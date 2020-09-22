@@ -1033,7 +1033,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		JSONObject epaymentConfigJSON = input.getEpaymentProfile() != null
 				? JSONFactoryUtil.createJSONObject(input.getEpaymentProfile())
 				: JSONFactoryUtil.createJSONObject();
-		JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
+		//get all config
+		JSONObject epaymentProfileJSON = epaymentConfigJSON;
 
 		if (epaymentConfigJSON.has("paymentKeypayDomain")) {
 			try {

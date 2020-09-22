@@ -808,9 +808,16 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				throw new UnauthenticationException();
 			}
 			if (dossierId == 0) {
+				//get dossier by referenceId
 				Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 				if (dossier != null) {
 					dossierId = dossier.getDossierId();
+				} else {
+					//case get dossier by dossierNo
+					dossier = DossierLocalServiceUtil.getByDossierNo(groupId, id);
+					if(dossier != null) {
+						dossierId = dossier.getDossierId();
+					}
 				}
 			}
 
