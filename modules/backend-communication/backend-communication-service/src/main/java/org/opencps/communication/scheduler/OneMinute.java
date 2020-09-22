@@ -117,7 +117,7 @@ public class OneMinute extends BaseMessageListener {
 								serviceContext);
 						_log.debug("messageEntry: "+messageEntry);
 
-						if (flagJobMail && notificationtemplate.getSendEmail()) {
+						if (flagJobMail) {
 							//Process send SMS
 							Result resultSendSMS = new Result("Success", new Long(1));
 							if(messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())){

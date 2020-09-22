@@ -1589,7 +1589,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		Sort[] sorts = null;
 		sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
-				true) };
+				false) };
 
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -1755,6 +1755,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						}
 						dossierObj.put("don_gia",sbDonGia.toString());
 						dossierObj.put("recordCount",sbRecordCount.toString());
+						dossierObj.put("totalRecord", metaData.has("totalRecord") ? metaData.getInt("totalRecord") : 0 );
 						dossierObj.put("dossierFilePayments", dossierFilePayments);
 						//dossierObj.put("chitietdongia", chitietDonGia.toString());
 					}
