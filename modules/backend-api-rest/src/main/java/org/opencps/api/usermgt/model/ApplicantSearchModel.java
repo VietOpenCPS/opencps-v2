@@ -52,7 +52,9 @@ import javax.xml.bind.annotation.XmlType;
     "idNo",
     "applicantName",
     "verification",
-    "haveAccount"
+    "haveAccount",
+    "fromRegistryDate",
+    "toRegistryDate"    
 })
 @XmlRootElement(name = "ApplicantSearchModel")
 public class ApplicantSearchModel {
@@ -81,6 +83,10 @@ public class ApplicantSearchModel {
 	@QueryParam(value = "haveAccount")
 	@DefaultValue("false")
 	protected boolean haveAccount;
+	@QueryParam(value = "fromRegistryDate")
+	protected String fromRegistryDate;
+	@QueryParam(value = "toRegistryDate")
+	protected String toRegistryDate;
 	
 	public boolean isHaveAccount() {
 		return haveAccount;
@@ -151,5 +157,17 @@ public class ApplicantSearchModel {
 	public void setIdNo(String idNo) {
 		this.idNo = idNo;
 	}
+	public String getFromRegistryDate() {
+		return fromRegistryDate;
+	}
+	public void setFromRegistryDate(String fromRegistryDate) {
+		this.fromRegistryDate = fromRegistryDate;
+	}
+	public String getToRegistryDate() {
+		return toRegistryDate;
+	}
+	public void setToRegistryDate(String toRegistryDate) {
+		this.toRegistryDate = toRegistryDate;
+	}	
 
 }
