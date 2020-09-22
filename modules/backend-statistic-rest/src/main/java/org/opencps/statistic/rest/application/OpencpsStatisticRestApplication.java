@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -45,6 +46,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.activation.DataHandler;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -153,6 +155,8 @@ import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.opencps.statistic.service.OpencpsDossierStatisticManualLocalServiceUtil;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 import org.slf4j.Logger;
@@ -193,7 +197,8 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	@GET
 	public Response searchDossierStatistic(@HeaderParam("groupId") long groupId,
-			@BeanParam DossierSearchModel query, @Context Request requestCC) {
+			@BeanParam DossierSearchModel query, @Context Request requestCC,
+			@Context HttpServletRequest request) {
 
 		//LOG.info("GET DossierStatisticResponse");
 		//_log.info("START DossierStatisticResponse: "+query.getAgency());
@@ -224,6 +229,27 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		if (end == 0)
 			end = QueryUtil.ALL_POS;
+		
+		// add by phuchn
+		User user = (User) request.getAttribute("USER");
+		String scopeUser = null; 
+		if (user != null) {
+			long userId = user.getUserId();
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			if (employee != null) {
+				String scope = employee.getScope();
+				if (scope!= null && scope.split(",").length > 1) {
+					String[] govAgency = scope.split(",");
+					scope = govAgency[0];
+				}
+				scopeUser = scope;
+			}
+		}
+		if (query.getAgency() != null) {
+			govAgencyCode = query.getAgency();
+		}else if (scopeUser != null) {
+			govAgencyCode = scopeUser;
+		}
 
 		boolean calculate = true;
 		if (Validator.isNotNull(fromStatisticDate) ||Validator.isNotNull(toStatisticDate)) {

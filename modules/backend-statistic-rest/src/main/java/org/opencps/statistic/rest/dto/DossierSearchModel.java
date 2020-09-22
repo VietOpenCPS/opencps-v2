@@ -400,5 +400,5 @@ public class DossierSearchModel {
 	public void setSystem(String system) {
 		this.system = system;
 	}
-
+	
 }
