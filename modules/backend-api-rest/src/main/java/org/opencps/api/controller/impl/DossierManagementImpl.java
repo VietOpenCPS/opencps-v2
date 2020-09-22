@@ -1887,6 +1887,13 @@ public class DossierManagementImpl implements DossierManagement {
 						serviceContext);
 				}
 				String actionCode = input.getActionCode();
+				// add by phuchn - thao tac gop
+				List<String> actionCodes = null;
+				if (actionCode.split(",").length > 1) {
+					actionCodes = Arrays.asList(actionCode.split(","));
+					actionCode = getActionCode(groupId, actionCodes, dossier, user);
+				}
+								
 				if (Validator.isNotNull(actionCode)) {
 					ActionConfig actConfig =
 						ActionConfigLocalServiceUtil.getByCode(
@@ -8534,92 +8541,95 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
-	@Override
-	public Response doActionSpecial(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, DoActionModel input, Long dueDate, String listDossierId,
-			String listActionCode) {
+	private String getActionCode(long groupId, List<String> listActionCode, Dossier dossier, User user) {
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		String actionCode = null;		
 		DossierAction dossierAction = null;
-		List<ProcessAction> processActionList = null;
-		List<String> dossierIds = null;
-		List<String> actionCodes = null;
-		
-		if (listDossierId.split(",").length > 1) {
-			dossierIds = Arrays.asList(listDossierId.split(","));
-		}
-		
-		if (listActionCode.split(",").length > 1) {
-			actionCodes = Arrays.asList(listActionCode.split(","));
-		}
-		
-		for (String dossierId : dossierIds) {
-			
-			Dossier dossier = DossierUtils.getDossier(dossierId, groupId);
-			
-			try {
-				if (dossier != null) {
-					long serviceProcessId = 0;
-					String stepCode = StringPool.BLANK;
-					long dossierActionId = dossier.getDossierActionId();
-					List<String> listActCode = new ArrayList<String>();
-					List<String> newListActCode = new ArrayList<String>();
-					
-					if (dossierActionId > 0) {
-						dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+		List<ProcessAction> processActionList = null;		
+				
+		try {
+			if (dossier != null) {
+				long serviceProcessId = 0;
+				String stepCode = StringPool.BLANK;
+				long dossierActionId = dossier.getDossierActionId();
+				
+				if (dossierActionId > 0) {
+					dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				}
+				
+				if (dossierAction != null) {
+					serviceProcessId = dossierAction.getServiceProcessId();
+					stepCode = dossierAction.getStepCode();
+				}
+				
+				if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
+					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
+							serviceProcessId, stepCode);
+					if (processActionList != null && processActionList.size() > 0) {
+						actionCode = mapActionCode(processActionList, listActionCode, dossier, groupId, user);
 					}
-					
+				}else {
+					ProcessOption option = null;
 					if (dossierAction != null) {
-						serviceProcessId = dossierAction.getServiceProcessId();
-						stepCode = dossierAction.getStepCode();
-					}
-					
-					if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
-						processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
-								serviceProcessId, stepCode);
-						if (processActionList != null && processActionList.size() > 0) {
-							getActionCode(listActCode, processActionList, actionCodes, newListActCode, input);
-							doAction(request, header, company, locale, user, serviceContext, dossierId, input, dueDate);
-						}
+						DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(dossier.getGroupId(), dossier.getDossierTemplateNo());
+						option = ProcessOptionLocalServiceUtil.fetchBySP_DT(dossierAction.getServiceProcessId(), dossierTemplate.getDossierTemplateId());
 					}else {
-						ProcessOption option = null;
-						if (dossierAction != null) {
-							DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(dossier.getGroupId(), dossier.getDossierTemplateNo());
-							option = ProcessOptionLocalServiceUtil.fetchBySP_DT(dossierAction.getServiceProcessId(), dossierTemplate.getDossierTemplateId());
-						}else {
-							option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-								dossier.getDossierTemplateNo(), groupId);
-						}
-	
-						if (option != null) {
-							serviceProcessId = option.getServiceProcessId();
-						}
-						processActionList = ProcessActionLocalServiceUtil
-							.getByServiceStepCode(groupId, serviceProcessId, StringPool.BLANK);
-						if (processActionList != null && processActionList.size() > 0) {
-							getActionCode(listActCode, processActionList, actionCodes, newListActCode, input);
-							doAction(request, header, company, locale, user, serviceContext, dossierId, input, dueDate);
-						}						
+						option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+							dossier.getDossierTemplateNo(), groupId);
 					}
-					
-				}				
-			} catch (Exception e) {
-				_log.error(e);
-			}		
-		}
-		return Response.status(HttpURLConnection.HTTP_OK).build();
+
+					if (option != null) {
+						serviceProcessId = option.getServiceProcessId();
+					}
+					processActionList = ProcessActionLocalServiceUtil
+						.getByServiceStepCode(groupId, serviceProcessId, StringPool.BLANK);
+					if (processActionList != null && processActionList.size() > 0) {
+						actionCode = mapActionCode(processActionList, listActionCode, dossier, groupId, user);
+					}						
+				}
+				
+			}				
+		} catch (Exception e) {
+			_log.error(e);
+		}		
+		return actionCode;
 	}
 	
-	private void getActionCode(List<String> listActCode, List<ProcessAction> processActionList,
-			List<String> actionCodes,List<String> newListActCode, DoActionModel input) {
-		
-		listActCode = processActionList.stream().map(processAction -> {return processAction.getActionCode();
-		}).collect(Collectors.toList());
-		for (String actionCode : actionCodes) {
-			if (listActCode.contains(actionCode)) {								
-				newListActCode.add(actionCode);								
+	private String mapActionCode(List<ProcessAction> processActionList,
+			List<String> actionCodes, Dossier dossier, long groupId, User user) {
+		String actCode = null;
+		List<String> listActionCode = new ArrayList<String>();
+		for (ProcessAction processAction : processActionList) {
+			String actionCode = processAction.getActionCode();
+			String autoEvent = processAction.getAutoEvent();
+			String preCondition = processAction.getPreCondition();
+			if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)) {
+				listActionCode.add(actionCode);
 			}
 		}
-		input.setActionCode(newListActCode.get(0));
+				
+		for (String actionCode : actionCodes) {
+			if (listActionCode.contains(actionCode)) {								
+				actCode = actionCode;
+				break;
+			}
+		}
+		return actCode;
 	}
+	
+	private boolean processCheckEnable(String preCondition, String autoEvent, Dossier dossier, String actionCode,
+			long groupId, User curUser) {
+			if (AUTO_EVENT_SUBMIT.equals(autoEvent) || AUTO_EVENT_TIMMER.equals(autoEvent)
+				|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+
+				return false;
+			}
+			String[] preConditionArr = StringUtil.split(preCondition);
+			if (preConditionArr != null && preConditionArr.length > 0) {
+
+				return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, curUser);
+			}
+			return true;
+		}
+		
 }
