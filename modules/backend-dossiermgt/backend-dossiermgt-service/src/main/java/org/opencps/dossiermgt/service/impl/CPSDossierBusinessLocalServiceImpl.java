@@ -1773,14 +1773,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				strDueDate = APIDateTimeUtils.convertDateToString(dossier.getDueDate(),
 						APIDateTimeUtils._NORMAL_PARTTERN);
 			}
-			dossierObj.put("dueDateSMS", strDueDate != null ? strDueDate : StringPool.BLANK);
+			dossierObj.put("dueDateNotify", strDueDate != null ? strDueDate : StringPool.BLANK);
+			//Payment
+			PaymentFile payment = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+			long paymentAmount = 0;
+			if (payment != null) {
+				paymentAmount = payment.getPaymentAmount();
+			}
+			dossierObj.put("paymentAmount", paymentAmount);
+			//
 			dossierObj = buildNotificationPayload(dossier, dossierObj);
 
 			payloadObj.put(KeyPayTerm.DOSSIER, dossierObj);
 
-			//        	payloadObj.put(
-			//					KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
-			//						JSONFactoryUtil.looseSerialize(dossier)));
 
 			if (dossierAction != null) {
 				payloadObj.put(DossierActionTerm.ACTION_CODE, dossierAction.getActionCode());
@@ -4801,6 +4806,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//		}
 
 		dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
+		if (DossierActionTerm.OUTSIDE_ACTION_PAYMENT.equals(actionCode)) {
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+			if (paymentFile != null) {
+				paymentFile.setPaymentStatus(5);
+				paymentFile.setApproveDatetime(new Date());
+			}
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+			//
+			return dossierAction;
+		}
 		//		ActionConfig ac = actionConfigLocalService.getByCode(groupId, actionCode);
 		ActionConfig ac = actionConfig;
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
@@ -4896,6 +4911,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						String formData = payload;
 						JSONObject formDataObj = processMergeDossierFormData(dossier,
 								JSONFactoryUtil.createJSONObject(formData));
+						formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
 						formDataObj.put("documentCode", Validator.isNotNull(documentCode) ? documentCode: StringPool.BLANK);
 						//_log.info("Dossier document form data action outside: " + formDataObj.toJSONString());
 						Message message = new Message();

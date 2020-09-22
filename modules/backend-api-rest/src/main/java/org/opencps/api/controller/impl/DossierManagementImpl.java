@@ -3919,19 +3919,13 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			if (Validator.isNotNull(dossierFile.getFormData())) {
-				dossierFile.setFormData(dossierFile.getFormData());
-			}else{
+			if (Validator.isNotNull(formData)) {
 				dossierFile.setFormData(formData);
 			}
-			if (Validator.isNotNull(dossierFile.getRemoved())) {
-				dossierFile.setRemoved(dossierFile.getRemoved());
-			}else{
+			if (Validator.isNotNull(removed)) {
 				dossierFile.setRemoved(Boolean.parseBoolean(removed));
 			}
-			if (Validator.isNotNull(dossierFile.getEForm())) {
-				dossierFile.setEForm(dossierFile.getEForm());
-			}else{
+			if (Validator.isNotNull(eForm)) {
 				dossierFile.setEForm(Boolean.parseBoolean(eForm));
 			}
 
@@ -3941,7 +3935,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			dossierFile = action.updateDossierFileFormData(
 						groupId, dossier.getDossierId(), dossierFile.getReferenceUid(),
-						Validator.isNull(dossierFile.getFormData()) ? formData : dossierFile.getFormData(), serviceContext);
+						Validator.isNotNull(formData) ? formData : dossierFile.getFormData(), serviceContext);
 
 			_log.info("__End update dossier file at:" + new Date());
 
