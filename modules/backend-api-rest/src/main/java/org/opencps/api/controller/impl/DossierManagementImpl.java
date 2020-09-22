@@ -232,101 +232,150 @@ public class DossierManagementImpl implements DossierManagement {
 		long userId = user.getUserId();
 		String emailLogin = user.getEmailAddress();
 		DossierActions actions = new DossierActionsImpl();
+		DossierResultsModel results = null;
 
 		try {
-			boolean istheViaPostal = query.isIstheViaPostal();
-			if(istheViaPostal){
-			try {
-				DossierDetailModel result = null;
-				String dossierNo = query.getDossierNo();
-				if(Validator.isNotNull(dossierNo)){
-					Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(dossierNo, groupId);
-					if(Validator.isNotNull(dossier)){
-						result = mappingForGetDetail(dossier, user.getUserId());
-						return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+			boolean isViaPostal = query.isIstheViaPostal();
+			// boolean isCitizen = false;
+			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
+			}
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+			Sort[] sorts = null;
+			if (Validator.isNull(query.getSort())) {
+				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
+				sorts = new Sort[]{ SortFactoryUtil.create(dateSort, Sort.LONG_TYPE,
+								GetterUtil.getBoolean(query.getOrder()))
+				};
+			} else {
+				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
+				sorts = new Sort[]{ SortFactoryUtil.create( querySort, Sort.STRING_TYPE,
+								GetterUtil.getBoolean(query.getOrder()))
+				};
+			}
+			backend.auth.api.BackendAuth auth2 =
+					new backend.auth.api.BackendAuthImpl();
+			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
+				params.put(DossierTerm.USER_ID, user.getUserId());
+			}
+
+            if(isViaPostal){
+				try {
+					String dossierNo = query.getDossierNo();
+					 _log.info("dossierIdNo: "+dossierNo);
+					String dossierNoSearch = StringPool.BLANK;
+					if (Validator.isNotNull(dossierNo)) {
+						dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierNo);
 					}
-					Dossier dossierByPostalCodeSend = DossierLocalServiceUtil.fetchByDO_POST_SEND_GROUP(dossierNo, groupId);
-					if(Validator.isNotNull(dossierByPostalCodeSend)){
-						result = mappingForGetDetail(dossierByPostalCodeSend, user.getUserId());
-						return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+					params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
+
+					_log.info("params: "+params);
+					JSONObject jsonData = actions.getDossiers(
+							user.getUserId(), company.getCompanyId(), groupId, params,
+							sorts, query.getStart(), query.getEnd(), serviceContext);
+
+					if (jsonData.getInt(ConstantUtils.TOTAL) > 0) {
+						results = new DossierResultsModel();
+						results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+						results.getData().addAll(
+								DossierUtils.mappingForGetList(
+										(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
+										query.getAssigned(), query));
+						return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 					}
-					Dossier dossierByPostalCodeReceived = DossierLocalServiceUtil.fetchByDO_POST_RECEIVED_GROUP(dossierNo, groupId);
-					if(Validator.isNotNull(dossierByPostalCodeReceived)){
-						result = mappingForGetDetail(dossierByPostalCodeReceived, user.getUserId());
-						return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-					}
-				}
-				if(Validator.isNull(result)) {
-					ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(DossierTerm.VNPOST_CLS);
-					if (Validator.isNotNull(sc)) {
-						JSONObject config = JSONFactoryUtil.createJSONObject(sc.getConfigs());
+					else {
+						ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(DossierTerm.VNPOST_CLS);
+						if (Validator.isNotNull(sc)) {
+							JSONObject config = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 
-						HashMap<String, String> properties = new HashMap<String, String>();
-						InvokeREST callRest = new InvokeREST();
+							HashMap<String, String> properties = new HashMap<String, String>();
+							InvokeREST callRest = new InvokeREST();
 
-						if (Validator.isNotNull(dossierNo)) {
-							//URL + token
-							String urlVnPost = config.getString(DossierTerm.URL_VIA_POST);
-							//Path : Token + Code
-							String path = StringPool.FORWARD_SLASH + config.getString(DossierTerm.TOKEN_VN_POST) + StringPool.FORWARD_SLASH + dossierNo;
+							if (Validator.isNotNull(dossierNo)) {
+								//URL + token
+								String urlVNPOST = config.getString(DossierTerm.URL_VIA_POST);
+								//Path : Token + Code
+								String endPointVNPOST = StringPool.FORWARD_SLASH + config.getString(DossierTerm.TOKEN_VN_POST) + StringPool.FORWARD_SLASH + dossierNo;
 
-							JSONObject resultObj = callRest.callAPI(groupId, HttpMethods.GET, MediaType.APPLICATION_JSON,
-									urlVnPost, path, "",
-									"", properties, serviceContext);
+								JSONObject resultObj = callRest.callAPI(groupId, HttpMethods.GET, MediaType.APPLICATION_JSON,
+										urlVNPOST, endPointVNPOST, "", "", properties, serviceContext);
 
-							System.out.println("===========" + urlVnPost + " " + path);
-							if (Validator.isNotNull(resultObj)) {
-								if (GetterUtil.getInteger(resultObj.get(RESTFulConfiguration.STATUS)) != HttpURLConnection.HTTP_OK) {
-									throw new RuntimeException(
-											"Failed : HTTP error code : " + resultObj.get(RESTFulConfiguration.STATUS));
-								} else {
-									JSONArray arrayData = JSONFactoryUtil.createJSONArray(resultObj.getString(RESTFulConfiguration.MESSAGE));
+								_log.info("URLVNPOST===========" + urlVNPOST + " | ENDPOINT: " + endPointVNPOST);
+								if (Validator.isNotNull(resultObj)) {
+									if (GetterUtil.getInteger(resultObj.get(RESTFulConfiguration.STATUS)) != HttpURLConnection.HTTP_OK) {
+										results = new DossierResultsModel();
+										results.setTotal(0);
+//										return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+									} else {
+										JSONArray arrayData = JSONFactoryUtil.createJSONArray(resultObj.getString(RESTFulConfiguration.MESSAGE));
+										_log.info("arrayData: "+arrayData);
 
-									for (int i = 0; i < arrayData.length(); i++) {
-										JSONObject object = arrayData.getJSONObject(i);
-										Dossier dossier = null;
-										String soCongvan = object.getString(DossierFileTerm.SO_CONG_VAN);
-										String status = object.getString(DossierFileTerm.STATUS_CONG_VAN);
-										// Trạng thái 1 || 2 || 3 là mã tờ khai
-										// Trạng thái 4 || 5 || 6 || 7 || 8 là mã hồ sơ
-										if (Validator.isNotNull(status) && Validator.isNotNull(soCongvan)) {
-											if ("1".equals(status) || "2".equals(status) || "3".equals(status)) {
-												dossier = DossierLocalServiceUtil.findDossierByDeclarationCode(soCongvan, groupId);
-												result = mappingForGetDetail(dossier, user.getUserId());
-											} else {
-												dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(soCongvan, groupId);
-												result = mappingForGetDetail(dossier, user.getUserId());
+										for (int i = 0; i < arrayData.length(); i++) {
+											JSONObject object = arrayData.getJSONObject(i);
+											String soCongvan = object.getString(DossierFileTerm.SO_CONG_VAN);
+											String status = object.getString(DossierFileTerm.STATUS_CONG_VAN);
+											// Trạng thái 1 || 2 || 3 là mã tờ khai
+											// Trạng thái 4 || 5 || 6 || 7 || 8 là mã hồ sơ
+											_log.info("soCongvan: "+soCongvan);
+											if (Validator.isNotNull(status) && Validator.isNotNull(soCongvan)) {
+												String eformCode = SpecialCharacterUtils.splitSpecial(soCongvan);
+												if ("1".equals(status) || "2".equals(status) || "3".equals(status)) {
+													//dossier = DossierLocalServiceUtil.findDossierByDeclarationCode(soCongvan, groupId);
+													_log.info("dossier_1_2_3: ");
+													params.put(DossierTerm.DOSSIER_NO, StringPool.BLANK);
+													params.put(DossierTerm.MA_TO_KHAI, eformCode);
+												} else {
+													_log.info("!dossier_1_2_3: ");
+													params.put(DossierTerm.DOSSIER_NO, eformCode);
+													//dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(soCongvan, groupId);
+												}
+												_log.info("params: " + params);
+												JSONObject jsonDataEform = actions.getDossiers(
+														user.getUserId(), company.getCompanyId(), groupId, params,
+														sorts, query.getStart(), query.getEnd(), serviceContext);
+
+												_log.info("jsonData11.getInt(ConstantUtils.TOTAL): " + jsonDataEform.getInt(ConstantUtils.TOTAL));
+												if (jsonDataEform.getInt(ConstantUtils.TOTAL) > 0) {
+													results = new DossierResultsModel();
+													results.setTotal(jsonDataEform.getInt(ConstantUtils.TOTAL));
+													List<Document> dataList = (List<Document>) jsonDataEform.get(ConstantUtils.DATA);
+													// Update Dossier khi truyền mã bưu gửi tìm trên API ==>
+													if (dataList != null && dataList.size() > 0) {
+														for (Document doc : dataList) {
+															long dossierId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ID));
+															Dossier dossier = dossierId > 0 ? DossierLocalServiceUtil.fetchDossier(dossierId) : null;
+															if (dossier != null) {
+																dossier.setPostalCodeSend(dossierNo);
+																DossierLocalServiceUtil.updateDossier(dossier);
+															}
+														}
+													}
+													results.getData().addAll(
+															DossierUtils.mappingForGetList(dataList, userId, query.getAssigned(), query));
+													return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+												}
 											}
 										}
-										// Update Dossier khi truyền mã bưu gửi tìm trên API ==>
-										if(Validator.isNotNull(result)){
-											dossier.setPostalCodeSend(dossierNo);
-											DossierLocalServiceUtil.updateDossier(dossier);
-										}
+											// Update Dossier khi truyền mã bưu gửi tìm trên API ==>
+											/*if(Validator.isNotNull(dossier)){
+												dossier.setPostalCodeSend(dossierNo);
+												DossierLocalServiceUtil.updateDossier(dossier);
+											}*/
 									}
 								}
 							}
 						}
-					}
-				}
-				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-			} catch (Exception e) {
-					e.printStackTrace();
-					_log.info("------ Log Exception ------ " + " " + e.getMessage());
-					return BusinessExceptionImpl.processException(e);
-			}
-			}else {
-				// boolean isCitizen = false;
-				if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
-					query.setStart(QueryUtil.ALL_POS);
-					query.setEnd(QueryUtil.ALL_POS);
-					// query.setStart(0);
-					// query.setEnd(15);
-				}
 
-				LinkedHashMap<String, Object> params =
-						new LinkedHashMap<String, Object>();
-				params.put(Field.GROUP_ID, String.valueOf(groupId));
+						return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+					}
+				} catch (Exception e) {
+					return BusinessExceptionImpl.processException(e);
+				}
+			}
+            else {
 				// LamTV_Process search LIKE
 				String keywordSearch = query.getKeyword();
 				String keySearch = StringPool.BLANK;
@@ -598,11 +647,6 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.FOLLOW, follow);
 				params.put(DossierTerm.TOP, top);
 
-				backend.auth.api.BackendAuth auth2 =
-						new backend.auth.api.BackendAuthImpl();
-				if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
-					params.put(DossierTerm.USER_ID, user.getUserId());
-				}
 				params.put(DossierTerm.SECRET_KEY, query.getSecetKey());
 				params.put(DossierTerm.STATE, state);
 				params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
@@ -732,22 +776,6 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 					}
 				}
-				Sort[] sorts = null;
-				if (Validator.isNull(query.getSort())) {
-					String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
-					sorts = new Sort[]{
-							SortFactoryUtil.create(
-									dateSort, Sort.LONG_TYPE,
-									GetterUtil.getBoolean(query.getOrder()))
-					};
-				} else {
-					String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
-					sorts = new Sort[]{
-							SortFactoryUtil.create(
-									querySort, Sort.STRING_TYPE,
-									GetterUtil.getBoolean(query.getOrder()))
-					};
-				}
 
 				if (Validator.isNotNull(top)) {
 					String querySort;
@@ -797,8 +825,9 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 
-				DossierResultsModel results = new DossierResultsModel();
+				results = new DossierResultsModel();
 
+				_log.info("params: "+params);
 				JSONObject jsonData = actions.getDossiers(
 						user.getUserId(), company.getCompanyId(), groupId, params,
 						sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -816,7 +845,6 @@ public class DossierManagementImpl implements DossierManagement {
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
-
 	}
 
 	// LamTV: Process dossierTodo
@@ -1504,9 +1532,24 @@ public class DossierManagementImpl implements DossierManagement {
 				vnpostalStatus = VnpostCollectionTerm.VNPOSTAL_STAUS_1;
 			}
 			//
-			int systemId =
-				input.getSystemId() != null ? input.getSystemId() : 0;
+			int systemId = input.getSystemId() != null ? input.getSystemId() : 0;
 
+
+			int durationCount = 0;
+			try {
+				String metaData = input.getMetaData();
+				if (Validator.isNotNull(metaData)) {
+					JSONObject metaJSON = JSONFactoryUtil.createJSONObject(metaData);
+					if (metaJSON.has("durationCountMeta") && metaJSON.get("durationCountMeta") != null) {
+						durationCount = metaJSON.getInt("durationCountMeta");
+						if (durationCount == 2 || durationCount == 6) durationCount -= 1;
+						if (durationCount == 4) durationCount += 1;
+					}
+				}
+			}
+			catch (JSONException ex) {
+				_log.debug(ex);
+			}
 			// Dossier dossier = actions.initDossier(groupId, id, referenceUid,
 			// counter, input.getServiceCode(),
 			// StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
@@ -1538,7 +1581,7 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getDelegateDistrictCode(), input.getDelegateWardCode(), input.getSampleCount(),
 					input.getDossierName(), input.getBriefNote(), delegateType, documentNo, documentDate, systemId,
 					vnpostalStatus, vnpostalProfile, input.getFromViaPostal(), input.getFormMeta(), input.getDueDate(),
-					serviceContext);
+					durationCount, serviceContext);
 
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());
@@ -3876,19 +3919,13 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			if (Validator.isNotNull(dossierFile.getFormData())) {
-				dossierFile.setFormData(dossierFile.getFormData());
-			}else{
+			if (Validator.isNotNull(formData)) {
 				dossierFile.setFormData(formData);
 			}
-			if (Validator.isNotNull(dossierFile.getRemoved())) {
-				dossierFile.setRemoved(dossierFile.getRemoved());
-			}else{
+			if (Validator.isNotNull(removed)) {
 				dossierFile.setRemoved(Boolean.parseBoolean(removed));
 			}
-			if (Validator.isNotNull(dossierFile.getEForm())) {
-				dossierFile.setEForm(dossierFile.getEForm());
-			}else{
+			if (Validator.isNotNull(eForm)) {
 				dossierFile.setEForm(Boolean.parseBoolean(eForm));
 			}
 
@@ -3898,7 +3935,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			dossierFile = action.updateDossierFileFormData(
 						groupId, dossier.getDossierId(), dossierFile.getReferenceUid(),
-						Validator.isNull(dossierFile.getFormData()) ? formData : dossierFile.getFormData(), serviceContext);
+						Validator.isNotNull(formData) ? formData : dossierFile.getFormData(), serviceContext);
 
 			_log.info("__End update dossier file at:" + new Date());
 
@@ -7757,15 +7794,30 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
+			_log.info("Updating dossier epar with groupId: "+ groupId );
 			Dossier dossier =
 				CPSDossierBusinessLocalServiceUtil.eparPublish(
 					groupId, company, user, serviceContext, id,
 					DossierUtils.convertFormModelToPublishModel(input));
+			_log.info("Updated dossier epar with dossierId: "+ dossier.getDossierId() );
+
+			List<ServerConfig> listServerConfig = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.DVCQG_INTEGRATION);
+			for (ServerConfig serverConfig : listServerConfig) {
+				List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(),
+						dossier.getDossierId(), serverConfig.getServerNo(),
+						new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+				if (lstQueues == null || lstQueues.isEmpty()) {
+					PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(),
+							serverConfig.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, serviceContext);
+				}
+			}
+			_log.info("Done saving dossier to queue to integrate to DVCQG");
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerializeDeep(dossier)).build();
 		}
 		catch (Exception e) {
+			_log.error("Update epar dossier error: " + e.getMessage());
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

@@ -25,9 +25,11 @@ import javax.portlet.PortletResponse;
 
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.ConverterTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ServiceInfo;
@@ -95,7 +97,12 @@ public class PaymentFileIndexer extends BaseIndexer<PaymentFile> {
 		document.addTextSortable(PaymentFileTerm.PAYMENT_NOTE, object.getPaymentNote());
 		document.addTextSortable(PaymentFileTerm.EPAYMENT_PROFILE, object.getEpaymentProfile());
 		document.addTextSortable(PaymentFileTerm.BANK_INFO, object.getBankInfo());
-		document.addTextSortable(PaymentFileTerm.PAYMENT_METHOD, object.getPaymentMethod());
+
+		if (Validator.isNotNull(object.getPaymentMethod())) {
+			document.addTextSortable(PaymentFileTerm.PAYMENT_METHOD, object.getPaymentMethod());
+		} else {
+			document.addTextSortable(PaymentFileTerm.PAYMENT_METHOD, String.valueOf(0));
+		}
 		document.addTextSortable(PaymentFileTerm.CONFIRM_PAYLOAD, object.getConfirmPayload());
 		document.addTextSortable(PaymentFileTerm.CONFIRM_NOTE, object.getConfirmNote());
 		document.addTextSortable(PaymentFileTerm.ACCOUNT_USER_NAME, object.getAccountUserName());
@@ -116,6 +123,10 @@ public class PaymentFileIndexer extends BaseIndexer<PaymentFile> {
 			document.addNumberSortable(PaymentFileTerm.COUNTER, dossier.getCounter());
 			document.addTextSortable(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
 			document.addTextSortable(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+			if (Validator.isNotNull(dossier.getServiceCode())) {
+				String serviceCodeSearch = SpecialCharacterUtils.splitSpecial(dossier.getServiceCode());
+				document.addTextSortable(ServiceInfoTerm.SERVICE_CODE_SEARCH, serviceCodeSearch);
+			}
 			document.addTextSortable(DossierTerm.SERVICE_NAME, dossier.getServiceName());
 			document.addTextSortable(DossierTerm.ADDRESS, dossier.getAddress());
 			document.addTextSortable(DossierTerm.META_DATA, dossier.getMetaData());

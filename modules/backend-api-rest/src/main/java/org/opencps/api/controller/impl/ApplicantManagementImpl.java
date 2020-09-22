@@ -1280,8 +1280,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						_log.info("strProfile: " + strProfile);
 						if (Validator.isNull(strProfile) || "ERROR".equals(strProfile)) {
 							_log.info("CO VAO KHONG1111 ???");
-							return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("{Register error}")
-									.build();
+							ErrorMsgModel error = new ErrorMsgModel();
+							error.setMessage("Active error");
+							error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+							error.setDescription("RegisterError");
+							return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 						} else if (Validator.isNotNull(strProfile)) {
 							JSONObject jsonProfile = JSONFactoryUtil.createJSONObject(strProfile);
 							_log.info("jsonProfile: " + jsonProfile);
@@ -1291,14 +1294,22 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 								if ("DUPLICATE".equals(strResult)) {
 									_log.info("CO VAO 222222 ???");
-									Applicant applicant = actions.registerApproved(serviceContext, groupId, applicantName,
-											applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address,
-											cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
-											contactTelNo, StringPool.BLANK, input.getPassword());
+									try{
+										Applicant applicant = actions.registerApproved(serviceContext, groupId, applicantName,
+												applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address,
+												cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
+												contactTelNo, StringPool.BLANK, input.getPassword());
 
-									result = ApplicantUtils.mappingToApplicantModel(applicant);
-
-									return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("{User exit!}").build();
+										result = ApplicantUtils.mappingToApplicantModel(applicant);
+									}
+									catch (Exception e) {
+										_log.error("Error duplicate lgsp: " + e.getMessage());
+									}
+									ErrorMsgModel error = new ErrorMsgModel();
+									error.setMessage("Active error");
+									error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+									error.setDescription("RegisterDuplicate");
+									return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 								} else if ("SUCCESSFUL".equals(strResult)) {
 									_log.info("CO VAO 33333 ???");
 									Applicant applicant = actions.register(serviceContext, groupId, applicantName,

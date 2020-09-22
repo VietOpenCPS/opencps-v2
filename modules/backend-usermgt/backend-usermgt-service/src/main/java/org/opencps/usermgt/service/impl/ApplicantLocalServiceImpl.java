@@ -1602,6 +1602,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
 		Applicant applicant = null;
 		if (applicantId == 0) {
+			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate != null ? String.valueOf(applicantIdDate.getTime()) : StringPool.BLANK);
+			validateApplicantDuplicate(groupId, context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
 
 			applicantId = counterLocalService.increment(Applicant.class.getName());
 			applicant = applicantPersistence.create(applicantId);

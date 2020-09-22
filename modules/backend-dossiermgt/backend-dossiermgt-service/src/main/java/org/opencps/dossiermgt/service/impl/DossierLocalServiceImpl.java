@@ -2591,12 +2591,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	// sondt end
 
 	public Dossier getByRef(long groupId, String refId) {
-
-		try {
-			return dossierPersistence.findByG_REF(groupId, refId);
-		} catch (NoSuchDossierException e) {
-			return null;
-		}
+		return dossierPersistence.fetchByG_REF(groupId, refId);
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -2618,7 +2613,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 		}
 		else {
-			dossier = dossierPersistence.findByG_REF(groupId, refId);
+			dossier = dossierPersistence.fetchByG_REF(groupId, refId);
 		}
 
 		return dossierPersistence.remove(dossier);
@@ -3520,9 +3515,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		System.out.println("====online 3511==" + online);
-		_log.info("====online 3511==" + online);
-		_log.debug("====online 3511==" + online);
+//		System.out.println("====online 3511==" + online);
+//		_log.info("====online 3511==" + online);
+//		_log.debug("====online 3511==" + online);
 		if (Validator.isNotNull(online)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(online));
 			query.addField(DossierTerm.ONLINE);
@@ -3991,7 +3986,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(dossierNo)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { DossierTerm.DOSSIER_COUNTER_SEARCH, DossierTerm.DOSSIER_NO_SEARCH };
+			String[] subQuerieArr = new String[]{DossierTerm.DOSSIER_COUNTER_SEARCH, DossierTerm.DOSSIER_NO_SEARCH,
+					DossierTerm.POSTAL_CODE_RECEIVED, DossierTerm.POSTAL_CODE_SEND};
 
 			String[] keyDossier = dossierNo.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
@@ -6942,7 +6938,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String dossierName, String briefNote, Integer delegateType,
 			String documentNo, Date documentDate, int systemId,
 			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-			Date dueDate, ServiceContext serviceContext) {
+			Date dueDate, int durationCount, ServiceContext serviceContext) {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -7115,6 +7111,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		if (dueDate != null)
 			dossier.setDueDate(dueDate);
+		if (durationCount > 0)
+			dossier.setDurationCount(durationCount);
 
 		return dossierPersistence.update(dossier);
 	}
@@ -7136,7 +7134,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String dossierName, String briefNote, Integer delegateType,
 			String documentNo, Date documentDate, int systemId,
 			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-			String metaData, Date dueDate, ServiceContext serviceContext) {
+			String metaData, Date dueDate, int durationCount, ServiceContext serviceContext) {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -7312,6 +7310,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		if (dueDate != null)
 			dossier.setDueDate(dueDate);
+		if (durationCount > 0)
+			dossier.setDurationCount(durationCount);
 
 		return dossierPersistence.update(dossier);
 	}

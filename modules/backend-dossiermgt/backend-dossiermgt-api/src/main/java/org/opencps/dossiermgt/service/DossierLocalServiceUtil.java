@@ -895,7 +895,7 @@ public class DossierLocalServiceUtil {
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, java.util.Date documentDate, int systemId,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		java.util.Date dueDate,
+		java.util.Date dueDate, int durationCount,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .initUpdateDossierFull(groupId, id, applicantName,
@@ -909,7 +909,7 @@ public class DossierLocalServiceUtil {
 			delegateDistrictCode, delegateWardCode, sampleCount, dossierName,
 			briefNote, delegateType, documentNo, documentDate, systemId,
 			vnpostalStatus, vnpostalProfile, fromViaPostal, dueDate,
-			serviceContext);
+			durationCount, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier initUpdateDossierMeta(
@@ -928,7 +928,7 @@ public class DossierLocalServiceUtil {
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, java.util.Date documentDate, int systemId,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		String metaData, java.util.Date dueDate,
+		String metaData, java.util.Date dueDate, int durationCount,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .initUpdateDossierMeta(groupId, id, applicantName,
@@ -942,7 +942,7 @@ public class DossierLocalServiceUtil {
 			delegateDistrictCode, delegateWardCode, sampleCount, dossierName,
 			briefNote, delegateType, documentNo, documentDate, systemId,
 			vnpostalStatus, vnpostalProfile, fromViaPostal, metaData, dueDate,
-			serviceContext);
+			durationCount, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier postDossier(

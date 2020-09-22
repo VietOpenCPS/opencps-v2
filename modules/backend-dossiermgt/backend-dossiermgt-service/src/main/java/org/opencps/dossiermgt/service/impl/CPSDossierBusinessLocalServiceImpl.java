@@ -1434,7 +1434,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 			//Call API postAction
-			processPostAction(proAction.getPostAction(), groupId, dossier);
+			String strPostAction = processPostAction(proAction.getPostAction(), groupId, dossier);
+			_log.info("strPostAction: "+strPostAction);
 		}
 
 		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
@@ -1534,7 +1535,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	//Post Action
-	private void processPostAction(String postAction, long groupId, Dossier dossier) throws JSONException {
+	private String processPostAction(String postAction, long groupId, Dossier dossier) throws JSONException {
 		if (Validator.isNotNull(postAction)) {
 			JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(postAction);
 			if (jsonPostData != null) {
@@ -1657,6 +1658,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 										sb.append((char) cp);
 									}
 									_log.debug("RESULT PROXY: " + sb.toString());
+									return sb.toString();
 								} catch (IOException e) {
 									_log.debug(e);
 									//_log.debug("Something went wrong while reading/writing in stream!!");
@@ -1667,6 +1669,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 		}
+		return StringPool.BLANK;
 	}
 
 	private JSONObject buildNotificationPayload(Dossier dossier, JSONObject payloadObject) {
@@ -1770,14 +1773,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				strDueDate = APIDateTimeUtils.convertDateToString(dossier.getDueDate(),
 						APIDateTimeUtils._NORMAL_PARTTERN);
 			}
-			dossierObj.put("dueDateSMS", strDueDate != null ? strDueDate : StringPool.BLANK);
+			dossierObj.put("dueDateNotify", strDueDate != null ? strDueDate : StringPool.BLANK);
+			//Payment
+			PaymentFile payment = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+			long paymentAmount = 0;
+			if (payment != null) {
+				paymentAmount = payment.getPaymentAmount();
+			}
+			dossierObj.put("paymentAmount", paymentAmount);
+			//
 			dossierObj = buildNotificationPayload(dossier, dossierObj);
 
 			payloadObj.put(KeyPayTerm.DOSSIER, dossierObj);
 
-			//        	payloadObj.put(
-			//					KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
-			//						JSONFactoryUtil.looseSerialize(dossier)));
 
 			if (dossierAction != null) {
 				payloadObj.put(DossierActionTerm.ACTION_CODE, dossierAction.getActionCode());
@@ -2473,7 +2481,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					if (Validator.isNotNull(paymentMethod)) {
 						oldPaymentFile.setPaymentMethod(paymentMethod);
 					}
-					oldPaymentFile.setApproveDatetime(new Date());
+					if (oldPaymentFile.getApproveDatetime() == null)
+						oldPaymentFile.setApproveDatetime(new Date());
 					paymentFileLocalService.updatePaymentFile(oldPaymentFile);
 				}
 			}
@@ -2628,6 +2637,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				if (epaymentConfigJSON.has(KeyPayTerm.KEYPAY_LATE_CONFIG)) {
+					try {
+						epaymentProfileJsonNew.put(KeyPayTerm.KEYPAY_LATE, true);
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+
+				}
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (IOException e) {
@@ -2693,21 +2712,20 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 					epaymentProfileJSON.put(KeyPayTerm.KEYPAYMERCHANTCODE,
 							epaymentConfigJSON.get("paymentMerchantCode"));
+					epaymentProfileJSON.put("paymentMerchantSecureKey", epaymentConfigJSON.get("paymentMerchantSecureKey"));
+					epaymentProfileJSON.put("paymentHashAlgorithm", epaymentConfigJSON.get("paymentHashAlgorithm"));
 					epaymentProfileJSON.put(KeyPayTerm.BANK, String.valueOf(true));
 					epaymentProfileJSON.put(KeyPayTerm.PAYGATE, String.valueOf(true));
 					epaymentProfileJSON.put(KeyPayTerm.SERVICEAMOUNT, serviceAmount);
 					epaymentProfileJSON.put(KeyPayTerm.PAYMENTNOTE, paymentNote);
 					epaymentProfileJSON.put(KeyPayTerm.PAYMENTFEE, paymentFee);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 
 				} catch (IOException e) {
 					_log.error(e);
 				}
 
-			} else {
-				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-						epaymentProfileJSON.toJSONString(), context);
 			}
 
 			_log.debug("==========VTPayTerm.VTP_CONFIG========" + epaymentConfigJSON);
@@ -2732,8 +2750,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.VALUE));
 
 					epaymentProfileJSON.put(VTPayTerm.VTPAY_GENQR, data);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}
@@ -2745,8 +2763,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.KPDVCQG, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}
@@ -2757,13 +2775,27 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.PP_KPDVCQG, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}
 
 			}
+			if (epaymentConfigJSON.has(KeyPayTerm.KEYPAY_LATE_CONFIG)) {
+				try {
+					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE, true);
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+					epaymentProfileJSON.toJSONString(), context);
 		}
 		return oldPaymentFile;
 	}
@@ -4531,6 +4563,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		MessageBusUtil.sendMessage(DossierTerm.COLLECTION_VNPOST_DOSSIER_DESTINATION, message);
 	}
 
+	private void createTransactionKeypayV3(Dossier dossier, long dossierActionId) {
+		Message message = new Message();
+		JSONObject msgData = JSONFactoryUtil.createJSONObject();
+
+		message.put(ConstantUtils.MSG_ENG, msgData);
+		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId));
+		_log.info("=============create keypay v3============");
+		MessageBusUtil.sendMessage(DossierTerm.KEYPAY_V3_DESTINATION, message);
+	}
+
 	private void integrateTTTT(Dossier dossier, ServiceContext context, long dossierActionId) {
 		//Add tich hop Thong tin truyen thong
 		try{
@@ -4795,6 +4837,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//		}
 
 		dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
+		if (DossierActionTerm.OUTSIDE_ACTION_PAYMENT.equals(actionCode)) {
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+			if (paymentFile != null) {
+				paymentFile.setPaymentStatus(5);
+				paymentFile.setApproveDatetime(new Date());
+			}
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+			//
+			return dossierAction;
+		}
 		//		ActionConfig ac = actionConfigLocalService.getByCode(groupId, actionCode);
 		ActionConfig ac = actionConfig;
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
@@ -4890,6 +4942,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						String formData = payload;
 						JSONObject formDataObj = processMergeDossierFormData(dossier,
 								JSONFactoryUtil.createJSONObject(formData));
+						formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
 						formDataObj.put("documentCode", Validator.isNotNull(documentCode) ? documentCode: StringPool.BLANK);
 						//_log.info("Dossier document form data action outside: " + formDataObj.toJSONString());
 						Message message = new Message();
@@ -7885,12 +7938,20 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				referenceUid = PortalUUIDUtil.generate();
 			}
 
+			long paymentAmount = 0;
+			if (Validator.isNull(input.getPaymentAmount()) || input.getPaymentAmount() == 0) {
+				paymentAmount = GetterUtil.getLong(input.getFeeAmount()) + GetterUtil.getLong(input.getServiceAmount()) +
+						GetterUtil.getLong(input.getShipAmount()) - GetterUtil.getLong(input.getAdvanceAmount());
+			} else {
+				paymentAmount = input.getPaymentAmount();
+			}
+
 			if (oldPaymentFile != null) {
 				paymentFile = oldPaymentFile;
 			} else {
 				paymentFile = paymentFileLocalService.createPaymentFiles(userId, groupId, dossierId, referenceUid,
 						input.getPaymentFee(), input.getAdvanceAmount(), input.getFeeAmount(), input.getServiceAmount(),
-						input.getShipAmount(), input.getPaymentAmount(), input.getPaymentNote(),
+						input.getShipAmount(), paymentAmount, input.getPaymentNote(),
 						input.getEpaymentProfile(), input.getBankInfo(), 0, input.getPaymentMethod(), serviceContext);
 			}
 
@@ -7906,8 +7967,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getEinvoice())) {
 				paymentFile.setEinvoice(input.getEinvoice());
 			}
-			if (input.getPaymentAmount() != null) {
+			if (input.getPaymentAmount() != null && input.getPaymentAmount() != 0) {
 				paymentFile.setPaymentAmount(input.getPaymentAmount());
+			} else {
+				paymentFile.setPaymentAmount(paymentAmount);
 			}
 			if (Validator.isNotNull(input.getPaymentMethod())) {
 				paymentFile.setPaymentMethod(input.getPaymentMethod());
@@ -8717,6 +8780,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(),
 						DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
 
+				boolean returnDocument = true;
 				for (DossierFile dossierFile : dossierFiles) {
 					// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
 					_log.info("================DOSSIERFILE=============" + dossierFile.getFileEntryId());
@@ -8729,10 +8793,20 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							jsonObject.put("url", "documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH
 									+ fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
 							files.put(jsonObject);
+							returnDocument = false;
 						}
 					}
 				}
 
+				if (returnDocument) {
+					jsonObject = JSONFactoryUtil.createJSONObject();
+					jsonObject.put("name", proAction.getActionName());
+					jsonObject.put("url", "o/rest/v2/dossiers/documentpreviews?dossierId=" + dossier.getDossierId() +
+							"&documentTypeCode=" + proAction.getReturnDossierFiles());
+					files.put(jsonObject);
+					returnDocument = true;
+				}
+				/**
 				List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil
 						.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
@@ -8751,6 +8825,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						}
 					}
 				}
+				*/
 			}
 		} catch (Exception e) {
 			_log.error(e);
