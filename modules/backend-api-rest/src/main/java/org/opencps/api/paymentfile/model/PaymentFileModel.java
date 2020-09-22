@@ -98,7 +98,8 @@ import javax.xml.bind.annotation.XmlType;
     "invoiceNo",
     "invoicePayload",
     "einvoice",
-    "paymentFileId"
+    "paymentFileId",
+    "address"
 })
 @XmlRootElement(name = "PaymentFileModel")
 public class PaymentFileModel {
