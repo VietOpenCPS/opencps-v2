@@ -95,6 +95,7 @@ public interface SMSManagement {
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
 		@FormParam("startDate") String startDate,
+		@FormParam("endDate") String endDate,
 		@FormParam("durationCount") double durationCount,
 		@FormParam("durationUnit") int durationUnit,
 		@FormParam("groupId") long groupId);

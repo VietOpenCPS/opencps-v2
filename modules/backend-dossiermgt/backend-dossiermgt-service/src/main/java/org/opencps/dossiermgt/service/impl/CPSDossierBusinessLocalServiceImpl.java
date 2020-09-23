@@ -14,6 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import backend.auth.api.exception.BusinessExceptionImpl;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -86,6 +87,7 @@ import javax.activation.DataHandler;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.adminconfig.model.DynamicReport;
@@ -171,25 +173,7 @@ import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
-import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ConfigCounterLocalServiceUtil;
-import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.NotarizationLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
-import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
-import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.dossiermgt.service.base.CPSDossierBusinessLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
@@ -1395,6 +1379,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					&& dossier.getVnpostalStatus() == VnpostCollectionTerm.VNPOSTAL_STAUS_2) {
 				dossier.setVnpostalStatus(VnpostCollectionTerm.VNPOSTAL_STAUS_3);
 			}
+			//Check buu dien ha noi
+			if (dossier.getViaPostal() == 2) {
+				_log.info("START SEND VNPOST HN");
+				ServerConfig config = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.SERVER_VNPOST_HN);
+				if (config != null){
+					for (int i = 0; i < 3; i++) {
+
+					}
+				}
+			}
 		} else {
 
 		}
@@ -1773,14 +1767,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				strDueDate = APIDateTimeUtils.convertDateToString(dossier.getDueDate(),
 						APIDateTimeUtils._NORMAL_PARTTERN);
 			}
-			dossierObj.put("dueDateSMS", strDueDate != null ? strDueDate : StringPool.BLANK);
+			dossierObj.put("dueDateNotify", strDueDate != null ? strDueDate : StringPool.BLANK);
+			//Payment
+			PaymentFile payment = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+			long paymentAmount = 0;
+			if (payment != null) {
+				paymentAmount = payment.getPaymentAmount();
+			}
+			dossierObj.put("paymentAmount", paymentAmount);
+			//
 			dossierObj = buildNotificationPayload(dossier, dossierObj);
 
 			payloadObj.put(KeyPayTerm.DOSSIER, dossierObj);
 
-			//        	payloadObj.put(
-			//					KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
-			//						JSONFactoryUtil.looseSerialize(dossier)));
 
 			if (dossierAction != null) {
 				payloadObj.put(DossierActionTerm.ACTION_CODE, dossierAction.getActionCode());
@@ -2632,6 +2631,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				if (epaymentConfigJSON.has(KeyPayTerm.KEYPAY_LATE_CONFIG)) {
+					try {
+						epaymentProfileJsonNew.put(KeyPayTerm.KEYPAY_LATE, true);
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+
+				}
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (IOException e) {
@@ -2704,16 +2713,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.SERVICEAMOUNT, serviceAmount);
 					epaymentProfileJSON.put(KeyPayTerm.PAYMENTNOTE, paymentNote);
 					epaymentProfileJSON.put(KeyPayTerm.PAYMENTFEE, paymentFee);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 
 				} catch (IOException e) {
 					_log.error(e);
 				}
 
-			} else {
-				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-						epaymentProfileJSON.toJSONString(), context);
 			}
 
 			_log.debug("==========VTPayTerm.VTP_CONFIG========" + epaymentConfigJSON);
@@ -2738,8 +2744,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.VALUE));
 
 					epaymentProfileJSON.put(VTPayTerm.VTPAY_GENQR, data);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}
@@ -2751,8 +2757,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.KPDVCQG, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}
@@ -2763,13 +2769,27 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.PP_KPDVCQG, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}
 
 			}
+			if (epaymentConfigJSON.has(KeyPayTerm.KEYPAY_LATE_CONFIG)) {
+				try {
+					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE, true);
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+					epaymentProfileJSON.toJSONString(), context);
 		}
 		return oldPaymentFile;
 	}
@@ -4517,6 +4537,121 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return jsonSequenceArr;
 	}
 
+	private void vnpostHN_CLS(long groupId, Dossier dossier) {
+		try {
+
+			ServerConfig config = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.SERVER_VNPOST_HN);
+			_log.debug("SERVER PROXY: " + config.getConfigs());
+			if (config != null) {
+				JSONObject configObj = JSONFactoryUtil.createJSONObject(config.getConfigs());
+				String authStrEnc = StringPool.BLANK;
+				String serverUrl = StringPool.BLANK;
+
+				StringBuilder sb = new StringBuilder();
+				try
+				{
+					StringBuilder postData = new StringBuilder();
+					//
+					postData.append(DossierTerm.DOSSIER_ID);
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getDossierId());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("MaThuTuc");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getServiceCode());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("TenThuTuc");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getServiceName());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("MaHoSo");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getDossierNo());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("LePhi");
+					postData.append(StringPool.EQUAL);
+					postData.append("");
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("ChuHoSo");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getApplicantName());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("NguoiNop");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getDelegateName());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("CMT");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getApplicantIdNo());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("DiaChi");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getAddress());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("NgayTiepNhan");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getReceiveDate());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("DiaChiBC");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getPostalAddress());
+
+					if (configObj.has(SyncServerTerm.SERVER_USERNAME)
+							&& configObj.has(SyncServerTerm.SERVER_SECRET)
+							&& configObj.has(SyncServerTerm.SERVER_URL)) {
+						authStrEnc = Base64.getEncoder().encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME) + ":" + configObj.getString(SyncServerTerm.SERVER_SECRET)).getBytes());
+						serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+					}
+
+					URL urlVal = new URL(serverUrl);
+					_log.debug("API URL: " + serverUrl);
+
+					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
+					conn.setRequestMethod(HttpMethod.POST);
+					conn.setRequestProperty(HttpHeaders.ACCEPT, "application/json");
+					conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
+
+					String authorization = "Basic " + authStrEnc;
+					conn.setRequestProperty(HttpHeaders.AUTHORIZATION, authorization);
+					_log.debug("BASIC AUTHEN: " + authStrEnc);
+					conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
+					conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
+
+					conn.setUseCaches(false);
+					conn.setDoInput(true);
+					conn.setDoOutput(true);
+					_log.debug("POST DATA: " + postData.toString());
+					OutputStream os = conn.getOutputStream();
+					os.write( postData.toString().getBytes() );
+					os.close();
+
+					BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+					int cp;
+					while ((cp = brf.read()) != -1) {
+						sb.append((char) cp);
+					}
+					_log.debug("sb.tostring : "+ sb.toString());
+				}
+				catch (IOException e) {
+					_log.error("err ",e);
+				}
+			}
+		}
+		catch (Exception e) {
+			_log.debug(e);
+		}
+	}
+
 	private void vnpostEvent(Dossier dossier, long dossierActionId) {
 		Message message = new Message();
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
@@ -4535,6 +4670,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId));
 		_log.info("=============create collectVnpostEvent============");
 		MessageBusUtil.sendMessage(DossierTerm.COLLECTION_VNPOST_DOSSIER_DESTINATION, message);
+	}
+
+	private void createTransactionKeypayV3(Dossier dossier, long dossierActionId) {
+		Message message = new Message();
+		JSONObject msgData = JSONFactoryUtil.createJSONObject();
+
+		message.put(ConstantUtils.MSG_ENG, msgData);
+		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId));
+		_log.info("=============create keypay v3============");
+		MessageBusUtil.sendMessage(DossierTerm.KEYPAY_V3_DESTINATION, message);
 	}
 
 	private void integrateTTTT(Dossier dossier, ServiceContext context, long dossierActionId) {
@@ -4801,6 +4946,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//		}
 
 		dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
+		if (DossierActionTerm.OUTSIDE_ACTION_PAYMENT.equals(actionCode)) {
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+			if (paymentFile != null) {
+				paymentFile.setPaymentStatus(5);
+				paymentFile.setApproveDatetime(new Date());
+			}
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+			//
+			return dossierAction;
+		}
 		//		ActionConfig ac = actionConfigLocalService.getByCode(groupId, actionCode);
 		ActionConfig ac = actionConfig;
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
@@ -4896,6 +5051,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						String formData = payload;
 						JSONObject formDataObj = processMergeDossierFormData(dossier,
 								JSONFactoryUtil.createJSONObject(formData));
+						formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
 						formDataObj.put("documentCode", Validator.isNotNull(documentCode) ? documentCode: StringPool.BLANK);
 						//_log.info("Dossier document form data action outside: " + formDataObj.toJSONString());
 						Message message = new Message();
@@ -7313,6 +7469,15 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCountProcess,
 							process.getDurationUnit(), groupId);
 					Date dueDateCal = dueDateUtils.getDueDate();
+					//Fix dueDate 8h30
+					if (dueDateCal != null) {
+						Calendar calFix = Calendar.getInstance();
+						calFix.setTime(dueDateCal);
+						calFix.set(Calendar.HOUR_OF_DAY, 8);
+						calFix.set(Calendar.MINUTE, 30);
+						//
+						dueDateCal = calFix.getTime();
+					}
 
 					jsonDate.put(DossierTerm.DUE_DATE, dueDateCal != null ? dueDateCal.getTime() : 0);
 				}
@@ -8733,6 +8898,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(),
 						DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
 
+				boolean returnDocument = true;
 				for (DossierFile dossierFile : dossierFiles) {
 					// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
 					_log.info("================DOSSIERFILE=============" + dossierFile.getFileEntryId());
@@ -8745,10 +8911,20 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							jsonObject.put("url", "documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH
 									+ fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
 							files.put(jsonObject);
+							returnDocument = false;
 						}
 					}
 				}
 
+				if (returnDocument) {
+					jsonObject = JSONFactoryUtil.createJSONObject();
+					jsonObject.put("name", proAction.getActionName());
+					jsonObject.put("url", "o/rest/v2/dossiers/documentpreviews?dossierId=" + dossier.getDossierId() +
+							"&documentTypeCode=" + proAction.getReturnDossierFiles());
+					files.put(jsonObject);
+					returnDocument = true;
+				}
+				/**
 				List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil
 						.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
@@ -8767,6 +8943,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						}
 					}
 				}
+				*/
 			}
 		} catch (Exception e) {
 			_log.error(e);

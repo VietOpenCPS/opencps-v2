@@ -420,6 +420,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 						dataHandler != null ? dataHandler.getInputStream() : null, serviceContext);
 
 				PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
+				if (result != null)
+					result.setAddress(dossier.getAddress() + ", " + dossier.getWardName() +
+							", " + dossier.getDistrictName() + ", " + dossier.getCityName());
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();				
 			}
@@ -807,21 +810,35 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			if (Validator.isNull(secretCode) && !auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			Dossier dossier = null;
 			if (dossierId == 0) {
-				Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+				//get dossier by referenceId
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 				if (dossier != null) {
 					dossierId = dossier.getDossierId();
+				} else {
+					//case get dossier by dossierNo
+					dossier = DossierLocalServiceUtil.getByDossierNo(groupId, id);
+					if(dossier != null) {
+						dossierId = dossier.getDossierId();
+					}
 				}
 			}
 
-			if (Validator.isNotNull(secretCode) && dossierId > 0) {
-				Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+			if (Validator.isNotNull(secretCode) && dossier != null) {
 				if (!secretCode.equals(dossier.getPassword())) {
 					throw new UnauthenticationException();
 				}
 			}
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
+			PaymentFileModel result = null;
+			if (dossier != null) {
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+				result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
+				if (result != null)
+					result.setAddress(dossier.getAddress() + ", " + dossier.getWardName() +
+							", " + dossier.getDistrictName() + ", " + dossier.getCityName());
+			}
+
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
@@ -1443,6 +1460,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			indexer.reindex(paymentFile);
 
 			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
+			if (result != null)
+				result.setAddress(StringPool.BLANK);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 

@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -17,6 +18,8 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.awt.*;
@@ -27,6 +30,8 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -677,4 +682,43 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		return Response.status(java.net.HttpURLConnection.HTTP_NO_CONTENT).build();
 	}
 
+	@Override
+	public Response getDocumentPreview(HttpServletRequest request, HttpHeaders header,
+			Company company, Locale locale, User user,
+			ServiceContext serviceContext, long dossierId, String partNo,
+			String documentTypeCode) {
+
+		try {
+
+			System.out.println("==getDocumentPreview===dossierId======" + dossierId);
+			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+			List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil.getByG_DocTypeList(dossier.getGroupId(),
+					dossierId, documentTypeCode, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			List<String> returnFileTempNoList = ListUtil.toList(StringUtil.split(documentTypeCode));
+			System.out.println("==getDocumentPreview===returnFileTempNoList======" + returnFileTempNoList.size());
+			System.out.println("==getDocumentPreview===dossierDocuments======" + dossierDocuments.size());
+			for (DossierDocument dossierDocument : dossierDocuments) {
+
+				System.out.println("==getDocumentPreview===dossierDocument.dddd======" + dossierDocument.getDocumentCode());
+				if (returnFileTempNoList.indexOf(dossierDocument.getDocumentType()) >= 0) {
+
+					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierDocument.getDocumentFileId());
+					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
+					ResponseBuilder responseBuilder = Response.ok((Object) file);
+					String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
+
+					responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+							attachmentFilename);
+					responseBuilder.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
+
+					return responseBuilder.build();
+				}
+			}
+			return null;
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+
+		}
+
+	}
 }
