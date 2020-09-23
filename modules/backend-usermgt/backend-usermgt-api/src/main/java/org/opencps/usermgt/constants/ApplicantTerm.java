@@ -69,4 +69,10 @@ public class ApplicantTerm {
 	public static final String INDENTIFY_NO_URL = "indentifyNoFileUrl";
 	public static final String DOC_URL = "documents/"; 
 	public static final String NOT_CHECK_DUPLICATE = "checkDuplicate"; 
+	
+	public static final String FROM_REGISTRY_DATE = "fromRegistryDate";
+	public static final String TO_REGISTRY_DATE = "toRegistryDate";
+	public static final String CREATE_DATE = "createDate";
+	public static final String HOUR_START = "000000";
+	public static final String HOUR_END = "235959";
 }

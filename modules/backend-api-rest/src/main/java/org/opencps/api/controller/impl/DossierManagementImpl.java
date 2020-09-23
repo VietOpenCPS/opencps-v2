@@ -3926,19 +3926,13 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			if (Validator.isNotNull(dossierFile.getFormData())) {
-				dossierFile.setFormData(dossierFile.getFormData());
-			}else{
+			if (Validator.isNotNull(formData)) {
 				dossierFile.setFormData(formData);
 			}
-			if (Validator.isNotNull(dossierFile.getRemoved())) {
-				dossierFile.setRemoved(dossierFile.getRemoved());
-			}else{
+			if (Validator.isNotNull(removed)) {
 				dossierFile.setRemoved(Boolean.parseBoolean(removed));
 			}
-			if (Validator.isNotNull(dossierFile.getEForm())) {
-				dossierFile.setEForm(dossierFile.getEForm());
-			}else{
+			if (Validator.isNotNull(eForm)) {
 				dossierFile.setEForm(Boolean.parseBoolean(eForm));
 			}
 
@@ -3948,7 +3942,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			dossierFile = action.updateDossierFileFormData(
 						groupId, dossier.getDossierId(), dossierFile.getReferenceUid(),
-						Validator.isNull(dossierFile.getFormData()) ? formData : dossierFile.getFormData(), serviceContext);
+						Validator.isNotNull(formData) ? formData : dossierFile.getFormData(), serviceContext);
 
 			_log.info("__End update dossier file at:" + new Date());
 
@@ -7813,9 +7807,18 @@ public class DossierManagementImpl implements DossierManagement {
 					groupId, company, user, serviceContext, id,
 					DossierUtils.convertFormModelToPublishModel(input));
 			_log.info("Updated dossier epar with dossierId: "+ dossier.getDossierId() );
-			DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
-			JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier, null);
-			_log.info("Result epar integration DVCQG: "+result);
+
+			List<ServerConfig> listServerConfig = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.DVCQG_INTEGRATION);
+			for (ServerConfig serverConfig : listServerConfig) {
+				List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(),
+						dossier.getDossierId(), serverConfig.getServerNo(),
+						new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+				if (lstQueues == null || lstQueues.isEmpty()) {
+					PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(),
+							serverConfig.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, serviceContext);
+				}
+			}
+			_log.info("Done saving dossier to queue to integrate to DVCQG");
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerializeDeep(dossier)).build();

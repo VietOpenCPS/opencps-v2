@@ -66,6 +66,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -715,9 +716,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		String applicantName = String.valueOf(params.get(ApplicantTerm.APPLICANTNAME));
 		String verification = String.valueOf(params.get(ApplicantTerm.VERIFICATION));
 		Boolean haveAccount = params.get(ApplicantTerm.HAVE_ACCOUNT) != null ? (Boolean)params.get(ApplicantTerm.HAVE_ACCOUNT) : false;
+		String fromRegistryDate = GetterUtil.getString(params.get(ApplicantTerm.FROM_REGISTRY_DATE));
+		String toRegistryDate = GetterUtil.getString(params.get(ApplicantTerm.TO_REGISTRY_DATE));
 		
-		Indexer<Applicant> indexer =
-			IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
+		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
 
 		searchContext.addFullQueryEntryClassName(Applicant.class.getName());
 		searchContext.setEntryClassNames(new String[] { Applicant.class.getName() });
@@ -824,8 +826,39 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);			
 		}
 		
-		booleanQuery.addRequiredTerm(
-			Field.ENTRY_CLASS_NAME, Applicant.class.getName());
+		if (Validator.isNotNull(fromRegistryDate) ||
+				Validator.isNotNull(toRegistryDate)) {
+			String fromRegistryDateFilter = fromRegistryDate + ApplicantTerm.HOUR_START;
+			String toRegistryDateFilter = toRegistryDate + ApplicantTerm.HOUR_END;
+			_log.info("fromRegistryDateFilter: "+fromRegistryDateFilter);
+			_log.info("toRegistryDateFilter: "+toRegistryDateFilter);
+
+			if (Validator.isNotNull(fromRegistryDate)) {
+				if (Validator.isNotNull(toRegistryDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							ApplicantTerm.CREATE_DATE, fromRegistryDateFilter,
+							toRegistryDateFilter, true, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				} else {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							ApplicantTerm.CREATE_DATE, fromRegistryDateFilter,
+							toRegistryDateFilter, true, false);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+			} else {
+				if (Validator.isNotNull(toRegistryDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							ApplicantTerm.CREATE_DATE, fromRegistryDateFilter,
+							toRegistryDateFilter, false, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+			}
+		}
+		
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Applicant.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
@@ -842,7 +875,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		String applicantName = String.valueOf(params.get(ApplicantTerm.APPLICANTNAME));
 		String verification = String.valueOf(params.get(ApplicantTerm.VERIFICATION));
 		Boolean haveAccount = params.get(ApplicantTerm.HAVE_ACCOUNT) != null ? (Boolean)params.get(ApplicantTerm.HAVE_ACCOUNT) : false;
-
+		String fromRegistryDate = GetterUtil.getString(params.get(ApplicantTerm.FROM_REGISTRY_DATE));
+		String toRegistryDate = GetterUtil.getString(params.get(ApplicantTerm.TO_REGISTRY_DATE));
+		
 		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
 
 		searchContext.addFullQueryEntryClassName(Applicant.class.getName());
@@ -946,6 +981,37 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
 			query.addFields(ApplicantTerm.MAPPINGUSERID);
 			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);			
+		}
+		if (Validator.isNotNull(fromRegistryDate) ||
+				Validator.isNotNull(toRegistryDate)) {
+			String fromRegistryDateFilter = fromRegistryDate + "000000";
+			String toRegistryDateFilter = toRegistryDate + "235959";
+			_log.info("fromRegistryDateFilter: "+fromRegistryDateFilter);
+			_log.info("toRegistryDateFilter: "+toRegistryDateFilter);
+
+			if (Validator.isNotNull(fromRegistryDate)) {
+				if (Validator.isNotNull(toRegistryDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							ApplicantTerm.CREATE_DATE, fromRegistryDateFilter,
+							toRegistryDateFilter, true, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				} else {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							ApplicantTerm.CREATE_DATE, fromRegistryDateFilter,
+							toRegistryDateFilter, true, false);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+			} else {
+				if (Validator.isNotNull(toRegistryDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							ApplicantTerm.CREATE_DATE, fromRegistryDateFilter,
+							toRegistryDateFilter, false, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+			}
 		}
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Applicant.class.getName());
@@ -1602,6 +1668,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
 		Applicant applicant = null;
 		if (applicantId == 0) {
+			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate != null ? String.valueOf(applicantIdDate.getTime()) : StringPool.BLANK);
+			validateApplicantDuplicate(groupId, context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
 
 			applicantId = counterLocalService.increment(Applicant.class.getName());
 			applicant = applicantPersistence.create(applicantId);

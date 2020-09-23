@@ -256,21 +256,30 @@ public class SMSManagementImpl implements SMSManagement {
 	public Response calculateDueDate(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
-		String startDate, double durationCount, int durationUnit,
+		String startDate, String endDate, double durationCount, int durationUnit,
 		long groupId) {
 
 		try {
 
+			String dueDate = StringPool.BLANK;
 			Date startDateS =
 				new SimpleDateFormat(VN_FORMAT_H).parse(startDate);
-			String dueDate2 =
-				new SimpleDateFormat(VN_FORMAT_H).format(startDateS);
-			_log.info(startDateS);
-			_log.info(dueDate2);
-			DueDateUtils dueDateUtils = new DueDateUtils(
-				startDateS, durationCount, durationUnit, groupId);
-			String dueDate = new SimpleDateFormat(VN_FORMAT_H).format(
-				dueDateUtils.getDueDate());
+			if (Validator.isNotNull(endDate)) {
+				Date endDateS =
+						new SimpleDateFormat(VN_FORMAT_H).parse(endDate);
+				DueDateUtils dueDateUtils = new DueDateUtils(startDateS, endDateS, durationUnit, groupId);
+				dueDate = dueDateUtils.getOverDueCalcToHours() + StringPool.AMPERSAND + dueDateUtils.getOverDueTypeDay() + StringPool.AMPERSAND + dueDateUtils.getOverDueCalcToString();
+			} else {
+				String dueDate2 =
+					new SimpleDateFormat(VN_FORMAT_H).format(startDateS);
+				_log.info(startDateS);
+				_log.info(dueDate2);
+				DueDateUtils dueDateUtils = new DueDateUtils(
+					startDateS, durationCount, durationUnit, groupId);
+				dueDate = new SimpleDateFormat(VN_FORMAT_H).format(
+					dueDateUtils.getDueDate());
+			}
+			
 			return Response.status(HttpURLConnection.HTTP_OK).entity(dueDate).build();
 		}
 		catch (Exception e) {
