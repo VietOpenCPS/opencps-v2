@@ -9067,7 +9067,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			metaData.put(DossierTerm.DATE_OPTION + dateOption, dueDateStr);
 			metaData.put(DossierTerm.DATE_OPTION_RECEIVER + dateOption, receiveDateStr);
 			metaData.put(DossierTerm.DATE_OPTION_DURATION + dateOption, duration);
-			metaData.put(DossierTerm.DUE_DATE_PATTERN, dueDatePattern);
+			metaData.put(DossierTerm.DUE_DATE_PATTERN, JSONFactoryUtil.createJSONObject(dueDatePattern));
 			_log.info("===============metaData==========" +metaData);
 			return metaData.toJSONString();
 		} catch (Exception e) {

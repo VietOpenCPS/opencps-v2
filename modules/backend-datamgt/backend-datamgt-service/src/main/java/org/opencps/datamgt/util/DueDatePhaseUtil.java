@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -107,14 +108,21 @@ public class DueDatePhaseUtil {
 	}
 	
 	private void setByWorkDay(JSONObject phase) {
-
+		
+		int allDay = phase.getInt(ALL_DAY, 0);
 		double workDay = phase.getDouble(WORK_DAY, 0D);			
 		Calendar calStartDate = Calendar.getInstance();
 		calStartDate.setTime(this.startDate);
 		DueDateUtils dueDateUtil = new DueDateUtils(calStartDate.getTime(), workDay, 0, this.groupId);
-		this.dueDate = dueDateUtil.getDueDate();
+		// caculate duedate 
+		Date dueDateTem = dueDateUtil.getDueDate();
+		Calendar calDueDate = Calendar.getInstance();
+		calDueDate.setTime(dueDateTem);
+		calDueDate.add(Calendar.DATE, allDay);
+		this.dueDate = calDueDate.getTime();
+		
 		this.receiveDate = this.startDate;
-		this.duration = workDay;
+		this.duration = workDay + allDay;
 
 	}
 
