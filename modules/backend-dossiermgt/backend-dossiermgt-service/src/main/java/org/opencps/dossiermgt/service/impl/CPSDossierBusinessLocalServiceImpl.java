@@ -14,6 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import backend.auth.api.exception.BusinessExceptionImpl;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -86,6 +87,7 @@ import javax.activation.DataHandler;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.adminconfig.model.DynamicReport;
@@ -171,25 +173,7 @@ import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
-import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ConfigCounterLocalServiceUtil;
-import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.NotarizationLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
-import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
-import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.dossiermgt.service.base.CPSDossierBusinessLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
@@ -1394,6 +1378,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_REC_COLLECTION_VNPOST)
 					&& dossier.getVnpostalStatus() == VnpostCollectionTerm.VNPOSTAL_STAUS_2) {
 				dossier.setVnpostalStatus(VnpostCollectionTerm.VNPOSTAL_STAUS_3);
+			}
+			//Check buu dien ha noi
+			if (dossier.getViaPostal() == 2) {
+				_log.info("START SEND VNPOST HN");
+				ServerConfig config = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.SERVER_VNPOST_HN);
+				if (config != null){
+					for (int i = 0; i < 3; i++) {
+
+					}
+				}
 			}
 		} else {
 
@@ -4543,6 +4537,121 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return jsonSequenceArr;
 	}
 
+	private void vnpostHN_CLS(long groupId, Dossier dossier) {
+		try {
+
+			ServerConfig config = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.SERVER_VNPOST_HN);
+			_log.debug("SERVER PROXY: " + config.getConfigs());
+			if (config != null) {
+				JSONObject configObj = JSONFactoryUtil.createJSONObject(config.getConfigs());
+				String authStrEnc = StringPool.BLANK;
+				String serverUrl = StringPool.BLANK;
+
+				StringBuilder sb = new StringBuilder();
+				try
+				{
+					StringBuilder postData = new StringBuilder();
+					//
+					postData.append(DossierTerm.DOSSIER_ID);
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getDossierId());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("MaThuTuc");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getServiceCode());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("TenThuTuc");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getServiceName());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("MaHoSo");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getDossierNo());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("LePhi");
+					postData.append(StringPool.EQUAL);
+					postData.append("");
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("ChuHoSo");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getApplicantName());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("NguoiNop");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getDelegateName());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("CMT");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getApplicantIdNo());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("DiaChi");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getAddress());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("NgayTiepNhan");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getReceiveDate());
+					//
+					postData.append(StringPool.AMPERSAND);
+					postData.append("DiaChiBC");
+					postData.append(StringPool.EQUAL);
+					postData.append(dossier.getPostalAddress());
+
+					if (configObj.has(SyncServerTerm.SERVER_USERNAME)
+							&& configObj.has(SyncServerTerm.SERVER_SECRET)
+							&& configObj.has(SyncServerTerm.SERVER_URL)) {
+						authStrEnc = Base64.getEncoder().encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME) + ":" + configObj.getString(SyncServerTerm.SERVER_SECRET)).getBytes());
+						serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+					}
+
+					URL urlVal = new URL(serverUrl);
+					_log.debug("API URL: " + serverUrl);
+
+					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
+					conn.setRequestMethod(HttpMethod.POST);
+					conn.setRequestProperty(HttpHeaders.ACCEPT, "application/json");
+					conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
+
+					String authorization = "Basic " + authStrEnc;
+					conn.setRequestProperty(HttpHeaders.AUTHORIZATION, authorization);
+					_log.debug("BASIC AUTHEN: " + authStrEnc);
+					conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
+					conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
+
+					conn.setUseCaches(false);
+					conn.setDoInput(true);
+					conn.setDoOutput(true);
+					_log.debug("POST DATA: " + postData.toString());
+					OutputStream os = conn.getOutputStream();
+					os.write( postData.toString().getBytes() );
+					os.close();
+
+					BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+					int cp;
+					while ((cp = brf.read()) != -1) {
+						sb.append((char) cp);
+					}
+					_log.debug("sb.tostring : "+ sb.toString());
+				}
+				catch (IOException e) {
+					_log.error("err ",e);
+				}
+			}
+		}
+		catch (Exception e) {
+			_log.debug(e);
+		}
+	}
+
 	private void vnpostEvent(Dossier dossier, long dossierActionId) {
 		Message message = new Message();
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
@@ -7360,6 +7469,15 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCountProcess,
 							process.getDurationUnit(), groupId);
 					Date dueDateCal = dueDateUtils.getDueDate();
+					//Fix dueDate 8h30
+					if (dueDateCal != null) {
+						Calendar calFix = Calendar.getInstance();
+						calFix.setTime(dueDateCal);
+						calFix.set(Calendar.HOUR_OF_DAY, 8);
+						calFix.set(Calendar.MINUTE, 30);
+						//
+						dueDateCal = calFix.getTime();
+					}
 
 					jsonDate.put(DossierTerm.DUE_DATE, dueDateCal != null ? dueDateCal.getTime() : 0);
 				}

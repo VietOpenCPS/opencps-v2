@@ -81,6 +81,7 @@
 	<bean id="dossier.vnpost.message" class="org.opencps.event.message.VnpostEvent" />
 	<bean id="dossier.collectvnpost.message" class="org.opencps.event.message.VnpostCollectionEvent" />
 	<bean id="lgsp.event.message" class="org.opencps.event.message.LGSPEvent" />
+	<bean id="dossier.keypayv3.message" class="org.opencps.event.message.KeypayV3Event" />
 
 	<!-- Destinations -->
 	<bean id="jasper.dossier.in.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">
