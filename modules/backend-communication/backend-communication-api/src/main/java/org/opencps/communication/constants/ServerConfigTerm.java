@@ -56,6 +56,4 @@ public class ServerConfigTerm {
 	public static final String PAGINATION_TYPE = "paginationType";
 	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
-	
-
 }
