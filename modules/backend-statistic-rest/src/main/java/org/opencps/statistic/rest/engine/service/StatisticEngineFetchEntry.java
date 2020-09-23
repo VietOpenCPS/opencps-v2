@@ -126,6 +126,13 @@ public class StatisticEngineFetchEntry {
 					}
 
 					Date now = new Date();
+					// add by phuchn - caculate duedate by day
+					if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
+						dueDate = Validator.isNull(dossierData.getDueDate())
+								? null : StatisticUtils.convertStringToDate(dossierData.getDueDate(), DossierStatusTerm.DATE_FORMAT);
+						DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+						now = StatisticUtils.convertStringToDate(dateFormat.format(new Date()), DossierStatusTerm.DATE_FORMAT);
+					}
 					if (dueDate != null && !dueDate.after(now.before(toStatisticDate) ? now : toStatisticDate)) {
 						// đang quá hạn
 						statisticData.setOverdueCount(statisticData.getOverdueCount() + 1);
@@ -158,6 +165,17 @@ public class StatisticEngineFetchEntry {
 						}
 					}
 
+					// add by phuchn - caculate duedate by day
+					if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
+						dueDate = Validator.isNull(dossierData.getDueDate())
+								? null : StatisticUtils.convertStringToDate(dossierData.getDueDate(), DossierStatusTerm.DATE_FORMAT);
+						releaseDate = Validator.isNull(dossierData.getReleaseDate())
+								? null
+								: StatisticUtils.convertStringToDate(dossierData.getReleaseDate(), DossierStatusTerm.DATE_FORMAT);
+						finishDate = Validator.isNull(dossierData.getFinishDate())
+								? null
+								: StatisticUtils.convertStringToDate(dossierData.getFinishDate(), DossierStatusTerm.DATE_FORMAT);
+					}
 					// hồ sơ có kết quả hoặc từ chối tính hạn xử lý
 					int overdue = 1; // 0: sớm hạn, 1: đúng hạn, 2: quá hạn
 					// Check condition filter betimes
@@ -293,7 +311,7 @@ public class StatisticEngineFetchEntry {
 					}
 
 					Date now = new Date();
-					// add by phuchn
+					// add by phuchn - caculate duedate by day
 					if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
 						dueDate = Validator.isNull(dossierData.getDueDate())
 								? null : StatisticUtils.convertStringToDate(dossierData.getDueDate(), DossierStatusTerm.DATE_FORMAT);
@@ -365,7 +383,7 @@ public class StatisticEngineFetchEntry {
 						*/
 						
 						//int betimeCal = dueDate != null ? BetimeUtils.getValueCompareRelease(dossierData.getGroupId(), releaseDate, dueDate) : 3;
-						// add by phuchn
+						// add by phuchn - caculate duedate by day
 						if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
 							dueDate = Validator.isNull(dossierData.getDueDate())
 									? null : StatisticUtils.convertStringToDate(dossierData.getDueDate(), DossierStatusTerm.DATE_FORMAT);
