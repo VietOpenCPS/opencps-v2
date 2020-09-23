@@ -1889,7 +1889,7 @@ public class DossierManagementImpl implements DossierManagement {
 				String actionCode = input.getActionCode();
 				// add by phuchn - thao tac gop
 				List<String> actionCodes = null;
-				if (actionCode.split(",").length > 1) {
+				if (Validator.isNotNull(actionCode) && actionCode.split(",").length > 1) {
 					actionCodes = Arrays.asList(actionCode.split(","));
 					actionCode = getActionCode(groupId, actionCodes, dossier, user);
 				}
