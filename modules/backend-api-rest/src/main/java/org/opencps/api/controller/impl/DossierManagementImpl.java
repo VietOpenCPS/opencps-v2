@@ -972,7 +972,7 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}else{
 					params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
-					_log.info("Vao 1111111111");
+//					_log.info("Vao 1111111111");
 					JSONObject jsonData = actions.getDossiers(
 							user.getUserId(), company.getCompanyId(), groupId, params,
 							sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -1640,6 +1640,36 @@ public class DossierManagementImpl implements DossierManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 
+	}
+
+	@Override
+	public Response getPostConnectByDossierId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, PostConnectDetailModel input) {
+		try {
+			PostConnectDetailModel postConnect = new PostConnectDetailModel();
+			if(Validator.isNotNull(input)){
+				if(Validator.isNotNull(input.getPostType())){
+					List<PostConnect> lstPostConnect = PostConnectLocalServiceUtil.findByPostConnectByDossierId(
+							input.getGroupId(),input.getDossierId());
+					if(lstPostConnect !=null && lstPostConnect.size() >0){
+						postConnect = DossierUtils.mappingForGetDetailPost(lstPostConnect);
+					}
+				}else{
+					PostConnect postModel = PostConnectLocalServiceUtil.findByPostByDossierIdAndPostType(
+							input.getGroupId(),input.getDossierId(), input.getPostType());
+					List<PostConnect> lstPostConnect = new ArrayList<>();
+					if(Validator.isNotNull(postModel)){
+						lstPostConnect.add(postModel);
+					}
+					postConnect = DossierUtils.mappingForGetDetailPost(lstPostConnect);
+				}
+				return Response.status(HttpURLConnection.HTTP_OK).entity(postConnect).build();
+			}else {
+				return null;
+			}
+		}catch (Exception e){
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 
 	@Override

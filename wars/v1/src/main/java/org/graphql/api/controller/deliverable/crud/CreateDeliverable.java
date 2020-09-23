@@ -29,6 +29,7 @@ import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * Created binhth
@@ -98,10 +99,21 @@ public class CreateDeliverable implements DataFetcher<Deliverable> {
 				}
 				inputObject.put("deliverableCode", deliverableCode);
 			}
+			_log.info("Log nguoixuly :" + inputObject.get("nguoixuly"));
 			Employee employee = null;
+			Iterator<String> keys = inputObject.keys();
+
 			if(inputObject.has("nguoixuly")){
-				inputObject.put("userName", inputObject.get("nguoixuly"));
+				while (keys.hasNext()) {
+					String key = keys.next();
+					String value = inputObject.getString(key);
+					if (key.equals(DossierTerm.DELIVERABLE_STATE)) {
+						_log.info("true");
+						inputObject.put("userName", value);
+					}
+				}
 			}else {
+				_log.info("FALSE");
 				if (Validator.isNotNull(groupId) && Validator.isNotNull(userId)) {
 					employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 					inputObject.put("userName", employee.getFullName());

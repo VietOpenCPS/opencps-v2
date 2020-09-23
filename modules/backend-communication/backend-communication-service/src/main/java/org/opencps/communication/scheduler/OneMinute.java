@@ -118,6 +118,7 @@ public class OneMinute extends BaseMessageListener {
 						_log.debug("messageEntry: "+messageEntry);
 
 						if (flagJobMail && notificationtemplate.getSendEmail()) {
+							_log.info("SEND EMAIL ......");
 							//Process send SMS
 							Result resultSendSMS = new Result("Success", new Long(1));
 							if(messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())){
@@ -157,8 +158,9 @@ public class OneMinute extends BaseMessageListener {
 							notificationQueue.setModifiedDate(cal.getTime());
 							NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
 						} else {
-
+							_log.info("SEND EMAIL LGSP ......");
 							if (isSendLGSP) {
+								_log.info("iS SEND EMAIL LGSP ......");
 								// Process send SMS
 								Result resultSendSMS = new Result("Success", new Long(1));
 								if (messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())) {
@@ -200,6 +202,7 @@ public class OneMinute extends BaseMessageListener {
 									NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
 								}
 							} else {
+								_log.info("SEND EMAIL NOT LGSP ......");
 								// Process send SMS
 								Result resultSendSMS = new Result("Success", new Long(1));
 								if (messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())) {

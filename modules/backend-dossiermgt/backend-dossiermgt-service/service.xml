@@ -1234,6 +1234,15 @@
 			<finder-column name="orderNumber" />
 			<finder-column name="postStatus" />
 		</finder>
+		<finder name="F_POST_BY_DOSSIER_ID" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+		</finder>
+		<finder name="F_POST_BY_D_TYPE" return-type="PostConnect">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="postType" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="ServiceProcess"

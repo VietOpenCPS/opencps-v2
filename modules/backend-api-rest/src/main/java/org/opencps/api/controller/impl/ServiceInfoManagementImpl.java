@@ -783,19 +783,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //											_log.info("Vào .......Level :" + level);
 //											_log.info("Vào .......ServiceLevel :" + serviceConfig.getServiceLevel());
 											if (String.valueOf(serviceConfig.getServiceLevel()).equals(level) || level.equals(String.valueOf(serviceConfig.getServiceLevel()))) {
-												if (Validator.isNotNull(e)) {
+												if (query.isEmployee()) {
 													if (e != null && (Validator.isNull(e.getScope()))
 															|| (e != null && Validator.isNotNull(e.getScope()) && Validator.isNotNull(serviceConfig.getGovAgencyCode())
 															&& e.getScope().indexOf(serviceConfig.getGovAgencyCode()) >= 0)) {
 //														_log.info("Vào ........................... Employee");
-//														DictItemModelInput ett = new DictItemModelInput();
-//														ett.setDictItemId(dict.getDictItemId());
-//														ett.setItemName(dict.getItemName());
-//														ett.setServiceLevel(serviceConfig.getServiceLevel());
-//														ett.setGovAgencyCode(serviceConfig.getGovAgencyCode());
-//														ett.setGroupId(dict.getGroupId());
-//														ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceConfig.getServiceInfoId());
-//														ett.setDomainCode(serviceInfo.getDomainCode());
 														DictItemModelInput ett = setData(dict, serviceConfig,"");
 														if(Validator.isNotNull(ett)) {
 															lstDictInput.add(ett);

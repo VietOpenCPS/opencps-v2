@@ -1415,11 +1415,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					for(String oneSplitComma : splitCodes) {
 						_log.info("Precondition in loop: " + oneSplitComma);
 						_log.info("splitCodes.length: " + splitCodes.length);
-						if(oneSplitComma.contains(DossierTerm.CONTAIN_POST_STATUS)) {
+						if(oneSplitComma.contains(DossierTerm.VNPOSTAL_STATUS.toLowerCase())) {
 							_log.info("oneSplitComma before parse equal: " + oneSplitComma);
 							String[] keyValueVnPostalStatus = oneSplitComma.split(StringPool.EQUAL);
 							_log.info("oneSplitComma after parse equal: " + keyValueVnPostalStatus);
 							if (keyValueVnPostalStatus.length == 2) {
+								_log.info("VAO 2233232323");
 								Integer vnPostalValue = Validator.isNotNull(keyValueVnPostalStatus[1]) ?
 										Integer.valueOf(keyValueVnPostalStatus[1]) : null;
 								if(Validator.isNotNull(vnPostalValue) && vnPostalValue.equals(dossier.getVnpostalStatus())) {
@@ -5888,7 +5889,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if (Validator.isNotNull(input.getPostalDistrictCode())) {
 			postalDistrictName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalDistrictCode());
 		}
-		Long sampleCount = (option != null ? option.getSampleCount() : 1l);
+		Long sampleCount = (option != null ? option.getSampleCount() : 0l);
 		String registerBookCode = (option != null
 				? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode() : StringPool.BLANK)
 				: StringPool.BLANK);

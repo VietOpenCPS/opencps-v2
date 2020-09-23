@@ -208,8 +208,7 @@ public class ServiceConfigLocalServiceUtil {
 
 	public static java.util.List<org.opencps.dossiermgt.model.ServiceConfig> fetchByF_INFO_LEVEL(
 		long groupId, long[] serviceInfoId) {
-		return getService()
-				   .fetchByF_INFO_LEVEL(groupId, serviceInfoId);
+		return getService().fetchByF_INFO_LEVEL(groupId, serviceInfoId);
 	}
 
 	public static org.opencps.dossiermgt.model.ServiceConfig fetchServiceConfig(

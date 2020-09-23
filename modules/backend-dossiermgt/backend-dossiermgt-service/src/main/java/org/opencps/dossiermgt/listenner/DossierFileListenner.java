@@ -573,6 +573,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				formDataContent = AutoFillFormData.sampleDataBindingDeliverable(
 						dlvType.getMappingData(), dossier.getDossierId(),
 						serviceContext);
+				_log.info("Log formData :" + formDataContent.toString());
 			}
 			// else if (jsMappingData.has("deliverables")) {
 			// formDataContent = mappingContent(jsMappingData, jsFormData);

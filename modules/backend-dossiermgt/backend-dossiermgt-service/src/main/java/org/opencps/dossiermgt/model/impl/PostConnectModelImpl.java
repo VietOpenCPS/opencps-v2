@@ -123,12 +123,14 @@ public class PostConnectModelImpl extends BaseModelImpl<PostConnect>
 				"value.object.column.bitmask.enabled.org.opencps.dossiermgt.model.PostConnect"),
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long ORDERNUMBER_COLUMN_BITMASK = 4L;
-	public static final long POSTSTATUS_COLUMN_BITMASK = 8L;
-	public static final long SYNCSTATE_COLUMN_BITMASK = 16L;
-	public static final long UUID_COLUMN_BITMASK = 32L;
-	public static final long POSTCONNECTID_COLUMN_BITMASK = 64L;
+	public static final long DOSSIERID_COLUMN_BITMASK = 2L;
+	public static final long GROUPID_COLUMN_BITMASK = 4L;
+	public static final long ORDERNUMBER_COLUMN_BITMASK = 8L;
+	public static final long POSTSTATUS_COLUMN_BITMASK = 16L;
+	public static final long POSTTYPE_COLUMN_BITMASK = 32L;
+	public static final long SYNCSTATE_COLUMN_BITMASK = 64L;
+	public static final long UUID_COLUMN_BITMASK = 128L;
+	public static final long POSTCONNECTID_COLUMN_BITMASK = 256L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.PostConnect"));
 
@@ -442,7 +444,19 @@ public class PostConnectModelImpl extends BaseModelImpl<PostConnect>
 
 	@Override
 	public void setDossierId(long dossierId) {
+		_columnBitmask |= DOSSIERID_COLUMN_BITMASK;
+
+		if (!_setOriginalDossierId) {
+			_setOriginalDossierId = true;
+
+			_originalDossierId = _dossierId;
+		}
+
 		_dossierId = dossierId;
+	}
+
+	public long getOriginalDossierId() {
+		return _originalDossierId;
 	}
 
 	@Override
@@ -462,7 +476,19 @@ public class PostConnectModelImpl extends BaseModelImpl<PostConnect>
 
 	@Override
 	public void setPostType(int postType) {
+		_columnBitmask |= POSTTYPE_COLUMN_BITMASK;
+
+		if (!_setOriginalPostType) {
+			_setOriginalPostType = true;
+
+			_originalPostType = _postType;
+		}
+
 		_postType = postType;
+	}
+
+	public int getOriginalPostType() {
+		return _originalPostType;
 	}
 
 	@Override
@@ -685,6 +711,14 @@ public class PostConnectModelImpl extends BaseModelImpl<PostConnect>
 		postConnectModelImpl._setOriginalCompanyId = false;
 
 		postConnectModelImpl._setModifiedDate = false;
+
+		postConnectModelImpl._originalDossierId = postConnectModelImpl._dossierId;
+
+		postConnectModelImpl._setOriginalDossierId = false;
+
+		postConnectModelImpl._originalPostType = postConnectModelImpl._postType;
+
+		postConnectModelImpl._setOriginalPostType = false;
 
 		postConnectModelImpl._originalOrderNumber = postConnectModelImpl._orderNumber;
 
@@ -914,8 +948,12 @@ public class PostConnectModelImpl extends BaseModelImpl<PostConnect>
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private long _dossierId;
+	private long _originalDossierId;
+	private boolean _setOriginalDossierId;
 	private int _postService;
 	private int _postType;
+	private int _originalPostType;
+	private boolean _setOriginalPostType;
 	private String _orderNumber;
 	private String _originalOrderNumber;
 	private int _postStatus;

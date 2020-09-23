@@ -218,6 +218,7 @@ create index IX_51CA8DC3 on opencps_paymentfile (paymentStatus);
 create index IX_6BE34299 on opencps_paymentfile (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_C65D9B5B on opencps_paymentfile (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_DD3B66E7 on opencps_postconnect (groupId, dossierId, postType);
 create index IX_BB72AF29 on opencps_postconnect (groupId, syncState);
 create index IX_31CF29C0 on opencps_postconnect (orderNumber[$COLUMN_LENGTH:75$], postStatus);
 create index IX_5E22119 on opencps_postconnect (syncState);

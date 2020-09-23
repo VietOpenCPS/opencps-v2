@@ -2,6 +2,7 @@ package org.opencps.api.controller.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -40,33 +41,12 @@ import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
-import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.DossierPublishModel;
-import org.opencps.dossiermgt.constants.ConstantsTerm;
-import org.opencps.dossiermgt.constants.DeliverableTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierActionUser;
-import org.opencps.dossiermgt.model.DossierSync;
-import org.opencps.dossiermgt.model.DossierUser;
-import org.opencps.dossiermgt.model.ProcessAction;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ProcessStep;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.model.ServiceProcessRole;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
@@ -986,7 +966,7 @@ public class DossierUtils {
 	public static DossierDetailModel mappingForGetDetail(Dossier input, long userId) {
 
 		DossierDetailModel model = new DossierDetailModel();
-		
+
 		if (Validator.isNull(input)) {
 			return model;
 		}
@@ -1191,6 +1171,13 @@ public class DossierUtils {
 				model.setDossierSyncState(0);
 			} 
 		}
+//		PostConnect postConnect = PostConnectLocalServiceUtil.fetchPostConnectByDossierId(
+//				input.getGroupId(),input.getDossierId());
+//		if(Validator.isNotNull(postConnect)){
+//			model.setPostType(String.valueOf(postConnect.getPostType()));
+//			model.setPostStatus(String.valueOf(postConnect.getPostStatus()));
+//		}
+
 
 		return model;
 	}
@@ -1490,6 +1477,22 @@ public class DossierUtils {
 		}
 	}
 
+	public static PostConnectDetailModel mappingForGetDetailPost(List<PostConnect> lstPostConnect) {
+		PostConnectDetailModel result = new PostConnectDetailModel();
+		if(lstPostConnect != null && lstPostConnect.size() >0){
+			for(PostConnect post : lstPostConnect){
+				result.setPostConnectId(post.getPostConnectId());
+				result.setDossierId(post.getDossierId());
+				result.setGroupId(post.getGroupId());
+				result.setPostType(post.getPostType());
+				result.setPostStatus(post.getPostStatus());
+				result.setPostService(post.getPostService());
+				result.setOrderNumber(post.getOrderNumber());
+				result.setSyncState(post.getSyncState());
+			}
+		}
+		return result;
+	}
 	public static DossierActionDetailModel mappingDossierAction(DossierAction dAction, long dossierDocumentId) {
 		DossierActionDetailModel model = new DossierActionDetailModel();
 
@@ -1874,6 +1877,236 @@ public class DossierUtils {
 		}
 
 		return ouputs;
+	}
+	public static JSONObject mappingForGetDetailJSON(Dossier input, long userId) {
+
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		if (Validator.isNull(input)) {
+			return jsonObject;
+		}
+		jsonObject.put(DossierTerm.GROUP_ID,input.getGroupId());
+		jsonObject.put(DossierTerm.DOSSIER_ID,input.getDossierId());
+		jsonObject.put(DossierTerm.DOSSIER_NAME,input.getDossierName());
+		jsonObject.put(DossierTerm.DOSSIER_ID,input.getDossierId());
+		jsonObject.put(DossierTerm.USER_ID,input.getUserId());
+
+		jsonObject.put(DossierTerm.CREATE_DATE,APIDateTimeUtils.convertDateToString(input.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonObject.put(DossierTerm.MODIFIED_DATE,APIDateTimeUtils.convertDateToString(input.getModifiedDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonObject.put(DossierTerm.REFERENCE_UID,input.getReferenceUid());
+
+		jsonObject.put(DossierTerm.COUNTER,input.getCounter());
+		jsonObject.put(DossierTerm.SERVICE_CODE,input.getServiceCode());
+		jsonObject.put(DossierTerm.SERVICE_NAME,input.getServiceName());
+		jsonObject.put(DossierTerm.GOV_AGENCY_CODE,input.getGovAgencyCode());
+
+
+		jsonObject.put(DossierTerm.GOV_AGENCY_NAME,input.getGovAgencyName());
+		jsonObject.put(DossierTerm.DOSSIER_TEMPLATE_NO,input.getDossierTemplateNo());
+//		jsonObject.put(DossierTerm.APPLI,input.getApplicantName() != null ? input.getApplicantName().toUpperCase() : StringPool.BLANK);
+		jsonObject.put(DossierTerm.APPLICANT_ID_TYPE,input.getApplicantIdType());
+		jsonObject.put(DossierTerm.APPLICANT_ID_NO,input.getApplicantIdNo());
+		jsonObject.put(DossierTerm.APPLICANT_ID_DATE,APIDateTimeUtils.convertDateToString(input.getApplicantIdDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonObject.put(DossierTerm.ADDRESS,input.getAddress());
+		jsonObject.put(DossierTerm.CITY_CODE,input.getCityCode());
+
+
+		jsonObject.put(DossierTerm.CITY_NAME,input.getCityName());
+		jsonObject.put(DossierTerm.DISTRICT_CODE,input.getDistrictCode());
+		jsonObject.put(DossierTerm.DISTRICT_NAME,input.getDistrictName());
+		jsonObject.put(DossierTerm.WARD_CODE,input.getWardCode());
+		jsonObject.put(DossierTerm.WARD_NAME,input.getWardName());
+		jsonObject.put(DossierTerm.CONTACT_NAME,input.getContactName());
+		jsonObject.put(DossierTerm.CONTACT_TEL_NO,input.getContactTelNo());
+		jsonObject.put(DossierTerm.CONTACT_EMAIL,input.getContactEmail());
+		jsonObject.put(DossierTerm.DOSSIER_NOTE,input.getDossierNote());
+
+		if(Validator.isNotNull(input.getSubmissionNote())) {
+			String submissionNote = DossierContentGenerator.getSubmissionNote(
+					input.getDossierId(), input.getSubmissionNote());
+			jsonObject.put(DossierTerm.SUBMISSION_NOTE,submissionNote);
+
+		}
+		jsonObject.put(DossierTerm.BRIEF_NOTE,input.getBriefNote());
+		jsonObject.put(DossierTerm.DOSSIER_NO,input.getDossierNo());
+		jsonObject.put(DossierTerm.SUBMITTING,Boolean.toString(input.getSubmitting()));
+		jsonObject.put(DossierTerm.SUBMIT_DATE,APIDateTimeUtils.convertDateToString(input.getSubmitDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonObject.put(DossierTerm.RECEIVE_DATE
+				,APIDateTimeUtils.convertDateToString(input.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonObject.put(DossierTerm.DUE_DATE,APIDateTimeUtils.convertDateToString(input.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonObject.put(DossierTerm.RELEASE_DATE,APIDateTimeUtils.convertDateToString(input.getReleaseDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonObject.put(DossierTerm.FINISH_DATE,APIDateTimeUtils.convertDateToString(input.getFinishDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonObject.put(DossierTerm.CANCELLING_DATE,APIDateTimeUtils.convertDateToString(input.getCancellingDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonObject.put(DossierTerm.CORRECTING_DATE,APIDateTimeUtils.convertDateToString(input.getCorrecttingDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonObject.put(DossierTerm.EXTEND_DATE,APIDateTimeUtils.convertDateToString(input.getExtendDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+
+		jsonObject.put(DossierTerm.DOSSIER_STATUS,input.getDossierStatus());
+		jsonObject.put(DossierTerm.DOSSIER_STATUS_TEXT,input.getDossierStatusText());
+		jsonObject.put(DossierTerm.DOSSIER_SUB_STATUS,input.getDossierSubStatus());
+		jsonObject.put(DossierTerm.DOSSIER_SUB_STATUS_TEXT,input.getDossierSubStatusText());
+
+		jsonObject.put(DossierTerm.VIA_POSTAL,input.getViaPostal());
+		jsonObject.put(DossierTerm.POSTAL_ADDRESS,input.getPostalAddress());
+		jsonObject.put(DossierTerm.POSTAL_CITY_CODE,input.getPostalCityCode());
+		jsonObject.put(DossierTerm.POSTAL_CITY_NAME,input.getPostalCityName());
+
+		jsonObject.put(DossierTerm.POSTAL_DISTRICT_CODE,input.getPostalDistrictCode());
+		jsonObject.put(DossierTerm.POSTAL_DISTRICT_NAME,input.getPostalDistrictName());
+		jsonObject.put(DossierTerm.POSTAL_TEL_NO,input.getPostalTelNo());
+		jsonObject.put(DossierTerm.MAPPING_PERMISSION,getPermission(input.getPrimaryKey(), userId));
+
+
+
+
+		if (input.getDossierActionId() != 0) {
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(input.getDossierActionId());
+			if (dossierAction != null) {
+				jsonObject.put(DossierTerm.LAST_ACTION_DATE,APIDateTimeUtils.convertDateToString(dossierAction.getCreateDate(),
+						APIDateTimeUtils._NORMAL_PARTTERN));
+				jsonObject.put(DossierTerm.LAST_ACTION_NAME,dossierAction.getActionName());
+				jsonObject.put(DossierTerm.LAST_ACTION_USER,dossierAction.getActionUser() != null ? dossierAction.getActionUser().toUpperCase() : StringPool.BLANK);
+				jsonObject.put(DossierTerm.LAST_ACTION_NOTE,dossierAction.getActionNote());
+				jsonObject.put(DossierTerm.LAST_ACTION_CODE,dossierAction.getActionCode());
+				jsonObject.put(DossierTerm.USER_ID,dossierAction.getUserId());
+				jsonObject.put(DossierTerm.STEP_CODE,dossierAction.getStepCode());
+				jsonObject.put(DossierTerm.STEP_NAME,dossierAction.getStepName());
+
+				Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getGroupId(), dossierAction.getActionOverdue(), new Date());
+				jsonObject.put(DossierTerm.STEP_OVER_DUE,StringPool.TRUE);
+				jsonObject.put(DossierTerm.STEP_DUE_DATE,APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
+
+
+				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getStepCode(),
+						dossierAction.getGroupId(), dossierAction.getServiceProcessId());
+
+				jsonObject.put(DossierTerm.STEP_OVER_DUE,step!= null ? step.getStepInstruction() : StringPool.BLANK);
+			}
+			// Check permission process dossier
+			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ConstantUtils.DOSSIER_STATUS,
+					input.getGroupId());
+			String statusCode = input.getDossierStatus();
+			String subStatusCode = input.getDossierSubStatus();
+			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
+				DictItem dictItem = null;
+				if (Validator.isNotNull(subStatusCode)) {
+					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(subStatusCode,
+							dictCollection.getDictCollectionId(), input.getGroupId());
+				} else {
+					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(statusCode,
+							dictCollection.getDictCollectionId(), input.getGroupId());
+				}
+				if (dictItem != null) {
+//					_log.info("53");
+					String metaData = dictItem.getMetaData();
+					String specialStatus = StringPool.BLANK;
+					if (Validator.isNotNull(metaData)) {
+//						_log.info("metaData: " +metaData);
+						try {
+							JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
+							specialStatus = metaJson.getString(DossierTerm.KEY_SPECIAL_STATUS);
+//							_log.info("specialStatus: " +specialStatus);
+
+						} catch (Exception e) {
+							// TODO: handle exception
+							//_log.error(e);
+							_log.debug(e);
+						}
+					}
+					if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
+						DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(input.getDossierActionId(), userId);
+						if (dau != null) {
+							jsonObject.put(DossierTerm.SPECIAL_NO,dau.getModerator());
+						} else {
+							jsonObject.put(DossierTerm.SPECIAL_NO,0);
+						}
+					} else {
+						jsonObject.put(DossierTerm.SPECIAL_NO,1);
+					}
+				}
+			}
+		}
+
+		jsonObject.put(DossierTerm.VISITED,getVisisted(input.getPrimaryKey()));
+		jsonObject.put(DossierTerm.PENDING,getPendding(input.getPrimaryKey()));
+		jsonObject.put(DossierTerm.APPLICANT_NOTE,input.getApplicantNote());
+		jsonObject.put(DossierTerm.NOTIFICATION,Boolean.toString(input.getNotification()));
+		jsonObject.put(DossierTerm.ONLINE,Boolean.toString(input.getOnline()));
+		jsonObject.put(DossierTerm.LOCK_STATE,input.getLockState());
+		jsonObject.put(DossierTerm.DELEGATE_ADDRESS,input.getDelegateAddress());
+		jsonObject.put(DossierTerm.DELEGATE_CITYCODE,input.getDelegateCityCode());
+		jsonObject.put(DossierTerm.DELEGATE_CITYNAME,input.getDelegateCityName());
+		jsonObject.put(DossierTerm.DELEGATE_DISTRICTCODE,input.getDelegateDistrictCode());
+
+
+		jsonObject.put(DossierTerm.DELEGATE_DISTRICTNAME,input.getDelegateDistrictName());
+		jsonObject.put(DossierTerm.DELEGATE_EMAIL,input.getDelegateEmail());
+		jsonObject.put(DossierTerm.DELEGATE_ID_NO,input.getDelegateIdNo());
+		jsonObject.put(DossierTerm.DELEGATE_NAME,input.getDelegateName());
+		jsonObject.put(DossierTerm.DELEGATE_TELNO,input.getDelegateTelNo());
+		jsonObject.put(DossierTerm.DELEGATE_WARDCODE,input.getDelegateWardCode());
+		jsonObject.put(DossierTerm.DELEGATE_WARDNAME,input.getDelegateWardName());
+
+		jsonObject.put(DossierTerm.DURATION_COUNT,input.getDurationCount());
+		jsonObject.put(DossierTerm.DURATION_UNIT,input.getDurationUnit());
+		jsonObject.put(DossierTerm.SAMPLE_COUNT,input.getSampleCount());
+		jsonObject.put(DossierTerm.ORIGINALLITY,input.getOriginality());
+		jsonObject.put(DossierTerm.ORIGIN_DOSSIER_ID,input.getOriginDossierId());
+		jsonObject.put(DossierTerm.ORIGIN_DOSSIER_NO,input.getOriginDossierNo());
+		jsonObject.put(DossierTerm.META_DATA,input.getMetaData());
+		jsonObject.put(DossierTerm.GROUP_DOSSIER_ID,input.getGroupDossierId());
+		jsonObject.put(DossierTerm.DELEGATE_TYPE,input.getDelegateType());
+		jsonObject.put(DossierTerm.DOCUMENT_NO,input.getDocumentNo());
+
+		if (Validator.isNotNull(input.getDocumentDate())) {
+			jsonObject.put(DossierTerm.DOSSIER_SYN_STATE,APIDateTimeUtils.convertDateToString(input.getDocumentDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		}
+		jsonObject.put(DossierTerm.SERVER_NO,input.getServerNo());
+		jsonObject.put(DossierTerm.SYSTEM_ID,input.getSystemId());
+		jsonObject.put(DossierTerm.DOSSIER_COUNTER,input.getDossierCounter());
+		jsonObject.put(DossierTerm.VNPOSTAL_STATUS,input.getVnpostalStatus());
+		jsonObject.put(DossierTerm.VNPOSTAL_PROFILE,input.getVnpostalProfile());
+		jsonObject.put(DossierTerm.FROM_VIA_POSTAL,input.getFromViaPostal());
+		jsonObject.put(DossierTerm.POSTAL_CODE_SEND,input.getPostalCodeSend());
+		jsonObject.put(DossierTerm.PROCESS_NO,input.getProcessNo());
+
+
+		String lastActionCode = (String) jsonObject.get(DossierTerm.LAST_ACTION_CODE);
+
+		// add key dossierSyncState in table dossierSync flowing lastActionCode
+		if (input.getDossierActionId() != 0 && lastActionCode != null) {
+			DossierSync dossierSync = DossierSyncLocalServiceUtil.getByDID_DAD_AC(
+					input.getGroupId(), input.getDossierId(), input.getDossierActionId(), lastActionCode);
+			if (dossierSync != null) {
+				jsonObject.put(DossierTerm.DOSSIER_SYN_STATE,dossierSync.getState());
+
+			}else {
+				jsonObject.put(DossierTerm.DOSSIER_SYN_STATE,0);
+
+			}
+		}
+		try {
+			List<PostConnect> lstPostConnect = PostConnectLocalServiceUtil.findByPostConnectByDossierId(
+					input.getGroupId(),input.getDossierId());
+			JSONArray options = JSONFactoryUtil.createJSONArray();
+			JSONObject elmOption = JSONFactoryUtil.createJSONObject();
+			if(lstPostConnect !=null && lstPostConnect.size() >0){
+				for(PostConnect post: lstPostConnect){
+					elmOption.put(DossierTerm.POST_TYPE, post.getPostType());
+					elmOption.put(DossierTerm.POST_STATUS, post.getPostStatus());
+					elmOption.put(DossierTerm.POST_SERVICE, post.getPostService());
+					elmOption.put(DossierTerm.ORDER_NUMBER, post.getOrderNumber());
+					elmOption.put(DossierTerm.SYNC_STATE, post.getSyncState());
+					options.put(elmOption);
+				}
+			}
+			if (options.length() > 0) {
+				jsonObject.put(DossierTerm.POST_CONNECT, options);
+			}
+		}catch (Exception e){
+			_log.info(e);
+		}
+		return jsonObject;
 	}
 
 }

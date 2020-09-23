@@ -201,11 +201,11 @@ public class DeliverableNumberGenerator {
 		} else if (ngayQD.split(DOT).length > 1) {
 			ngayquyetdinh = ngayQD.split(DOT);
 		}
-		_log.info("VAO ngayQD " + ngayquyetdinh);
+//		_log.info("VAO ngayQD " + ngayquyetdinh);
 		String day = ngayquyetdinh[0];
 		String month = ngayquyetdinh[1];
 		String year = ngayquyetdinh[2];
-		_log.info("VAO year " + year);
+//		_log.info("VAO year " + year);
 		
 		for (String pattern : patterns) {
 			Pattern r = Pattern.compile(pattern);
@@ -256,15 +256,15 @@ public class DeliverableNumberGenerator {
 				} else if (r.toString().equals(yearPattern)) {
 
 					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
-					_log.info("VAO YEARPATTERN : " + tmp);
+//					_log.info("VAO YEARPATTERN : " + tmp);
 					if (year.length() < tmp.length()) {
-						_log.info("VAO YEARPATTERN <<<<<<: " + year );
+//						_log.info("VAO YEARPATTERN <<<<<<: " + year );
 						year = tmp.substring(0, tmp.length() - year.length()).concat(year);
 					} else if (year.length() > tmp.length()) {
-						_log.info("VAO YEARPATTERN >>>>>: " + year );
+//						_log.info("VAO YEARPATTERN >>>>>: " + year );
 						year = year.substring(year.length() - tmp.length(), year.length());
 					}
-					_log.info("VAO m.GROUP >>>>>: " + m.group(0) );
+//					_log.info("VAO m.GROUP >>>>>: " + m.group(0) );
 					serialNumberPattern = serialNumberPattern.replace(m.group(0), year);
 				} 
 				m = r.matcher(serialNumberPattern);
