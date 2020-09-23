@@ -3977,6 +3977,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossierActionLocalService.updateDossierAction(dossierAction);
 			}
 		}
+		
+		// create submit date
+		if(dateOption == DossierTerm.CREATE_SUBMIT_DATE){
+			if (Validator.isNull(dossier.getSubmitDate())) {
+				dossier.setSubmitDate(new Date());
+			}
+		}
 
 		return bResult;
 	}
