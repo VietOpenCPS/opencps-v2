@@ -315,6 +315,8 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             String apiGetOrderService = this.configJson.getString(ViettelPostTerm.API_GET_PRICE);
             HttpHeaders headers = new HttpHeaders();
             headers.set(ViettelPostTerm.TOKEN, token);
+            _log.info("TOKEN :" +token);
+            _log.info("apiGetOrderService :" +apiGetOrderService);
             Map<String, Object> body = new HashMap<>();
             body.put(ViettelPostTerm.SENDER_PROVINCE, senderProvinceInt);
             body.put(ViettelPostTerm.SENDER_DISTRICT, senderDistrictInt);

@@ -115,6 +115,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			isRunningDossier = true;
 		}
 		else {
+			_log.info("STOP STATISTIC DOSSIER");
 			return;
 		}
 		long startTime = System.currentTimeMillis();
@@ -681,6 +682,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		String listenerClass = getClass().getName();
 		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null,
 				TIME_STATISTIC, TimeUnit.MINUTE);
+		if(Validator.isNotNull(jobTrigger)){
+			_log.info("Start đồng bộ tháng 9");
+		}
 
 		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);

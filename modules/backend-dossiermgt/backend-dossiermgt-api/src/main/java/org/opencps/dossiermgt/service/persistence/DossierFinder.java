@@ -27,10 +27,4 @@ public interface DossierFinder {
 
 	public org.opencps.dossiermgt.model.Dossier findDossierByDeclarationCode(
 		String code, long groupId);
-
-	public java.util.List<org.opencps.dossiermgt.input.model.DictItemModel> findDictItemByServiceDomain(
-			String serviceLevel, long groupId);
-
-	public java.util.List<org.opencps.dossiermgt.input.model.DictItemModel> findServiceConfigByServiceLevel(
-			String serviceLevel, long groupId);
 }

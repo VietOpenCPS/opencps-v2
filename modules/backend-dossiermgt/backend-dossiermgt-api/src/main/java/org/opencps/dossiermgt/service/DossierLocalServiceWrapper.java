@@ -460,7 +460,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
-	public java.util.List<org.opencps.dossiermgt.input.model.DictItemModel> findDictItemByServiceDomain(
+	public java.util.List<org.opencps.datamgt.model.DictItemModelInput> findDictItemByServiceDomain(
 		String serviceLevel, long groupId) {
 		return _dossierLocalService.findDictItemByServiceDomain(serviceLevel,
 			groupId);
@@ -485,7 +485,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
-	public java.util.List<org.opencps.dossiermgt.input.model.DictItemModel> findServiceConfigByServiceLevel(
+	public java.util.List<org.opencps.datamgt.model.DictItemModelInput> findServiceConfigByServiceLevel(
 		String serviceLevel, long groupId) {
 		return _dossierLocalService.findServiceConfigByServiceLevel(serviceLevel,
 			groupId);

@@ -171,7 +171,7 @@ public class AutoFillFormData {
 					_employee_employeeNo = employeeJSON.getString(EmployeeTerm.EMPLOYEE_NO);
 					_employee_fullName = employeeJSON.getString(EmployeeTerm.FULL_NAME);
 					_employee_title = employeeJSON.getString(EmployeeTerm.TITLE);
-					_employee_userName = employeeJSON.getString(EmployeeTerm.USER_NAME);
+					_employee_userName = employeeJSON.getString(EmployeeTerm.FULL_NAME);
 
 				} catch (Exception e) {
 					_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());
@@ -277,6 +277,7 @@ public class AutoFillFormData {
 
 					if (value.startsWith(StringPool.UNDERLINE) && value.contains(DossierTerm.META_DATA)){
 						String metaDataV = value.substring(value.indexOf(".") + 1, value.length());
+						_log.info("metaData " + metaDataV);
 						if(Validator.isNotNull(dossier.getMetaData())) {
 							try {
 								JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
@@ -287,6 +288,7 @@ public class AutoFillFormData {
 									String key = keys.next();
 									String valueMeta = jsonMetaData.getString(key);
 									if(key.equals(metaDataV)){
+										_log.info("valueMeta " + valueMeta);
 										jsonMap.put(entry.getKey(), valueMeta);
 										check = false;
 									}
@@ -993,7 +995,7 @@ public class AutoFillFormData {
 					_employee_employeeNo = employeeJSON.getString(EmployeeTerm.EMPLOYEE_NO);
 					_employee_fullName = employeeJSON.getString(EmployeeTerm.FULL_NAME);
 					_employee_title = employeeJSON.getString(EmployeeTerm.TITLE);
-					_employee_userName = employeeJSON.getString(EmployeeTerm.USER_NAME);
+//					_employee_userName = employeeJSON.getString(EmployeeTerm.FULL_NAME);
 
 				} catch (Exception e) {
 					_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());
@@ -1084,9 +1086,11 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _documentDate);
 					}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_NO).equals(value)){
 						jsonMap.put(entry.getKey(), _documentNo);
-					}else if ((StringPool.UNDERLINE + EmployeeTerm.USER_NAME).equals(value)) {
-						jsonMap.put(entry.getKey(), _employee_userName);
-					}else if ((EmployeeTerm._FIRSTSCOPE).equals(value)) {
+					}
+//					else if ((StringPool.UNDERLINE + EmployeeTerm.USER_NAME).equals(value)) {
+//						jsonMap.put(entry.getKey(), _employee_userName);
+//					}
+					else if ((EmployeeTerm._FIRSTSCOPE).equals(value)) {
 						if(Validator.isNotNull(employee)) {
 							String _govAgencyCode[] = employee.getScope().split(StringPool.COMMA);
 							jsonMap.put(entry.getKey(), _govAgencyCode[0]);
@@ -1177,9 +1181,10 @@ public class AutoFillFormData {
 							jsonMap.put(entry.getKey(), _documentDate);
 						}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_NO).equals(value)){
 							jsonMap.put(entry.getKey(), _documentNo);
-						}else if ((StringPool.UNDERLINE + EmployeeTerm.USER_NAME).equals(value)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _employee_userName;
 						}
+//						else if ((StringPool.UNDERLINE + EmployeeTerm.USER_NAME).equals(value)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _employee_userName;
+//						}
 					}
 
 					jsonMap.put(entry.getKey(), resultBinding.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK));
@@ -1289,7 +1294,7 @@ public class AutoFillFormData {
 			_log.error(e);
 		}
 
-		_log.debug("START result: "+result);
+		_log.info("START result: "+result);
 		return result;
 	}
 	private static final Log _log = LogFactoryUtil.getLog(AutoFillFormData.class);

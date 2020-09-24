@@ -435,7 +435,7 @@ public class DossierLocalServiceUtil {
 		return getService().findByVnpostalStatus(groupId, vnpostalStatus);
 	}
 
-	public static java.util.List<org.opencps.dossiermgt.input.model.DictItemModel> findDictItemByServiceDomain(
+	public static java.util.List<org.opencps.datamgt.model.DictItemModelInput> findDictItemByServiceDomain(
 		String serviceLevel, long groupId) {
 		return getService().findDictItemByServiceDomain(serviceLevel, groupId);
 	}
@@ -455,7 +455,7 @@ public class DossierLocalServiceUtil {
 		return getService().findDossierByGroup(groupId);
 	}
 
-	public static java.util.List<org.opencps.dossiermgt.input.model.DictItemModel> findServiceConfigByServiceLevel(
+	public static java.util.List<org.opencps.datamgt.model.DictItemModelInput> findServiceConfigByServiceLevel(
 		String serviceLevel, long groupId) {
 		return getService()
 				   .findServiceConfigByServiceLevel(serviceLevel, groupId);

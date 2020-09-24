@@ -99,66 +99,66 @@ public class DossierFinderImpl extends DossierFinderBaseImpl implements DossierF
 		}
 		return null;
 	}
-	@Override
-	public List<DictItemModel> findDictItemByServiceDomain(String serviceLevel, long groupId) {
-		Session session = null;
-		try {
-			// Mở session
-			session = openSession();
-			String sql = _customSQL.get(getClass(),FIND_DICT_ITEM_BY_SERVICE_LEVEL);
-			_log.info("ServiceLevel : " + serviceLevel);
-			_log.info("groupId: " + groupId);
-			SQLQuery query = session.createSQLQuery(sql);
-			query.setCacheable(false);
-			query.addEntity(DICTITEM_ENTITY, DossierImpl.class);
-
-			QueryPos queryPos = QueryPos.getInstance(query);
-			queryPos.add(serviceLevel);
-			queryPos.add(groupId);
-			List<DictItemModel> dictItems = (List<DictItemModel>) query.uniqueResult();
-			if(Validator.isNotNull(dictItems)){
-				return dictItems;
-			}
-		}catch (Exception e){
-			try {
-				throw new SystemException(e);
-			} catch (SystemException se) {
-				se.printStackTrace();
-			}
-		}finally {
-			closeSession(session);
-		}
-		return null;
-	}
-	@Override
-	public List<DictItemModel> findServiceConfigByServiceLevel(String serviceLevel, long groupId) {
-		Session session = null;
-		try {
-			// Mở session
-			session = openSession();
-			String sql = _customSQL.get(getClass(),FIND_DICT_ITEM_BY_SERVICE_LEVEL);
-			_log.info("ServiceLevel : " + serviceLevel);
-			_log.info("groupId: " + groupId);
-			SQLQuery query = session.createSQLQuery(sql);
-			query.setCacheable(false);
-			query.addEntity(DICTITEM_ENTITY, DossierImpl.class);
-
-			QueryPos queryPos = QueryPos.getInstance(query);
-			queryPos.add(serviceLevel);
-			queryPos.add(groupId);
-			List<DictItemModel> dictItems = (List<DictItemModel>) query.uniqueResult();
-			if(Validator.isNotNull(dictItems)){
-				return dictItems;
-			}
-		}catch (Exception e){
-			try {
-				throw new SystemException(e);
-			} catch (SystemException se) {
-				se.printStackTrace();
-			}
-		}finally {
-			closeSession(session);
-		}
-		return null;
-	}
+//	@Override
+//	public List<DictItemModel> findDictItemByServiceDomain(String serviceLevel, long groupId) {
+//		Session session = null;
+//		try {
+//			// Mở session
+//			session = openSession();
+//			String sql = _customSQL.get(getClass(),FIND_DICT_ITEM_BY_SERVICE_LEVEL);
+//			_log.info("ServiceLevel : " + serviceLevel);
+//			_log.info("groupId: " + groupId);
+//			SQLQuery query = session.createSQLQuery(sql);
+//			query.setCacheable(false);
+//			query.addEntity(DICTITEM_ENTITY, DossierImpl.class);
+//
+//			QueryPos queryPos = QueryPos.getInstance(query);
+//			queryPos.add(serviceLevel);
+//			queryPos.add(groupId);
+//			List<DictItemModel> dictItems = (List<DictItemModel>) query.uniqueResult();
+//			if(Validator.isNotNull(dictItems)){
+//				return dictItems;
+//			}
+//		}catch (Exception e){
+//			try {
+//				throw new SystemException(e);
+//			} catch (SystemException se) {
+//				se.printStackTrace();
+//			}
+//		}finally {
+//			closeSession(session);
+//		}
+//		return null;
+//	}
+//	@Override
+//	public List<DictItemModel> findServiceConfigByServiceLevel(String serviceLevel, long groupId) {
+//		Session session = null;
+//		try {
+//			// Mở session
+//			session = openSession();
+//			String sql = _customSQL.get(getClass(),FIND_DICT_ITEM_BY_SERVICE_LEVEL);
+//			_log.info("ServiceLevel : " + serviceLevel);
+//			_log.info("groupId: " + groupId);
+//			SQLQuery query = session.createSQLQuery(sql);
+//			query.setCacheable(false);
+//			query.addEntity(DICTITEM_ENTITY, DossierImpl.class);
+//
+//			QueryPos queryPos = QueryPos.getInstance(query);
+//			queryPos.add(serviceLevel);
+//			queryPos.add(groupId);
+//			List<DictItemModel> dictItems = (List<DictItemModel>) query.uniqueResult();
+//			if(Validator.isNotNull(dictItems)){
+//				return dictItems;
+//			}
+//		}catch (Exception e){
+//			try {
+//				throw new SystemException(e);
+//			} catch (SystemException se) {
+//				se.printStackTrace();
+//			}
+//		}finally {
+//			closeSession(session);
+//		}
+//		return null;
+//	}
 }

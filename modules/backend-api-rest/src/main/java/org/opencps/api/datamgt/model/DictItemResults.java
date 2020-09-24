@@ -8,6 +8,8 @@
 
 package org.opencps.api.datamgt.model;
 
+import org.opencps.datamgt.model.DictItemModelInput;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -40,7 +42,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "total",
-    "dictItemModel"
+    "dictItemModel",
+    "dictItemModelInput"
 })
 @XmlRootElement(name = "data")
 public class DictItemResults {
@@ -48,6 +51,8 @@ public class DictItemResults {
     protected long total;
     @XmlElement(name = "data")
     protected List<DictItemModel> dictItemModel;
+    @XmlElement(name = "dataInput")
+    protected List<DictItemModelInput> dictItemModelInput;
 
     /**
      * Gets the value of the total property.
@@ -92,6 +97,12 @@ public class DictItemResults {
             dictItemModel = new ArrayList<DictItemModel>();
         }
         return this.dictItemModel;
+    }
+    public List<DictItemModelInput> getDictItemModelInput() {
+        if (dictItemModelInput == null) {
+            dictItemModelInput = new ArrayList<DictItemModelInput>();
+        }
+        return this.dictItemModelInput;
     }
 
 }

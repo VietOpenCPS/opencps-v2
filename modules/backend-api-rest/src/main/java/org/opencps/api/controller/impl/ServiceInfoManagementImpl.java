@@ -61,11 +61,13 @@ import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.OneGateController;
 import org.opencps.api.controller.ServiceInfoManagement;
 import org.opencps.api.controller.util.DataManagementUtils;
+import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.ServiceInfoUtils;
 import org.opencps.api.datamgt.model.DataSearchModel;
 import org.opencps.api.datamgt.model.DictItemResults;
 import org.opencps.api.datamgt.model.ParentItem;
+import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierSearchDetailModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
@@ -87,9 +89,11 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
+import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.DictItemModelInput;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
@@ -745,59 +749,74 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	}
 
 	@Override
-	public Response getDictItemsByRoles(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext,
+	public Response getDictItemsByRoles(HttpServletRequest request, HttpHeaders header, Company company,
+										Locale locale, User user, ServiceContext serviceContext,
 										DataSearchModel query, Request requestCC) {
 		SearchContext searchContext = new SearchContext();
 		searchContext.setCompanyId(company.getCompanyId());
 
 		try {
-			List<DictItemModel> results = new ArrayList<>();
+			DictItemResults results = new DictItemResults();
+			List<DictItemModelInput> lstDictInput = new ArrayList<>();
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
+			String[] serviceLevel = query.getServiceLevel().split(StringPool.COMMA);
 
-//			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-			List<DictItemModel> lstDictItem = DossierLocalServiceUtil.findServiceConfigByServiceLevel(query.getServiceLevel(), groupId);
-			if(lstDictItem !=null && lstDictItem.size() >0){
-				Employee e = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+			Employee e = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+//			_log.info("USER_ID :" + user.getUserId() + " groupId "+ groupId);
+//			List<DictItemModelInput> lstDictItem = DossierLocalServiceUtil.findServiceConfigByServiceLevel(query.getServiceLevel(), groupId);
+			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(DataMGTConstants.GOVERNMENT_AGENCY, groupId);
+			if (Validator.isNotNull(dictCollection)) {
+//				_log.info("Vào dictCollection : " + dictCollection.getDictCollectionId() + " dictCollectionCode :" + DataMGTConstants.SERVICE_DOMAIN + " groupId : " + groupId);
+				List<DictItem> listDict = DictItemLocalServiceUtil.findByF_dictCollectionId(dictCollection.getDictCollectionId());
+				if (listDict != null && listDict.size() > 0) {
+//					_log.info("Vào listDict :" + listDict.size());
+					for (DictItem dict : listDict) {
 
-				for (DictItemModel dictItem : lstDictItem)
-				{
-//					String itemCode = dictItem.getItemCode();
-//					String itemName = String.valueOf(dictItem.getItemName());
-//					groupId = dictItem.getGroupId();
-//					jsonObject.put("itemCode", itemCode);
-//					jsonObject.put("itemName", itemName);
-//					jsonObject.put("groupId", groupId);
-					if(query.isEmployee()) {
-						String govAgencyCode = dictItem.getGovAgencyCode();
-						if (Validator.isNotNull(e)) {
-							if (e != null && (Validator.isNull(e.getScope()))
-									|| (e != null && Validator.isNotNull(e.getScope()) && Validator.isNotNull(govAgencyCode)
-									&& e.getScope().indexOf(govAgencyCode) >= 0)) {
-								DictItemModel ett = new DictItemModel();
-//								jsonObject.put("itemCode",dictItem.getItemCode());
-//								jsonObject.put("itemName",dictItem.getItemName());
-//								jsonObject.put("ServiceLevel",dictItem.getServiceLevel());
-//								jsonObject.put("govAgencyCode",dictItem.getGovAgencyCode());
-//								jsonObject.put("groupId",dictItem.getGroupId());
-								ett.setItemName(dictItem.getItemName());
-								ett.setServiceLevel(dictItem.getServiceLevel());
-								ett.setGovAgencyCode(dictItem.getGovAgencyCode());
-								ett.setGroupId(dictItem.getGroupId());
-								results.add(ett);
+						if (Validator.isNotNull(dict.getItemCode())) {
+							List<ServiceConfig> lstServiceConfig = ServiceConfigLocalServiceUtil.getByGovAgencyCode(dict.getItemCode());
+//							_log.info("Vào ITEM_CODE :" + dict.getItemCode());
+							if (lstServiceConfig != null && lstServiceConfig.size() > 0) {
+								if (Validator.isNotNull(serviceLevel)) {
+									for (String level : serviceLevel) {
+										for (ServiceConfig serviceConfig : lstServiceConfig) {
+//											_log.info("Vào .......Level :" + level);
+//											_log.info("Vào .......ServiceLevel :" + serviceConfig.getServiceLevel());
+											if (String.valueOf(serviceConfig.getServiceLevel()).equals(level) || level.equals(String.valueOf(serviceConfig.getServiceLevel()))) {
+												if (query.isEmployee()) {
+													if (e != null && (Validator.isNull(e.getScope()))
+															|| (e != null && Validator.isNotNull(e.getScope()) && Validator.isNotNull(serviceConfig.getGovAgencyCode())
+															&& e.getScope().indexOf(serviceConfig.getGovAgencyCode()) >= 0)) {
+//														_log.info("Vào ........................... Employee");
+														DictItemModelInput ett = setData(dict, serviceConfig,"");
+														if(Validator.isNotNull(ett)) {
+															lstDictInput.add(ett);
+														}
+														break;
+													}
+												} else {
+//													_log.info("Vào ........................... NoEmployee");
+													DictItemModelInput ett = setData(dict, serviceConfig,"");
+													if(Validator.isNotNull(ett)) {
+														lstDictInput.add(ett);
+													}
+													break;
+												}
+											}
+										}
+									}
+								}
 							}
 						}
 					}
 				}
 			}
-
-//			DictItemResults result = new DictItemResults();
-
-//			result.setTotal(jsonObject.getLong(ConstantUtils.TOTAL));
-//			result.getDictItemModel()
-//					.addAll(DataManagementUtils.mapperDictItemModelList((List<DictItemModel>) lstDictItem,query,groupId, user));
-			return Response.status(HttpURLConnection.HTTP_OK).entity(results.toString()).build();
-
+			_log.info("Vào ..........................." + lstDictInput.size());
+			results.setTotal(lstDictInput.size());
+			results.getDictItemModelInput()
+					.addAll(ServiceInfoUtils.mappingDomain((List<DictItemModelInput>) lstDictInput));
+			_log.info("LOG Results" + JSONFactoryUtil.looseSerialize(results));
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -809,23 +828,82 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		searchContext.setCompanyId(company.getCompanyId());
 
 		try {
-			List<DictItemModel> results = new ArrayList<>();
+			List<DictItemModelInput> lstDictInput = new ArrayList<>();
+			DictItemResults results = new DictItemResults();
+
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			if (Validator.isNotNull(search.getServiceLevel())) {
+				String[] serviceLevel = search.getServiceLevel().split(StringPool.COMMA);
 
+			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(DataMGTConstants.SERVICE_DOMAIN, groupId);
+			if (Validator.isNotNull(dictCollection)) {
+				_log.debug("Vào dictCollection : " + dictCollection.getDictCollectionId() + "dictCollectionCode :" + DataMGTConstants.SERVICE_DOMAIN + " groupId : " + groupId);
+				List<DictItem> listDict = DictItemLocalServiceUtil.findByF_dictCollectionId(dictCollection.getDictCollectionId());
+				if (listDict != null && listDict.size() > 0) {
+//					_log.debug("Vào listDict :" +listDict.size());
+					for (DictItem dict : listDict) {
+						if (Validator.isNotNull(dict)) {
+							List<Long> lstServiceInfoId = new ArrayList<>();
+							List<ServiceInfo> lstServiceInfo = ServiceInfoLocalServiceUtil.fetchByDomain(groupId, dict.getItemCode());
+//							_log.debug("Vào lstServiceInfo :" +lstServiceInfo.size());
+							if (lstServiceInfo != null && lstServiceInfo.size() > 0) {
+								for (ServiceInfo serviceInfo : lstServiceInfo) {
+									if (!String.valueOf(serviceInfo.getServiceInfoId()).contains(lstServiceInfoId.toString())) {
+										lstServiceInfoId.add(serviceInfo.getServiceInfoId());
+//										_log.debug("Vào serviceInfoId :" +serviceInfo.getServiceInfoId());
+									}
+								}
+								if(Validator.isNotNull(lstServiceInfoId)) {
+									long[] serviceInfoId = new long[lstServiceInfoId.size()];
+									if (lstServiceInfoId != null && !lstServiceInfoId.isEmpty()) {
+										int j = 0;
+										for (Long id : lstServiceInfoId) {
+											serviceInfoId[j++] = id;
+										}
+									}
+									List<ServiceConfig> lstServiceConfig = ServiceConfigLocalServiceUtil.fetchByF_INFO_LEVEL(groupId, serviceInfoId);
+//									_log.debug("Vào lstServiceConfig :" + JSONFactoryUtil.looseSerialize(lstServiceConfig));
 
-			List<DictItemModel> lstDictItem = DossierLocalServiceUtil.findDictItemByServiceDomain(search.getServiceLevel(), groupId);
-			if(lstDictItem !=null && lstDictItem.size() >0){
-
-				for (DictItemModel dictItem : lstDictItem) {
-					DictItemModel ett = new DictItemModel();
-					ett.setItemName(dictItem.getItemName());
-					ett.setServiceLevel(dictItem.getServiceLevel());
-					ett.setGovAgencyCode(dictItem.getGovAgencyCode());
-					ett.setGroupId(dictItem.getGroupId());
-					results.add(ett);
+									if(lstServiceConfig !=null && lstServiceConfig.size() >0) {
+										for (ServiceConfig serviceConfig : lstServiceConfig) {
+												if (search.getServiceLevel().contains(StringPool.COMMA)) {
+													for (String level : serviceLevel) {
+//														_log.debug("Vào .......Level :" +level);
+//														_log.debug("Vào .......ServiceLevel :" +serviceConfig.getServiceLevel());
+														if (String.valueOf(serviceConfig.getServiceLevel()).equals(level) || level.equals(String.valueOf(serviceConfig.getServiceLevel()))) {
+//														_log.debug("Vào ...........................");
+//														DictItemModelInput ett = new DictItemModelInput();
+//														ett.setDictItemId(dict.getDictItemId());
+//														ett.setItemName(dict.getItemName());
+//														ett.setServiceLevel(serviceConfig.getServiceLevel());
+//														ett.setGovAgencyCode(serviceConfig.getGovAgencyCode());
+//														ett.setGroupId(dict.getGroupId());
+//														//Update DomainCode ==> search thủ tục hành chính theo lĩnh vực
+//														ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceConfig.getServiceInfoId());
+//														ett.setDomainCode(serviceInfo.getDomainCode());
+														DictItemModelInput ett = setData(dict,serviceConfig,agency);
+														_log.info("DictItem :" + JSONFactoryUtil.looseSerialize(ett));
+														if(Validator.isNotNull(ett)) {
+															lstDictInput.add(ett);
+														}
+														break;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 			}
-			return Response.status(HttpURLConnection.HTTP_OK).entity(results.toString()).build();
+		}
+			_log.debug("Vào ..........................." + lstDictInput.size());
+			results.setTotal(lstDictInput.size());
+			results.getDictItemModelInput()
+					.addAll(ServiceInfoUtils.mappingDomain((List<DictItemModelInput>) lstDictInput));
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -1401,5 +1479,32 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
 		}
 
+	}
+	public DictItemModelInput setData( DictItem dict,ServiceConfig serviceConfig, String agency){
+		ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceConfig.getServiceInfoId());
+		DictItemModelInput ett = new DictItemModelInput();
+		if(Validator.isNotNull(agency)){
+			if (agency.equals(serviceConfig.getGovAgencyCode())){
+				ett.setDictItemId(dict.getDictItemId());
+				ett.setItemName(dict.getItemName());
+				ett.setServiceLevel(serviceConfig.getServiceLevel());
+				ett.setGovAgencyCode(serviceConfig.getGovAgencyCode());
+				ett.setGroupId(dict.getGroupId());
+				ett.setDomainCode(serviceInfo.getDomainCode());
+				ett.setDomainName(serviceInfo.getDomainName());
+			}else{
+				return null;
+			}
+		}else{
+			ett.setDictItemId(dict.getDictItemId());
+			ett.setItemName(dict.getItemName());
+			ett.setServiceLevel(serviceConfig.getServiceLevel());
+			ett.setGovAgencyCode(serviceConfig.getGovAgencyCode());
+			ett.setGroupId(dict.getGroupId());
+			ett.setDomainCode(serviceInfo.getDomainCode());
+			ett.setDomainName(serviceInfo.getDomainName());
+		}
+
+		return ett;
 	}
 }

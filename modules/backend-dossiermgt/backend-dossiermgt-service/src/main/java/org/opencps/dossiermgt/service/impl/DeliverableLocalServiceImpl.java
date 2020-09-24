@@ -1727,17 +1727,27 @@ public class DeliverableLocalServiceImpl
 				} else if (key.contains("@EQUAL")) {
 					 if(entry.getValue().contains(StringPool.FORWARD_SLASH)){
 					 	String keywordDate = SpecialCharacterUtils.splitSpecial(entry.getValue());
+
+//					 	MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+//					 	query.addFields(key.split("@")[0]);
+//					 	queryBool.add(query, BooleanClauseOccur.MUST);
+
 					 	if(key.split("@")[0].contains(DeliverableTerm.NGAY_SINH)){
 							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
 							query.addFields(DeliverableTerm.NGAYSINH_SEARCH);
 							queryBool.add(query, BooleanClauseOccur.MUST);
-						}else if(key.split("@")[0].contains(DeliverableTerm.NGAY_QD)){
+						}
+					 	else if(key.split("@")[0].contains(DeliverableTerm.NGAY_QD)){
 							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
 							query.addFields(DeliverableTerm.NGAY_QD_SEARCH);
 							queryBool.add(query, BooleanClauseOccur.MUST);
 						}else if(key.split("@")[0].contains(DeliverableTerm.ISSUE_DATE)){
 							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
 							query.addFields(DeliverableTerm.ISSUE_DATE_SEARCH);
+							queryBool.add(query, BooleanClauseOccur.MUST);
+						}else if(key.split("@")[0].contains(DeliverableTerm.NGAY_CAP)){
+							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+							query.addFields(DeliverableTerm.NGAY_CAP_SEARCH);
 							queryBool.add(query, BooleanClauseOccur.MUST);
 						}
 					}else {

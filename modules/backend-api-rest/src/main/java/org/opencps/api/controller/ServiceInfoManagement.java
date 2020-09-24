@@ -108,14 +108,13 @@ public interface ServiceInfoManagement {
 
 	@GET
 	@Path("statistics/agency")
-	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Get DictItem list of DictCollectin", response = DictItemResults.class, notes = "Get DictItem list of DictCollection")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Get DictItem list of DictCollection", response = DictItemResults.class, notes = "Get DictItem list of DictCollection")
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Get DictItem list of DictCollectin", response = DictItemResults.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized"),
-			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found"),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server problems") })
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of ServiceInfo", response = StatisticsLevelResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getDictItemsByRoles(@Context HttpServletRequest request, @Context HttpHeaders header,
 										@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 										@BeanParam DataSearchModel query, @Context Request requestCC);

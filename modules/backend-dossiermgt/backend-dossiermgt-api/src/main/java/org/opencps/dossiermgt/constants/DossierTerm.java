@@ -380,6 +380,7 @@ public class DossierTerm {
 	public static final String DOSSIER_CTN = "CTN";
 	public static final String OPENCPSV2 = "OPENCPSV2";
 	public static final String PENDING = "pendding";
+	public static final String VISITED = "visited";
 	public static final String WAITING = "waiting";
 	public static final String STEP_DONE_CODE = "400";
 	
@@ -430,4 +431,13 @@ public class DossierTerm {
 	public static final String DATA = "data";
 	public static final String VIETTEL_POST_KEY = "viettelPost";
 	public static final String VIETTEL_POST_VALUE = "1";
+	public static final String SPECIAL_NO = "specialNo";
+	public static final String DOSSIER_SYN_STATE = "dossierSynState";
+	public static final String POST_TYPE = "postType";
+	public static final String POST_STATUS = "postStatus";
+	public static final String POST_SERVICE = "postService";
+	public static final String ORDER_NUMBER = "orderNumber";
+	public static final String SYNC_STATE = "syncState";
+	public static final String POST_CONNECT = "postConnect";
+
 }

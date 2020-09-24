@@ -3034,6 +3034,815 @@ public class PostConnectPersistenceImpl extends BasePersistenceImpl<PostConnect>
 		"(postConnect.orderNumber IS NULL OR postConnect.orderNumber = '') AND ";
 	private static final String _FINDER_COLUMN_F_ORDER_NUMBER_POST_STATUS_POSTSTATUS_2 =
 		"postConnect.postStatus = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_POST_BY_DOSSIER_ID =
+		new FinderPath(PostConnectModelImpl.ENTITY_CACHE_ENABLED,
+			PostConnectModelImpl.FINDER_CACHE_ENABLED, PostConnectImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByF_POST_BY_DOSSIER_ID",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_POST_BY_DOSSIER_ID =
+		new FinderPath(PostConnectModelImpl.ENTITY_CACHE_ENABLED,
+			PostConnectModelImpl.FINDER_CACHE_ENABLED, PostConnectImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByF_POST_BY_DOSSIER_ID",
+			new String[] { Long.class.getName(), Long.class.getName() },
+			PostConnectModelImpl.GROUPID_COLUMN_BITMASK |
+			PostConnectModelImpl.DOSSIERID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_POST_BY_DOSSIER_ID = new FinderPath(PostConnectModelImpl.ENTITY_CACHE_ENABLED,
+			PostConnectModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_POST_BY_DOSSIER_ID",
+			new String[] { Long.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns all the post connects where groupId = &#63; and dossierId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @return the matching post connects
+	 */
+	@Override
+	public List<PostConnect> findByF_POST_BY_DOSSIER_ID(long groupId,
+		long dossierId) {
+		return findByF_POST_BY_DOSSIER_ID(groupId, dossierId,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the post connects where groupId = &#63; and dossierId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PostConnectModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param start the lower bound of the range of post connects
+	 * @param end the upper bound of the range of post connects (not inclusive)
+	 * @return the range of matching post connects
+	 */
+	@Override
+	public List<PostConnect> findByF_POST_BY_DOSSIER_ID(long groupId,
+		long dossierId, int start, int end) {
+		return findByF_POST_BY_DOSSIER_ID(groupId, dossierId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the post connects where groupId = &#63; and dossierId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PostConnectModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param start the lower bound of the range of post connects
+	 * @param end the upper bound of the range of post connects (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching post connects
+	 */
+	@Override
+	public List<PostConnect> findByF_POST_BY_DOSSIER_ID(long groupId,
+		long dossierId, int start, int end,
+		OrderByComparator<PostConnect> orderByComparator) {
+		return findByF_POST_BY_DOSSIER_ID(groupId, dossierId, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the post connects where groupId = &#63; and dossierId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PostConnectModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param start the lower bound of the range of post connects
+	 * @param end the upper bound of the range of post connects (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching post connects
+	 */
+	@Override
+	public List<PostConnect> findByF_POST_BY_DOSSIER_ID(long groupId,
+		long dossierId, int start, int end,
+		OrderByComparator<PostConnect> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_POST_BY_DOSSIER_ID;
+			finderArgs = new Object[] { groupId, dossierId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_POST_BY_DOSSIER_ID;
+			finderArgs = new Object[] {
+					groupId, dossierId,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<PostConnect> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<PostConnect>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PostConnect postConnect : list) {
+					if ((groupId != postConnect.getGroupId()) ||
+							(dossierId != postConnect.getDossierId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_POSTCONNECT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_POST_BY_DOSSIER_ID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_POST_BY_DOSSIER_ID_DOSSIERID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(PostConnectModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dossierId);
+
+				if (!pagination) {
+					list = (List<PostConnect>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<PostConnect>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first post connect in the ordered set where groupId = &#63; and dossierId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching post connect
+	 * @throws NoSuchPostConnectException if a matching post connect could not be found
+	 */
+	@Override
+	public PostConnect findByF_POST_BY_DOSSIER_ID_First(long groupId,
+		long dossierId, OrderByComparator<PostConnect> orderByComparator)
+		throws NoSuchPostConnectException {
+		PostConnect postConnect = fetchByF_POST_BY_DOSSIER_ID_First(groupId,
+				dossierId, orderByComparator);
+
+		if (postConnect != null) {
+			return postConnect;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", dossierId=");
+		msg.append(dossierId);
+
+		msg.append("}");
+
+		throw new NoSuchPostConnectException(msg.toString());
+	}
+
+	/**
+	 * Returns the first post connect in the ordered set where groupId = &#63; and dossierId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching post connect, or <code>null</code> if a matching post connect could not be found
+	 */
+	@Override
+	public PostConnect fetchByF_POST_BY_DOSSIER_ID_First(long groupId,
+		long dossierId, OrderByComparator<PostConnect> orderByComparator) {
+		List<PostConnect> list = findByF_POST_BY_DOSSIER_ID(groupId, dossierId,
+				0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last post connect in the ordered set where groupId = &#63; and dossierId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching post connect
+	 * @throws NoSuchPostConnectException if a matching post connect could not be found
+	 */
+	@Override
+	public PostConnect findByF_POST_BY_DOSSIER_ID_Last(long groupId,
+		long dossierId, OrderByComparator<PostConnect> orderByComparator)
+		throws NoSuchPostConnectException {
+		PostConnect postConnect = fetchByF_POST_BY_DOSSIER_ID_Last(groupId,
+				dossierId, orderByComparator);
+
+		if (postConnect != null) {
+			return postConnect;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", dossierId=");
+		msg.append(dossierId);
+
+		msg.append("}");
+
+		throw new NoSuchPostConnectException(msg.toString());
+	}
+
+	/**
+	 * Returns the last post connect in the ordered set where groupId = &#63; and dossierId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching post connect, or <code>null</code> if a matching post connect could not be found
+	 */
+	@Override
+	public PostConnect fetchByF_POST_BY_DOSSIER_ID_Last(long groupId,
+		long dossierId, OrderByComparator<PostConnect> orderByComparator) {
+		int count = countByF_POST_BY_DOSSIER_ID(groupId, dossierId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PostConnect> list = findByF_POST_BY_DOSSIER_ID(groupId, dossierId,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the post connects before and after the current post connect in the ordered set where groupId = &#63; and dossierId = &#63;.
+	 *
+	 * @param postConnectId the primary key of the current post connect
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next post connect
+	 * @throws NoSuchPostConnectException if a post connect with the primary key could not be found
+	 */
+	@Override
+	public PostConnect[] findByF_POST_BY_DOSSIER_ID_PrevAndNext(
+		long postConnectId, long groupId, long dossierId,
+		OrderByComparator<PostConnect> orderByComparator)
+		throws NoSuchPostConnectException {
+		PostConnect postConnect = findByPrimaryKey(postConnectId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PostConnect[] array = new PostConnectImpl[3];
+
+			array[0] = getByF_POST_BY_DOSSIER_ID_PrevAndNext(session,
+					postConnect, groupId, dossierId, orderByComparator, true);
+
+			array[1] = postConnect;
+
+			array[2] = getByF_POST_BY_DOSSIER_ID_PrevAndNext(session,
+					postConnect, groupId, dossierId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PostConnect getByF_POST_BY_DOSSIER_ID_PrevAndNext(
+		Session session, PostConnect postConnect, long groupId, long dossierId,
+		OrderByComparator<PostConnect> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_POSTCONNECT_WHERE);
+
+		query.append(_FINDER_COLUMN_F_POST_BY_DOSSIER_ID_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_F_POST_BY_DOSSIER_ID_DOSSIERID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(PostConnectModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(dossierId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(postConnect);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<PostConnect> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the post connects where groupId = &#63; and dossierId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 */
+	@Override
+	public void removeByF_POST_BY_DOSSIER_ID(long groupId, long dossierId) {
+		for (PostConnect postConnect : findByF_POST_BY_DOSSIER_ID(groupId,
+				dossierId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(postConnect);
+		}
+	}
+
+	/**
+	 * Returns the number of post connects where groupId = &#63; and dossierId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @return the number of matching post connects
+	 */
+	@Override
+	public int countByF_POST_BY_DOSSIER_ID(long groupId, long dossierId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_POST_BY_DOSSIER_ID;
+
+		Object[] finderArgs = new Object[] { groupId, dossierId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_POSTCONNECT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_POST_BY_DOSSIER_ID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_POST_BY_DOSSIER_ID_DOSSIERID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dossierId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_POST_BY_DOSSIER_ID_GROUPID_2 = "postConnect.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_POST_BY_DOSSIER_ID_DOSSIERID_2 = "postConnect.dossierId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_POST_BY_D_TYPE = new FinderPath(PostConnectModelImpl.ENTITY_CACHE_ENABLED,
+			PostConnectModelImpl.FINDER_CACHE_ENABLED, PostConnectImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_POST_BY_D_TYPE",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				Integer.class.getName()
+			},
+			PostConnectModelImpl.GROUPID_COLUMN_BITMASK |
+			PostConnectModelImpl.DOSSIERID_COLUMN_BITMASK |
+			PostConnectModelImpl.POSTTYPE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_POST_BY_D_TYPE = new FinderPath(PostConnectModelImpl.ENTITY_CACHE_ENABLED,
+			PostConnectModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_POST_BY_D_TYPE",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				Integer.class.getName()
+			});
+
+	/**
+	 * Returns the post connect where groupId = &#63; and dossierId = &#63; and postType = &#63; or throws a {@link NoSuchPostConnectException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param postType the post type
+	 * @return the matching post connect
+	 * @throws NoSuchPostConnectException if a matching post connect could not be found
+	 */
+	@Override
+	public PostConnect findByF_POST_BY_D_TYPE(long groupId, long dossierId,
+		int postType) throws NoSuchPostConnectException {
+		PostConnect postConnect = fetchByF_POST_BY_D_TYPE(groupId, dossierId,
+				postType);
+
+		if (postConnect == null) {
+			StringBundler msg = new StringBundler(8);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", dossierId=");
+			msg.append(dossierId);
+
+			msg.append(", postType=");
+			msg.append(postType);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchPostConnectException(msg.toString());
+		}
+
+		return postConnect;
+	}
+
+	/**
+	 * Returns the post connect where groupId = &#63; and dossierId = &#63; and postType = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param postType the post type
+	 * @return the matching post connect, or <code>null</code> if a matching post connect could not be found
+	 */
+	@Override
+	public PostConnect fetchByF_POST_BY_D_TYPE(long groupId, long dossierId,
+		int postType) {
+		return fetchByF_POST_BY_D_TYPE(groupId, dossierId, postType, true);
+	}
+
+	/**
+	 * Returns the post connect where groupId = &#63; and dossierId = &#63; and postType = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param postType the post type
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching post connect, or <code>null</code> if a matching post connect could not be found
+	 */
+	@Override
+	public PostConnect fetchByF_POST_BY_D_TYPE(long groupId, long dossierId,
+		int postType, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, dossierId, postType };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_POST_BY_D_TYPE,
+					finderArgs, this);
+		}
+
+		if (result instanceof PostConnect) {
+			PostConnect postConnect = (PostConnect)result;
+
+			if ((groupId != postConnect.getGroupId()) ||
+					(dossierId != postConnect.getDossierId()) ||
+					(postType != postConnect.getPostType())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_SELECT_POSTCONNECT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_POST_BY_D_TYPE_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_POST_BY_D_TYPE_DOSSIERID_2);
+
+			query.append(_FINDER_COLUMN_F_POST_BY_D_TYPE_POSTTYPE_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dossierId);
+
+				qPos.add(postType);
+
+				List<PostConnect> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_POST_BY_D_TYPE,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"PostConnectPersistenceImpl.fetchByF_POST_BY_D_TYPE(long, long, int, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					PostConnect postConnect = list.get(0);
+
+					result = postConnect;
+
+					cacheResult(postConnect);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_POST_BY_D_TYPE,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (PostConnect)result;
+		}
+	}
+
+	/**
+	 * Removes the post connect where groupId = &#63; and dossierId = &#63; and postType = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param postType the post type
+	 * @return the post connect that was removed
+	 */
+	@Override
+	public PostConnect removeByF_POST_BY_D_TYPE(long groupId, long dossierId,
+		int postType) throws NoSuchPostConnectException {
+		PostConnect postConnect = findByF_POST_BY_D_TYPE(groupId, dossierId,
+				postType);
+
+		return remove(postConnect);
+	}
+
+	/**
+	 * Returns the number of post connects where groupId = &#63; and dossierId = &#63; and postType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param postType the post type
+	 * @return the number of matching post connects
+	 */
+	@Override
+	public int countByF_POST_BY_D_TYPE(long groupId, long dossierId,
+		int postType) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_POST_BY_D_TYPE;
+
+		Object[] finderArgs = new Object[] { groupId, dossierId, postType };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_POSTCONNECT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_POST_BY_D_TYPE_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_POST_BY_D_TYPE_DOSSIERID_2);
+
+			query.append(_FINDER_COLUMN_F_POST_BY_D_TYPE_POSTTYPE_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dossierId);
+
+				qPos.add(postType);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_POST_BY_D_TYPE_GROUPID_2 = "postConnect.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_POST_BY_D_TYPE_DOSSIERID_2 = "postConnect.dossierId = ? AND ";
+	private static final String _FINDER_COLUMN_F_POST_BY_D_TYPE_POSTTYPE_2 = "postConnect.postType = ?";
 
 	public PostConnectPersistenceImpl() {
 		setModelClass(PostConnect.class);
@@ -3077,6 +3886,12 @@ public class PostConnectPersistenceImpl extends BasePersistenceImpl<PostConnect>
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_ORDER_NUMBER_POST_STATUS,
 			new Object[] {
 				postConnect.getOrderNumber(), postConnect.getPostStatus()
+			}, postConnect);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_POST_BY_D_TYPE,
+			new Object[] {
+				postConnect.getGroupId(), postConnect.getDossierId(),
+				postConnect.getPostType()
 			}, postConnect);
 
 		postConnect.resetOriginalValues();
@@ -3176,6 +3991,17 @@ public class PostConnectPersistenceImpl extends BasePersistenceImpl<PostConnect>
 			args, Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_ORDER_NUMBER_POST_STATUS,
 			args, postConnectModelImpl, false);
+
+		args = new Object[] {
+				postConnectModelImpl.getGroupId(),
+				postConnectModelImpl.getDossierId(),
+				postConnectModelImpl.getPostType()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_POST_BY_D_TYPE, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_POST_BY_D_TYPE, args,
+			postConnectModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -3241,6 +4067,29 @@ public class PostConnectPersistenceImpl extends BasePersistenceImpl<PostConnect>
 				args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_ORDER_NUMBER_POST_STATUS,
 				args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					postConnectModelImpl.getGroupId(),
+					postConnectModelImpl.getDossierId(),
+					postConnectModelImpl.getPostType()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_POST_BY_D_TYPE, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_POST_BY_D_TYPE, args);
+		}
+
+		if ((postConnectModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_POST_BY_D_TYPE.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					postConnectModelImpl.getOriginalGroupId(),
+					postConnectModelImpl.getOriginalDossierId(),
+					postConnectModelImpl.getOriginalPostType()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_POST_BY_D_TYPE, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_POST_BY_D_TYPE, args);
 		}
 	}
 
@@ -3457,6 +4306,16 @@ public class PostConnectPersistenceImpl extends BasePersistenceImpl<PostConnect>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_SYNC_STATE,
 				args);
 
+			args = new Object[] {
+					postConnectModelImpl.getGroupId(),
+					postConnectModelImpl.getDossierId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_POST_BY_DOSSIER_ID,
+				args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_POST_BY_DOSSIER_ID,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -3538,6 +4397,29 @@ public class PostConnectPersistenceImpl extends BasePersistenceImpl<PostConnect>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_SYNC_STATE, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_SYNC_STATE,
+					args);
+			}
+
+			if ((postConnectModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_POST_BY_DOSSIER_ID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						postConnectModelImpl.getOriginalGroupId(),
+						postConnectModelImpl.getOriginalDossierId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_POST_BY_DOSSIER_ID,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_POST_BY_DOSSIER_ID,
+					args);
+
+				args = new Object[] {
+						postConnectModelImpl.getGroupId(),
+						postConnectModelImpl.getDossierId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_POST_BY_DOSSIER_ID,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_POST_BY_DOSSIER_ID,
 					args);
 			}
 		}

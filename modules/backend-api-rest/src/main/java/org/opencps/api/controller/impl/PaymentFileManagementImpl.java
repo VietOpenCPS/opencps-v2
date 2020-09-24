@@ -796,9 +796,16 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				throw new UnauthenticationException();
 			}
 			if (dossierId == 0) {
+				//get dossier by referenceId
 				Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 				if (dossier != null) {
 					dossierId = dossier.getDossierId();
+				} else {
+					//case get dossier by dossierNo
+					dossier = DossierLocalServiceUtil.getByDossierNo(groupId, id);
+					if(dossier != null) {
+						dossierId = dossier.getDossierId();
+					}
 				}
 			}
 
@@ -1268,7 +1275,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		String hashCodeUppercase = null;
 		try
 		{
-			MessageDigest crypt = MessageDigest.getInstance(PasswordEncrypt.DIGEST_5);
+			MessageDigest crypt = MessageDigest.getInstance(algorithm);
 			crypt.reset();
 			crypt.update(stringBuilder.toString().getBytes("UTF-8"));
 			hashCodeUppercase = (new BigInteger(1,crypt.digest()).toString(16)).toUpperCase();

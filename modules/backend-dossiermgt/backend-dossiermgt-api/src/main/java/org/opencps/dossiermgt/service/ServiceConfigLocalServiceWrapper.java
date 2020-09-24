@@ -215,6 +215,13 @@ public class ServiceConfigLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ServiceConfig> fetchByF_INFO_LEVEL(
+		long groupId, long[] serviceInfoId) {
+		return _serviceConfigLocalService.fetchByF_INFO_LEVEL(groupId,
+			serviceInfoId);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.ServiceConfig fetchServiceConfig(
 		long serviceConfigId) {
 		return _serviceConfigLocalService.fetchServiceConfig(serviceConfigId);
