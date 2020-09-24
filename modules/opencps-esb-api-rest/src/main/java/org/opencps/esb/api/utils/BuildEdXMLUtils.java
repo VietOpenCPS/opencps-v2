@@ -96,9 +96,9 @@ public class BuildEdXMLUtils {
 							+ StringPool.FORWARD_SLASH + dossierNo,
 					Validator.isNotNull(dossier.getDossierName()) ? dossier.getDossierName() : dossier.getServiceName(),
 					null, dossier.getDueDate(), null, null);*/
-			String dossierNote = dossier.getDossierNote();
+			String subject = dossier.getServiceName() + StringPool.FORWARD_SLASH + dossierNo;
 			MessageHeader headerEd = new MessageHeader(from, toes, code, promulgationInfo, docType,
-					dossierNote, Validator.isNotNull(dossier.getDossierName()) ? dossier.getDossierName() : dossier.getServiceName(),
+					subject, Validator.isNotNull(dossier.getDossierName()) ? dossier.getDossierName() : dossier.getServiceName(),
 					null, dossier.getDueDate(), null, null);
 			headerEd.setApplicationType("MCDT_DT");
 			headerEd.addToPlace("Cac bo va co quan ngang bo");
