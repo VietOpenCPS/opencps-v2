@@ -381,4 +381,60 @@ public class RealtimeData {
 	public void setSaturdayCount(int saturdayCount) {
 		this.saturdayCount = saturdayCount;
 	}
+	
+	private int dossierOnegate3Count;
+	private int dossierOnegate4Count;
+	private int releaseDossierOnline3Count;
+	private int releaseDossierOnline4Count;
+	private int releaseDossierOnegate3Count;
+	private int releaseDossierOnegate4Count;
+	
+	public int getDossierOnegate3Count() {
+		return dossierOnegate3Count;
+	}
+
+	public void setDossierOnegate3Count(int dossierOnegate3Count) {
+		this.dossierOnegate3Count = dossierOnegate3Count;
+	}
+
+	public int getDossierOnegate4Count() {
+		return dossierOnegate4Count;
+	}
+
+	public void setDossierOnegate4Count(int dossierOnegate4Count) {
+		this.dossierOnegate4Count = dossierOnegate4Count;
+	}
+
+	public int getReleaseDossierOnline3Count() {
+		return releaseDossierOnline3Count;
+	}
+
+	public void setReleaseDossierOnline3Count(int releaseDossierOnline3Count) {
+		this.releaseDossierOnline3Count = releaseDossierOnline3Count;
+	}
+
+	public int getReleaseDossierOnline4Count() {
+		return releaseDossierOnline4Count;
+	}
+
+	public void setReleaseDossierOnline4Count(int releaseDossierOnline4Count) {
+		this.releaseDossierOnline4Count = releaseDossierOnline4Count;
+	}
+
+	public int getReleaseDossierOnegate3Count() {
+		return releaseDossierOnegate3Count;
+	}
+
+	public void setReleaseDossierOnegate3Count(int releaseDossierOnegate3Count) {
+		this.releaseDossierOnegate3Count = releaseDossierOnegate3Count;
+	}
+
+	public int getReleaseDossierOnegate4Count() {
+		return releaseDossierOnegate4Count;
+	}
+
+	public void setReleaseDossierOnegate4Count(int releaseDossierOnegate4Count) {
+		this.releaseDossierOnegate4Count = releaseDossierOnegate4Count;
+	}
+		
 }

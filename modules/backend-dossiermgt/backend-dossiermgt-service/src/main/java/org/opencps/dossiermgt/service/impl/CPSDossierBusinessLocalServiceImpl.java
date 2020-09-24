@@ -3902,7 +3902,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(getDueDateByPayload(payload))) {
 				Date dueDate = getDueDateByPayload(payload);
 				dossier.setDueDate(dueDate);
-				String metadata = getDossierMetaKeyDateOption(dossier, dueDate, getReceiveDateByPayload(payload), getDurationByPayload(payload), dateOption);
+				String metadata = getDossierMetaKeyDateOption(dossier, dueDate, getReceiveDateByPayload(payload), getDurationByPayload(payload), dateOption, serviceProcess.getDueDatePattern());
 				dossier.setMetaData(metadata);
 				bResult.put(DossierTerm.META_DATA, true);
 				bResult.put(DossierTerm.DUE_DATE, true);
@@ -3910,7 +3910,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption,
 						serviceProcess.getDueDatePattern());
 				dossier.setDueDate(dueDatePharse.getDueDate());
-				String metadata = getDossierMetaKeyDateOption(dossier, dueDatePharse.getDueDate(), dueDatePharse.getReceiveDate(), dueDatePharse.getDuration(), dateOption);
+				String metadata = getDossierMetaKeyDateOption(dossier, dueDatePharse.getDueDate(), dueDatePharse.getReceiveDate(), dueDatePharse.getDuration(), dateOption, serviceProcess.getDueDatePattern());
 				dossier.setMetaData(metadata);
 				bResult.put(DossierTerm.META_DATA, true);
 				bResult.put(DossierTerm.DUE_DATE, true);
@@ -4093,6 +4093,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				//				_log.info("dActTest: "+dActTest);
 			} else {
 				dossierActionLocalService.updateDossierAction(dossierAction);
+			}
+		}
+		
+		// create submit date
+		if(dateOption == DossierTerm.CREATE_SUBMIT_DATE){
+			if (Validator.isNull(dossier.getSubmitDate())) {
+				dossier.setSubmitDate(new Date());
 			}
 		}
 
@@ -9147,7 +9154,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return oldDossier;
 	}
 
-	private String getDossierMetaKeyDateOption (Dossier dossier, Date dueDate, Date receiveDate, double duration, int dateOption) {
+	private String getDossierMetaKeyDateOption (Dossier dossier, Date dueDate, Date receiveDate, double duration, int dateOption, String dueDatePattern) {
 
 		try {
 			JSONObject metaData = Validator.isNotNull(dossier.getMetaData()) ?
@@ -9158,6 +9165,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			metaData.put(DossierTerm.DATE_OPTION + dateOption, dueDateStr);
 			metaData.put(DossierTerm.DATE_OPTION_RECEIVER + dateOption, receiveDateStr);
 			metaData.put(DossierTerm.DATE_OPTION_DURATION + dateOption, duration);
+			metaData.put(DossierTerm.DUE_DATE_PATTERN, JSONFactoryUtil.createJSONObject(dueDatePattern));
 			_log.info("===============metaData==========" +metaData);
 			return metaData.toJSONString();
 		} catch (Exception e) {
