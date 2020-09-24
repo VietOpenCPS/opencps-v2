@@ -1238,7 +1238,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					}
 				} else {
 					String govAgencyCode = dossier.getGovAgencyCode();
-					_log.info("PAYMENT FILE NOT NULL: govAgencyCode: "+ govAgencyCode);
+					_log.info("PAYMENT FILE NULL: govAgencyCode: "+ govAgencyCode);
 					if (Validator.isNotNull(govAgencyCode)) {
 						PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,govAgencyCode);
 						if (paymentConfig != null) {

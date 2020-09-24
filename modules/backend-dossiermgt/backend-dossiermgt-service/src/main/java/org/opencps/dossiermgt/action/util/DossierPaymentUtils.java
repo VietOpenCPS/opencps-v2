@@ -184,41 +184,32 @@ public class DossierPaymentUtils {
 			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
 
 			if (epaymentConfigJSON.has(PAY_KEYPAY_DOMAIN)) {
+				String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
+						paymentFile.getPaymentFileId(), pattern, dossier);
 
-				try {
-					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
-							paymentFile.getPaymentFileId(), pattern, dossierId);
+				epaymentProfileJSON.put(PAY_KEYPAY_URL, generatorPayURL);
 
-					epaymentProfileJSON.put(PAY_KEYPAY_URL, generatorPayURL);
+				// fill good_code to keypayGoodCode
+				String pattern1 = GOODCODE_EQUAL;
+				String pattern2 = StringPool.AMPERSAND;
 
-					// fill good_code to keypayGoodCode
-					String pattern1 = GOODCODE_EQUAL;
-					String pattern2 = StringPool.AMPERSAND;
+				String regexString = Pattern.quote(pattern1) + ALL_CHARACTER_PATTERN + Pattern.quote(pattern2);
 
-					String regexString = Pattern.quote(pattern1) + ALL_CHARACTER_PATTERN + Pattern.quote(pattern2);
+				Pattern p = Pattern.compile(regexString);
+				Matcher m = p.matcher(generatorPayURL);
 
-					Pattern p = Pattern.compile(regexString);
-					Matcher m = p.matcher(generatorPayURL);
+				if (m.find()) {
+					String goodCode = m.group(1);
 
-					if (m.find()) {
-						String goodCode = m.group(1);
-
-						epaymentProfileJSON.put(PAY_KEYPAY_GOOD_CODE, goodCode);
-					} else {
-						epaymentProfileJSON.put(PAY_KEYPAY_GOOD_CODE, StringPool.BLANK);
-					}
-
-					epaymentProfileJSON.put(PAY_KEYPAY_MERCHANT_CODE, epaymentConfigJSON.get(PAY_MERCHANT_CODE));
-
-					actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
-							serviceContext);
-
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-//					e.printStackTrace();
-					_log.error(e);
+					epaymentProfileJSON.put(PAY_KEYPAY_GOOD_CODE, goodCode);
+				} else {
+					epaymentProfileJSON.put(PAY_KEYPAY_GOOD_CODE, StringPool.BLANK);
 				}
 
+				epaymentProfileJSON.put(PAY_KEYPAY_MERCHANT_CODE, epaymentConfigJSON.get(PAY_MERCHANT_CODE));
+
+				actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
+						serviceContext);
 			}
 
 			System.out.println("==========VTPayTerm.VTP_CONFIG========"+epaymentConfigJSON);

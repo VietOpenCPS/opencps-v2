@@ -1211,11 +1211,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 
-			//Xử lý phiếu thanh toán
-			processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
-
 			//Bước sau không có thì mặc định quay lại bước trước đó
 			if (Validator.isNull(postStepCode)) {
+				//Xử lý phiếu thanh toán
+				processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
+
 				postStepCode = previousAction.getFromStepCode();
 				_log.info("postStepCode: "+postStepCode);
 				ProcessStep backCurStep = processStepLocalService.fetchBySC_GID(postStepCode, groupId,
@@ -1354,8 +1354,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					previousAction, proAction, dossier, actionCode, actionUser, actionNote, payload, assignUsers,
 					paymentFee, serviceProcess, option, flagChanged, dateOption, context);
 
-			//			dossier = dossierLocalService.updateDossier(dossier);
+			_log.info("dossier generate_DossierNo: "+JSONFactoryUtil.looseSerialize(dossier));
 
+			//Xử lý phiếu thanh toán
+			processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
 			//Tạo văn bản đính kèm
 			if (OpenCPSConfigUtil.isDossierDocumentEnable()) {
 				if (!flagDocument) {
@@ -1762,11 +1764,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				govAgencyNameUnsigned = AccentUtils.removeAccent(dossier.getGovAgencyName());
 			}
 			dossierObj.put("govAgencyNameUnsigned", govAgencyNameUnsigned);
-			String strDueDate = null;
+			//dueDate
+			/*String strDueDate = null;
 			if (dossier.getDueDate() != null) {
 				strDueDate = APIDateTimeUtils.convertDateToString(dossier.getDueDate(),
 						APIDateTimeUtils._NORMAL_PARTTERN);
-			}
+			}*/
+			String strDueDate = processDueDate(groupId, dossier.getReceiveDate(),  dossier.getDueDate(), dossier.getProcessNo());
 			dossierObj.put("dueDateNotify", strDueDate != null ? strDueDate : StringPool.BLANK);
 			//Payment
 			PaymentFile payment = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
@@ -2067,6 +2071,108 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 		}
+	}
+
+	private String processDueDate(long groupId, Date receiveDate,  Date dueDate, String processNo) {
+		if (dueDate != null) {
+			ServiceProcess process = ServiceProcessLocalServiceUtil.getByG_PNO(groupId, processNo);
+			if (process != null) {
+				String dueDatePattern = process.getDueDatePattern();
+				if (Validator.isNotNull(dueDatePattern)) {
+					try {
+						JSONObject jsonDueDate = JSONFactoryUtil.createJSONObject(dueDatePattern);
+						//_log.info("jsonDueDate: " + jsonDueDate);
+						if (jsonDueDate != null) {
+							JSONObject hours = jsonDueDate.getJSONObject(DossierDocumentTerm.HOUR);
+							JSONObject processHours = jsonDueDate.getJSONObject(DossierDocumentTerm.PROCESS_HOUR);
+							//_log.info("hours: " + hours);
+							if (hours != null && hours.has(DossierDocumentTerm.AM) && hours.has(DossierDocumentTerm.PM)) {
+								//_log.info("AM-PM: ");
+								Calendar receiveCalendar = Calendar.getInstance();
+								receiveCalendar.setTime(receiveDate);
+
+								Calendar dueCalendar = Calendar.getInstance();
+								//_log.info("hours: " + receiveCalendar.get(Calendar.HOUR_OF_DAY));
+								if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < 12) {
+									dueCalendar.setTime(dueDate);
+
+									String hoursAfterNoon = hours.getString("AM");
+									//_log.info("hoursAfterNoon: " + hoursAfterNoon);
+
+									if (Validator.isNotNull(hoursAfterNoon)) {
+										String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
+										if (splitAfter != null) {
+											dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
+											dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+										}
+									}
+								} else {
+									dueCalendar.setTime(dueDate);
+									String hoursAfterNoon = hours.getString(DossierDocumentTerm.PM);
+									if (Validator.isNotNull(hoursAfterNoon)) {
+										String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
+										if (splitAfter != null) {
+											if (Integer.valueOf(splitAfter[0]) < 12) {
+												dueCalendar.add(Calendar.DAY_OF_MONTH, 1);
+												dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
+												dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+											} else {
+												//dueCalendar.add(Calendar.DAY_OF_MONTH, 1);
+												dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
+												dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+											}
+										}
+									}
+								}
+								return  APIDateTimeUtils.convertDateToString(dueCalendar.getTime(), APIDateTimeUtils._NORMAL_PARTTERN);
+							} else if (processHours != null && processHours.has(DossierDocumentTerm.START_HOUR) && processHours.has(DossierDocumentTerm.DUE_HOUR)) {
+								//_log.info("STRART check new: ");
+								Calendar receiveCalendar = Calendar.getInstance();
+								receiveCalendar.setTime(receiveDate);
+								//
+								String receiveHour = processHours.getString(DossierDocumentTerm.START_HOUR);
+								//_log.info("receiveHour: " + receiveHour);
+
+								if (Validator.isNotNull(receiveHour)) {
+									String[] splitHour = StringUtil.split(receiveHour, StringPool.COLON);
+									if (splitHour != null) {
+										int hourStart = GetterUtil.getInteger(splitHour[0]);
+										if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < hourStart) {
+											String[] splitdueHour = StringUtil.split(processHours.getString(DossierDocumentTerm.DUE_HOUR),
+													StringPool.COLON);
+											Calendar dueCalendar = Calendar.getInstance();
+											if (splitdueHour != null) {
+												dueCalendar.set(Calendar.HOUR_OF_DAY,
+														GetterUtil.getInteger(splitdueHour[0]));
+												dueCalendar.set(Calendar.MINUTE,
+														GetterUtil.getInteger(splitdueHour[1]));
+											} else {
+												return APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN);
+											}
+											return APIDateTimeUtils.convertDateToString(dueCalendar.getTime(), APIDateTimeUtils._NORMAL_PARTTERN);
+										} else {
+											return APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN);
+										}
+									}
+								}
+							} else {
+								return APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN);
+							}
+						} else {
+							return APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN);
+						}
+					} catch (JSONException e) {
+						_log.error(e);
+						return APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN);
+					}
+				} else {
+					return APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN);
+				}
+			} else {
+				return APIDateTimeUtils.convertDateToString(dueDate, APIDateTimeUtils._NORMAL_PARTTERN);
+			}
+		}
+			return StringPool.BLANK;
 	}
 
 	private void updateDossierPayload(Dossier dossier, JSONObject obj) {
@@ -2573,7 +2679,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount,
 						shipAmount, paymentNote, dossier.getOriginality());
 				String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId, paymentFile.getPaymentFileId(),
-						paymentFee, dossier.getDossierId());
+						paymentFee, dossier);
 				JSONObject epaymentProfileJsonNew = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 				epaymentProfileJsonNew.put(KeyPayTerm.KEYPAYURL, generatorPayURL);
 
@@ -2643,8 +2749,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
-			} catch (IOException e) {
-				_log.error(e);
 			} catch (JSONException e) {
 				_log.debug(e);
 			}
@@ -2683,43 +2787,37 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
 
 			if (epaymentConfigJSON.has("paymentKeypayDomain")) {
-				try {
-					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
-							paymentFile.getPaymentFileId(), paymentFee, dossier.getDossierId());
-					epaymentProfileJSON.put(KeyPayTerm.KEYPAYURL, generatorPayURL);
+				String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
+						paymentFile.getPaymentFileId(), paymentFee, dossier);
+				epaymentProfileJSON.put(KeyPayTerm.KEYPAYURL, generatorPayURL);
 
-					String pattern1 = KeyPayTerm.GOOD_CODE_EQ;
-					String pattern2 = StringPool.AMPERSAND;
+				String pattern1 = KeyPayTerm.GOOD_CODE_EQ;
+				String pattern2 = StringPool.AMPERSAND;
 
-					String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
+				String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
 
-					Pattern p = Pattern.compile(regexString);
-					Matcher m = p.matcher(generatorPayURL);
+				Pattern p = Pattern.compile(regexString);
+				Matcher m = p.matcher(generatorPayURL);
 
-					if (m.find()) {
-						String goodCode = m.group(1);
+				if (m.find()) {
+					String goodCode = m.group(1);
 
-						epaymentProfileJSON.put(KeyPayTerm.KEYPAYGOODCODE, goodCode);
-					} else {
-						epaymentProfileJSON.put(KeyPayTerm.KEYPAYGOODCODE, StringPool.BLANK);
-					}
-
-					epaymentProfileJSON.put(KeyPayTerm.KEYPAYMERCHANTCODE,
-							epaymentConfigJSON.get("paymentMerchantCode"));
-					epaymentProfileJSON.put("paymentMerchantSecureKey", epaymentConfigJSON.get("paymentMerchantSecureKey"));
-					epaymentProfileJSON.put("paymentHashAlgorithm", epaymentConfigJSON.get("paymentHashAlgorithm"));
-					epaymentProfileJSON.put(KeyPayTerm.BANK, String.valueOf(true));
-					epaymentProfileJSON.put(KeyPayTerm.PAYGATE, String.valueOf(true));
-					epaymentProfileJSON.put(KeyPayTerm.SERVICEAMOUNT, serviceAmount);
-					epaymentProfileJSON.put(KeyPayTerm.PAYMENTNOTE, paymentNote);
-					epaymentProfileJSON.put(KeyPayTerm.PAYMENTFEE, paymentFee);
-//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-//							epaymentProfileJSON.toJSONString(), context);
-
-				} catch (IOException e) {
-					_log.error(e);
+					epaymentProfileJSON.put(KeyPayTerm.KEYPAYGOODCODE, goodCode);
+				} else {
+					epaymentProfileJSON.put(KeyPayTerm.KEYPAYGOODCODE, StringPool.BLANK);
 				}
 
+				epaymentProfileJSON.put(KeyPayTerm.KEYPAYMERCHANTCODE,
+						epaymentConfigJSON.get("paymentMerchantCode"));
+				epaymentProfileJSON.put("paymentMerchantSecureKey", epaymentConfigJSON.get("paymentMerchantSecureKey"));
+				epaymentProfileJSON.put("paymentHashAlgorithm", epaymentConfigJSON.get("paymentHashAlgorithm"));
+				epaymentProfileJSON.put(KeyPayTerm.BANK, String.valueOf(true));
+				epaymentProfileJSON.put(KeyPayTerm.PAYGATE, String.valueOf(true));
+				epaymentProfileJSON.put(KeyPayTerm.SERVICEAMOUNT, serviceAmount);
+				epaymentProfileJSON.put(KeyPayTerm.PAYMENTNOTE, paymentNote);
+				epaymentProfileJSON.put(KeyPayTerm.PAYMENTFEE, paymentFee);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 			}
 
 			_log.debug("==========VTPayTerm.VTP_CONFIG========" + epaymentConfigJSON);

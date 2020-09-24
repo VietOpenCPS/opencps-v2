@@ -360,9 +360,9 @@ public class OpencpsStatisticRestApplication extends Application {
 					params.put(DossierTerm.DOMAIN_CODE, domain);
 					
 					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
-					long companyId = company.getCompanyId(); 
-					
-					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
+					long companyId = company.getCompanyId();
+
+					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, 29999, new ServiceContext());
 					List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 					List<GetDossierData> dossierData = new ArrayList<>();
 					_log.debug("GET DOSSIER SIZE: " + datas.size());
