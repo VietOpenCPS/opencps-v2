@@ -78,7 +78,7 @@ public class OpenCPSServletFilter extends BaseFilter {
 
 		if (Validator.isNotNull(requestURI)
 				&& (requestURI.contains("/XrdAdapter/RestService/forward/nhanhsdvcqg") || requestURI.contains("/VXPAdapter/RestService/forward/nhanhsdvcqg") || requestURI.contains("nhanhsdvcqg"))) {
-			httpServletRequest.getRequestDispatcher("/o/rest/v2/nps/createdossierfromdvcqg").forward(httpServletRequest,
+			httpServletRequest.getRequestDispatcher("/o/rest/v2/nps/nhanhsdvcqg").forward(httpServletRequest,
 					httpServletResponse);
 		}
 
