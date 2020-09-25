@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.WorkTime;
 import org.opencps.datamgt.service.WorkTimeLocalServiceUtil;
 
@@ -109,17 +110,13 @@ public class BetimeUtils {
 		if(CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
 			
 			String releaseDateTem = DateTimeUtils.convertDateToString(releaseDate, _VN_DATE_TIME_FORMAT);
-			releaseDate = DateTimeUtils.convertStringToDate(releaseDateTem);
-			_log.info("AAAAAAAAAAAAAAAAAA: "+ releaseDate);
+			releaseDate = APIDateTimeUtils.convertStringToDate(releaseDateTem, APIDateTimeUtils._NORMAL_DATE);
 			String dueDateTem = DateTimeUtils.convertDateToString(dueDate, _VN_DATE_TIME_FORMAT);
-			dueDate = DateTimeUtils.convertStringToDate(dueDateTem);
-			_log.info("AAAAAAAAAAAAAAAAAA: "+ dueDate);
+			dueDate = APIDateTimeUtils.convertStringToDate(dueDateTem, APIDateTimeUtils._NORMAL_DATE);
 			DateFormat dateFormat =
 					DateFormatFactoryUtil.getSimpleDateFormat(_VN_DATE_TIME_FORMAT);
 			String betimeDateTem = dateFormat.format(betimeDate);
-			betimeDate = DateTimeUtils.convertStringToDate(betimeDateTem);
-			_log.info("AAAAAAAAAAAAAAAAAA: "+ betimeDate);
-			
+			betimeDate = APIDateTimeUtils.convertStringToDate(betimeDateTem, APIDateTimeUtils._NORMAL_DATE);			
 		}
 		if (releaseDate.before(betimeDate)) {
 			return 3;
