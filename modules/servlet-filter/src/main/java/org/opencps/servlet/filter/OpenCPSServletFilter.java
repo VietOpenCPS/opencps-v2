@@ -51,6 +51,7 @@ import org.osgi.service.component.annotations.Component;
 		"servlet-context-name=", "servlet-filter-name=Blade Servlet Filter",
 		"url-pattern=/web/guest/XrdAdapter/RestService/forward/*",
 		"url-pattern=/web/guest/VXPAdapter/RestService/forward/*",
+		"url-pattern=/web/guest/nhanhsdvcqg",
 		"url-pattern=/web/guest/addtthcKhuyenMai",
 		"url-pattern=/web/guest/search/call",
 		"url-pattern=/web/guest/downloadfile/*"
@@ -71,6 +72,12 @@ public class OpenCPSServletFilter extends BaseFilter {
 		String requestURI = httpServletRequest.getRequestURI();
 		if (Validator.isNotNull(requestURI)
 				&& (requestURI.contains("/XrdAdapter/RestService/forward/addtthcKhuyenMai") || requestURI.contains("/VXPAdapter/RestService/forward/addtthcKhuyenMai") || requestURI.contains("addtthcKhuyenMai"))) {
+			httpServletRequest.getRequestDispatcher("/o/rest/v2/nps/createdossierfromdvcqg").forward(httpServletRequest,
+					httpServletResponse);
+		}
+
+		if (Validator.isNotNull(requestURI)
+				&& (requestURI.contains("/XrdAdapter/RestService/forward/nhanhsdvcqg") || requestURI.contains("/VXPAdapter/RestService/forward/nhanhsdvcqg") || requestURI.contains("nhanhsdvcqg"))) {
 			httpServletRequest.getRequestDispatcher("/o/rest/v2/nps/createdossierfromdvcqg").forward(httpServletRequest,
 					httpServletResponse);
 		}
