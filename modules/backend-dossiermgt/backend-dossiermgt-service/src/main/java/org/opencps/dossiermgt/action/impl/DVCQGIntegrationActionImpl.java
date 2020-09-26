@@ -3401,7 +3401,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			if (serverConfig == null) {
 				_log.error("HSKMBS result: " + "Not found server config width protocal: DVCQG_INTEGRATION");
-				return createResponseMessage(result, -1, "Not found server config width protocal: DVCQG_INTEGRATION");
+				return createResponseMessage(result, -1, "Not found server config with protocol: DVCQG_INTEGRATION");
 			}
 
 			if (data == null) {
@@ -3590,18 +3590,17 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					_log.info("HSKMBS data: " + data.toJSONString());
 					_log.info("HSKMBS result: " + "Not found server config width protocal: DVCQG_TTKM|" + MaHoSo);
 					return createResponseMessage(result, -1,
-							MaHoSo + "| Not found server config width protocal: DVCQG_TTKM");
+							MaHoSo + "| Not found server config with protocol: DVCQG_TTKM");
 				}
 
 				user = UserLocalServiceUtil.getUser(applicant.getMappingUserId());
-
-				JSONArray listServiceCodeMapping = JSONFactoryUtil.createJSONArray(serverConfig.getConfigs());
-
-				if(Validator.isNull(listServiceCodeMapping) && listServiceCodeMapping.length() == 0) {
+				JSONObject configTTKM = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+				JSONArray listServiceCodeMapping = configTTKM.getJSONArray("configTBKM");
+				if(Validator.isNull(listServiceCodeMapping) || listServiceCodeMapping.length() == 0) {
 					_log.info("HSKMBS data: " + data.toJSONString());
-					_log.info("HSKMBS result: " + "Not found listServiceCodeMapping width protocal: DVCQG_TTKM|" + MaHoSo);
+					_log.info("HSKMBS result: " + "Not found configTBKM width protocal: DVCQG_TTKM|" + MaHoSo);
 					return createResponseMessage(result, -1,
-							MaHoSo + "| Not found server config width protocal: DVCQG_TTKM");
+							MaHoSo + "| Not found server config with protocol: DVCQG_TTKM");
 				}
 
 				int lengthArr = listServiceCodeMapping.length();
@@ -3745,7 +3744,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, processAction, actionCode,
 						applicant.getApplicantName(), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 						StringPool.BLANK, actConfig.getSyncType(), serviceContext, errorModel);
-				_log.info("HSKMBS result: " + "create dossier error|" + MaHoSo);
+				_log.info("HSKMBS result: " + "create dossier success|" + MaHoSo);
 				return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
 
 			} catch (Exception e) {
