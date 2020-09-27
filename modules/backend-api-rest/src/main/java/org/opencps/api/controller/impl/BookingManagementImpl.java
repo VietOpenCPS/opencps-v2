@@ -378,8 +378,8 @@ public class BookingManagementImpl implements BookingManagement{
 													timeBook += bookingOnlineBreek;
 													timeBookWaitting = timeBook - bookingOnlineWaiting;
 												} else if (timeBook - timeCurrentBooking < bookingOnlineWaiting && timeBook - timeCurrentBooking >= 0) {
-													timeBook += bookingOnlineWaiting;
 													timeBookWaitting = timeBook;
+													timeBook += bookingOnlineWaiting;
 												} else {
 													// timeCurrentBooking > timeBook
 													int timeCeilCurrent = (int) (Math.ceil((double)timeCurrentBooking / 5) * 5);

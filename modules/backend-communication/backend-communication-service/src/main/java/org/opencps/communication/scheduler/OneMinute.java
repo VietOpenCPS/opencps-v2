@@ -117,16 +117,16 @@ public class OneMinute extends BaseMessageListener {
 								serviceContext);
 						_log.debug("messageEntry: "+messageEntry);
 
-						if (flagJobMail && notificationtemplate.getSendEmail()) {
-							_log.info("SEND EMAIL ......");
+						if (flagJobMail) {
 							//Process send SMS
 							Result resultSendSMS = new Result("Success", new Long(1));
 							if(messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())){
 
 								if ("BCT".contentEquals(agencySMS)) {
+									_log.info("dossierNo: "+ messageEntry.getDossierNo());
 									String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(),
 											notificationQueue.getClassPK(), messageEntry.getTextMessage(),
-											messageEntry.getEmailSubject(), messageEntry.getToTelNo());
+											messageEntry.getEmailSubject(), messageEntry.getToTelNo(), messageEntry.getDossierNo());
 									JSONObject jsonMsg = JSONFactoryUtil.createJSONObject(rsMsg);
 									if (jsonMsg != null && "Success".equalsIgnoreCase(jsonMsg.getString("message"))) {
 										resultSendSMS.setMessage("Success");
@@ -151,16 +151,20 @@ public class OneMinute extends BaseMessageListener {
 							 * If Send SMS error, continue until expiredDate 
 							 * */
 							_log.debug("resultSendSMS: "+JSONFactoryUtil.looseSerialize(resultSendSMS));
-							Calendar cal = Calendar.getInstance();
-							cal.setTime(notificationQueue.getCreateDate());
-							cal.add(Calendar.SECOND, 30);
-							notificationQueue.setExpireDate(cal.getTime());
-							notificationQueue.setModifiedDate(cal.getTime());
-							NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
+							if (notificationtemplate.getSendEmail()) {
+								Calendar cal = Calendar.getInstance();
+								cal.setTime(notificationQueue.getCreateDate());
+								cal.add(Calendar.SECOND, 30);
+								notificationQueue.setExpireDate(cal.getTime());
+								notificationQueue.setModifiedDate(cal.getTime());
+								NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
+							} else {
+								NotificationQueueBusinessFactoryUtil
+										.delete(notificationQueue.getNotificationQueueId(), serviceContext);
+							}
 						} else {
-							_log.info("SEND EMAIL LGSP ......");
+
 							if (isSendLGSP) {
-								_log.info("iS SEND EMAIL LGSP ......");
 								// Process send SMS
 								Result resultSendSMS = new Result("Success", new Long(1));
 								if (messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())) {
@@ -202,7 +206,6 @@ public class OneMinute extends BaseMessageListener {
 									NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
 								}
 							} else {
-								_log.info("SEND EMAIL NOT LGSP ......");
 								// Process send SMS
 								Result resultSendSMS = new Result("Success", new Long(1));
 								if (messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())) {
@@ -222,7 +225,7 @@ public class OneMinute extends BaseMessageListener {
 									if ("BCT".contentEquals(agencySMS)) {
 										String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(),
 												notificationQueue.getClassPK(), messageEntry.getTextMessage(),
-												messageEntry.getEmailSubject(), messageEntry.getToTelNo());
+												messageEntry.getEmailSubject(), messageEntry.getToTelNo(), messageEntry.getDossierNo());
 										JSONObject jsonMsg = JSONFactoryUtil.createJSONObject(rsMsg);
 										if (jsonMsg != null
 												&& "Success".equalsIgnoreCase(jsonMsg.getString("message"))) {

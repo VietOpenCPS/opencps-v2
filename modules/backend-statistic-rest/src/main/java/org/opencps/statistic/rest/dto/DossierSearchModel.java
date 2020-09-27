@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 		"toSubmitDate", "online", "domain", "domainName", "applicantName", "applicantIdNo", "serviceName",
 		"fromReleaseDate", "toReleaseDate", "originality", "fromFinishDate", "toFinishDate", "fromReceiveNotDoneDate",
 		"toReceiveNotDoneDate", "fromStatisticDate", "toStatisticDate", "origin", "originDossierId", "time",
-		"groupAgencyCode", "reporting", "reCalculate", "system", "groupCode", "parentAgency", "collectionCode", "parentCode"})
+		"groupAgencyCode", "reporting", "reCalculate", "system", "groupCode", "parentAgency", "serviceLevel"})
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
 
@@ -123,11 +123,9 @@ public class DossierSearchModel {
 	protected String groupCode;
 	@QueryParam(value = "parentAgency")
 	protected String parentAgency;
-	@QueryParam(value = "collectionCode")
-	protected String collectionCode;
-	@QueryParam(value = "parentCode")
-	protected String parentCode;
-	
+	@QueryParam(value = "serviceLevel")
+	protected String serviceLevel;
+
 	public String getGroupCode() {
 		return groupCode;
 	}
@@ -404,18 +402,11 @@ public class DossierSearchModel {
 	public void setSystem(String system) {
 		this.system = system;
 	}
-	public String getCollectionCode() {
-		return collectionCode;
+	public String getServiceLevel() {
+		return serviceLevel;
 	}
-	public void setCollectionCode(String collectionCode) {
-		this.collectionCode = collectionCode;
+	public void setServiceLevel(String serviceLevel) {
+		this.serviceLevel = serviceLevel;
 	}
-	public String getParentCode() {
-		return parentCode;
-	}
-	public void setParentCode(String parentCode) {
-		this.parentCode = parentCode;
-	}
-	
 
 }
