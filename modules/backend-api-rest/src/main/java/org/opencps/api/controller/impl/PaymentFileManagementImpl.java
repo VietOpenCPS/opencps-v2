@@ -837,7 +837,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				if (result != null){
 					result.setAddress(dossier.getAddress() + ", " + dossier.getWardName() +
 							", " + dossier.getDistrictName() + ", " + dossier.getCityName());
-					result.setOrderId(dossier.getDossierNo() + "_01");
+					result.setOrderId(dossier.getDossierNo() + "-01");
 				}
 			}
 

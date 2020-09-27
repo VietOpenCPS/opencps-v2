@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
@@ -40,6 +41,20 @@ public class DossierFileUtils {
 			}
 		}
 		return inputStream;
+	}
+
+	public static File urlDownloadToFile(String url) throws Exception{
+		InputStream inputStream = null;
+		try {
+			inputStream = new URL(url).openStream();
+			return FileUtil.createTempFile(inputStream);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		} finally {
+			if (inputStream != null) {
+				inputStream.close();
+			}
+		}
 	}
 
 	public static File base64ToFile(String fileName, String base64) throws IOException {

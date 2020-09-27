@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import com.liferay.portal.kernel.util.Validator;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DVCQGIManagement;
 import org.opencps.api.controller.util.MessageUtil;
@@ -317,6 +318,40 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		
 		try {
 			JSONObject result = actionImpl.doCreateDossierFromDVCQG(company, user, groupId, serviceContext, JSONFactoryUtil.createJSONObject(body));
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("request body incorrect").build();
+		}
+	}
+
+	@Override
+	public Response doCreateDossierSuaDoiBoSungFromDVCQG(HttpServletRequest request, HttpServletResponse response,
+											 HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		serviceContext.setScopeGroupId(groupId);
+
+		serviceContext.setCompanyId(company.getCompanyId());
+
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+
+		_log.debug("doCreateDossierFromDVCQG API " + body);
+
+		try {
+			JSONObject bodyFull = JSONFactoryUtil.createJSONObject(body);
+			if(Validator.isNull(bodyFull)) {
+				throw new Exception("Body is empty");
+			}
+
+			JSONObject data = bodyFull.getJSONObject("data");
+			if(Validator.isNull(data)) {
+				throw new Exception("Data is empty");
+			}
+
+			boolean isUpdating = bodyFull.getBoolean("isUpdating");
+			JSONObject result = actionImpl.doCreateDossierSuaDoiBoSungFromDVCQG(company, user, groupId, serviceContext, data, isUpdating);
+
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
