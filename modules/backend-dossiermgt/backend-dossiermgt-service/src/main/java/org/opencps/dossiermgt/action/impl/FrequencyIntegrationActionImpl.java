@@ -243,10 +243,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     @Override
     public List<ProfileReceiver> getDossiers(String token) throws Exception {
         try{
-            String urlGetDossiers = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
-                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_LIST_DOSSIERS) + "?unit_code=" +
-                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE);
-//            String urlGetDossiers = "http://localhost:8080/o/rest/v2/hshc/dossiers";
+//            String urlGetDossiers = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_LIST_DOSSIERS) + "?unit_code=" +
+//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE);
+            String urlGetDossiers = "http://localhost:8080/o/rest/v2/hshc/dossiers";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -273,10 +273,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     @Override
     public ProfileInModel getDetailDossier(String token, Integer profileId) throws Exception {
         try{
-            String urlGetDetailDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
-                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_DETAIL_DOSSIERS) + "?unit_code=" +
-                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE) + "&profile_id=" + profileId;
-//            String urlGetDetailDossier = "http://localhost:8080/o/rest/v2/hshc/dossier";
+//            String urlGetDetailDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_DETAIL_DOSSIERS) + "?unit_code=" +
+//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE) + "&profile_id=" + profileId;
+            String urlGetDetailDossier = "http://localhost:8080/o/rest/v2/hshc/dossier";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -327,10 +327,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     public void syncDossierToLGSP(String token, ProfileInModel profile) throws Exception {
         try {
             long groupId = serverConfig.getGroupId();
-            String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
-                    this.configJson.get(FrequencyOfficeConstants.CONFIG_SYNC_DOSSIER);
+//            String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_SYNC_DOSSIER);
 
-//            String urlSyncDossier = "http://localhost:8080/o/rest/v2/hshc/synDossierFake";
+            String urlSyncDossier = "http://localhost:8080/o/rest/v2/hshc/synDossierFake";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -342,7 +342,21 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             if(Validator.isNull(dossier.getDossierNo()) || dossier.getDossierNo().isEmpty()) {
                 throw new Exception("DossierNo is null with referenceId = " + profile.getRef_code());
             }
+
+            if(profile.getStatus().equals(FrequencyOfficeConstants.STATUS_DENIED)) {
+                if(Validator.isNull(profile.getProcess_officials()) || profile.getProcess_officials().isEmpty()) {
+                    profile.setProcess_officials("Not found");
+                }
+
+                if(Validator.isNull(profile.getTime_of_process()) || profile.getTime_of_process().isEmpty()) {
+                    profile.setTime_of_process(getCurrentDateStr("yyyy-MM-dd HH:mm:ss", new Date()));
+                }
+            }
+
             profile.setSource_id(dossier.getDossierNo());
+            profile.setType("profile");
+            profile.setFrom_unit_code(this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
+            profile.setTo_unit_code(new String[] {this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)});
             JSONObject response = apiService.callApi(urlSyncDossier, headers, profile);
             _log.info("Result syn dossier: " + response);
 
@@ -384,9 +398,9 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             body.put(FrequencyOfficeConstants.REF_CODE, dossier.getReferenceUid());
             body.put(FrequencyOfficeConstants.STATUS_PROFILE, statusProfile);
             body.put(FrequencyOfficeConstants.PROCESS_OFFICIALS, "Admin");
-            body.put(FrequencyOfficeConstants.TIME_OF_PROCESS, getCurrentDateStr("yyyy-MM-dd", new Date()));
-            body.put(FrequencyOfficeConstants.FROM_UNIT_CODE, this.configJson.get(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
-            body.put(FrequencyOfficeConstants.TO_UNIT_CODE, this.configJson.get(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE));
+            body.put(FrequencyOfficeConstants.TIME_OF_PROCESS, getCurrentDateStr("yyyy-MM-dd HH:mm:ss", new Date()));
+            body.put(FrequencyOfficeConstants.FROM_UNIT_CODE, this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
+            body.put(FrequencyOfficeConstants.TO_UNIT_CODE, this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE));
 
             JSONObject response = apiService.callApi(urlSyncDossier, headers, body);
             _log.info("Result send dossier status: " + response);

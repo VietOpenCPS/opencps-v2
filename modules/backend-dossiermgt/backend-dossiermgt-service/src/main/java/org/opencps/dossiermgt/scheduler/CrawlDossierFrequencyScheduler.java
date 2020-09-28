@@ -79,7 +79,7 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
             String token = integrationAction.getToken();
             List<ProfileReceiver> listDossier = integrationAction.getDossiers(token);
             System.out.println(1111);
-            integrationAction.crawlDossierLGSP(null);
+//            integrationAction.crawlDossierLGSP(null);
 
             _log.info("End crawl dossier frequency!!!");
         } catch (Exception e){

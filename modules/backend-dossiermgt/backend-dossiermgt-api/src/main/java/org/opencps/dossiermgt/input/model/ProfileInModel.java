@@ -60,6 +60,26 @@ public class ProfileInModel {
 
     public String status_profile;
 
+    public String process_officials;
+
+    public String time_of_process;
+
+    public String getTime_of_process() {
+        return time_of_process;
+    }
+
+    public void setTime_of_process(String time_of_process) {
+        this.time_of_process = time_of_process;
+    }
+
+    public String getProcess_officials() {
+        return process_officials;
+    }
+
+    public void setProcess_officials(String process_officials) {
+        this.process_officials = process_officials;
+    }
+
     public String getStatus() {
         return status;
     }

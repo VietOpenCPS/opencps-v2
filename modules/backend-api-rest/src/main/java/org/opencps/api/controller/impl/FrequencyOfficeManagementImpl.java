@@ -59,17 +59,27 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
 
             for(ProfileReceiver oneDossier : listDossiers) {
                 if(Validator.isNotNull(oneDossier.getStatus())) {
+                    _log.info("Handling dossier: " + oneDossier.getProfileId());
+                    //todo remove this block code
+//                    if(true) {
+//                        continue;
+//                    }
+                    //////
+
                     ProfileInModel profile = integrationAction.getDetailDossier(token, oneDossier.getProfileId());
                     if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
-                        _log.info("Handling dossier: " + profile);
                         result = integrationAction.crawlDossierLGSP(profile);
-                        if(result) {
-                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
-                        } else {
-                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
-                        }
+                        //todo uncomment this block
+//                        if(result) {
+//                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
+//                        } else {
+//                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
+//                        }
+                        /////
                         //Sync dossier when update dossier
-                        if(!profile.getStatus().equals(FrequencyOfficeConstants.STATUS_RECEIVE) && result) {
+                        if(!profile.getStatus().equals(FrequencyOfficeConstants.STATUS_RECEIVE)
+//                               todo uncomment this: && result
+                        ) {
                             integrationAction.syncDossierToLGSP(token, profile);
                         }
                     }
@@ -96,7 +106,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
                     "            \"fromUnitCode\": \"000.00.00.G14\",\n" +
                     "            \"toUnitCode\": \"000.00.25.G14\",\n" +
                     "            \"createTime\": \"2020-06-20T01:08:52.000+0000\",\n" +
-                    "            \"status\": \"TIEPNHAN\",\n" +
+                    "            \"status\": \"CAPNHAT\",\n" +
                     "            \"status_profile\": \"5\"\n" +
                     "        }\n" +
                     "    ]\n" +
@@ -118,7 +128,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
                     "    \"errorCode\": \"0\",\n" +
                     "    \"errorDesc\": \"\",\n" +
                     "    \"profileInmodel\": {\n" +
-                    "        \"status\": \"TIEPNHAN\",\n" +
+                    "        \"status\": \"CAPNHAT\",\n" +
                     "        \"source_id\": \"HS_0154\",\n" +
                     "        \"ref_code\": \"TC_HS_00223\",\n" +
                     "        \"procedures_code\": \"TT_HS_1_00443\",\n" +
@@ -211,7 +221,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
     }
 
     @Override
-    public Response synDossierFake(Object profile) {
+    public Response synDossierFake(String profile) {
         try {
             _log.info(11111);
             _log.info(profile);
