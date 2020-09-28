@@ -165,6 +165,23 @@ public class PayGateTerm {
 	public static final String PAYMENTPLATFORM_DVCQG_GET_RECEIPT_ENDPOINT = "paymentplatform_dvcgq_get_receipt_endpoint";
 	public static final String PAYMENTPLATFORM_DVCQG_GET_BILL_ENDPOINT = "paymentplatform_dvcqg_get_bill_endpoint";
 
+	public static final String SUCCESSFUL = "SUCCESSFUL";
+	public static final String FAILED = "FAILED";
+	public static final String SIGNATURE_WRONG = "SIGNATURE_WRONG";
+	//config paygov
+	public static final String PAYGOV_AMOUNT = "amount";
+	public static final String PAYGOV_ORDER_ID = "orderId";
+	public static final String PAYGOV_ORDER_INFO = "orderInfo";
+	public static final String PAYGOV_REQUEST_CODE = "requestCode";
+	public static final String PAYGOV_TRANSACTION_NO = "transactionNo";
+	public static final String PAYGOV_PAY_DATE = "payDate";
+	public static final String PAYGOV_PAY_GATE = "paygate";
+	public static final String PAYGOV_ERROR_CODE = "errorCode";
+	public static final String PAYGOV_TYPE = "type";
+	public static final String PAYGOV_TRANSACTION_CODE = "transactionCode";
+	public static final String PAYGOV_CHECKSUM = "checksum";
+
+
 	public static String buildPathDoAction(String path, String dossierId) {
 
 		return path + "/o/rest/v2/dossiers/" + dossierId + "/actions";

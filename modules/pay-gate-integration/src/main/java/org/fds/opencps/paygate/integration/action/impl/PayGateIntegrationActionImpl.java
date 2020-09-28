@@ -1700,6 +1700,55 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		}
 	}
 
+	@Override
+	public JSONObject ppConfirmTransactionPaygov(User user, ServiceContext serviceContext, String body) {
+		try {
+			_log.info("=======body========" + body);
+			JSONObject data = JSONFactoryUtil.createJSONObject(body);
+
+			if(Validator.isNull(data)) {
+				throw new Exception("Body null");
+			}
+
+			String amount = data.getString(PayGateTerm.PAYGOV_AMOUNT);
+			String orderId = data.getString(PayGateTerm.PAYGOV_ORDER_ID);
+			String orderInfo = data.getString(PayGateTerm.PAYGOV_ORDER_INFO);
+			String requestCode = data.getString(PayGateTerm.PAYGOV_REQUEST_CODE);
+			String transactionNo = data.getString(PayGateTerm.PAYGOV_TRANSACTION_NO);
+			String payDate = data.getString(PayGateTerm.PAYGOV_PAY_DATE);
+			String paygate = data.getString(PayGateTerm.PAYGOV_PAY_GATE);
+			String errorCode = data.getString(PayGateTerm.PAYGOV_ERROR_CODE);
+			String type = data.getString(PayGateTerm.PAYGOV_TYPE);
+			String transactionCode = data.getString(PayGateTerm.PAYGOV_TRANSACTION_CODE);
+			String checksum = data.getString(PayGateTerm.PAYGOV_CHECKSUM);
+
+
+			String dossierNo = orderId.substring(orderId.length() - 3); //remove -01
+			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
+
+			if(Validator.isNull(dossier)) {
+				throw new Exception("No dossier found with dossierNo: " + dossierNo);
+			}
+
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
+			if(Validator.isNull(paymentFile)) {
+				throw new Exception("No payment file found with dossierNo: " + dossierNo);
+			}
+
+			boolean doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, data, serviceContext);
+
+			if (doAction) {
+				return PayGateUtil.createResponseToPaygov(PayGateTerm.SUCCESSFUL, "Confirm transaction");
+			} else {
+				throw new Exception("Do action error with: " + dossierNo);
+			}
+
+		} catch (Exception e) {
+			_log.error(e.getMessage());
+			return PayGateUtil.createResponseToPaygov(PayGateTerm.FAILED, e.getMessage());
+		}
+	}
+
 	private boolean doActionPP(User user, long groupId, Dossier dossier, PaymentFile paymentFile, JSONObject confirmPayload,
 			ServiceContext serviceContext) {
 

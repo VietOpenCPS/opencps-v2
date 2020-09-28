@@ -294,6 +294,21 @@ public class PayGateIntegrationApplication extends Application {
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
 
+	@POST
+	@Path("/paygov/dpnhankqthanhtoanhs")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response ppConfirmTransactionPayGov(@Context HttpServletRequest request, @Context HttpServletResponse response,
+										 @Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+										 @Context ServiceContext serviceContext, String body) {
+
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = actionImpl.ppConfirmTransactionPaygov(user, serviceContext, body);
+
+		return Response.status(200).entity(result.toJSONString()).build();
+	}
+
 	/**
 	 * Gets the receipt.
 	 *
