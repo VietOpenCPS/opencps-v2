@@ -1722,8 +1722,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			String transactionCode = data.getString(PayGateTerm.PAYGOV_TRANSACTION_CODE);
 			String checksum = data.getString(PayGateTerm.PAYGOV_CHECKSUM);
 
-
-			String dossierNo = orderId.substring(orderId.length() - 3); //remove -01
+			String dossierNo = orderId.substring(0, orderId.length()- 3); //remove -01
 			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
 
 			if(Validator.isNull(dossier)) {
@@ -1734,6 +1733,9 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			if(Validator.isNull(paymentFile)) {
 				throw new Exception("No payment file found with dossierNo: " + dossierNo);
 			}
+
+			paymentFile.setInvoicePayload(body);
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 
 			boolean doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, data, serviceContext);
 
