@@ -272,11 +272,13 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             }
 
             String orderNumber = data.getString(ViettelPostTerm.ORDER_NUMBER);
+            _log.info("vnPostalStatus :" + dossierObj.getLong(DossierTerm.VNPOSTAL_STATUS));
+            String vnPostalStatus = String.valueOf(dossierObj.getLong(DossierTerm.VNPOSTAL_STATUS));
 
             PostConnectLocalServiceUtil.createOrUpdatePostConnect(
                     dossierObj.getLong(Field.GROUP_ID), dossierObj.getLong(DossierTerm.USER_ID),
                     dossierObj.getLong(DossierTerm.DOSSIER_ID),
-                    ViettelPostTerm.VIETTEL_POST, ViettelPostTerm.RECEIVE_DOSSIER,
+                    ViettelPostTerm.VIETTEL_POST, "1".equals(vnPostalStatus) ? ViettelPostTerm.SEND_DOSSIER :ViettelPostTerm.RECEIVE_DOSSIER,
                     orderNumber, ViettelPostTerm.FIRST_TIME_CREATE, "",
                     PublishQueueTerm.STATE_NOT_SYNC, 0
             );
@@ -290,10 +292,16 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
         try {
             String senderDistrict  = this.configJson.getString(ViettelPostTerm.SENDER_DISTRICT_CONFIG);
             String senderProvince  = this.configJson.getString(ViettelPostTerm.SENDER_PROVINCE_CONFIG);
-            String receiveDistrict  = Validator.isNotNull(dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE))
-                    ? dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE) : "0" ;
-            String receiveProvince  = Validator.isNotNull(dossierObj.getString(DossierTerm.POSTAL_CITY_CODE))
-                    ? dossierObj.getString(DossierTerm.POSTAL_CITY_CODE) : "0" ;
+//            String receiveDistrict  = Validator.isNotNull(dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE))
+//                    ? dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE) : "0" ;
+//            String receiveProvince  = Validator.isNotNull(dossierObj.getString(DossierTerm.POSTAL_CITY_CODE))
+//                    ? dossierObj.getString(DossierTerm.POSTAL_CITY_CODE) : "0" ;
+            String vnPostalProfile = dossierObj.getString(DossierTerm.VNPOSTAL_PROFILE);
+            JSONObject profileSenderJson = JSONFactoryUtil.createJSONObject(vnPostalProfile);
+            String receiveDistrict =  Validator.isNotNull(profileSenderJson.getString(DossierTerm.POSTAL_DISTRICT_CODE))?
+                    profileSenderJson.getString(DossierTerm.POSTAL_DISTRICT_CODE): "0";
+            String receiveProvince = Validator.isNotNull(profileSenderJson.getString(DossierTerm.POSTAL_CITY_CODE))?
+                    profileSenderJson.getString(DossierTerm.POSTAL_CITY_CODE): "0";
 
 
             Integer receiveDistrictInt = 0;

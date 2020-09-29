@@ -118,6 +118,7 @@ public class OneMinute extends BaseMessageListener {
 						_log.debug("messageEntry: "+messageEntry);
 
 						if (flagJobMail) {
+							_log.debug("Vao flag " + flagJobMail);
 							//Process send SMS
 							Result resultSendSMS = new Result("Success", new Long(1));
 							if(messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())){
@@ -163,7 +164,7 @@ public class OneMinute extends BaseMessageListener {
 										.delete(notificationQueue.getNotificationQueueId(), serviceContext);
 							}
 						} else {
-
+							_log.debug("Vao isSendLGSP " + isSendLGSP);
 							if (isSendLGSP) {
 								// Process send SMS
 								Result resultSendSMS = new Result("Success", new Long(1));
@@ -244,6 +245,7 @@ public class OneMinute extends BaseMessageListener {
 								if (messageEntry.isSendEmail()) {
 									_log.info("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
 									MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK, serviceContext);
+									resultSendSMS.setResult(1L);
 								}
 								if (messageEntry.isSendNotify() || messageEntry.isSendZalo()) {
 									_log.debug("messageEntry.isSendNotify(): " + messageEntry.isSendNotify());
@@ -255,12 +257,13 @@ public class OneMinute extends BaseMessageListener {
 								 * 
 								 * If Send SMS error, continue until expiredDate
 								 */
-								_log.debug("resultSendSMS: " + JSONFactoryUtil.looseSerialize(resultSendSMS));
 								if (resultSendSMS.getResult() > 0) {
+									_log.debug("resultSendSMS: " + JSONFactoryUtil.looseSerialize(resultSendSMS));
 									NotificationQueueBusinessFactoryUtil
 											.delete(notificationQueue.getNotificationQueueId(), serviceContext);
+									_log.debug("ID noti " + notificationQueue.getNotificationQueueId());
 								} else {
-
+									_log.debug("STOP MAIL: " );
 									// hot fix: stop send noti (spam mail)
 									notificationQueue.setExpireDate(notificationQueue.getCreateDate());
 									NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);

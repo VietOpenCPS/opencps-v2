@@ -971,6 +971,20 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 				JSONObject deliverable = deliverables.getJSONObject(i);
 				JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
+				String gioitinh = formData.getString(DeliverableTerm.GIOI_TINH_TEXT);
+				if(Validator.isNotNull(gioitinh)){
+					_log.info("Gioi tinh :" + gioitinh);
+				}
+				if(gioitinh.contains(DeliverableTerm.GIOI_TINH_NAM)){
+					_log.info("NAM ......");
+					formData.put(DeliverableTerm.GIOI_TINH, 0);
+				}else if(gioitinh.contains(DeliverableTerm.GIOI_TINH_NU)){
+					_log.info("NU ......");
+					formData.put(DeliverableTerm.GIOI_TINH, 1);
+				}else{
+					_log.info("KO ......");
+					formData.put(DeliverableTerm.GIOI_TINH, 2);
+				}
 				
 				DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableTypeCode);				
 				if (deliverable.has(DeliverableTerm.CMND)) {
