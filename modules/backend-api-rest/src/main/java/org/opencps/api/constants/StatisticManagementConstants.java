@@ -12,6 +12,7 @@ public class StatisticManagementConstants {
 	public static final String DELAY = "statistic.message.delay";
 	public static final String OVERDUE = "statistic.message.overdue";
 	public static final String COMING = "statistic.message.coming";
+	public static final String OVER_TIME = "statistic.message.overtime";
 	
 	public static final String CONTENT = "content";
 	public static final String REPORT = "report";

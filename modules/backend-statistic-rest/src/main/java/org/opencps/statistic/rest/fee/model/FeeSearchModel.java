@@ -67,7 +67,11 @@ import javax.xml.bind.annotation.XmlType;
     "toDueDate",
     "fromStatisticDate",
     "toStatisticDate",
-    "paymentMethod"
+    "fromApprovedDate",
+    "toApprovedDate",
+    "paymentMethod",
+    "domainCode",
+    "serviceCode"
 })
 @XmlRootElement(name = "FeeSearchModel")
 public class FeeSearchModel {
@@ -106,8 +110,32 @@ public class FeeSearchModel {
     protected String fromStatisticDate;
 	@QueryParam(value="toStatisticDate")
     protected String toStatisticDate;
+    @QueryParam(value="fromApprovedDate")
+    protected String fromApprovedDate;
+    @QueryParam(value="toApprovedDate")
+    protected String toApprovedDate;
 	@QueryParam(value="paymentMethod")
     protected String paymentMethod;
+    @QueryParam(value="domainCode")
+    protected String domainCode;
+    @QueryParam(value="serviceCode")
+    protected String serviceCode;
+
+    public String getDomainCode() {
+        return domainCode;
+    }
+
+    public void setDomainCode(String domainCode) {
+        this.domainCode = domainCode;
+    }
+
+    public String getServiceCode() {
+        return serviceCode;
+    }
+
+    public void setServiceCode(String serviceCode) {
+        this.serviceCode = serviceCode;
+    }
 
     /**
      * Gets the value of the keyword property.
@@ -522,6 +550,20 @@ public class FeeSearchModel {
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
-    
 
+    public String getFromApprovedDate() {
+        return fromApprovedDate;
+    }
+
+    public void setFromApprovedDate(String fromApprovedDate) {
+        this.fromApprovedDate = fromApprovedDate;
+    }
+
+    public String getToApprovedDate() {
+        return toApprovedDate;
+    }
+
+    public void setToApprovedDate(String toApprovedDate) {
+        this.toApprovedDate = toApprovedDate;
+    }
 }

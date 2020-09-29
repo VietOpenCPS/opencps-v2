@@ -495,7 +495,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
 							properties, params, action.getString(PayGateTerm.USERNAME),
 							action.getString(PayGateTerm.SECRECT_PD));
-					_log.info("=====resPostDossier=========" + resPostDossier);
+//					params.put(PayGateTerm.PAZZWD, action.getString(PayGateTerm.PAZZWD));
+//					_log.info("========ORDER_ID======" + params.get(PayGateTerm.ORDER_ID));
+//					JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
+//							properties, params, action.getString(PayGateTerm.USERNAME),
+//							action.getString(PayGateTerm.PAZZWD));
+//					_log.info("=====resPostDossier=========" + resPostDossier);
 
 				} else {
 					// TODO: call api doaction to MC

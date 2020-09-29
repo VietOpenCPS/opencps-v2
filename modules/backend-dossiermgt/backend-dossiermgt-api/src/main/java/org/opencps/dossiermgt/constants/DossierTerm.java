@@ -245,6 +245,8 @@ public class DossierTerm {
 	//
 	public static final String FROM_STATISTIC_DATE = "fromStatisticDate";
 	public static final String TO_STATISTIC_DATE = "toStatisticDate";
+	public static final String FROM_APPROVED_DATE = "fromApprovedDate";
+	public static final String TO_APPROVED_DATE = "toApprovedDate";
 	public static final String ORIGIN = "origin";
 	//
 	public static final String ACTION_CODE_GOTO = "9999";
@@ -285,6 +287,7 @@ public class DossierTerm {
 
 	public static final String VALUE_COMPARE_RELEASE = "compareRelease";
 	public static final String VALUE_COMPARE_FINISH = "compareFinish";
+	public static final String VALUE_STATISTIC_RELEASE = "compareStatisticRelease";
 
 	public static final String PROCESS_NO = "processNo";
 	public static final String REGISTER = "register";
@@ -377,6 +380,7 @@ public class DossierTerm {
 	public static final String DOSSIER_CTN = "CTN";
 	public static final String OPENCPSV2 = "OPENCPSV2";
 	public static final String PENDING = "pendding";
+	public static final String VISITED = "visited";
 	public static final String WAITING = "waiting";
 	public static final String STEP_DONE_CODE = "400";
 	
@@ -425,4 +429,15 @@ public class DossierTerm {
 	public static final String PROCESS_AGENCY_METADATA = "processAgency";
 	public static final String ACTION_USER_SEARCH = "actionUserSearch";
 	public static final String DATA = "data";
+	public static final String VIETTEL_POST_KEY = "viettelPost";
+	public static final String VIETTEL_POST_VALUE = "1";
+	public static final String SPECIAL_NO = "specialNo";
+	public static final String DOSSIER_SYN_STATE = "dossierSynState";
+	public static final String POST_TYPE = "postType";
+	public static final String POST_STATUS = "postStatus";
+	public static final String POST_SERVICE = "postService";
+	public static final String ORDER_NUMBER = "orderNumber";
+	public static final String SYNC_STATE = "syncState";
+	public static final String POST_CONNECT = "postConnect";
+
 }

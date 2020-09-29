@@ -62,9 +62,9 @@ import org.osgi.service.component.annotations.Component;
 		"url-pattern=/o/rest/v2_1/*",
 		"url-pattern=/o/v1/opencps/login",
 		"url-pattern=/o/v1/opencps/logout",
-		"url-pattern=/c/portal/logout",
-		"url-pattern=/o/rest/v2/*",
-		"url-pattern=/o/rest/v2_1/*"
+		"url-pattern=/c/portal/logout"
+//		"url-pattern=/o/rest/v2/*",
+//		"url-pattern=/o/rest/v2_1/*"
 	}, service = Filter.class
 )
 public class RestAuthFilter implements Filter {

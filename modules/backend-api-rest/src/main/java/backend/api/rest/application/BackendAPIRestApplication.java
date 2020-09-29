@@ -263,10 +263,11 @@ public class BackendAPIRestApplication extends Application {
 			String barcodeFilename = String.format(MessageUtil.getMessage(ConstantUtils.BARCODE_FILENAME), uuid);
 			
 			File file = new File(barcodeFilename);
+			boolean fileExits = true;
 			if (!file.exists()) {
-				file.createNewFile();
+				fileExits = file.createNewFile();
 			}
-			if (file.exists()) {
+			if (file.exists() && fileExits) {
 				ImageIO.write(image, ConstantUtils.PNG, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
@@ -330,10 +331,11 @@ public class BackendAPIRestApplication extends Application {
 			}
 			String barCodeFileName = String.format(MessageUtil.getMessage(ConstantUtils.BARCODE_FILENAME), uuid);
 			File file = new File(barCodeFileName);
+			boolean fileExits = true;
 			if (!file.exists()) {
-				file.createNewFile();
+				fileExits = file.createNewFile();
 			}
-			if (file.exists()) {
+			if (file.exists() && fileExits) {
 				ImageIO.write(image, ConstantUtils.PNG, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);

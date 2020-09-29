@@ -560,11 +560,11 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	@ThreadLocalCachable
 	public Employee fetchByFB_MUID(long mappingUserId) {
 		Serializable userSerialize = null;
-		try {
-			userSerialize = cache.getFromCache("EmployeeMapping", mappingUserId + "");
-		} catch (PortalException e) {
-			_log.debug(e);
-		}
+//		try {
+//			userSerialize = cache.getFromCache("EmployeeMapping", mappingUserId + "");
+//		} catch (PortalException e) {
+//			_log.debug(e);
+//		}
 		if (userSerialize != null) {
 			return (Employee)userSerialize;
 		}

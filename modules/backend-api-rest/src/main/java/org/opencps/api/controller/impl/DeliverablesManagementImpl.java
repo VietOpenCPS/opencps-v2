@@ -981,20 +981,20 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 					if (deliverableObj != null) {				
 						deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
 						deliverable.put(DeliverableTerm.DELIVERABLE_ID, deliverableObj.getDeliverableId());
-						formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
+//						formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
 					} else {
 						String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
 						String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
 						deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
 						deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
-						formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode); 
+//						formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
 					}
 				}else {
 					String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
 					String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
 					deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
 					deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
-					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+//					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
 				}
 
 				deliverable.put(Field.GROUP_ID, groupId);

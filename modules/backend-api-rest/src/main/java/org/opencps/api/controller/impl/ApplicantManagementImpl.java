@@ -1280,8 +1280,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						_log.info("strProfile: " + strProfile);
 						if (Validator.isNull(strProfile) || "ERROR".equals(strProfile)) {
 							_log.info("CO VAO KHONG1111 ???");
-							return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("{Register error}")
-									.build();
+							ErrorMsgModel error = new ErrorMsgModel();
+							error.setMessage("Active error");
+							error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+							error.setDescription("RegisterError");
+							return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 						} else if (Validator.isNotNull(strProfile)) {
 							JSONObject jsonProfile = JSONFactoryUtil.createJSONObject(strProfile);
 							_log.info("jsonProfile: " + jsonProfile);
@@ -1291,14 +1294,22 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 								if ("DUPLICATE".equals(strResult)) {
 									_log.info("CO VAO 222222 ???");
-									actions.registerApproved(serviceContext, groupId, applicantName,
-											applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address,
-											cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
-											contactTelNo, StringPool.BLANK, input.getPassword());
+									try{
+										Applicant applicant = actions.registerApproved(serviceContext, groupId, applicantName,
+												applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address,
+												cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
+												contactTelNo, StringPool.BLANK, input.getPassword());
 
-									//result = ApplicantUtils.mappingToApplicantModel(applicant);
-
-									return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("{User exit!}").build();
+										result = ApplicantUtils.mappingToApplicantModel(applicant);
+									}
+									catch (Exception e) {
+										_log.error("Error duplicate lgsp: " + e.getMessage());
+									}
+									ErrorMsgModel error = new ErrorMsgModel();
+									error.setMessage("Active error");
+									error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+									error.setDescription("RegisterDuplicate");
+									return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 								} else if ("SUCCESSFUL".equals(strResult)) {
 									_log.info("CO VAO 33333 ???");
 									Applicant applicant = actions.register(serviceContext, groupId, applicantName,
@@ -2050,9 +2061,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 //							if (ConvertDossierFromV1Dot9Utils.TEMP_TYPE_DATE.equals(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_TYPE))) {
 //								Long date = ConvertDossierFromV1Dot9Utils.convertStringToDate(rs.getString(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME)));
 //								if (date == null) {
-//									objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), 0l); 
+//									objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), 0l);
 //								} else {
-//									objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), date); 
+//									objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), date);
 //								}
 //							} else {
 //								objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), rs.getString(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME)));
@@ -2078,7 +2089,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 //						e.printStackTrace();
 //						result--;
 //					}
-//					
+//
 //				}
 //			}
 //			catch (Exception e) {
@@ -2122,7 +2133,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 //				dbSecret)) {
 //				stmt = con.createStatement();
 //				rs = stmt.executeQuery(sqlQuery);
-//	
+//
 //				while (rs.next()) {
 //					try {
 //						result++;
@@ -2130,7 +2141,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 //						Long date = ConvertDossierFromV1Dot9Utils.convertStringToDate(rs.getString(ApplicantTerm.APPLICANTIDDATE));
 //						String applicantIdDate = date != null ? new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(
 //								new Date(date)) : null;
-//						actions.importApplicantDB(user.getUserId(), groupId, rs.getString(ApplicantTerm.APPLICANTIDNO), 
+//						actions.importApplicantDB(user.getUserId(), groupId, rs.getString(ApplicantTerm.APPLICANTIDNO),
 //								rs.getString(ApplicantTerm.APPLICANTNAME), rs.getString(ApplicantTerm.APPLICANTIDTYPE), applicantIdDate,
 //								rs.getString(ApplicantTerm.CONTACTEMAIL), rs.getString(ApplicantTerm.CONTACTTELNO),
 //								rs.getString(ApplicantTerm.ADDRESS), rs.getString(ApplicantTerm.CITYCODE),rs.getString(ApplicantTerm.DISTRICTCODE),
@@ -2139,7 +2150,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 //						_log.debug(e);
 //						result--;
 //					}
-//					
+//
 //				}
 //			}
 //			catch (Exception e) {

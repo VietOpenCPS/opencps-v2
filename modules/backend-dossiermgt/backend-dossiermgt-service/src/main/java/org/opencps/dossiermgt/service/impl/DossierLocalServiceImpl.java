@@ -64,6 +64,7 @@ import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.DictItemModelInput;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
@@ -76,6 +77,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
+import org.opencps.dossiermgt.input.model.DictItemModel;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -771,7 +773,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String delegateDistrictCode, String delegateDistrictName,
 			String delegateWardCode, String delegateWardName,
 			String registerBookCode, String registerBookName, int sampleCount,
-			String dossierName, ServiceInfo service, ServiceProcess process,
+			String dossierName, int durationCount, ServiceInfo service, ServiceProcess process,
 			ProcessOption option, ServiceContext context)
 			throws PortalException {
 
@@ -882,7 +884,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setServerNo(process.getServerNo());
 			// Update submit date
 			if (process != null) {
-				dossier.setDurationCount(process.getDurationCount());
+				if (durationCount > 0) {
+					dossier.setDurationCount(durationCount);
+				} else {
+					dossier.setDurationCount(process.getDurationCount());
+				}
 				dossier.setDurationUnit(
 						Validator.isNotNull(process.getDurationUnit())
 								? process.getDurationUnit() : 0);
@@ -2608,7 +2614,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 		}
 		else {
-			dossier = dossierPersistence.findByG_REF(groupId, refId);
+			dossier = dossierPersistence.fetchByG_REF(groupId, refId);
 		}
 
 		return dossierPersistence.remove(dossier);
@@ -3823,7 +3829,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				queryAction.addField(DossierTerm.USER_DOSSIER_ACTION_ID);
 				booleanQuery.add(queryAction, BooleanClauseOccur.MUST);
 
-			}else if(DossierTerm.DANG_XU_LY.equals(top.toLowerCase())){
+			}
+			else if(DossierTerm.DANG_XU_LY.equals(top.toLowerCase())){
 				MultiMatchQuery queryAction =
 						new MultiMatchQuery(DossierTerm.DANG_XU_LY  + StringPool.UNDERLINE
 								+ String.valueOf(userId) + StringPool.UNDERLINE + 1);
@@ -3832,11 +3839,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 			else if (!DossierTerm.STATISTIC.equals(top.toLowerCase())) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
-
-				MultiMatchQuery queryRelease =
-						new MultiMatchQuery(String.valueOf(0));
-				queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
-				subQuery.add(queryRelease, BooleanClauseOccur.MUST);
+				if (!top.toLowerCase().equals(DossierTerm.OVER_TIME)) {
+					MultiMatchQuery queryRelease =
+							new MultiMatchQuery(String.valueOf(0));
+					queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+					subQuery.add(queryRelease, BooleanClauseOccur.MUST);
+				}
 				// Dossier is delay
 				if (top.toLowerCase().equals(DossierTerm.DELAY)) {
 					/** Check condition dueDate != null **/
@@ -3967,6 +3975,23 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 									String.valueOf(nowTime), null, true, true);
 					subQuery.add(termRangeQueryNow, BooleanClauseOccur.MUST);
 				}
+				else if (top.toLowerCase().equals(DossierTerm.OVER_TIME)) {
+					/** Check condition dueDate != null **/
+					MultiMatchQuery querydueDate =
+							new MultiMatchQuery(String.valueOf(0));
+					querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+					subQuery.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+					/** Check condition status != waiting **/
+					MultiMatchQuery queryReleaseDate =
+							new MultiMatchQuery(String.valueOf(0));
+					queryReleaseDate.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+					subQuery.add(queryReleaseDate, BooleanClauseOccur.MUST_NOT);
+
+					MultiMatchQuery query =
+							new MultiMatchQuery(String.valueOf(1));
+					query.addFields(DossierTerm.VALUE_COMPARE_RELEASE);
+					subQuery.add(query, BooleanClauseOccur.MUST);
+				}
 				//
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			}
@@ -3974,7 +3999,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(dossierNo)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { DossierTerm.DOSSIER_COUNTER_SEARCH, DossierTerm.DOSSIER_NO_SEARCH };
+			String[] subQuerieArr = new String[]{DossierTerm.DOSSIER_COUNTER_SEARCH, DossierTerm.DOSSIER_NO_SEARCH,
+					DossierTerm.POSTAL_CODE_RECEIVED, DossierTerm.POSTAL_CODE_SEND};
 
 			String[] keyDossier = dossierNo.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
@@ -6933,7 +6959,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String dossierName, String briefNote, Integer delegateType,
 			String documentNo, Date documentDate, int systemId,
 			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-			Date dueDate, ServiceContext serviceContext) {
+			Date dueDate, int durationCount, ServiceContext serviceContext) {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -7106,6 +7132,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		if (dueDate != null)
 			dossier.setDueDate(dueDate);
+		if (durationCount > 0)
+			dossier.setDurationCount(durationCount);
 
 		return dossierPersistence.update(dossier);
 	}
@@ -7127,7 +7155,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String dossierName, String briefNote, Integer delegateType,
 			String documentNo, Date documentDate, int systemId,
 			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-			String metaData, Date dueDate, ServiceContext serviceContext) {
+			String metaData, Date dueDate, int durationCount, ServiceContext serviceContext) {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -7303,6 +7331,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		if (dueDate != null)
 			dossier.setDueDate(dueDate);
+		if (durationCount > 0)
+			dossier.setDurationCount(durationCount);
 
 		return dossierPersistence.update(dossier);
 	}
@@ -7756,5 +7786,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived, long groupId) {
 		return dossierPersistence.fetchByDO_POST_RECEIVED_GROUP(postalCodeReceived, groupId);
+	}
+	public List<DictItemModelInput> findServiceConfigByServiceLevel(String serviceLevel, long groupId) {
+//		return dictItemFinder.findServiceConfigByServiceLevel(serviceLevel, groupId);
+		return null;
+
+	}
+	public List<DictItemModelInput> findDictItemByServiceDomain(String serviceLevel, long groupId) {
+		return null;
+//		return dictItemFinder.findDictItemByServiceDomain(serviceLevel, groupId);
 	}
 }

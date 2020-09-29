@@ -37,6 +37,7 @@ import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -46,6 +47,8 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import javax.ws.rs.core.Response;
 
@@ -268,7 +271,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 	}
 
 	@Override
-	public JSONObject getStatisticByDomain(long groupId, Sort[] sorts, ServiceContext context, JSONObject jsonObject)
+	public JSONObject getStatisticByDomain(long groupId, Sort[] sorts, ServiceContext context, JSONObject jsonObject,LinkedHashMap<String, Object> paramSearch)
 			throws ParseException, SearchException {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		JSONArray data = JSONFactoryUtil.createJSONArray();
@@ -281,11 +284,13 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 		LinkedHashMap<String, Object> paramsData = new LinkedHashMap<String, Object>();
+		String serviceLevel = (String) paramSearch.get(ServiceConfigTerm.SERVICE_LEVEL);
 
 		params.put(Field.GROUP_ID, String.valueOf(groupId));
 
 		paramsData.put(Field.GROUP_ID, String.valueOf(groupId));
 		paramsData.put(DictItemTerm.DICT_COLLECTION_CODE, DataMGTConstants.SERVICE_DOMAIN);
+		paramsData.put(ServiceConfigTerm.SERVICE_LEVEL, serviceLevel);
 
 		Hits hits = DictItemLocalServiceUtil.luceneSearchEngine(paramsData, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				searchContext);
@@ -314,45 +319,69 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		}catch (Exception e){
 			_log.info(e);
 		}
+		if(jsonObject.length() > 0) {
+			for (Document doc : documents) {
+				String itemCode = "";
+				if (Validator.isNotNull(doc.get(DictItemTerm.ITEM_CODE))) {
+					itemCode = doc.get(DictItemTerm.ITEM_CODE);
+				}
+				long admCount = 0;
 
-		for (Document doc : documents) {
-			String itemCode = "";
-			if(Validator.isNotNull(doc.get(DictItemTerm.ITEM_CODE))){
-				itemCode = doc.get(DictItemTerm.ITEM_CODE);
-			}
-			long admCount = 0;
+				//params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+				//Administration Code
+				String domainCode = doc.get(DictItemTerm.ITEM_CODE);
+				String domainCodeSearch = StringPool.BLANK;
+				if (Validator.isNotNull(domainCode)) {
+					domainCodeSearch = SpecialCharacterUtils.splitSpecial(domainCode);
+				}
+				params.put(ServiceInfoTerm.DOMAIN_CODE_SEARCH, domainCodeSearch);
+				params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 
-			//params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
-			//Administration Code
-			String domainCode = doc.get(DictItemTerm.ITEM_CODE);
-			String domainCodeSearch = StringPool.BLANK;
-			if (Validator.isNotNull(domainCode)) {
-				domainCodeSearch = SpecialCharacterUtils.splitSpecial(domainCode);
-			}
-			params.put(ServiceInfoTerm.DOMAIN_CODE_SEARCH, domainCodeSearch);
-			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
-
-			admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
-			if (admCount != 0) {
-				JSONObject elm = JSONFactoryUtil.createJSONObject();
-				if(Validator.isNotNull(domainCodes)){
-					String domainCodeArr[] = domainCodes.split(StringPool.COMMA);
-					for(String code : domainCodeArr){
-						if(code.equals(itemCode)){
-							count = admCount + count;
-							elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
-							elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
-							elm.put(ConstantUtils.VALUE_COUNT, admCount);
-							data.put(elm);
-							break;
+//				admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
+//				if (admCount != 0) {
+					JSONObject elm = JSONFactoryUtil.createJSONObject();
+					if (Validator.isNotNull(domainCodes)) {
+						String domainCodeArr[] = domainCodes.split(StringPool.COMMA);
+						for (String code : domainCodeArr) {
+							if (code.equals(itemCode)) {
+								count = admCount + count;
+								elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+								elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
+								elm.put(ConstantUtils.VALUE_COUNT, admCount);
+								data.put(elm);
+								break;
+							}
 						}
 					}
+//				}
+
+//				result.put(ConstantUtils.TOTAL, count);
+				result.put(ConstantUtils.DATA, data);
+			}
+		}else {
+			for (Document doc : documents) {
+				long admCount = 0;
+
+				String domainCode = doc.get(DictItemTerm.ITEM_CODE);
+				String domainCodeSearch = StringPool.BLANK;
+				if (Validator.isNotNull(domainCode)) {
+					domainCodeSearch = SpecialCharacterUtils.splitSpecial(domainCode);
+				}
+				params.put(ServiceInfoTerm.DOMAIN_CODE_SEARCH, domainCodeSearch);
+				params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
+
+				admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
+				if (admCount != 0) {
+					count = admCount + count;
+					JSONObject elm = JSONFactoryUtil.createJSONObject();
+					elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+					elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
+					elm.put(ConstantUtils.VALUE_COUNT, admCount);
+					data.put(elm);
 				}
 			}
-
 			result.put(ConstantUtils.TOTAL, count);
 			result.put(ConstantUtils.DATA, data);
-
 		}
 
 		return result;
@@ -507,7 +536,6 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 		LinkedHashMap<String, Object> paramsData = new LinkedHashMap<String, Object>();
-
 		params.put(Field.GROUP_ID, String.valueOf(groupId));
 
 		paramsData.put(Field.GROUP_ID, String.valueOf(groupId));
@@ -543,13 +571,10 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 			if (admCount != 0) {
 				count = admCount + count;
-
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
-
 				elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
 				elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
 				elm.put(ConstantUtils.VALUE_COUNT, admCount);
-
 				data.put(elm);
 			}
 

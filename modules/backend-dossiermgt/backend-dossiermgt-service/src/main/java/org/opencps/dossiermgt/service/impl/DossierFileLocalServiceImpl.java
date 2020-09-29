@@ -15,6 +15,7 @@
 package org.opencps.dossiermgt.service.impl;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import org.apache.commons.io.IOUtils;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
@@ -496,13 +500,27 @@ public class DossierFileLocalServiceImpl
 			if (Validator.isNotNull(dossierPart.getFormReport())) {
 				object.setFormReport(dossierPart.getFormReport());
 			}
-//		}else if(Validator.isNotNull(dossierPart.getFormReport())){
-//			object.setFormReport(dossierPart.getFormReport());
 		}else{
 			DeliverableType dt = DeliverableTypeLocalServiceUtil.getByCode(
 				groupId, dossierPart.getDeliverableType());
 			if (dt != null && Validator.isNotNull(dt.getFormReport())) {
 				object.setFormReport(dt.getFormReport());
+			}else{
+				InputStream is = null;
+				String result = StringPool.BLANK;
+				try {
+
+					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(dt.getFormReportFileId());
+
+					is = dlFileEntry.getContentStream();
+
+					result = IOUtils.toString(is, StandardCharsets.UTF_8);
+					_log.info("Log FormReport Dbfile" + result.toString());
+					object.setFormReport(result.toString());
+				} catch (Exception e) {
+					_log.debug(e);
+					result = StringPool.BLANK;
+				}
 			}
 		}
 
@@ -1067,9 +1085,10 @@ public class DossierFileLocalServiceImpl
 
 		// dossierFileLocalService.getDossierFileByReferenceUid(dossierId,
 		// referenceUid);
+		_log.info(" DOSSIER FILE " + JSONFactoryUtil.looseSerialize(dossierFile));
 
 		String jrxmlTemplate = dossierFile.getFormReport();
-
+		_log.info(" FORM REPORT " + jrxmlTemplate);
 		if (Validator.isNull(jrxmlTemplate)) {
 			DossierPart dossierPart =
 				dossierPartLocalService.fetchByTemplatePartNo(
@@ -1085,9 +1104,10 @@ public class DossierFileLocalServiceImpl
 					groupId, dossierPart.getDeliverableType());
 				if (dt != null && Validator.isNotNull(dt.getFormReport())) {
 					jrxmlTemplate = dt.getFormReport();
-				}else{
-					jrxmlTemplate = dossierPart.getFormReport();
 				}
+//				else{
+//					jrxmlTemplate = dossierPart.getFormReport();
+//				}
 			}
 			else {
 				jrxmlTemplate = dossierPart.getFormReport();
@@ -1095,24 +1115,32 @@ public class DossierFileLocalServiceImpl
 
 			dossierFile.setFormReport(jrxmlTemplate);
 		}
+		/*if(Validator.isNotNull(dossierFile.getFormData())){
+			dossierFile.setFormData(dossierFile.getFormData());
+		}else{
 			dossierFile.setFormData(formData);
+		}*/
+		if(Validator.isNotNull(formData)){
+			dossierFile.setFormData(formData);
+		}
 		dossierFile.setIsNew(true);
 
 		// Binhth add message bus to processing jasper file
-		_log.debug("IN DOSSIER FILE UPDATE FORM DATA");
+		_log.info("IN DOSSIER FILE UPDATE FORM DATA");
 		Message message = new Message();
+		if(Validator.isNotNull(jrxmlTemplate)) {
+			_log.info("LOG jasper : " +  jrxmlTemplate);
+			JSONObject msgData = JSONFactoryUtil.createJSONObject();
+			msgData.put(ConstantUtils.CLASS_NAME, DossierFile.class.getName());
+			msgData.put(Field.CLASS_PK, dossierFile.getDossierFileId());
+			msgData.put(ConstantUtils.JRXML_TEMPLATE, jrxmlTemplate);
+			msgData.put(ConstantUtils.FORM_DATA, formData);
+			msgData.put(Field.USER_ID, serviceContext.getUserId());
 
-		JSONObject msgData = JSONFactoryUtil.createJSONObject();
-		msgData.put(ConstantUtils.CLASS_NAME, DossierFile.class.getName());
-		msgData.put(Field.CLASS_PK, dossierFile.getDossierFileId());
-		msgData.put(ConstantUtils.JRXML_TEMPLATE, jrxmlTemplate);
-		msgData.put(ConstantUtils.FORM_DATA, formData);
-		msgData.put(Field.USER_ID, serviceContext.getUserId());
-
-		message.put(ConstantUtils.MSG_ENG, msgData);
-		MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
-
-		_log.debug("SEND TO CREATED FILE MODEL");
+			message.put(ConstantUtils.MSG_ENG, msgData);
+			MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
+		}
+		_log.info("SEND TO CREATED FILE MODEL");
 
 		return dossierFilePersistence.update(dossierFile);
 	}

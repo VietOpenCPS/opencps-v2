@@ -21,6 +21,8 @@ import org.osgi.framework.FrameworkUtil;
 
 import org.osgi.util.tracker.ServiceTracker;
 
+import java.util.List;
+
 /**
  * Provides the local service utility for PostConnect. This utility wraps
  * {@link org.opencps.dossiermgt.service.impl.PostConnectLocalServiceImpl} and is the
@@ -261,6 +263,16 @@ public class PostConnectLocalServiceUtil {
 		String uuid, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getPostConnectByUuidAndGroupId(uuid, groupId);
+	}
+	public static org.opencps.dossiermgt.model.PostConnect findByPostByDossierIdAndPostType(
+			 long groupId, long dossierId, int postType)
+			throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().findByPostByDossierIdAndPostType( groupId,dossierId,postType);
+	}
+	public static List<org.opencps.dossiermgt.model.PostConnect> findByPostConnectByDossierId (
+			 long groupId,long dossierId)
+			throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().findByPostConnectByDossierId( groupId,dossierId);
 	}
 
 	/**

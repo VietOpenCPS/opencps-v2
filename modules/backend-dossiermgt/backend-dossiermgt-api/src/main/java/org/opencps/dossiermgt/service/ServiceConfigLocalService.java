@@ -193,6 +193,10 @@ public interface ServiceConfigLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ServiceConfig> fetchByF_INFO_LEVEL(long groupId,
+		long[] serviceInfoId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ServiceConfig fetchServiceConfig(long serviceConfigId);
 
 	/**

@@ -94,7 +94,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public RegistrationForm addRegistrationForm(long groupId, long companyId, long registrationId, String referenceUid,
+	public RegistrationForm addRegistrationForm(long groupId, long companyId, long registrationId, String referenceUidUnUse,
 			String formNo, String formName, String formData, String formScript, String formReport, long fileEntryId,
 			boolean isNew, boolean removed, ServiceContext serviceContext) throws PortalException {
 		// TODO Add RegistrationForm
@@ -104,7 +104,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		User userAction = userLocalService.getUser(userId);
 
-		referenceUid = UUID.randomUUID().toString();
+		String referenceUid = UUID.randomUUID().toString();
 
 		long registrationFormId = counterLocalService.increment(RegistrationForm.class.getName());
 

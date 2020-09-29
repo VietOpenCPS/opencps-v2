@@ -419,6 +419,10 @@
 			<finder-column name="groupId" />
 			<finder-column name="serviceLevel" />
 		</finder>
+		<finder return-type="Collection" name="F_INFO_LEVEL">
+			<finder-column name="groupId" />
+			<finder-column name="serviceInfoId" comparator="=" arrayable-operator="OR" />
+		</finder>
 
 	</entity>
 
@@ -1229,6 +1233,15 @@
 		<finder name="F_ORDER_NUMBER_POST_STATUS" return-type="PostConnect">
 			<finder-column name="orderNumber" />
 			<finder-column name="postStatus" />
+		</finder>
+		<finder name="F_POST_BY_DOSSIER_ID" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+		</finder>
+		<finder name="F_POST_BY_D_TYPE" return-type="PostConnect">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="postType" />
 		</finder>
 	</entity>
 

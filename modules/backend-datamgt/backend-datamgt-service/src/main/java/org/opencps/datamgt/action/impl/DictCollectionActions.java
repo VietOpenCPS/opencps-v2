@@ -751,7 +751,6 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 			hits = DictItemLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
-
 			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = DictItemLocalServiceUtil.countLuceneSearchEngine(

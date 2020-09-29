@@ -967,6 +967,262 @@ public class PostConnectUtil {
 	}
 
 	/**
+	* Returns all the post connects where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @return the matching post connects
+	*/
+	public static List<PostConnect> findByF_POST_BY_DOSSIER_ID(long groupId,
+		long dossierId) {
+		return getPersistence().findByF_POST_BY_DOSSIER_ID(groupId, dossierId);
+	}
+
+	/**
+	* Returns a range of all the post connects where groupId = &#63; and dossierId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PostConnectModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param start the lower bound of the range of post connects
+	* @param end the upper bound of the range of post connects (not inclusive)
+	* @return the range of matching post connects
+	*/
+	public static List<PostConnect> findByF_POST_BY_DOSSIER_ID(long groupId,
+		long dossierId, int start, int end) {
+		return getPersistence()
+				   .findByF_POST_BY_DOSSIER_ID(groupId, dossierId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the post connects where groupId = &#63; and dossierId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PostConnectModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param start the lower bound of the range of post connects
+	* @param end the upper bound of the range of post connects (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching post connects
+	*/
+	public static List<PostConnect> findByF_POST_BY_DOSSIER_ID(long groupId,
+		long dossierId, int start, int end,
+		OrderByComparator<PostConnect> orderByComparator) {
+		return getPersistence()
+				   .findByF_POST_BY_DOSSIER_ID(groupId, dossierId, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the post connects where groupId = &#63; and dossierId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PostConnectModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param start the lower bound of the range of post connects
+	* @param end the upper bound of the range of post connects (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching post connects
+	*/
+	public static List<PostConnect> findByF_POST_BY_DOSSIER_ID(long groupId,
+		long dossierId, int start, int end,
+		OrderByComparator<PostConnect> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_POST_BY_DOSSIER_ID(groupId, dossierId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first post connect in the ordered set where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching post connect
+	* @throws NoSuchPostConnectException if a matching post connect could not be found
+	*/
+	public static PostConnect findByF_POST_BY_DOSSIER_ID_First(long groupId,
+		long dossierId, OrderByComparator<PostConnect> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchPostConnectException {
+		return getPersistence()
+				   .findByF_POST_BY_DOSSIER_ID_First(groupId, dossierId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first post connect in the ordered set where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching post connect, or <code>null</code> if a matching post connect could not be found
+	*/
+	public static PostConnect fetchByF_POST_BY_DOSSIER_ID_First(long groupId,
+		long dossierId, OrderByComparator<PostConnect> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_POST_BY_DOSSIER_ID_First(groupId, dossierId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last post connect in the ordered set where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching post connect
+	* @throws NoSuchPostConnectException if a matching post connect could not be found
+	*/
+	public static PostConnect findByF_POST_BY_DOSSIER_ID_Last(long groupId,
+		long dossierId, OrderByComparator<PostConnect> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchPostConnectException {
+		return getPersistence()
+				   .findByF_POST_BY_DOSSIER_ID_Last(groupId, dossierId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last post connect in the ordered set where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching post connect, or <code>null</code> if a matching post connect could not be found
+	*/
+	public static PostConnect fetchByF_POST_BY_DOSSIER_ID_Last(long groupId,
+		long dossierId, OrderByComparator<PostConnect> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_POST_BY_DOSSIER_ID_Last(groupId, dossierId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the post connects before and after the current post connect in the ordered set where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param postConnectId the primary key of the current post connect
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next post connect
+	* @throws NoSuchPostConnectException if a post connect with the primary key could not be found
+	*/
+	public static PostConnect[] findByF_POST_BY_DOSSIER_ID_PrevAndNext(
+		long postConnectId, long groupId, long dossierId,
+		OrderByComparator<PostConnect> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchPostConnectException {
+		return getPersistence()
+				   .findByF_POST_BY_DOSSIER_ID_PrevAndNext(postConnectId,
+			groupId, dossierId, orderByComparator);
+	}
+
+	/**
+	* Removes all the post connects where groupId = &#63; and dossierId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	*/
+	public static void removeByF_POST_BY_DOSSIER_ID(long groupId, long dossierId) {
+		getPersistence().removeByF_POST_BY_DOSSIER_ID(groupId, dossierId);
+	}
+
+	/**
+	* Returns the number of post connects where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @return the number of matching post connects
+	*/
+	public static int countByF_POST_BY_DOSSIER_ID(long groupId, long dossierId) {
+		return getPersistence().countByF_POST_BY_DOSSIER_ID(groupId, dossierId);
+	}
+
+	/**
+	* Returns the post connect where groupId = &#63; and dossierId = &#63; and postType = &#63; or throws a {@link NoSuchPostConnectException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param postType the post type
+	* @return the matching post connect
+	* @throws NoSuchPostConnectException if a matching post connect could not be found
+	*/
+	public static PostConnect findByF_POST_BY_D_TYPE(long groupId,
+		long dossierId, int postType)
+		throws org.opencps.dossiermgt.exception.NoSuchPostConnectException {
+		return getPersistence()
+				   .findByF_POST_BY_D_TYPE(groupId, dossierId, postType);
+	}
+
+	/**
+	* Returns the post connect where groupId = &#63; and dossierId = &#63; and postType = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param postType the post type
+	* @return the matching post connect, or <code>null</code> if a matching post connect could not be found
+	*/
+	public static PostConnect fetchByF_POST_BY_D_TYPE(long groupId,
+		long dossierId, int postType) {
+		return getPersistence()
+				   .fetchByF_POST_BY_D_TYPE(groupId, dossierId, postType);
+	}
+
+	/**
+	* Returns the post connect where groupId = &#63; and dossierId = &#63; and postType = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param postType the post type
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching post connect, or <code>null</code> if a matching post connect could not be found
+	*/
+	public static PostConnect fetchByF_POST_BY_D_TYPE(long groupId,
+		long dossierId, int postType, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_POST_BY_D_TYPE(groupId, dossierId, postType,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes the post connect where groupId = &#63; and dossierId = &#63; and postType = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param postType the post type
+	* @return the post connect that was removed
+	*/
+	public static PostConnect removeByF_POST_BY_D_TYPE(long groupId,
+		long dossierId, int postType)
+		throws org.opencps.dossiermgt.exception.NoSuchPostConnectException {
+		return getPersistence()
+				   .removeByF_POST_BY_D_TYPE(groupId, dossierId, postType);
+	}
+
+	/**
+	* Returns the number of post connects where groupId = &#63; and dossierId = &#63; and postType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param postType the post type
+	* @return the number of matching post connects
+	*/
+	public static int countByF_POST_BY_D_TYPE(long groupId, long dossierId,
+		int postType) {
+		return getPersistence()
+				   .countByF_POST_BY_D_TYPE(groupId, dossierId, postType);
+	}
+
+	/**
 	* Caches the post connect in the entity cache if it is enabled.
 	*
 	* @param postConnect the post connect

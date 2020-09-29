@@ -65,7 +65,6 @@ public class GraphQLUtils {
 		} catch (Exception e) {
 
 			_log.debug(e);
-			e.printStackTrace();
 		}
 		return StringPool.BLANK;
 	}

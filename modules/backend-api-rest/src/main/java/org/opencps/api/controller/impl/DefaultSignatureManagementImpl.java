@@ -23,9 +23,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.net.HttpURLConnection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -40,24 +38,17 @@ import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.util.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.ActionConfig;
-import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.ProcessAction;
-import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
-import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.*;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -1082,6 +1073,8 @@ public class DefaultSignatureManagementImpl
 		long dossierId = id;
 		long userId = user.getUserId();
 
+
+
 		if (!auth.isAuth(serviceContext)) {
 			throw new UnauthenticationException();
 		}
@@ -1135,7 +1128,7 @@ public class DefaultSignatureManagementImpl
 									deliverable);
 							}
 						} else if (deliverable != null) {
-							
+
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
 							if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
@@ -1216,6 +1209,86 @@ public class DefaultSignatureManagementImpl
 
 			// Process success
 			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
+		}
+
+		// Update fileEntryId == file đính kèm cho QĐ hàng tháng
+		List<DossierFile> listDossierHS = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossierId);
+		Deliverable deliverable = null;
+
+		if(listDossierHS.size() >0) {
+			long fileEntryId= 0;
+			for (DossierFile dossierFile : listDossierHS) {
+				if (!dossierFile.getEForm()) {
+					fileEntryId = dossierFile.getFileEntryId();
+					_log.info("LOG dossierFile = false -- log fileEntryId :" + dossierFile.getFileEntryId());
+					break;
+				}
+			}
+			for (DossierFile item : listDossierHS) {
+//				if (item.getEForm()) {
+					if(Validator.isNotNull(item.getDeliverableCode())) {
+						deliverable = DeliverableLocalServiceUtil.getByCode(
+								item.getDeliverableCode());
+						if (Validator.isNotNull(fileEntryId)) {
+							if(Validator.isNotNull(deliverable)) {
+								_log.info("DeliverableState :" + deliverable.getDeliverableState());
+//							if (deliverable.getDeliverableState() == 1) {
+								DossierPart dossierPart =
+										DossierPartLocalServiceUtil.fetchByTemplatePartNo(
+												item.getGroupId(), item.getDossierTemplateNo(),
+												item.getDossierPartNo());
+								DeliverableType dlvType =
+										DeliverableTypeLocalServiceUtil.getByCode(
+												item.getGroupId(), dossierPart.getDeliverableType());
+
+								JSONObject formDataContent = JSONFactoryUtil.createJSONObject(item.getFormData());
+								formDataContent = AutoFillFormData.sampleDataBindingDeliverable(
+										dlvType.getMappingData(), dossier.getDossierId(),
+										serviceContext);
+								if (Validator.isNotNull(formDataContent)) {
+									_log.info("Log formData : " + formDataContent.toString());
+									String deliverableCode = "";
+									String issueDate = "";
+									Iterator<String> keys = formDataContent.keys();
+									while (keys.hasNext()) {
+										String key = keys.next();
+										String value = formDataContent.getString(key);
+										if (key.equals(DossierTerm.DELIVERABLE_CODE)) {
+											deliverableCode = value;
+											break;
+										}else if(key.equals(DeliverableTerm.ISSUE_DATE)){
+											issueDate = value;
+											break;
+										}
+									}
+									deliverable.setDeliverableCode(deliverableCode);
+									deliverable.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate,APIDateTimeUtils._NORMAL_DATE));
+									if (formDataContent.has(DeliverableTerm.DELIVERABLE_CODE)) {
+										formDataContent.remove(DeliverableTerm.DELIVERABLE_CODE);
+									}
+									if (formDataContent.has(DeliverableTerm.GOV_AGENCY_CODE)) {
+										formDataContent.remove(DeliverableTerm.GOV_AGENCY_CODE);
+									}
+									if (formDataContent.has(DeliverableTerm.DELIVERABLE_STATE)) {
+										formDataContent.remove(DeliverableTerm.DELIVERABLE_STATE);
+									}
+									if (formDataContent.has(DeliverableTerm.ISSUE_DATE)) {
+										formDataContent.remove(DeliverableTerm.ISSUE_DATE);
+									}
+									_log.info("Log deliverableCode : " + deliverable.getDeliverableCode());
+									deliverable.setFormData(formDataContent.toString());
+
+								}
+								deliverable.setFileAttachs(String.valueOf(fileEntryId));
+								DeliverableLocalServiceUtil.updateDeliverable(
+										deliverable);
+								break;
+//							}
+							}
+						}
+					}
+//				}
+			}
 		}
 
 		if (!signOk) {

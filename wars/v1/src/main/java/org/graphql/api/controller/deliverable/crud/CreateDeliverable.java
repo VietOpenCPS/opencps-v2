@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.graphql.api.controller.utils.WebKeys;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
@@ -27,6 +29,7 @@ import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * Created binhth
@@ -79,24 +82,42 @@ public class CreateDeliverable implements DataFetcher<Deliverable> {
 				Date sysDate = new Date();
 				String deliverableCode = "";
 				if(Validator.isNotNull(issueDate) ) {
+					_log.info("Vao issueDate : " + issueDate);
 					Date issue = APIDateTimeUtils
 							.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_DATE);
 					if(Validator.isNotNull(issue)){
 						deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(
-								groupId, delType.getCodePattern(), issueDate);
+								groupId, delType.getCodePattern(),  APIDateTimeUtils
+										.convertDateToString(issue, APIDateTimeUtils._NORMAL_DATE));
 					}
 				}else{
 					String dateNow = APIDateTimeUtils
-							.convertDateToString(sysDate, APIDateTimeUtils._NORMAL_PARTTERN);
+							.convertDateToString(sysDate, APIDateTimeUtils._NORMAL_DATE);
+					_log.info("Vao not issueDate : " + dateNow);
 					deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(
 							groupId, delType.getCodePattern(), dateNow);
 				}
 				inputObject.put("deliverableCode", deliverableCode);
 			}
+			_log.info("Log nguoixuly :" + inputObject.get("nguoixuly"));
 			Employee employee = null;
-			if(Validator.isNotNull(groupId) && Validator.isNotNull(userId)) {
-				 employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-				 inputObject.put("userName", employee.getFullName());
+			Iterator<String> keys = inputObject.keys();
+
+			if(inputObject.has("nguoixuly")){
+				while (keys.hasNext()) {
+					String key = keys.next();
+					String value = inputObject.getString(key);
+					if (key.equals(DossierTerm.DELIVERABLE_STATE)) {
+						_log.info("true");
+						inputObject.put("userName", value);
+					}
+				}
+			}else {
+				_log.info("FALSE");
+				if (Validator.isNotNull(groupId) && Validator.isNotNull(userId)) {
+					employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+					inputObject.put("userName", employee.getFullName());
+				}
 			}
 			if(!inputObject.has("govAgencyCode")){
 				if(employee != null){
@@ -106,6 +127,21 @@ public class CreateDeliverable implements DataFetcher<Deliverable> {
 			}
 
 			_log.info("inputObject: "+JSONFactoryUtil.looseSerialize(inputObject));
+			if(Validator.isNotNull(formData)) {
+				if (formData.has(DeliverableTerm.DELIVERABLE_CODE)) {
+					formData.remove(DeliverableTerm.DELIVERABLE_CODE);
+				}
+				if (formData.has(DeliverableTerm.GOV_AGENCY_CODE)) {
+					formData.remove(DeliverableTerm.GOV_AGENCY_CODE);
+				}
+				if (formData.has(DeliverableTerm.DELIVERABLE_STATE)) {
+					formData.remove(DeliverableTerm.DELIVERABLE_STATE);
+				}
+				if (formData.has(DeliverableTerm.ISSUE_DATE)) {
+					formData.remove(DeliverableTerm.ISSUE_DATE);
+				}
+				inputObject.put(DeliverableTerm.FORM_DATA, formData.toString());
+			}
 			result = DeliverableLocalServiceUtil.adminProcessData(inputObject);
 			
 		} catch (JSONException e) {

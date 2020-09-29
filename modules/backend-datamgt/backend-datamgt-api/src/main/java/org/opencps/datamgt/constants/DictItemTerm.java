@@ -129,6 +129,10 @@ public class DictItemTerm {
 	public static final String ITEM_LV = "itemLv";
 	public static final String PAGINATION_TYPE = "paginationType";
 	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
+	public static final String SERVICE_LEVEL_ROLE = "serviceLevelRole";
+	public static final String GOVAGENCY_CODE_ROLE = "govAgencyCodeRole";
+	public static final String SERVICE_LEVEL = "serviceLevel";
+	public static final String GOVAGENCY_CODE = "govAgencyCode";
 	
 	public DictItemTerm() {
 

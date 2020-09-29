@@ -153,6 +153,24 @@ public interface DossierManagement {
 		@Context ServiceContext serviceContext, @PathParam("id") String id,
 		@QueryParam("secretKey") String secretKey);
 
+	@GET
+	@Path("/postConnect")
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Get the detail of PostConnect by its id ", response = PostConnectDetailModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of Dossiers have been filtered", response = PostConnectDetailModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+
+	public Response getPostConnectByDossierId(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,@BeanParam PostConnectDetailModel input);
+
 	@PUT
 	@Path("/{id}")
 	@Consumes({

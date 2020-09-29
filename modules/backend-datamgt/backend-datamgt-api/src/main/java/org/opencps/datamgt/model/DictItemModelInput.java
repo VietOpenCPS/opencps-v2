@@ -6,15 +6,9 @@
 //
 
 
-package org.opencps.api.datamgt.model;
+package org.opencps.datamgt.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 
 /**
@@ -59,65 +53,60 @@ import javax.xml.bind.annotation.XmlType;
     "level",
     "sibling",
     "treeIndex",
-    "parentItem",
-    "groups",
     "serviceLevel",
     "govAgencyCode",
-    "serviceLevelRole",
-    "govAgencyCodeRole"
+    "groupId",
+    "domainCode",
+    "domainName"
 })
-@XmlRootElement(name = "DictItemModel")
-public class DictItemModel {
+@XmlRootElement(name = "DictItemModelInput")
+public class DictItemModelInput {
 
     protected long dictItemId;
-    @XmlElement(required = true)
     protected String createDate;
-    @XmlElement(required = true)
     protected String modifiedDate;
-    @XmlElement(required = true)
     protected String itemCode;
-    @XmlElement(required = true)
     protected String itemName;
-    @XmlElement(required = true)
     protected String itemNameEN;
-    @XmlElement(required = true)
     protected String itemDescription;
     protected int level;
     protected int sibling;
-    @XmlElement(required = true)
     protected String treeIndex;
-    protected List<ParentItem> parentItem;
-    protected List<Groups> groups;
-    @XmlElement(required = true)
-    protected String serviceLevel;
-    @XmlElement(required = true)
+    protected int serviceLevel;
     protected String govAgencyCode;
-    @XmlElement(required = true)
-    protected String serviceLevelRole;
-    @XmlElement(required = true)
-    protected String govAgencyCodeRole;
+    protected long groupId;
+    protected String domainCode;
+    protected String domainName;
 
-    public String getServiceLevelRole() {
-        return serviceLevelRole;
+    public String getDomainCode() {
+        return domainCode;
     }
 
-    public void setServiceLevelRole(String serviceLevelRole) {
-        this.serviceLevelRole = serviceLevelRole;
+    public void setDomainCode(String domainCode) {
+        this.domainCode = domainCode;
     }
 
-    public String getGovAgencyCodeRole() {
-        return govAgencyCodeRole;
+    public String getDomainName() {
+        return domainName;
     }
 
-    public void setGovAgencyCodeRole(String govAgencyCodeRole) {
-        this.govAgencyCodeRole = govAgencyCodeRole;
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
     }
 
-    public String getServiceLevel() {
+    public long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(long groupId) {
+        this.groupId = groupId;
+    }
+
+    public int getServiceLevel() {
         return serviceLevel;
     }
 
-    public void setServiceLevel(String serviceLevel) {
+    public void setServiceLevel(int serviceLevel) {
         this.serviceLevel = serviceLevel;
     }
 
@@ -345,62 +334,6 @@ public class DictItemModel {
         this.treeIndex = value;
     }
 
-    /**
-     * Gets the value of the parentItem property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the parentItem property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getParentItem().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link ParentItem }
-     * 
-     * 
-     */
-    public List<ParentItem> getParentItem() {
-        if (parentItem == null) {
-            parentItem = new ArrayList<ParentItem>();
-        }
-        return this.parentItem;
-    }
 
-    /**
-     * Gets the value of the groups property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the groups property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getGroups().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Groups }
-     * 
-     * 
-     */
-    public List<Groups> getGroups() {
-        if (groups == null) {
-            groups = new ArrayList<Groups>();
-        }
-        return this.groups;
-    }
 
 }

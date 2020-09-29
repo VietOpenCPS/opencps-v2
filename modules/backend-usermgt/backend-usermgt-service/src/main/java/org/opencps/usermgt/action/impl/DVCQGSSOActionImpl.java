@@ -148,12 +148,13 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 	@Override
 	public JSONObject getUserInfo(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String authToken, String state) {
+			String authToken, String stateUnUse) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
 
 		JSONObject result = null;
 		String id_token = StringPool.BLANK;
 		String accessToken = StringPool.BLANK;
+		String state = null;
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
 
@@ -680,13 +681,12 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		session = request.getSession(true);
 
 		for (String protectedAttributeName : protectedAttributeNames) {
-			Object protectedAttributeValue = protectedAttributes.get(protectedAttributeName);
 
-			if (protectedAttributeValue == null) {
+			if (protectedAttributes.get(protectedAttributeName) == null) {
 				continue;
 			}
 
-			session.setAttribute(protectedAttributeName, protectedAttributeValue);
+			session.setAttribute(protectedAttributeName, protectedAttributes.get(protectedAttributeName));
 		}
 
 		return session;

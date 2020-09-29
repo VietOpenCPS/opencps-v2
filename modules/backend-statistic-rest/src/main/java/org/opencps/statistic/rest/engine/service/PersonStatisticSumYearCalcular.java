@@ -604,9 +604,10 @@ public class PersonStatisticSumYearCalcular {
 			veryGoodCount += data.getVeryGoodCount();
 			goodCount += data.getGoodCount();
 		}
+		
 		//Calculate percent option answer
-		int percentVeryGood = veryGoodCount * 100 / totalVoted;
-		int percentGood = goodCount * 100 / totalVoted;
+		int percentVeryGood = totalVoted > 0 ? veryGoodCount * 100 / totalVoted : 100;
+		int percentGood = totalVoted > 0 ? goodCount * 100 / totalVoted : 100;
 		int percentBad = 100 - (percentVeryGood + percentGood);
 		// set value in object
 		votingData.setPercentVeryGood(percentVeryGood);
@@ -620,7 +621,7 @@ public class PersonStatisticSumYearCalcular {
 		votingData.setYear(year);
 		votingData.setVotingCode(votingCode);
 		votingData.setVotingSubject(votingSubject);
-		votingData.setEmployeeId(employeeId);
+		votingData.setEmployeeId(Validator.isNotNull(employeeId) ? employeeId : null);
 		votingData.setGovAgencyCode(govAgencyCode);
 		votingData.setGovAgencyName(govAgencyName);
 		votingData.setCompanyId(companyId);

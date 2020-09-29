@@ -455,6 +455,16 @@ public abstract class PostConnectLocalServiceBaseImpl
 		return postConnectPersistence.findByUUID_G(uuid, groupId);
 	}
 
+	@Override
+	public PostConnect findByPostByDossierIdAndPostType(long groupId, long dossierId, int postType) throws PortalException {
+		return postConnectPersistence.findByF_POST_BY_D_TYPE(groupId,dossierId,postType);
+	}
+
+	@Override
+	public List<PostConnect> findByPostConnectByDossierId(long groupId, long dossierId) throws PortalException {
+		return postConnectPersistence.findByF_POST_BY_DOSSIER_ID(groupId,dossierId);
+	}
+
 	/**
 	 * Returns a range of all the post connects.
 	 *

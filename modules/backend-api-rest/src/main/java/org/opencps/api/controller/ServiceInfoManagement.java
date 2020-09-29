@@ -27,6 +27,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.opencps.api.datamgt.model.DataSearchModel;
+import org.opencps.api.datamgt.model.DictItemResults;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplateResultsModel;
@@ -85,6 +87,48 @@ public interface ServiceInfoManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getStatisticByDomain(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("agency") String agency,
+			@ApiParam(value = "query params for search") @BeanParam ServiceInfoSearchModel search,
+			@Context Request requestCC);
+	@GET
+	@Path("/statistics/domains/serviceLevel")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Get StatisticByLevel", response = StatisticsLevelResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of ServiceInfo", response = StatisticsLevelResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response getStatisticByDomainServiceLevel(@Context HttpServletRequest request, @Context HttpHeaders header,
+										 @Context Company company, @Context Locale locale, @Context User user,
+										 @Context ServiceContext serviceContext, @QueryParam("agency") String agency,
+										 @ApiParam(value = "query params for search") @BeanParam ServiceInfoSearchModel search,
+										 @Context Request requestCC);
+
+	@GET
+	@Path("statistics/agency")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Get DictItem list of DictCollection", response = DictItemResults.class, notes = "Get DictItem list of DictCollection")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of ServiceInfo", response = StatisticsLevelResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response getDictItemsByRoles(@Context HttpServletRequest request, @Context HttpHeaders header,
+										@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+										@BeanParam DataSearchModel query, @Context Request requestCC);
+
+	@GET
+	@Path("/domains")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Get StatisticByLevel", response = StatisticsLevelResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of ServiceInfo", response = StatisticsLevelResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response getDomain(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @QueryParam("agency") String agency,
 			@ApiParam(value = "query params for search") @BeanParam ServiceInfoSearchModel search,

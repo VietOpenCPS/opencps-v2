@@ -4,31 +4,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ViettelPostUpdateOrder")
 public class ViettelPostUpdateOrder {
-    private Integer TYPE;
-    private String ORDER_NUMBER;
-    private String NOTE;
+    private ViettelPostDataUpdate DATA;
+    private String TOKEN;
 
-    public Integer getTYPE() {
-        return TYPE;
+    public ViettelPostDataUpdate getDATA() {
+        return DATA;
     }
 
-    public void setTYPE(Integer TYPE) {
-        this.TYPE = TYPE;
+    public void setDATA(ViettelPostDataUpdate DATA) {
+        this.DATA = DATA;
     }
 
-    public String getORDER_NUMBER() {
-        return ORDER_NUMBER;
+    public String getTOKEN() {
+        return TOKEN;
     }
 
-    public void setORDER_NUMBER(String ORDER_NUMBER) {
-        this.ORDER_NUMBER = ORDER_NUMBER;
-    }
-
-    public String getNOTE() {
-        return NOTE;
-    }
-
-    public void setNOTE(String NOTE) {
-        this.NOTE = NOTE;
+    public void setTOKEN(String TOKEN) {
+        this.TOKEN = TOKEN;
     }
 }

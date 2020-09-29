@@ -573,6 +573,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				formDataContent = AutoFillFormData.sampleDataBindingDeliverable(
 						dlvType.getMappingData(), dossier.getDossierId(),
 						serviceContext);
+				_log.info("Log formData :" + formDataContent.toString());
 			}
 			// else if (jsMappingData.has("deliverables")) {
 			// formDataContent = mappingContent(jsMappingData, jsFormData);
@@ -716,12 +717,29 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 									revalidate, APIDateTimeUtils._NORMAL_DATE)
 									: deliverable.getRevalidate());
 
-					formDataContent = mergeObject(
-							deliverable.getFormData(), formDataContent.toString());
+//					formDataContent = mergeObject(
+//							deliverable.getFormData(), formDataContent.toString());
+					formDataContent = AutoFillFormData.sampleDataBindingDeliverable(
+							dlvType.getMappingData(), dossier.getDossierId(),
+							serviceContext);
+					if(Validator.isNotNull(formDataContent)) {
+						if (formDataContent.has(DeliverableTerm.DELIVERABLE_CODE)) {
+							formDataContent.remove(DeliverableTerm.DELIVERABLE_CODE);
+						}
+						if (formDataContent.has(DeliverableTerm.GOV_AGENCY_CODE)) {
+							formDataContent.remove(DeliverableTerm.GOV_AGENCY_CODE);
+						}
+						if (formDataContent.has(DeliverableTerm.DELIVERABLE_STATE)) {
+							formDataContent.remove(DeliverableTerm.DELIVERABLE_STATE);
+						}
+						if (formDataContent.has(DeliverableTerm.ISSUE_DATE)) {
+							formDataContent.remove(DeliverableTerm.ISSUE_DATE);
+						}
+					}
 					deliverable.setFormData(formDataContent.toString());
 
 					deliverable.setFileAttachs(fileAttachs);
-					_log.info("UPDATE Deliverable :" + JSONFactoryUtil.looseSerialize(deliverable));
+					_log.info("UPDATE Deliverable :" + deliverable.getFormData());
 
 					DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 				}

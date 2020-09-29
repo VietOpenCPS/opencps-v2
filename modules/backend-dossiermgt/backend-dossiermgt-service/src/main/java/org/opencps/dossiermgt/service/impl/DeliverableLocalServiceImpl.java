@@ -1417,7 +1417,7 @@ public class DeliverableLocalServiceImpl
 		if (objectData.getLong(DeliverableTerm.FILE_ENTRY_ID) > 0) {
 			object.setFileEntryId(objectData.getLong(DeliverableTerm.FILE_ENTRY_ID));
 		}
-		object.setDeliverableState(Integer.valueOf(objectData.getInt(DeliverableTerm.DELIVERABLE_STATE, 1)));
+		object.setDeliverableState(objectData.getInt(DeliverableTerm.DELIVERABLE_STATE, 1));
 
 		String deliverableType = objectData.getString(DeliverableTerm.DELIVERABLE_TYPE);
 		object.setDeliverableType(deliverableType);
@@ -1494,24 +1494,21 @@ public class DeliverableLocalServiceImpl
 
 				try {
 					DLFileEntry dlFileEntry =
-						DLFileEntryLocalServiceUtil.getFileEntry(
-								object.getFormReportFileId());
+							DLFileEntryLocalServiceUtil.getFileEntry(
+									object.getFormReportFileId());
 
 					is = dlFileEntry.getContentStream();
 
 					result = IOUtils.toString(is, StandardCharsets.UTF_8);
 
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					_log.debug(e);
 					result = StringPool.BLANK;
-				}
-				finally {
+				} finally {
 					if (is != null) {
 						try {
 							is.close();
-						}
-						catch (IOException e) {
+						} catch (IOException e) {
 							_log.debug(e);
 						}
 					}
@@ -1520,15 +1517,17 @@ public class DeliverableLocalServiceImpl
 			// Process update deliverable file Id
 			Message message = new Message();
 			// _log.info("Document script: " + dt.getDocumentScript());
-			JSONObject msgData = JSONFactoryUtil.createJSONObject();
-			msgData.put(ConstantUtils.CLASS_NAME, Deliverable.class.getName());
-			msgData.put(Field.CLASS_PK, object.getDeliverableId());
-			msgData.put(ConstantUtils.JRXML_TEMPLATE, result);
-			msgData.put( ConstantUtils.FORM_DATA, objectData);
-			msgData.put(Field.USER_ID, objectData.getLong(Field.USER_ID));
-			message.put(ConstantUtils.MSG_ENG, msgData);
-			MessageBusUtil.sendMessage(
-					ConstantUtils.JASPER_DESTINATION, message);
+			if (Validator.isNotNull(result)) {
+				JSONObject msgData = JSONFactoryUtil.createJSONObject();
+				msgData.put(ConstantUtils.CLASS_NAME, Deliverable.class.getName());
+				msgData.put(Field.CLASS_PK, object.getDeliverableId());
+				msgData.put(ConstantUtils.JRXML_TEMPLATE, result);
+				msgData.put(ConstantUtils.FORM_DATA, objectData);
+				msgData.put(Field.USER_ID, objectData.getLong(Field.USER_ID));
+				message.put(ConstantUtils.MSG_ENG, msgData);
+				MessageBusUtil.sendMessage(
+						ConstantUtils.JASPER_DESTINATION, message);
+			}
 		}
 
 		return object;
@@ -1685,27 +1684,14 @@ public class DeliverableLocalServiceImpl
 						}
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 					}else
-					if(entry.getValue().contains(StringPool.SPACE)
-//							|| entry.getValue().contains(StringPool.PERIOD)
-							&& !"".equals(entry.getValue())){
-//						String[] keywordArr = {""};
-//						if(entry.getValue().contains(StringPool.SPACE)){
+					if(entry.getValue().contains(StringPool.SPACE) && !"".equals(entry.getValue())){
 						String[] keywordArr = entry.getValue().split(StringPool.SPACE);
-//						}else if(entry.getValue().contains(StringPool.PERIOD)){
-//							String[] keyArr = entry.getValue().split(StringPool.PERIOD);
-//							for (String keyValue : keyArr) {
-//								WildcardQuery wildQuery = new WildcardQueryImpl(
-//										key.split("@")[0],
-//										StringPool.STAR + keyValue.toLowerCase() + StringPool.STAR);
-////								query.add(wildQuery, BooleanClauseOccur.SHOULD);
-//							}
-//						}
 							BooleanQuery query = new BooleanQueryImpl();
 							for (String keyValue : keywordArr) {
 								WildcardQuery wildQuery = new WildcardQueryImpl(
 										key.split("@")[0],
 										StringPool.STAR + keyValue.toLowerCase() + StringPool.STAR);
-								query.add(wildQuery, BooleanClauseOccur.SHOULD);
+								query.add(wildQuery, BooleanClauseOccur.MUST);
 							}
 						booleanQuery.add(query, BooleanClauseOccur.MUST);
 					}else {
@@ -1714,9 +1700,13 @@ public class DeliverableLocalServiceImpl
 							if(Validator.isNotNull(employee)){
 								String listScope = employee.getScope();
 								if (listScope.contains(StringPool.COMMA)) {
-									String[] keywordArr = listScope.split(StringPool.COMMA);
-									MultiMatchQuery query = new MultiMatchQuery(keywordArr[0]);
-									query.addFields(key.split("@")[0]);
+									String[] keyScope = listScope.split(StringPool.COMMA);
+									BooleanQuery query = new BooleanQueryImpl();
+									for(String value: keyScope){
+										MultiMatchQuery multiMatchQuery = new MultiMatchQuery(value);
+										multiMatchQuery.addFields(key.split("@")[0]);
+										query.add(multiMatchQuery, BooleanClauseOccur.SHOULD);
+									}
 									booleanQuery.add(query, BooleanClauseOccur.MUST);
 								}
 							} else {
@@ -1737,17 +1727,27 @@ public class DeliverableLocalServiceImpl
 				} else if (key.contains("@EQUAL")) {
 					 if(entry.getValue().contains(StringPool.FORWARD_SLASH)){
 					 	String keywordDate = SpecialCharacterUtils.splitSpecial(entry.getValue());
+
+//					 	MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+//					 	query.addFields(key.split("@")[0]);
+//					 	queryBool.add(query, BooleanClauseOccur.MUST);
+
 					 	if(key.split("@")[0].contains(DeliverableTerm.NGAY_SINH)){
 							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
 							query.addFields(DeliverableTerm.NGAYSINH_SEARCH);
 							queryBool.add(query, BooleanClauseOccur.MUST);
-						}else if(key.split("@")[0].contains(DeliverableTerm.NGAY_QD)){
+						}
+					 	else if(key.split("@")[0].contains(DeliverableTerm.NGAY_QD)){
 							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
 							query.addFields(DeliverableTerm.NGAY_QD_SEARCH);
 							queryBool.add(query, BooleanClauseOccur.MUST);
 						}else if(key.split("@")[0].contains(DeliverableTerm.ISSUE_DATE)){
 							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
 							query.addFields(DeliverableTerm.ISSUE_DATE_SEARCH);
+							queryBool.add(query, BooleanClauseOccur.MUST);
+						}else if(key.split("@")[0].contains(DeliverableTerm.NGAY_CAP)){
+							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+							query.addFields(DeliverableTerm.NGAY_CAP_SEARCH);
 							queryBool.add(query, BooleanClauseOccur.MUST);
 						}
 					}else {
