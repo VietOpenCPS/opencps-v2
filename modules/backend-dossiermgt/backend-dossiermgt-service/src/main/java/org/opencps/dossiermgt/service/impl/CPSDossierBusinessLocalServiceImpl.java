@@ -2616,7 +2616,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				_log.info(1231231231);
 				_log.info("==========VTPayTerm.KP_DVCQG_CONFIG========" + epaymentConfigJSON);
+				_log.info(11111);
 				if (epaymentConfigJSON.has(KeyPayTerm.KP_DVCQG_CONFIG)) {
 					try {
 						epaymentProfileJsonNew.put(KeyPayTerm.KPDVCQG, true);
@@ -2627,6 +2629,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+
+
+				_log.info(22222);
 				if (epaymentConfigJSON.has(KeyPayTerm.PP_DVCGQ_CONFIG)) {
 					try {
 						epaymentProfileJsonNew.put(KeyPayTerm.PP_KPDVCQG, true);
@@ -2637,6 +2642,20 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				_log.info(333333);
+				_log.info("==========Payment before add paygov111: " + epaymentConfigJSON);
+				if (epaymentConfigJSON.has(KeyPayTerm.PAYGOV_CONFIG)) {
+					try {
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PAYGOV_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.PAYGOV_CONFIG, schema);
+						paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+								epaymentProfileJsonNew.toJSONString(), context);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+
+				}
+				_log.info("==========Payment after add paygov111: " + epaymentConfigJSON);
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (IOException e) {
@@ -2775,6 +2794,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 
 			}
+			_log.info("==========Payment before add paygov222: " + epaymentConfigJSON);
+			if (epaymentConfigJSON.has(KeyPayTerm.PAYGOV_CONFIG)) {
+				try {
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PAYGOV_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.PAYGOV_CONFIG, schema);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfileJSON.toJSONString(), context);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			_log.info("==========Payment after add paygov222: " + epaymentConfigJSON);
 		}
 		return oldPaymentFile;
 	}

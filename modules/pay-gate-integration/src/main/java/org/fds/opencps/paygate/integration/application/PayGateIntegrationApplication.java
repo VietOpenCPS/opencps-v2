@@ -1,6 +1,7 @@
 package org.fds.opencps.paygate.integration.application;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -307,6 +308,26 @@ public class PayGateIntegrationApplication extends Application {
 		JSONObject result = actionImpl.ppConfirmTransactionPaygov(user, serviceContext, body);
 
 		return Response.status(200).entity(result.toJSONString()).build();
+	}
+
+	@GET
+	@Path("/paygov/urlRedirect")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getUrlRedirectToPaygov(@Context HttpServletRequest request, @Context HttpServletResponse response,
+											   @Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+											   @Context ServiceContext serviceContext, @FormParam("dossierId") long dossierId,
+										   @FormParam("ipAddress") String ipAddress) {
+
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			result.put("url", actionImpl.getUrlRedirectToPaygov(dossierId, ipAddress));
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			return Response.status(404).entity(e.getMessage()).build();
+		}
 	}
 
 	/**

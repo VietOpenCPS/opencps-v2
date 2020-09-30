@@ -49,6 +49,8 @@ public interface PayGateIntegrationAction {
 
 	public JSONObject ppConfirmTransactionPaygov(User user, ServiceContext serviceContext, String body);
 
+	public String getUrlRedirectToPaygov(long dossierId, String ipAddress) throws Exception;
+
 	public String ppGetReceipt(User user, long groupId, long dosssierId, ServiceContext serviceContext);
 	
 	public JSONObject doSyncServiceConfig(User user, long groupId, String requestBody, ServiceContext context);
