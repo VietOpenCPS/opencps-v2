@@ -26,8 +26,7 @@ import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 public class BCTSMSUtils {
 
 	public static String sendSMS(
-		long groupId, String classPK, String body, String title, String toTelNo)
-		throws RemoteException, ServiceException {
+			long groupId, String classPK, String body, String title, String toTelNo, String dossierNo) {
 
 		//CcApi_ServiceLocator locator = new CcApi_ServiceLocator();
 		//CcApi_PortType portType;
@@ -97,12 +96,12 @@ public class BCTSMSUtils {
 					postData.append("&");
 					postData.append("sale_order_id");
 					postData.append("=");
-					postData.append("BZ" + classPK);
+					postData.append(dossierNo);
 					//
 					postData.append("&");
 					postData.append("content");
 					postData.append("=");
-					postData.append(body + " BZ" + classPK);
+					postData.append(body);
 
 
 					apiUrl = serverUrl + "/send-sms";

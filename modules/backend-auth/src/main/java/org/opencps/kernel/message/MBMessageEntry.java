@@ -102,7 +102,7 @@ public class MBMessageEntry {
 	private String emailSubject;
 	private String emailBody;
 	private String textMessage;
-	
+
 	private String zaloAccessToken;
 	private Map<Long, String> mappingZaloUid;
 	
@@ -157,6 +157,7 @@ public class MBMessageEntry {
 	private String attachementName;
 	private String className;
 	private String toTelNo;
+	private String dossierNo;
 
 	public long getGroupId() {
 
@@ -474,4 +475,11 @@ public class MBMessageEntry {
 		this.sendZalo = sendZalo;
 	}
 
+	public String getDossierNo() {
+		return dossierNo;
+	}
+
+	public void setDossierNo(String dossierNo) {
+		this.dossierNo = dossierNo;
+	}
 }

@@ -98,7 +98,9 @@ import javax.xml.bind.annotation.XmlType;
     "invoiceNo",
     "invoicePayload",
     "einvoice",
-    "paymentFileId"
+    "paymentFileId",
+    "address",
+    "orderId"
 })
 @XmlRootElement(name = "PaymentFileModel")
 public class PaymentFileModel {
@@ -136,6 +138,9 @@ public class PaymentFileModel {
     protected String invoicePayload;
     protected String einvoice;
     protected Long paymentFileId;
+    protected String address;
+    protected String orderId;
+
 
     /**
      * Gets the value of the createDate property.
@@ -913,4 +918,19 @@ public class PaymentFileModel {
 		this.paymentFileId = paymentFileId;
 	}
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 }
