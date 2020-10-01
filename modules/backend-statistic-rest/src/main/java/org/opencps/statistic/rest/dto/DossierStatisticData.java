@@ -317,17 +317,13 @@ public class DossierStatisticData {
 	private long companyId;
 	private long groupId;
 	private String system;
-	
-	// Hồ sơ trả kết quả qua bưu chính
 	private int viaPostalCount;
 	private int saturdayCount;
 	private int dossierOnline3Count;
 	private int dossierOnline4Count;
 	private int receiveDossierSatCount;
 	private int releaseDossierSatCount;
-	private String groupAgencyCode;
-	
-	// Hồ sơ tiếp nhận qua bưu chính
+	private String groupAgencyCode;	
 	private int fromViaPostalCount;
 	private int onlineBetimesCount = 0;
 	private int onlineOntimeCount = 0;
@@ -347,8 +343,6 @@ public class DossierStatisticData {
 	private int onegateReleaseBetimesCount = 0;
 	private int onegateReleaseOntimeCount = 0;
 	private int onegateReleaseOvertimeCount = 0;	
-	// Hồ sơ trả kết quả trực tiếp tại một cửa
-	private int onegateDoneCount = 0;
 		
 	
 	public int getFromViaPostalCount() {
@@ -527,12 +521,4 @@ public class DossierStatisticData {
 		this.onegateReleaseOvertimeCount = onegateReleaseOvertimeCount;
 	}
 
-	public int getOnegateDoneCount() {
-		return onegateDoneCount;
-	}
-
-	public void setOnegateDoneCount(int onegateDoneCount) {
-		this.onegateDoneCount = onegateDoneCount;
-	}
-		
 }

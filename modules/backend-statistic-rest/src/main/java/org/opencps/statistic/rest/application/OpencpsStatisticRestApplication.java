@@ -391,7 +391,6 @@ public class OpencpsStatisticRestApplication extends Application {
 						model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
 						model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
 						model.setFromViaPostal(GetterUtil.getInteger(doc.get(DossierTerm.FROM_VIA_POSTAL)));
-						model.setVnpostalStatus(GetterUtil.getInteger(doc.get(DossierTerm.VNPOSTAL_STATUS)));
 						
 						dossierData.add(model);
 					}

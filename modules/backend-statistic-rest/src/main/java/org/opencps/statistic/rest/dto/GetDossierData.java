@@ -22,7 +22,6 @@ public class GetDossierData {
 	private int serviceLevel;
 	private int fromViaPostal;
 	private String dossierNo;
-	private int vnpostalStatus;
 
 	public String getDossierNo() {
 		return dossierNo;
@@ -183,14 +182,6 @@ public class GetDossierData {
 
 	public void setSystem(String system) {
 		this.system = system;
-	}
-
-	public int getVnpostalStatus() {
-		return vnpostalStatus;
-	}
-
-	public void setVnpostalStatus(int vnpostalStatus) {
-		this.vnpostalStatus = vnpostalStatus;
 	}
 
 }
