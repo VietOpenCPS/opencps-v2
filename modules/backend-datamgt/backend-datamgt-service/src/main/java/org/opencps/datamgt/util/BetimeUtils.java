@@ -1,13 +1,19 @@
 package org.opencps.datamgt.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.WorkTime;
 import org.opencps.datamgt.service.WorkTimeLocalServiceUtil;
 
@@ -20,6 +26,10 @@ public class BetimeUtils {
 	private static int DEFAULT_START_PM_MINUTE = 30;
 	private static int DEFAULT_END_PM_HOUR = 17;
 	private static int DEFAULT_END_PM_MINUTE = 0;
+	//Caculate dueDate by day
+	private static final Boolean CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.dueDate.day.enable"))
+			? Boolean.valueOf(PropsUtil.get("opencps.statistic.dossier.dueDate.day.enable")) : false;
+	private static final String _VN_DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss";
 	
 	public static Integer getValueCompareRelease(long groupId, Date releaseDate, Date dueDate) {
 		if (dueDate == null || Validator.isNull(dueDate)) return 3;
@@ -97,6 +107,17 @@ public class BetimeUtils {
 		c.set(Calendar.HOUR_OF_DAY, timeCompareH);
 		c.set(Calendar.MINUTE, timeCompareM);
 		Date betimeDate = c.getTime();
+		if(CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
+			
+			String releaseDateTem = DateTimeUtils.convertDateToString(releaseDate, _VN_DATE_TIME_FORMAT);
+			releaseDate = APIDateTimeUtils.convertStringToDate(releaseDateTem, APIDateTimeUtils._NORMAL_DATE);
+			String dueDateTem = DateTimeUtils.convertDateToString(dueDate, _VN_DATE_TIME_FORMAT);
+			dueDate = APIDateTimeUtils.convertStringToDate(dueDateTem, APIDateTimeUtils._NORMAL_DATE);
+			DateFormat dateFormat =
+					DateFormatFactoryUtil.getSimpleDateFormat(_VN_DATE_TIME_FORMAT);
+			String betimeDateTem = dateFormat.format(betimeDate);
+			betimeDate = APIDateTimeUtils.convertStringToDate(betimeDateTem, APIDateTimeUtils._NORMAL_DATE);			
+		}
 		if (releaseDate.before(betimeDate)) {
 			return 3;
 		}
@@ -105,5 +126,7 @@ public class BetimeUtils {
 		}
 		
 		return 1;
-	}	
+	}
+	
+	static Log _log = LogFactoryUtil.getLog(BetimeUtils.class);
 }

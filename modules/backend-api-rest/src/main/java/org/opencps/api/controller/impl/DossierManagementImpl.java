@@ -1863,7 +1863,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
-				//throw new UnauthenticationException();
+				throw new UnauthenticationException();
 			}
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
