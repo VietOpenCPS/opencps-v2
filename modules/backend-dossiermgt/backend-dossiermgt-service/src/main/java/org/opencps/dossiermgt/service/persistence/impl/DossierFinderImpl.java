@@ -1,10 +1,7 @@
 package org.opencps.dossiermgt.service.persistence.impl;
 
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
-import com.liferay.portal.kernel.dao.orm.QueryPos;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.SQLQuery;
-import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.dao.orm.*;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -27,6 +24,7 @@ public class DossierFinderImpl extends DossierFinderBaseImpl implements DossierF
 	Log _log = LogFactoryUtil.getLog(DossierFinderImpl.class);
 	public static final String FIND_DOSSIER_BY_DAY = DossierFinder.class.getName() + ".findDossierByDay";
 	public static final String FIND_DOSSIER_BY_DECLARATION_CODE = DossierFinder.class.getName() + ".findDossierByDeclarationCode";
+	public static final String GET_VOTING_BY_DOSSIER = DossierFinder.class.getName() + ".getListVotingByDossier";
 
 
 	@Override
@@ -57,6 +55,46 @@ public class DossierFinderImpl extends DossierFinderBaseImpl implements DossierF
 			e.printStackTrace();
 		} finally {
 			closeSession(session);
+		}
+		return null;
+	}
+
+	@Override
+	public List<Object[]> getListVotingByDossier(long groupId, List<String> listDossier) {
+		Session session;
+		try {
+			session = openSession();
+			StringBuilder listDossierWithComma = new StringBuilder();
+			int lengthListDossierId = listDossier.size();
+			for(int i=0; i<=lengthListDossierId - 1; i++) {
+				if(i == (lengthListDossierId - 1)) {
+					listDossierWithComma.append(listDossier.get(i));
+				} else {
+					listDossierWithComma.append(listDossier.get(i)).append(",");
+				}
+			}
+
+			String sql = "select OV.classPK, OV.votingCode, OV.votingId, OV.subject, sum(case when OVR.selected = 1 then 2 " +
+					"    when OVR.selected = 2 then 1 " +
+					"                       when OVR.selected = 3 then 0 " +
+					"                       else 0 end) as point " +
+					"            from opencps_voting OV left join opencps_votingresult OVR on ov.votingId = OVR.votingId " +
+					"            where OV.groupId = " + groupId +" and OV.classPK in (" + listDossierWithComma.toString() + ") " +
+					"            group by OV.votingId " +
+					"            order by votingId asc";
+
+			_log.info("Query get list voting: " + sql);
+			SQLQuery query = session.createSQLQuery(sql);
+			query.setCacheable(false);
+			query.addScalar("classPK", Type.STRING);
+			query.addScalar("votingCode", Type.STRING);
+			query.addScalar("votingId", Type.INTEGER);
+			query.addScalar("subject", Type.STRING);
+			query.addScalar("point",Type.INTEGER);
+
+			return (List<Object[]>) query.list();
+		} catch (Exception e) {
+			_log.error(e.getMessage());
 		}
 		return null;
 	}

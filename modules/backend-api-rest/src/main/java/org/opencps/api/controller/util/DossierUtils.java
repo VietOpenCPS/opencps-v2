@@ -568,6 +568,15 @@ public class DossierUtils {
 			model.setProcessNo(doc.get(DossierTerm.PROCESS_NO));
 			model.setPostalCodeSend(doc.get(DossierTerm.POSTAL_CODE_SEND));
 			model.setPostalCodeReceived(doc.get(DossierTerm.POSTAL_CODE_RECEIVED));
+			model.setVotingCode1("");
+			model.setVotingCode2("");
+			model.setVotingCode3("");
+			model.setVotingName1("");
+			model.setVotingName2("");
+			model.setVotingName3("");
+			model.setResultVotingCode1(0);
+			model.setResultVotingCode2(0);
+			model.setResultVotingCode3(0);
 			ouputs.add(model);
 		}
 

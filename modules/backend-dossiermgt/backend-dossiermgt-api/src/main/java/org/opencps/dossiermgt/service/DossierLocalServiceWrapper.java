@@ -690,6 +690,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		return _dossierLocalService.getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public java.util.List<Object[]> getListVotingByDossier(long groupId,
+		java.util.List<String> listDossier) {
+		return _dossierLocalService.getListVotingByDossier(groupId, listDossier);
+	}
+
 	/**
 	* Returns the OSGi service identifier.
 	*
