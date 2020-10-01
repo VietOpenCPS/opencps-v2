@@ -2,6 +2,7 @@ package org.opencps.statistic.rest.engine.service;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Calendar;
@@ -19,6 +20,8 @@ public class StatisticEngineFetchEntry {
 	private static final int USED_POSTAL = 2;
 //	private static final int NOT_USED_POSTAL = 1;
 	protected Log _log = LogFactoryUtil.getLog(StatisticEngineFetchEntry.class);
+	private static final Boolean VIAPOSTAL_ENABLE = Validator.isNotNull(PropsUtil.get("opencps.statistic.viapostal.enable"))
+			? Boolean.valueOf(PropsUtil.get("opencps.statistic.viapostal.enable")) : false;
 	
 	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData,
 			Date fromStatisticDate, Date toStatisticDate, int reporting) {
@@ -215,10 +218,10 @@ public class StatisticEngineFetchEntry {
 		//
 		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
 		int viaPostalCount = dossierData.getViaPostal();
-		if (viaPostalCount == USED_POSTAL) {
+		if (!VIAPOSTAL_ENABLE && viaPostalCount == USED_POSTAL) {
 			statisticData.setViaPostalCount(statisticData.getViaPostalCount() + 1);
 		}
-		if (!dossierData.getOnline() && dossierData.getFromViaPostal() > 0) {
+		if (!VIAPOSTAL_ENABLE && !dossierData.getOnline() && dossierData.getFromViaPostal() > 0) {
 			statisticData.setFromViaPostalCount(statisticData.getFromViaPostalCount() + 1);
 		}
 		Calendar receivedStatistic = Calendar.getInstance();
@@ -259,6 +262,12 @@ public class StatisticEngineFetchEntry {
 				} else {
 					statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 				}
+				// add by phuc - hồ sơ nhận qua buu chinh (gửi từ dân)
+				if (VIAPOSTAL_ENABLE) {
+					if (dossierData.getFromViaPostal() == 1 || dossierData.getVnpostalStatus() >= 1) {
+						statisticData.setFromViaPostalCount(statisticData.getFromViaPostalCount() + 1);
+					}
+				}				
 			} else {
 				// ton ky truoc
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
@@ -315,7 +324,15 @@ public class StatisticEngineFetchEntry {
 						if (finishDate != null
 								&& fromStatisticDate.before(finishDate) && toStatisticDate.after(finishDate)) {
 							// số đã trả kết quả
-							statisticData.setDoneCount(statisticData.getDoneCount() + 1);								
+							statisticData.setDoneCount(statisticData.getDoneCount() + 1);
+							// add by phuchn - hồ sơ trả kết quả trực tiếp, qua bưu chính
+							if (VIAPOSTAL_ENABLE) {
+								if (dossierData.getViaPostal() < 1) { 
+									statisticData.setOnegateDoneCount(statisticData.getOnegateCount() + 1);
+									}else {
+										statisticData.setViaPostalCount(statisticData.getViaPostalCount() + 1);
+									}
+							}						
 						} else {
 							statisticData.setReleasingCount(statisticData.getReleasingCount() + 1);
 						}

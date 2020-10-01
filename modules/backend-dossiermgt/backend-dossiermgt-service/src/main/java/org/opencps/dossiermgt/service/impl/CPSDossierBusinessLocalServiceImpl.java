@@ -9162,10 +9162,29 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					JSONFactoryUtil.createJSONObject();
 			String dueDateStr = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(dueDate);
 			String receiveDateStr = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(receiveDate);
+			
+			JSONObject phase = JSONFactoryUtil.createJSONObject();
+			JSONArray dueDatePhases = JSONFactoryUtil.createJSONObject(dueDatePattern).getJSONArray("dueDatePhase");
+			switch (dateOption) {
+			case 11:
+				phase = dueDatePhases.getJSONObject(0);
+				break;
+			case 12:
+				phase = dueDatePhases.getJSONObject(1);
+				break;
+			case 13:
+				phase = dueDatePhases.getJSONObject(2);
+				break;
+
+			default:
+				break;
+			}
+			
 			metaData.put(DossierTerm.DATE_OPTION + dateOption, dueDateStr);
 			metaData.put(DossierTerm.DATE_OPTION_RECEIVER + dateOption, receiveDateStr);
 			metaData.put(DossierTerm.DATE_OPTION_DURATION + dateOption, duration);
-			metaData.put(DossierTerm.DUE_DATE_PATTERN, JSONFactoryUtil.createJSONObject(dueDatePattern));
+			metaData.put(DossierTerm.WORK_DAY + dateOption, phase.getDouble("workDay", 0D) );
+			metaData.put(DossierTerm.ALL_DAY + dateOption, phase.getInt("allDay", 0));
 			_log.info("===============metaData==========" +metaData);
 			return metaData.toJSONString();
 		} catch (Exception e) {

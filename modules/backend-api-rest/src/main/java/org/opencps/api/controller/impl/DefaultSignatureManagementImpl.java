@@ -1337,7 +1337,7 @@ public class DefaultSignatureManagementImpl
 		long userId = user.getUserId();
 
 		if (!auth.isAuth(serviceContext)) {
-			throw new UnauthenticationException();
+			//throw new UnauthenticationException();
 		}
 
 		String[] fileEntryIdArr = StringUtil.split(fileEntries);
