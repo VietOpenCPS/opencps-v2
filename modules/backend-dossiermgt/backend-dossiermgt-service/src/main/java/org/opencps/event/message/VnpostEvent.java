@@ -138,8 +138,14 @@ public class VnpostEvent implements MessageListener {
 			params.put(KeyPayTerm.RECEIVERNAME, dossierObj.getString(DossierTerm.DELEGATE_NAME));
 			params.put(KeyPayTerm.RECEIVERADDRESS, dossierObj.get(DossierTerm.POSTAL_ADDRESS));
 			params.put(KeyPayTerm.RECEIVERTEL, dossierObj.getString(DossierTerm.POSTAL_TEL_NO));
-			params.put(KeyPayTerm.RECEIVERPROVINCE, dossierObj.getString(DossierTerm.POSTAL_CITY_CODE));
-			params.put(KeyPayTerm.RECEIVERDISTRICT, dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE));
+//			params.put(KeyPayTerm.RECEIVERPROVINCE, dossierObj.getString(DossierTerm.POSTAL_CITY_CODE));
+//			params.put(KeyPayTerm.RECEIVERDISTRICT, dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE));
+			String vnPostalProfile = dossierObj.getString(DossierTerm.VNPOSTAL_PROFILE);
+			JSONObject profileSenderJson = JSONFactoryUtil.createJSONObject(vnPostalProfile);
+			String receiveDistrict =  Validator.isNotNull(profileSenderJson.getString(DossierTerm.POSTAL_DISTRICT_CODE))?
+					profileSenderJson.getString(DossierTerm.POSTAL_DISTRICT_CODE): "0";
+			String receiveProvince = Validator.isNotNull(profileSenderJson.getString(DossierTerm.POSTAL_CITY_CODE))?
+					profileSenderJson.getString(DossierTerm.POSTAL_CITY_CODE): "0";
 			params.put(KeyPayTerm.RECEIVEREMAIL, dossierObj.getString(DossierTerm.DELEGATE_EMAIL));
 			params.put(VnpostCollectionTerm.SENDER_DESC, createVnpostSenderDesc(dossier, false));
 

@@ -63,6 +63,7 @@ import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoMappingTerm;
 import org.opencps.dossiermgt.exception.HasExsistException;
 import org.opencps.dossiermgt.exception.RequiredAgencyCodeException;
 import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
@@ -405,9 +406,12 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		}
 
 		if (Validator.isNotNull(service)) {
+			
+			BooleanQuery serviceQuery = new BooleanQueryImpl();
 			MultiMatchQuery query = new MultiMatchQuery(service);
 
-			query.addFields(ServiceConfigTerm.SERVICE_CODE);
+			query.addFields(ServiceConfigTerm.SERVICE_CODE, ServiceInfoMappingTerm.SERVICE_CODE_DVCQG);
+			serviceQuery.add(query, BooleanClauseOccur.SHOULD);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -447,6 +451,8 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
+		System.out.println("====================booleanQuery=========================");
+		System.out.println(booleanQuery);
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
 
@@ -536,9 +542,11 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		}
 
 		if (Validator.isNotNull(service)) {
+			BooleanQuery serviceQuery = new BooleanQueryImpl();
 			MultiMatchQuery query = new MultiMatchQuery(service);
 
-			query.addFields(ServiceConfigTerm.SERVICE_CODE);
+			query.addFields(ServiceConfigTerm.SERVICE_CODE, ServiceInfoMappingTerm.SERVICE_CODE_DVCQG);
+			serviceQuery.add(query, BooleanClauseOccur.SHOULD);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

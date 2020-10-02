@@ -6,17 +6,19 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
 public class DueDatePhaseUtil {
 
-	public static final String ALL_DAY = "allDay";
-	public static final String WORK_DAY = "workDay";
-	public static final String DAY_OF_WEEK = "dayOfWeek";
-	public static final String DAY_OF_MONTH = "dayOfMonth";
-	public static final String MONTH = "month";
-	public static final String DUEDATE_PHASE = "dueDatePhase";
+	public static String ALL_DAY = "allDay";
+	public static String WORK_DAY = "workDay";
+	public static String DAY_OF_WEEK = "dayOfWeek";
+	public static String DAY_OF_MONTH = "dayOfMonth";
+	public static String MONTH = "month";
+	public static String DUEDATE_PHASE = "dueDatePhase";
+	public static String IS_WORK_DAY = "isWorkDay";
 
 	int dateOption;
 	long groupId;
@@ -67,9 +69,14 @@ public class DueDatePhaseUtil {
 				break;
 			}
 
-			if (phase.has(ALL_DAY) && phase.has(WORK_DAY)) {
+			if (phase.has(ALL_DAY) && phase.has(WORK_DAY) && !phase.has(IS_WORK_DAY)) {
 
 				setByAllDay(phase);
+			} else if (phase.has(ALL_DAY) && phase.has(WORK_DAY) && phase.has(IS_WORK_DAY)) {
+				String isWorkDay = phase.getString(IS_WORK_DAY);
+				if(isWorkDay.equals("true")) {
+				setByWorkDay(phase);
+				}
 			} else if (phase.has(DAY_OF_WEEK)) {
 
 				setByDayOfWeek(phase);
@@ -91,13 +98,32 @@ public class DueDatePhaseUtil {
 		int allDay = phase.getInt(ALL_DAY, 0);
 		double workDay = phase.getDouble(WORK_DAY, 0D);
 		Calendar calStartDate = Calendar.getInstance();
-
 		calStartDate.setTime(this.startDate);
 		calStartDate.add(Calendar.DATE, allDay);
 		DueDateUtils dueDateUtil = new DueDateUtils(calStartDate.getTime(), workDay, 0, this.groupId);
 		this.dueDate = dueDateUtil.getDueDate();
 		this.receiveDate = this.startDate;
 		this.duration = allDay + workDay;
+
+	}
+
+	private void setByWorkDay(JSONObject phase) {
+
+		int allDay = phase.getInt(ALL_DAY, 0);
+		double workDay = phase.getDouble(WORK_DAY, 0D);
+		Calendar calStartDate = Calendar.getInstance();
+		calStartDate.setTime(this.startDate);
+		DueDateUtils dueDateUtil = new DueDateUtils(calStartDate.getTime(), workDay, 0, this.groupId);
+		// caculate duedate
+		Date dueDateTem = dueDateUtil.getDueDate();
+		Calendar calDueDate = Calendar.getInstance();
+		calDueDate.setTime(dueDateTem);
+		calDueDate.add(Calendar.DATE, allDay);
+		this.dueDate = calDueDate.getTime();
+
+		this.receiveDate = this.startDate;
+		this.duration = workDay + allDay;
+
 	}
 
 	private void setByDayOfWeek(JSONObject phase) {

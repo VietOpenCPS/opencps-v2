@@ -78,7 +78,7 @@ public class PaymentUrlGenerator {
 		    
 	}
 	public static String generatorPayURL(long groupId, long paymentFileId, String pattern,
-			long dossierId) throws IOException {
+			Dossier dossier) {
 
 		String result = "";
 		try {
@@ -86,7 +86,7 @@ public class PaymentUrlGenerator {
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getPaymentFile(paymentFileId);
 
 			// get dossier
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			//Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
 					dossier.getGovAgencyCode());

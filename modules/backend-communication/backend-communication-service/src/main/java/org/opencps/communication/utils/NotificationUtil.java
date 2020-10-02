@@ -133,19 +133,20 @@ public class NotificationUtil {
 			}
 
 			String security = StringPool.BLANK;
+			String dossierNo = null;
 
 			try {
 
 				Object payload =
 					JSONFactoryUtil.looseDeserialize(queue.getPayload());
 
-				// JSONObject payloadJSON =
-				// JSONFactoryUtil.createJSONObject(queue.getPayload());
-				// if (payloadJSON.has("Visibility")) {
-				// security =
-				// payloadJSON.getJSONObject("Visibility").getString(
-				// "security");
-				// }
+				if (Validator.isNotNull(queue.getPayload())) {
+					JSONObject payloadJSON = JSONFactoryUtil.createJSONObject(queue.getPayload());
+					if (payloadJSON.has("Dossier")) {
+						dossierNo = payloadJSON.getJSONObject("Dossier") != null ? payloadJSON.
+								getJSONObject("Dossier").getString("dossierNo") : StringPool.BLANK;
+					}
+				}
 
 				// String guestConfirmUrl = guestBaseUrl +
 				// MailVariables.SUB_URL_ACTIVE +
@@ -243,6 +244,7 @@ public class NotificationUtil {
 				messageEntry.setToTelNo(queue.getToTelNo());
 				messageEntry.setNotifyMessage(template.getNotifyMessage());
 				messageEntry.setData(queue.getPayload());
+				messageEntry.setDossierNo(Validator.isNotNull(dossierNo) ? dossierNo : StringPool.BLANK);
 
 				// _log.info(emailBody);
 

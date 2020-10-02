@@ -44,6 +44,8 @@ public class VnPostTerm {
 	public static final String SERVER_CUSTOMERKEY = "customerKey";
 	public static final String SERVER_SECRETKEY = "secretKey";
 	public static final String SERVER_ACTIVE = "active";
+	public static final String SERVER_KEY_TOKEN_LGSP = "keyToken";
+	public static final String SERVER_IS_THROUGH_LGSP = "isThroughLGSP";
 	public static final String SERVER_CUSTOMERCODE = "customerCode";
 	public static final String SERVER_SENDERPROVINCE = "senderProvince";
 	public static final String SERVER_SENDERDISTRICT = "senderDistrict";
