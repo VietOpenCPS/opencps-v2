@@ -60,21 +60,15 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             for(ProfileReceiver oneDossier : listDossiers) {
                 if(Validator.isNotNull(oneDossier.getStatus())) {
                     _log.info("Handling dossier: " + oneDossier.getProfileId());
-                    //todo remove this block code
-//                    if(true) {
-//                        continue;
-//                    }
-                    //////
-
                     ProfileInModel profile = integrationAction.getDetailDossier(token, oneDossier.getProfileId());
                     if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
                         result = integrationAction.crawlDossierLGSP(profile);
-                        //todo uncomment this block
-//                        if(result) {
-//                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
-//                        } else {
-//                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
-//                        }
+
+                        if(result) {
+                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
+                        } else {
+                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
+                        }
                         /////
                         //Sync dossier when update dossier
                         if(!profile.getStatus().equals(FrequencyOfficeConstants.STATUS_RECEIVE)
@@ -90,6 +84,44 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
         } catch (Exception e) {
             _log.error("Error message when call api send file: " + e.getMessage());
            return null;
+        }
+    }
+
+    @Override
+    public Response sendOneProfile(String profileId) {
+
+        try{
+            //validator
+            List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
+
+            ServerConfig serverConfig = listConfig.get(0);
+            FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
+            String token = integrationAction.getToken();
+
+            boolean result;
+
+            ProfileInModel profile = integrationAction.getDetailDossier(token, Integer.valueOf(profileId));
+            if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
+                result = integrationAction.crawlDossierLGSP(profile);
+
+                if(result) {
+                    integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_SUCCESS);
+                } else {
+                    integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_FAIL);
+                }
+                /////
+                //Sync dossier when update dossier
+                if(!profile.getStatus().equals(FrequencyOfficeConstants.STATUS_RECEIVE)
+//                               todo uncomment this: && result
+                ) {
+                    integrationAction.syncDossierToLGSP(token, profile);
+                }
+            }
+
+            return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+        } catch (Exception e) {
+            _log.error("Error message when call api send one file: " + e.getMessage());
+            return null;
         }
     }
 

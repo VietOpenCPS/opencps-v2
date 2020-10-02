@@ -18,6 +18,12 @@ public interface FrequencyOfficeManagement {
     @Produces(MediaType.APPLICATION_JSON)
     public Response sendProfile();
 
+    @POST
+    @Path("/sendOneProfile/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response sendOneProfile(@PathParam("id") String profileId);
+
     @GET
     @Path("/dossiers")
     @Consumes(MediaType.APPLICATION_JSON)

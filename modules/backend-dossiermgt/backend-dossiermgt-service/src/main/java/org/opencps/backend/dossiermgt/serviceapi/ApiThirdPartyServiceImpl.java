@@ -90,6 +90,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
         try {
             _log.info("Calling api: " + url);
             HttpEntity entity = new HttpEntity<>(headers);
+//            Object test = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
             _log.info("Response api: " + response);
             if(Validator.isNull(response) || Validator.isNull(response.getBody()) || response.getStatusCode().value() != 200){
