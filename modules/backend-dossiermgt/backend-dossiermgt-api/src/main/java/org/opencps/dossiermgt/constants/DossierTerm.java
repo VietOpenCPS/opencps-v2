@@ -252,6 +252,7 @@ public class DossierTerm {
 	public static final String DATE_OPTION = "dateOption";
 	public static final String DATE_OPTION_RECEIVER = "dateOptionReceiver";
 	public static final String DATE_OPTION_DURATION = "dateOptionDuration";
+	public static final String DUE_DATE_PATTERN = "dueDatePattern";
 	//Constant dateOption
 	public static final int DATE_OPTION_CHANGE_DUE_DATE = 1;
 	public static final int DATE_OPTION_TWO = 2;
@@ -260,7 +261,7 @@ public class DossierTerm {
 	public static final int DATE_OPTION_FIVE = 5;
 	public static final int DATE_OPTION_RESET_DUE_DATE = 6;
 	public static final int DATE_OPTION_SEVEN = 7;
-	//public static final int DATE_OPTION_RESET_DUE_DATE = 8;
+	public static final int CREATE_SUBMIT_DATE = 8;
 	//PAUSE OVERDUE
 	public static final int DATE_OPTION_PAUSE_OVERDUE = 9;
 	public static final int DATE_OPTION_TEN = 10;
@@ -274,6 +275,7 @@ public class DossierTerm {
 	public static final String VNPOST_DOSSIER_DESTINATION = "vnpost/dossier/in/destination";
 	public static final String KYSO_ENGINE_OUT_DESTINATION = "kyso/engine/out/destination";
 	public static final String COLLECTION_VNPOST_DOSSIER_DESTINATION = "collectvnpost/dossier/in/destination";
+	public static final String KEYPAY_V3_DESTINATION = "keypayv3/dossier/in/destination";
 	//STATISTIC
 	public static final String BE_TIME = "betimes";
 	public static final String OVER_TIME = "overtime";

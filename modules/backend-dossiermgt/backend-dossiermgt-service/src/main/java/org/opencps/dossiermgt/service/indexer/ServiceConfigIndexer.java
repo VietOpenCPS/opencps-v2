@@ -6,12 +6,16 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoMappingTerm;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceInfoMapping;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -90,6 +94,8 @@ public class ServiceConfigIndexer extends BaseIndexer<ServiceConfig> {
 			document.addTextSortable(ServiceConfigTerm.SERVICE_NAME, serviceInfo.getServiceName());
 			document.addTextSortable(ServiceConfigTerm.DOMAIN_CODE, serviceInfo.getDomainCode());
 			document.addTextSortable(ServiceConfigTerm.DOMAIN_NAME, serviceInfo.getDomainName());
+			ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(serviceInfo.getGroupId(), serviceInfo.getServiceCode());
+			document.addTextSortable(ServiceInfoMappingTerm.SERVICE_CODE_DVCQG, Validator.isNull(serviceInfoMapping) ? StringPool.BLANK : serviceInfoMapping.getServiceCodeDVCQG());
 		}
 		return document;
 	}

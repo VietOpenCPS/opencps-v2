@@ -16,10 +16,12 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.DateTimeUtils;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.util.DossierContentGenerator;
@@ -78,6 +81,9 @@ public class DossierUtils {
 	private static final long VALUE_HOUR_TO_DAY = 8;
 	private static final String EXTEND_ONE_VALUE = ".0";
 	private static final String EXTEND_TWO_VALUE = ".00";
+	//Caculate dueDate by day
+	private static final Boolean CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.dueDate.day.enable"))
+			? Boolean.valueOf(PropsUtil.get("opencps.statistic.dossier.dueDate.day.enable")) : false;
 
 	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId, Integer assigned, DossierSearchModel query) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
@@ -271,6 +277,15 @@ public class DossierUtils {
 					}
 				} else {
 					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+						// add by phuchn- caculate duedate by date
+						if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
+							String dateNow = APIDateTimeUtils.convertDateToString(now, APIDateTimeUtils._NORMAL_PARTTERN);
+							Date dateNowTem = APIDateTimeUtils.convertStringToDate(dateNow, APIDateTimeUtils._NORMAL_DATE);
+							dateNowTimeStamp = dateNowTem.getTime();
+														
+							Date dueDateTem = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.DUE_DATE), APIDateTimeUtils._NORMAL_DATE);
+							dueDateTimeStamp = dueDateTem.getTime();
+						}
 						long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 	//					_log.info("subTimeStamp: "+subTimeStamp);
 						String strOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,

@@ -421,7 +421,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 				PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 				if (result != null)
-					result.setAddress(dossier.getAddress() + dossier.getWardName() + dossier.getDistrictName() + dossier.getCityName());
+					result.setAddress(dossier.getAddress() + ", " + dossier.getWardName() +
+							", " + dossier.getDistrictName() + ", " + dossier.getCityName());
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();				
 			}
@@ -1243,7 +1244,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					}
 				} else {
 					String govAgencyCode = dossier.getGovAgencyCode();
-					_log.info("PAYMENT FILE NOT NULL: govAgencyCode: "+ govAgencyCode);
+					_log.info("PAYMENT FILE NULL: govAgencyCode: "+ govAgencyCode);
 					if (Validator.isNotNull(govAgencyCode)) {
 						PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,govAgencyCode);
 						if (paymentConfig != null) {
