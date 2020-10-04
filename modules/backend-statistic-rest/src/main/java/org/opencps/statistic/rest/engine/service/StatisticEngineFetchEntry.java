@@ -22,6 +22,7 @@ public class StatisticEngineFetchEntry {
 	private static final int USED_POSTAL = 2;
 //	private static final int NOT_USED_POSTAL = 1;
 	protected Log _log = LogFactoryUtil.getLog(StatisticEngineFetchEntry.class);
+		
 	//Caculate dueDate by day
 	private static final Boolean CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.dueDate.day.enable"))
 			? Boolean.valueOf(PropsUtil.get("opencps.statistic.dossier.dueDate.day.enable")) : false;
@@ -282,7 +283,7 @@ public class StatisticEngineFetchEntry {
 					statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
 				} else {
 					statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
-				}
+				}			
 			} else {
 				// ton ky truoc
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
@@ -346,7 +347,7 @@ public class StatisticEngineFetchEntry {
 						if (finishDate != null
 								&& fromStatisticDate.before(finishDate) && toStatisticDate.after(finishDate)) {
 							// số đã trả kết quả
-							statisticData.setDoneCount(statisticData.getDoneCount() + 1);								
+							statisticData.setDoneCount(statisticData.getDoneCount() + 1);												
 						} else {
 							statisticData.setReleasingCount(statisticData.getReleasingCount() + 1);
 						}
