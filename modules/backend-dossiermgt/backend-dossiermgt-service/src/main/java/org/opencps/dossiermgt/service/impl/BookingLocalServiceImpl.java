@@ -503,7 +503,9 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 				if (Validator.isNotNull(state))
 					booking.setState(state);
 				booking.setSpeaking(speaking);
-				booking.setOnline(online);
+				if (Validator.isNotNull(online)) {
+					booking.setOnline(online);
+				}
 			}
 			//
 			return bookingPersistence.update(booking);
