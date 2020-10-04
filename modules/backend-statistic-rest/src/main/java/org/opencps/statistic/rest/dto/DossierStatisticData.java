@@ -323,7 +323,7 @@ public class DossierStatisticData {
 	private int dossierOnline4Count;
 	private int receiveDossierSatCount;
 	private int releaseDossierSatCount;
-	private String groupAgencyCode;
+	private String groupAgencyCode;	
 	private int fromViaPostalCount;
 	private int onlineBetimesCount = 0;
 	private int onlineOntimeCount = 0;
@@ -342,9 +342,8 @@ public class DossierStatisticData {
 	private int onlineReleaseOvertimeCount = 0;
 	private int onegateReleaseBetimesCount = 0;
 	private int onegateReleaseOntimeCount = 0;
-	private int onegateReleaseOvertimeCount = 0;
-	
-	
+	private int onegateReleaseOvertimeCount = 0;	
+		
 	
 	public int getFromViaPostalCount() {
 		return fromViaPostalCount;
@@ -521,5 +520,5 @@ public class DossierStatisticData {
 	public void setOnegateReleaseOvertimeCount(int onegateReleaseOvertimeCount) {
 		this.onegateReleaseOvertimeCount = onegateReleaseOvertimeCount;
 	}
-		
+
 }
