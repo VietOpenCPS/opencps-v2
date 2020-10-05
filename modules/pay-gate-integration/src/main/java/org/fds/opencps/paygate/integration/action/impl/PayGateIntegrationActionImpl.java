@@ -792,8 +792,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 				bill_info.put(PayGateTerm.SOCMNDNGUOINOP, dossier.getApplicantIdNo());
 				bill_info.put(PayGateTerm.DIACHINGUOINOP, dossier.getAddress());
-				bill_info.put(PayGateTerm.HUYENNGUOINOP, "");//ko bb
-				bill_info.put(PayGateTerm.TINHNGUOINOP, "");//ko bb
+				bill_info.put(PayGateTerm.HUYENNGUOINOP, dossier.getDistrictName());//ko bb
+				bill_info.put(PayGateTerm.TINHNGUOINOP, dossier.getCityName());//ko bb
 
 				//lay trong dictItem
 //				ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, dossier.getServiceCode());
@@ -1587,8 +1587,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		dskhoannop.put(dskhoannop_obj);
 		receipt_info.put(PayGateTerm.DSKHOANNOP, dskhoannop);
 
-		receipt_info.put(PayGateTerm.HUYENNGUOINOP, ""); // kbb
-		receipt_info.put(PayGateTerm.TINHNGUOINOP, ""); // kbb
+		receipt_info.put(PayGateTerm.HUYENNGUOINOP, dossier.getDistrictName()); // kbb
+		receipt_info.put(PayGateTerm.TINHNGUOINOP, dossier.getCityName()); // kbb
 		receipt_info.put(PayGateTerm.TAIKHOANTHUNSNN, ""); // kbb
 
 		return receipt_info;

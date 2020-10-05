@@ -156,8 +156,8 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 
 			bill_info.put(KeyPayV3Term.SOCMNDNGUOINOP, dossier.getApplicantIdNo());
 			bill_info.put(KeyPayV3Term.DIACHINGUOINOP, dossier.getAddress());
-			bill_info.put(KeyPayV3Term.HUYENNGUOINOP, "");// ko bb
-			bill_info.put(KeyPayV3Term.TINHNGUOINOP, "");// ko bb
+			bill_info.put(KeyPayV3Term.HUYENNGUOINOP, dossier.getDistrictName());// ko bb
+			bill_info.put(KeyPayV3Term.TINHNGUOINOP, dossier.getCityName());// ko bb
 
 			// lay trong dictItem
 //				ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, dossier.getServiceCode());

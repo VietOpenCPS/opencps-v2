@@ -2,8 +2,11 @@ package org.opencps.statistic.rest.engine.service;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -19,7 +22,11 @@ public class StatisticEngineFetchEntry {
 	private static final int USED_POSTAL = 2;
 //	private static final int NOT_USED_POSTAL = 1;
 	protected Log _log = LogFactoryUtil.getLog(StatisticEngineFetchEntry.class);
-	
+		
+	//Caculate dueDate by day
+	private static final Boolean CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.dueDate.day.enable"))
+			? Boolean.valueOf(PropsUtil.get("opencps.statistic.dossier.dueDate.day.enable")) : false;
+			
 	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData,
 			Date fromStatisticDate, Date toStatisticDate, int reporting) {
 //		int month = LocalDate.now().getMonthValue();
@@ -32,20 +39,20 @@ public class StatisticEngineFetchEntry {
 		statisticData.setGroupId(dossierData.getGroupId());
 		statisticData.setReporting(reporting);
 		Date dueDate = Validator.isNull(dossierData.getDueDate())
-				? null
-				: StatisticUtils.convertStringToDate(dossierData.getDueDate());
+					? null
+					: StatisticUtils.convertStringToDate(dossierData.getDueDate());
 		Date extendDate = Validator.isNull(dossierData.getExtendDate())
-				? null
-				: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
+					? null
+					: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
 		Date releaseDate = Validator.isNull(dossierData.getReleaseDate())
-				? null
-				: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());
+					? null
+					: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());
 		Date receviedDate = Validator.isNull(dossierData.getReceiveDate())
-				? null
-				: StatisticUtils.convertStringToDate(dossierData.getReceiveDate());
+					? null
+					: StatisticUtils.convertStringToDate(dossierData.getReceiveDate());
 		Date finishDate = Validator.isNull(dossierData.getFinishDate())
-				? null
-				: StatisticUtils.convertStringToDate(dossierData.getFinishDate());
+					? null
+					: StatisticUtils.convertStringToDate(dossierData.getFinishDate());		
 		int viaPostal = dossierData.getViaPostal();
 //		if (viaPostal != 0)
 //			_log.info("VIA POSTAL STATISTIC: " + viaPostal);
@@ -120,6 +127,13 @@ public class StatisticEngineFetchEntry {
 					}
 
 					Date now = new Date();
+					// add by phuchn - caculate duedate by day
+					if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
+						dueDate = Validator.isNull(dossierData.getDueDate())
+								? null : StatisticUtils.convertStringToDate(dossierData.getDueDate(), DossierStatusTerm.DATE_FORMAT);
+						DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+						now = StatisticUtils.convertStringToDate(dateFormat.format(new Date()), DossierStatusTerm.DATE_FORMAT);
+					}
 					if (dueDate != null && !dueDate.after(now.before(toStatisticDate) ? now : toStatisticDate)) {
 						// đang quá hạn
 						statisticData.setOverdueCount(statisticData.getOverdueCount() + 1);
@@ -152,6 +166,17 @@ public class StatisticEngineFetchEntry {
 						}
 					}
 
+					// add by phuchn - caculate duedate by day
+					if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
+						dueDate = Validator.isNull(dossierData.getDueDate())
+								? null : StatisticUtils.convertStringToDate(dossierData.getDueDate(), DossierStatusTerm.DATE_FORMAT);
+						releaseDate = Validator.isNull(dossierData.getReleaseDate())
+								? null
+								: StatisticUtils.convertStringToDate(dossierData.getReleaseDate(), DossierStatusTerm.DATE_FORMAT);
+						finishDate = Validator.isNull(dossierData.getFinishDate())
+								? null
+								: StatisticUtils.convertStringToDate(dossierData.getFinishDate(), DossierStatusTerm.DATE_FORMAT);
+					}
 					// hồ sơ có kết quả hoặc từ chối tính hạn xử lý
 					int overdue = 1; // 0: sớm hạn, 1: đúng hạn, 2: quá hạn
 					// Check condition filter betimes
@@ -201,17 +226,17 @@ public class StatisticEngineFetchEntry {
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getDueDate());
 		Date extendDate = Validator.isNull(dossierData.getExtendDate())
-				? null
-				: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
+					? null
+					: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
 		Date releaseDate = Validator.isNull(dossierData.getReleaseDate())
-				? null
-				: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());
+					? null
+					: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());
 		Date receviedDate = Validator.isNull(dossierData.getReceiveDate())
-				? null
-				: StatisticUtils.convertStringToDate(dossierData.getReceiveDate());
+					? null
+					: StatisticUtils.convertStringToDate(dossierData.getReceiveDate());
 		Date finishDate = Validator.isNull(dossierData.getFinishDate())
-				? null
-				: StatisticUtils.convertStringToDate(dossierData.getFinishDate());
+					? null
+					: StatisticUtils.convertStringToDate(dossierData.getFinishDate());
 		//
 		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
 		int viaPostalCount = dossierData.getViaPostal();
@@ -258,7 +283,7 @@ public class StatisticEngineFetchEntry {
 					statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
 				} else {
 					statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
-				}
+				}			
 			} else {
 				// ton ky truoc
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
@@ -287,6 +312,13 @@ public class StatisticEngineFetchEntry {
 					}
 
 					Date now = new Date();
+					// add by phuchn - caculate duedate by day
+					if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
+						dueDate = Validator.isNull(dossierData.getDueDate())
+								? null : StatisticUtils.convertStringToDate(dossierData.getDueDate(), DossierStatusTerm.DATE_FORMAT);
+						DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+						now = StatisticUtils.convertStringToDate(dateFormat.format(new Date()), DossierStatusTerm.DATE_FORMAT);
+					}
 					if (dueDate != null && !dueDate.after(now.before(toStatisticDate) ? now : toStatisticDate)) {
 						// đang quá hạn
 						statisticData.setOverdueCount(statisticData.getOverdueCount() + 1);
@@ -315,7 +347,7 @@ public class StatisticEngineFetchEntry {
 						if (finishDate != null
 								&& fromStatisticDate.before(finishDate) && toStatisticDate.after(finishDate)) {
 							// số đã trả kết quả
-							statisticData.setDoneCount(statisticData.getDoneCount() + 1);								
+							statisticData.setDoneCount(statisticData.getDoneCount() + 1);												
 						} else {
 							statisticData.setReleasingCount(statisticData.getReleasingCount() + 1);
 						}
@@ -352,6 +384,18 @@ public class StatisticEngineFetchEntry {
 						*/
 						
 						//int betimeCal = dueDate != null ? BetimeUtils.getValueCompareRelease(dossierData.getGroupId(), releaseDate, dueDate) : 3;
+						// add by phuchn - caculate duedate by day
+						if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
+							dueDate = Validator.isNull(dossierData.getDueDate())
+									? null : StatisticUtils.convertStringToDate(dossierData.getDueDate(), DossierStatusTerm.DATE_FORMAT);
+							releaseDate = Validator.isNull(dossierData.getReleaseDate())
+									? null
+									: StatisticUtils.convertStringToDate(dossierData.getReleaseDate(), DossierStatusTerm.DATE_FORMAT);
+							finishDate = Validator.isNull(dossierData.getFinishDate())
+									? null
+									: StatisticUtils.convertStringToDate(dossierData.getFinishDate(), DossierStatusTerm.DATE_FORMAT);
+						}
+						
 						int overdue = 1; // 0: sớm hạn, 1: đúng hạn, 2: quá hạn
 						// Check condition filter betimes
 						if (dueDate != null) {
@@ -487,5 +531,6 @@ class DossierStatusTerm {
 	public static final String PROCESSING = "processing";
 	public static final String CANCELLED = "cancelled";
 	public static final String UNRESOLVED = "unresolved";
+	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
 }
