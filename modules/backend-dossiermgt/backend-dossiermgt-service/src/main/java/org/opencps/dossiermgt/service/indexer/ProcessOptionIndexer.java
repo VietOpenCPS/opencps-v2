@@ -5,6 +5,7 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import com.liferay.portal.kernel.util.Validator;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.model.DossierTemplate;
@@ -80,16 +81,17 @@ public class ProcessOptionIndexer extends BaseIndexer<ProcessOption> {
 		// add extend fields
 		JSONObject extContent = getExtentData(object.getDossierTemplateId(), object.getServiceProcessId(),
 				object.getServiceConfigId());
+		if(Validator.isNotNull(extContent)) {
+			document.addTextSortable(ProcessOptionTerm.TEMPLATE_NO, extContent.getString(ProcessOptionTerm.TEMPLATE_NO));
+			document.addTextSortable(ProcessOptionTerm.TEMPLATE_NAME,
+					extContent.getString(ProcessOptionTerm.TEMPLATE_NAME));
+			document.addTextSortable(ProcessOptionTerm.PROCESS_NO, extContent.getString(ProcessOptionTerm.PROCESS_NO));
+			document.addTextSortable(ProcessOptionTerm.PROCESS_NAME, extContent.getString(ProcessOptionTerm.PROCESS_NAME));
 
-		document.addTextSortable(ProcessOptionTerm.TEMPLATE_NO, extContent.getString(ProcessOptionTerm.TEMPLATE_NO));
-		document.addTextSortable(ProcessOptionTerm.TEMPLATE_NAME,
-				extContent.getString(ProcessOptionTerm.TEMPLATE_NAME));
-		document.addTextSortable(ProcessOptionTerm.PROCESS_NO, extContent.getString(ProcessOptionTerm.PROCESS_NO));
-		document.addTextSortable(ProcessOptionTerm.PROCESS_NAME, extContent.getString(ProcessOptionTerm.PROCESS_NAME));
+			document.addTextSortable(ActionKeys.APPLICANT_CTZ, extContent.getString(ActionKeys.APPLICANT_CTZ));
 
-		document.addTextSortable(ActionKeys.APPLICANT_CTZ, extContent.getString(ActionKeys.APPLICANT_CTZ));
-
-		document.addTextSortable(ActionKeys.APPLICANT_BUSINESS, extContent.getString(ActionKeys.APPLICANT_BUSINESS));
+			document.addTextSortable(ActionKeys.APPLICANT_BUSINESS, extContent.getString(ActionKeys.APPLICANT_BUSINESS));
+		}
 		document.addNumberSortable(ProcessOptionTerm.STATUS,object.getStatus());
 		return document;
 	}
