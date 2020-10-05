@@ -164,6 +164,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("postalCodeSend", getPostalCodeSend());
 		attributes.put("postalCodeReceived", getPostalCodeReceived());
 		attributes.put("lastReceiveDate", getLastReceiveDate());
+		attributes.put("lastSendDate", getLastSendDate());
 
 		return attributes;
 	}
@@ -803,6 +804,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		if (lastReceiveDate != null) {
 			setLastReceiveDate(lastReceiveDate);
 		}
+
+		Date lastSendDate = (Date)attributes.get("lastSendDate");
+
+		if (lastSendDate != null) {
+			setLastSendDate(lastSendDate);
+		}
 	}
 
 	@Override
@@ -1408,6 +1415,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public Date getLastReceiveDate() {
 		return _dossier.getLastReceiveDate();
+	}
+
+	/**
+	* Returns the last send date of this dossier.
+	*
+	* @return the last send date of this dossier
+	*/
+	@Override
+	public Date getLastSendDate() {
+		return _dossier.getLastSendDate();
 	}
 
 	/**
@@ -2569,6 +2586,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setLastReceiveDate(Date lastReceiveDate) {
 		_dossier.setLastReceiveDate(lastReceiveDate);
+	}
+
+	/**
+	* Sets the last send date of this dossier.
+	*
+	* @param lastSendDate the last send date of this dossier
+	*/
+	@Override
+	public void setLastSendDate(Date lastSendDate) {
+		_dossier.setLastSendDate(lastSendDate);
 	}
 
 	/**

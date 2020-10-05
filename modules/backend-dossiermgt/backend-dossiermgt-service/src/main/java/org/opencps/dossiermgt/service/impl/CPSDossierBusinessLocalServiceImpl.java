@@ -3860,7 +3860,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(getDueDateByPayload(payload))) {
 				dossier.setDueDate(getDueDateByPayload(payload));
 			}
-			// Cập nhật ngày tiếp nhận cuối cùng cho hồ sơ
+			// Cập nhật ngày tiếp nhận và ngày gửi cuối cùng cho hồ sơ
+			dossier.setLastSendDate(new Date());
 			dossier.setLastReceiveDate(new Date());
 			_log.debug("Log LastReiveDate " + new Date());
 		} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
@@ -3889,7 +3890,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					bResult.put(DossierTerm.DUE_DATE, true);
 				}
 			}
-			// Cập nhật ngày tiếp nhận cuối cùng cho hồ sơ
+			// Cập nhật ngày tiếp nhận và ngày gửi cuối cùng cho hồ sơ
+			dossier.setLastSendDate(new Date());
 			dossier.setLastReceiveDate(new Date());
 			_log.debug("Log LastReiveDate " + new Date());
 		} else if (dateOption == DossierTerm.DATE_OPTION_PAUSE_OVERDUE) {

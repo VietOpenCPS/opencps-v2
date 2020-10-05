@@ -1663,6 +1663,20 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setLastReceiveDate(Date lastReceiveDate);
 
+	/**
+	 * Returns the last send date of this dossier.
+	 *
+	 * @return the last send date of this dossier
+	 */
+	public Date getLastSendDate();
+
+	/**
+	 * Sets the last send date of this dossier.
+	 *
+	 * @param lastSendDate the last send date of this dossier
+	 */
+	public void setLastSendDate(Date lastSendDate);
+
 	@Override
 	public boolean isNew();
 
