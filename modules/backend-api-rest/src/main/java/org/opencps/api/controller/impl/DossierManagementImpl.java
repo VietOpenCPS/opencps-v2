@@ -284,7 +284,6 @@ public class DossierManagementImpl implements DossierManagement {
 								DossierUtils.mappingForGetList(
 										(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
 										query.getAssigned(), query));
-						return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 					}
 					else {
 						ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(DossierTerm.VNPOST_CLS);
@@ -308,7 +307,6 @@ public class DossierManagementImpl implements DossierManagement {
 									if (GetterUtil.getInteger(resultObj.get(RESTFulConfiguration.STATUS)) != HttpURLConnection.HTTP_OK) {
 										results = new DossierResultsModel();
 										results.setTotal(0);
-//										return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 									} else {
 										JSONArray arrayData = JSONFactoryUtil.createJSONArray(resultObj.getString(RESTFulConfiguration.MESSAGE));
 										_log.info("arrayData: "+arrayData);
@@ -355,7 +353,6 @@ public class DossierManagementImpl implements DossierManagement {
 													}
 													results.getData().addAll(
 															DossierUtils.mappingForGetList(dataList, userId, query.getAssigned(), query));
-													return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 												}
 											}
 										}
@@ -368,8 +365,6 @@ public class DossierManagementImpl implements DossierManagement {
 								}
 							}
 						}
-
-						return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 					}
 				} catch (Exception e) {
 					return BusinessExceptionImpl.processException(e);
@@ -839,8 +834,83 @@ public class DossierManagementImpl implements DossierManagement {
 								(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
 								query.getAssigned(), query));
 
+			}
+            //Add voting data
+			if(Validator.isNull(query.getIsGetVotingData())
+					|| query.getIsGetVotingData().isEmpty()
+					|| query.getIsGetVotingData().equals("false")) {
+				//case default
 				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			}
+
+			List<DossierDataModel> dossiers = results.getData();
+			List<String> listDossierId = new ArrayList<>();
+			for(DossierDataModel oneDossier : dossiers) {
+				if(Validator.isNotNull(oneDossier.getDossierId())) {
+					listDossierId.add(String.valueOf(oneDossier.getDossierId()));
+				}
+			}
+
+			if(listDossierId.size() > 0) {
+				List<Object[]> listVoting = DossierLocalServiceUtil.getListVotingByDossier(groupId, listDossierId);
+				if(Validator.isNull(listVoting) || listVoting.size() == 0) {
+					return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+				}
+				int size = listVoting.size();
+				long classPK;
+				String votingCode;
+				Integer votingId;
+				String votingName;
+				Integer point;
+				long dossierIdFromDossier;
+				int indexVoting = 1;
+
+				for(DossierDataModel dossierModel : dossiers) {
+					//each dossier
+					dossierIdFromDossier = dossierModel.getDossierId();
+					indexVoting = 1;
+					for (int i = 0; i < size; i++) {
+						//each voting
+						if(Validator.isNull(listVoting.get(i))) {
+							continue;
+						}
+
+						if(Validator.isNull(listVoting.get(i)[0])) {
+							//No classPK
+							continue;
+						}
+
+						classPK = GetterUtil.getLong(listVoting.get(i)[0]);
+						if(classPK == 0) {
+							//classPK is string or = 0
+							continue;
+						}
+						if(dossierIdFromDossier == classPK) {
+							votingCode = Validator.isNotNull(listVoting.get(i)[1]) ? (String) listVoting.get(i)[1] : "";
+							votingName = Validator.isNotNull(listVoting.get(i)[3]) ? (String) listVoting.get(i)[3] : "";
+							point      = Validator.isNotNull(listVoting.get(i)[4]) ? (Integer) listVoting.get(i)[4] : 0;
+
+							if(indexVoting == 1) {
+								dossierModel.setVotingCode1(votingCode);
+								dossierModel.setVotingName1(votingName);
+								dossierModel.setResultVotingCode1(point);
+							} else if(indexVoting == 2) {
+								dossierModel.setVotingCode2(votingCode);
+								dossierModel.setVotingName2(votingName);
+								dossierModel.setResultVotingCode2(point);
+							} else if(indexVoting == 3) {
+								dossierModel.setVotingCode3(votingCode);
+								dossierModel.setVotingName3(votingName);
+								dossierModel.setResultVotingCode3(point);
+								break;
+							}
+							indexVoting++;
+						}
+					}
+				}
+			}
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

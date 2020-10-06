@@ -2716,7 +2716,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				_log.info(1231231231);
 				_log.info("==========VTPayTerm.KP_DVCQG_CONFIG========" + epaymentConfigJSON);
+				_log.info(11111);
 				if (epaymentConfigJSON.has(KeyPayTerm.KP_DVCQG_CONFIG)) {
 					try {
 						epaymentProfileJsonNew.put(KeyPayTerm.KPDVCQG, true);
@@ -2747,6 +2749,20 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				_log.info(333333);
+				_log.info("==========Payment before add paygov111: " + epaymentConfigJSON);
+				if (epaymentConfigJSON.has(KeyPayTerm.PAYGOV_CONFIG)) {
+					try {
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PAYGOV_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.PAYGOV_CONFIG, schema);
+						paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+								epaymentProfileJsonNew.toJSONString(), context);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+
+				}
+				_log.info("==========Payment after add paygov111: " + epaymentConfigJSON);
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (JSONException e) {
@@ -2888,6 +2904,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 					epaymentProfileJSON.toJSONString(), context);
+			_log.info("==========Payment before add paygov222: " + epaymentConfigJSON);
+			if (epaymentConfigJSON.has(KeyPayTerm.PAYGOV_CONFIG)) {
+				try {
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PAYGOV_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.PAYGOV_CONFIG, schema);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfileJSON.toJSONString(), context);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			_log.info("==========Payment after add paygov222: " + epaymentConfigJSON);
 		}
 		return oldPaymentFile;
 	}
@@ -4095,7 +4124,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossierActionLocalService.updateDossierAction(dossierAction);
 			}
 		}
-		
+
 		// create submit date
 		if(dateOption == DossierTerm.CREATE_SUBMIT_DATE){
 			if (Validator.isNull(dossier.getSubmitDate())) {
@@ -9003,7 +9032,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(),
 						DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
 
-				boolean returnDocument = true;
 				for (DossierFile dossierFile : dossierFiles) {
 					// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
 					_log.info("================DOSSIERFILE=============" + dossierFile.getFileEntryId());

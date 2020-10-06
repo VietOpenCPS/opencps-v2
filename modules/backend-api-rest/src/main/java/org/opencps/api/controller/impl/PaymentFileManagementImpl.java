@@ -823,6 +823,12 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 						dossierId = dossier.getDossierId();
 					}
 				}
+			} else {
+				//case get by dossierID
+				dossier = DossierLocalServiceUtil.getDossier(dossierId);
+				if(dossier != null) {
+					dossierId = dossier.getDossierId();
+				}
 			}
 
 			if (Validator.isNotNull(secretCode) && dossier != null) {

@@ -122,7 +122,7 @@ public class KeyPayTerm {
 	public static final String KPDVCQG = "kpdvcqg";
 	public static final String PP_KPDVCQG = "ppkpdvcqg";
 	public static final String PP_DVCGQ_CONFIG = "PP_DVCGQ_CONFIG";
-
+	public static final String PAYGOV_CONFIG = "PAYGOV_CONFIG";
 	public static final String KEYPAY_LATE_CONFIG = "KEYPAY_LATE_CONFIG";
 	public static final String KEYPAY_LATE= "keypay_late";
 }

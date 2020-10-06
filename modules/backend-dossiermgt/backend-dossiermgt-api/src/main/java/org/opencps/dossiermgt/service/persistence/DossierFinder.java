@@ -25,6 +25,9 @@ public interface DossierFinder {
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(
 		String date);
 
+	public java.util.List<Object[]> getListVotingByDossier(long groupId,
+		java.util.List<String> listDossier);
+
 	public org.opencps.dossiermgt.model.Dossier findDossierByDeclarationCode(
 		String code, long groupId);
 }
