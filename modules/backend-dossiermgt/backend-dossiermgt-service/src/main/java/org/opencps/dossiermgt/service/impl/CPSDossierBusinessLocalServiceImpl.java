@@ -1008,7 +1008,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if (Validator.isNull(dossier.getApplicantName()) && Validator.isNull(dossier.getApplicantIdNo())) {
 			_log.info("TRACE_LOG_LOST_DOSSIER: "+JSONFactoryUtil.looseSerialize(dossier));
 		}
-		
+
 		Employee employee = null;
 		Serializable employeeCache = cache.getFromCache(CacheTerm.MASTER_DATA_EMPLOYEE,
 				groupId + StringPool.UNDERLINE + userId);
@@ -2317,7 +2317,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if (Validator.isNotNull(cityName)) {
 					dossier.setCityName(cityName);
 				}
-				
+
 			}
 			if (obj.has(DossierTerm.DISTRICT_CODE) && Validator.isNotNull(obj.get(DossierTerm.DISTRICT_CODE))) {
 				districtCode = String.valueOf(obj.get(DossierTerm.DISTRICT_CODE));
@@ -2360,7 +2360,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 					if (obj.has(DossierTerm.POSTAL_CITY_CODE) && Validator.isNotNull(obj.get(DossierTerm.POSTAL_CITY_CODE))) {
 						dossier.setPostalCityCode(String.valueOf(obj.get(DossierTerm.POSTAL_CITY_CODE)));
-						
+
 						String postalCityName = getDictItemName(dossier.getGroupId(), VNPOST_CITY_CODE,
 								String.valueOf(obj.get(DossierTerm.POSTAL_CITY_CODE)));
 						if (Validator.isNotNull(postalCityName))
@@ -2368,7 +2368,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 					if (obj.has(DossierTerm.POSTAL_DISTRICT_CODE) && Validator.isNotNull(obj.get(DossierTerm.POSTAL_DISTRICT_CODE))) {
 						dossier.setPostalDistrictCode(String.valueOf(obj.get(DossierTerm.POSTAL_DISTRICT_CODE)));
-						
+
 						String postalDistrictName = getDictItemName(dossier.getGroupId(), VNPOST_CITY_CODE,
 								String.valueOf(obj.get(DossierTerm.POSTAL_DISTRICT_CODE)));
 						if (Validator.isNotNull(postalDistrictName))
@@ -2716,7 +2716,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				_log.info(1231231231);
 				_log.info("==========VTPayTerm.KP_DVCQG_CONFIG========" + epaymentConfigJSON);
+				_log.info(11111);
 				if (epaymentConfigJSON.has(KeyPayTerm.KP_DVCQG_CONFIG)) {
 					try {
 						epaymentProfileJsonNew.put(KeyPayTerm.KPDVCQG, true);
@@ -2747,6 +2749,20 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				_log.info(333333);
+				_log.info("==========Payment before add paygov111: " + epaymentConfigJSON);
+				if (epaymentConfigJSON.has(KeyPayTerm.PAYGOV_CONFIG)) {
+					try {
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PAYGOV_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.PAYGOV_CONFIG, schema);
+						paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+								epaymentProfileJsonNew.toJSONString(), context);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+
+				}
+				_log.info("==========Payment after add paygov111: " + epaymentConfigJSON);
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (JSONException e) {
@@ -2888,6 +2904,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 					epaymentProfileJSON.toJSONString(), context);
+			_log.info("==========Payment before add paygov222: " + epaymentConfigJSON);
+			if (epaymentConfigJSON.has(KeyPayTerm.PAYGOV_CONFIG)) {
+				try {
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PAYGOV_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.PAYGOV_CONFIG, schema);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfileJSON.toJSONString(), context);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			_log.info("==========Payment after add paygov222: " + epaymentConfigJSON);
 		}
 		return oldPaymentFile;
 	}
@@ -4103,7 +4132,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossierActionLocalService.updateDossierAction(dossierAction);
 			}
 		}
-		
+
 		// create submit date
 		if(dateOption == DossierTerm.CREATE_SUBMIT_DATE){
 			if (Validator.isNull(dossier.getSubmitDate())) {
@@ -9014,7 +9043,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(),
 						DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
-
 				boolean returnDocument = true;
 				for (DossierFile dossierFile : dossierFiles) {
 					// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
@@ -9174,7 +9202,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					JSONFactoryUtil.createJSONObject();
 			String dueDateStr = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(dueDate);
 			String receiveDateStr = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(receiveDate);
-			
+
 			JSONObject phase = JSONFactoryUtil.createJSONObject();
 			JSONArray dueDatePhases = JSONFactoryUtil.createJSONObject(dueDatePattern).getJSONArray("dueDatePhase");
 			switch (dateOption) {
@@ -9191,7 +9219,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			default:
 				break;
 			}
-			
+
 			metaData.put(DossierTerm.DATE_OPTION + dateOption, dueDateStr);
 			metaData.put(DossierTerm.DATE_OPTION_RECEIVER + dateOption, receiveDateStr);
 			metaData.put(DossierTerm.DATE_OPTION_DURATION + dateOption, duration);
