@@ -4138,8 +4138,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNull(dossier.getSubmitDate())) {
 				dossier.setSubmitDate(new Date());
 			}
+			// Cập nhật ngày gửi theo submitDate
 			if(Validator.isNotNull(dossier.getSubmitDate())){
-				// Cập nhật ngày gửi theo submitDate
+				dossier.setLastSendDate(dossier.getSubmitDate());
+			}else{
 				dossier.setLastSendDate(new Date());
 			}
 		}
