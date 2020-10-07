@@ -213,13 +213,14 @@ public class MBEmailSenderImpl implements MBEmailSender {
 //					_log.debug("messageEntry FROM1: " + messageEntry.getFrom().getAddress());
 //					_log.debug("mailMessage FROM1: " + mailMessage.getFrom().getAddress());
 				String smtpUser = PrefsPropsUtil.getString(PropsKeys.MAIL_SESSION_MAIL_SMTP_USER, StringPool.BLANK);
-				_log.debug("Send from email: " + smtpUser);
+				_log.info("Send from email: " + smtpUser);
 				if (Validator.isNotNull(smtpUser)) {
 					messageEntry.getFrom().setAddress(smtpUser);
 					mailMessage.setFrom(messageEntry.getFrom());
 //						_log.debug("SEND EMAIL FROM2: " + messageEntry.getFrom());
 					// mailMessage.addFileAttachment(file);
 				}
+				_log.info("mailMessage: " + JSONFactoryUtil.looseSerialize(mailMessage));
 				MailServiceUtil.sendEmail(mailMessage);
 			}
 		}
