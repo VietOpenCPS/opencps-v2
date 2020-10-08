@@ -2,7 +2,8 @@ package org.opencps.api.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonObject;import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -14,6 +15,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
@@ -43,6 +46,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -8634,5 +8638,39 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			return true;
 		}
+
+	@Override
+	public Response getInterconnectionDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id) {
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		List<DossierDetailModel> results = new ArrayList<DossierDetailModel>();
+		List<Dossier> listDossier = new ArrayList<Dossier>();
+		try {			
+			Dossier dossier = DossierLocalServiceUtil.getByOrigin(groupId, Long.valueOf(id));
+			if (dossier != null) {
+				// kt hslt
+				listDossier.add(0, dossier);
+				getDossier(dossier, listDossier);
+				for (Dossier eachDossier : listDossier) {
+					DossierDetailModel dossierDetailModel = DossierUtils.mappingForGetDetail(eachDossier, user.getUserId());
+					results.add(dossierDetailModel);
+				}
+			}
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+	
+	private void getDossier(Dossier dossier, List<Dossier> listDossier) {
+		if (dossier != null) {
+			Dossier newDossier = DossierLocalServiceUtil.getByOrigin(dossier.getGroupId(), dossier.getDossierId());
+			if(newDossier != null) {
+				listDossier.add(newDossier);
+				getDossier(newDossier, listDossier);
+			}
+		}
+	}
 		
 }
