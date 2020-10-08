@@ -8704,5 +8704,73 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			return true;
 		}
-		
+
+	@Override
+	public Response updateDossierIdByRole(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+										  ServiceContext serviceContext, DossierSearchModel query) {
+		try {
+			BackendAuth auth = new BackendAuthImpl();
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			List<Role> userRoles = user.getRoles();
+			boolean overdue = false;
+			for (Role r : userRoles) {
+				r.setName(ConstantUtils.ROLE_OVERDUE);
+				if (r.getName().startsWith(ConstantUtils.ROLE_OVERDUE)) {
+					_log.info("Role TRUE");
+					overdue = true;
+					break;
+				}
+			}
+
+			if (!overdue) {
+				throw new UnauthenticationException();
+			}else{
+				if (Validator.isNotNull(query.getDossierArr())) {
+					List<Dossier> lstDossier = new ArrayList<>();
+					List<Long> lstId = new ArrayList<>();
+					String[] dossierArr = query.getDossierArr().split(StringPool.COMMA);
+					for(String dossierId : dossierArr){
+						lstId.add(Long.valueOf(dossierId));
+					}
+					_log.info("Length Id : " + lstId.size());
+					long[] dossierIds = new long[lstId.size()];
+					if(lstId !=null && !lstId.isEmpty()){
+						int i = 0;
+						for(Long id : lstId){
+							dossierIds[i++] = id;
+						}
+					}
+					lstDossier = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
+					_log.info("Length lstDossierId : " + lstDossier.size());
+					if(lstDossier !=null && lstDossier.size() >0){
+						for(Dossier dossier : lstDossier){
+							_log.info("Log dossier : " + dossier.getDossierId());
+							// Hồ sơ đã có kq ==> hs quá hạn thì cập nhật bằng thời gian trả hạn
+							if(Validator.isNotNull(dossier.getReleaseDate())) {
+								Long releaseDate = dossier.getReleaseDate().getTime();
+								Long dueDate = dossier.getDueDate().getTime();
+								if (releaseDate > dueDate) {
+									_log.info("Vao 11111111111");
+									dossier.setReleaseDate(dossier.getDueDate());
+								}
+							}
+							DossierLocalServiceUtil.updateDossier(dossier);
+						}
+						return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
+					}else{
+						return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(StringPool.BLANK).build();
+					}
+				}else{
+					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(StringPool.BLANK).build();
+				}
+			}
+
+		}catch (Exception e){
+			_log.info(e.getMessage());
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
 }
