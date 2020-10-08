@@ -261,14 +261,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		} else if (Validator.isNotNull(proAction.getCreateDossiers())) {
 			createDossiers = proAction.getCreateDossiers();
 		}
+		_log.info("createDossiers: "+createDossiers);
 		if (Validator.isNotNull(createDossiers)) {
 			//Create new HSLT
 			String GOVERNMENT_AGENCY = ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY);
+			_log.info("GOVERNMENT_AGENCY: "+GOVERNMENT_AGENCY);
 
 			//String createDossiers = proAction.getCreateDossiers();
 			/*if (Validator.isNotNull(createDossiers) && createDossiers.contentEquals("$interoperaGovAgencyCode")) {
 			}*/
 			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, createDossiers);
+			_log.info("govAgencyName: "+ govAgencyName);
 			String govAgencyCode = StringPool.BLANK;
 			String serviceCode = dossier.getServiceCode();
 			String dossierTemplateNo = dossier.getDossierTemplateNo();
@@ -301,9 +304,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					govAgencyCode = createDossiers;
 				}
 			}
+			_log.info("govAgencyCode: " + govAgencyCode);
+			_log.info("serviceCode: " + serviceCode);
+			_log.info("dossierTemplateNo: " + dossierTemplateNo);
 
 			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(),
 					govAgencyCode);
+			_log.info("serviceConfig: " + serviceConfig);
 			if (serviceConfig != null) {
 				List<ProcessOption> lstOptions = processOptionLocalService
 						.getByServiceProcessId(serviceConfig.getServiceConfigId());
@@ -368,6 +375,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								dossier.getPostalTelNo(), dossier.getOnline(), dossier.getNotification(),
 								dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
 					}
+					_log.info("hsltDossier: " + hsltDossier);
 					WorkingUnit wu = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(dossier.getGroupId(),
 							dossier.getGovAgencyCode());
 
