@@ -129,7 +129,13 @@ public class PayGateUtil {
 		result.put("return_code", return_code);
 		result.put("return_msg", return_msg);
 		return result;
+	}
 
+	public static JSONObject createResponseToPaygov(String errorCode, String errorMessage) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		result.put("error_code", errorCode);
+		result.put("error_message", errorMessage);
+		return result;
 	}
 
 	public static String decodeTransactionId (long paymentFileId) {
