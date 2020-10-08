@@ -1417,7 +1417,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				}
 				String ssEndpoint = ppConfig.getString("ss_endpoint");
 				String ssEndpointTerm = ppConfig.getString("ss_endpoint_term");
-				url = StringUtils.replaceOnce(url, ssEndpointTerm, ssEndpoint);
+				url = StringUtils.replaceOnce(url, "http://ip-ss-donvi:8080", ssEndpoint);
 				_log.info("endpoint get invoice: " + url);
 				
 				InputStream file = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(url);
