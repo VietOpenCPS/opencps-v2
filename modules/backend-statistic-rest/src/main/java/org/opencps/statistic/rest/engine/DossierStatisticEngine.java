@@ -100,6 +100,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		}
 		long startTime = System.currentTimeMillis();
 		try {
+			System.out.println("STATISTICS START TIME: " + (System.currentTimeMillis() - startTime) + " ms");
 			_log.debug("STATISTICS START TIME: " + (System.currentTimeMillis() - startTime) + " ms");
 			
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
@@ -234,7 +235,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					if (flagLastYear) {
 						try {
 							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
-								engineUpdateAction, serviceDomainResponse, calculateLastData);
+									engineUpdateAction, serviceDomainResponse, calculateLastData);
 							calculateDatas.put(lastYear, calculateLastData);
 						}
 						catch (Exception e) {
@@ -607,12 +608,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
 				model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
 				model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
-				if (!"0".contentEquals(doc.get(DossierTerm.VIA_POSTAL))) {
+				/*if (!"0".contentEquals(doc.get(DossierTerm.VIA_POSTAL))) {
 					_log.debug("FIND DOSSIER: " + doc.get(DossierTerm.VIA_POSTAL));
 				}
 				if ("35818".contentEquals(doc.get(DossierTerm.GROUP_ID))) {
 					_log.debug("FIND DOSSIER GROUP: " + doc.get(DossierTerm.VIA_POSTAL));
-				}
+				}*/
 				model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
 				
 				dossierData.add(model);
@@ -744,7 +745,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	//Time engine dossier
 	private static int timeStatistic = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.time"))
 			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.time"))
-			: 10;
+			: 60;
 	/**
 	   * activate: Called whenever the properties for the component change (ala Config Admin)
 	   * or OSGi is activating the component.

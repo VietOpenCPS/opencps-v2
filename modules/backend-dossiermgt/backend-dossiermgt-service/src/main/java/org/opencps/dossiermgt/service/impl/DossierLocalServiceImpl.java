@@ -5496,7 +5496,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, double durationCount, int durationUnit,
 		String dossierName, String processNo, String metaData,
-		String dossierCounter, ServiceContext context)
+		String dossierCounter, int systemId, ServiceContext context)
 		throws PortalException {
 
 		long userId = context.getUserId();
@@ -5603,6 +5603,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setProcessNo(processNo);
 			dossier.setMetaData(metaData);
 			dossier.setDossierCounter(dossierCounter);
+			dossier.setSystemId(systemId);
 
 			dossier = dossierPersistence.update(dossier);
 		}
@@ -5690,6 +5691,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setMetaData(metaData);
 			if (Validator.isNotNull(dossierCounter))
 				dossier.setDossierCounter(dossierCounter);
+
+			dossier.setSystemId(systemId);
 
 			dossier.setViaPostal(viaPostal);
 			if (viaPostal == 1) {
