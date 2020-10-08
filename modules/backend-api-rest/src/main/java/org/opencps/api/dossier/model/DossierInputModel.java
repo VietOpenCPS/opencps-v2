@@ -127,7 +127,8 @@ import javax.xml.bind.annotation.XmlType;
 	// Custom form
 	"formMeta",
 	"postalCodeSend",
-	"postalCodeReceived"
+	"postalCodeReceived",
+	"dossierIds"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -276,6 +277,16 @@ public class DossierInputModel {
 	protected String postalCodeSend;
 	@FormParam(value = "postalCodeReceived")
 	protected String postalCodeReceived;
+	@FormParam(value = "dossierIds")
+	protected String dossierIds;
+
+	public String getDossierIds() {
+		return dossierIds;
+	}
+
+	public void setDossierIds(String dossierIds) {
+		this.dossierIds = dossierIds;
+	}
 
 	public String getPostalCodeSend() {
 		return postalCodeSend;

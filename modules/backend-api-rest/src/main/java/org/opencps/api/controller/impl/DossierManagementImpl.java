@@ -8706,14 +8706,9 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 	@Override
-	public Response updateDossierIdByRole(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-										  ServiceContext serviceContext, DossierSearchModel query) {
+	public Response updateDossierIdByRole(HttpServletRequest request, HttpHeaders header, Company company,
+							Locale locale, User user, ServiceContext serviceContext, DossierInputModel model) {
 		try {
-			BackendAuth auth = new BackendAuthImpl();
-
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
 			List<Role> userRoles = user.getRoles();
 			boolean overdue = false;
 			for (Role r : userRoles) {
@@ -8728,32 +8723,33 @@ public class DossierManagementImpl implements DossierManagement {
 			if (!overdue) {
 				throw new UnauthenticationException();
 			}else{
-				if (Validator.isNotNull(query.getDossierArr())) {
+				if (Validator.isNotNull(model.getDossierIds())) {
+					String dossierIds = model.getDossierIds();
+					_log.info("DossierId :" + dossierIds);
 					List<Dossier> lstDossier = new ArrayList<>();
 					List<Long> lstId = new ArrayList<>();
-					String[] dossierArr = query.getDossierArr().split(StringPool.COMMA);
+					String[] dossierArr = dossierIds.split(StringPool.COMMA);
 					for(String dossierId : dossierArr){
 						lstId.add(Long.valueOf(dossierId));
 					}
 					_log.info("Length Id : " + lstId.size());
-					long[] dossierIds = new long[lstId.size()];
+					long[] dossierIdsArr = new long[lstId.size()];
 					if(lstId !=null && !lstId.isEmpty()){
 						int i = 0;
 						for(Long id : lstId){
-							dossierIds[i++] = id;
+							dossierIdsArr[i++] = id;
 						}
 					}
-					lstDossier = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
+					lstDossier = DossierLocalServiceUtil.fetchByD_OR_D(dossierIdsArr);
 					_log.info("Length lstDossierId : " + lstDossier.size());
 					if(lstDossier !=null && lstDossier.size() >0){
 						for(Dossier dossier : lstDossier){
 							_log.info("Log dossier : " + dossier.getDossierId());
 							// Hồ sơ đã có kq ==> hs quá hạn thì cập nhật bằng thời gian trả hạn
 							if(Validator.isNotNull(dossier.getReleaseDate())) {
-								Long releaseDate = dossier.getReleaseDate().getTime();
-								Long dueDate = dossier.getDueDate().getTime();
+								Long releaseDate = dossier.getReleaseDate().getTime(); // thời gian trả kq
+								Long dueDate = dossier.getDueDate().getTime(); // thời gian hẹn trả
 								if (releaseDate > dueDate) {
-									_log.info("Vao 11111111111");
 									dossier.setReleaseDate(dossier.getDueDate());
 								}
 							}
@@ -8764,7 +8760,7 @@ public class DossierManagementImpl implements DossierManagement {
 						return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(StringPool.BLANK).build();
 					}
 				}else{
-					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(StringPool.BLANK).build();
+					return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(StringPool.BLANK).build();
 				}
 			}
 
