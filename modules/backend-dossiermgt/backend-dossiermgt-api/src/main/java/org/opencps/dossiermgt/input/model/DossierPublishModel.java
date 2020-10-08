@@ -79,8 +79,26 @@ public class DossierPublishModel {
 	protected String dossierName;
 	protected String metaData;
 	protected String dossierCounter;
+    protected Integer systemId;
+    protected String systemCode;
 
-	public String getDossierCounter() {
+    public String getSystemCode() {
+        return systemCode;
+    }
+
+    public void setSystemCode(String systemCode) {
+        this.systemCode = systemCode;
+    }
+
+    public Integer getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(Integer systemId) {
+        this.systemId = systemId;
+    }
+
+    public String getDossierCounter() {
 		return dossierCounter;
 	}
 

@@ -1333,7 +1333,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		//Integrate TTTT
-		this.integrateTTTT(dossier, context, dossierAction.getDossierActionId());
+		if (dossierAction != null) {
+			integrateTTTT(dossier, context, dossierAction.getDossierActionId());
+		}
 
 		return dossierAction;
 	}
@@ -1343,13 +1345,18 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		try{
 			List<ServerConfig> listServerConfig = ServerConfigLocalServiceUtil.getByProtocol(
 					dossier.getGroupId(), ServerConfigTerm.TTTT_INTEGRATION);
-			for (ServerConfig serverConfig : listServerConfig) {
-				List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(),
-						dossier.getDossierId(), serverConfig.getServerNo(),
-						new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
-				if (lstQueues == null || lstQueues.isEmpty()) {
-					publishQueueLocalService.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(),
-							serverConfig.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);
+			if (listServerConfig == null || (listServerConfig != null && listServerConfig.size() == 0)) {
+				listServerConfig = ServerConfigLocalServiceUtil.getByProtocol(0, ServerConfigTerm.TTTT_INTEGRATION);
+			}
+			if (listServerConfig != null && listServerConfig.size() > 0) {
+				for (ServerConfig serverConfig : listServerConfig) {
+					List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(),
+							dossier.getDossierId(), serverConfig.getServerNo(),
+							new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+					if (lstQueues == null || lstQueues.isEmpty()) {
+						publishQueueLocalService.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(),
+								serverConfig.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);
+					}
 				}
 			}
 		}catch(Exception e) {
@@ -6731,7 +6738,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Exception.class })
 	public Dossier addDossierPublish(long groupId, Company company, User user, ServiceContext serviceContext,
 			org.opencps.dossiermgt.input.model.DossierPublishModel input)
-			throws UnauthenticationException, PortalException, Exception {
+			throws Exception {
 
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
@@ -6781,6 +6788,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		String lockState = input.getLockState();
 		String dossierNo = input.getDossierNo();
 		String dossierCounter = input.getDossierCounter();
+		int systemId = input.getSystemId() != null ? input.getSystemId() : 0;
+		String systemCode = input.getSystemCode();
 
 		Dossier oldDossier = null;
 		if (Validator.isNotNull(input.getReferenceUid())) {
@@ -6816,7 +6825,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(),
 					input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(),
 					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(),
-					dossierCounter, serviceContext);
+					dossierCounter, systemId, systemCode, serviceContext);
 
 			return dossier;
 		}

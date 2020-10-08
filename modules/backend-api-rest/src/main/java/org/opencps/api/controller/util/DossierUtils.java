@@ -1454,6 +1454,8 @@ public class DossierUtils {
 		model.setWardName(input.getWardName());
 		model.setMetaData(input.getMetaData());
 		model.setDossierCounter(input.getDossierCounter());
+		model.setSystemId(input.getSystemId());
+		model.setSystemCode(input.getSystemCode());
 		
 		return model;
 	}

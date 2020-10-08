@@ -3833,17 +3833,17 @@ public class DossierManagementImpl implements DossierManagement {
 					groupId, company, user, serviceContext,
 					DossierUtils.convertFormModelToPublishModel(input));
 			//add by TrungNT
-			if(dossier.getOriginality() == 0 & 2 != input.getSystemId()) {
+			if (dossier.getOriginality() == 0 & (input.getSystemId() == null || (input.getSystemId() != null && input.getSystemId() < 1))) {
 				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
 				String mappingDossierStatus = actionImpl.getMappingStatus(dossier.getGroupId(), dossier);
-				if(Validator.isNotNull(mappingDossierStatus)) {
+				if (Validator.isNotNull(mappingDossierStatus)) {
 					List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.DVCQG_INTEGRATION);
-					
+
 					for (ServerConfig sc : lstScs) {
 						try {
-							List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo(), new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+							List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo(), new int[]{PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT});
 							if (lstQueues == null || lstQueues.isEmpty()) {
-								PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, serviceContext);					
+								PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, serviceContext);
 							}
 
 						} catch (PortalException e) {

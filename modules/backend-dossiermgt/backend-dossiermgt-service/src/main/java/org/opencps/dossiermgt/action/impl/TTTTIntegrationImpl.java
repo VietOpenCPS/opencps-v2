@@ -4,6 +4,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.TTTTIntegrationAction;
@@ -25,12 +26,16 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
     private Log _log = LogFactoryUtil.getLog(TTTTIntegrationImpl.class);
     @Override
     public boolean syncDoActionDossier(Dossier dossier) throws Exception{
-        List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(ServerConfigTerm.TTTT_INTEGRATION);
-        if (serverConfigs == null || serverConfigs.isEmpty()) {
+        List<ServerConfig> listServerConfig = ServerConfigLocalServiceUtil.getByProtocol(
+                dossier.getGroupId(), ServerConfigTerm.TTTT_INTEGRATION);
+        if (listServerConfig == null || (listServerConfig != null && listServerConfig.size() == 0)) {
+            listServerConfig = ServerConfigLocalServiceUtil.getByProtocol(0, ServerConfigTerm.TTTT_INTEGRATION);
+        }
+        if (listServerConfig == null || listServerConfig.isEmpty()) {
             throw new Exception("No server config");
         }
 
-        ServerConfig serverConfig = serverConfigs.get(0);
+        ServerConfig serverConfig = listServerConfig.get(0);
         JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 
         RestTemplate restTemplate = new RestTemplate();
@@ -59,10 +64,10 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
     private MultiValueMap<String, String> createBodyForCheckActionDossier(Dossier dossier, JSONObject serverConfig) {
         MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
 
-        String codeProfile = dossier.getDocumentNo()!= null ? dossier.getDocumentNo() : "";
+        String codeProfile = Validator.isNotNull(dossier.getDossierNo()) ? dossier.getDossierNo() : "";
         Integer siteId  = IntegrateTTTTConstants.SITE_ID;
-        String codeTTHC = dossier.getServiceCode()!= null ? dossier.getServiceCode() : "";
-        String nameTTHC = dossier.getServiceName()!= null ? dossier.getServiceName() : "";;
+        String codeTTHC = Validator.isNotNull(dossier.getServiceCode()) ? dossier.getServiceCode() : "";
+        String nameTTHC = Validator.isNotNull(dossier.getServiceName()) ? dossier.getServiceName() : "";;
         Integer status;
         Integer formsReception ;
         Integer formsPayments = IntegrateTTTTConstants.FormsPaymentDirect;

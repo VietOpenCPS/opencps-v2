@@ -876,7 +876,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, double durationCount, int durationUnit,
 		String dossierName, String processNo, String metaData,
-		String dossierCounter,
+		String dossierCounter, int systemId,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _dossierLocalService.publishDossier(groupId, dossierId,
@@ -895,7 +895,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateTelNo, delegateEmail, delegateAddress, delegateCityCode,
 			delegateCityName, delegateDistrictCode, delegateDistrictName,
 			delegateWardCode, delegateWardName, durationCount, durationUnit,
-			dossierName, processNo, metaData, dossierCounter, context);
+			dossierName, processNo, metaData, dossierCounter, systemId, context);
 	}
 
 	@Override

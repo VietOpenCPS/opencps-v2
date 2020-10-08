@@ -4,6 +4,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -36,6 +37,8 @@ import java.util.Map;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.cache.actions.CacheActions;
 import org.opencps.cache.actions.impl.CacheActionsImpl;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -3992,7 +3995,7 @@ public class DossierActionsImpl implements DossierActions {
 			String delegateAddress, String delegateCityCode, String delegateCityName, String delegateDistrictCode,
 			String delegateDistrictName, String delegateWardCode, String delegateWardName, double durationCount,
 			int durationUnit, String dossierName, String processNo, String metaData, String dossierCounter,
-			ServiceContext context) throws PortalException {
+			int systemId, String systemCode, ServiceContext context) {
 
 		Date appIdDate = null;
 		SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
@@ -4002,6 +4005,35 @@ public class DossierActionsImpl implements DossierActions {
 			_log.debug(e);
 		}
 		Dossier dossier = null;
+		if (systemId != 0) {
+			//Convert govAgency
+			String protocol = "API_MAPPING";
+			ServerConfig configAgency = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId, "SERVER_MAPPING_AGENCY" + systemCode, protocol);
+			if (configAgency != null && Validator.isNotNull(configAgency.getConfigs())) {
+				JSONObject jsonData = null;
+				try {
+					jsonData = JSONFactoryUtil.createJSONObject(configAgency.getConfigs());
+				} catch (JSONException e) {
+					_log.debug(e);
+				}
+				if (jsonData != null && jsonData.has(govAgencyCode)) {
+					govAgencyCode = Validator.isNotNull(jsonData.getString(govAgencyCode)) ? jsonData.getString(govAgencyCode) : govAgencyCode;
+				}
+			}
+			//Convert ServiceCode
+			ServerConfig configService = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId, "SERVER_MAPPING_SERVICE" + systemCode, protocol);
+			if (configService != null && Validator.isNotNull(configService.getConfigs())) {
+				JSONObject jsonData = null;
+				try {
+					jsonData = JSONFactoryUtil.createJSONObject(configAgency.getConfigs());
+				} catch (JSONException e) {
+					_log.debug(e);
+				}
+				if (jsonData != null && jsonData.has(serviceCode)) {
+					serviceCode = Validator.isNotNull(jsonData.getString(serviceCode)) ? jsonData.getString(serviceCode) : serviceCode;
+				}
+			}
+		}
 		try {
 			//Process
 			dossier = DossierLocalServiceUtil.publishDossier(groupId, dossierId, referenceUid, counter, serviceCode,
@@ -4014,11 +4046,10 @@ public class DossierActionsImpl implements DossierActions {
 					dossierStatusText, dossierSubStatus, dossierSubStatusText, dossierActionId, submissionNote,
 					lockState, delegateName, delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
 					delegateCityCode, delegateCityName, delegateDistrictCode, delegateDistrictName, delegateWardCode,
-					delegateWardName, durationCount, durationUnit, dossierName, processNo, metaData, dossierCounter, context);
+					delegateWardName, durationCount, durationUnit, dossierName, processNo, metaData, dossierCounter, systemId, context);
 
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
 		}
 
 		return dossier;

@@ -539,7 +539,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 	private LinkedHashMap<String, Object> processAddQueryParams(String subQuery, long userId, String stepCode, LinkedHashMap<String, Object> params) {
 
 		params.put(DossierTerm.ASSIGNED_USER_ID, StringPool.BLANK);
-		_log.info("params subQuery: "+subQuery);
+//		_log.info("params subQuery: "+subQuery);
 		if (Validator.isNotNull(subQuery)) {
 			String[] elementParams = subQuery.split("&");
 			for (String param : elementParams) {
@@ -565,9 +565,9 @@ public class StatisticManagementImpl implements StatisticManagement {
 							}
 						} else if (!"step".equalsIgnoreCase(paramSplit[0])
 								&& !"order".equalsIgnoreCase(paramSplit[0])) {
-							_log.info("params subQuery1: "+params + "| paramSplit[0]: "+paramSplit[0]);
+//							_log.info("params subQuery1: "+params + "| paramSplit[0]: "+paramSplit[0]);
 							params.put(paramSplit[0], paramSplit[1]);
-							_log.info("params subQuery2: "+params);
+//							_log.info("params subQuery2: "+params);
 						}
 					}
 				}
