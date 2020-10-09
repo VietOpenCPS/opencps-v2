@@ -236,16 +236,18 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			DossierAction previousAction, Employee employee, Dossier dossier, User user, JSONObject payloadObj,
 			ServiceContext context) throws PortalException {
 		String createDossiers = null;
+		_log.info("payloadObj Action: "+ payloadObj);
 		if (payloadObj != null && payloadObj.has("createDossiers") && Validator.isNotNull(payloadObj.get("createDossiers"))) {
 			if (Validator.isNotNull(proAction.getCreateDossiers())) {
-				if (createDossiers.contains(StringPool.POUND)) {
+				_log.info("proAction.getCreateDossiers(): "+proAction.getCreateDossiers());
+				if (proAction.getCreateDossiers().contains(StringPool.POUND)) {
 					String[] splitCDs = createDossiers.split(StringPool.POUND);
 					if (splitCDs.length == 2) {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers")) + StringPool.POUND + splitCDs[1];
 					} else {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
 					}
-				} else if (createDossiers.contains(StringPool.AT)) {
+				} else if (proAction.getCreateDossiers().contains(StringPool.AT)) {
 					String[] splitCDs = createDossiers.split(StringPool.AT);
 					if (splitCDs.length != 2) {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
@@ -1006,6 +1008,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String payload, String assignUsers, String payment, int syncType, ServiceContext context)
 			throws PortalException, SystemException, Exception {
 
+		System.out.println("payload Action: "+ payload);
 		_log.info("payload Action: "+ payload);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
