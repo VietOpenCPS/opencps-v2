@@ -355,7 +355,7 @@ public class BookingLocalServiceUtil {
 		long classPK, String serviceCode, String codeNumber,
 		String bookingName, String gateNumber, Integer state,
 		java.util.Date checkinDate, java.util.Date bookingDate,
-		boolean speaking, String serviceGroupCode, boolean online,
+		boolean speaking, String serviceGroupCode, Boolean online,
 		String bookingInTime, String telNo,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
