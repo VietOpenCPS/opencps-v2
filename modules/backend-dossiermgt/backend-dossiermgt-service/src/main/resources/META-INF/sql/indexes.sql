@@ -110,6 +110,7 @@ create index IX_B06993A5 on opencps_dossieractionuser (uuid_[$COLUMN_LENGTH:75$]
 create index IX_7E9B770D on opencps_dossierdocument (dossierId);
 create index IX_FCE3302B on opencps_dossierdocument (groupId, dossierActionId);
 create index IX_D80E15BE on opencps_dossierdocument (groupId, dossierId, documentType[$COLUMN_LENGTH:255$]);
+create index IX_A32A09D7 on opencps_dossierdocument (groupId, dossierId, dossierActionId);
 create index IX_703C7CE on opencps_dossierdocument (groupId, dossierId, referenceUid[$COLUMN_LENGTH:75$]);
 create unique index IX_15D0143F on opencps_dossierdocument (uuid_[$COLUMN_LENGTH:75$], groupId);
 

@@ -46,6 +46,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
 
     @Override
     public Response sendProfile() {
+        //Api to crawl all profile with status TIEPNHAN or RUT
         try{
             //validator
             List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
@@ -59,7 +60,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
 
             for(ProfileReceiver oneDossier : listDossiers) {
                 if(Validator.isNotNull(oneDossier.getStatus())) {
-                    _log.info("Handling dossier: " + oneDossier.getProfileId());
+                    _log.info("Handling profile: " + oneDossier.getProfileId());
                     ProfileInModel profile = integrationAction.getDetailDossier(token, oneDossier.getProfileId());
                     if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
                         result = integrationAction.crawlDossierLGSP(profile);
@@ -69,14 +70,8 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
                         } else {
                             integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
                         }
-                        /////
-                        //Sync dossier when update dossier
-                        if(!profile.getStatus().equals(FrequencyOfficeConstants.STATUS_RECEIVE)
-//                               todo uncomment this: && result
-                        ) {
-                            integrationAction.syncDossierToLGSP(token, profile);
-                        }
                     }
+                    _log.info("Done crawl one profile id: " + oneDossier.getProfileId());
                 }
             }
 
@@ -89,7 +84,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
 
     @Override
     public Response sendOneProfile(String profileId) {
-
+        //API test crawl one profile
         try{
             //validator
             List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
@@ -102,20 +97,13 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
 
             ProfileInModel profile = integrationAction.getDetailDossier(token, Integer.valueOf(profileId));
             if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
-                result = integrationAction.crawlDossierLGSP(profile);
-
-                if(result) {
-                    integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_SUCCESS);
-                } else {
-                    integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_FAIL);
-                }
-                /////
-                //Sync dossier when update dossier
-                if(!profile.getStatus().equals(FrequencyOfficeConstants.STATUS_RECEIVE)
-//                               todo uncomment this: && result
-                ) {
-                    integrationAction.syncDossierToLGSP(token, profile);
-                }
+//                integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_SUCCESS);
+                boolean resultCrawl = integrationAction.crawlDossierLGSP(profile);
+//                if(resultCrawl) {
+//                    integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_SUCCESS);
+//                } else {
+//                    integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_FAIL);
+//                }
             }
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
@@ -266,18 +254,69 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
     }
 
     @Override
-    public Response sendStatusProfile(long dossierId) {
+    public Response sendStatusProfile(long dossierId, long status) {
         try {
             List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
             ServerConfig serverConfig = listConfig.get(0);
             FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
             String token = integrationAction.getToken();
-            integrationAction.sendStatusProfile(token, dossierId);
+            integrationAction.sendStatusProfile(token, dossierId, status);
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 
         } catch (Exception e) {
             _log.error("Error when send status profile: " + e.getMessage());
+            return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
+        }
+    }
+
+    @Override
+    public Response sendStatusProfileToDVCBo(long dossierId) {
+        try {
+            List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
+            ServerConfig serverConfig = listConfig.get(0);
+            FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
+            String token = integrationAction.getToken();
+            integrationAction.sendStatusProfileToDVCBo(token, dossierId);
+
+            return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+
+        } catch (Exception e) {
+            _log.error("Error when send status profile: " + e.getMessage());
+            return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
+        }
+    }
+
+    @Override
+    public Response syncDossierToLGSPManual(long dossierId) {
+        try {
+            List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
+            ServerConfig serverConfig = listConfig.get(0);
+            FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
+            String token = integrationAction.getToken();
+
+            integrationAction.syncDossierToLGSPManual(token, dossierId);
+
+            return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+        } catch (Exception e) {
+            _log.error("Error when sync dossier: " + e.getMessage());
+            return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
+        }
+    }
+
+    @Override
+    public Response syncDossierToDVCBoManual(long dossierId) {
+        try {
+            List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
+            ServerConfig serverConfig = listConfig.get(0);
+            FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
+            String token = integrationAction.getToken();
+
+            integrationAction.syncDossierToDVCBoManual(token, dossierId);
+
+            return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+        } catch (Exception e) {
+            _log.error("Error when sync dossier: " + e.getMessage());
             return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
         }
     }

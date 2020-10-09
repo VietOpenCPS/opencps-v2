@@ -1,11 +1,13 @@
 package org.opencps.backend.dossiermgt.serviceapi;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.apache.http.impl.client.HttpClients;
 import org.opencps.dossiermgt.input.model.ResponseListDossier;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -30,6 +32,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     private ClientHttpRequestFactory setConfigRestTemplate(Integer timeout) {
         HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
                 = new HttpComponentsClientHttpRequestFactory();
+//        clientHttpRequestFactory.setHttpClient(HttpClients.createDefault());
         clientHttpRequestFactory.setConnectTimeout(timeout);
         return clientHttpRequestFactory;
     }
@@ -38,6 +41,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     public JSONObject callApi(String url, HttpHeaders headers, Map<String, Object> body){
         try {
             _log.info("Calling api: " + url);
+            headers.set("Accept", "*");
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
             ResponseEntity<String> response = restTemplate.postForEntity( url, entity , String.class);
             _log.info("Response api: " + response);
@@ -55,6 +59,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     public JSONObject callApi(String url, HttpHeaders headers, Object body) {
         try {
             _log.info("Calling api: " + url);
+            headers.set("Accept", "*");
             HttpEntity<Object> entity = new HttpEntity<>(body, headers);
             ResponseEntity<String> response = restTemplate.postForEntity( url, entity , String.class);
             _log.info("Response api: " + response);
@@ -72,6 +77,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     public JSONArray callApiWithResponseArray(String url, HttpHeaders headers, Map<String, Object> body) {
         try {
             _log.info("Calling api: " + url);
+            headers.set("Accept", "*");
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
             ResponseEntity<String> response = restTemplate.postForEntity( url, entity , String.class);
             _log.info("Response api: " + response);
@@ -89,8 +95,8 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     public JSONObject get(String url, HttpHeaders headers) {
         try {
             _log.info("Calling api: " + url);
+            headers.set("Accept", "*");
             HttpEntity entity = new HttpEntity<>(headers);
-//            Object test = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
             _log.info("Response api: " + response);
             if(Validator.isNull(response) || Validator.isNull(response.getBody()) || response.getStatusCode().value() != 200){
@@ -101,5 +107,50 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             _log.error(e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public JSONObject getNew(String url, String token) {
+        return getResponseNew(url, token);
+    }
+
+    private JSONObject getResponseNew(String endpoint, String token) {
+        HttpURLConnection conn = null;
+        try {
+            URL url = new URL(endpoint);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+//            conn.setDoInput(true);
+//            conn.setDoOutput(true);
+//            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+//            conn.setInstanceFollowRedirects(true);
+//            HttpURLConnection.setFollowRedirects(true);
+            conn.setReadTimeout(60 * 1000);
+            conn.connect();
+
+
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            String output = StringPool.BLANK;
+
+            StringBuilder sb = new StringBuilder();
+
+            while ((output = bufferedReader.readLine()) != null) {
+                sb.append(output);
+            }
+
+            System.out.println("response: " + sb.toString());
+
+            JSONObject result = JSONFactoryUtil.createJSONObject(sb.toString());
+            return result;
+        } catch (Exception e) {
+            _log.error(e.getMessage());
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+        return null;
     }
 }

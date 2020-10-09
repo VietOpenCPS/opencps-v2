@@ -26,6 +26,14 @@ public class ProfileInModel {
 
     public String profile_ems;
 
+    public String profiles_status;
+
+    public String require_date;
+
+    public String start_date;
+
+    public String end_date;
+
     public String creation_date;
 
     public Integer applicants_type;
@@ -63,6 +71,38 @@ public class ProfileInModel {
     public String process_officials;
 
     public String time_of_process;
+
+    public String getProfiles_status() {
+        return profiles_status;
+    }
+
+    public void setProfiles_status(String profiles_status) {
+        this.profiles_status = profiles_status;
+    }
+
+    public String getRequire_date() {
+        return require_date;
+    }
+
+    public void setRequire_date(String require_date) {
+        this.require_date = require_date;
+    }
+
+    public String getStart_date() {
+        return start_date;
+    }
+
+    public void setStart_date(String start_date) {
+        this.start_date = start_date;
+    }
+
+    public String getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(String end_date) {
+        this.end_date = end_date;
+    }
 
     public String getTime_of_process() {
         return time_of_process;

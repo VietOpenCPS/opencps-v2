@@ -2,16 +2,17 @@ package org.opencps.dossiermgt.action;
 
 import org.opencps.dossiermgt.input.model.ProfileInModel;
 import org.opencps.dossiermgt.input.model.ProfileReceiver;
-import org.opencps.dossiermgt.input.model.ResponseDetailDossier;
-
 import java.util.List;
 
-public interface FrequencyIntegrationAction{
+public interface FrequencyIntegrationAction {
     public boolean crawlDossierLGSP(ProfileInModel profile) throws Exception;
-    public String getToken() throws Exception;
-    public List<ProfileReceiver> getDossiers(String token) throws Exception;
-    public ProfileInModel getDetailDossier(String token, Integer profileId) throws Exception;
+    public String getToken() throws Exception; // API 3.1
+    public void syncDossierToLGSP(String token, ProfileInModel profile) throws Exception; //Case auto sync dossier to CucTanSo
+    public void syncDossierToLGSPManual(String token, long dossierId) throws Exception; //API 3.3, 3.5, 3.6
     public void updateStatusReceiver(String token, Integer profileId, String status) throws Exception; // API 3.7
-    public void syncDossierToLGSP(String token, ProfileInModel profile) throws Exception;
-    public void sendStatusProfile(String token, long dossierId) throws Exception; //API 3.10
+    public List<ProfileReceiver> getDossiers(String token) throws Exception; // API 3.8
+    public ProfileInModel getDetailDossier(String token, Integer profileId) throws Exception; //API 3.9
+    public void sendStatusProfile(String token, long dossierId, long status) throws Exception; //API 3.10
+    public void syncDossierToDVCBoManual(String token, long dossierId) throws Exception; //API 3.11
+    public void sendStatusProfileToDVCBo(String token, long dossierId) throws Exception; //API 3.12
 }

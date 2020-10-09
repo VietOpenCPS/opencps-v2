@@ -6902,7 +6902,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String delegateWardCode = StringPool.BLANK;
 			String delegateWardName = StringPool.BLANK;
 			String dossierName = serviceName;
-			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date receiveDate = formatter.parse(input.getCreation_date());
 			Date dueDate     = Validator.isNotNull(input.getAccept_date()) ?
 									formatter.parse(input.getAccept_date()) :

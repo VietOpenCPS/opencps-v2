@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.action.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -8,6 +9,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -22,14 +24,14 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.dossiermgt.action.FrequencyIntegrationAction;
 import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
 import org.opencps.dossiermgt.input.model.*;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.kernel.context.MBServiceContextFactoryUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -42,6 +44,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     private static final String PARSE_CONFIG_JSON_FAIL= "Create object json from config error";
     private ObjectMapper objectMapper;
     private ServerConfig serverConfig;
+    private static final String FORMAT_DATE_LGSP = "yyyy/MM/dd HH:mm:ss";
 
     public FrequencyIntegrationActionImpl(ServerConfig serverConfig) throws Exception{
         this.apiService = new ApiThirdPartyServiceImpl();
@@ -152,6 +155,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                         groupId, company, user, serviceContext, profile);
                 this.addDossierFile(profile, groupId, serviceContext, dossier);
             } else {
+                //Case API 3.3 or 3.4
                 Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, profile.getRef_code());
                 if(Validator.isNull(dossier)) {
                     throw new Exception("No dossier found to update with referenceId = " + profile.getRef_code());
@@ -162,8 +166,8 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 }
             }
             return true;
-        }catch (Exception e) {
-            _log.error("Error when crawlDossierLGSP: " + e.getMessage());
+        } catch (Exception e) {
+            _log.error("Error when crawlDossierLGSP for refCode: " + profile.getRef_code() + " | Error: " + e.getMessage());
             return false;
         }
     }
@@ -278,15 +282,16 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 //            String urlGetDetailDossier = "http://localhost:8080/o/rest/v2/hshc/dossier";
 
             HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + token);
 
             JSONObject response = apiService.get(urlGetDetailDossier, headers);
+//            JSONObject response = apiService.getNew(urlGetDetailDossier, token);
             if(Validator.isNull(response)) {
                 throw new Exception("Response get one dossier null");
             }
 
-            String profileDetail  = response.getString("profileInmodel");
+            String profileDetail  = response.getString("profileOutmodel");
             if(Validator.isNull(profileDetail)) {
                 throw new Exception("Profile in model is null");
             }
@@ -308,6 +313,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Accept", "*");
             headers.set("Authorization", "Bearer " + token);
 
             JSONObject response = apiService.callApi(urlUpdateStatusReceiver, headers, null);
@@ -348,7 +354,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 }
 
                 if(Validator.isNull(profile.getTime_of_process()) || profile.getTime_of_process().isEmpty()) {
-                    profile.setTime_of_process(getCurrentDateStr("yyyy-MM-dd HH:mm:ss", new Date()));
+                    profile.setTime_of_process(getCurrentDateStr(FORMAT_DATE_LGSP, new Date()));
                 }
             }
 
@@ -357,7 +363,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             profile.setFrom_unit_code(this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
             profile.setTo_unit_code(new String[] {this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)});
             JSONObject response = apiService.callApi(urlSyncDossier, headers, profile);
-            _log.info("Result syn dossier: " + response);
+            _log.info("Result sync dossier: " + response);
 
         } catch (Exception e) {
             _log.error("Sync dossier to lgsp error: " + e.getMessage());
@@ -365,7 +371,206 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     }
 
     @Override
-    public void sendStatusProfile(String token, long dossierId) throws Exception {
+    public void syncDossierToLGSPManual(String token, long dossierId) throws Exception {
+        try {
+            //case 3.5, 3.6
+            Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+            if(Validator.isNull(dossier)) {
+                throw new Exception("No dossier found with id: " + dossierId);
+            }
+
+            if(Validator.isNull(dossier.getDossierNo())) {
+                throw new Exception("No dossierNo found with id: " + dossierId);
+            }
+
+            if(Validator.isNull(dossier.getReferenceUid())) {
+                throw new Exception("No ReferenceId found with id: " + dossierId);
+            }
+            //todo remove this line
+            Integer statusProfile = 3;
+//            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
+            if(statusProfile.equals(0)) {
+                throw new Exception("Status profile: 0");
+            }
+
+            ProfileInModel profile = new ProfileInModel();
+
+            if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_DENIED)) {
+                profile.setStatus(FrequencyOfficeConstants.STATUS_DENIED);
+            } else if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_RETURNED_RESULT)) {
+                profile.setStatus(FrequencyOfficeConstants.STATUS_RESULT);
+            } else if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_REQUIRE_PAPER)) {
+                profile.setStatus(FrequencyOfficeConstants.STATUS_UPDATE);
+            } else {
+                throw new Exception("Status profile is invalid with value: " + statusProfile);
+            }
+
+            profile.setSource_id(dossier.getDossierNo());
+            profile.setRef_code(dossier.getReferenceUid());
+            profile.setType("profile");
+            profile.setFrom_unit_code(this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
+            profile.setTo_unit_code(new String[] {this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)});
+            profile.setTime_of_process(getCurrentDateStr(FORMAT_DATE_LGSP, new Date()));
+            profile.setProcess_officials("Admin");
+
+            List<ProfileAttachment> listProfileAttachments = this.getProfileAttachments(dossier);
+            if(Validator.isNotNull(listProfileAttachments) && listProfileAttachments.size() > 0) {
+                profile.setProfileAttachments(listProfileAttachments);
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + token);
+
+            String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+                    this.configJson.getString(FrequencyOfficeConstants.CONFIG_SYNC_DOSSIER);
+
+//            String urlSyncDossier = "http://localhost:8080/o/rest/v2/hshc/synDossierFake";
+            JSONObject response = apiService.callApi(urlSyncDossier, headers, profile);
+            _log.info("Result sync dossier manual: " + response);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public void syncDossierToDVCBoManual(String token, long dossierId) throws Exception {
+        try {
+            Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+            if(Validator.isNull(dossier)) {
+                throw new Exception("No dossier found with id: " + dossierId);
+            }
+
+            if(Validator.isNull(dossier.getDossierNo())) {
+                throw new Exception("No dossierNo found with id: " + dossierId);
+            }
+
+            if(Validator.isNull(dossier.getReferenceUid())) {
+                throw new Exception("No ReferenceId found with id: " + dossierId);
+            }
+
+            String proceduresCode = this.getProceduresCodeQGFromServiceCodeFDS(dossier.getServiceCode());
+            if(proceduresCode.isEmpty()) {
+                throw new Exception("No proceduresCode found with dossierId: " + dossierId);
+            }
+
+            String creationDate = this.getCurrentDateStr(FORMAT_DATE_LGSP, dossier.getCreateDate());
+            String acceptDate = this.getCurrentDateStr(FORMAT_DATE_LGSP, dossier.getReceiveDate());
+            String appointmentDate = this.getCurrentDateStr(FORMAT_DATE_LGSP, dossier.getDueDate());
+
+            if(creationDate.isEmpty()) {
+                throw new Exception("Create date is empty with dossierId: " + dossierId);
+            }
+
+            if(Validator.isNull(dossier.getApplicantName()) || dossier.getApplicantName().isEmpty()) {
+                throw new Exception("ApplicantName is empty with dossierId: " + dossierId);
+            }
+
+            if(Validator.isNull(dossier.getDelegateName()) || dossier.getDelegateName().isEmpty()) {
+                throw new Exception("DelegateName is empty with dossierId: " + dossierId);
+            }
+
+            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
+            //todo remove this
+            statusProfile = 2;
+            if(statusProfile.equals(0)) {
+                throw new Exception("Status profile 0 with dossierId: " + dossierId);
+            }
+
+            ProfileInModel profile = new ProfileInModel();
+            ProfileOwner profileOwner = new ProfileOwner();
+            ProfileApplicant profileApplicant = new ProfileApplicant();
+            profileOwner.setName(dossier.getApplicantName());
+            profileOwner.setAddress(dossier.getAddress());
+            profileOwner.setTel(dossier.getContactTelNo());
+            profileApplicant.setName(dossier.getDelegateName());
+            profileApplicant.setAddress(dossier.getDelegateAddress());
+            profileApplicant.setEmail(dossier.getDelegateEmail());
+            profileApplicant.setTel(dossier.getDelegateTelNo());
+            profileApplicant.setIdentify(dossier.getDelegateIdNo());
+            List<ProfileAttachment> listProfileAttachments = this.getProfileAttachments(dossier);
+            List<ProfileDocFee> listProfileDocFees = this.getListProfileDocFee(dossier.getGroupId(), dossierId);
+
+            profile.setStatus(FrequencyOfficeConstants.STATUS_RECEIVE);
+            profile.setProfiles_status(String.valueOf(statusProfile));
+            profile.setSource_id(dossier.getDossierNo());
+            profile.setRef_code(dossier.getReferenceUid());
+            profile.setProcedures_code(proceduresCode);
+            profile.setType("profile");
+            profile.setCreation_date(creationDate);
+            profile.setFrom_unit_code(this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
+            profile.setTo_unit_code(new String[] {this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)});
+            profile.setProfileOwner(profileOwner);
+            profile.setProfileApplicant(profileApplicant);
+            profile.setAccept_date(acceptDate);
+            profile.setAppointment_date(appointmentDate);
+            if(Validator.isNotNull(listProfileAttachments) && listProfileAttachments.size() > 0) {
+                profile.setProfileAttachments(listProfileAttachments);
+            }
+
+            if(Validator.isNotNull(listProfileDocFees) && listProfileDocFees.size() > 0) {
+                profile.setProfileDocFees(listProfileDocFees);
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + token);
+
+            String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+                    this.configJson.getString(FrequencyOfficeConstants.CONFIG_SYNC_DOSSIER_TO_DVC_BO);
+//            String urlSyncDossier = "http://localhost:8080/o/rest/v2/hshc/synDossierFake";
+
+            JSONObject response = apiService.callApi(urlSyncDossier, headers, profile);
+            _log.info("Result sync dossier DVC Bo manual: " + response);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    private List<ProfileDocFee> getListProfileDocFee(long groupId, long dossierId) {
+        try {
+            List<ProfileDocFee> listDocFees = new ArrayList<>();
+            ProfileDocFee docFee = new ProfileDocFee();
+            PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+            if(Validator.isNull(paymentFile)) {
+                throw new Exception("No payment file with dossierId: " + dossierId);
+            }
+
+            docFee.setPrice(String.valueOf(paymentFile.getPaymentAmount()));
+            docFee.setFee_name(paymentFile.getPaymentFee());
+            listDocFees.add(docFee);
+            return listDocFees;
+        } catch (Exception e) {
+            _log.error("Error when get profile doc fee: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private String getProceduresCodeQGFromServiceCodeFDS(String serviceCode) {
+        try {
+            JSONArray listServiceConfig = this.configJson.getJSONArray("serviceConfig");
+            if(Validator.isNull(listServiceConfig) || listServiceConfig.length() == 0) {
+                throw new Exception("No service config");
+            }
+            int length = listServiceConfig.length();
+            JSONObject oneServiceConfig;
+
+            for(int i = 0; i< length; i ++) {
+                oneServiceConfig = listServiceConfig.getJSONObject(i);
+                if(oneServiceConfig.getString("serviceCode").equals(serviceCode)) {
+                    return oneServiceConfig.getString("procedures_code");
+                }
+            }
+
+            return "";
+        } catch (Exception e) {
+            _log.error("Error when get procedures code from service code " + serviceCode + ": " + e.getMessage());
+            return "";
+        }
+    }
+
+    @Override
+    public void sendStatusProfile(String token, long dossierId, long status) throws Exception {
 
         try {
             Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -381,23 +586,74 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 throw new Exception("No ReferenceId found with id: " + dossierId);
             }
 
-            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
-            if(statusProfile.equals(0)) {
-                throw new Exception("Status profile: 0");
-            }
+//            Integer statusProfile = Integer.valueOf(status);
+            //toto undo this code
+//            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
+//            if(statusProfile.equals(0)) {
+//                throw new Exception("Status profile: 0");
+//            }
 
             String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
                     this.configJson.get(FrequencyOfficeConstants.CONFIG_SEND_STATUS_RECEIVER);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + token);
+
+            Map<String, Object> body = new HashMap<>();
+            body.put(FrequencyOfficeConstants.TYPE, "status");
+            body.put(FrequencyOfficeConstants.SOURCE_ID, dossier.getDossierNo());
+            body.put(FrequencyOfficeConstants.REF_CODE, dossier.getReferenceUid());
+            body.put(FrequencyOfficeConstants.STATUS_PROFILE, String.valueOf(status));
+            body.put(FrequencyOfficeConstants.PROCESS_OFFICIALS, "Admin");
+            body.put(FrequencyOfficeConstants.TIME_OF_PROCESS, getCurrentDateStr(FORMAT_DATE_LGSP, new Date()));
+            body.put(FrequencyOfficeConstants.FROM_UNIT_CODE, this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
+            body.put(FrequencyOfficeConstants.TO_UNIT_CODE, this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE));
+
+            JSONObject response = apiService.callApi(urlSyncDossier, headers, body);
+            _log.info("Result send dossier status: " + response);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public void sendStatusProfileToDVCBo(String token, long dossierId) throws Exception {
+        try {
+            Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+            if(Validator.isNull(dossier)) {
+                throw new Exception("No dossier found with id: " + dossierId);
+            }
+
+            if(Validator.isNull(dossier.getDossierNo())) {
+                throw new Exception("No dossierNo found with id: " + dossierId);
+            }
+
+            if(Validator.isNull(dossier.getReferenceUid())) {
+                throw new Exception("No ReferenceId found with id: " + dossierId);
+            }
+
+            Integer statusProfile = 2;
+            //toto undo this code
+//            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
+//            if(statusProfile.equals(0)) {
+//                throw new Exception("Status profile: 0");
+//            }
+
+            String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+                    this.configJson.get(FrequencyOfficeConstants.CONFIG_SEND_STATUS_PROFILE_TO_DVC_BO);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + token);
+
             Map<String, Object> body = new HashMap<>();
             body.put(FrequencyOfficeConstants.TYPE, "status");
             body.put(FrequencyOfficeConstants.SOURCE_ID, dossier.getDossierNo());
             body.put(FrequencyOfficeConstants.REF_CODE, dossier.getReferenceUid());
             body.put(FrequencyOfficeConstants.STATUS_PROFILE, statusProfile);
             body.put(FrequencyOfficeConstants.PROCESS_OFFICIALS, "Admin");
-            body.put(FrequencyOfficeConstants.TIME_OF_PROCESS, getCurrentDateStr("yyyy-MM-dd HH:mm:ss", new Date()));
+            body.put(FrequencyOfficeConstants.TIME_OF_PROCESS, getCurrentDateStr(FORMAT_DATE_LGSP, new Date()));
             body.put(FrequencyOfficeConstants.FROM_UNIT_CODE, this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
             body.put(FrequencyOfficeConstants.TO_UNIT_CODE, this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE));
 
@@ -427,8 +683,119 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
         }
     }
 
+    private List<ProfileAttachment> getProfileAttachments(Dossier dossier) {
+        try {
+            List<ProfileAttachment> listAttachments = new ArrayList<>();
+            FileEntry fileEntry;
+            long dossierId = dossier.getDossierId();
+            DossierAction lastAction = DossierActionLocalServiceUtil.getByNextActionId(dossierId, 0);
+            if(Validator.isNull(lastAction)) {
+                throw new Exception("No last action with dossierId: " + dossierId);
+            }
+
+            List<DossierDocument> listDossierDocuments =
+                    DossierDocumentLocalServiceUtil.getByDID_DAIDList(dossier.getGroupId(), dossierId, lastAction.getDossierActionId());
+
+            //Case file in dossier document
+            if(Validator.isNotNull(listDossierDocuments) && listDossierDocuments.size() > 0) {
+                for(DossierDocument oneDocument : listDossierDocuments) {
+                    if(Validator.isNotNull(oneDocument.getDocumentFileId()) && oneDocument.getDocumentFileId() > 0) {
+                        ProfileAttachment profileAttachment = new ProfileAttachment();
+                        fileEntry = DLAppLocalServiceUtil.getFileEntry(
+                                oneDocument.getDocumentFileId());
+                        if(Validator.isNotNull(fileEntry)) {
+                            profileAttachment.setContent_type(fileEntry.getExtension());
+                            profileAttachment.setAttachment_name(fileEntry.getFileName());
+                            profileAttachment.setIs_verified(0);
+                            profileAttachment.setDescription("");
+                            profileAttachment.setIs_deleted(0);
+                            profileAttachment.setAttachment_file_url(
+                                    InetAddress.getLocalHost().getHostName() +
+                                    "/o/rest/v2/dossiers/lgsp/download/"
+                                    + fileEntry.getFileEntryId());
+                            listAttachments.add(profileAttachment);
+                        }
+                    }
+                }
+
+                if(Validator.isNotNull(listAttachments) && listAttachments.size()>0) {
+                    return listAttachments;
+                }
+            }
+
+            //Case file in dossier file
+            if(Validator.isNull(lastAction.getServiceProcessId())
+                    || Validator.isNull(lastAction.getActionCode())
+                    || Validator.isNull(lastAction.getStepCode())
+                    || Validator.isNull(lastAction.getFromStepCode())) {
+                throw new Exception("Last action is invalid with dossierActionId" + lastAction.getDossierActionId());
+            }
+
+            ProcessAction processAction = ProcessActionLocalServiceUtil.fetchByF_GID_SID_AC_PRE_POST(lastAction.getGroupId(),
+                    lastAction.getServiceProcessId(), lastAction.getActionCode(), lastAction.getFromStepCode(), lastAction.getStepCode());
+
+            if(Validator.isNull(processAction)) {
+                throw new Exception("No process action with serviceProcessId: " + lastAction.getServiceProcessId() +", actionCode: " +
+                        lastAction.getActionCode() + ", fromStepCode: " + lastAction.getFromStepCode() + ", stepCode: " + lastAction.getStepCode());
+            }
+
+            if(Validator.isNull(processAction.getCreateDossierFiles()) || processAction.getCreateDossierFiles().isEmpty()) {
+                throw new Exception("No create dossier file in process action with serviceProcessId: " + lastAction.getServiceProcessId() +", actionCode: " +
+                        lastAction.getActionCode() + ", fromStepCode: " + lastAction.getFromStepCode() + ", stepCode: " + lastAction.getStepCode());
+            }
+
+            List<DossierFile> listDossierFiles = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId,
+                    processAction.getCreateDossierFiles(), false);
+
+            if(Validator.isNull(listDossierFiles) || listDossierFiles.isEmpty()) {
+                throw new Exception("No dossier file with dossierId: " + dossierId + ", fileTemplateNo: " + processAction.getCreateDossierFiles());
+            }
+
+            for(DossierFile oneDossierFile : listDossierFiles) {
+                if(Validator.isNotNull(oneDossierFile.getFileEntryId()) && oneDossierFile.getFileEntryId() > 0) {
+                    ProfileAttachment profileAttachment = new ProfileAttachment();
+                    fileEntry = DLAppLocalServiceUtil.getFileEntry(
+                            oneDossierFile.getFileEntryId());
+                    if(Validator.isNotNull(fileEntry)) {
+                        profileAttachment.setContent_type(fileEntry.getExtension());
+                        profileAttachment.setAttachment_name(fileEntry.getFileName());
+                        profileAttachment.setIs_verified(0);
+                        profileAttachment.setDescription("");
+                        profileAttachment.setIs_deleted(0);
+                        profileAttachment.setAttachment_file_url(
+                                InetAddress.getLocalHost().getHostName() +
+                                        "/o/rest/v2/dossiers/lgsp/download/"
+                                        + fileEntry.getFileEntryId());
+                        listAttachments.add(profileAttachment);
+                    }
+                }
+            }
+            return listAttachments;
+        } catch (Exception e) {
+            _log.info("Error when get list attachments: " + e.getMessage());
+            return null;
+        }
+    }
+
     private String getCurrentDateStr(String format, Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat(format);
-        return formatter.format(date);
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat(format);
+            return formatter.format(date);
+        } catch (Exception e) {
+            _log.error("Error when get current date str: " + e.getMessage());
+            return "";
+        }
+    }
+
+    private String getDateStrFromDateStr(String currentFormat, String newFormat, String strDate) {
+        try {
+            SimpleDateFormat formatCurrent = new SimpleDateFormat(currentFormat);
+            SimpleDateFormat formatNew     = new SimpleDateFormat(newFormat);
+            String reformattedStr = formatNew.format(formatCurrent.parse(strDate));
+            return reformattedStr;
+        } catch (Exception e) {
+            _log.error("Error when parse string date: " + e.getMessage());
+            return "";
+        }
     }
 }

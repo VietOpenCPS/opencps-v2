@@ -2686,10 +2686,15 @@
 			<finder-column name="dossierId" />
 			<finder-column name="referenceUid" />
 		</finder>
-	<finder return-type="Collection" name="F_DID_DOCTYPE">
+		<finder return-type="Collection" name="F_DID_DOCTYPE">
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />
 			<finder-column name="documentType" />
+		</finder>
+		<finder return-type="Collection" name="F_GID_DID_DAID">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="dossierActionId" />
 		</finder>
 	</entity>
 

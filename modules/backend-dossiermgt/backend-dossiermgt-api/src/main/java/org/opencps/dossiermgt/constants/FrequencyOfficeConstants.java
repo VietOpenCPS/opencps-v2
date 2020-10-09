@@ -31,6 +31,8 @@ public class FrequencyOfficeConstants {
     public static final String CONFIG_GET_DETAIL_DOSSIERS = "getDetailDossier";
     public static final String CONFIG_UPDATE_STATUS_RECEIVER = "updateStatusReceiver";
     public static final String CONFIG_SEND_STATUS_RECEIVER = "sendStatusProfile";
+    public static final String CONFIG_SYNC_DOSSIER_TO_DVC_BO = "syncDossierToDVCBo";
+    public static final String CONFIG_SEND_STATUS_PROFILE_TO_DVC_BO = "sendStatusProfileToDVCBo";
     public static final String CONFIG_SYNC_DOSSIER = "syncDossier";
     public static final String CONFIG_USER_LGSP = "userLGSP";
     public static final String CONFIG_PASS_LGSP = "passLGSP";
@@ -47,6 +49,18 @@ public class FrequencyOfficeConstants {
     public static final String STATUS_PULL_OUT = "RUT";
     public static final String STATUS_DENIED = "TUCHOI";
     public static final String STATUS_RESULT = "KETQUA";
+    //Status LGSP
+    public static final Integer STATUS_LGSP_NEW = 1;
+    public static final Integer STATUS_LGSP_RECEIVED = 2;
+    public static final Integer STATUS_LGSP_DENIED = 3;
+    public static final Integer STATUS_LGSP_PROCESSING = 4;
+    public static final Integer STATUS_LGSP_REQUIRE_PAPER = 5;
+    public static final Integer STATUS_LGSP_REQUIRE_MONEY = 6;
+    public static final Integer STATUS_LGSP_PEOPLE_REQUIRE_CANCEL = 7;
+    public static final Integer STATUS_LGSP_STOP_PROCESS = 8;
+    public static final Integer STATUS_LGSP_DONE = 9;
+    public static final Integer STATUS_LGSP_RETURNED_RESULT = 10;
+
 
     public static final String STATUS_SUCCESS = "done";
     public static final String STATUS_FAIL = "fail";
