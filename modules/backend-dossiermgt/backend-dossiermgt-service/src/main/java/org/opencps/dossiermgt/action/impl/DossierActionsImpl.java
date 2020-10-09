@@ -546,12 +546,7 @@ public class DossierActionsImpl implements DossierActions {
 								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)) {
 									data.put(ProcessActionTerm.ENABLE, enable);
 								}else {
-									//A.Duẩn autoEvent == SPECIAL vẫn check preCondition
-									if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
-										break;
-									}else {
-										data.put(ProcessActionTerm.ENABLE, 0);
-									}
+									data.put(ProcessActionTerm.ENABLE, 0);
 								}
 							}
 							else {
@@ -3444,7 +3439,7 @@ public class DossierActionsImpl implements DossierActions {
 		long groupId, User curUser) {
 		//A.Duẩn autoEvent == SPECIAL vẫn check preCondition
 		if (AUTO_EVENT_SUBMIT.equals(autoEvent) || AUTO_EVENT_TIMMER.equals(autoEvent)
-			|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+			|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
 
 			return false;
 		}
