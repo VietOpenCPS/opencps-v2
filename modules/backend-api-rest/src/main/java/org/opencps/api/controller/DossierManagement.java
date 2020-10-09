@@ -1769,7 +1769,7 @@ public interface DossierManagement {
 			@Context ServiceContext serviceContext,
 			@BeanParam DossierSearchModel query);
 
-	@PUT
+	@POST
 	@Path("/overdueTime")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,MediaType.APPLICATION_FORM_URLENCODED})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

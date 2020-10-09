@@ -255,7 +255,7 @@ public class DossierTerm {
 	public static final String DUE_DATE_PATTERN = "dueDatePattern";
 	public static final String WORK_DAY = "workDay";
 	public static final String ALL_DAY = "allDay";
-	public static final String ACTION_CODE_SPECIAL = "7777";
+	public static final String ACTION_CODE_SPECIAL = "9669";
 	//Constant dateOption
 	public static final int DATE_OPTION_CHANGE_DUE_DATE = 1;
 	public static final int DATE_OPTION_TWO = 2;
