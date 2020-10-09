@@ -8709,10 +8709,15 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response updateDossierIdByRole(HttpServletRequest request, HttpHeaders header, Company company,
 							Locale locale, User user, ServiceContext serviceContext, DoActionModel model) {
 		try {
-			BackendAuth auth = new BackendAuthImpl();
 			DossierActions actions = new DossierActionsImpl();
 			DossierAction dossierResult = null;
 			ErrorMsgModel errorModel = new ErrorMsgModel();
+
+			JSONObject results = JSONFactoryUtil.createJSONObject();
+			JSONArray data = JSONFactoryUtil.createJSONArray();
+			JSONObject elmData = JSONFactoryUtil.createJSONObject();
+			JSONObject element = JSONFactoryUtil.createJSONObject();
+
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
@@ -8881,9 +8886,26 @@ public class DossierManagementImpl implements DossierManagement {
 								}
 								DossierLocalServiceUtil.updateDossier(dossier);
 							}
-							return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
+							int total = 0;
+							if (dossierResult != null) {
+								long dossierActionId = dossierResult.getDossierActionId();
+								DossierDocument doc = DossierDocumentLocalServiceUtil.getByActiocId(groupId, dossierActionId);
+								long dossierDocumentId = 0;
+								if (doc != null) {
+									dossierDocumentId = doc.getDossierDocumentId();
+								}
+								elmData = DossierUtils.mappingDossierJSON(dossierResult, dossierDocumentId, element);
+								if(Validator.isNotNull(elmData)){
+									data.put(elmData);
+									total++;
+								}
+							}
+							results.put(ConstantUtils.DATA,data);
+							results.put(ConstantUtils.TOTAL,total);
+
+							return Response.status(HttpURLConnection.HTTP_OK).entity(results.toJSONString()).build();
 						} else {
-							return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(StringPool.BLANK).build();
+							return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(StringPool.BLANK).build();
 						}
 					} else {
 						return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(StringPool.BLANK).build();
