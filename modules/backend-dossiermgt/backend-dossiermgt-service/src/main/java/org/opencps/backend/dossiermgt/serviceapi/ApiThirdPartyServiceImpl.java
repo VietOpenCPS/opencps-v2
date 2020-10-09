@@ -87,6 +87,32 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     }
 
     @Override
+    public boolean checkSum(String token, Map<String, Object> body) {
+        try {
+            _log.info("Body checksum paygov: " + body);
+            String url = "https://api.dongthap.gov.vn/api/v1/PayGov/CheckSumUrlReturn";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "Bearer " + token);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            JSONObject response = this.callApi(url, headers, body);
+            if (Validator.isNull(response)) {
+                throw new Exception(response.toString());
+            }
+
+            if(Validator.isNull(response.getString("error_code"))) {
+                throw new Exception(response.toString());
+            }
+
+            if(response.getString("error_code").equals("SUCCESSFUL")) {
+                return true;
+            }
+        } catch (Exception e) {
+            _log.error("Error when check sum: " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
     public JSONObject callApi(String url, HttpHeaders headers, Map<String, Object> body){
         try {
             _log.info("Calling api viettle: " + url);
