@@ -488,8 +488,9 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		try {
 			_log.info("serviceInfoId : " + serviceInfoId);
 			List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByServiceInfo(groupId, serviceInfoId);
+			_log.info("LogInfo : " + configList.size());
 			if (configList != null && configList.size() > 0) {
-				_log.info("LogInfo : " + configList.size());
+
 				long serviceConfigId = 0;
 				for (ServiceConfig config : configList) {
 					serviceConfigId = config.getServiceConfigId();

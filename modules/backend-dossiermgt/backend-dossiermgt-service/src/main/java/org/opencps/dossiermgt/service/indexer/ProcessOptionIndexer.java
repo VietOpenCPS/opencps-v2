@@ -100,31 +100,36 @@ public class ProcessOptionIndexer extends BaseIndexer<ProcessOption> {
 		JSONObject jsonObj = JSONFactoryUtil.createJSONObject();
 
 		try {
-			DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(dossierTemplateId);
-			jsonObj.put(ProcessOptionTerm.TEMPLATE_NO, dossierTemplate.getTemplateNo());
-			jsonObj.put(ProcessOptionTerm.TEMPLATE_NAME, dossierTemplate.getTemplateName());
+			if(Validator.isNotNull(dossierTemplateId)) {
+				DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(dossierTemplateId);
+				jsonObj.put(ProcessOptionTerm.TEMPLATE_NO, dossierTemplate.getTemplateNo());
+				jsonObj.put(ProcessOptionTerm.TEMPLATE_NAME, dossierTemplate.getTemplateName());
+			}
 		} catch (Exception e) {
 			_log.error(e);
 		}
 
 		try {
-			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceProcess(serviceProcessId);
-			jsonObj.put(ProcessOptionTerm.PROCESS_NO, serviceProcess.getProcessNo());
-			jsonObj.put(ProcessOptionTerm.PROCESS_NAME, serviceProcess.getProcessName());
+			if(Validator.isNotNull(serviceProcessId)) {
+				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceProcess(serviceProcessId);
+				jsonObj.put(ProcessOptionTerm.PROCESS_NO, serviceProcess.getProcessNo());
+				jsonObj.put(ProcessOptionTerm.PROCESS_NAME, serviceProcess.getProcessName());
+			}
 
 		} catch (Exception e) {
 			_log.error(e);
 		}
 
 		try {
-			ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getServiceConfig(serviceConfigId);
+			if(Validator.isNotNull(serviceConfigId)) {
+				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getServiceConfig(serviceConfigId);
 
-			if (serviceConfig.getForBusiness())
-				jsonObj.put(ActionKeys.APPLICANT_BUSINESS, Boolean.toString(serviceConfig.getForBusiness()));
+				if (serviceConfig.getForBusiness())
+					jsonObj.put(ActionKeys.APPLICANT_BUSINESS, Boolean.toString(serviceConfig.getForBusiness()));
 
-			if (serviceConfig.getForCitizen())
-				jsonObj.put(ActionKeys.APPLICANT_CTZ, Boolean.toString(serviceConfig.getForCitizen()));
-
+				if (serviceConfig.getForCitizen())
+					jsonObj.put(ActionKeys.APPLICANT_CTZ, Boolean.toString(serviceConfig.getForCitizen()));
+			}
 		} catch (Exception e) {
 			_log.error(e);
 		}
