@@ -47,8 +47,8 @@ public class StatisticEngineFetchEntry {
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getFinishDate());
 		int viaPostal = dossierData.getViaPostal();
-		if (viaPostal != 0)
-			_log.info("VIA POSTAL STATISTIC: " + viaPostal);
+		/*if (viaPostal != 0)
+			_log.info("VIA POSTAL STATISTIC: " + viaPostal);*/
 		if (viaPostal == USED_POSTAL) {
 			statisticData.setViaPostalCount(statisticData.getViaPostalCount() + 1);
 		}

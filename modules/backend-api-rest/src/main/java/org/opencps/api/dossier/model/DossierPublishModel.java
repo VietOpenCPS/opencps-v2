@@ -121,9 +121,10 @@ import javax.xml.bind.annotation.XmlType;
 	"durationUnit",
 	"sampleCount",
 	"dossierName",
-	"mataData",
+	"metaData",
 	"dossierCounter",
-	"systemId"
+	"systemId",
+	"systemCode"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierPublishModel {
@@ -272,6 +273,16 @@ public class DossierPublishModel {
 	@DefaultValue("0")
 	@FormParam(value = "systemId")
 	protected Integer systemId;
+	@FormParam(value = "systemCode")
+	protected String systemCode;
+
+	public String getSystemCode() {
+		return systemCode;
+	}
+
+	public void setSystemCode(String systemCode) {
+		this.systemCode = systemCode;
+	}
 
 	public Integer getSystemId() {
 		return systemId;

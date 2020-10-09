@@ -70,8 +70,7 @@ public class CPSDossierBusinessLocalServiceWrapper
 		com.liferay.portal.kernel.model.User user,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,
 		org.opencps.dossiermgt.input.model.DossierPublishModel input)
-		throws org.opencps.auth.api.exception.UnauthenticationException,
-			com.liferay.portal.kernel.exception.PortalException, Exception {
+		throws Exception {
 		return _cpsDossierBusinessLocalService.addDossierPublish(groupId,
 			company, user, serviceContext, input);
 	}
