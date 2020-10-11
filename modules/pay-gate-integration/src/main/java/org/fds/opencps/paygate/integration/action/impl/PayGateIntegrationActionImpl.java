@@ -1708,12 +1708,13 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		try {
 			_log.info("=======body========" + body);
 			JSONObject data = JSONFactoryUtil.createJSONObject(body);
+			final String PAY_SUCCESS = "00";
 
 			if(Validator.isNull(data)) {
 				throw new Exception("Body null");
 			}
 
-			String amount = data.getString(PayGateTerm.PAYGOV_AMOUNT);
+			Integer amount = data.getInt(PayGateTerm.PAYGOV_AMOUNT);
 			String orderId = data.getString(PayGateTerm.PAYGOV_ORDER_ID);
 			String orderInfo = data.getString(PayGateTerm.PAYGOV_ORDER_INFO);
 			String requestCode = data.getString(PayGateTerm.PAYGOV_REQUEST_CODE);
@@ -1726,6 +1727,33 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			String checksum = data.getString(PayGateTerm.PAYGOV_CHECKSUM);
 
 			String dossierNo = orderId.substring(0, orderId.length()- 3); //remove -01
+			if(!errorCode.equals(PAY_SUCCESS)) {
+				throw new Exception("Pay error with error code: " + errorCode);
+			}
+
+			if(Validator.isNotNull(data.getBoolean(PayGateTerm.PAYGOV_ACTIVE_CHECK_SUM))
+					&& data.getBoolean(PayGateTerm.PAYGOV_ACTIVE_CHECK_SUM)) {
+				//Call from FE of fds
+				ApiThirdPartyService apiService = new ApiThirdPartyServiceImpl();
+				String token = apiService.getTokenLGSP();
+				Map<String, Object> bodyChecksum = new HashMap<>();
+				bodyChecksum.put(PayGateTerm.PAYGOV_AMOUNT, amount);
+				bodyChecksum.put(PayGateTerm.PAYGOV_ORDER_ID, orderId);
+				bodyChecksum.put(PayGateTerm.PAYGOV_ORDER_INFO, orderInfo);
+				bodyChecksum.put(PayGateTerm.PAYGOV_REQUEST_CODE, requestCode);
+				bodyChecksum.put(PayGateTerm.PAYGOV_TRANSACTION_NO, transactionNo);
+				bodyChecksum.put(PayGateTerm.PAYGOV_PAY_DATE, payDate);
+				bodyChecksum.put(PayGateTerm.PAYGOV_PAY_GATE, paygate);
+				bodyChecksum.put(PayGateTerm.PAYGOV_ERROR_CODE, errorCode);
+				bodyChecksum.put(PayGateTerm.PAYGOV_TYPE, type);
+				bodyChecksum.put(PayGateTerm.PAYGOV_TRANSACTION_CODE, transactionCode);
+				bodyChecksum.put(PayGateTerm.PAYGOV_CHECKSUM, checksum);
+				boolean resultChecksum = apiService.checkSum(token, bodyChecksum);
+				if(!resultChecksum) {
+					return PayGateUtil.createResponseToPaygov(PayGateTerm.FAILED, "Checksum is invalid");
+				}
+			}
+
 			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
 
 			if(Validator.isNull(dossier)) {
