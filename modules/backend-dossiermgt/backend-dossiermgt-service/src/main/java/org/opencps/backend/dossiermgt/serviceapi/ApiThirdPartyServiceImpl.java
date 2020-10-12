@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.usermgt.service.util.LGSPRestfulUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -36,19 +37,12 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     @Override
     public String getTokenLGSP() throws Exception{
         try {
-            String url = "http://api.dongthap.gov.vn/api/v1/Authentication/Token";
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.add("Auth", "WVdSdGFXND06WVdSdGFXNUFNZz09");
-            JSONObject response = this.callApi(url, headers, null);
-            if(Validator.isNull(response)) {
-                throw new Exception("Response get token null");
+            JSONObject jsonToken = LGSPRestfulUtils.createTokenLGSP("Bearer");
+            if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
+                    && jsonToken.has("expiryDate")) {
+                return jsonToken.getString("token");
             }
-            String token = response.getString("token");
-            if(token.isEmpty()){
-                throw new Exception("Token is empty");
-            }
-            return token;
+            throw new Exception("Token is empty with response jsonToken: " + jsonToken);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
