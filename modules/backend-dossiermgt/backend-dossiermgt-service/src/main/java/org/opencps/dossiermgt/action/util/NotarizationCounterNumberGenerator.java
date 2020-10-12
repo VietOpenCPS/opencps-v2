@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.opencps.datamgt.utils.DateTimeUtils;
+import org.opencps.dossiermgt.constants.ConstantsUtils;
 import org.opencps.dossiermgt.model.ConfigCounter;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.Notarization;
@@ -347,5 +348,40 @@ public class NotarizationCounterNumberGenerator {
 		}
 
 		return String.format(format, _counterNumber); 
+	}
+	
+	public static long countByServiceCode(String serviceCode, String govAgencyCode) {
+			
+			long _counterNumber = 0;
+			Date now = new Date();
+			try {
+				String year = String.valueOf(DateTimeUtils.getYearFromDate(now));
+				String certConfigName = ConstantsUtils.PRE_FIX_COUNTER + govAgencyCode 
+						+ "-" + year + "-"+ serviceCode;
+				
+				_log.info("___certConfigId" + certConfigName);
+			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigName);
+	
+			if (Validator.isNotNull(counterConfig)) {
+				// create counter config
+				_counterNumber = counterConfig.getCurrentId() + 1;
+				//
+				counterConfig.setCurrentId(_counterNumber);
+				CounterLocalServiceUtil.updateCounter(counterConfig);
+					
+				} else {
+					_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+					counterConfig = CounterLocalServiceUtil.createCounter(certConfigName);
+					//increment CurrentCounter 
+					counterConfig.setCurrentId(1);
+					_counterNumber = 1;
+					CounterLocalServiceUtil.updateCounter(counterConfig);
+				}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+	
+		return _counterNumber;
+	
 	}
 }
