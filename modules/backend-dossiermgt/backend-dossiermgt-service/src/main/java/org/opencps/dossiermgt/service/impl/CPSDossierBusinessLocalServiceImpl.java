@@ -236,16 +236,18 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			DossierAction previousAction, Employee employee, Dossier dossier, User user, JSONObject payloadObj,
 			ServiceContext context) throws PortalException {
 		String createDossiers = null;
+		_log.info("payloadObj Action: "+ payloadObj);
 		if (payloadObj != null && payloadObj.has("createDossiers") && Validator.isNotNull(payloadObj.get("createDossiers"))) {
 			if (Validator.isNotNull(proAction.getCreateDossiers())) {
-				if (createDossiers.contains(StringPool.POUND)) {
+				_log.info("proAction.getCreateDossiers(): "+proAction.getCreateDossiers());
+				if (proAction.getCreateDossiers().contains(StringPool.POUND)) {
 					String[] splitCDs = createDossiers.split(StringPool.POUND);
 					if (splitCDs.length == 2) {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers")) + StringPool.POUND + splitCDs[1];
 					} else {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
 					}
-				} else if (createDossiers.contains(StringPool.AT)) {
+				} else if (proAction.getCreateDossiers().contains(StringPool.AT)) {
 					String[] splitCDs = createDossiers.split(StringPool.AT);
 					if (splitCDs.length != 2) {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
@@ -261,14 +263,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		} else if (Validator.isNotNull(proAction.getCreateDossiers())) {
 			createDossiers = proAction.getCreateDossiers();
 		}
+		_log.info("createDossiers: "+createDossiers);
 		if (Validator.isNotNull(createDossiers)) {
 			//Create new HSLT
 			String GOVERNMENT_AGENCY = ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY);
+			_log.info("GOVERNMENT_AGENCY: "+GOVERNMENT_AGENCY);
 
 			//String createDossiers = proAction.getCreateDossiers();
 			/*if (Validator.isNotNull(createDossiers) && createDossiers.contentEquals("$interoperaGovAgencyCode")) {
 			}*/
 			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, createDossiers);
+			_log.info("govAgencyName: "+ govAgencyName);
 			String govAgencyCode = StringPool.BLANK;
 			String serviceCode = dossier.getServiceCode();
 			String dossierTemplateNo = dossier.getDossierTemplateNo();
@@ -301,9 +306,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					govAgencyCode = createDossiers;
 				}
 			}
+			_log.info("govAgencyCode: " + govAgencyCode);
+			_log.info("serviceCode: " + serviceCode);
+			_log.info("dossierTemplateNo: " + dossierTemplateNo);
 
 			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(),
 					govAgencyCode);
+			_log.info("serviceConfig: " + serviceConfig);
 			if (serviceConfig != null) {
 				List<ProcessOption> lstOptions = processOptionLocalService
 						.getByServiceProcessId(serviceConfig.getServiceConfigId());
@@ -368,6 +377,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								dossier.getPostalTelNo(), dossier.getOnline(), dossier.getNotification(),
 								dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
 					}
+					_log.info("hsltDossier: " + hsltDossier);
 					WorkingUnit wu = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(dossier.getGroupId(),
 							dossier.getGovAgencyCode());
 
@@ -998,6 +1008,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String payload, String assignUsers, String payment, int syncType, ServiceContext context)
 			throws PortalException, SystemException, Exception {
 
+		System.out.println("payload Action: "+ payload);
 		_log.info("payload Action: "+ payload);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;

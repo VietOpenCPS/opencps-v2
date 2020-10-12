@@ -443,7 +443,7 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.REINDEX)
 	public Booking updateBooking(long userId, long groupId, long bookingId, String className, long classPK,
 			String serviceCode, String codeNumber, String bookingName, String gateNumber, Integer state,
-			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode, boolean online,
+			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode, Boolean online,
 			String bookingInTime, String telNo, ServiceContext serviceContext) {
 
 		Date now = new Date();
@@ -503,7 +503,9 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 				if (Validator.isNotNull(state))
 					booking.setState(state);
 				booking.setSpeaking(speaking);
-				booking.setOnline(online);
+				if (Validator.isNotNull(online)) {
+					booking.setOnline(online);
+				}
 			}
 			//
 			return bookingPersistence.update(booking);
