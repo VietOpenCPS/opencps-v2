@@ -1683,6 +1683,12 @@ public class OpencpsStatisticRestApplication extends Application {
 		String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
 		params.put(DossierTerm.SYSTEM_ID, strSystemId);
 		params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
+		params.put(DossierTerm.DOMAIN_CODE, query.getDomainCode());
+		String serviceCodeSearch = StringPool.BLANK;
+		if (Validator.isNotNull(query.getServiceCode())) {
+			serviceCodeSearch = SpecialCharacterUtils.splitSpecial(query.getServiceCode());
+		}
+		params.put(DossierTerm.SERVICE_CODE, serviceCodeSearch);
 		
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));

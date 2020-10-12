@@ -180,6 +180,7 @@ public class PayGateTerm {
 	public static final String PAYGOV_TYPE = "type";
 	public static final String PAYGOV_TRANSACTION_CODE = "transactionCode";
 	public static final String PAYGOV_CHECKSUM = "checksum";
+	public static final String PAYGOV_ACTIVE_CHECK_SUM = "activeCheckSum";
 
 
 	public static String buildPathDoAction(String path, String dossierId) {
