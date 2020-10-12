@@ -642,7 +642,10 @@ public class DossierActionsImpl implements DossierActions {
 			if (dossier != null) {
 				String dossierTempNo = dossier.getDossierTemplateNo();
 				long processActionId = GetterUtil.getLong(params.get(ProcessActionTerm.PROCESS_ACTION_ID));
+				
 				ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
+				
+				_log.debug("====processAction:"+processAction);
 
 				JSONObject payment = JSONFactoryUtil.createJSONObject();
 				String postStepCode = StringPool.BLANK;
@@ -709,15 +712,24 @@ public class DossierActionsImpl implements DossierActions {
 
 				ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId,
 						serviceProcessId);
+				
+				_log.info("++dossierNo: " + dossier.getDossierNo());
+				_log.info("++groupId: " + groupId);
+				_log.info("postStepCode: " + postStepCode);
+				_log.info("---serviceProcessId: " + serviceProcessId);
+				_log.info("---processStep: " + processStep);
 				if (processStep != null) {
 					List<User> lstUser = new ArrayList<>();
 
 					List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
 							.findByP_S_ID(processStep.getProcessStepId());
-					_log.debug("ROLE LIST: " + processStepRoleList.size());
+					_log.info("ROLE LIST: " + processStepRoleList.size());
+					_log.info("processStep.getRoleAsStep() " + processStep.getRoleAsStep());
 					if (Validator.isNotNull(processStep.getRoleAsStep())) {
 						String[] steps = StringUtil.split(processStep.getRoleAsStep());
 						for (String stepCode : steps) {
+							
+							_log.info("+++stepCode:" + stepCode);
 							if (stepCode.startsWith(StringPool.EXCLAMATION)) {
 								int index = stepCode.indexOf(StringPool.EXCLAMATION);
 								String stepCodePunc = stepCode.substring(index + 1);
@@ -732,18 +744,24 @@ public class DossierActionsImpl implements DossierActions {
 						if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
 							List<ProcessStepRole> lstStepRoles = new ArrayList<>();
 							for (ProcessStepRole psr : processStepRoleList) {
+								
+								_log.info("+++psr.getCondition():"+psr.getCondition());
 								if (Validator.isNotNull(psr.getCondition())) {
 									String[] conditions = StringUtil.split(psr.getCondition());
 
 									if (DossierMgtUtils.checkPreCondition(conditions, dossier, user)) {
+										
+										_log.info("+addd psr:"+psr);
 										lstStepRoles.add(psr);
 									}
 								}
 								else {
+									
+									_log.info("+addd psr(2):"+psr);
 									lstStepRoles.add(psr);
 								}
 							}
-							_log.debug("PROCESS STEP ROLE: " + lstStepRoles.size());
+							_log.info("PROCESS STEP ROLE: " + lstStepRoles.size());
 							lstUser.addAll(processRoleListUser(dossier, lstStepRoles, serviceProcessId));
 						}						
 					}
@@ -2019,7 +2037,7 @@ public class DossierActionsImpl implements DossierActions {
 
 			DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
 
-			_log.debug("subUsers***" + subUsers);
+			_log.info("subUsers***" + subUsers);
 
 			if (Validator.isNotNull(subUsers)) {
 				JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(subUsers);
@@ -3358,7 +3376,7 @@ public class DossierActionsImpl implements DossierActions {
 	private List<User> processRoleListUser(Dossier dossier, List<ProcessStepRole> processStepRoleList, long serviceProcessId) {
 		List<User> lstUser = null;
 		// Check roles
-		_log.debug("processStepRoleList: "+processStepRoleList);
+		_log.info("processStepRoleList: "+processStepRoleList);
 		Map<Long, Employee> mapEmps = new HashMap<Long, Employee>();
 		List<Employee> lstEmps = EmployeeLocalServiceUtil.findByG(dossier.getGroupId());
 		for (Employee e : lstEmps) {
@@ -3366,12 +3384,14 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		
 		if (processStepRoleList != null && processStepRoleList.size() > 0) {
-			_log.debug("processStepRoleList.size(): "+processStepRoleList.size());
+			_log.info("processStepRoleList.size(): "+processStepRoleList.size());
 			lstUser = new ArrayList<User>();
 			for (ProcessStepRole processStepRole : processStepRoleList) {
+				
+				_log.info("+++++processStepRole.getRoleId(): "+processStepRole.getRoleId());
 				List<User> users = UserLocalServiceUtil.getRoleUsers(processStepRole.getRoleId());
 				if (users != null && users.size() > 0) {
-					_log.debug("users.size(): "+users.size());
+					_log.info("users.size(): "+users.size());
 					HashMap<String, Object> assigned = new HashMap<>();
 					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
 					for (User user : users) {

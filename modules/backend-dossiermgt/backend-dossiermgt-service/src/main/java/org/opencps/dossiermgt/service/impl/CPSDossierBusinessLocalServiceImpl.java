@@ -815,7 +815,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				proAction.getProcessActionId());
 		String actionName = proAction.getActionName();
 		String prevStatus = dossier.getDossierStatus();
-
+		
+		_log.info("#######createActionAndAssignUser#######");
+		_log.info("===dossierId:"+dossier.getDossierId()+"|dossierNo:"+dossier.getDossierNo()+"|userId:"+userId);
 		if (curStep != null) {
 			String curStatus = curStep.getDossierStatus();
 			String curSubStatus = curStep.getDossierSubStatus();
@@ -889,8 +891,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		//Thiết lập quyền thao tác hồ sơ
-
+		_log.info("+assignUsers:"+assignUsers);
 		int allowAssignUser = proAction.getAllowAssignUser();
+		_log.info("+proAction:"+proAction);
 		if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
 			if (Validator.isNotNull(assignUsers)) {
 				JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
@@ -905,6 +908,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 		} else {
 			//Process role as step
+			
+			_log.info("+curStep:"+curStep);
 			if (curStep != null && Validator.isNotNull(curStep.getRoleAsStep())) {
 				copyRoleAsStep(curStep, dossier);
 			} else {
@@ -1182,7 +1187,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 				}
 
-				_log.debug("groupId=" + groupId + "|dossierId=" + dossier.getDossierId() + "|serviceProcessId="
+				_log.info("groupId=" + groupId + "|dossierId=" + dossier.getDossierId() + "|serviceProcessId="
 						+ serviceProcess.getServiceProcessId() + "|dossierActionId=" + dossier.getDossierActionId()
 						+ "|fromStepCode=" + previousAction.getStepCode() + "|fromStepName="
 						+ previousAction.getStepName() + "|fromSequenceNo= " + dossierAction.getSequenceNo()
@@ -1224,7 +1229,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				ProcessAction processAction = processActionLocalService.fetchBySPID_AC(serviceProcessId,
 						newAction.getActionCode());
 
-				_log.debug("|processAction.getPostStepCode()=" + processAction.getPostStepCode()
+				_log.info("|processAction.getPostStepCode()=" + processAction.getPostStepCode()
 						+ "|processAction.getActionCode()=" + processAction.getActionCode()
 						+ "|processAction.getProcessActionId()=" + processAction.getProcessActionId() + "|"
 						+ processAction.getAllowAssignUser() + "|" + processAction.getAssignUserId());
@@ -3989,6 +3994,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 	private void assignDossierActionUser(Dossier dossier, int allowAssignUser, DossierAction dossierAction, long userId,
 			long groupId, long assignUserId, JSONArray assignedUsers) throws PortalException {
+		
+		_log.info("====assignDossierActionUser====");
+		
 		int moderator = 1;
 		List<DossierUser> lstDus = dossierUserLocalService.findByDID(dossier.getDossierId());
 		HashMap<Long, DossierUser> mapDus = new HashMap<>();
@@ -4011,6 +4019,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 		for (int n = 0; n < assignedUsers.length(); n++) {
 			JSONObject subUser = assignedUsers.getJSONObject(n);
+			
+			_log.info("====subUser====+"+subUser);
 			if (subUser != null && subUser.has(DossierActionUserTerm.ASSIGNED)
 					&& subUser.getInt(DossierActionUserTerm.ASSIGNED) == DossierActionUserTerm.ASSIGNED_TH) {
 				DossierActionUserPK pk = new DossierActionUserPK();
@@ -4066,6 +4076,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				} else {
 					dau.setModerator(1);
 					dau.setAssigned(assigned);
+					
+					_log.info("====dau===="+dau);
 					dossierActionUserLocalService.updateDossierActionUser(dau);
 				}
 			} else if (subUser != null && subUser.has(DossierActionUserTerm.ASSIGNED)
@@ -4081,6 +4093,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if (Validator.isNull(dau)) {
 				} else {
 					dau.setModerator(0);
+					
+					_log.info("====dau(2):"+dau);
 					dossierActionUserLocalService.updateDossierActionUser(dau);
 				}
 			}
@@ -4091,7 +4105,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			int moderator, boolean visited, String stepCode, long dossierId, int assigned, int delegacy) {
 		org.opencps.dossiermgt.model.DossierActionUser model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 
-		//		int assigned = DossierActionUserTerm.NOT_ASSIGNED;
+		_log.info("++++addDossierActionUserByAssigned++++");
 		model.setVisited(visited);
 		model.setDossierId(dossierId);
 		model.setStepCode(stepCode);
@@ -4100,7 +4114,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//Check employee is exits and wokingStatus
 		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 		//_log.debug("Employee : " + employee);
+		
+		_log.info("====userId:"+userId);
 		if (employee != null && employee.getWorkingStatus() == 1) {
+			
+
 
 			DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, userId);
 
@@ -4201,6 +4219,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			//					}
 			//				}
 			//			}
+			
+			_log.info("===model:"+model);
 			if (dau == null) {
 				dossierActionUserLocalService.addDossierActionUser(model);
 			} else {
@@ -4212,6 +4232,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	public void initDossierActionUser(String stepCode, long serviceProcessId, Dossier dossier,
 			ProcessAction processAction, int allowAssignUser, DossierAction dossierAction, long userId, long groupId,
 			long assignUserId) throws PortalException {
+		
+		_log.info("===========start initDossierActionUser==========");
+		_log.info("===dossierId:"+dossier.getDossierId()+"|dossierNo:"+dossier.getDossierNo()+"|userId:"+userId);
 		// Delete record in dossierActionUser
 		List<org.opencps.dossiermgt.model.DossierActionUser> dossierActionUser = dossierActionUserLocalService
 				.getListUser(dossierAction.getDossierActionId());
@@ -4231,8 +4254,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		List<DossierAction> lstStepActions = dossierActionLocalService.getByDID_FSC_NOT_DAI(dossier.getDossierId(),
 				stepCode, dossierAction.getDossierActionId());
 		if (listProcessStepRole.size() != 0) {
+			
+			_log.info("===listProcessStepRole.size():"+listProcessStepRole.size());
+			
 			for (int i = 0; i < listProcessStepRole.size(); i++) {
 				processStepRole = listProcessStepRole.get(i);
+				
+				_log.info("===processStepRole:"+processStepRole);
 				long roleId = processStepRole.getRoleId();
 				boolean moderator = processStepRole.getModerator();
 				int mod = 0;
@@ -4241,7 +4269,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 				// Get list user
 				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
+				
 				for (User user : users) {
+					
+					_log.info("++user:"+user.getUserId() +"|email:"+user.getEmailAddress());
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
 							user.getUserId());
 					//_log.debug("Employee : " + employee);
@@ -4269,7 +4300,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								lastDau = dau;
 							}
 						}
-
+						
+						_log.info("===lastDau:"+lastDau);
 						if (lastDau != null) {
 							addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(),
 									user.getUserId(), dossierAction.getDossierActionId(), lastDau.getModerator(), false,
@@ -4283,10 +4315,15 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 		} else {
+			
+			_log.info("===listProcessStepRole.size() < 0====");
+			
 			//Get role from service process
 			initDossierActionUserByServiceProcessRole(dossier, allowAssignUser, dossierAction, userId, groupId,
 					assignUserId);
 		}
+		
+		_log.info("===========end initDossierActionUser==========");
 	}
 
 	public void initDossierActionUser(ProcessAction processAction, Dossier dossier, int allowAssignUser,
@@ -4297,7 +4334,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if (dossierActionUser != null && dossierActionUser.size() > 0) {
 			dossierActionUserLocalService.deleteByDossierAction(dossierAction.getDossierActionId());
 		}
-		_log.debug("========initDossierActionUser " + dossierAction.getServiceProcessId() + "|"
+		_log.info("========initDossierActionUser " + dossierAction.getServiceProcessId() + "|"
 				+ processAction.getPostStepCode() + "|" + groupId + "|" + processAction.getActionCode() + "|"
 				+ processAction.getProcessActionId());
 		long serviceProcessId = dossierAction.getServiceProcessId();
@@ -4317,6 +4354,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if (listProcessStepRole.size() != 0) {
 			for (int i = 0; i < listProcessStepRole.size(); i++) {
 				processStepRole = listProcessStepRole.get(i);
+				
+				_log.info("+++processStepRole:"+processStepRole);
 				long roleId = processStepRole.getRoleId();
 				boolean moderator = processStepRole.getModerator();
 				int mod = 0;
@@ -4326,6 +4365,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				// Get list user
 				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 				for (User user : users) {
+					
+					_log.info("+++user.getUserId:"+user.getUserId());
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
 							user.getUserId());
 					//_log.debug("Employee : " + employee);
@@ -4353,6 +4394,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								lastDau = dau;
 							}
 						}
+						
+						_log.info("+++lastDau:"+lastDau);
 
 						if (lastDau != null) {
 							addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(),
