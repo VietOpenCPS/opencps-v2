@@ -7567,6 +7567,166 @@ public class DossierUtil {
 	}
 
 	/**
+	* Returns all the dossiers where dossierNo = &#63;.
+	*
+	* @param dossierNo the dossier no
+	* @return the matching dossiers
+	*/
+	public static List<Dossier> findByNEW_DO_NO(String dossierNo) {
+		return getPersistence().findByNEW_DO_NO(dossierNo);
+	}
+
+	/**
+	* Returns a range of all the dossiers where dossierNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierNo the dossier no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public static List<Dossier> findByNEW_DO_NO(String dossierNo, int start,
+		int end) {
+		return getPersistence().findByNEW_DO_NO(dossierNo, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossiers where dossierNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierNo the dossier no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public static List<Dossier> findByNEW_DO_NO(String dossierNo, int start,
+		int end, OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence()
+				   .findByNEW_DO_NO(dossierNo, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossiers where dossierNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierNo the dossier no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public static List<Dossier> findByNEW_DO_NO(String dossierNo, int start,
+		int end, OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByNEW_DO_NO(dossierNo, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier in the ordered set where dossierNo = &#63;.
+	*
+	* @param dossierNo the dossier no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public static Dossier findByNEW_DO_NO_First(String dossierNo,
+		OrderByComparator<Dossier> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence()
+				   .findByNEW_DO_NO_First(dossierNo, orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier in the ordered set where dossierNo = &#63;.
+	*
+	* @param dossierNo the dossier no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByNEW_DO_NO_First(String dossierNo,
+		OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence()
+				   .fetchByNEW_DO_NO_First(dossierNo, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier in the ordered set where dossierNo = &#63;.
+	*
+	* @param dossierNo the dossier no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public static Dossier findByNEW_DO_NO_Last(String dossierNo,
+		OrderByComparator<Dossier> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence()
+				   .findByNEW_DO_NO_Last(dossierNo, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier in the ordered set where dossierNo = &#63;.
+	*
+	* @param dossierNo the dossier no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByNEW_DO_NO_Last(String dossierNo,
+		OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence()
+				   .fetchByNEW_DO_NO_Last(dossierNo, orderByComparator);
+	}
+
+	/**
+	* Returns the dossiers before and after the current dossier in the ordered set where dossierNo = &#63;.
+	*
+	* @param dossierId the primary key of the current dossier
+	* @param dossierNo the dossier no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier
+	* @throws NoSuchDossierException if a dossier with the primary key could not be found
+	*/
+	public static Dossier[] findByNEW_DO_NO_PrevAndNext(long dossierId,
+		String dossierNo, OrderByComparator<Dossier> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence()
+				   .findByNEW_DO_NO_PrevAndNext(dossierId, dossierNo,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the dossiers where dossierNo = &#63; from the database.
+	*
+	* @param dossierNo the dossier no
+	*/
+	public static void removeByNEW_DO_NO(String dossierNo) {
+		getPersistence().removeByNEW_DO_NO(dossierNo);
+	}
+
+	/**
+	* Returns the number of dossiers where dossierNo = &#63;.
+	*
+	* @param dossierNo the dossier no
+	* @return the number of matching dossiers
+	*/
+	public static int countByNEW_DO_NO(String dossierNo) {
+		return getPersistence().countByNEW_DO_NO(dossierNo);
+	}
+
+	/**
 	* Caches the dossier in the entity cache if it is enabled.
 	*
 	* @param dossier the dossier

@@ -806,6 +806,9 @@
 		<finder return-type="Collection" name="D_OR_D">
 			<finder-column name="dossierId" comparator="=" arrayable-operator="OR"/>
 		</finder>
+		<finder return-type="Collection" name="NEW_DO_NO">
+			<finder-column name="dossierNo"/>
+		</finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"

@@ -286,6 +286,12 @@ public interface DossierLocalService extends BaseLocalService,
 		long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Dossier> fetchByNEW_DO_NO(String dossierNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Dossier> fetchByORIGIN_NO(String originDossierNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier fetchDossier(long dossierId);
 
 	/**

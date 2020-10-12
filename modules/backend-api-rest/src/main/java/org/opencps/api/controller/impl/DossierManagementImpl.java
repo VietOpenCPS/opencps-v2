@@ -134,6 +134,7 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
 import org.springframework.http.HttpEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.org.okapibarcode.backend.Code128;
@@ -8643,34 +8644,60 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response getInterconnectionDossier(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		List<DossierDetailModel> results = new ArrayList<DossierDetailModel>();
+		DossierResultsModel results = new DossierResultsModel();
 		List<Dossier> listDossier = new ArrayList<Dossier>();
-		try {			
-			Dossier dossier = DossierLocalServiceUtil.getByOrigin(groupId, Long.valueOf(id));
+		try {
+			// get dossier by dossierId
+			Dossier dossier = DossierLocalServiceUtil.getDossier(Long.valueOf(id));
 			if (dossier != null) {
-				// kt hslt
-				listDossier.add(0, dossier);
-				getDossier(dossier, listDossier);
-				for (Dossier eachDossier : listDossier) {
-					DossierDetailModel dossierDetailModel = DossierUtils.mappingForGetDetail(eachDossier, user.getUserId());
-					results.add(dossierDetailModel);
+				// originDossierNo != null -> hslt or hstg
+				if (!StringUtils.isEmpty(dossier.getOriginDossierNo())) {
+					getInterDossierFromOriginDossier(dossier, listDossier);
+					getConnectDossierFromInterDossier(dossier, listDossier);
+				}else {
+					// la ho so goc-> tim danh sach hslt
+					getInterDossierFromOriginDossier(dossier, listDossier);
 				}
 			}
+			
+			results.setTotal(listDossier.size());
+
+			results.getData().addAll(
+					DossierUtils.mappingForListDossier(listDossier));
+
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
 	
-	private void getDossier(Dossier dossier, List<Dossier> listDossier) {
-		if (dossier != null) {
-			Dossier newDossier = DossierLocalServiceUtil.getByOrigin(dossier.getGroupId(), dossier.getDossierId());
-			if(newDossier != null) {
-				listDossier.add(newDossier);
-				getDossier(newDossier, listDossier);
-			}
+	private void getInterDossierFromOriginDossier(Dossier dossier, List<Dossier> listDossier) {
+		// Ds ho so trung gian va lien thong tu ho so goc
+		List<Dossier> aList = DossierLocalServiceUtil.fetchByORIGIN_NO(dossier.getDossierNo());
+		// Lay ho so lien thong la ho so co originDossierId = 0
+		Dossier newDossier = null;
+		if (aList.size() > 0) {
+			newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
+					.findAny().orElse(null);
+			listDossier.add(newDossier);
+			getInterDossierFromOriginDossier(newDossier, listDossier);
 		}
+	}
+	
+	private void getConnectDossierFromInterDossier(Dossier dossier, List<Dossier> listDossier) {
+		// Ds ho so goc cua hslt
+		List<Dossier> aList = new ArrayList<Dossier>();
+		if (!StringUtils.isEmpty(dossier.getOriginDossierNo())) {
+		aList = DossierLocalServiceUtil.fetchByNEW_DO_NO(dossier.getOriginDossierNo());
+		}
+		Dossier newDossier = null;
+		if (aList.size() > 0) {
+			newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
+					.findAny().orElse(null);
+			listDossier.add(newDossier);
+			getConnectDossierFromInterDossier(newDossier, listDossier);
+		}
+		
 	}
 		
 }
