@@ -1740,7 +1740,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		actionConfig = actionConfigLocalService.getByCode(groupId, actionCode);
 
 		if (actionConfig != null && !actionConfig.getInsideProcess()) {
-
+			_log.info("OutSide : " + !actionConfig.getInsideProcess());
 			dossierAction = doActionOutsideProcess(groupId, userId, dossier, actionConfig, option, proAction,
 					actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context);
 		} else {
@@ -1898,9 +1898,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 				}
 			}
-
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(now);
 			if (notiTemplate != null) {
-				if (KeyPayTerm.MINUTELY.equals(notiTemplate.getInterval())) {
+				if(KeyPayTerm.MINUTELY_PATTERN.contains(notiTemplate.getInterval())){
+					//Tính publicationDate == now + 120 thời gian cấu hình (MINUTELY@120)
+					_log.info("NotiTemp: " + notiTemplate.getInterval());
+					String intervalSub = notiTemplate.getInterval().substring(notiTemplate.getInterval().indexOf('@')+ 1);
+					_log.info("Tính thời gian publicationDate " + intervalSub);
+					calendar.add(Calendar.MINUTE, Integer.valueOf(intervalSub));
+				}else if (KeyPayTerm.MINUTELY.equals(notiTemplate.getInterval())) {
 					cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
 				} else if (KeyPayTerm.HOURLY.equals(notiTemplate.getInterval())) {
 					cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());
@@ -1908,6 +1915,15 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
 				}
 				Date expired = cal.getTime();
+
+				Date publicationDate = calendar.getTime();
+				Date expiredCal = new Date();
+				//Tính expiredDate == publiCationDate + 1h
+				if(Validator.isNotNull(calendar.getTime())){
+					calendar.add(Calendar.HOUR, 1);
+					expiredCal = calendar.getTime();
+				}
+				_log.info("PublicationDate : " + publicationDate + "expiredCal : " + expiredCal);
 
 				if (notificationType.startsWith(KeyPayTerm.APLC)) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
@@ -1940,7 +1956,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 										String.valueOf(dossier.getDossierId()), payloadObj.toJSONString(), fromFullName,
 										dossier.getApplicantName(), foundApplicant.getMappingUserId(),
 										isSendNotiEmail ? dossier.getContactEmail() : StringPool.BLANK,
-										isSendNotiSMS ? dossier.getContactTelNo() : StringPool.BLANK, now, expired,
+										isSendNotiSMS ? dossier.getContactTelNo() : StringPool.BLANK,
+										Validator.isNotNull(publicationDate) ? publicationDate : now,
+										Validator.isNotNull(expiredCal) ? expiredCal : expired,
 										context);
 							}
 						} catch (NoSuchUserException e) {
@@ -5125,6 +5143,20 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			} else {
 				dossier = dossierLocalService.updateDossier(dossier.getDossierId(), payloadObject);
 			}
+		}
+//		int actionOverdue = getActionDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
+//				proAction.getProcessActionId());
+		ProcessStep backCurStep = processStepLocalService.fetchBySC_GID(dossierAction.getFromStepCode(), groupId,
+				dossierAction.getServiceProcessId());
+		if(DossierTerm.ACTION_CODE_SPECIAL.equals(actionCode)){
+			_log.info("Log action :" + actionCode + "dossierActionId " + dossierAction.getDossierActionId());
+			 DossierAction action = dossierActionLocalService.updateDossierAction(groupId, 0,
+					dossier.getDossierId(), dossierAction.getServiceProcessId(), dossier.getDossierActionId(),
+					dossierAction.getStepCode(), dossierAction.getStepName(), dossierAction.getSequenceNo(),
+					actionCode, actionUser, actionConfig.getActionName(), actionNote, 0, dossierAction.getStepCode(),
+					dossierAction.getStepName(), "", null, 0l, payload,
+					dossierAction.getStepInstruction(), 1, 1, false, context);
+			 _log.info("Log DossierAction : " + JSONFactoryUtil.looseSerialize(action));
 		}
 		if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
 			Dossier hslt = dossierLocalService.getByOrigin(dossier.getGroupId(), dossier.getDossierId());

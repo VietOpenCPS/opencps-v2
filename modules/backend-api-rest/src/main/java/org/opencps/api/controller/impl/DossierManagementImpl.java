@@ -1932,9 +1932,9 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 		try {
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 
@@ -8747,6 +8747,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (!overdue) {
 				throw new UnauthenticationException();
 			}else {
+				_log.info("ActionCode " + actionCode);
 				if (actionCode.equals(DossierTerm.ACTION_CODE_SPECIAL)) {
 					if (Validator.isNotNull(model.getDossierIds())) {
 						String dossierIds = model.getDossierIds();
@@ -8772,114 +8773,53 @@ public class DossierManagementImpl implements DossierManagement {
 								_log.info("Log dossier : " + dossier.getDossierId());
 								// Hồ sơ đã có kq ==> hs quá hạn thì cập nhật bằng thời gian trả hạn
 								if (Validator.isNotNull(dossier.getReleaseDate())) {
-
-									if (Validator.isNotNull(actionCode)) {
-										ActionConfig actConfig =
-												ActionConfigLocalServiceUtil.getByCode(
-														groupId, actionCode);
-										_log.debug("Action config: " + actConfig);
-										String serviceCode = dossier.getServiceCode();
-										String govAgencyCode = dossier.getGovAgencyCode();
-										String dossierTempNo = dossier.getDossierTemplateNo();
-										if (actConfig != null) {
-											boolean insideProcess = actConfig.getInsideProcess();
-											ProcessOption option = DossierUtils.getProcessOption(
-													serviceCode, govAgencyCode, dossierTempNo, groupId);
-											if (insideProcess) {
-												if (dossier.getDossierActionId() == 0) {
-													if (option != null) {
-														long serviceProcessId =
-																option.getServiceProcessId();
-														ProcessAction proAction =
-																DossierUtils.getProcessAction(
-																		user,
-																		groupId, dossier, actionCode,
-																		serviceProcessId);
-														if (proAction != null) {
-															_log.debug(
-																	"DO ACTION: " +
-																			proAction.getActionCode());
-															dossierResult = actions.doAction(
-																	groupId, userId, dossier, option,
-																	proAction, actionCode, actionUser,
-																	model.getActionNote(),
-																	model.getPayload(),
-																	model.getAssignUsers(),
-																	model.getPayment(),
-																	actConfig.getSyncType(),
-																	serviceContext, errorModel);
-														}
-													}
-												} else {
-													DossierAction dossierAction =
-															DossierActionLocalServiceUtil.fetchDossierAction(
-																	dossier.getDossierActionId());
-													if (dossierAction != null) {
-														long serviceProcessId =
-																dossierAction.getServiceProcessId();
-														DossierTemplate dossierTemplate =
-																DossierTemplateLocalServiceUtil.getByTemplateNo(
-																		groupId,
-																		dossier.getDossierTemplateNo());
-
-														ProcessOption oldOption =
-																ProcessOptionLocalServiceUtil.fetchBySP_DT(
-																		serviceProcessId,
-																		dossierTemplate.getDossierTemplateId());
-
-														ProcessAction proAction =
-																DossierUtils.getProcessAction(
-																		user,
-																		groupId, dossier, actionCode,
-																		serviceProcessId);
-														if (proAction != null) {
-															_log.debug(
-																	"DO ACTION: " +
-																			proAction.getActionCode());
-															dossierResult = actions.doAction(
-																	groupId, userId, dossier, oldOption,
-																	proAction, actionCode, actionUser,
-																	model.getActionNote(),
-																	model.getPayload(),
-																	model.getAssignUsers(),
-																	model.getPayment(),
-																	actConfig.getSyncType(),
-																	serviceContext, errorModel);
-														}
-													}
-												}
-											} else {
-												dossierResult = actions.doAction(
-														groupId, userId, dossier, option, null,
-														actionCode, actionUser, model.getActionNote(),
-														model.getPayload(), model.getAssignUsers(),
-														model.getPayment(), actConfig.getSyncType(),
-														serviceContext, errorModel);
-											}
-										} else {
-											ProcessOption option = DossierUtils.getProcessOption(
-													serviceCode, govAgencyCode, dossierTempNo, groupId);
-											if (option != null) {
-												long serviceProcessId =
-														option.getServiceProcessId();
-												ProcessAction proAction =
-														DossierUtils.getProcessAction(user,
-																groupId, dossier, actionCode,
-																serviceProcessId);
-												if (proAction != null) {
-													dossierResult = actions.doAction(
-															groupId, userId, dossier, option, proAction,
-															actionCode, actionUser,
-															model.getActionNote(), model.getPayload(),
-															model.getAssignUsers(), model.getPayment(),
-															0, serviceContext, errorModel);
-												}
-											}
-										}
-									}
-
 									Long releaseDate = dossier.getReleaseDate().getTime(); // thời gian trả kq
 									Long dueDate = dossier.getDueDate().getTime(); // thời gian hẹn trả
+										_log.info("Thoa man thời gian thực hiện cập nhật thời gian cho hồ sơ");
+										if (Validator.isNotNull(actionCode)) {
+											ActionConfig actConfig =
+													ActionConfigLocalServiceUtil.getByCode(
+															groupId, actionCode);
+											_log.info("Action config: " + actConfig);
+											String serviceCode = dossier.getServiceCode();
+											String govAgencyCode = dossier.getGovAgencyCode();
+											String dossierTempNo = dossier.getDossierTemplateNo();
+											if (actConfig != null) {
+												boolean insideProcess = actConfig.getInsideProcess();
+												ProcessOption option = DossierUtils.getProcessOption(
+														serviceCode, govAgencyCode, dossierTempNo, groupId);
+												if (!insideProcess) {
+													_log.info("Vao outSide");
+													dossierResult = actions.doAction(
+															groupId, userId, dossier, option, null,
+															actionCode, actionUser, model.getActionNote(),
+															model.getPayload(), model.getAssignUsers(),
+															model.getPayment(), actConfig.getSyncType(),
+															serviceContext, errorModel);
+												}
+											}
+//											else {
+//												ProcessOption option = DossierUtils.getProcessOption(
+//														serviceCode, govAgencyCode, dossierTempNo, groupId);
+//												if (option != null) {
+//													long serviceProcessId =
+//															option.getServiceProcessId();
+//													ProcessAction proAction =
+//															DossierUtils.getProcessAction(user,
+//																	groupId, dossier, actionCode,
+//																	serviceProcessId);
+//													if (proAction != null) {
+//														_log.info("Thực hiện action 3");
+//														dossierResult = actions.doAction(
+//																groupId, userId, dossier, option, proAction,
+//																actionCode, actionUser,
+//																model.getActionNote(), model.getPayload(),
+//																model.getAssignUsers(), model.getPayment(),
+//																0, serviceContext, errorModel);
+//													}
+//												}
+//											}
+										}
 									if (releaseDate > dueDate) {
 										dossier.setReleaseDate(dossier.getDueDate());
 									}
