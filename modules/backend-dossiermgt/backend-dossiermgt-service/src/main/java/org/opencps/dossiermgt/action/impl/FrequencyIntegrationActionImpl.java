@@ -104,7 +104,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
 
             //counting payment
-            if(Validator.isNotNull(profile.getProfileDocFees())) {
+            if(Validator.isNotNull(profile.getProfileDocFees()) && profile.getProfileDocFees().size() > 0) {
                 final Integer PAYMENT_ONE_GATE = 1;
                 List<ProfileDocFee> profileDocFeeList = profile.getProfileDocFees();
                 int totalFee = 0;

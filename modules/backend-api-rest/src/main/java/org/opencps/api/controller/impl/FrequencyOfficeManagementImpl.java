@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.util.Validator;
 import javafx.animation.ScaleTransition;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.FrequencyOfficeManagement;
-import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.dossiermgt.action.FrequencyIntegrationAction;
 import org.opencps.dossiermgt.action.impl.FrequencyIntegrationActionImpl;
 import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;

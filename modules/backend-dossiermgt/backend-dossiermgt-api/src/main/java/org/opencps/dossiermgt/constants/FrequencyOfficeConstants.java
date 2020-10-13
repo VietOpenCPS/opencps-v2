@@ -42,6 +42,7 @@ public class FrequencyOfficeConstants {
     public static final String CONFIG_STATUS_LGSP = "LGSP";
     public static final String CONFIG_FROM_UNIT_CODE = "from_unit_code";
     public static final String CONFIG_TO_UNIT_CODE = "to_unit_code";
+    public static final String CONFIG_TO_UNIT_CODE_CUCTANSO = "to_unit_code_cuctanso";
 
     //Dossier status
     public static final String STATUS_RECEIVE = "TIEPNHAN";
