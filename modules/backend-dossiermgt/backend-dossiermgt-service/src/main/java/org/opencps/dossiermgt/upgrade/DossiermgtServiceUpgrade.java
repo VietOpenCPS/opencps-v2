@@ -21,11 +21,6 @@ import com.liferay.portal.kernel.settings.SettingsFactory;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
-import org.opencps.dossiermgt.upgrade.v0_0_1.UpgradeSchema;
-import org.opencps.dossiermgt.upgrade.v0_0_3.UpgradeSchema1_0_3;
-import org.opencps.dossiermgt.upgrade.v0_0_4.UpgradeSchema1_0_4;
-import org.opencps.dossiermgt.upgrade.v0_0_4.UpgradeSchema1_0_5;
-import org.opencps.dossiermgt.upgrade.v0_0_4.UpgradeSchema1_0_6;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -43,7 +38,7 @@ public class DossiermgtServiceUpgrade implements UpgradeStepRegistrator {
 		_log.info("===DossiermgtServiceUpgrade===");
 		
 		registry.register("1.0.0", "1.0.1", new DummyUpgradeStep());
-		registry.register("1.0.1", "1.0.2", new UpgradeSchema());
+		registry.register("1.0.1", "1.0.2", new UpgradeSchema1_0_1());
 		registry.register("1.0.2", "1.0.3", new UpgradeSchema1_0_3());
 		registry.register("1.0.3", "1.0.4", new UpgradeSchema1_0_4());
 		registry.register("1.0.4", "1.0.5", new UpgradeSchema1_0_5());

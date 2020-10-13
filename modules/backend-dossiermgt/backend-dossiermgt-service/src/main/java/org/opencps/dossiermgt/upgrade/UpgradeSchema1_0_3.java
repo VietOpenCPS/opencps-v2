@@ -12,20 +12,26 @@
  * details.
  */
 
-package org.opencps.dossiermgt.upgrade.v0_0_4;
+package org.opencps.dossiermgt.upgrade;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeMVCCVersion;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.upgrade.UpgradeProcess.AlterTableAddColumn;
 
-import org.opencps.dossiermgt.upgrade.v0_0_1.util.PostConnectTable;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.upgrade.table.BookingTable;
+import org.opencps.dossiermgt.upgrade.table.DossierPartTable;
+import org.opencps.dossiermgt.upgrade.table.DossierTable;
+import org.opencps.dossiermgt.upgrade.table.DossierTemplateTable;
+import org.opencps.dossiermgt.upgrade.table.ServiceInfoTable;
 
 /**
  * @author nhanhoang
  */
-public class UpgradeSchema1_0_6 extends UpgradeProcess {
-	private Log _log = LogFactoryUtil.getLog(UpgradeSchema1_0_6.class.getName());
+public class UpgradeSchema1_0_3 extends UpgradeProcess {
+	private Log _log = LogFactoryUtil.getLog(UpgradeSchema1_0_3.class.getName());
 	
 	
 	@Override
@@ -33,17 +39,11 @@ public class UpgradeSchema1_0_6 extends UpgradeProcess {
 		
 		upgrade(new UpgradeMVCCVersion());
 		
-
-		if (!hasTable(PostConnectTable.TABLE_NAME)) {
-
-			runSQL(PostConnectTable.TABLE_SQL_CREATE);
-
-		} else {
-			upgradeTable(PostConnectTable.TABLE_NAME, PostConnectTable.TABLE_COLUMNS, PostConnectTable.TABLE_SQL_CREATE,
-					PostConnectTable.TABLE_SQL_ADD_INDEXES);
+		if(!hasColumn(DossierPartTable.TABLE_NAME, "partNameTitle")){
+			
+			alter(DossierPartTable.class, new AlterTableAddColumn("partNameTitle VARCHAR(500) null"));
+					
 		}
-		
-		
 
 	}
 

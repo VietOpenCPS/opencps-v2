@@ -12,15 +12,15 @@
  * details.
  */
 
-package org.opencps.dossiermgt.upgrade.v0_0_4;
+package org.opencps.dossiermgt.upgrade;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeMVCCVersion;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 
-import org.opencps.dossiermgt.upgrade.v0_0_1.util.NewsBoardTable;
-import org.opencps.dossiermgt.upgrade.v0_0_1.util.NotarizationTable;
+import org.opencps.dossiermgt.upgrade.table.NewsBoardTable;
+import org.opencps.dossiermgt.upgrade.table.NotarizationTable;
 
 /**
  * @author nhanhoang

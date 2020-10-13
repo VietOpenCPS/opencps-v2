@@ -12,16 +12,16 @@
  * details.
  */
 
-package org.opencps.dossiermgt.upgrade.v0_0_4;
+package org.opencps.dossiermgt.upgrade;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeMVCCVersion;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 
-import org.opencps.dossiermgt.upgrade.v0_0_1.util.ApplicableInfoTable;
-import org.opencps.dossiermgt.upgrade.v0_0_1.util.PaymentFeeInfoTable;
-import org.opencps.dossiermgt.upgrade.v0_0_1.util.ServiceConfigMappingTable;
+import org.opencps.dossiermgt.upgrade.table.ApplicableInfoTable;
+import org.opencps.dossiermgt.upgrade.table.PaymentFeeInfoTable;
+import org.opencps.dossiermgt.upgrade.table.ServiceConfigMappingTable;
 
 /**
  * @author nhanhoang
