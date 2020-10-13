@@ -12,7 +12,7 @@
  * details.
  */
 
-package org.opencps.dossiermgt.upgrade.v0_0_1.util;
+package org.opencps.dossiermgt.upgrade.table;
 
 import java.sql.Types;
 
