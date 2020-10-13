@@ -2254,7 +2254,7 @@ public class DossierManagementImpl implements DossierManagement {
 				for(Notarization notarization : list) {
 					if (notarization.getNotarizationNo() == 0) {
 						long notarizationNoNumber = NotarizationCounterNumberGenerator.countByServiceCode(
-								dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getDossierId());
+								dossier.getServiceCode(), dossier.getGovAgencyCode());
 						notarization.setNotarizationNo(notarizationNoNumber);
 						notarization = NotarizationLocalServiceUtil.updateNotarization(notarization);
 					}

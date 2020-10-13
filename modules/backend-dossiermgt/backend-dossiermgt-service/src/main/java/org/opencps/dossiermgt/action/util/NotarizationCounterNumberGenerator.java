@@ -350,14 +350,14 @@ public class NotarizationCounterNumberGenerator {
 		return String.format(format, _counterNumber); 
 	}
 	
-	public static long countByServiceCode(String serviceCode, String govAgencyCode, long dossierId) {
+	public static long countByServiceCode(String serviceCode, String govAgencyCode) {
 			
 			long _counterNumber = 0;
 			Date now = new Date();
 			try {
 				String year = String.valueOf(DateTimeUtils.getYearFromDate(now));
 				String certConfigName = ConstantsUtils.PRE_FIX_COUNTER + govAgencyCode 
-						+ "-" + year + "-" + serviceCode + "-" + dossierId;
+						+ "-" + year + "-" + serviceCode;
 				
 				_log.info("___certConfigId" + certConfigName);
 			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigName);
