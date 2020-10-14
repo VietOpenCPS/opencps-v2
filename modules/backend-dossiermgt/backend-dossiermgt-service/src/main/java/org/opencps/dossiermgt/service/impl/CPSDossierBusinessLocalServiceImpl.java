@@ -236,16 +236,18 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			DossierAction previousAction, Employee employee, Dossier dossier, User user, JSONObject payloadObj,
 			ServiceContext context) throws PortalException {
 		String createDossiers = null;
+		_log.info("payloadObj Action: "+ payloadObj);
 		if (payloadObj != null && payloadObj.has("createDossiers") && Validator.isNotNull(payloadObj.get("createDossiers"))) {
 			if (Validator.isNotNull(proAction.getCreateDossiers())) {
-				if (createDossiers.contains(StringPool.POUND)) {
+				_log.info("proAction.getCreateDossiers(): "+proAction.getCreateDossiers());
+				if (proAction.getCreateDossiers().contains(StringPool.POUND)) {
 					String[] splitCDs = createDossiers.split(StringPool.POUND);
 					if (splitCDs.length == 2) {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers")) + StringPool.POUND + splitCDs[1];
 					} else {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
 					}
-				} else if (createDossiers.contains(StringPool.AT)) {
+				} else if (proAction.getCreateDossiers().contains(StringPool.AT)) {
 					String[] splitCDs = createDossiers.split(StringPool.AT);
 					if (splitCDs.length != 2) {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
@@ -261,14 +263,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		} else if (Validator.isNotNull(proAction.getCreateDossiers())) {
 			createDossiers = proAction.getCreateDossiers();
 		}
+		_log.info("createDossiers: "+createDossiers);
 		if (Validator.isNotNull(createDossiers)) {
 			//Create new HSLT
 			String GOVERNMENT_AGENCY = ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY);
+			_log.info("GOVERNMENT_AGENCY: "+GOVERNMENT_AGENCY);
 
 			//String createDossiers = proAction.getCreateDossiers();
 			/*if (Validator.isNotNull(createDossiers) && createDossiers.contentEquals("$interoperaGovAgencyCode")) {
 			}*/
 			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, createDossiers);
+			_log.info("govAgencyName: "+ govAgencyName);
 			String govAgencyCode = StringPool.BLANK;
 			String serviceCode = dossier.getServiceCode();
 			String dossierTemplateNo = dossier.getDossierTemplateNo();
@@ -301,9 +306,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					govAgencyCode = createDossiers;
 				}
 			}
+			_log.info("govAgencyCode: " + govAgencyCode);
+			_log.info("serviceCode: " + serviceCode);
+			_log.info("dossierTemplateNo: " + dossierTemplateNo);
 
 			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(),
 					govAgencyCode);
+			_log.info("serviceConfig: " + serviceConfig);
 			if (serviceConfig != null) {
 				List<ProcessOption> lstOptions = processOptionLocalService
 						.getByServiceProcessId(serviceConfig.getServiceConfigId());
@@ -368,6 +377,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								dossier.getPostalTelNo(), dossier.getOnline(), dossier.getNotification(),
 								dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
 					}
+					_log.info("hsltDossier: " + hsltDossier);
 					WorkingUnit wu = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(dossier.getGroupId(),
 							dossier.getGovAgencyCode());
 
@@ -998,6 +1008,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String payload, String assignUsers, String payment, int syncType, ServiceContext context)
 			throws PortalException, SystemException, Exception {
 
+		System.out.println("payload Action: "+ payload);
 		_log.info("payload Action: "+ payload);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
@@ -1008,7 +1019,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if (Validator.isNull(dossier.getApplicantName()) && Validator.isNull(dossier.getApplicantIdNo())) {
 			_log.info("TRACE_LOG_LOST_DOSSIER: "+JSONFactoryUtil.looseSerialize(dossier));
 		}
-		
+
 		Employee employee = null;
 		Serializable employeeCache = cache.getFromCache(CacheTerm.MASTER_DATA_EMPLOYEE,
 				groupId + StringPool.UNDERLINE + userId);
@@ -2317,7 +2328,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if (Validator.isNotNull(cityName)) {
 					dossier.setCityName(cityName);
 				}
-				
+
 			}
 			if (obj.has(DossierTerm.DISTRICT_CODE) && Validator.isNotNull(obj.get(DossierTerm.DISTRICT_CODE))) {
 				districtCode = String.valueOf(obj.get(DossierTerm.DISTRICT_CODE));
@@ -2360,7 +2371,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 					if (obj.has(DossierTerm.POSTAL_CITY_CODE) && Validator.isNotNull(obj.get(DossierTerm.POSTAL_CITY_CODE))) {
 						dossier.setPostalCityCode(String.valueOf(obj.get(DossierTerm.POSTAL_CITY_CODE)));
-						
+
 						String postalCityName = getDictItemName(dossier.getGroupId(), VNPOST_CITY_CODE,
 								String.valueOf(obj.get(DossierTerm.POSTAL_CITY_CODE)));
 						if (Validator.isNotNull(postalCityName))
@@ -2368,7 +2379,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 					if (obj.has(DossierTerm.POSTAL_DISTRICT_CODE) && Validator.isNotNull(obj.get(DossierTerm.POSTAL_DISTRICT_CODE))) {
 						dossier.setPostalDistrictCode(String.valueOf(obj.get(DossierTerm.POSTAL_DISTRICT_CODE)));
-						
+
 						String postalDistrictName = getDictItemName(dossier.getGroupId(), VNPOST_CITY_CODE,
 								String.valueOf(obj.get(DossierTerm.POSTAL_DISTRICT_CODE)));
 						if (Validator.isNotNull(postalDistrictName))
@@ -2716,7 +2727,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				_log.info(1231231231);
 				_log.info("==========VTPayTerm.KP_DVCQG_CONFIG========" + epaymentConfigJSON);
+				_log.info(11111);
 				if (epaymentConfigJSON.has(KeyPayTerm.KP_DVCQG_CONFIG)) {
 					try {
 						epaymentProfileJsonNew.put(KeyPayTerm.KPDVCQG, true);
@@ -2747,6 +2760,20 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				_log.info(333333);
+				_log.info("==========Payment before add paygov111: " + epaymentConfigJSON);
+				if (epaymentConfigJSON.has(KeyPayTerm.PAYGOV_CONFIG)) {
+					try {
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PAYGOV_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.PAYGOV_CONFIG, schema);
+						paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+								epaymentProfileJsonNew.toJSONString(), context);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+
+				}
+				_log.info("==========Payment after add paygov111: " + epaymentConfigJSON);
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (JSONException e) {
@@ -2888,6 +2915,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 					epaymentProfileJSON.toJSONString(), context);
+			_log.info("==========Payment before add paygov222: " + epaymentConfigJSON);
+			if (epaymentConfigJSON.has(KeyPayTerm.PAYGOV_CONFIG)) {
+				try {
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PAYGOV_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.PAYGOV_CONFIG, schema);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfileJSON.toJSONString(), context);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			_log.info("==========Payment after add paygov222: " + epaymentConfigJSON);
 		}
 		return oldPaymentFile;
 	}
@@ -3860,6 +3900,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(getDueDateByPayload(payload))) {
 				dossier.setDueDate(getDueDateByPayload(payload));
 			}
+			// Cập nhật ngày tiếp nhận cuối cùng cho hồ sơ
+//			dossier.setLastSendDate(new Date());
+			dossier.setLastReceiveDate(new Date());
+			_log.debug("Log LastReiveDate " + new Date());
 		} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
 			if (dossier.getDueDate() != null) {
 				//dossier.setCorrecttingDate(dossier.getDueDate());
@@ -3886,6 +3930,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					bResult.put(DossierTerm.DUE_DATE, true);
 				}
 			}
+			// Cập nhật ngày tiếp nhận cuối cùng cho hồ sơ
+//			dossier.setLastSendDate(new Date());
+			dossier.setLastReceiveDate(new Date());
+			_log.debug("Log LastReiveDate " + new Date());
 		} else if (dateOption == DossierTerm.DATE_OPTION_PAUSE_OVERDUE) {
 			if (dossier.getDueDate() != null) {
 				dossier.setLockState(DossierTerm.PAUSE_OVERDUE_LOCK_STATE);
@@ -4095,11 +4143,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossierActionLocalService.updateDossierAction(dossierAction);
 			}
 		}
-		
+
 		// create submit date
 		if(dateOption == DossierTerm.CREATE_SUBMIT_DATE){
 			if (Validator.isNull(dossier.getSubmitDate())) {
 				dossier.setSubmitDate(new Date());
+			}
+			// Cập nhật ngày gửi theo submitDate
+			if(Validator.isNotNull(dossier.getSubmitDate())){
+				dossier.setLastSendDate(dossier.getSubmitDate());
+			}else{
+				dossier.setLastSendDate(new Date());
 			}
 		}
 
@@ -9002,7 +9056,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(),
 						DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
-
 				boolean returnDocument = true;
 				for (DossierFile dossierFile : dossierFiles) {
 					// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
@@ -9162,7 +9215,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					JSONFactoryUtil.createJSONObject();
 			String dueDateStr = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(dueDate);
 			String receiveDateStr = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(receiveDate);
-			
+
 			JSONObject phase = JSONFactoryUtil.createJSONObject();
 			JSONArray dueDatePhases = JSONFactoryUtil.createJSONObject(dueDatePattern).getJSONArray("dueDatePhase");
 			switch (dateOption) {
@@ -9179,7 +9232,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			default:
 				break;
 			}
-			
+
 			metaData.put(DossierTerm.DATE_OPTION + dateOption, dueDateStr);
 			metaData.put(DossierTerm.DATE_OPTION_RECEIVER + dateOption, receiveDateStr);
 			metaData.put(DossierTerm.DATE_OPTION_DURATION + dateOption, duration);

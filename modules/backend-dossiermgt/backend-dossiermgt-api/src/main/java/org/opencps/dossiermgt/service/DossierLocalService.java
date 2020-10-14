@@ -475,6 +475,10 @@ public interface DossierLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Object[]> getListVotingByDossier(long groupId,
+		List<String> listDossier);
+
 	/**
 	* Returns the OSGi service identifier.
 	*

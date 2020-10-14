@@ -7770,6 +7770,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public Dossier findDossierByDeclarationCode(String code, long groupId) {
 		return dossierFinder.findDossierByDeclarationCode(code, groupId);
 	}
+	public java.util.List<Object[]> getListVotingByDossier(long groupId, List<String> listDossier) {
+		return dossierFinder.getListVotingByDossier(groupId, listDossier);
+	}
 	public Dossier fetchByDO_POST_SEND_GROUP(String postpostalCodeSend, long groupId) {
 		return dossierPersistence.fetchByDO_POST_SEND_GROUP(postpostalCodeSend, groupId);
 	}

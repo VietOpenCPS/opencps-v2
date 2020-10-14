@@ -370,7 +370,7 @@ public class BookingLocalServiceWrapper implements BookingLocalService,
 		String serviceCode, String codeNumber, String bookingName,
 		String gateNumber, Integer state, java.util.Date checkinDate,
 		java.util.Date bookingDate, boolean speaking, String serviceGroupCode,
-		boolean online, String bookingInTime, String telNo,
+		Boolean online, String bookingInTime, String telNo,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return _bookingLocalService.updateBooking(userId, groupId, bookingId,
 			className, classPK, serviceCode, codeNumber, bookingName,

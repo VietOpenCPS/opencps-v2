@@ -137,6 +137,8 @@ public class DossierSoap implements Serializable {
 		soapModel.setMultipleCheck(model.getMultipleCheck());
 		soapModel.setPostalCodeSend(model.getPostalCodeSend());
 		soapModel.setPostalCodeReceived(model.getPostalCodeReceived());
+		soapModel.setLastReceiveDate(model.getLastReceiveDate());
+		soapModel.setLastSendDate(model.getLastSendDate());
 
 		return soapModel;
 	}
@@ -1037,6 +1039,22 @@ public class DossierSoap implements Serializable {
 		_postalCodeReceived = postalCodeReceived;
 	}
 
+	public Date getLastReceiveDate() {
+		return _lastReceiveDate;
+	}
+
+	public void setLastReceiveDate(Date lastReceiveDate) {
+		_lastReceiveDate = lastReceiveDate;
+	}
+
+	public Date getLastSendDate() {
+		return _lastSendDate;
+	}
+
+	public void setLastSendDate(Date lastSendDate) {
+		_lastSendDate = lastSendDate;
+	}
+
 	private String _uuid;
 	private long _dossierId;
 	private long _groupId;
@@ -1141,4 +1159,6 @@ public class DossierSoap implements Serializable {
 	private String _multipleCheck;
 	private String _postalCodeSend;
 	private String _postalCodeReceived;
+	private Date _lastReceiveDate;
+	private Date _lastSendDate;
 }

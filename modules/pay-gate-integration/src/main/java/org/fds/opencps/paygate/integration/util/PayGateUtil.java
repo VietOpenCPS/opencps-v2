@@ -5,6 +5,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -129,7 +130,13 @@ public class PayGateUtil {
 		result.put("return_code", return_code);
 		result.put("return_msg", return_msg);
 		return result;
+	}
 
+	public static JSONObject createResponseToPaygov(String errorCode, String errorMessage) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		result.put("error_code", errorCode);
+		result.put("error_message", Validator.isNotNull(errorMessage) ? errorMessage : "");
+		return result;
 	}
 
 	public static String decodeTransactionId (long paymentFileId) {

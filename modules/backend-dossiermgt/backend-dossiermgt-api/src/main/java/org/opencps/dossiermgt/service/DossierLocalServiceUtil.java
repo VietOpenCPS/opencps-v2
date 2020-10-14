@@ -652,6 +652,11 @@ public class DossierLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static java.util.List<Object[]> getListVotingByDossier(
+		long groupId, java.util.List<String> listDossier) {
+		return getService().getListVotingByDossier(groupId, listDossier);
+	}
+
 	/**
 	* Returns the OSGi service identifier.
 	*
