@@ -93,10 +93,6 @@ public class NotarizationInputModel {
 	@FormParam(value = "statusCode")
 	@DefaultValue("")
     protected String statusCode;
-	@FormParam(value = "govAgencyCode")
-	protected String govAgencyCode;
-	@FormParam(value = "serviceCode")
-	protected String serviceCode;
 
     /**
      * Gets the value of the fileName property.
