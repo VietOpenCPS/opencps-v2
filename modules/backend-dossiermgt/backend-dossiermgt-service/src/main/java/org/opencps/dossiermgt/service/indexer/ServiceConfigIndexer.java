@@ -100,12 +100,19 @@ public class ServiceConfigIndexer extends BaseIndexer<ServiceConfig> {
 			document.addTextSortable(ServiceConfigTerm.SERVICE_NAME, serviceInfo.getServiceName());
 			document.addTextSortable(ServiceConfigTerm.DOMAIN_CODE, serviceInfo.getDomainCode());
 			document.addTextSortable(ServiceConfigTerm.DOMAIN_NAME, serviceInfo.getDomainName());
-			ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(serviceInfo.getGroupId(), serviceInfo.getServiceCode());
-			document.addTextSortable(ServiceInfoMappingTerm.SERVICE_CODE_DVCQG, Validator.isNull(serviceInfoMapping) ? StringPool.BLANK : serviceInfoMapping.getServiceCodeDVCQG());
-			if (Validator.isNotNull(serviceInfoMapping.getServiceCodeDVCQG())) {
-				String serviceCodeDVCQGSearch = SpecialCharacterUtils.splitSpecial(serviceInfoMapping.getServiceCodeDVCQG());
-				document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE_DVCQG_SEARCH, serviceCodeDVCQGSearch);
+			ServiceInfoMapping serviceInfoMapping = null;
+			try {
+				serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(serviceInfo.getGroupId(), serviceInfo.getServiceCode());		
+			} catch (Exception e) {
+				_log.info(e);
 			}
+			if (serviceInfoMapping != null && Validator.isNotNull(serviceInfoMapping)) {
+				document.addTextSortable(ServiceInfoMappingTerm.SERVICE_CODE_DVCQG,serviceInfoMapping.getServiceCodeDVCQG());
+				if (Validator.isNotNull(serviceInfoMapping.getServiceCodeDVCQG())) {
+					String serviceCodeDVCQGSearch = SpecialCharacterUtils.splitSpecial(serviceInfoMapping.getServiceCodeDVCQG());
+					document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE_DVCQG_SEARCH, serviceCodeDVCQGSearch);
+				}
+			}						
 		}
 		return document;
 	}
