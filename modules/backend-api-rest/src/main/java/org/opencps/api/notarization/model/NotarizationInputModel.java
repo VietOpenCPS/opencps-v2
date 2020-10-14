@@ -58,9 +58,7 @@ import javax.xml.bind.annotation.XmlType;
     "notarizationDate",
     "signerName",
     "signerPosition",
-    "statusCode",
-    "govAgencyCode",
-    "serviceCode"
+    "statusCode"
 })
 public class NotarizationInputModel {
 
@@ -387,23 +385,5 @@ public class NotarizationInputModel {
     public void setStatusCode(String value) {
         this.statusCode = value;
     }
-
-	public String getGovAgencyCode() {
-		return govAgencyCode;
-	}
-
-	public void setGovAgencyCode(String govAgencyCode) {
-		this.govAgencyCode = govAgencyCode;
-	}
-
-	public String getServiceCode() {
-		return serviceCode;
-	}
-
-	public void setServiceCode(String serviceCode) {
-		this.serviceCode = serviceCode;
-	}
-    
-    
 
 }
