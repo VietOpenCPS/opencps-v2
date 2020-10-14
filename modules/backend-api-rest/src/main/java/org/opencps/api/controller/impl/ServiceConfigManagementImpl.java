@@ -111,18 +111,19 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
 
-			String level = query.getLevel();
-			String agency = query.getAgency();
-			String service = query.getService();
-			String domain = query.getDomain();
-			String applicant = query.getApplicant();
+			String level = HtmlUtil.escape(query.getLevel());
+			String agency = HtmlUtil.escape(query.getAgency());
+			String service = HtmlUtil.escape(query.getService());
+			String domain = HtmlUtil.escape(query.getDomain());
+			String applicant = HtmlUtil.escape(query.getApplicant());
+			String serviceConfigId = HtmlUtil.escape(query.getServiceConfigId());
 
 			params.put(ServiceConfigTerm.SERVICE_LEVEL, level);
 			params.put(ServiceConfigTerm.GOVAGENCY_CODE, agency);
 			params.put(ServiceConfigTerm.SERVICE_CODE, service);
 			params.put(ServiceConfigTerm.DOMAIN_CODE, domain);
 			params.put(ServiceConfigTerm.APPICATION_TYPE, applicant);
-			params.put(ServiceConfigTerm.SERVICECONFIG_ID, query.getServiceConfigId());
+			params.put(ServiceConfigTerm.SERVICECONFIG_ID, serviceConfigId);
 			
 			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
