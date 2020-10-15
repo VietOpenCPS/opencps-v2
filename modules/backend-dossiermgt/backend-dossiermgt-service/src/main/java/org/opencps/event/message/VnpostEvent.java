@@ -98,6 +98,7 @@ public class VnpostEvent implements MessageListener {
 			_log.info("-----Creating bill viettel post for dossier: " + dossierObj.getString(DossierTerm.DOSSIER_ID));
 			ViettelPostManagement viettelPostManagement = new ViettelPostManagementImpl(serverConfig);
 			String token = viettelPostManagement.getToken();
+			_log.info("getToken :" + token);
 			String orderService = viettelPostManagement.getOrderService(token, dossierObj);
 			viettelPostManagement.postBill(token, orderService, dossierObj);
 			_log.info("-----Done create bill viettel");

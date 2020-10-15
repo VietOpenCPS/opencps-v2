@@ -9,10 +9,14 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.DataOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.http.HttpConnection;
 import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyService;
 import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyServiceImpl;
 import org.opencps.communication.model.ServerConfig;
@@ -22,8 +26,9 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PostConnect;
 import org.opencps.dossiermgt.rest.model.ViettelPostUpdateOrder;
 import org.opencps.dossiermgt.service.PostConnectLocalServiceUtil;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+
+import javax.ws.rs.core.HttpHeaders;
 
 public class ViettelPostManagementImpl implements ViettelPostManagement {
     private JSONObject configJson;
@@ -54,19 +59,28 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
     @Override
     public String getToken() throws Exception {
         try {
+//            _log.info("configJson" + JSONFactoryUtil.looseSerialize(configJson));
             String apiGetToken = this.configJson.getString(ViettelPostTerm.API_GET_TOKEN);
+            _log.info("apiGetToken" + apiGetToken);
             String userName    = this.configJson.getString(ViettelPostTerm.USER);
             String password    = this.configJson.getString(ViettelPostTerm.VT_SECRECT_KEY);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-            headers.setContentType(MediaType.APPLICATION_JSON);
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.getHeaderString(Collections.singletonList(MediaType.APPLICATION_JSON));
+//            headers.setContentType(MediaType.APPLICATION_JSON);
 
-            Map<String, Object> body = new HashMap<>();
+            JSONObject body = JSONFactoryUtil.createJSONObject();
+
             body.put(ViettelPostTerm.USER_NAME, userName);
             body.put(ViettelPostTerm.SECRET_KEY, password);
 
-            JSONObject response = apiService.callApi(apiGetToken, headers, body);
+            HttpURLConnection conn = null;
+
+//            Map<String, Object> body = new HashMap<>();
+//            body.put(ViettelPostTerm.USER_NAME, userName);
+//            body.put(ViettelPostTerm.SECRET_KEY, password);
+            conn = getConnect(apiGetToken,"" );
+            JSONObject response = apiService.callApi(apiGetToken, conn, body);
             if(Validator.isNull(response)) {
                throw new Exception("Response get token null");
             }
@@ -80,6 +94,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             if(Validator.isNull(token)){
                 throw new Exception("Token is empty");
             }
+            _log.info("token" + token);
             return token;
         }catch (Exception e) {
             _log.debug(e);
@@ -202,10 +217,11 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             } catch (Exception e) {
                 _log.debug(e);
             }
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.set(ViettelPostTerm.TOKEN, token);
-            Map<String, Object> body = new HashMap<>();
+            HttpURLConnection conn = null;
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.set(ViettelPostTerm.TOKEN, token);
+            JSONObject body = JSONFactoryUtil.createJSONObject();
+//            Map<String, Object> body = new HashMap<>();
             body.put(ViettelPostTerm.ORDER_NUMBER, "");
             body.put(ViettelPostTerm.GROUPADDRESS_ID, Integer.valueOf(this.configJson.getString(ViettelPostTerm.GROUP_ADDRESS_ID_CONFIG)));
             body.put(ViettelPostTerm.CUS_ID, Integer.valueOf(this.configJson.getString(ViettelPostTerm.CUS_ID_CONFIG)));
@@ -252,7 +268,9 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             body.put(ViettelPostTerm.MONEY_TOTALVAT, 0);
             body.put(ViettelPostTerm.MONEY_TOTAL, 0);
             _log.info("Body json post bill: " + body);
-            JSONObject response = apiService.callApi(apiCreateBill, headers, body);
+
+            conn = getConnect(apiCreateBill,token);
+            JSONObject response = apiService.callApi(apiCreateBill, conn, body);
             if(Validator.isNull(response)) {
                 throw new Exception("Response create bill null");
             }
@@ -321,11 +339,12 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             }
 
             String apiGetOrderService = this.configJson.getString(ViettelPostTerm.API_GET_PRICE);
-            HttpHeaders headers = new HttpHeaders();
-            headers.set(ViettelPostTerm.TOKEN, token);
-            _log.info("TOKEN :" +token);
-            _log.info("apiGetOrderService :" +apiGetOrderService);
-            Map<String, Object> body = new HashMap<>();
+            HttpURLConnection conn = null;
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.set(ViettelPostTerm.TOKEN, token);
+
+//            Map<String, Object> body = new HashMap<>();
+            JSONObject body = JSONFactoryUtil.createJSONObject();
             body.put(ViettelPostTerm.SENDER_PROVINCE, senderProvinceInt);
             body.put(ViettelPostTerm.SENDER_DISTRICT, senderDistrictInt);
             body.put(ViettelPostTerm.RECEIVER_PROVINCE, receiveProvinceInt);
@@ -336,7 +355,10 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             body.put(ViettelPostTerm.MONEY_COLLECTION, "0");
             body.put(ViettelPostTerm.TYPE, 1);
             _log.info("Body json get order service: " + body);
-            JSONArray response = apiService.callApiWithResponseArray(apiGetOrderService, headers, body);
+            conn = getConnect(apiGetOrderService,token);
+//            _log.info("TOKEN :" +token);
+            _log.info("apiGetOrderService :" +apiGetOrderService);
+            JSONArray response = apiService.callApiWithResponseArray(apiGetOrderService, conn, body);
 
             if(Validator.isNull(response) || response.length() == 0) {
                 throw new Exception("Response get price all is invalid data");
@@ -374,5 +396,37 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
         	_log.debug(e);
         	return false;
         }
+    }
+    private HttpURLConnection getConnect(String enpoint, String token){
+        HttpURLConnection conn = null;
+        try {
+            URL url = new URL(enpoint);
+
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Charset", "utf-8");
+            conn.setRequestProperty("token", token);
+//            _log.info("TOKEN : " + token);
+            conn.setInstanceFollowRedirects(true);
+            HttpURLConnection.setFollowRedirects(true);
+            conn.setReadTimeout(60 * 1000);
+
+//            byte[] postData = body.toJSONString().getBytes("UTF-8");
+//            int postDataLength = postData.length;
+//            conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+//            try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+//                wr.write(postData);
+//            }
+
+            conn.connect();
+        }catch (Exception e){
+            e.getMessage();
+        }
+        return conn;
     }
 }

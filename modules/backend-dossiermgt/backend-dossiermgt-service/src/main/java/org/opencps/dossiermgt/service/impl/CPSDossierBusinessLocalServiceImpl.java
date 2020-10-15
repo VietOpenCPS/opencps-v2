@@ -6473,7 +6473,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				Date appIdDate = null;
 
 				try {
-					appIdDate = sdf.parse(input.getApplicantIdDate());
+					if(Validator.isNotNull(input.getApplicantIdDate())) {
+						appIdDate = sdf.parse(input.getApplicantIdDate());
+					}
 
 				} catch (Exception e) {
 					_log.debug(e);

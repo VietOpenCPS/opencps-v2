@@ -81,6 +81,7 @@ public class NotificationUtil {
 			return this.getCode();
 		}
 	}
+	private static final String FROM_USER_NAME = "Bộ Quốc Phòng";
 
 	@SuppressWarnings("unchecked")
 	public static MBMessageEntry createMBMessageEntry(
@@ -167,6 +168,9 @@ public class NotificationUtil {
 				else {
 					dataModel.setFromUsername(queue.getFromUsername());
 				}
+
+//				dataModel.setFromUsername(NotificationUtil.FROM_USER_NAME);
+				_log.info("Log dataModel " + JSONFactoryUtil.looseSerialize(dataModel));
 				dataModel.setGroupId(queue.getGroupId());
 				dataModel.setModifiedDate(queue.getModifiedDate());
 				dataModel.setNotificationType(queue.getNotificationType());
@@ -230,8 +234,7 @@ public class NotificationUtil {
 					// _log.info("guestUrl: "+guestUrl);
 				}
 
-				messageEntry = new MBMessageEntry(
-					queue.getFromUsername(), queue.getToUserId(),
+				messageEntry = new MBMessageEntry(NotificationUtil.FROM_USER_NAME, queue.getToUserId(),
 					queue.getToEmail(), queue.getToUsername(), serviceContext);
 
 				messageEntry.setCreateDate(queue.getCreateDate());
@@ -245,6 +248,7 @@ public class NotificationUtil {
 				messageEntry.setNotifyMessage(template.getNotifyMessage());
 				messageEntry.setData(queue.getPayload());
 				messageEntry.setDossierNo(Validator.isNotNull(dossierNo) ? dossierNo : StringPool.BLANK);
+				_log.info("Log message :" +JSONFactoryUtil.looseSerialize(messageEntry));
 
 				// _log.info(emailBody);
 

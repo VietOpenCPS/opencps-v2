@@ -486,8 +486,11 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			ServiceContext serviceContext) {
 		boolean flag = false;
 		try {
+			_log.info("serviceInfoId : " + serviceInfoId);
 			List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByServiceInfo(groupId, serviceInfoId);
+			_log.info("LogInfo : " + configList.size());
 			if (configList != null && configList.size() > 0) {
+
 				long serviceConfigId = 0;
 				for (ServiceConfig config : configList) {
 					serviceConfigId = config.getServiceConfigId();
@@ -503,11 +506,9 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 							flag = true;
 						}
 					}
+					_log.info("Delete serviceConfig : " + serviceConfigId + " flag : " + flag);
 					if (flag) {
 						ServiceConfigLocalServiceUtil.deleteServiceConfig(config);
-//						if (serviceConfig == null) {
-//							flag = false;
-//						}
 					}
 				}
 			} else {
