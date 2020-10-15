@@ -939,6 +939,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				}
 
 			}
+			
+			/* Bỏ check an toàn thông tin ký tự đặc biệt
 			String applicantName = HtmlUtil.escape(input.getApplicantName());
 			String applicantIdType = HtmlUtil.escape(input.getApplicantIdType());
 			String applicantIdNo = HtmlUtil.escape(input.getApplicantIdNo());
@@ -949,6 +951,19 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactName = HtmlUtil.escape(input.getContactName());
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
+			*/
+			
+			
+			String applicantName = input.getApplicantName();
+			String applicantIdType = input.getApplicantIdType();
+			String applicantIdNo = input.getApplicantIdNo();
+			String address = input.getAddress();
+			String cityCode = input.getCityCode();
+			String districtCode = input.getDistrictCode();
+			String wardCode = input.getWardCode();
+			String contactName = input.getContactName();
+			String contactTelNo = input.getContactTelNo();
+			String contactEmail = input.getContactEmail();
 
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
