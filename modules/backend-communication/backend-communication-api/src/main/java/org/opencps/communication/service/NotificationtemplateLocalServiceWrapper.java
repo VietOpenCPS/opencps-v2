@@ -273,6 +273,12 @@ public class NotificationtemplateLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.communication.model.Notificationtemplate> findByIntervalLike(
+		String interval) {
+		return _notificationtemplateLocalService.findByIntervalLike(interval);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _notificationtemplateLocalService.getActionableDynamicQuery();
 	}

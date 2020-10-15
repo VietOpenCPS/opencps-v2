@@ -480,6 +480,11 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		return notificationtemplatePersistence.findByF_interval(interval);
 	}
 
+	@Override
+	public List<Notificationtemplate> findByIntervalLike(String interval) {
+		return notificationtemplatePersistence.findByF_interval_Like(interval);
+	}
+
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public Notificationtemplate adminProcessDelete(Long id) {

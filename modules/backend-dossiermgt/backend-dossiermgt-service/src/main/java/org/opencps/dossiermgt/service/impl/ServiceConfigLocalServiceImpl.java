@@ -627,27 +627,27 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	
 	// LamTV_Process get list ServiceConfig by ServiceInfo
 	public List<ServiceConfig> getByServiceInfo(long groupId, long serviceInfoId) {
-		Serializable lstServiceConfigs = null;
-		try {
-			lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + StringPool.UNDERLINE + serviceInfoId);
-		} catch (PortalException e) {
-			_log.debug(e);
-		}
-		if (lstServiceConfigs != null) {
-			return (List<ServiceConfig>)lstServiceConfigs;
-		}
-		else {
+//		Serializable lstServiceConfigs = null;
+//		try {
+//			lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + StringPool.UNDERLINE + serviceInfoId);
+//		} catch (PortalException e) {
+//			_log.debug(e);
+//		}
+//		if (lstServiceConfigs != null) {
+//			return (List<ServiceConfig>)lstServiceConfigs;
+//		}
+//		else {
 			List<ServiceConfig> tempServiceConfigs = serviceConfigPersistence.findByF_GID_SID(groupId, serviceInfoId);
-			if (tempServiceConfigs != null) {
-				try {
-					cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
-							groupId + StringPool.UNDERLINE + serviceInfoId, (Serializable)tempServiceConfigs, ttl);
-				} catch (PortalException e) {
-					_log.debug(e);
-				}
-			}			
+//			if (tempServiceConfigs != null) {
+//				try {
+//					cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
+//							groupId + StringPool.UNDERLINE + serviceInfoId, (Serializable)tempServiceConfigs, ttl);
+//				} catch (PortalException e) {
+//					_log.debug(e);
+//				}
+//			}
 			return tempServiceConfigs;
-		}
+//		}
 	}
 
 	public List<ServiceConfig> getByGovAgencyCode(String govAgencyCode) {

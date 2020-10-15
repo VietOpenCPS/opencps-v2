@@ -199,6 +199,10 @@ public interface NotificationQueueLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<NotificationQueue> fetchByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public NotificationQueue fetchNotificationQueue(long notificationQueueId);
 
 	public List<NotificationQueue> findByF_LessThan_ExpireDate(Date date);

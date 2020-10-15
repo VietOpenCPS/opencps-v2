@@ -86,6 +86,12 @@ public class NotificationQueueBusinessFactoryUtil {
 		return getNotificationQueueBusiness().findByNotificationType_LessThanExpireDate(
 			notificationType, date);
 	}
+	public static List<NotificationQueue> fetchByF_Greate_PublicationDate_Less_ExpireDate(
+			String notificationType, Date publicationDate, Date expireDate) {
+
+		return getNotificationQueueBusiness().fetchByF_Greate_PublicationDate_Less_ExpireDate(
+				notificationType, publicationDate,expireDate);
+	}
 
 	public static NotificationQueue update(
 		NotificationQueue notificationQueue, ServiceContext serviceContext)

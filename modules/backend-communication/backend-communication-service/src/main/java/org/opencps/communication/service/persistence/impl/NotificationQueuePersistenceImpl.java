@@ -2749,6 +2749,720 @@ public class NotificationQueuePersistenceImpl extends BasePersistenceImpl<Notifi
 	private static final String _FINDER_COLUMN_F_NT_CN_CPK_EMAIL_TOEMAIL_1 = "notificationQueue.toEmail IS NULL";
 	private static final String _FINDER_COLUMN_F_NT_CN_CPK_EMAIL_TOEMAIL_2 = "notificationQueue.toEmail = ?";
 	private static final String _FINDER_COLUMN_F_NT_CN_CPK_EMAIL_TOEMAIL_3 = "(notificationQueue.toEmail IS NULL OR notificationQueue.toEmail = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE =
+		new FinderPath(NotificationQueueModelImpl.ENTITY_CACHE_ENABLED,
+			NotificationQueueModelImpl.FINDER_CACHE_ENABLED,
+			NotificationQueueImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByF_Greate_PublicationDate_Less_ExpireDate",
+			new String[] {
+				String.class.getName(), Date.class.getName(),
+				Date.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE =
+		new FinderPath(NotificationQueueModelImpl.ENTITY_CACHE_ENABLED,
+			NotificationQueueModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"countByF_Greate_PublicationDate_Less_ExpireDate",
+			new String[] {
+				String.class.getName(), Date.class.getName(),
+				Date.class.getName()
+			});
+
+	/**
+	 * Returns all the notification queues where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	 *
+	 * @param notificationType the notification type
+	 * @param publicationDate the publication date
+	 * @param expireDate the expire date
+	 * @return the matching notification queues
+	 */
+	@Override
+	public List<NotificationQueue> findByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate) {
+		return findByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+			publicationDate, expireDate, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the notification queues where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link NotificationQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param notificationType the notification type
+	 * @param publicationDate the publication date
+	 * @param expireDate the expire date
+	 * @param start the lower bound of the range of notification queues
+	 * @param end the upper bound of the range of notification queues (not inclusive)
+	 * @return the range of matching notification queues
+	 */
+	@Override
+	public List<NotificationQueue> findByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate,
+		int start, int end) {
+		return findByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+			publicationDate, expireDate, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the notification queues where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link NotificationQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param notificationType the notification type
+	 * @param publicationDate the publication date
+	 * @param expireDate the expire date
+	 * @param start the lower bound of the range of notification queues
+	 * @param end the upper bound of the range of notification queues (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching notification queues
+	 */
+	@Override
+	public List<NotificationQueue> findByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate,
+		int start, int end,
+		OrderByComparator<NotificationQueue> orderByComparator) {
+		return findByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+			publicationDate, expireDate, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the notification queues where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link NotificationQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param notificationType the notification type
+	 * @param publicationDate the publication date
+	 * @param expireDate the expire date
+	 * @param start the lower bound of the range of notification queues
+	 * @param end the upper bound of the range of notification queues (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching notification queues
+	 */
+	@Override
+	public List<NotificationQueue> findByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate,
+		int start, int end,
+		OrderByComparator<NotificationQueue> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE;
+		finderArgs = new Object[] {
+				notificationType, _getTime(publicationDate),
+				_getTime(expireDate),
+				
+				start, end, orderByComparator
+			};
+
+		List<NotificationQueue> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<NotificationQueue>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (NotificationQueue notificationQueue : list) {
+					if (!Objects.equals(notificationType,
+								notificationQueue.getNotificationType()) ||
+							(publicationDate.getTime() <= notificationQueue.getPublicationDate()
+																			   .getTime()) ||
+							(expireDate.getTime() > notificationQueue.getExpireDate()
+																		 .getTime())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_NOTIFICATIONQUEUE_WHERE);
+
+			boolean bindNotificationType = false;
+
+			if (notificationType == null) {
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_NOTIFICATIONTYPE_1);
+			}
+			else if (notificationType.equals("")) {
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_NOTIFICATIONTYPE_3);
+			}
+			else {
+				bindNotificationType = true;
+
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_NOTIFICATIONTYPE_2);
+			}
+
+			boolean bindPublicationDate = false;
+
+			if (publicationDate == null) {
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_PUBLICATIONDATE_1);
+			}
+			else {
+				bindPublicationDate = true;
+
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_PUBLICATIONDATE_2);
+			}
+
+			boolean bindExpireDate = false;
+
+			if (expireDate == null) {
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_EXPIREDATE_1);
+			}
+			else {
+				bindExpireDate = true;
+
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_EXPIREDATE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(NotificationQueueModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindNotificationType) {
+					qPos.add(notificationType);
+				}
+
+				if (bindPublicationDate) {
+					qPos.add(new Timestamp(publicationDate.getTime()));
+				}
+
+				if (bindExpireDate) {
+					qPos.add(new Timestamp(expireDate.getTime()));
+				}
+
+				if (!pagination) {
+					list = (List<NotificationQueue>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<NotificationQueue>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first notification queue in the ordered set where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	 *
+	 * @param notificationType the notification type
+	 * @param publicationDate the publication date
+	 * @param expireDate the expire date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching notification queue
+	 * @throws NoSuchNotificationQueueException if a matching notification queue could not be found
+	 */
+	@Override
+	public NotificationQueue findByF_Greate_PublicationDate_Less_ExpireDate_First(
+		String notificationType, Date publicationDate, Date expireDate,
+		OrderByComparator<NotificationQueue> orderByComparator)
+		throws NoSuchNotificationQueueException {
+		NotificationQueue notificationQueue = fetchByF_Greate_PublicationDate_Less_ExpireDate_First(notificationType,
+				publicationDate, expireDate, orderByComparator);
+
+		if (notificationQueue != null) {
+			return notificationQueue;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("notificationType=");
+		msg.append(notificationType);
+
+		msg.append(", publicationDate=");
+		msg.append(publicationDate);
+
+		msg.append(", expireDate=");
+		msg.append(expireDate);
+
+		msg.append("}");
+
+		throw new NoSuchNotificationQueueException(msg.toString());
+	}
+
+	/**
+	 * Returns the first notification queue in the ordered set where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	 *
+	 * @param notificationType the notification type
+	 * @param publicationDate the publication date
+	 * @param expireDate the expire date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching notification queue, or <code>null</code> if a matching notification queue could not be found
+	 */
+	@Override
+	public NotificationQueue fetchByF_Greate_PublicationDate_Less_ExpireDate_First(
+		String notificationType, Date publicationDate, Date expireDate,
+		OrderByComparator<NotificationQueue> orderByComparator) {
+		List<NotificationQueue> list = findByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+				publicationDate, expireDate, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last notification queue in the ordered set where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	 *
+	 * @param notificationType the notification type
+	 * @param publicationDate the publication date
+	 * @param expireDate the expire date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching notification queue
+	 * @throws NoSuchNotificationQueueException if a matching notification queue could not be found
+	 */
+	@Override
+	public NotificationQueue findByF_Greate_PublicationDate_Less_ExpireDate_Last(
+		String notificationType, Date publicationDate, Date expireDate,
+		OrderByComparator<NotificationQueue> orderByComparator)
+		throws NoSuchNotificationQueueException {
+		NotificationQueue notificationQueue = fetchByF_Greate_PublicationDate_Less_ExpireDate_Last(notificationType,
+				publicationDate, expireDate, orderByComparator);
+
+		if (notificationQueue != null) {
+			return notificationQueue;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("notificationType=");
+		msg.append(notificationType);
+
+		msg.append(", publicationDate=");
+		msg.append(publicationDate);
+
+		msg.append(", expireDate=");
+		msg.append(expireDate);
+
+		msg.append("}");
+
+		throw new NoSuchNotificationQueueException(msg.toString());
+	}
+
+	/**
+	 * Returns the last notification queue in the ordered set where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	 *
+	 * @param notificationType the notification type
+	 * @param publicationDate the publication date
+	 * @param expireDate the expire date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching notification queue, or <code>null</code> if a matching notification queue could not be found
+	 */
+	@Override
+	public NotificationQueue fetchByF_Greate_PublicationDate_Less_ExpireDate_Last(
+		String notificationType, Date publicationDate, Date expireDate,
+		OrderByComparator<NotificationQueue> orderByComparator) {
+		int count = countByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+				publicationDate, expireDate);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<NotificationQueue> list = findByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+				publicationDate, expireDate, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the notification queues before and after the current notification queue in the ordered set where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	 *
+	 * @param notificationQueueId the primary key of the current notification queue
+	 * @param notificationType the notification type
+	 * @param publicationDate the publication date
+	 * @param expireDate the expire date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next notification queue
+	 * @throws NoSuchNotificationQueueException if a notification queue with the primary key could not be found
+	 */
+	@Override
+	public NotificationQueue[] findByF_Greate_PublicationDate_Less_ExpireDate_PrevAndNext(
+		long notificationQueueId, String notificationType,
+		Date publicationDate, Date expireDate,
+		OrderByComparator<NotificationQueue> orderByComparator)
+		throws NoSuchNotificationQueueException {
+		NotificationQueue notificationQueue = findByPrimaryKey(notificationQueueId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			NotificationQueue[] array = new NotificationQueueImpl[3];
+
+			array[0] = getByF_Greate_PublicationDate_Less_ExpireDate_PrevAndNext(session,
+					notificationQueue, notificationType, publicationDate,
+					expireDate, orderByComparator, true);
+
+			array[1] = notificationQueue;
+
+			array[2] = getByF_Greate_PublicationDate_Less_ExpireDate_PrevAndNext(session,
+					notificationQueue, notificationType, publicationDate,
+					expireDate, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected NotificationQueue getByF_Greate_PublicationDate_Less_ExpireDate_PrevAndNext(
+		Session session, NotificationQueue notificationQueue,
+		String notificationType, Date publicationDate, Date expireDate,
+		OrderByComparator<NotificationQueue> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(5);
+		}
+
+		query.append(_SQL_SELECT_NOTIFICATIONQUEUE_WHERE);
+
+		boolean bindNotificationType = false;
+
+		if (notificationType == null) {
+			query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_NOTIFICATIONTYPE_1);
+		}
+		else if (notificationType.equals("")) {
+			query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_NOTIFICATIONTYPE_3);
+		}
+		else {
+			bindNotificationType = true;
+
+			query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_NOTIFICATIONTYPE_2);
+		}
+
+		boolean bindPublicationDate = false;
+
+		if (publicationDate == null) {
+			query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_PUBLICATIONDATE_1);
+		}
+		else {
+			bindPublicationDate = true;
+
+			query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_PUBLICATIONDATE_2);
+		}
+
+		boolean bindExpireDate = false;
+
+		if (expireDate == null) {
+			query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_EXPIREDATE_1);
+		}
+		else {
+			bindExpireDate = true;
+
+			query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_EXPIREDATE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(NotificationQueueModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindNotificationType) {
+			qPos.add(notificationType);
+		}
+
+		if (bindPublicationDate) {
+			qPos.add(new Timestamp(publicationDate.getTime()));
+		}
+
+		if (bindExpireDate) {
+			qPos.add(new Timestamp(expireDate.getTime()));
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(notificationQueue);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<NotificationQueue> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the notification queues where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63; from the database.
+	 *
+	 * @param notificationType the notification type
+	 * @param publicationDate the publication date
+	 * @param expireDate the expire date
+	 */
+	@Override
+	public void removeByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate) {
+		for (NotificationQueue notificationQueue : findByF_Greate_PublicationDate_Less_ExpireDate(
+				notificationType, publicationDate, expireDate,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(notificationQueue);
+		}
+	}
+
+	/**
+	 * Returns the number of notification queues where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	 *
+	 * @param notificationType the notification type
+	 * @param publicationDate the publication date
+	 * @param expireDate the expire date
+	 * @return the number of matching notification queues
+	 */
+	@Override
+	public int countByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE;
+
+		Object[] finderArgs = new Object[] {
+				notificationType, _getTime(publicationDate),
+				_getTime(expireDate)
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_NOTIFICATIONQUEUE_WHERE);
+
+			boolean bindNotificationType = false;
+
+			if (notificationType == null) {
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_NOTIFICATIONTYPE_1);
+			}
+			else if (notificationType.equals("")) {
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_NOTIFICATIONTYPE_3);
+			}
+			else {
+				bindNotificationType = true;
+
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_NOTIFICATIONTYPE_2);
+			}
+
+			boolean bindPublicationDate = false;
+
+			if (publicationDate == null) {
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_PUBLICATIONDATE_1);
+			}
+			else {
+				bindPublicationDate = true;
+
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_PUBLICATIONDATE_2);
+			}
+
+			boolean bindExpireDate = false;
+
+			if (expireDate == null) {
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_EXPIREDATE_1);
+			}
+			else {
+				bindExpireDate = true;
+
+				query.append(_FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_EXPIREDATE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindNotificationType) {
+					qPos.add(notificationType);
+				}
+
+				if (bindPublicationDate) {
+					qPos.add(new Timestamp(publicationDate.getTime()));
+				}
+
+				if (bindExpireDate) {
+					qPos.add(new Timestamp(expireDate.getTime()));
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_NOTIFICATIONTYPE_1 =
+		"notificationQueue.notificationType IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_NOTIFICATIONTYPE_2 =
+		"notificationQueue.notificationType = ? AND ";
+	private static final String _FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_NOTIFICATIONTYPE_3 =
+		"(notificationQueue.notificationType IS NULL OR notificationQueue.notificationType = '') AND ";
+	private static final String _FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_PUBLICATIONDATE_1 =
+		"notificationQueue.publicationDate IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_PUBLICATIONDATE_2 =
+		"notificationQueue.publicationDate < ? AND ";
+	private static final String _FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_EXPIREDATE_1 =
+		"notificationQueue.expireDate IS NULL";
+	private static final String _FINDER_COLUMN_F_GREATE_PUBLICATIONDATE_LESS_EXPIREDATE_EXPIREDATE_2 =
+		"notificationQueue.expireDate >= ?";
 
 	public NotificationQueuePersistenceImpl() {
 		setModelClass(NotificationQueue.class);
