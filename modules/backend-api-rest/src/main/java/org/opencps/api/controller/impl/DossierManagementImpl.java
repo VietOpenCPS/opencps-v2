@@ -2251,14 +2251,17 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 				// update notarization
 				List<Notarization> list = NotarizationLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
-				for(Notarization notarization : list) {
-					if (notarization.getNotarizationNo() == 0) {
-						long notarizationNoNumber = NotarizationCounterNumberGenerator.countByServiceCode(
-								dossier.getServiceCode(), dossier.getGovAgencyCode());
-						notarization.setNotarizationNo(notarizationNoNumber);
-						notarization = NotarizationLocalServiceUtil.updateNotarization(notarization);
+				if (list.size() > 0) {
+					for(Notarization notarization : list) {
+						if (notarization.getNotarizationNo() == 0) {
+							long notarizationNoNumber = NotarizationCounterNumberGenerator.countByServiceCode(
+									dossier.getServiceCode(), dossier.getGovAgencyCode());
+							notarization.setNotarizationNo(notarizationNoNumber);
+							notarization = NotarizationLocalServiceUtil.updateNotarization(notarization);
+						}
 					}
 				}
+				
 			}
 
 			// DossierAction dossierAction = actions.doAction(groupId, dossier,
