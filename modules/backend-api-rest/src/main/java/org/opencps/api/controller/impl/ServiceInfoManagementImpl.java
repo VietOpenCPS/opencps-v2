@@ -153,7 +153,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			String keywordSearch = query.getKeyword();
 			String keySearch = StringPool.BLANK;
 			if (Validator.isNotNull(keywordSearch)) {
-				keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
+				keySearch = SpecialCharacterUtils.splitSpecialNoSpace(keywordSearch);
 			}
 			params.put(Field.KEYWORD_SEARCH, keySearch);
 
