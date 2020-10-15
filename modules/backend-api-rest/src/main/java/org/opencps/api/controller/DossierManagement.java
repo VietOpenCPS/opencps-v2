@@ -1768,6 +1768,25 @@ public interface DossierManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@BeanParam DossierSearchModel query);
+	@GET
+	@Path("/inter/{id}")
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Get list interconnection dossier of Dossier by its id ", response = DossierResultsModel.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list interconnection dossier of Dossiers", response = DossierResultsModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+
+	public Response getInterconnectionDossier(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext, @PathParam("id") String id);
+
+			@BeanParam DossierSearchModel query);
 
 	@POST
 	@Path("/overdueTime")
