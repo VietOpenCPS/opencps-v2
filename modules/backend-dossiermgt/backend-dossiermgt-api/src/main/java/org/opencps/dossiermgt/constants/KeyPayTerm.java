@@ -125,5 +125,5 @@ public class KeyPayTerm {
 	public static final String PAYGOV_CONFIG = "PAYGOV_CONFIG";
 	public static final String KEYPAY_LATE_CONFIG = "KEYPAY_LATE_CONFIG";
 	public static final String KEYPAY_LATE= "keypay_late";
-	public static final String MINUTELY_PATTERN = "minutely@";
+	public static final String MINUTELY_PATTERN = "minutely#";
 }

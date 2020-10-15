@@ -132,6 +132,12 @@ public class NotificationQueueLocalServiceImpl extends NotificationQueueLocalSer
 		return notificationQueuePersistence.findByF_notificationType_LessThanExpireDate(notificationType, date);
 	}
 
+	@Override
+	public List<NotificationQueue> fetchByF_Greate_PublicationDate_Less_ExpireDate(String notificationType, Date publicationDate, Date expireDate) {
+		return notificationQueuePersistence.findByF_Greate_PublicationDate_Less_ExpireDate(
+				notificationType, publicationDate, expireDate);
+	}
+
 	public void deleteByGroup(long groupId) {
 		notificationQueuePersistence.removeByG(groupId);
 	}

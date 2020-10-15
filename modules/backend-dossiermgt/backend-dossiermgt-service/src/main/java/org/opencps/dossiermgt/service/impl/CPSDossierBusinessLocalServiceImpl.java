@@ -1901,19 +1901,21 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(now);
 			if (notiTemplate != null) {
-				if(KeyPayTerm.MINUTELY_PATTERN.contains(notiTemplate.getInterval())){
-					//Tính publicationDate == now + 120 thời gian cấu hình (MINUTELY@120)
-					_log.info("NotiTemp: " + notiTemplate.getInterval());
-					String intervalSub = notiTemplate.getInterval().substring(notiTemplate.getInterval().indexOf('@')+ 1);
-					_log.info("Tính thời gian publicationDate " + intervalSub);
-					calendar.add(Calendar.MINUTE, Integer.valueOf(intervalSub));
-				}else if (KeyPayTerm.MINUTELY.equals(notiTemplate.getInterval())) {
+				 if (KeyPayTerm.MINUTELY.equals(notiTemplate.getInterval())) {
 					cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
 				} else if (KeyPayTerm.HOURLY.equals(notiTemplate.getInterval())) {
 					cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());
 				} else {
 					cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
 				}
+				//Tính publicationDate == now + 120 thời gian cấu hình (MINUTELY#120)
+				if(notiTemplate.getInterval().contains(KeyPayTerm.MINUTELY_PATTERN)) {
+					String interVal = notiTemplate.getInterval();
+					String intervalSub = interVal.substring(interVal.indexOf('#') + 1);
+					_log.info("Tính thời gian publicationDate " + intervalSub);
+					calendar.add(Calendar.MINUTE, Integer.valueOf(intervalSub));
+				}
+
 				Date expired = cal.getTime();
 
 				Date publicationDate = calendar.getTime();

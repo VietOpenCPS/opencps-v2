@@ -50,6 +50,7 @@ public class NotificationTemplateTerm {
 	public static final String THIRTY_MINUTES = "30-mins";
 	public static final String HOURLY = "hourly";
 	public static final String DAILY = "daily";
+	public static final String MINUTELY_PATTERN = "minutely#%";
 
 	public static final String NOTIFICATIONTEMPLATE_ID = "notificationTemplateId";
 

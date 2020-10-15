@@ -96,14 +96,14 @@ public class OneMinute extends BaseMessageListener {
 
 		_log.info("notificationQueues check SIZE: "+notificationQueues.size());
 		if (notificationQueues != null) {
-	
-			_log.info("notificationQueues SIZE: "+notificationQueues.size());
+
 			for (NotificationQueue notificationQueue : notificationQueues) {
+//				_log.info("notificationQueues : "+JSONFactoryUtil.looseSerialize(notificationQueue));
 				Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil.findByF_TYPE_INTER(
 						notificationQueue.getGroupId(), notificationQueue.getNotificationType(),
 						NotificationTemplateTerm.MINUTELY);
 				if (notificationtemplate != null) {
-					_log.debug("Template: "+notificationtemplate.getNotificationType());
+					_log.info("Template: "+notificationtemplate.getNotificationType());
 					try {
 						ServiceContext serviceContext =
 							MBServiceContextFactoryUtil.create(
@@ -184,11 +184,13 @@ public class OneMinute extends BaseMessageListener {
 								if (messageEntry.isSendEmail()) {
 									_log.info("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
 									LGSPSendMailUtils.sendLGSP(messageEntry, StringPool.BLANK);
+									resultSendSMS.setResult(1L);
 								}
 								if (messageEntry.isSendNotify() || messageEntry.isSendZalo()) {
 									_log.debug("messageEntry.isSendNotify(): " + messageEntry.isSendNotify());
 									MBNotificationSenderFactoryUtil.send(messageEntry, messageEntry.getClassName(),
 											serviceContext);
+									resultSendSMS.setResult(1L);
 								}
 								/*
 								 * Remove queue when send SMS success Or telNo is null
@@ -196,7 +198,7 @@ public class OneMinute extends BaseMessageListener {
 								 * If Send SMS error, continue until expiredDate
 								 */
 								_log.debug("resultSendSMS: " + JSONFactoryUtil.looseSerialize(resultSendSMS));
-								if (resultSendSMS.getResult() > 0) {
+								if (resultSendSMS.getResult() > 0 && resultSendSMS.getResult() == 1L) {
 									NotificationQueueBusinessFactoryUtil
 											.delete(notificationQueue.getNotificationQueueId(), serviceContext);
 								} else {
@@ -207,7 +209,7 @@ public class OneMinute extends BaseMessageListener {
 								}
 							} else {
 								// Process send SMS
-								Result resultSendSMS = new Result("Success", new Long(1));
+								Result resultSendSMS = new Result("Failed", new Long(0));
 								if (messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())) {
 
 									/**
@@ -237,6 +239,7 @@ public class OneMinute extends BaseMessageListener {
 										resultSendSMS = ViettelSMSUtils.sendSMS(notificationQueue.getGroupId(),
 												messageEntry.getTextMessage(), messageEntry.getEmailSubject(),
 												messageEntry.getToTelNo());
+										resultSendSMS.setResult(1L);
 									}
 									_log.debug("END SEND SMS");
 								}
@@ -244,11 +247,13 @@ public class OneMinute extends BaseMessageListener {
 								if (messageEntry.isSendEmail()) {
 									_log.info("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
 									MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK, serviceContext);
+									resultSendSMS.setResult(1L);
 								}
 								if (messageEntry.isSendNotify() || messageEntry.isSendZalo()) {
 									_log.debug("messageEntry.isSendNotify(): " + messageEntry.isSendNotify());
 									MBNotificationSenderFactoryUtil.send(messageEntry, messageEntry.getClassName(),
 											serviceContext);
+									resultSendSMS.setResult(1L);
 								}
 								/*
 								 * Remove queue when send SMS success Or telNo is null
@@ -256,7 +261,7 @@ public class OneMinute extends BaseMessageListener {
 								 * If Send SMS error, continue until expiredDate
 								 */
 								_log.debug("resultSendSMS: " + JSONFactoryUtil.looseSerialize(resultSendSMS));
-								if (resultSendSMS.getResult() > 0) {
+								if (resultSendSMS.getResult() > 0 && resultSendSMS.getResult() == 1L) {
 									NotificationQueueBusinessFactoryUtil
 											.delete(notificationQueue.getNotificationQueueId(), serviceContext);
 								} else {
