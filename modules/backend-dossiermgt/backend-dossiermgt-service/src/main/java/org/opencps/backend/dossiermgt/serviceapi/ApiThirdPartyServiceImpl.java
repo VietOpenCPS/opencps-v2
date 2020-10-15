@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.usermgt.service.util.LGSPRestfulUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,6 +22,20 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     private RestTemplate restTemplate;
     private static final Integer timeout = 30000 ;
     private Log _log = LogFactoryUtil.getLog(ApiThirdPartyServiceImpl.class);
+    private enum ListPaygovUnitLocal {
+        DONGTHAP("PAYGOV-DONGTHAP"),
+        HAUGIANG("PAYGOV-HAUGIANG");
+
+        private final String value;
+
+        ListPaygovUnitLocal(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return this.value;
+        }
+    }
+
 
     public ApiThirdPartyServiceImpl(){
         this.restTemplate = new RestTemplate(setConfigRestTemplate(timeout));
@@ -34,33 +49,38 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     }
 
     @Override
-    public String getTokenLGSP() throws Exception{
+    public String getTokenLGSP(JSONObject paygovConfig) throws Exception{
         try {
-            String url = "http://api.dongthap.gov.vn/api/v1/Authentication/Token";
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.add("Auth", "WVdSdGFXND06WVdSdGFXNUFNZz09");
-            JSONObject response = this.callApi(url, headers, null);
-            if(Validator.isNull(response)) {
-                throw new Exception("Response get token null");
+            if(paygovConfig.getString("partnerCode").equals(ListPaygovUnitLocal.DONGTHAP.getValue())) {
+                JSONObject jsonToken = LGSPRestfulUtils.createTokenLGSP("Bearer");
+                if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
+                        && jsonToken.has("expiryDate")) {
+                    return jsonToken.getString("token");
+                }
+            } else if (paygovConfig.getString("partnerCode").equals(ListPaygovUnitLocal.HAUGIANG.getValue())) {
+                return paygovConfig.getString("token");
+            } else {
+                //other unit
             }
-            String token = response.getString("token");
-            if(token.isEmpty()){
-                throw new Exception("Token is empty");
-            }
-            return token;
+
+            throw new Exception("Token is empty with paygov config: " + paygovConfig);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
     @Override
-    public String getUrlRedirectToPaygov(String token, Map<String, Object> body) throws Exception {
+    public String getUrlRedirectToPaygov(String token, Map<String, Object> body, JSONObject paygovConfig) throws Exception {
         try{
             _log.info("Body get url redirect paygov: " + body);
-            String url = "https://api.dongthap.gov.vn/api/v1/PayGov/paygate";
+            String url = paygovConfig.getString("urlPaygate");
+
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "Bearer " + token);
+            if(paygovConfig.getString("partnerCode").equals(ListPaygovUnitLocal.HAUGIANG.getValue())) {
+                headers.add("lgspaccesstoken", paygovConfig.getString("lgspAccessToken"));
+            }
+
             headers.setContentType(MediaType.APPLICATION_JSON);
             JSONObject response = this.callApi(url, headers, body);
             if(Validator.isNull(response)) {

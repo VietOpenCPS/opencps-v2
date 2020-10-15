@@ -9,6 +9,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Base64;
+
 public class PayGateTerm {
 
 	private static Log _log = LogFactoryUtil.getLog(PayGateTerm.class.getName());
@@ -198,5 +203,37 @@ public class PayGateTerm {
 			_log.debug(e);
 		}
 		return StringPool.BLANK;
+	}
+
+	public static String genChecksum(JSONObject paygovConfig, String orderId, long amount, String requestCode) throws Exception{
+		try {
+			String secretKey   = paygovConfig.getString("secretKey");
+			String accessKey   = paygovConfig.getString("accessKey");
+			String partnerCode = paygovConfig.getString("partnerCode");
+			String stringBeforeHash = secretKey + accessKey + partnerCode + orderId + requestCode + amount;
+			System.out.println("String before hash: " + stringBeforeHash);
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			digest.update(stringBeforeHash.getBytes(StandardCharsets.UTF_8));
+			byte[] digest1 = digest.digest();
+			String hex = String.format("%064x", new BigInteger(1, digest1));
+			System.out.println("String after hash: " + hex);
+			return hex;
+		} catch (Exception e) {
+			throw new Exception("Error when gen checksum for orderId " + orderId + ": " + e.getMessage());
+		}
+	}
+
+	public enum ListPaygovUnit {
+		DONGTHAP("PAYGOV-DONGTHAP"),
+		HAUGIANG("PAYGOV-HAUGIANG");
+
+		private final String value;
+
+		ListPaygovUnit(String value) {
+			this.value = value;
+		}
+		public String getValue() {
+			return this.value;
+		}
 	}
 }

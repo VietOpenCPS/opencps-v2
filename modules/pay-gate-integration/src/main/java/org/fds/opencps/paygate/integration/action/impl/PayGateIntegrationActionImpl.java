@@ -1731,29 +1731,6 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				throw new Exception("Pay error with error code: " + errorCode);
 			}
 
-			if(Validator.isNotNull(data.getBoolean(PayGateTerm.PAYGOV_ACTIVE_CHECK_SUM))
-					&& data.getBoolean(PayGateTerm.PAYGOV_ACTIVE_CHECK_SUM)) {
-				//Call from FE of fds
-				ApiThirdPartyService apiService = new ApiThirdPartyServiceImpl();
-				String token = apiService.getTokenLGSP();
-				Map<String, Object> bodyChecksum = new HashMap<>();
-				bodyChecksum.put(PayGateTerm.PAYGOV_AMOUNT, amount);
-				bodyChecksum.put(PayGateTerm.PAYGOV_ORDER_ID, orderId);
-				bodyChecksum.put(PayGateTerm.PAYGOV_ORDER_INFO, orderInfo);
-				bodyChecksum.put(PayGateTerm.PAYGOV_REQUEST_CODE, requestCode);
-				bodyChecksum.put(PayGateTerm.PAYGOV_TRANSACTION_NO, transactionNo);
-				bodyChecksum.put(PayGateTerm.PAYGOV_PAY_DATE, payDate);
-				bodyChecksum.put(PayGateTerm.PAYGOV_PAY_GATE, paygate);
-				bodyChecksum.put(PayGateTerm.PAYGOV_ERROR_CODE, errorCode);
-				bodyChecksum.put(PayGateTerm.PAYGOV_TYPE, type);
-				bodyChecksum.put(PayGateTerm.PAYGOV_TRANSACTION_CODE, transactionCode);
-				bodyChecksum.put(PayGateTerm.PAYGOV_CHECKSUM, checksum);
-				boolean resultChecksum = apiService.checkSum(token, bodyChecksum);
-				if(!resultChecksum) {
-					return PayGateUtil.createResponseToPaygov(PayGateTerm.FAILED, "Checksum is invalid");
-				}
-			}
-
 			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
 
 			if(Validator.isNull(dossier)) {
@@ -1786,7 +1763,6 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	public String getUrlRedirectToPaygov(long dossierId, String ipAddress) throws Exception{
 		try {
 			ApiThirdPartyService apiService = new ApiThirdPartyServiceImpl();
-			String token = apiService.getTokenLGSP();
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			if(Validator.isNull(dossier)) {
 				throw new Exception("No dossier found with dossierId: " + dossierId);
@@ -1796,6 +1772,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			if(Validator.isNull(paymentFile) || Validator.isNull(paymentFile.getEpaymentProfile())) {
 				throw new Exception("No payment file found with dossierId: " + dossierId);
 			}
+
 			JSONObject ePaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 			if(Validator.isNull(ePaymentProfile.getJSONObject("PAYGOV_CONFIG"))) {
 				throw new Exception("No paygov config in payment profile");
@@ -1803,15 +1780,27 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 			JSONObject paygovConfig = ePaymentProfile.getJSONObject("PAYGOV_CONFIG");
 			Map<String, Object> body = new HashMap<>();
+			String orderId     = dossier.getDossierNo() + "-01";
+			long amount        = paymentFile.getPaymentAmount();
+			String requestCode = String.valueOf(dossierId) + System.currentTimeMillis();
+
 			body.put("partnerCode", paygovConfig.getString("partnerCode"));
 			body.put("returnUrl", paygovConfig.getString("urlDomain"));
-			body.put("orderId", dossier.getDossierNo() + "-01");
-			body.put("amount", paymentFile.getPaymentAmount());
+			body.put("orderId", orderId);
+			body.put("amount", amount);
 			body.put("orderInfo", StringUtils.stripAccents(dossier.getDossierName()));
-			body.put("requestCode", String.valueOf(dossierId) + System.currentTimeMillis());
+			body.put("requestCode", requestCode);
 			body.put("ipAddress", ipAddress);
 
-			return apiService.getUrlRedirectToPaygov(token, body);
+			if(paygovConfig.getString("partnerCode").equals(PayGateTerm.ListPaygovUnit.HAUGIANG.getValue())) {
+				body.put("checksum", PayGateTerm.genChecksum(paygovConfig, orderId, amount, requestCode));
+				body.put("accessKey", paygovConfig.getString("accessKey"));
+				body.put("serviceCode", paygovConfig.getString("serviceCode"));
+			}
+
+			String token = apiService.getTokenLGSP(paygovConfig);
+
+			return apiService.getUrlRedirectToPaygov(token, body, paygovConfig);
 		} catch (Exception e){
 			_log.error(e.getMessage());
 			throw new Exception(e.getMessage());
