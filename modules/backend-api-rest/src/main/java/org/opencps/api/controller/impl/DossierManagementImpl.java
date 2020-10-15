@@ -2,7 +2,8 @@ package org.opencps.api.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonObject;import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -14,6 +15,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
@@ -43,6 +46,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -130,6 +134,7 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
 import org.springframework.http.HttpEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.org.okapibarcode.backend.Code128;
@@ -8704,5 +8709,65 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			return true;
 		}
+
+	@Override
+	public Response getInterconnectionDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id) {
+		
+		DossierResultsModel results = new DossierResultsModel();
+		List<Dossier> listDossier = new ArrayList<Dossier>();
+		try {
+			// get dossier by dossierId
+			Dossier dossier = DossierLocalServiceUtil.getDossier(Long.valueOf(id));
+			if (dossier != null) {
+				// originDossierNo != null -> hslt or hstg
+				if (!StringUtils.isEmpty(dossier.getOriginDossierNo())) {
+					getInterDossierFromOriginDossier(dossier, listDossier);
+					getConnectDossierFromInterDossier(dossier, listDossier);
+				}else {
+					// la ho so goc-> tim danh sach hslt
+					getInterDossierFromOriginDossier(dossier, listDossier);
+				}
+			}
+			
+			results.setTotal(listDossier.size());
+
+			results.getData().addAll(
+					DossierUtils.mappingForListDossier(listDossier));
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+	
+	private void getInterDossierFromOriginDossier(Dossier dossier, List<Dossier> listDossier) {
+		// Ds ho so trung gian va lien thong tu ho so goc
+		List<Dossier> aList = DossierLocalServiceUtil.fetchByORIGIN_NO(dossier.getDossierNo());
+		// Lay ho so lien thong la ho so co originDossierId = 0
+		Dossier newDossier = null;
+		if (aList.size() > 0) {
+			newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
+					.findAny().orElse(null);
+			listDossier.add(newDossier);
+			getInterDossierFromOriginDossier(newDossier, listDossier);
+		}
+	}
+	
+	private void getConnectDossierFromInterDossier(Dossier dossier, List<Dossier> listDossier) {
+		// Ds ho so goc cua hslt
+		List<Dossier> aList = new ArrayList<Dossier>();
+		if (!StringUtils.isEmpty(dossier.getOriginDossierNo())) {
+		aList = DossierLocalServiceUtil.fetchByNEW_DO_NO(dossier.getOriginDossierNo());
+		}
+		Dossier newDossier = null;
+		if (aList.size() > 0) {
+			newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
+					.findAny().orElse(null);
+			listDossier.add(newDossier);
+			getConnectDossierFromInterDossier(newDossier, listDossier);
+		}
+		
+	}
 		
 }

@@ -7785,4 +7785,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived, long groupId) {
 		return dossierPersistence.fetchByDO_POST_RECEIVED_GROUP(postalCodeReceived, groupId);
 	}
+	
+	public List<Dossier> fetchByORIGIN_NO(String originDossierNo) {
+		return dossierPersistence.findByORIGIN_NO(originDossierNo);
+	}
+	
+	public List<Dossier> fetchByNEW_DO_NO(String dossierNo) {
+		return dossierPersistence.findByNEW_DO_NO(dossierNo);
+	}
 }
