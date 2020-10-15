@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -8524,8 +8525,19 @@ public class DossierManagementImpl implements DossierManagement {
 							if ("7".equals(String.valueOf(dossierPart.getPartType()))) {
 								if (Validator.isNotNull(listDossierFile)) {
 									for (DossierFile item : listDossierFile) {
-//									_log.info("TRACE_LOG_INFO checkCreateFile " + checkCreateFile);
 										_log.info("Log clone file entryId:" + item.getFileEntryId());
+										if (item.getFileEntryId() > 0) {
+											try {
+												FileEntry fileEntry = FileUploadUtils.cloneDossierFile(
+														user.getPrimaryKey(), groupId,
+														item.getFileEntryId(), serviceContext);
+												fileEntryId = fileEntry.getFileEntryId();
+												_log.info("FileEntryId : " + fileEntryId);
+											}
+											catch (Exception e) {
+												throw new SystemException(e);
+											}
+										}
 										DossierFile dossierFile = DossierFileLocalServiceUtil.updateDossierFile(
 												0, groupId, company.getCompanyId(), user.getUserId(), user.getFullName(),
 												dossier.getDossierId(),
@@ -8535,7 +8547,7 @@ public class DossierManagementImpl implements DossierManagement {
 												item.getDossierPartType(),
 												item.getFileTemplateNo(),
 												item.getDisplayName(), item.getFormData(),
-												item.getFileEntryId(), false,
+												fileEntryId, false,
 												item.getEForm(), item.isNew(),
 												item.getRemoved(), item.getSignCheck(),
 												item.getSignInfo(), item.getFormScript(),
