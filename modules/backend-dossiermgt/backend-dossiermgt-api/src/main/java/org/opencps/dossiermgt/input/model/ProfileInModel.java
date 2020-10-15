@@ -72,6 +72,26 @@ public class ProfileInModel {
 
     public String time_of_process;
 
+    public String is_request_payment;
+
+    public String total_amount;
+
+    public String getTotal_amount() {
+        return total_amount;
+    }
+
+    public void setTotal_amount(String total_amount) {
+        this.total_amount = total_amount;
+    }
+
+    public String getIs_request_payment() {
+        return is_request_payment;
+    }
+
+    public void setIs_request_payment(String is_request_payment) {
+        this.is_request_payment = is_request_payment;
+    }
+
     public String getProfiles_status() {
         return profiles_status;
     }

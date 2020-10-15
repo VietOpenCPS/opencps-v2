@@ -45,6 +45,8 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     private ObjectMapper objectMapper;
     private ServerConfig serverConfig;
     private static final String FORMAT_DATE_LGSP = "yyyy/MM/dd HH:mm:ss";
+    private static final String REQUEST_PAYMENT = "true";
+
 
     public FrequencyIntegrationActionImpl(ServerConfig serverConfig) throws Exception{
         this.apiService = new ApiThirdPartyServiceImpl();
@@ -386,8 +388,8 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             if(Validator.isNull(dossier.getReferenceUid())) {
                 throw new Exception("No ReferenceId found with id: " + dossierId);
             }
-            //todo remove this line
-            Integer statusProfile = 3;
+            //todo remove this line (dang test thanh toan)
+            Integer statusProfile = 6;
 //            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
             if(statusProfile.equals(0)) {
                 throw new Exception("Status profile: 0");
@@ -401,6 +403,8 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 profile.setStatus(FrequencyOfficeConstants.STATUS_RESULT);
             } else if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_REQUIRE_PAPER)) {
                 profile.setStatus(FrequencyOfficeConstants.STATUS_UPDATE);
+            } else if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_REQUIRE_MONEY)) {
+                profile.setStatus(FrequencyOfficeConstants.STATUS_PAYMENT);
             } else {
                 throw new Exception("Status profile is invalid with value: " + statusProfile);
             }
@@ -422,8 +426,20 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + token);
 
-            String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
-                    this.configJson.getString(FrequencyOfficeConstants.CONFIG_SYNC_DOSSIER);
+            String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL);
+
+            if(profile.getStatus().equals(FrequencyOfficeConstants.STATUS_PAYMENT)) {
+                urlSyncDossier += this.configJson.getString(FrequencyOfficeConstants.CONFIG_PAYMENT);
+                profile.setIs_request_payment(REQUEST_PAYMENT);
+                PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
+
+                if(Validator.isNull(paymentFile)) {
+                    throw new Exception("No payment file for dossierId: " + dossierId);
+                }
+                profile.setTotal_amount(String.valueOf(paymentFile.getPaymentAmount()));
+            } else {
+                urlSyncDossier += this.configJson.getString(FrequencyOfficeConstants.CONFIG_SYNC_DOSSIER);
+            }
 
 //            String urlSyncDossier = "http://localhost:8080/o/rest/v2/hshc/synDossierFake";
             JSONObject response = apiService.callApi(urlSyncDossier, headers, profile);

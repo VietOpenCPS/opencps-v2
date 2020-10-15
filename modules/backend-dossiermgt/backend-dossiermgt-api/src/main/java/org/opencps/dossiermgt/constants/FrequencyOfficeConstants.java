@@ -34,6 +34,7 @@ public class FrequencyOfficeConstants {
     public static final String CONFIG_SYNC_DOSSIER_TO_DVC_BO = "syncDossierToDVCBo";
     public static final String CONFIG_SEND_STATUS_PROFILE_TO_DVC_BO = "sendStatusProfileToDVCBo";
     public static final String CONFIG_SYNC_DOSSIER = "syncDossier";
+    public static final String CONFIG_PAYMENT= "sendRequestOrPayMentProfile";
     public static final String CONFIG_USER_LGSP = "userLGSP";
     public static final String CONFIG_PASS_LGSP = "passLGSP";
     public static final String CONFIG_UNIT_CODE = "madonvi";
@@ -50,6 +51,7 @@ public class FrequencyOfficeConstants {
     public static final String STATUS_PULL_OUT = "RUT";
     public static final String STATUS_DENIED = "TUCHOI";
     public static final String STATUS_RESULT = "KETQUA";
+    public static final String STATUS_PAYMENT = "THANHTOAN";
     //Status LGSP
     public static final Integer STATUS_LGSP_NEW = 1;
     public static final Integer STATUS_LGSP_RECEIVED = 2;
