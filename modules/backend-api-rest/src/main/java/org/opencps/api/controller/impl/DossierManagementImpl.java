@@ -2251,7 +2251,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 				// update notarization
 				List<Notarization> list = NotarizationLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
-				if (list.size() > 0) {
+				if (list != null) {
 					for(Notarization notarization : list) {
 						if (notarization.getNotarizationNo() == 0) {
 							long notarizationNoNumber = NotarizationCounterNumberGenerator.countByServiceCode(
