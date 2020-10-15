@@ -110,6 +110,7 @@ import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.NotarizationCounterNumberGenerator;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.*;
@@ -2253,6 +2254,19 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 					}
 				}
+				// update notarization
+				List<Notarization> list = NotarizationLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+				if (list != null) {
+					for(Notarization notarization : list) {
+						if (notarization.getNotarizationNo() == 0) {
+							long notarizationNoNumber = NotarizationCounterNumberGenerator.countByServiceCode(
+									dossier.getServiceCode(), dossier.getGovAgencyCode());
+							notarization.setNotarizationNo(notarizationNoNumber);
+							notarization = NotarizationLocalServiceUtil.updateNotarization(notarization);
+						}
+					}
+				}
+				
 			}
 
 			// DossierAction dossierAction = actions.doAction(groupId, dossier,

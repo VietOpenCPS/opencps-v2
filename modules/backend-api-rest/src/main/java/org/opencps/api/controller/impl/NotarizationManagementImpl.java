@@ -71,13 +71,6 @@ public class NotarizationManagementImpl implements NotarizationManagement {
 			String statusCode = input.getStatusCode();
 			Date notarizationDateFmt = new Date(notarizationDate);
 			Notarization notarization = actions.createNotarization(groupId, dossierId, fileName, totalRecord, totalPage, totalCopy, totalFee, notarizationNo, notarizationYear, notarizationDateFmt, signerName, signerPosition, statusCode, serviceContext);
-			if (notarizationNo == 0) {
-				ConfigCounter cc = ConfigCounterLocalServiceUtil.fetchByCountrCode(groupId, NOTARIZATION_COUNTER);
-				String notarizationNoText = NotarizationCounterNumberGenerator.generateCounterNumber(groupId, company.getCompanyId(), notarization.getNotarizationId(), 
-						cc.getPatternCode(), cc, new LinkedHashMap<String, Object>(), new SearchContext());
-				notarization.setNotarizationNo(Long.valueOf(notarizationNoText));
-				notarization = NotarizationLocalServiceUtil.updateNotarization(notarization);
-			}
 			result = NotarizationUtils.mappingToNotarizationDetailModel(notarization);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
