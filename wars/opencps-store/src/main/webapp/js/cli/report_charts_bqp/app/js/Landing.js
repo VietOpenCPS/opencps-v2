@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["Landing"],{"306c":function(n,e,t){"use strict";t.r(e);var i=function(){var n=this,e=n.$createElement,t=n._self._c||e;return t("div",[n._v("\n bbbbbb\n")])},u=[],a={data:function(){return{}}},c=a,l=t("2877"),o=Object(l["a"])(c,i,u,!1,null,null,null);o.options.__file="Landing.vue";e["default"]=o.exports}}]);
