@@ -2753,6 +2753,15 @@
         <finder name="STS" return-type="Collection">
             <finder-column name="status" comparator="=" arrayable-operator="OR"></finder-column>
         </finder>
+		<finder name="STS_SN_NOT" return-type="Collection">
+			<finder-column name="status" comparator="=" arrayable-operator="OR"></finder-column>
+			<finder-column name="serverNo" comparator="!="></finder-column>
+		</finder>
+
+		<finder name="STS_SN" return-type="Collection">
+			<finder-column name="status" comparator="=" arrayable-operator="OR"></finder-column>
+			<finder-column name="serverNo" />
+		</finder>
 	</entity>
 		
 	<entity name="DeliverableTypeRole" table="opencps_deliverabletyperole"

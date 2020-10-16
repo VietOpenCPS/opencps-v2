@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.liferay.portal.kernel.json.*;
 import org.apache.commons.text.similarity.CosineSimilarity;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
@@ -77,10 +78,6 @@ import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -2183,7 +2180,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		} catch (Exception e) {
 			_log.error(e);
-			return result;
+			//must null to check timeout of calling api
+			return null;
 		} finally {
 			if (conn != null) {
 				conn.disconnect();
@@ -2224,6 +2222,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				body.put("service", "DongBoHoSoMC");
 				body.put("data", synsObjects);
 				result = syncData(serverConfig, body);
+				if(Validator.isNull(result)) {
+					return JSONFactoryUtil.createJSONObject();
+				}
 			}
 
 		}
@@ -2282,10 +2283,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						result = syncData(serverConfig, body);
 					}
 				}
-
+				return result;
 			}
-
+			//no access token
+			return null;
 		}
+		_log.info("No server config with dossierId: " + dossier.getDossierId());
 		return result;
 	}
 
@@ -2313,8 +2316,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			JSONObject body = JSONFactoryUtil.createJSONObject();
 			body.put("service", "CapNhatTienDoHoSoMC");
 			body.put("data", synsObjects);
-
-			return syncData(serverConfig, body);
+			JSONObject resultNew = syncData(serverConfig, body);
+			if(Validator.isNull(resultNew)) {
+				return JSONFactoryUtil.createJSONObject();
+			}
+			return resultNew;
 		}
 		return result;
 	}
@@ -2982,7 +2988,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					body.put("data", data);
 					JSONObject result = syncData(serverConfig, body);
 
-					if (result.has("error_code") && result.getInt("error_code") == 0) {
+					if (Validator.isNotNull(result) && result.has("error_code") && result.getInt("error_code") == 0) {
 						for (int i = 0; i < data.length(); i++) {
 							JSONObject _tmp = data.getJSONObject(i);
 							long questionId = _tmp.getLong("HOIDAPID");

@@ -5003,6 +5003,1792 @@ public class PublishQueuePersistenceImpl extends BasePersistenceImpl<PublishQueu
 
 	private static final String _FINDER_COLUMN_STS_STATUS_2 = "publishQueue.status = ?";
 	private static final String _FINDER_COLUMN_STS_STATUS_7 = "publishQueue.status IN (";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_STS_SN_NOT =
+		new FinderPath(PublishQueueModelImpl.ENTITY_CACHE_ENABLED,
+			PublishQueueModelImpl.FINDER_CACHE_ENABLED, PublishQueueImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBySTS_SN_NOT",
+			new String[] {
+				Integer.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_STS_SN_NOT =
+		new FinderPath(PublishQueueModelImpl.ENTITY_CACHE_ENABLED,
+			PublishQueueModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countBySTS_SN_NOT",
+			new String[] { Integer.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns all the publish queues where status = &#63; and serverNo &ne; &#63;.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @return the matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN_NOT(int status, String serverNo) {
+		return findBySTS_SN_NOT(status, serverNo, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the publish queues where status = &#63; and serverNo &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of publish queues
+	 * @param end the upper bound of the range of publish queues (not inclusive)
+	 * @return the range of matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN_NOT(int status, String serverNo,
+		int start, int end) {
+		return findBySTS_SN_NOT(status, serverNo, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the publish queues where status = &#63; and serverNo &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of publish queues
+	 * @param end the upper bound of the range of publish queues (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN_NOT(int status, String serverNo,
+		int start, int end, OrderByComparator<PublishQueue> orderByComparator) {
+		return findBySTS_SN_NOT(status, serverNo, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the publish queues where status = &#63; and serverNo &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of publish queues
+	 * @param end the upper bound of the range of publish queues (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN_NOT(int status, String serverNo,
+		int start, int end, OrderByComparator<PublishQueue> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_STS_SN_NOT;
+		finderArgs = new Object[] {
+				status, serverNo,
+				
+				start, end, orderByComparator
+			};
+
+		List<PublishQueue> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<PublishQueue>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PublishQueue publishQueue : list) {
+					if ((status != publishQueue.getStatus()) ||
+							Objects.equals(serverNo, publishQueue.getServerNo())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_PUBLISHQUEUE_WHERE);
+
+			query.append(_FINDER_COLUMN_STS_SN_NOT_STATUS_2);
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(PublishQueueModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(status);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				if (!pagination) {
+					list = (List<PublishQueue>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<PublishQueue>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first publish queue in the ordered set where status = &#63; and serverNo &ne; &#63;.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching publish queue
+	 * @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	 */
+	@Override
+	public PublishQueue findBySTS_SN_NOT_First(int status, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException {
+		PublishQueue publishQueue = fetchBySTS_SN_NOT_First(status, serverNo,
+				orderByComparator);
+
+		if (publishQueue != null) {
+			return publishQueue;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("status=");
+		msg.append(status);
+
+		msg.append(", serverNo=");
+		msg.append(serverNo);
+
+		msg.append("}");
+
+		throw new NoSuchPublishQueueException(msg.toString());
+	}
+
+	/**
+	 * Returns the first publish queue in the ordered set where status = &#63; and serverNo &ne; &#63;.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	 */
+	@Override
+	public PublishQueue fetchBySTS_SN_NOT_First(int status, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator) {
+		List<PublishQueue> list = findBySTS_SN_NOT(status, serverNo, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last publish queue in the ordered set where status = &#63; and serverNo &ne; &#63;.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching publish queue
+	 * @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	 */
+	@Override
+	public PublishQueue findBySTS_SN_NOT_Last(int status, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException {
+		PublishQueue publishQueue = fetchBySTS_SN_NOT_Last(status, serverNo,
+				orderByComparator);
+
+		if (publishQueue != null) {
+			return publishQueue;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("status=");
+		msg.append(status);
+
+		msg.append(", serverNo=");
+		msg.append(serverNo);
+
+		msg.append("}");
+
+		throw new NoSuchPublishQueueException(msg.toString());
+	}
+
+	/**
+	 * Returns the last publish queue in the ordered set where status = &#63; and serverNo &ne; &#63;.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	 */
+	@Override
+	public PublishQueue fetchBySTS_SN_NOT_Last(int status, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator) {
+		int count = countBySTS_SN_NOT(status, serverNo);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PublishQueue> list = findBySTS_SN_NOT(status, serverNo, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the publish queues before and after the current publish queue in the ordered set where status = &#63; and serverNo &ne; &#63;.
+	 *
+	 * @param publishQueueId the primary key of the current publish queue
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next publish queue
+	 * @throws NoSuchPublishQueueException if a publish queue with the primary key could not be found
+	 */
+	@Override
+	public PublishQueue[] findBySTS_SN_NOT_PrevAndNext(long publishQueueId,
+		int status, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException {
+		PublishQueue publishQueue = findByPrimaryKey(publishQueueId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PublishQueue[] array = new PublishQueueImpl[3];
+
+			array[0] = getBySTS_SN_NOT_PrevAndNext(session, publishQueue,
+					status, serverNo, orderByComparator, true);
+
+			array[1] = publishQueue;
+
+			array[2] = getBySTS_SN_NOT_PrevAndNext(session, publishQueue,
+					status, serverNo, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PublishQueue getBySTS_SN_NOT_PrevAndNext(Session session,
+		PublishQueue publishQueue, int status, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_PUBLISHQUEUE_WHERE);
+
+		query.append(_FINDER_COLUMN_STS_SN_NOT_STATUS_2);
+
+		boolean bindServerNo = false;
+
+		if (serverNo == null) {
+			query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_1);
+		}
+		else if (serverNo.equals("")) {
+			query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_3);
+		}
+		else {
+			bindServerNo = true;
+
+			query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(PublishQueueModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(status);
+
+		if (bindServerNo) {
+			qPos.add(serverNo);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(publishQueue);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<PublishQueue> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the publish queues where status = any &#63; and serverNo &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param statuses the statuses
+	 * @param serverNo the server no
+	 * @return the matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN_NOT(int[] statuses, String serverNo) {
+		return findBySTS_SN_NOT(statuses, serverNo, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the publish queues where status = any &#63; and serverNo &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param statuses the statuses
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of publish queues
+	 * @param end the upper bound of the range of publish queues (not inclusive)
+	 * @return the range of matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN_NOT(int[] statuses, String serverNo,
+		int start, int end) {
+		return findBySTS_SN_NOT(statuses, serverNo, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the publish queues where status = any &#63; and serverNo &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param statuses the statuses
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of publish queues
+	 * @param end the upper bound of the range of publish queues (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN_NOT(int[] statuses, String serverNo,
+		int start, int end, OrderByComparator<PublishQueue> orderByComparator) {
+		return findBySTS_SN_NOT(statuses, serverNo, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the publish queues where status = &#63; and serverNo &ne; &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of publish queues
+	 * @param end the upper bound of the range of publish queues (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN_NOT(int[] statuses, String serverNo,
+		int start, int end, OrderByComparator<PublishQueue> orderByComparator,
+		boolean retrieveFromCache) {
+		if (statuses == null) {
+			statuses = new int[0];
+		}
+		else if (statuses.length > 1) {
+			statuses = ArrayUtil.unique(statuses);
+
+			Arrays.sort(statuses);
+		}
+
+		if (statuses.length == 1) {
+			return findBySTS_SN_NOT(statuses[0], serverNo, start, end,
+				orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] { StringUtil.merge(statuses), serverNo };
+		}
+		else {
+			finderArgs = new Object[] {
+					StringUtil.merge(statuses), serverNo,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<PublishQueue> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<PublishQueue>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_STS_SN_NOT,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PublishQueue publishQueue : list) {
+					if (!ArrayUtil.contains(statuses, publishQueue.getStatus()) ||
+							Objects.equals(serverNo, publishQueue.getServerNo())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_PUBLISHQUEUE_WHERE);
+
+			if (statuses.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_STS_SN_NOT_STATUS_7);
+
+				query.append(StringUtil.merge(statuses));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_2);
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(PublishQueueModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				if (!pagination) {
+					list = (List<PublishQueue>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<PublishQueue>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_STS_SN_NOT,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_STS_SN_NOT,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the publish queues where status = &#63; and serverNo &ne; &#63; from the database.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 */
+	@Override
+	public void removeBySTS_SN_NOT(int status, String serverNo) {
+		for (PublishQueue publishQueue : findBySTS_SN_NOT(status, serverNo,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(publishQueue);
+		}
+	}
+
+	/**
+	 * Returns the number of publish queues where status = &#63; and serverNo &ne; &#63;.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @return the number of matching publish queues
+	 */
+	@Override
+	public int countBySTS_SN_NOT(int status, String serverNo) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_STS_SN_NOT;
+
+		Object[] finderArgs = new Object[] { status, serverNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_PUBLISHQUEUE_WHERE);
+
+			query.append(_FINDER_COLUMN_STS_SN_NOT_STATUS_2);
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(status);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of publish queues where status = any &#63; and serverNo &ne; &#63;.
+	 *
+	 * @param statuses the statuses
+	 * @param serverNo the server no
+	 * @return the number of matching publish queues
+	 */
+	@Override
+	public int countBySTS_SN_NOT(int[] statuses, String serverNo) {
+		if (statuses == null) {
+			statuses = new int[0];
+		}
+		else if (statuses.length > 1) {
+			statuses = ArrayUtil.unique(statuses);
+
+			Arrays.sort(statuses);
+		}
+
+		Object[] finderArgs = new Object[] { StringUtil.merge(statuses), serverNo };
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_STS_SN_NOT,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_PUBLISHQUEUE_WHERE);
+
+			if (statuses.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_STS_SN_NOT_STATUS_7);
+
+				query.append(StringUtil.merge(statuses));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_STS_SN_NOT_SERVERNO_2);
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_STS_SN_NOT,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_STS_SN_NOT,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_STS_SN_NOT_STATUS_2 = "publishQueue.status = ? AND ";
+	private static final String _FINDER_COLUMN_STS_SN_NOT_STATUS_7 = "publishQueue.status IN (";
+	private static final String _FINDER_COLUMN_STS_SN_NOT_SERVERNO_1 = "publishQueue.serverNo IS NOT NULL";
+	private static final String _FINDER_COLUMN_STS_SN_NOT_SERVERNO_2 = "publishQueue.serverNo != ?";
+	private static final String _FINDER_COLUMN_STS_SN_NOT_SERVERNO_3 = "(publishQueue.serverNo IS NULL OR publishQueue.serverNo != '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_STS_SN = new FinderPath(PublishQueueModelImpl.ENTITY_CACHE_ENABLED,
+			PublishQueueModelImpl.FINDER_CACHE_ENABLED, PublishQueueImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBySTS_SN",
+			new String[] {
+				Integer.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_STS_SN =
+		new FinderPath(PublishQueueModelImpl.ENTITY_CACHE_ENABLED,
+			PublishQueueModelImpl.FINDER_CACHE_ENABLED, PublishQueueImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findBySTS_SN",
+			new String[] { Integer.class.getName(), String.class.getName() },
+			PublishQueueModelImpl.STATUS_COLUMN_BITMASK |
+			PublishQueueModelImpl.SERVERNO_COLUMN_BITMASK |
+			PublishQueueModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_STS_SN = new FinderPath(PublishQueueModelImpl.ENTITY_CACHE_ENABLED,
+			PublishQueueModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBySTS_SN",
+			new String[] { Integer.class.getName(), String.class.getName() });
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_STS_SN = new FinderPath(PublishQueueModelImpl.ENTITY_CACHE_ENABLED,
+			PublishQueueModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countBySTS_SN",
+			new String[] { Integer.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns all the publish queues where status = &#63; and serverNo = &#63;.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @return the matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN(int status, String serverNo) {
+		return findBySTS_SN(status, serverNo, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the publish queues where status = &#63; and serverNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of publish queues
+	 * @param end the upper bound of the range of publish queues (not inclusive)
+	 * @return the range of matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN(int status, String serverNo,
+		int start, int end) {
+		return findBySTS_SN(status, serverNo, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the publish queues where status = &#63; and serverNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of publish queues
+	 * @param end the upper bound of the range of publish queues (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN(int status, String serverNo,
+		int start, int end, OrderByComparator<PublishQueue> orderByComparator) {
+		return findBySTS_SN(status, serverNo, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the publish queues where status = &#63; and serverNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of publish queues
+	 * @param end the upper bound of the range of publish queues (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN(int status, String serverNo,
+		int start, int end, OrderByComparator<PublishQueue> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_STS_SN;
+			finderArgs = new Object[] { status, serverNo };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_STS_SN;
+			finderArgs = new Object[] {
+					status, serverNo,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<PublishQueue> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<PublishQueue>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PublishQueue publishQueue : list) {
+					if ((status != publishQueue.getStatus()) ||
+							!Objects.equals(serverNo, publishQueue.getServerNo())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_PUBLISHQUEUE_WHERE);
+
+			query.append(_FINDER_COLUMN_STS_SN_STATUS_2);
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_STS_SN_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_STS_SN_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_STS_SN_SERVERNO_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(PublishQueueModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(status);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				if (!pagination) {
+					list = (List<PublishQueue>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<PublishQueue>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first publish queue in the ordered set where status = &#63; and serverNo = &#63;.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching publish queue
+	 * @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	 */
+	@Override
+	public PublishQueue findBySTS_SN_First(int status, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException {
+		PublishQueue publishQueue = fetchBySTS_SN_First(status, serverNo,
+				orderByComparator);
+
+		if (publishQueue != null) {
+			return publishQueue;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("status=");
+		msg.append(status);
+
+		msg.append(", serverNo=");
+		msg.append(serverNo);
+
+		msg.append("}");
+
+		throw new NoSuchPublishQueueException(msg.toString());
+	}
+
+	/**
+	 * Returns the first publish queue in the ordered set where status = &#63; and serverNo = &#63;.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	 */
+	@Override
+	public PublishQueue fetchBySTS_SN_First(int status, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator) {
+		List<PublishQueue> list = findBySTS_SN(status, serverNo, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last publish queue in the ordered set where status = &#63; and serverNo = &#63;.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching publish queue
+	 * @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	 */
+	@Override
+	public PublishQueue findBySTS_SN_Last(int status, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException {
+		PublishQueue publishQueue = fetchBySTS_SN_Last(status, serverNo,
+				orderByComparator);
+
+		if (publishQueue != null) {
+			return publishQueue;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("status=");
+		msg.append(status);
+
+		msg.append(", serverNo=");
+		msg.append(serverNo);
+
+		msg.append("}");
+
+		throw new NoSuchPublishQueueException(msg.toString());
+	}
+
+	/**
+	 * Returns the last publish queue in the ordered set where status = &#63; and serverNo = &#63;.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	 */
+	@Override
+	public PublishQueue fetchBySTS_SN_Last(int status, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator) {
+		int count = countBySTS_SN(status, serverNo);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PublishQueue> list = findBySTS_SN(status, serverNo, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the publish queues before and after the current publish queue in the ordered set where status = &#63; and serverNo = &#63;.
+	 *
+	 * @param publishQueueId the primary key of the current publish queue
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next publish queue
+	 * @throws NoSuchPublishQueueException if a publish queue with the primary key could not be found
+	 */
+	@Override
+	public PublishQueue[] findBySTS_SN_PrevAndNext(long publishQueueId,
+		int status, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException {
+		PublishQueue publishQueue = findByPrimaryKey(publishQueueId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PublishQueue[] array = new PublishQueueImpl[3];
+
+			array[0] = getBySTS_SN_PrevAndNext(session, publishQueue, status,
+					serverNo, orderByComparator, true);
+
+			array[1] = publishQueue;
+
+			array[2] = getBySTS_SN_PrevAndNext(session, publishQueue, status,
+					serverNo, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PublishQueue getBySTS_SN_PrevAndNext(Session session,
+		PublishQueue publishQueue, int status, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_PUBLISHQUEUE_WHERE);
+
+		query.append(_FINDER_COLUMN_STS_SN_STATUS_2);
+
+		boolean bindServerNo = false;
+
+		if (serverNo == null) {
+			query.append(_FINDER_COLUMN_STS_SN_SERVERNO_1);
+		}
+		else if (serverNo.equals("")) {
+			query.append(_FINDER_COLUMN_STS_SN_SERVERNO_3);
+		}
+		else {
+			bindServerNo = true;
+
+			query.append(_FINDER_COLUMN_STS_SN_SERVERNO_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(PublishQueueModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(status);
+
+		if (bindServerNo) {
+			qPos.add(serverNo);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(publishQueue);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<PublishQueue> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the publish queues where status = any &#63; and serverNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param statuses the statuses
+	 * @param serverNo the server no
+	 * @return the matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN(int[] statuses, String serverNo) {
+		return findBySTS_SN(statuses, serverNo, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the publish queues where status = any &#63; and serverNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param statuses the statuses
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of publish queues
+	 * @param end the upper bound of the range of publish queues (not inclusive)
+	 * @return the range of matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN(int[] statuses, String serverNo,
+		int start, int end) {
+		return findBySTS_SN(statuses, serverNo, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the publish queues where status = any &#63; and serverNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param statuses the statuses
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of publish queues
+	 * @param end the upper bound of the range of publish queues (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN(int[] statuses, String serverNo,
+		int start, int end, OrderByComparator<PublishQueue> orderByComparator) {
+		return findBySTS_SN(statuses, serverNo, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the publish queues where status = &#63; and serverNo = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @param start the lower bound of the range of publish queues
+	 * @param end the upper bound of the range of publish queues (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching publish queues
+	 */
+	@Override
+	public List<PublishQueue> findBySTS_SN(int[] statuses, String serverNo,
+		int start, int end, OrderByComparator<PublishQueue> orderByComparator,
+		boolean retrieveFromCache) {
+		if (statuses == null) {
+			statuses = new int[0];
+		}
+		else if (statuses.length > 1) {
+			statuses = ArrayUtil.unique(statuses);
+
+			Arrays.sort(statuses);
+		}
+
+		if (statuses.length == 1) {
+			return findBySTS_SN(statuses[0], serverNo, start, end,
+				orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] { StringUtil.merge(statuses), serverNo };
+		}
+		else {
+			finderArgs = new Object[] {
+					StringUtil.merge(statuses), serverNo,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<PublishQueue> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<PublishQueue>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_STS_SN,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PublishQueue publishQueue : list) {
+					if (!ArrayUtil.contains(statuses, publishQueue.getStatus()) ||
+							!Objects.equals(serverNo, publishQueue.getServerNo())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_PUBLISHQUEUE_WHERE);
+
+			if (statuses.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_STS_SN_STATUS_7);
+
+				query.append(StringUtil.merge(statuses));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_STS_SN_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_STS_SN_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_STS_SN_SERVERNO_2);
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(PublishQueueModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				if (!pagination) {
+					list = (List<PublishQueue>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<PublishQueue>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_STS_SN,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_STS_SN,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the publish queues where status = &#63; and serverNo = &#63; from the database.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 */
+	@Override
+	public void removeBySTS_SN(int status, String serverNo) {
+		for (PublishQueue publishQueue : findBySTS_SN(status, serverNo,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(publishQueue);
+		}
+	}
+
+	/**
+	 * Returns the number of publish queues where status = &#63; and serverNo = &#63;.
+	 *
+	 * @param status the status
+	 * @param serverNo the server no
+	 * @return the number of matching publish queues
+	 */
+	@Override
+	public int countBySTS_SN(int status, String serverNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_STS_SN;
+
+		Object[] finderArgs = new Object[] { status, serverNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_PUBLISHQUEUE_WHERE);
+
+			query.append(_FINDER_COLUMN_STS_SN_STATUS_2);
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_STS_SN_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_STS_SN_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_STS_SN_SERVERNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(status);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of publish queues where status = any &#63; and serverNo = &#63;.
+	 *
+	 * @param statuses the statuses
+	 * @param serverNo the server no
+	 * @return the number of matching publish queues
+	 */
+	@Override
+	public int countBySTS_SN(int[] statuses, String serverNo) {
+		if (statuses == null) {
+			statuses = new int[0];
+		}
+		else if (statuses.length > 1) {
+			statuses = ArrayUtil.unique(statuses);
+
+			Arrays.sort(statuses);
+		}
+
+		Object[] finderArgs = new Object[] { StringUtil.merge(statuses), serverNo };
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_STS_SN,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_PUBLISHQUEUE_WHERE);
+
+			if (statuses.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_STS_SN_STATUS_7);
+
+				query.append(StringUtil.merge(statuses));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_STS_SN_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_STS_SN_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_STS_SN_SERVERNO_2);
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_STS_SN,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_STS_SN,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_STS_SN_STATUS_2 = "publishQueue.status = ? AND ";
+	private static final String _FINDER_COLUMN_STS_SN_STATUS_7 = "publishQueue.status IN (";
+	private static final String _FINDER_COLUMN_STS_SN_SERVERNO_1 = "publishQueue.serverNo IS NULL";
+	private static final String _FINDER_COLUMN_STS_SN_SERVERNO_2 = "publishQueue.serverNo = ?";
+	private static final String _FINDER_COLUMN_STS_SN_SERVERNO_3 = "(publishQueue.serverNo IS NULL OR publishQueue.serverNo = '')";
 
 	public PublishQueuePersistenceImpl() {
 		setModelClass(PublishQueue.class);
@@ -5407,6 +7193,15 @@ public class PublishQueuePersistenceImpl extends BasePersistenceImpl<PublishQueu
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_STS,
 				args);
 
+			args = new Object[] {
+					publishQueueModelImpl.getStatus(),
+					publishQueueModelImpl.getServerNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_STS_SN, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_STS_SN,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -5511,6 +7306,27 @@ public class PublishQueuePersistenceImpl extends BasePersistenceImpl<PublishQueu
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_STS, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_STS,
+					args);
+			}
+
+			if ((publishQueueModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_STS_SN.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						publishQueueModelImpl.getOriginalStatus(),
+						publishQueueModelImpl.getOriginalServerNo()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_STS_SN, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_STS_SN,
+					args);
+
+				args = new Object[] {
+						publishQueueModelImpl.getStatus(),
+						publishQueueModelImpl.getServerNo()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_STS_SN, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_STS_SN,
 					args);
 			}
 		}

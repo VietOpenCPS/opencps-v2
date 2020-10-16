@@ -11,21 +11,9 @@ import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
-import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
-import com.liferay.portal.kernel.scheduler.SchedulerEntryImpl;
-import com.liferay.portal.kernel.scheduler.SchedulerException;
-import com.liferay.portal.kernel.scheduler.StorageType;
-import com.liferay.portal.kernel.scheduler.StorageTypeAware;
-import com.liferay.portal.kernel.scheduler.TimeUnit;
-import com.liferay.portal.kernel.scheduler.Trigger;
-import com.liferay.portal.kernel.scheduler.TriggerFactory;
+import com.liferay.portal.kernel.scheduler.*;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -50,14 +38,14 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.*;
 
-@Component(immediate = true, service = PublishEventScheduler.class)
-public class PublishEventScheduler extends BaseMessageListener {
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+@Component(immediate = true, service = PublishEventHSKMScheduler.class)
+public class PublishEventHSKMScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 
 	@Override
@@ -69,14 +57,15 @@ public class PublishEventScheduler extends BaseMessageListener {
 			return;
 		}
 		try {
-			_log.info("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
-
-			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatusesAndNotServerNo(new int[] {
-							PublishQueueTerm.STATE_WAITING_SYNC,
-							PublishQueueTerm.STATE_ALREADY_SENT},
-					ServerConfigTerm.DVCQG_INTEGRATION, 0, 10);
+			_log.info("TASK SEND HSKM to DVCQG: " + APIDateTimeUtils.convertDateToString(new Date()));
+			
+			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatusesAndServerNo(new int[] {
+					PublishQueueTerm.STATE_WAITING_SYNC,
+					PublishQueueTerm.STATE_ALREADY_SENT},
+					ServerConfigTerm.DVCQG_INTEGRATION, 0, 20);
 
 			_log.info("lstPqs  : " + lstPqs.size());
+
 			for (PublishQueue pq : lstPqs) {
 				try {
 					pq.setStatus(PublishQueueTerm.STATE_ALREADY_SENT);
@@ -105,7 +94,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 					_log.debug(e);
 				}
 			}
-			_log.info("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
+			_log.info("TASK SEND HSKM to DVCQG HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 		catch (Exception e) {
 			_log.debug(e);
@@ -122,133 +111,9 @@ public class PublishEventScheduler extends BaseMessageListener {
 		_log.info("pq: "+JSONFactoryUtil.looseSerialize(pq));
 		long groupId = pq.getGroupId();
 		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, pq.getServerNo());
-		
-		if (ServerConfigTerm.PUBLISH_PROTOCOL.equals(sc.getProtocol())) {
-			try {
-				if (dossier != null && dossier.getOriginality() > 0) {
-					OpenCPSRestClient client = OpenCPSRestClient
-							.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
-					DossierDetailModel result = client.publishDossier(OpenCPSConverter.convertDossierPublish(
-							DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())));
 
-					PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-					if (result.getDossierId() != null && paymentFile != null && (paymentFile.getPaymentStatus() == 2)) { //|| paymentFile.getPaymentStatus() == 5
-
-						PaymentFileInputModel pfiModel = new PaymentFileInputModel();
-						pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
-						pfiModel.setApplicantName(dossier.getApplicantName());
-						pfiModel.setBankInfo(paymentFile.getBankInfo());
-						pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
-						pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
-						pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-						pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
-						pfiModel.setPaymentFee(paymentFile.getPaymentFee());
-						pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-						pfiModel.setReferenceUid(paymentFile.getReferenceUid());
-						if (Validator.isNotNull(dossier.getOriginDossierNo())) {
-							if (pfiModel.getReferenceUid().contains(DossierTerm.PREFIX_UUID)) {
-								String newRef = pfiModel.getReferenceUid().substring(DossierTerm.PREFIX_UUID.length());
-								pfiModel.setReferenceUid(newRef);
-							}
-						}
-						
-						pfiModel.setFeeAmount(paymentFile.getFeeAmount());
-						pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
-						pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
-						pfiModel.setAdvanceAmount(paymentFile.getAdvanceAmount());
-						pfiModel.setServiceAmount(paymentFile.getServiceAmount());
-						pfiModel.setShipAmount(paymentFile.getShipAmount());
-						
-						//_log.info("SONDT PAYMENT PFIMODEL SYNC INFORM ======================== " + JSONFactoryUtil.looseSerialize(pfiModel));
-						client.postPaymentFiles(pfiModel.getReferenceUid(), pfiModel);
-					}
-					
-					if (client.isWriteLog()) {
-						String messageText = DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())
-								.toJSONString();
-						String acknowlegement = JSONFactoryUtil.looseSerialize(result);
-						pq.setMessageText(messageText);
-						pq.setAcknowlegement(acknowlegement);
-						PublishQueueLocalServiceUtil.updatePublishQueue(pq);
-					}
-					if (result.getDossierId() != null) {
-						return true;
-					}
-					else {
-						return false;
-					}
-				}
-				else {
-					return true;
-				}
-			} catch (JSONException e) {
-				_log.error(e);
-			}			
-		}
-		else if (ServerConfigTerm.LGSP_PROTOCOL.equals(sc.getProtocol())) {
-			try {
-				if (dossier != null && dossier.getOriginality() > 0) {
-					LGSPRestClient client = LGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
-					Mtoken token = client.getToken();
-					if (Validator.isNotNull(token.getAccessToken())) {
-						JSONObject dossierObj = DossierMgtUtils.convertDossierToJSON(dossier,
-								dossier.getDossierActionId());
-						MResult result = client.publishDossier(token.getAccessToken(),
-								OpenCPSConverter.convertDossierPublish(
-										DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())));
-						if (client.isWriteLog()) {
-							JSONObject messageObj = JSONFactoryUtil.createJSONObject();
-							messageObj.put("token", token.getAccessToken());
-							messageObj.put("MSyncDocument", JSONFactoryUtil.looseSerialize(OpenCPSConverter
-									.convertDossierToLGSPJSON(OpenCPSConverter.convertDossierPublish(dossierObj))));
-							String messageText = messageObj.toJSONString();
-							String acknowlegement = JSONFactoryUtil.looseSerialize(result);
-							pq.setMessageText(messageText);
-							pq.setAcknowlegement(acknowlegement);
-							pq.setPublishType(1);
-							PublishQueueLocalServiceUtil.updatePublishQueue(pq);
-						}
-						if (result.getStatus() != 200) {
-							return false;
-						}
-						else {
-							ServiceContext context = new ServiceContext();
-							MResult result2 = client.postDocumentTrace(token.getAccessToken(), dossierObj.getLong(DossierTerm.DOSSIER_ID));	
-							JSONObject messageObj = JSONFactoryUtil.createJSONObject();
-							messageObj.put("token", token.getAccessToken());
-							JSONObject lgspObj = OpenCPSConverter.convertToDocumentTraces(dossierId);
-							messageObj.put("MDocumentTraces", lgspObj.toJSONString());
-							String messageText = messageObj.toJSONString();
-							String acknowlegement = JSONFactoryUtil.looseSerialize(result2);
-							PublishQueueLocalServiceUtil.updatePublishQueue(
-									sc.getGroupId(), 0l, 2, 0l, 
-									sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
-									messageText, acknowlegement,
-									context);	
-							
-							if (result2.getStatus() != 200) {
-								return false;
-							}
-							else {
-								return true;
-							}
-						}
-					}
-					else {
-						return false;
-					}
-				}
-				else {
-					return true;
-				}
-			} catch (JSONException e) {
-				_log.error(e);
-			} catch (PortalException e) {
-				_log.error(e);
-			}					
-		}
 		//add by TrungNt
-		else if (ServerConfigTerm.DVCQG_INTEGRATION.equals(sc.getProtocol())) {
+		if (ServerConfigTerm.DVCQG_INTEGRATION.equals(sc.getProtocol())) {
 			
 			try {
 				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
@@ -273,16 +138,6 @@ public class PublishEventScheduler extends BaseMessageListener {
 			}
 			return false;
 		}
-		else if (ServerConfigTerm.TTTT_INTEGRATION.equals(sc.getProtocol())) {
-			_log.info("Integrating dossier to TTTT...");
-			try {
-				TTTTIntegrationAction integrationAction = new TTTTIntegrationImpl();
-				return integrationAction.syncDoActionDossier(dossier);
-			} catch (Exception e) {
-				_log.error(e);
-				return false;
-			}
-		}
 
 		return true;
 	}
@@ -291,7 +146,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 45, TimeUnit.SECOND);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 40, TimeUnit.SECOND);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
@@ -367,6 +222,6 @@ public class PublishEventScheduler extends BaseMessageListener {
 	private volatile boolean _initialized;
 	private SchedulerEntryImpl _schedulerEntryImpl = null;
 
-	private Log _log = LogFactoryUtil.getLog(PublishEventScheduler.class);
+	private Log _log = LogFactoryUtil.getLog(PublishEventHSKMScheduler.class);
 	
 }
