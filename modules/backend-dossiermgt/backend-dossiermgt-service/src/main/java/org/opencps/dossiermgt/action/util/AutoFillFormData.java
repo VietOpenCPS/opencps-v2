@@ -277,7 +277,7 @@ public class AutoFillFormData {
 
 					if (value.startsWith(StringPool.UNDERLINE) && value.contains(DossierTerm.META_DATA)){
 						String metaDataV = value.substring(value.indexOf(".") + 1, value.length());
-						_log.info("metaData " + metaDataV);
+//						_log.info("metaData " + metaDataV);
 						if(Validator.isNotNull(dossier.getMetaData())) {
 							try {
 								JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
@@ -288,7 +288,7 @@ public class AutoFillFormData {
 									String key = keys.next();
 									String valueMeta = jsonMetaData.getString(key);
 									if(key.equals(metaDataV)){
-										_log.info("valueMeta " + valueMeta);
+//										_log.info("valueMeta " + valueMeta);
 										jsonMap.put(entry.getKey(), valueMeta);
 										check = false;
 									}
@@ -1190,7 +1190,7 @@ public class AutoFillFormData {
 					jsonMap.put(entry.getKey(), resultBinding.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK));
 
 				} else if (value.startsWith(StringPool.POUND) && value.contains(StringPool.AT)) {
-					_log.info("KGGP Map " + value);
+//					_log.info("KGGP Map " + value);
 					String newString = value.substring(1);
 					String[] stringSplit = newString.split(StringPool.AT);
 					String variable = stringSplit[0];
@@ -1207,7 +1207,7 @@ public class AutoFillFormData {
 									if (Validator.isNotNull(item.getDeliverableCode())) {
 										if (Validator.isNotNull(item.getFormData())) {
 											dossierFile = item;
-											_log.info("DossierFile" + JSONFactoryUtil.looseSerialize(dossierFile));
+//											_log.info("DossierFile" + JSONFactoryUtil.looseSerialize(dossierFile));
 										}
 									}
 								}

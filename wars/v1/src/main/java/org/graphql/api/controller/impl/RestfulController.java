@@ -1797,6 +1797,19 @@ public class RestfulController {
 
 			Deliverable deliverable = DeliverableLocalServiceUtil.fetchDeliverable(id);
 			if (deliverable != null) {
+				if(Validator.isNotNull(deliverable.getFormData())){
+					JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
+					if (Validator.isNotNull(deliverable.getDeliverableCode())){
+						formData.put("deliverableCode", deliverable.getDeliverableCode());
+					}
+					if(Validator.isNotNull(deliverable.getIssueDate())){
+						formData.put("issueDate", deliverable.getIssueDate());
+					}
+					if(Validator.isNotNull(deliverable.getGovAgencyCode())){
+						formData.put("govAgencyCode", deliverable.getGovAgencyCode());
+					}
+					deliverable.setFormData(formData.toString());
+				}
 				return JSONFactoryUtil.looseSerialize(deliverable);
 			}
 

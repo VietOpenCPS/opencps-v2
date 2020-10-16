@@ -811,11 +811,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					}
 				}
 			}
-			_log.info("Vào ..........................." + lstDictInput.size());
+//			_log.info("Vào ..........................." + lstDictInput.size());
 			results.setTotal(lstDictInput.size());
 			results.getDictItemModelInput()
 					.addAll(ServiceInfoUtils.mappingDomain((List<DictItemModelInput>) lstDictInput));
-			_log.info("LOG Results" + JSONFactoryUtil.looseSerialize(results));
+//			_log.info("LOG Results" + JSONFactoryUtil.looseSerialize(results));
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
