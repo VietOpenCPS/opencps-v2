@@ -456,4 +456,5 @@ public class ConstantUtils {
 	public static final String DOSSIER_LOCKUNDER3_MESSAGE = "dossier.message.lockunder3";
 	public static final String CTN = "CTN";
 	public static final String DOSSIER_STATUS = "DOSSIER_STATUS";
+	public static final String ROLE_OVERDUE = "RoleOverdue";
 }

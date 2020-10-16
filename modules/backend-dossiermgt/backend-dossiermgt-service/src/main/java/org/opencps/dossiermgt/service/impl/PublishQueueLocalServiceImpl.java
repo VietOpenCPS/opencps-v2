@@ -177,5 +177,13 @@ public class PublishQueueLocalServiceImpl
 	public List<PublishQueue> getByStatuses(int[] statuses, int start, int end) {
 		return publishQueuePersistence.findBySTS(statuses, start, end);
 	}
+
+	public List<PublishQueue> getByStatusesAndNotServerNo(int[] statuses, String serverNo, int start, int end) {
+		return publishQueuePersistence.findBySTS_SN_NOT(statuses, serverNo, start, end);
+	}
+
+	public List<PublishQueue> getByStatusesAndServerNo(int[] statuses, String serverNo, int start, int end) {
+		return publishQueuePersistence.findBySTS_SN(statuses, serverNo, start, end);
+	}
 	
 }

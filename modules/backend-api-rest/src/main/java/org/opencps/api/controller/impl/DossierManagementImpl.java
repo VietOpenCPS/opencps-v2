@@ -110,6 +110,7 @@ import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.NotarizationCounterNumberGenerator;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.*;
@@ -2253,6 +2254,19 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 					}
 				}
+				// update notarization
+				List<Notarization> list = NotarizationLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+				if (list != null) {
+					for(Notarization notarization : list) {
+						if (notarization.getNotarizationNo() == 0) {
+							long notarizationNoNumber = NotarizationCounterNumberGenerator.countByServiceCode(
+									dossier.getServiceCode(), dossier.getGovAgencyCode());
+							notarization.setNotarizationNo(notarizationNoNumber);
+							notarization = NotarizationLocalServiceUtil.updateNotarization(notarization);
+						}
+					}
+				}
+				
 			}
 
 			// DossierAction dossierAction = actions.doAction(groupId, dossier,
@@ -8713,7 +8727,7 @@ public class DossierManagementImpl implements DossierManagement {
 	@Override
 	public Response getInterconnectionDossier(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
-		
+
 		DossierResultsModel results = new DossierResultsModel();
 		List<Dossier> listDossier = new ArrayList<Dossier>();
 		try {
@@ -8729,7 +8743,7 @@ public class DossierManagementImpl implements DossierManagement {
 					getInterDossierFromOriginDossier(dossier, listDossier);
 				}
 			}
-			
+
 			results.setTotal(listDossier.size());
 
 			results.getData().addAll(
@@ -8740,7 +8754,7 @@ public class DossierManagementImpl implements DossierManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-	
+
 	private void getInterDossierFromOriginDossier(Dossier dossier, List<Dossier> listDossier) {
 		// Ds ho so trung gian va lien thong tu ho so goc
 		List<Dossier> aList = DossierLocalServiceUtil.fetchByORIGIN_NO(dossier.getDossierNo());
@@ -8753,7 +8767,7 @@ public class DossierManagementImpl implements DossierManagement {
 			getInterDossierFromOriginDossier(newDossier, listDossier);
 		}
 	}
-	
+
 	private void getConnectDossierFromInterDossier(Dossier dossier, List<Dossier> listDossier) {
 		// Ds ho so goc cua hslt
 		List<Dossier> aList = new ArrayList<Dossier>();
@@ -8767,7 +8781,162 @@ public class DossierManagementImpl implements DossierManagement {
 			listDossier.add(newDossier);
 			getConnectDossierFromInterDossier(newDossier, listDossier);
 		}
-		
+
 	}
-		
+
+
+	@Override
+	public Response updateDossierIdByRole(HttpServletRequest request, HttpHeaders header, Company company,
+							Locale locale, User user, ServiceContext serviceContext, DoActionModel model) {
+		try {
+			DossierActions actions = new DossierActionsImpl();
+			DossierAction dossierResult = null;
+			ErrorMsgModel errorModel = new ErrorMsgModel();
+
+			JSONObject results = JSONFactoryUtil.createJSONObject();
+			JSONArray data = JSONFactoryUtil.createJSONArray();
+			JSONObject elmData = JSONFactoryUtil.createJSONObject();
+			JSONObject element = JSONFactoryUtil.createJSONObject();
+
+
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			long userId = user.getUserId();
+			String actionCode = model.getActionCode();
+			String actionUser = model.getActionUser();
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(
+					groupId, user.getUserId());
+			if (employee != null) {
+				actionUser = employee.getFullName();
+			}else {
+				if (Validator.isNull(actionUser)) {
+					actionUser = user.getFullName();
+				}
+			}
+
+			List<Role> userRoles = user.getRoles();
+			boolean overdue = false;
+			for (Role r : userRoles) {
+				r.setName(ConstantUtils.ROLE_OVERDUE);
+				if (r.getName().startsWith(ConstantUtils.ROLE_OVERDUE)) {
+					_log.info("Role TRUE");
+					overdue = true;
+					break;
+				}
+			}
+
+			if (!overdue) {
+				throw new UnauthenticationException();
+			}else {
+				_log.info("ActionCode " + actionCode);
+				if (actionCode.equals(DossierTerm.ACTION_CODE_SPECIAL)) {
+					if (Validator.isNotNull(model.getDossierIds())) {
+						String dossierIds = model.getDossierIds();
+						_log.info("DossierId :" + dossierIds);
+						List<Dossier> lstDossier = new ArrayList<>();
+						List<Long> lstId = new ArrayList<>();
+						String[] dossierArr = dossierIds.split(StringPool.COMMA);
+						for (String dossierId : dossierArr) {
+							lstId.add(Long.valueOf(dossierId));
+						}
+						_log.info("Length Id : " + lstId.size());
+						long[] dossierIdsArr = new long[lstId.size()];
+						if (lstId != null && !lstId.isEmpty()) {
+							int i = 0;
+							for (Long id : lstId) {
+								dossierIdsArr[i++] = id;
+							}
+						}
+						lstDossier = DossierLocalServiceUtil.fetchByD_OR_D(dossierIdsArr);
+						_log.info("Length lstDossierId : " + lstDossier.size());
+						if (lstDossier != null && lstDossier.size() > 0) {
+							for (Dossier dossier : lstDossier) {
+								_log.info("Log dossier : " + dossier.getDossierId());
+								// Hồ sơ đã có kq ==> hs quá hạn thì cập nhật bằng thời gian trả hạn
+								if (Validator.isNotNull(dossier.getReleaseDate())) {
+									Long releaseDate = dossier.getReleaseDate().getTime(); // thời gian trả kq
+									Long dueDate = dossier.getDueDate().getTime(); // thời gian hẹn trả
+										_log.info("Thoa man thời gian thực hiện cập nhật thời gian cho hồ sơ");
+										if (Validator.isNotNull(actionCode)) {
+											ActionConfig actConfig =
+													ActionConfigLocalServiceUtil.getByCode(
+															groupId, actionCode);
+											_log.info("Action config: " + actConfig);
+											String serviceCode = dossier.getServiceCode();
+											String govAgencyCode = dossier.getGovAgencyCode();
+											String dossierTempNo = dossier.getDossierTemplateNo();
+											if (actConfig != null) {
+												boolean insideProcess = actConfig.getInsideProcess();
+												ProcessOption option = DossierUtils.getProcessOption(
+														serviceCode, govAgencyCode, dossierTempNo, groupId);
+												if (!insideProcess) {
+													_log.info("Vao outSide");
+													dossierResult = actions.doAction(
+															groupId, userId, dossier, option, null,
+															actionCode, actionUser, model.getActionNote(),
+															model.getPayload(), model.getAssignUsers(),
+															model.getPayment(), actConfig.getSyncType(),
+															serviceContext, errorModel);
+												}
+											}
+//											else {
+//												ProcessOption option = DossierUtils.getProcessOption(
+//														serviceCode, govAgencyCode, dossierTempNo, groupId);
+//												if (option != null) {
+//													long serviceProcessId =
+//															option.getServiceProcessId();
+//													ProcessAction proAction =
+//															DossierUtils.getProcessAction(user,
+//																	groupId, dossier, actionCode,
+//																	serviceProcessId);
+//													if (proAction != null) {
+//														_log.info("Thực hiện action 3");
+//														dossierResult = actions.doAction(
+//																groupId, userId, dossier, option, proAction,
+//																actionCode, actionUser,
+//																model.getActionNote(), model.getPayload(),
+//																model.getAssignUsers(), model.getPayment(),
+//																0, serviceContext, errorModel);
+//													}
+//												}
+//											}
+										}
+									if (releaseDate > dueDate) {
+										dossier.setReleaseDate(dossier.getDueDate());
+									}
+								}
+								DossierLocalServiceUtil.updateDossier(dossier);
+							}
+							int total = 0;
+							if (dossierResult != null) {
+								long dossierActionId = dossierResult.getDossierActionId();
+								DossierDocument doc = DossierDocumentLocalServiceUtil.getByActiocId(groupId, dossierActionId);
+								long dossierDocumentId = 0;
+								if (doc != null) {
+									dossierDocumentId = doc.getDossierDocumentId();
+								}
+								elmData = DossierUtils.mappingDossierJSON(dossierResult, dossierDocumentId, element);
+								if(Validator.isNotNull(elmData)){
+									data.put(elmData);
+									total++;
+								}
+							}
+							results.put(ConstantUtils.DATA,data);
+							results.put(ConstantUtils.TOTAL,total);
+
+							return Response.status(HttpURLConnection.HTTP_OK).entity(results.toJSONString()).build();
+						} else {
+							return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(StringPool.BLANK).build();
+						}
+					} else {
+						return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(StringPool.BLANK).build();
+					}
+				} else {
+					return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(StringPool.BLANK).build();
+				}
+			}
+		}catch (Exception e){
+			_log.info(e.getMessage());
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
 }

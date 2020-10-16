@@ -220,6 +220,14 @@ public class NotificationQueueLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static java.util.List<org.opencps.communication.model.NotificationQueue> fetchByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, java.util.Date publicationDate,
+		java.util.Date expireDate) {
+		return getService()
+				   .fetchByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+			publicationDate, expireDate);
+	}
+
 	public static org.opencps.communication.model.NotificationQueue fetchNotificationQueue(
 		long notificationQueueId) {
 		return getService().fetchNotificationQueue(notificationQueueId);

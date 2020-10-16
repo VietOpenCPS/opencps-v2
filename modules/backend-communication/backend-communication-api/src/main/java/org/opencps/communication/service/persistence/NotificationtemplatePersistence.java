@@ -699,6 +699,139 @@ public interface NotificationtemplatePersistence extends BasePersistence<Notific
 		String interval);
 
 	/**
+	* Returns all the notificationtemplates where interval LIKE &#63;.
+	*
+	* @param interval the interval
+	* @return the matching notificationtemplates
+	*/
+	public java.util.List<Notificationtemplate> findByF_interval_Like(
+		String interval);
+
+	/**
+	* Returns a range of all the notificationtemplates where interval LIKE &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link NotificationtemplateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param interval the interval
+	* @param start the lower bound of the range of notificationtemplates
+	* @param end the upper bound of the range of notificationtemplates (not inclusive)
+	* @return the range of matching notificationtemplates
+	*/
+	public java.util.List<Notificationtemplate> findByF_interval_Like(
+		String interval, int start, int end);
+
+	/**
+	* Returns an ordered range of all the notificationtemplates where interval LIKE &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link NotificationtemplateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param interval the interval
+	* @param start the lower bound of the range of notificationtemplates
+	* @param end the upper bound of the range of notificationtemplates (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching notificationtemplates
+	*/
+	public java.util.List<Notificationtemplate> findByF_interval_Like(
+		String interval, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Notificationtemplate> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the notificationtemplates where interval LIKE &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link NotificationtemplateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param interval the interval
+	* @param start the lower bound of the range of notificationtemplates
+	* @param end the upper bound of the range of notificationtemplates (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching notificationtemplates
+	*/
+	public java.util.List<Notificationtemplate> findByF_interval_Like(
+		String interval, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Notificationtemplate> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first notificationtemplate in the ordered set where interval LIKE &#63;.
+	*
+	* @param interval the interval
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching notificationtemplate
+	* @throws NoSuchNotificationtemplateException if a matching notificationtemplate could not be found
+	*/
+	public Notificationtemplate findByF_interval_Like_First(String interval,
+		com.liferay.portal.kernel.util.OrderByComparator<Notificationtemplate> orderByComparator)
+		throws NoSuchNotificationtemplateException;
+
+	/**
+	* Returns the first notificationtemplate in the ordered set where interval LIKE &#63;.
+	*
+	* @param interval the interval
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching notificationtemplate, or <code>null</code> if a matching notificationtemplate could not be found
+	*/
+	public Notificationtemplate fetchByF_interval_Like_First(String interval,
+		com.liferay.portal.kernel.util.OrderByComparator<Notificationtemplate> orderByComparator);
+
+	/**
+	* Returns the last notificationtemplate in the ordered set where interval LIKE &#63;.
+	*
+	* @param interval the interval
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching notificationtemplate
+	* @throws NoSuchNotificationtemplateException if a matching notificationtemplate could not be found
+	*/
+	public Notificationtemplate findByF_interval_Like_Last(String interval,
+		com.liferay.portal.kernel.util.OrderByComparator<Notificationtemplate> orderByComparator)
+		throws NoSuchNotificationtemplateException;
+
+	/**
+	* Returns the last notificationtemplate in the ordered set where interval LIKE &#63;.
+	*
+	* @param interval the interval
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching notificationtemplate, or <code>null</code> if a matching notificationtemplate could not be found
+	*/
+	public Notificationtemplate fetchByF_interval_Like_Last(String interval,
+		com.liferay.portal.kernel.util.OrderByComparator<Notificationtemplate> orderByComparator);
+
+	/**
+	* Returns the notificationtemplates before and after the current notificationtemplate in the ordered set where interval LIKE &#63;.
+	*
+	* @param notificationTemplateId the primary key of the current notificationtemplate
+	* @param interval the interval
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next notificationtemplate
+	* @throws NoSuchNotificationtemplateException if a notificationtemplate with the primary key could not be found
+	*/
+	public Notificationtemplate[] findByF_interval_Like_PrevAndNext(
+		long notificationTemplateId, String interval,
+		com.liferay.portal.kernel.util.OrderByComparator<Notificationtemplate> orderByComparator)
+		throws NoSuchNotificationtemplateException;
+
+	/**
+	* Removes all the notificationtemplates where interval LIKE &#63; from the database.
+	*
+	* @param interval the interval
+	*/
+	public void removeByF_interval_Like(String interval);
+
+	/**
+	* Returns the number of notificationtemplates where interval LIKE &#63;.
+	*
+	* @param interval the interval
+	* @return the number of matching notificationtemplates
+	*/
+	public int countByF_interval_Like(String interval);
+
+	/**
 	* Caches the notificationtemplate in the entity cache if it is enabled.
 	*
 	* @param notificationtemplate the notificationtemplate

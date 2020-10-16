@@ -543,10 +543,16 @@ public class DossierActionsImpl implements DossierActions {
 							// Check permission enable button
 							//							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
 							if (!isAdministratorData) {
-								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user))
+								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)){
 									data.put(ProcessActionTerm.ENABLE, enable);
-								else
-									data.put(ProcessActionTerm.ENABLE, 0);
+							}else {
+									//A.Duẩn autoEvent == SPECIAL vẫn check preCondition
+									if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+										break;
+									} else {
+										data.put(ProcessActionTerm.ENABLE, 0);
+									}
+								}
 							}
 							else {
 								data.put(ProcessActionTerm.ENABLE, enable);
@@ -3432,8 +3438,9 @@ public class DossierActionsImpl implements DossierActions {
 	//LamTV_Process check permission action
 	private boolean processCheckEnable(String preCondition, String autoEvent, Dossier dossier, String actionCode,
 		long groupId, User curUser) {
+		//A.Duẩn autoEvent == SPECIAL vẫn check preCondition
 		if (AUTO_EVENT_SUBMIT.equals(autoEvent) || AUTO_EVENT_TIMMER.equals(autoEvent)
-			|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+			|| AUTO_EVENT_LISTENER.equals(autoEvent) ) {
 
 			return false;
 		}

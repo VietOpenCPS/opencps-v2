@@ -130,8 +130,9 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 	public static final long EXPIREDATE_COLUMN_BITMASK = 4L;
 	public static final long GROUPID_COLUMN_BITMASK = 8L;
 	public static final long NOTIFICATIONTYPE_COLUMN_BITMASK = 16L;
-	public static final long TOEMAIL_COLUMN_BITMASK = 32L;
-	public static final long PRIORITY_COLUMN_BITMASK = 64L;
+	public static final long PUBLICATIONDATE_COLUMN_BITMASK = 32L;
+	public static final long TOEMAIL_COLUMN_BITMASK = 64L;
+	public static final long PRIORITY_COLUMN_BITMASK = 128L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.communication.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.communication.model.NotificationQueue"));
 
@@ -617,7 +618,17 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 
 	@Override
 	public void setPublicationDate(Date publicationDate) {
+		_columnBitmask |= PUBLICATIONDATE_COLUMN_BITMASK;
+
+		if (_originalPublicationDate == null) {
+			_originalPublicationDate = _publicationDate;
+		}
+
 		_publicationDate = publicationDate;
+	}
+
+	public Date getOriginalPublicationDate() {
+		return _originalPublicationDate;
 	}
 
 	@Override
@@ -785,6 +796,8 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 		notificationQueueModelImpl._originalClassPK = notificationQueueModelImpl._classPK;
 
 		notificationQueueModelImpl._originalToEmail = notificationQueueModelImpl._toEmail;
+
+		notificationQueueModelImpl._originalPublicationDate = notificationQueueModelImpl._publicationDate;
 
 		notificationQueueModelImpl._originalExpireDate = notificationQueueModelImpl._expireDate;
 
@@ -1083,6 +1096,7 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 	private String _originalToEmail;
 	private String _toTelNo;
 	private Date _publicationDate;
+	private Date _originalPublicationDate;
 	private Date _expireDate;
 	private Date _originalExpireDate;
 	private int _priority;
