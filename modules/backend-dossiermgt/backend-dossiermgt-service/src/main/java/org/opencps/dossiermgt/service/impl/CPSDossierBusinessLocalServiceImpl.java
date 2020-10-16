@@ -997,7 +997,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return dossierAction;
 	}
 
-	public static final String CACHE_ServiceProcess = "ServiceProcess";
+	//public static final String CACHE_ServiceProcess = "ServiceProcess";
 	public static final String CREATE_DOCUMENT = "CREATE_DOCUMENT";
 	public static final String CHANGE_DATE = "CHANGE_DATE";
 	public static final String CALL_API = "CALL_API";
@@ -1223,7 +1223,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 
 			//Bước sau không có thì mặc định quay lại bước trước đó
-			if (Validator.isNull(postStepCode)) {
+			if (Validator.isNull(proAction.getPreStepCode()) && Validator.isNull(postStepCode)) {
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+				if (paymentFile != null) {
+					paymentFile.setPaymentStatus(5);
+					paymentFile.setApproveDatetime(new Date());
+				}
+				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+				//
+				return dossierAction;
+			}
+			else if (Validator.isNull(postStepCode)) {
 				//Xử lý phiếu thanh toán
 				processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
 
@@ -1305,8 +1315,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				_log.info("lstDaus: "+JSONFactoryUtil.looseSerialize(lstDaus));
 				if (lstDaus != null && lstDaus.size() > 0) {
 					for (DossierActionUser dau : lstDaus) {
-						dau.setDossierActionId(newAction.getDossierActionId());
-						DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
+//						dau.setDossierActionId(newAction.getDossierActionId());
+//						DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
+						DossierActionUserLocalServiceUtil.addOrUpdateDossierActionUser(dau.getUserId(), groupId, newAction.getDossierActionId(),
+								dau.getDossierId(), dau.getStepCode(), dau.getModerator(), dau.getAssigned(), dau.getVisited(), dau.getDelegacy());
+						// Remove dau
+						DossierActionUserLocalServiceUtil.deleteDossierActionUser(dau);
 					}
 				}
 //				if (lstDaus != null && lstDaus.size() > 0) {
@@ -5089,7 +5103,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	private DossierAction doActionOutsideProcess(long groupId, long userId, Dossier dossier, ActionConfig actionConfig,
 												 ProcessOption option, ProcessAction proAction, String actionCode, String actionUser, String actionNote,
 												 String payload, String assignUsers, String payment, int syncType, ServiceContext context)
-			throws PortalException, SystemException, Exception {
+			throws Exception {
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 
@@ -5106,14 +5120,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		if (DossierActionTerm.OUTSIDE_ACTION_PAYMENT.equals(actionCode)) {
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
-			if (paymentFile != null) {
-				paymentFile.setPaymentStatus(5);
-				paymentFile.setApproveDatetime(new Date());
-			}
-			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
-			//
-			return dossierAction;
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+				if (paymentFile != null) {
+					paymentFile.setPaymentStatus(5);
+					paymentFile.setApproveDatetime(new Date());
+				}
+				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+				//
+				return dossierAction;
 		}
 		//		ActionConfig ac = actionConfigLocalService.getByCode(groupId, actionCode);
 		ActionConfig ac = actionConfig;
