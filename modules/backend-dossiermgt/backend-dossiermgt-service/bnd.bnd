@@ -9,7 +9,6 @@ Export-Package: org.opencps.dossiermgt.action
 Export-Package: \
 	org.opencps.dossiermgt.action.impl,\
 	org.opencps.backend.dossiermgt.service.util,\
-    org.opencps.backend.dossiermgt.serviceapi,\
 	org.opencps.dossiermgt.action,\
 	org.opencps.dossiermgt.action.util,\
 	org.opencps.dossiermgt.model.impl,\
@@ -20,6 +19,7 @@ Export-Package: \
 	org.apache.commons.io.output,\
 	org.apache.commons.io.input,\
 	org.opencps.dossiermgt.lgsp.model,\
-    org.opencps.backend.dossiermgt.logistic,\
-    org.opencps.dossiermgt.rest.model,\
+	org.opencps.backend.dossiermgt.serviceapi,\
+	org.opencps.backend.dossiermgt.logistic,\
+	org.opencps.dossiermgt.rest.model,\
 	org.apache.commons.text.*
