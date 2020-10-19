@@ -588,6 +588,7 @@ public class DossierUtils {
 			model.setProcessNo(doc.get(DossierTerm.PROCESS_NO));
 			model.setPostalCodeSend(doc.get(DossierTerm.POSTAL_CODE_SEND));
 			model.setPostalCodeReceived(doc.get(DossierTerm.POSTAL_CODE_RECEIVED));
+			model.setOrderNumber(doc.get(DossierTerm.ORDER_NUMBER));
 			ouputs.add(model);
 		}
 

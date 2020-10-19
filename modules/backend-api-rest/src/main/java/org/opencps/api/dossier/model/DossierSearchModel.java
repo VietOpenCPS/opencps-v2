@@ -130,7 +130,8 @@ import javax.xml.bind.annotation.XmlType;
     "dossierCounter",
     "delegate",
     "vnpostalStatus",
-    "fromViaPostal"
+    "fromViaPostal",
+	"orderNumber"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -320,6 +321,16 @@ public class DossierSearchModel {
 	protected String userName;
 	@QueryParam(value = "export")
 	protected boolean export;
+	@QueryParam(value = "orderNumber")
+	protected String orderNumber;
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 
 	public boolean isExport() {
 		return export;

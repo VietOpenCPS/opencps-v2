@@ -1234,6 +1234,9 @@
 			<finder-column name="orderNumber" />
 			<finder-column name="postStatus" />
 		</finder>
+		<finder name="F_BY_DOS_ID" return-type="Collection">
+			<finder-column name="dossierId" />
+		</finder>
 		<finder name="F_POST_BY_DOSSIER_ID" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />

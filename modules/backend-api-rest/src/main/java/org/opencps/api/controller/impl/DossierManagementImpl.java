@@ -862,6 +862,11 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 					}
 				}
+				// Search mã bưu chính (PostConnect)
+				String orderNumber = query.getOrderNumber();
+				if (Validator.isNotNull(orderNumber)) {
+					params.put(DossierTerm.ORDER_NUMBER, orderNumber);
+				}
 
 				if (Validator.isNotNull(top)) {
 					String querySort;
@@ -1430,6 +1435,11 @@ public class DossierManagementImpl implements DossierManagement {
 						params.put(DossierTerm.DON_VI_NHAN, donvinhan);
 					}
 				}
+			}
+			// Search mã bưu chính (PostConnect)
+			String orderNumber = query.getOrderNumber();
+			if (Validator.isNotNull(orderNumber)) {
+				params.put(DossierTerm.ORDER_NUMBER, orderNumber);
 			}
 
 			Sort[] sorts = null;

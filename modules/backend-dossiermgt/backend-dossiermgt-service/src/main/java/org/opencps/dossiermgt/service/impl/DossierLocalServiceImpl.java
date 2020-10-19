@@ -2954,6 +2954,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				? GetterUtil.getString(params.get(DossierTerm.PROCESS_AGENCY_METADATA)) : null;
 		String serviceLevel = params.get(DossierTerm.SERVICE_LEVEL) != null
 				? GetterUtil.getString(params.get(DossierTerm.SERVICE_LEVEL)) : null;
+		String orderNumber = params.get(DossierTerm.ORDER_NUMBER) != null
+				? GetterUtil.getString(params.get(DossierTerm.ORDER_NUMBER)) : null;
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2996,7 +2998,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
-				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,processAgency,serviceLevel);
+				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,processAgency,serviceLevel, orderNumber);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3170,6 +3172,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		String serviceLevel = params.get(DossierTerm.SERVICE_LEVEL) != null
 				? GetterUtil.getString(params.get(DossierTerm.SERVICE_LEVEL)) : null;
+		String orderNumber = params.get(DossierTerm.ORDER_NUMBER) != null
+				? GetterUtil.getString(params.get(DossierTerm.ORDER_NUMBER)) : null;
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -3209,7 +3213,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
-				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,processAgency,serviceLevel);
+				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,processAgency,serviceLevel,orderNumber);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3233,7 +3237,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					DossierTerm.CURRENT_ACTION_USER,
 					DossierTerm.ORIGIN_DOSSIER_NO_SEARCH,
 					ServiceInfoTerm.SERVICE_CODE_SEARCH,
-					DossierTerm.DELEGATE_NAME_SEARCH, DossierTerm.DOSSIER_COUNTER_SEARCH
+					DossierTerm.DELEGATE_NAME_SEARCH, DossierTerm.DOSSIER_COUNTER_SEARCH,DossierTerm.APPLICANT_ID_NO
 			};
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
@@ -3340,8 +3344,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
 			String delegate, String vnpostalStatus, Integer fromViaPostal,
 			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai,
-			String processAgency,String serviceLevel)
+			String processAgency,String serviceLevel, String orderNumber)
 			throws ParseException {
+
+		if (Validator.isNotNull(orderNumber)) {
+//			MultiMatchQuery query = new MultiMatchQuery(orderNumber);
+//			query.addField(DossierTerm.ORDER_NUMBER);
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			WildcardQuery wildQuery = new WildcardQueryImpl(
+					DossierTerm.ORDER_NUMBER,
+					StringPool.STAR + orderNumber.toLowerCase() + StringPool.STAR);
+			booleanQuery.add(wildQuery, BooleanClauseOccur.MUST);
+		}
 
 		//Dossier Counter
 		if (Validator.isNotNull(dossierCounterSearch)) {

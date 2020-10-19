@@ -38,27 +38,9 @@ import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.*;
-import org.opencps.dossiermgt.model.ActionConfig;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierActionUser;
-import org.opencps.dossiermgt.model.DossierRequestUD;
-import org.opencps.dossiermgt.model.DossierUser;
-import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
-import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
@@ -876,6 +858,20 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					}
 				} catch (JSONException e) {
 					_log.debug(e);
+				}
+			}
+			List<PostConnect> postConnect  = PostConnectLocalServiceUtil.findByPostConnectByDossierId(object.getGroupId(),object.getDossierId());
+			if(postConnect !=null && postConnect.size() >0) {
+				String orderNumber = "";
+				for (PostConnect item : postConnect) {
+					if (Validator.isNull(orderNumber)) {
+						orderNumber += item.getOrderNumber();
+					}else{
+						orderNumber += "," + item.getOrderNumber();
+					}
+				}
+				if (Validator.isNotNull(orderNumber)) {
+					document.addTextSortable(DossierTerm.ORDER_NUMBER,orderNumber);
 				}
 			}
 
