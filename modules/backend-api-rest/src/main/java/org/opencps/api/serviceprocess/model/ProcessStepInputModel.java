@@ -62,7 +62,8 @@ import javax.xml.bind.annotation.XmlType;
     "customProcessUrl",
     "editable",
     "lockState",
-    "checkInput"
+    "checkInput",
+    "roleAsStep"
 })
 @XmlRootElement(name = "ProcessStepInputModel")
 public class ProcessStepInputModel {
@@ -96,7 +97,17 @@ public class ProcessStepInputModel {
     protected String lockState;
 	@FormParam("checkInput")
     protected Integer checkInput;
-	
+    @FormParam("roleAsStep")
+    protected String roleAsStep;
+
+    public String getRoleAsStep() {
+        return roleAsStep;
+    }
+
+    public void setRoleAsStep(String roleAsStep) {
+        this.roleAsStep = roleAsStep;
+    }
+
     public Integer getCheckInput() {
 		return checkInput;
 	}

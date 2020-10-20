@@ -8,4 +8,5 @@ public class ServerConfigTerm {
 	public static final String DVCQG_INTEGRATION = "DVCQG_INTEGRATION";
 	public static final String TTTT_INTEGRATION = "TTTT_INTEGRATION";
 	public static final String SERVER_NO = "serverNo";
+	public static final String SERVER_VNPOST_HN = "SERVER_VNPOST_HN";
 }

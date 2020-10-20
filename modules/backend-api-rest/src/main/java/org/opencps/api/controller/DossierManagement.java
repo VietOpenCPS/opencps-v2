@@ -1768,28 +1768,40 @@ public interface DossierManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@BeanParam DossierSearchModel query);
-	
-	@POST
-	@Path("/special/actions")
-	@Consumes({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
-		MediaType.APPLICATION_FORM_URLENCODED
-	})
+	@GET
+	@Path("/inter/{id}")
 	@Produces({
 		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
 	})
-	@ApiOperation(value = "Processed to doing special ProcessAction on the Dossier", response = DoActionModel.class)
+	@ApiOperation(value = "Get list interconnection dossier of Dossier by its id ", response = DossierResultsModel.class)
 	@ApiResponses(value = {
-		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a ProcessAction has been Processed", response = DoActionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list interconnection dossier of Dossiers", response = DossierResultsModel.class),
 		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
 		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
 	})
 
-	public Response doActionSpecial(
+	public Response getInterconnectionDossier(
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
-		@Context ServiceContext serviceContext,
-		@BeanParam DoActionModel input, @FormParam("dueDate") Long dueDate,
-		@FormParam("listDossierId") String listDossierId, @FormParam("listActionCode") String listActionCode);
+		@Context ServiceContext serviceContext, @PathParam("id") String id);
+
+			@BeanParam DossierSearchModel query);
+
+	@POST
+	@Path("/overdueTime")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@ApiOperation(value = "Update Dossier", response = DoActionModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a ProcessAction has been Processed", response = DoActionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response updateDossierIdByRole(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@BeanParam DoActionModel input);
 }

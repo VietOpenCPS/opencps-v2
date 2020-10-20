@@ -378,8 +378,8 @@ public class BookingManagementImpl implements BookingManagement{
 													timeBook += bookingOnlineBreek;
 													timeBookWaitting = timeBook - bookingOnlineWaiting;
 												} else if (timeBook - timeCurrentBooking < bookingOnlineWaiting && timeBook - timeCurrentBooking >= 0) {
-													timeBook += bookingOnlineWaiting;
 													timeBookWaitting = timeBook;
+													timeBook += bookingOnlineWaiting;
 												} else {
 													// timeCurrentBooking > timeBook
 													int timeCeilCurrent = (int) (Math.ceil((double)timeCurrentBooking / 5) * 5);
@@ -725,7 +725,11 @@ public class BookingManagementImpl implements BookingManagement{
 							APIDateTimeUtils._NORMAL_PARTTERN);
 				}
 				boolean speaking = Boolean.valueOf(input.getSpeaking());
-				boolean online = Boolean.valueOf(input.getOnline());
+				_log.info("input.getOnline(): "+input.getOnline());
+				Boolean online = null;
+				if (Validator.isNotNull(input.getOnline())) {
+					online = Boolean.valueOf(input.getOnline());
+				}
 				String bookingInTime = StringPool.BLANK;
 
 				booking = actions.updateBooking(userId, groupId, booking.getBookingId(), className, classPK,

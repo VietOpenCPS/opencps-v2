@@ -4,6 +4,8 @@ import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -199,7 +201,7 @@ public class PaymentFileUtils {
 		model.setPaymentAmount(paymentFile.getPaymentAmount());
 		model.setPaymentNote(paymentFile.getPaymentNote());
 		model.setBankInfo(paymentFile.getBankInfo());
-		model.setEpaymentProfile(paymentFile.getEpaymentProfile());
+		model.setEpaymentProfile(removeUnnecessaryFieldFromPaymentFile(paymentFile.getEpaymentProfile()));
 		model.setPaymentStatus(paymentFile.getPaymentStatus());
 		model.setPaymentMethod(paymentFile.getPaymentMethod());
 		model.setConfirmDatetime(APIDateTimeUtils.convertDateToString(paymentFile.getConfirmDatetime()));
@@ -225,6 +227,24 @@ public class PaymentFileUtils {
 		model.setEinvoice(paymentFile.getEinvoice());
 
 		return model;
+	}
+
+	private static String removeUnnecessaryFieldFromPaymentFile(String paymentProfile) {
+		try {
+			JSONObject paymentProfileJson = JSONFactoryUtil.createJSONObject(paymentProfile);
+
+			if(paymentProfileJson.has("PP_DVCGQ_CONFIG")) {
+				paymentProfileJson.remove("PP_DVCGQ_CONFIG");
+			}
+
+			if(paymentProfileJson.has("PAYGOV_CONFIG")) {
+				paymentProfileJson.remove("PAYGOV_CONFIG");
+				paymentProfileJson.put("isPaygov", true);
+			}
+			return paymentProfileJson.toString();
+		} catch (Exception e) {
+			return paymentProfile;
+		}
 	}
 
 	/**

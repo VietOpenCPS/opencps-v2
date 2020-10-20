@@ -60,9 +60,12 @@ import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoMappingTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.HasExsistException;
 import org.opencps.dossiermgt.exception.RequiredAgencyCodeException;
 import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
@@ -405,11 +408,12 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		}
 
 		if (Validator.isNotNull(service)) {
-			MultiMatchQuery query = new MultiMatchQuery(service);
-
-			query.addFields(ServiceConfigTerm.SERVICE_CODE);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			String serviceCode = SpecialCharacterUtils.splitSpecial(service);
+			BooleanQuery query = new BooleanQueryImpl();
+			MultiMatchQuery serviceQuery = new MultiMatchQuery(serviceCode);
+			serviceQuery.addFields(ServiceInfoTerm.SERVICE_CODE_SEARCH,ServiceInfoTerm.SERVICE_CODE_DVCQG_SEARCH);
+			query.add(serviceQuery, BooleanClauseOccur.SHOULD);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);			
 		}
 
 		if (Validator.isNotNull(domain)) {
@@ -447,6 +451,8 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
+		System.out.println("====================booleanQuery=========================");
+		System.out.println(booleanQuery);
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
 
@@ -536,10 +542,11 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		}
 
 		if (Validator.isNotNull(service)) {
-			MultiMatchQuery query = new MultiMatchQuery(service);
-
-			query.addFields(ServiceConfigTerm.SERVICE_CODE);
-
+			String serviceCode = SpecialCharacterUtils.splitSpecial(service);
+			BooleanQuery query = new BooleanQueryImpl();
+			MultiMatchQuery serviceQuery = new MultiMatchQuery(serviceCode);
+			serviceQuery.addFields(ServiceInfoTerm.SERVICE_CODE_SEARCH,ServiceInfoTerm.SERVICE_CODE_DVCQG_SEARCH);
+			query.add(serviceQuery, BooleanClauseOccur.SHOULD);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
@@ -620,27 +627,27 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	
 	// LamTV_Process get list ServiceConfig by ServiceInfo
 	public List<ServiceConfig> getByServiceInfo(long groupId, long serviceInfoId) {
-		Serializable lstServiceConfigs = null;
-		try {
-			lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + StringPool.UNDERLINE + serviceInfoId);
-		} catch (PortalException e) {
-			_log.debug(e);
-		}
-		if (lstServiceConfigs != null) {
-			return (List<ServiceConfig>)lstServiceConfigs;
-		}
-		else {
+//		Serializable lstServiceConfigs = null;
+//		try {
+//			lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + StringPool.UNDERLINE + serviceInfoId);
+//		} catch (PortalException e) {
+//			_log.debug(e);
+//		}
+//		if (lstServiceConfigs != null) {
+//			return (List<ServiceConfig>)lstServiceConfigs;
+//		}
+//		else {
 			List<ServiceConfig> tempServiceConfigs = serviceConfigPersistence.findByF_GID_SID(groupId, serviceInfoId);
-			if (tempServiceConfigs != null) {
-				try {
-					cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
-							groupId + StringPool.UNDERLINE + serviceInfoId, (Serializable)tempServiceConfigs, ttl);
-				} catch (PortalException e) {
-					_log.debug(e);
-				}
-			}			
+//			if (tempServiceConfigs != null) {
+//				try {
+//					cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
+//							groupId + StringPool.UNDERLINE + serviceInfoId, (Serializable)tempServiceConfigs, ttl);
+//				} catch (PortalException e) {
+//					_log.debug(e);
+//				}
+//			}
 			return tempServiceConfigs;
-		}
+//		}
 	}
 
 	public List<ServiceConfig> getByGovAgencyCode(String govAgencyCode) {

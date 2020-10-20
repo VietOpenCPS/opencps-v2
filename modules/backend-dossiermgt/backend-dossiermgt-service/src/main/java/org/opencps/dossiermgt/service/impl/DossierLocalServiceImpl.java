@@ -2591,12 +2591,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	// sondt end
 
 	public Dossier getByRef(long groupId, String refId) {
-
-		try {
-			return dossierPersistence.findByG_REF(groupId, refId);
-		} catch (NoSuchDossierException e) {
-			return null;
-		}
+		return dossierPersistence.fetchByG_REF(groupId, refId);
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -2618,7 +2613,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 		}
 		else {
-			dossier = dossierPersistence.findByG_REF(groupId, refId);
+			dossier = dossierPersistence.fetchByG_REF(groupId, refId);
 		}
 
 		return dossierPersistence.remove(dossier);
@@ -2956,6 +2951,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String groupDossierIdHs =
 				GetterUtil.getString(params.get(DossierTerm.GROUP_DOSSIER_ID_HS));
 		String matokhai = GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI));
+		String serviceLevel = params.get(DossierTerm.SERVICE_LEVEL) != null
+				? GetterUtil.getString(params.get(DossierTerm.SERVICE_LEVEL)) : null;
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2998,7 +2995,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
-				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai);
+				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3166,7 +3163,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String matokhai =  params.get(DossierTerm.MA_TO_KHAI) != null
 				? GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI))
 				: null;
-
+		String serviceLevel = params.get(DossierTerm.SERVICE_LEVEL) != null
+				? GetterUtil.getString(params.get(DossierTerm.SERVICE_LEVEL)) : null;
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -3206,7 +3204,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
-				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai);
+				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3336,7 +3334,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String documentNo, String documentDate, String strSystemId,
 			String viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
 			String delegate, String vnpostalStatus, Integer fromViaPostal,
-			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai)
+			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai, String serviceLevel)
 			throws ParseException {
 
 		//Dossier Counter
@@ -3520,9 +3518,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		System.out.println("====online 3511==" + online);
-		_log.info("====online 3511==" + online);
-		_log.debug("====online 3511==" + online);
+//		System.out.println("====online 3511==" + online);
+//		_log.info("====online 3511==" + online);
+//		_log.debug("====online 3511==" + online);
 		if (Validator.isNotNull(online)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(online));
 			query.addField(DossierTerm.ONLINE);
@@ -3991,7 +3989,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(dossierNo)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { DossierTerm.DOSSIER_COUNTER_SEARCH, DossierTerm.DOSSIER_NO_SEARCH };
+			String[] subQuerieArr = new String[]{DossierTerm.DOSSIER_COUNTER_SEARCH, DossierTerm.DOSSIER_NO_SEARCH,
+					DossierTerm.POSTAL_CODE_RECEIVED, DossierTerm.POSTAL_CODE_SEND};
 
 			String[] keyDossier = dossierNo.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
@@ -4793,6 +4792,24 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				query.addFields(DossierTerm.DELEGATE_ID_NO);
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
+		}
+		
+		if (Validator.isNotNull(serviceLevel)) {
+			String[] lstServiceLevel = StringUtil.split(serviceLevel);
+			if (lstServiceLevel != null && lstServiceLevel.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < lstServiceLevel.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstServiceLevel[i]);
+					query.addField(DossierTerm.SERVICE_LEVEL);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(serviceLevel);
+				query.addFields(DossierTerm.SERVICE_LEVEL);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}			
 		}
 
 		return booleanQuery;
@@ -6942,7 +6959,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String dossierName, String briefNote, Integer delegateType,
 			String documentNo, Date documentDate, int systemId,
 			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-			Date dueDate, ServiceContext serviceContext) {
+			Date dueDate, int durationCount, ServiceContext serviceContext) {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -7115,6 +7132,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		if (dueDate != null)
 			dossier.setDueDate(dueDate);
+		if (durationCount > 0)
+			dossier.setDurationCount(durationCount);
 
 		return dossierPersistence.update(dossier);
 	}
@@ -7136,7 +7155,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String dossierName, String briefNote, Integer delegateType,
 			String documentNo, Date documentDate, int systemId,
 			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-			String metaData, Date dueDate, ServiceContext serviceContext) {
+			String metaData, Date dueDate, int durationCount, ServiceContext serviceContext) {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -7312,6 +7331,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		if (dueDate != null)
 			dossier.setDueDate(dueDate);
+		if (durationCount > 0)
+			dossier.setDurationCount(durationCount);
 
 		return dossierPersistence.update(dossier);
 	}
@@ -7749,6 +7770,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public Dossier findDossierByDeclarationCode(String code, long groupId) {
 		return dossierFinder.findDossierByDeclarationCode(code, groupId);
 	}
+	public java.util.List<Object[]> getListVotingByDossier(long groupId, List<String> listDossier) {
+		return dossierFinder.getListVotingByDossier(groupId, listDossier);
+	}
 	public Dossier fetchByDO_POST_SEND_GROUP(String postpostalCodeSend, long groupId) {
 		return dossierPersistence.fetchByDO_POST_SEND_GROUP(postpostalCodeSend, groupId);
 	}
@@ -7760,5 +7784,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived, long groupId) {
 		return dossierPersistence.fetchByDO_POST_RECEIVED_GROUP(postalCodeReceived, groupId);
+	}
+	
+	public List<Dossier> fetchByORIGIN_NO(String originDossierNo) {
+		return dossierPersistence.findByORIGIN_NO(originDossierNo);
+	}
+	
+	public List<Dossier> fetchByNEW_DO_NO(String dossierNo) {
+		return dossierPersistence.findByNEW_DO_NO(dossierNo);
 	}
 }

@@ -37,9 +37,33 @@ public class VNPostServerConfigModel {
 
 	private String senderName;
 
+	private boolean isLGSP;
+
+	private String keyToken;
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public String getKeyToken() {
+		return keyToken;
+	}
+
+	public void setKeyToken(String keyToken) {
+		this.keyToken = keyToken;
+	}
+
+	public boolean isLGSP() {
+		return isLGSP;
+	}
+
+	public void setLGSP(boolean LGSP) {
+		isLGSP = LGSP;
+	}
+
 	public VNPostServerConfigModel(String apiPostOrder, String apiGetOrderTracking, String apiGetToken,
-			String apiCancelOrder, String customerKey, String secretKey, boolean active, String customerCode,
-			Integer senderProvince, Integer senderDistrict, String senderAddress, String senderEmail, String senderTel, String senderName) {
+								   String apiCancelOrder, String customerKey, String secretKey, boolean active, String customerCode,
+								   Integer senderProvince, Integer senderDistrict, String senderAddress, String senderEmail, String senderTel, String senderName) {
 		super();
 		this.apiPostOrder = apiPostOrder;
 		this.apiGetOrderTracking = apiGetOrderTracking;

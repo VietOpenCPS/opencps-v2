@@ -286,6 +286,12 @@ public interface DossierLocalService extends BaseLocalService,
 		long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Dossier> fetchByNEW_DO_NO(String dossierNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Dossier> fetchByORIGIN_NO(String originDossierNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier fetchDossier(long dossierId);
 
 	/**
@@ -469,6 +475,10 @@ public interface DossierLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Object[]> getListVotingByDossier(long groupId,
+		List<String> listDossier);
+
 	/**
 	* Returns the OSGi service identifier.
 	*
@@ -624,7 +634,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String briefNote, Integer delegateType, String documentNo,
 		Date documentDate, int systemId, Integer vnpostalStatus,
 		String vnpostalProfile, Integer fromViaPostal, Date dueDate,
-		ServiceContext serviceContext);
+		int durationCount, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossierMeta(long groupId, long id,
@@ -643,7 +653,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String briefNote, Integer delegateType, String documentNo,
 		Date documentDate, int systemId, Integer vnpostalStatus,
 		String vnpostalProfile, Integer fromViaPostal, String metaData,
-		Date dueDate, ServiceContext serviceContext);
+		Date dueDate, int durationCount, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier postDossier(long groupId, long dossierId,

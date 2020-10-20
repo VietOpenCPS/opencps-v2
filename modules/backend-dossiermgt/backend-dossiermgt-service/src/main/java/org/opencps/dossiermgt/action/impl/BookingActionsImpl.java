@@ -65,7 +65,7 @@ public class BookingActionsImpl implements BookingActions {
 	@Override
 	public Booking updateBooking(long userId, long groupId, long bookingId, String className, long classPK,
 			String serviceCode, String codeNumber, String bookingName, String gateNumber, Integer state,
-			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode, boolean online,
+			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode, Boolean online,
 			String bookingInTime, String telNo, ServiceContext serviceContext) {
 
 		try {
@@ -116,7 +116,7 @@ public class BookingActionsImpl implements BookingActions {
 		Enumeration<String> enumeration;// = session.getAttributeNames();
 		
 		/*List<String> values = Collections.list(enumeration);
-		
+
 		for (String tmp : values) {
 			System.out.println("========================== > session.getAttributeNames() " + tmp);
 		}*/
@@ -128,7 +128,7 @@ public class BookingActionsImpl implements BookingActions {
 		}
 
 		if (session.getAttribute("_SIMPLE_CAPTCHA") != null) {
-			
+
 			captcha = (String) session.getAttribute("_SIMPLE_CAPTCHA");
 			
 			if (value.equals(captcha)) {

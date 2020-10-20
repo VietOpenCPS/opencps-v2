@@ -543,10 +543,16 @@ public class DossierActionsImpl implements DossierActions {
 							// Check permission enable button
 							//							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
 							if (!isAdministratorData) {
-								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user))
+								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)){
 									data.put(ProcessActionTerm.ENABLE, enable);
-								else
-									data.put(ProcessActionTerm.ENABLE, 0);
+							}else {
+									//A.Duẩn autoEvent == SPECIAL vẫn check preCondition
+									if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+										break;
+									} else {
+										data.put(ProcessActionTerm.ENABLE, 0);
+									}
+								}
 							}
 							else {
 								data.put(ProcessActionTerm.ENABLE, enable);
@@ -3432,8 +3438,9 @@ public class DossierActionsImpl implements DossierActions {
 	//LamTV_Process check permission action
 	private boolean processCheckEnable(String preCondition, String autoEvent, Dossier dossier, String actionCode,
 		long groupId, User curUser) {
+		//A.Duẩn autoEvent == SPECIAL vẫn check preCondition
 		if (AUTO_EVENT_SUBMIT.equals(autoEvent) || AUTO_EVENT_TIMMER.equals(autoEvent)
-			|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+			|| AUTO_EVENT_LISTENER.equals(autoEvent) ) {
 
 			return false;
 		}
@@ -4128,7 +4135,7 @@ public class DossierActionsImpl implements DossierActions {
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
 			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType,
 			String documentNo, Date documentDate, int systemId, Integer vnpostalStatus, String vnpostalProfile,
-			Integer fromViaPostal, String formMeta, String strDueDate, ServiceContext serviceContext) {
+			Integer fromViaPostal, String formMeta, String strDueDate, int durationCount, ServiceContext serviceContext) {
 		try {
 
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
@@ -4200,7 +4207,7 @@ public class DossierActionsImpl implements DossierActions {
 						postalCityCode, postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 						delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
 						delegateWardCode, sampleCount, dossierName, briefNote, delegateType, documentNo, documentDate,
-						systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, metaData, dueDate, serviceContext);
+						systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, metaData, dueDate, durationCount, serviceContext);
 			} else {
 				return DossierLocalServiceUtil.initUpdateDossierFull(groupId, id, applicantName, applicantIdType,
 						applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
@@ -4208,7 +4215,7 @@ public class DossierActionsImpl implements DossierActions {
 						postalCityCode, postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 						delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
 						delegateWardCode, sampleCount, dossierName, briefNote, delegateType, documentNo, documentDate,
-						systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, dueDate, serviceContext);
+						systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, dueDate, durationCount, serviceContext);
 			}
 
 		} catch (Exception e) {

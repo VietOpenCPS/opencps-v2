@@ -5,13 +5,19 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoMappingTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceInfoMapping;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -87,9 +93,26 @@ public class ServiceConfigIndexer extends BaseIndexer<ServiceConfig> {
 
 		if (serviceInfo != null && Validator.isNotNull(serviceInfo)) {
 			document.addTextSortable(ServiceConfigTerm.SERVICE_CODE, serviceInfo.getServiceCode());
+			if (Validator.isNotNull(serviceInfo.getServiceCode())) {
+				String serviceCodeSearch = SpecialCharacterUtils.splitSpecial(serviceInfo.getServiceCode());
+				document.addTextSortable(ServiceInfoTerm.SERVICE_CODE_SEARCH, serviceCodeSearch);
+			}
 			document.addTextSortable(ServiceConfigTerm.SERVICE_NAME, serviceInfo.getServiceName());
 			document.addTextSortable(ServiceConfigTerm.DOMAIN_CODE, serviceInfo.getDomainCode());
 			document.addTextSortable(ServiceConfigTerm.DOMAIN_NAME, serviceInfo.getDomainName());
+			ServiceInfoMapping serviceInfoMapping = null;
+			try {
+				serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(serviceInfo.getGroupId(), serviceInfo.getServiceCode());		
+			} catch (Exception e) {
+				_log.info(e);
+			}
+			if (serviceInfoMapping != null && Validator.isNotNull(serviceInfoMapping)) {
+				document.addTextSortable(ServiceInfoMappingTerm.SERVICE_CODE_DVCQG,serviceInfoMapping.getServiceCodeDVCQG());
+				if (Validator.isNotNull(serviceInfoMapping.getServiceCodeDVCQG())) {
+					String serviceCodeDVCQGSearch = SpecialCharacterUtils.splitSpecial(serviceInfoMapping.getServiceCodeDVCQG());
+					document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE_DVCQG_SEARCH, serviceCodeDVCQGSearch);
+				}
+			}						
 		}
 		return document;
 	}

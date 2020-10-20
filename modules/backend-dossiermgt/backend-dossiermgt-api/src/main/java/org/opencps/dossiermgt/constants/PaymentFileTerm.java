@@ -60,4 +60,6 @@ public class PaymentFileTerm {
 	public static final String PAYMENT_METHOD_VIETTEL_PAY = "ViettelPay";
 	public static final String PAYMENT_METHOD_KEYPAY_DVCQG = "KeyPayDVCQG";
 	public static final String PAYMENT_METHOD_PAY_PLAT_DVCQG = "PayPlatDVCQG";
+	public static final String PAYMENT_METHOD_KEYPAY_LATE = "KeyPayLate";
+	public static final String PAYMENT_METHOD_PAYGOV = "Paygov";
 }

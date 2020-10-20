@@ -445,7 +445,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 					}
 				}
-				_log.info("SIZE TOTAL MONTH: "+lstDossierDataObjs.size());
+//				_log.info("SIZE TOTAL MONTH: "+lstDossierDataObjs.size());
 				engineUpdateAction.updateStatistic(lstDossierDataObjs);
 //				_log.info("CALCULATE AFTER LAST MONTH YEAR UPDATE STATISTIC DATE TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
@@ -595,7 +595,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			int total = jsonData.getInt(ConstantUtils.TOTAL);
 
 			//_log.info("GET DOSSIER SIZE: " + datas != null ? datas.size() : 0);
-			_log.info("GET DOSSIER total: " + total);
+//			_log.info("GET DOSSIER total: " + total);
 
 			if (total > datas.size()) {
 				JSONObject jsonData2 = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, total, new ServiceContext());

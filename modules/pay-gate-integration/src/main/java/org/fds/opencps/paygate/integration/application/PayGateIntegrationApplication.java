@@ -1,13 +1,13 @@
 package org.fds.opencps.paygate.integration.application;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.xml.QName;
 
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -31,7 +31,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.fds.opencps.paygate.integration.action.KeyPayV3Action;
 import org.fds.opencps.paygate.integration.action.PayGateIntegrationAction;
+import org.fds.opencps.paygate.integration.action.impl.KeyPayV3ActionImpl;
 import org.fds.opencps.paygate.integration.action.impl.PayGateIntegrationActionImpl;
 import org.fds.opencps.paygate.integration.util.PayGateTerm;
 import org.osgi.service.component.annotations.Component;
@@ -294,6 +296,41 @@ public class PayGateIntegrationApplication extends Application {
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
 
+	@POST
+	@Path("/paygov/dpnhankqthanhtoanhs")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response ppConfirmTransactionPayGov(@Context HttpServletRequest request, @Context HttpServletResponse response,
+										 @Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+										 @Context ServiceContext serviceContext, String body) {
+
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = actionImpl.ppConfirmTransactionPaygov(user, serviceContext, body);
+
+		return Response.status(200).entity(result.toJSONString()).build();
+	}
+
+	@GET
+	@Path("/paygov/urlRedirect")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getUrlRedirectToPaygov(@Context HttpServletRequest request, @Context HttpServletResponse response,
+											   @Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+											   @Context ServiceContext serviceContext, @FormParam("dossierId") long dossierId,
+										   @FormParam("ipAddress") String ipAddress) {
+
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			result.put("url", actionImpl.getUrlRedirectToPaygov(dossierId, ipAddress));
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			return Response.status(404).entity(e.getMessage()).build();
+		}
+	}
+
 	/**
 	 * Gets the receipt.
 	 *
@@ -355,4 +392,59 @@ public class PayGateIntegrationApplication extends Application {
 
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
+
+	@GET
+	@Path("/keypayv3/create")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response createQRTransaction(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("dossierId") long dossierId) throws PortalException {
+
+		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
+		String result = keypayAction.createPaylater(user, dossierId, serviceContext, request);
+
+		return Response.status(200).entity(result).build();
+	}
+
+	@GET
+	@Path("/keypayv3/qrcode")
+	// @Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_OCTET_STREAM })
+	public Response getQR(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("dossierId") long dossierId) throws PortalException {
+
+		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
+
+		File file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
+
+		ResponseBuilder responseBuilder = Response.ok((Object) file);
+		String attachmentFilename = file.getName();
+		
+		responseBuilder.header(
+				HttpHeaders.CONTENT_DISPOSITION, attachmentFilename);
+		responseBuilder.header(HttpHeaders.CONTENT_TYPE, "image/png");
+
+		return responseBuilder.build();
+	}
+
+	/** 
+	 * 
+	 * 
+	 * */
+	@POST
+	@Path("/keypayv3/paylater-callback")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response paylaterCallback(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, String body) throws PortalException {
+
+		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
+		String result = keypayAction.paylaterCallback(user, serviceContext, body);
+
+		return Response.status(200).entity(result).build();
+	}
+
 }

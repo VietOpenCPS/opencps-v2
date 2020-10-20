@@ -34,7 +34,6 @@ import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.TTTTIntegrationImpl;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.lgsp.model.MResult;
@@ -71,8 +70,12 @@ public class PublishEventScheduler extends BaseMessageListener {
 		}
 		try {
 			_log.info("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
-			
-			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatuses(new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT }, 0, 10);
+
+			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatusesAndNotServerNo(new int[] {
+							PublishQueueTerm.STATE_WAITING_SYNC,
+							PublishQueueTerm.STATE_ALREADY_SENT},
+					ServerConfigTerm.DVCQG_INTEGRATION, 0, 10);
+
 			_log.info("lstPqs  : " + lstPqs.size());
 			for (PublishQueue pq : lstPqs) {
 				try {
@@ -251,6 +254,11 @@ public class PublishEventScheduler extends BaseMessageListener {
 				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
 				
 				JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier, null);
+
+				if(Validator.isNull(result)) {
+					return false;
+				}
+
 				_log.info("result DVCQG: "+result);
 				if(result.has("error_code") && "0".equals(result.getString("error_code"))) {
 					PublishQueueLocalServiceUtil.updatePublishQueue(
@@ -260,12 +268,10 @@ public class PublishEventScheduler extends BaseMessageListener {
 							new ServiceContext());	
 					return true;
 				}
-				
-				return false;
-					
 			} catch (Exception e) {
 				_log.error(e);
-			}				
+			}
+			return false;
 		}
 		else if (ServerConfigTerm.TTTT_INTEGRATION.equals(sc.getProtocol())) {
 			_log.info("Integrating dossier to TTTT...");

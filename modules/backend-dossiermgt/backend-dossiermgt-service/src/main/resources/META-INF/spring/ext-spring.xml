@@ -81,6 +81,7 @@
 	<bean id="dossier.vnpost.message" class="org.opencps.event.message.VnpostEvent" />
 	<bean id="dossier.collectvnpost.message" class="org.opencps.event.message.VnpostCollectionEvent" />
 	<bean id="lgsp.event.message" class="org.opencps.event.message.LGSPEvent" />
+	<bean id="dossier.keypayv3.message" class="org.opencps.event.message.KeypayV3Event" />
 
 	<!-- Destinations -->
 	<bean id="jasper.dossier.in.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">
@@ -97,6 +98,9 @@
 	</bean>
 	<bean id="lgsp.dossier.in.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">
 		<property name="name" value="lgsp/dossier/in/destination" />
+	</bean>
+		<bean id="keypayv3.dossier.in.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">
+		<property name="name" value="keypayv3/dossier/in/destination" />
 	</bean>
 
 	<!-- Configurator -->
@@ -119,16 +123,21 @@
 						<ref bean="dossier.vnpost.message" />
 					</list>
 				</entry>
-				<entry key="collectvnpost/dossier/in/destination">
+				<entry key="keypayv3/dossier/in/destination">
 					<list value-type="com.liferay.portal.kernel.messaging.MessageListener">
-						<ref bean="dossier.collectvnpost.message" />
+						<ref bean="dossier.keypayv3.message" />
 					</list>
 				</entry>
 				<entry key="lgsp/dossier/in/destination">
 					<list value-type="com.liferay.portal.kernel.messaging.MessageListener">
 						<ref bean="lgsp.event.message" />
 					</list>
-				</entry>				
+				</entry>
+				<entry key="collectvnpost/dossier/in/destination">
+					<list value-type="com.liferay.portal.kernel.messaging.MessageListener">
+						<ref bean="dossier.collectvnpost.message" />
+					</list>
+				</entry>
 			</map>
 		</property>
 		<property name="destinations">
@@ -138,6 +147,7 @@
 				<ref bean="vnpost.dossier.in.destination" />
 				<ref bean="collectvnpost.dossier.in.destination" />
 				<ref bean="lgsp.dossier.in.destination" />
+				<ref bean="keypayv3.dossier.in.destination" />
 			</list>
 		</property>
 	</bean>

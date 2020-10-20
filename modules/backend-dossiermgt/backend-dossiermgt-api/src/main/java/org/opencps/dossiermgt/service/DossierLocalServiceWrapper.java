@@ -381,6 +381,18 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> fetchByNEW_DO_NO(
+		String dossierNo) {
+		return _dossierLocalService.fetchByNEW_DO_NO(dossierNo);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> fetchByORIGIN_NO(
+		String originDossierNo) {
+		return _dossierLocalService.fetchByORIGIN_NO(originDossierNo);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier fetchDossier(long dossierId) {
 		return _dossierLocalService.fetchDossier(dossierId);
 	}
@@ -690,6 +702,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		return _dossierLocalService.getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public java.util.List<Object[]> getListVotingByDossier(long groupId,
+		java.util.List<String> listDossier) {
+		return _dossierLocalService.getListVotingByDossier(groupId, listDossier);
+	}
+
 	/**
 	* Returns the OSGi service identifier.
 	*
@@ -948,7 +966,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, java.util.Date documentDate, int systemId,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		java.util.Date dueDate,
+		java.util.Date dueDate, int durationCount,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return _dossierLocalService.initUpdateDossierFull(groupId, id,
 			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
@@ -961,7 +979,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateCityCode, delegateDistrictCode, delegateWardCode,
 			sampleCount, dossierName, briefNote, delegateType, documentNo,
 			documentDate, systemId, vnpostalStatus, vnpostalProfile,
-			fromViaPostal, dueDate, serviceContext);
+			fromViaPostal, dueDate, durationCount, serviceContext);
 	}
 
 	@Override
@@ -981,7 +999,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, java.util.Date documentDate, int systemId,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		String metaData, java.util.Date dueDate,
+		String metaData, java.util.Date dueDate, int durationCount,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return _dossierLocalService.initUpdateDossierMeta(groupId, id,
 			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
@@ -994,7 +1012,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateCityCode, delegateDistrictCode, delegateWardCode,
 			sampleCount, dossierName, briefNote, delegateType, documentNo,
 			documentDate, systemId, vnpostalStatus, vnpostalProfile,
-			fromViaPostal, metaData, dueDate, serviceContext);
+			fromViaPostal, metaData, dueDate, durationCount, serviceContext);
 	}
 
 	@Override

@@ -1128,7 +1128,7 @@ public class ProcessUpdateDBUtils {
 		try {
 			List<ProcessOption> optionList = process.getProcessOption();
 			if (optionList != null && optionList.size() > 0) {
-				_log.info("optionList: "+optionList.size());
+//				_log.info("optionList: "+optionList.size());
 				String optionCode;
 				String optionName;
 				Integer seqOrder = 0;

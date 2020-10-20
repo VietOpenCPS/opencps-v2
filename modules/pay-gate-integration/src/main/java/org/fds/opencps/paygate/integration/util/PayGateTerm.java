@@ -9,6 +9,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Base64;
+
 public class PayGateTerm {
 
 	private static Log _log = LogFactoryUtil.getLog(PayGateTerm.class.getName());
@@ -165,6 +170,24 @@ public class PayGateTerm {
 	public static final String PAYMENTPLATFORM_DVCQG_GET_RECEIPT_ENDPOINT = "paymentplatform_dvcgq_get_receipt_endpoint";
 	public static final String PAYMENTPLATFORM_DVCQG_GET_BILL_ENDPOINT = "paymentplatform_dvcqg_get_bill_endpoint";
 
+	public static final String SUCCESSFUL = "SUCCESSFUL";
+	public static final String FAILED = "FAILED";
+	public static final String SIGNATURE_WRONG = "SIGNATURE_WRONG";
+	//config paygov
+	public static final String PAYGOV_AMOUNT = "amount";
+	public static final String PAYGOV_ORDER_ID = "orderId";
+	public static final String PAYGOV_ORDER_INFO = "orderInfo";
+	public static final String PAYGOV_REQUEST_CODE = "requestCode";
+	public static final String PAYGOV_TRANSACTION_NO = "transactionNo";
+	public static final String PAYGOV_PAY_DATE = "payDate";
+	public static final String PAYGOV_PAY_GATE = "paygate";
+	public static final String PAYGOV_ERROR_CODE = "errorCode";
+	public static final String PAYGOV_TYPE = "type";
+	public static final String PAYGOV_TRANSACTION_CODE = "transactionCode";
+	public static final String PAYGOV_CHECKSUM = "checksum";
+	public static final String PAYGOV_ACTIVE_CHECK_SUM = "activeCheckSum";
+
+
 	public static String buildPathDoAction(String path, String dossierId) {
 
 		return path + "/o/rest/v2/dossiers/" + dossierId + "/actions";
@@ -180,5 +203,37 @@ public class PayGateTerm {
 			_log.debug(e);
 		}
 		return StringPool.BLANK;
+	}
+
+	public static String genChecksum(JSONObject paygovConfig, String orderId, long amount, String requestCode) throws Exception{
+		try {
+			String secretKey   = paygovConfig.getString("secretKey");
+			String accessKey   = paygovConfig.getString("accessKey");
+			String partnerCode = paygovConfig.getString("partnerCode");
+			String stringBeforeHash = secretKey + accessKey + partnerCode + orderId + requestCode + amount;
+			System.out.println("String before hash: " + stringBeforeHash);
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			digest.update(stringBeforeHash.getBytes(StandardCharsets.UTF_8));
+			byte[] digest1 = digest.digest();
+			String hex = String.format("%064x", new BigInteger(1, digest1));
+			System.out.println("String after hash: " + hex);
+			return hex;
+		} catch (Exception e) {
+			throw new Exception("Error when gen checksum for orderId " + orderId + ": " + e.getMessage());
+		}
+	}
+
+	public enum ListPaygovUnit {
+		DONGTHAP("PAYGOV-DONGTHAP"),
+		HAUGIANG("PAYGOV-HAUGIANG");
+
+		private final String value;
+
+		ListPaygovUnit(String value) {
+			this.value = value;
+		}
+		public String getValue() {
+			return this.value;
+		}
 	}
 }
