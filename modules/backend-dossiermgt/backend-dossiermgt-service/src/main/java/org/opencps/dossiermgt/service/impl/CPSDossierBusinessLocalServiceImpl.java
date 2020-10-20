@@ -1348,6 +1348,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	private void integrateTTTT(Dossier dossier, ServiceContext context, long dossierActionId) {
 		//Add tich hop Thong tin truyen thong
 		try{
+			
+			_log.debug("-----integrateTTTT----");
 			List<ServerConfig> listServerConfig = ServerConfigLocalServiceUtil.getByProtocol(
 					dossier.getGroupId(), ServerConfigTerm.TTTT_INTEGRATION);
 			if (listServerConfig == null || (listServerConfig != null && listServerConfig.size() == 0)) {
