@@ -898,6 +898,216 @@ public class NotificationQueueUtil {
 	}
 
 	/**
+	* Returns all the notification queues where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	*
+	* @param notificationType the notification type
+	* @param publicationDate the publication date
+	* @param expireDate the expire date
+	* @return the matching notification queues
+	*/
+	public static List<NotificationQueue> findByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate) {
+		return getPersistence()
+				   .findByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+			publicationDate, expireDate);
+	}
+
+	/**
+	* Returns a range of all the notification queues where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link NotificationQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param notificationType the notification type
+	* @param publicationDate the publication date
+	* @param expireDate the expire date
+	* @param start the lower bound of the range of notification queues
+	* @param end the upper bound of the range of notification queues (not inclusive)
+	* @return the range of matching notification queues
+	*/
+	public static List<NotificationQueue> findByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate,
+		int start, int end) {
+		return getPersistence()
+				   .findByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+			publicationDate, expireDate, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the notification queues where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link NotificationQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param notificationType the notification type
+	* @param publicationDate the publication date
+	* @param expireDate the expire date
+	* @param start the lower bound of the range of notification queues
+	* @param end the upper bound of the range of notification queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching notification queues
+	*/
+	public static List<NotificationQueue> findByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate,
+		int start, int end,
+		OrderByComparator<NotificationQueue> orderByComparator) {
+		return getPersistence()
+				   .findByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+			publicationDate, expireDate, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the notification queues where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link NotificationQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param notificationType the notification type
+	* @param publicationDate the publication date
+	* @param expireDate the expire date
+	* @param start the lower bound of the range of notification queues
+	* @param end the upper bound of the range of notification queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching notification queues
+	*/
+	public static List<NotificationQueue> findByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate,
+		int start, int end,
+		OrderByComparator<NotificationQueue> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+			publicationDate, expireDate, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first notification queue in the ordered set where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	*
+	* @param notificationType the notification type
+	* @param publicationDate the publication date
+	* @param expireDate the expire date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching notification queue
+	* @throws NoSuchNotificationQueueException if a matching notification queue could not be found
+	*/
+	public static NotificationQueue findByF_Greate_PublicationDate_Less_ExpireDate_First(
+		String notificationType, Date publicationDate, Date expireDate,
+		OrderByComparator<NotificationQueue> orderByComparator)
+		throws org.opencps.communication.exception.NoSuchNotificationQueueException {
+		return getPersistence()
+				   .findByF_Greate_PublicationDate_Less_ExpireDate_First(notificationType,
+			publicationDate, expireDate, orderByComparator);
+	}
+
+	/**
+	* Returns the first notification queue in the ordered set where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	*
+	* @param notificationType the notification type
+	* @param publicationDate the publication date
+	* @param expireDate the expire date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching notification queue, or <code>null</code> if a matching notification queue could not be found
+	*/
+	public static NotificationQueue fetchByF_Greate_PublicationDate_Less_ExpireDate_First(
+		String notificationType, Date publicationDate, Date expireDate,
+		OrderByComparator<NotificationQueue> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_Greate_PublicationDate_Less_ExpireDate_First(notificationType,
+			publicationDate, expireDate, orderByComparator);
+	}
+
+	/**
+	* Returns the last notification queue in the ordered set where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	*
+	* @param notificationType the notification type
+	* @param publicationDate the publication date
+	* @param expireDate the expire date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching notification queue
+	* @throws NoSuchNotificationQueueException if a matching notification queue could not be found
+	*/
+	public static NotificationQueue findByF_Greate_PublicationDate_Less_ExpireDate_Last(
+		String notificationType, Date publicationDate, Date expireDate,
+		OrderByComparator<NotificationQueue> orderByComparator)
+		throws org.opencps.communication.exception.NoSuchNotificationQueueException {
+		return getPersistence()
+				   .findByF_Greate_PublicationDate_Less_ExpireDate_Last(notificationType,
+			publicationDate, expireDate, orderByComparator);
+	}
+
+	/**
+	* Returns the last notification queue in the ordered set where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	*
+	* @param notificationType the notification type
+	* @param publicationDate the publication date
+	* @param expireDate the expire date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching notification queue, or <code>null</code> if a matching notification queue could not be found
+	*/
+	public static NotificationQueue fetchByF_Greate_PublicationDate_Less_ExpireDate_Last(
+		String notificationType, Date publicationDate, Date expireDate,
+		OrderByComparator<NotificationQueue> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_Greate_PublicationDate_Less_ExpireDate_Last(notificationType,
+			publicationDate, expireDate, orderByComparator);
+	}
+
+	/**
+	* Returns the notification queues before and after the current notification queue in the ordered set where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	*
+	* @param notificationQueueId the primary key of the current notification queue
+	* @param notificationType the notification type
+	* @param publicationDate the publication date
+	* @param expireDate the expire date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next notification queue
+	* @throws NoSuchNotificationQueueException if a notification queue with the primary key could not be found
+	*/
+	public static NotificationQueue[] findByF_Greate_PublicationDate_Less_ExpireDate_PrevAndNext(
+		long notificationQueueId, String notificationType,
+		Date publicationDate, Date expireDate,
+		OrderByComparator<NotificationQueue> orderByComparator)
+		throws org.opencps.communication.exception.NoSuchNotificationQueueException {
+		return getPersistence()
+				   .findByF_Greate_PublicationDate_Less_ExpireDate_PrevAndNext(notificationQueueId,
+			notificationType, publicationDate, expireDate, orderByComparator);
+	}
+
+	/**
+	* Removes all the notification queues where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63; from the database.
+	*
+	* @param notificationType the notification type
+	* @param publicationDate the publication date
+	* @param expireDate the expire date
+	*/
+	public static void removeByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate) {
+		getPersistence()
+			.removeByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+			publicationDate, expireDate);
+	}
+
+	/**
+	* Returns the number of notification queues where notificationType = &#63; and publicationDate &lt; &#63; and expireDate &ge; &#63;.
+	*
+	* @param notificationType the notification type
+	* @param publicationDate the publication date
+	* @param expireDate the expire date
+	* @return the number of matching notification queues
+	*/
+	public static int countByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, Date publicationDate, Date expireDate) {
+		return getPersistence()
+				   .countByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+			publicationDate, expireDate);
+	}
+
+	/**
 	* Caches the notification queue in the entity cache if it is enabled.
 	*
 	* @param notificationQueue the notification queue

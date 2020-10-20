@@ -381,6 +381,18 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> fetchByNEW_DO_NO(
+		String dossierNo) {
+		return _dossierLocalService.fetchByNEW_DO_NO(dossierNo);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> fetchByORIGIN_NO(
+		String originDossierNo) {
+		return _dossierLocalService.fetchByORIGIN_NO(originDossierNo);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier fetchDossier(long dossierId) {
 		return _dossierLocalService.fetchDossier(dossierId);
 	}
@@ -688,6 +700,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return _dossierLocalService.getIndexableActionableDynamicQuery();
+	}
+
+	@Override
+	public java.util.List<Object[]> getListVotingByDossier(long groupId,
+		java.util.List<String> listDossier) {
+		return _dossierLocalService.getListVotingByDossier(groupId, listDossier);
 	}
 
 	/**

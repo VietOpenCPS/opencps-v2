@@ -229,6 +229,8 @@ public interface NotificationtemplateLocalService extends BaseLocalService,
 
 	public List<Notificationtemplate> findByInterval(String interval);
 
+	public List<Notificationtemplate> findByIntervalLike(String interval);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

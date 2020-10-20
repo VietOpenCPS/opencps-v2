@@ -1267,6 +1267,447 @@ public interface PublishQueuePersistence extends BasePersistence<PublishQueue> {
 	public int countBySTS(int[] statuses);
 
 	/**
+	* Returns all the publish queues where status = &#63; and serverNo &ne; &#63;.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @return the matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN_NOT(int status,
+		String serverNo);
+
+	/**
+	* Returns a range of all the publish queues where status = &#63; and serverNo &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @return the range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN_NOT(int status,
+		String serverNo, int start, int end);
+
+	/**
+	* Returns an ordered range of all the publish queues where status = &#63; and serverNo &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN_NOT(int status,
+		String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the publish queues where status = &#63; and serverNo &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN_NOT(int status,
+		String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first publish queue in the ordered set where status = &#63; and serverNo &ne; &#63;.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching publish queue
+	* @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	*/
+	public PublishQueue findBySTS_SN_NOT_First(int status, String serverNo,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException;
+
+	/**
+	* Returns the first publish queue in the ordered set where status = &#63; and serverNo &ne; &#63;.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	*/
+	public PublishQueue fetchBySTS_SN_NOT_First(int status, String serverNo,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns the last publish queue in the ordered set where status = &#63; and serverNo &ne; &#63;.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching publish queue
+	* @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	*/
+	public PublishQueue findBySTS_SN_NOT_Last(int status, String serverNo,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException;
+
+	/**
+	* Returns the last publish queue in the ordered set where status = &#63; and serverNo &ne; &#63;.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	*/
+	public PublishQueue fetchBySTS_SN_NOT_Last(int status, String serverNo,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns the publish queues before and after the current publish queue in the ordered set where status = &#63; and serverNo &ne; &#63;.
+	*
+	* @param publishQueueId the primary key of the current publish queue
+	* @param status the status
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next publish queue
+	* @throws NoSuchPublishQueueException if a publish queue with the primary key could not be found
+	*/
+	public PublishQueue[] findBySTS_SN_NOT_PrevAndNext(long publishQueueId,
+		int status, String serverNo,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException;
+
+	/**
+	* Returns all the publish queues where status = any &#63; and serverNo &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param statuses the statuses
+	* @param serverNo the server no
+	* @return the matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN_NOT(int[] statuses,
+		String serverNo);
+
+	/**
+	* Returns a range of all the publish queues where status = any &#63; and serverNo &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param statuses the statuses
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @return the range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN_NOT(int[] statuses,
+		String serverNo, int start, int end);
+
+	/**
+	* Returns an ordered range of all the publish queues where status = any &#63; and serverNo &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param statuses the statuses
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN_NOT(int[] statuses,
+		String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the publish queues where status = &#63; and serverNo &ne; &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN_NOT(int[] statuses,
+		String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes all the publish queues where status = &#63; and serverNo &ne; &#63; from the database.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	*/
+	public void removeBySTS_SN_NOT(int status, String serverNo);
+
+	/**
+	* Returns the number of publish queues where status = &#63; and serverNo &ne; &#63;.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @return the number of matching publish queues
+	*/
+	public int countBySTS_SN_NOT(int status, String serverNo);
+
+	/**
+	* Returns the number of publish queues where status = any &#63; and serverNo &ne; &#63;.
+	*
+	* @param statuses the statuses
+	* @param serverNo the server no
+	* @return the number of matching publish queues
+	*/
+	public int countBySTS_SN_NOT(int[] statuses, String serverNo);
+
+	/**
+	* Returns all the publish queues where status = &#63; and serverNo = &#63;.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @return the matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN(int status, String serverNo);
+
+	/**
+	* Returns a range of all the publish queues where status = &#63; and serverNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @return the range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN(int status,
+		String serverNo, int start, int end);
+
+	/**
+	* Returns an ordered range of all the publish queues where status = &#63; and serverNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN(int status,
+		String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the publish queues where status = &#63; and serverNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN(int status,
+		String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first publish queue in the ordered set where status = &#63; and serverNo = &#63;.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching publish queue
+	* @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	*/
+	public PublishQueue findBySTS_SN_First(int status, String serverNo,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException;
+
+	/**
+	* Returns the first publish queue in the ordered set where status = &#63; and serverNo = &#63;.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	*/
+	public PublishQueue fetchBySTS_SN_First(int status, String serverNo,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns the last publish queue in the ordered set where status = &#63; and serverNo = &#63;.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching publish queue
+	* @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	*/
+	public PublishQueue findBySTS_SN_Last(int status, String serverNo,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException;
+
+	/**
+	* Returns the last publish queue in the ordered set where status = &#63; and serverNo = &#63;.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	*/
+	public PublishQueue fetchBySTS_SN_Last(int status, String serverNo,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns the publish queues before and after the current publish queue in the ordered set where status = &#63; and serverNo = &#63;.
+	*
+	* @param publishQueueId the primary key of the current publish queue
+	* @param status the status
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next publish queue
+	* @throws NoSuchPublishQueueException if a publish queue with the primary key could not be found
+	*/
+	public PublishQueue[] findBySTS_SN_PrevAndNext(long publishQueueId,
+		int status, String serverNo,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator)
+		throws NoSuchPublishQueueException;
+
+	/**
+	* Returns all the publish queues where status = any &#63; and serverNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param statuses the statuses
+	* @param serverNo the server no
+	* @return the matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN(int[] statuses,
+		String serverNo);
+
+	/**
+	* Returns a range of all the publish queues where status = any &#63; and serverNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param statuses the statuses
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @return the range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN(int[] statuses,
+		String serverNo, int start, int end);
+
+	/**
+	* Returns an ordered range of all the publish queues where status = any &#63; and serverNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param statuses the statuses
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN(int[] statuses,
+		String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the publish queues where status = &#63; and serverNo = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching publish queues
+	*/
+	public java.util.List<PublishQueue> findBySTS_SN(int[] statuses,
+		String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PublishQueue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes all the publish queues where status = &#63; and serverNo = &#63; from the database.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	*/
+	public void removeBySTS_SN(int status, String serverNo);
+
+	/**
+	* Returns the number of publish queues where status = &#63; and serverNo = &#63;.
+	*
+	* @param status the status
+	* @param serverNo the server no
+	* @return the number of matching publish queues
+	*/
+	public int countBySTS_SN(int status, String serverNo);
+
+	/**
+	* Returns the number of publish queues where status = any &#63; and serverNo = &#63;.
+	*
+	* @param statuses the statuses
+	* @param serverNo the server no
+	* @return the number of matching publish queues
+	*/
+	public int countBySTS_SN(int[] statuses, String serverNo);
+
+	/**
 	* Caches the publish queue in the entity cache if it is enabled.
 	*
 	* @param publishQueue the publish queue

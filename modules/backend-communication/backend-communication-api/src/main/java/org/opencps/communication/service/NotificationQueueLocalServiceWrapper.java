@@ -232,6 +232,14 @@ public class NotificationQueueLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.communication.model.NotificationQueue> fetchByF_Greate_PublicationDate_Less_ExpireDate(
+		String notificationType, java.util.Date publicationDate,
+		java.util.Date expireDate) {
+		return _notificationQueueLocalService.fetchByF_Greate_PublicationDate_Less_ExpireDate(notificationType,
+			publicationDate, expireDate);
+	}
+
+	@Override
 	public org.opencps.communication.model.NotificationQueue fetchNotificationQueue(
 		long notificationQueueId) {
 		return _notificationQueueLocalService.fetchNotificationQueue(notificationQueueId);

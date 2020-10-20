@@ -257,6 +257,11 @@ public class NotificationtemplateLocalServiceUtil {
 		return getService().findByInterval(interval);
 	}
 
+	public static java.util.List<org.opencps.communication.model.Notificationtemplate> findByIntervalLike(
+		String interval) {
+		return getService().findByIntervalLike(interval);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

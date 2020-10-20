@@ -129,11 +129,13 @@ import javax.xml.bind.annotation.XmlType;
     "dossierCounter",
     "delegate",
     "vnpostalStatus",
-    "fromViaPostal"
+    "fromViaPostal",
+	"isGetVotingData"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
-
+	@QueryParam(value = "isGetVotingData")
+	protected String isGetVotingData;
 	@QueryParam(value = "keyword")
     protected String keyword;
 	@QueryParam(value = "start")
@@ -305,6 +307,14 @@ public class DossierSearchModel {
 	@DefaultValue("false")
 	@QueryParam(value = "notAgencysScope")
 	protected boolean notAgencysScope;
+
+	public String getIsGetVotingData() {
+		return isGetVotingData;
+	}
+
+	public void setIsGetVotingData(String isGetVotingData) {
+		this.isGetVotingData = isGetVotingData;
+	}
 
 	public boolean isNotAgencysScope() {
 		return notAgencysScope;

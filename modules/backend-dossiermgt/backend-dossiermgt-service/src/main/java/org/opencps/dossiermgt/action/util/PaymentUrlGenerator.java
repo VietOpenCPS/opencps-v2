@@ -78,7 +78,7 @@ public class PaymentUrlGenerator {
 		    
 	}
 	public static String generatorPayURL(long groupId, long paymentFileId, String pattern,
-			long dossierId) throws IOException {
+			Dossier dossier) {
 
 		String result = "";
 		try {
@@ -86,7 +86,7 @@ public class PaymentUrlGenerator {
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getPaymentFile(paymentFileId);
 
 			// get dossier
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			//Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
 					dossier.getGovAgencyCode());
@@ -101,7 +101,8 @@ public class PaymentUrlGenerator {
 
 				String merchant_code = epaymentConfigJSON.getString("paymentMerchantCode");
 
-				String good_code = generatorGoodCode(10);
+				//String good_code = generatorGoodCode(10);
+				String good_code = dossier.getDossierNo();
 				
 				String net_cost = String.valueOf(paymentFile.getPaymentAmount());
 				
@@ -436,9 +437,10 @@ public class PaymentUrlGenerator {
 		lsDesc.add(4, StringPool.BLANK);
 
 		List<String> lsMsg = DossierPaymentUtils.getMessagePayment(pattern);
-
-		for (int i = 0; i < lsMsg.size(); i++) {
-			lsDesc.set(1, lsMsg.get(i));
+		if (lsMsg.size() > 0) {
+			for (int i = 0; i < lsMsg.size(); i++) {
+				lsDesc.set(1, lsMsg.get(i));
+			}
 		}
 
 		return lsDesc;

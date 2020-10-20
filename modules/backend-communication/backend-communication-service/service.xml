@@ -71,6 +71,9 @@
 			<finder-column name="notificationType" />
 			<finder-column name="interval" />
 		</finder>
+		<finder name="F_interval_Like" return-type="Collection">
+			<finder-column name ="interval" comparator="LIKE"/>
+		</finder>
 
 	</entity>
 	
@@ -135,6 +138,12 @@
 			<finder-column name="className"></finder-column>
 			<finder-column name="classPK"></finder-column>
 			<finder-column name="toEmail"></finder-column>
+		</finder>
+		<finder name="F_Greate_PublicationDate_Less_ExpireDate"
+				return-type="Collection">
+			<finder-column name="notificationType"></finder-column>
+			<finder-column name="publicationDate" comparator="&lt;" />
+			<finder-column name="expireDate" comparator="&gt;=" />
 		</finder>
 
 	</entity>
