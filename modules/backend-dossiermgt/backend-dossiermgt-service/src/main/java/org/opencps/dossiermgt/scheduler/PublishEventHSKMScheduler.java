@@ -62,7 +62,7 @@ public class PublishEventHSKMScheduler extends BaseMessageListener {
 			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatusesAndServerNo(new int[] {
 					PublishQueueTerm.STATE_WAITING_SYNC,
 					PublishQueueTerm.STATE_ALREADY_SENT},
-					ServerConfigTerm.DVCQG_INTEGRATION, 0, 20);
+					ServerConfigTerm.DVCQG_INTEGRATION, 0, 10);
 
 			_log.info("lstPqs  : " + lstPqs.size());
 
@@ -146,7 +146,7 @@ public class PublishEventHSKMScheduler extends BaseMessageListener {
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 40, TimeUnit.SECOND);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 90, TimeUnit.SECOND);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
