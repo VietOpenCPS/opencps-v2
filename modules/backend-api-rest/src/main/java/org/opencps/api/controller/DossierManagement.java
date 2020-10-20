@@ -1786,8 +1786,6 @@ public interface DossierManagement {
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext, @PathParam("id") String id);
 
-			@BeanParam DossierSearchModel query);
-
 	@POST
 	@Path("/overdueTime")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,MediaType.APPLICATION_FORM_URLENCODED})
