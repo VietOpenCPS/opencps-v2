@@ -58,20 +58,18 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             boolean result;
 
             for(ProfileReceiver oneDossier : listDossiers) {
-                if(Validator.isNotNull(oneDossier.getStatus())) {
-                    _log.info("Handling profile: " + oneDossier.getProfileId());
-                    ProfileInModel profile = integrationAction.getDetailDossier(token, oneDossier.getProfileId());
-                    if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
-                        result = integrationAction.crawlDossierLGSP(profile);
+                _log.info("Handling profile: " + oneDossier.getProfileId());
+                ProfileInModel profile = integrationAction.getDetailDossier(token, oneDossier.getProfileId());
+                if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
+                    result = integrationAction.crawlDossierLGSP(profile, token);
 
-                        if(result) {
-                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
-                        } else {
-                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
-                        }
+                    if(result) {
+                        integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
+                    } else {
+                        integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
                     }
-                    _log.info("Done crawl one profile id: " + oneDossier.getProfileId());
                 }
+                _log.info("Done crawl one profile id: " + oneDossier.getProfileId());
             }
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
@@ -97,7 +95,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             ProfileInModel profile = integrationAction.getDetailDossier(token, Integer.valueOf(profileId));
             if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
 //                integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_SUCCESS);
-                boolean resultCrawl = integrationAction.crawlDossierLGSP(profile);
+                boolean resultCrawl = integrationAction.crawlDossierLGSP(profile, token);
 //                if(resultCrawl) {
 //                    integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_SUCCESS);
 //                } else {

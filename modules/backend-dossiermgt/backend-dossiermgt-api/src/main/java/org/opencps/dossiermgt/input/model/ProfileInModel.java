@@ -28,6 +28,8 @@ public class ProfileInModel {
 
     public String profiles_status;
 
+    public String is_update;
+
     public String require_date;
 
     public String start_date;
@@ -75,6 +77,14 @@ public class ProfileInModel {
     public String is_request_payment;
 
     public String total_amount;
+
+    public String getIs_update() {
+        return is_update;
+    }
+
+    public void setIs_update(String is_update) {
+        this.is_update = is_update;
+    }
 
     public String getTotal_amount() {
         return total_amount;

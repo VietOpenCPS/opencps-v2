@@ -127,8 +127,8 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 		SystemException.class, PortalException.class, Exception.class}
 	)
 	public Dossier createDossierFrequency(long groupId, Company company,
-		User user, ServiceContext serviceContext, ProfileInModel input)
-		throws Exception;
+		User user, ServiceContext serviceContext, ProfileInModel input,
+		String actionCode) throws Exception;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}

@@ -134,11 +134,11 @@ public class CPSDossierBusinessLocalServiceUtil {
 		long groupId, com.liferay.portal.kernel.model.Company company,
 		com.liferay.portal.kernel.model.User user,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,
-		org.opencps.dossiermgt.input.model.ProfileInModel input)
-		throws Exception {
+		org.opencps.dossiermgt.input.model.ProfileInModel input,
+		String actionCode) throws Exception {
 		return getService()
 				   .createDossierFrequency(groupId, company, user,
-			serviceContext, input);
+			serviceContext, input, actionCode);
 	}
 
 	public static org.opencps.dossiermgt.model.PaymentFile createPaymentFileByDossierId(

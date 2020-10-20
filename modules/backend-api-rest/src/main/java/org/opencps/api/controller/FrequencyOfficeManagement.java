@@ -42,25 +42,25 @@ public interface FrequencyOfficeManagement {
     @Produces(MediaType.APPLICATION_JSON)
     public Response synDossierFake(String profile);
 
-    @POST
+    @GET
     @Path("/{dossierId}/sendStatusProfile/{status}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response sendStatusProfile(@PathParam("dossierId") long dossierId, @PathParam("status") long status);
 
-    @POST
+    @GET
     @Path("/{dossierId}/sendStatusProfileToDVCBo")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response sendStatusProfileToDVCBo(@PathParam("dossierId") long dossierId);
 
-    @POST
+    @GET
     @Path("/{dossierId}/syncDossierToLGSPManual")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response syncDossierToLGSPManual(@PathParam("dossierId") long dossierId);
 
-    @POST
+    @GET
     @Path("/{dossierId}/syncDossierToDVCBoManual")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

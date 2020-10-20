@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     private RestTemplate restTemplate;
-    private static final Integer timeout = 30000 ;
+    private static final Integer timeout = 10000 ;
     private Log _log = LogFactoryUtil.getLog(ApiThirdPartyServiceImpl.class);
 
     public ApiThirdPartyServiceImpl(){

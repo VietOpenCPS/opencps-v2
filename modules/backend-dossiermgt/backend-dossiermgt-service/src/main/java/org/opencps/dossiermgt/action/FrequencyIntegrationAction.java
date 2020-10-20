@@ -5,7 +5,7 @@ import org.opencps.dossiermgt.input.model.ProfileReceiver;
 import java.util.List;
 
 public interface FrequencyIntegrationAction {
-    public boolean crawlDossierLGSP(ProfileInModel profile) throws Exception;
+    public boolean crawlDossierLGSP(ProfileInModel profile, String token) throws Exception;
     public String getToken() throws Exception; // API 3.1
     public void syncDossierToLGSP(String token, ProfileInModel profile) throws Exception; //Case auto sync dossier to CucTanSo
     public void syncDossierToLGSPManual(String token, long dossierId) throws Exception; //API 3.3, 3.5, 3.6, 3.7

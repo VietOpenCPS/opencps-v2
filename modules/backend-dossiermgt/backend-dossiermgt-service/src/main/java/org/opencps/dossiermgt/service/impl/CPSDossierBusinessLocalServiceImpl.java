@@ -6818,7 +6818,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
 			Exception.class })
 	public Dossier createDossierFrequency(long groupId, Company company, User user,
-										  ServiceContext serviceContext, ProfileInModel input)  throws Exception {
+										  ServiceContext serviceContext, ProfileInModel input, String actionCode)  throws Exception {
 		try{
 			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
 					input.getTemplateNo(), groupId);
@@ -6907,6 +6907,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Date dueDate     = Validator.isNotNull(input.getAccept_date()) ?
 									formatter.parse(input.getAccept_date()) :
 									null;
+
 			Integer counter = 0;
 			Date appIdDate = null;
 			String metaData = StringPool.BLANK;
@@ -6926,6 +6927,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			if (Validator.isNull(dossier)) {
 				throw new NotFoundException("Cant add DOSSIER");
+			}
+
+			if(Validator.isNotNull(input.getFrom_unit_code()) && !input.getFrom_unit_code().isEmpty()) {
+				JSONObject metaDataJson = JSONFactoryUtil.createJSONObject();
+				metaDataJson.put("fromUnitCode", input.getFrom_unit_code());
+				metaData = metaDataJson.toString();
 			}
 
 			if (receiveDate != null)
@@ -6963,7 +6970,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			createDossierUsers(groupId, dossier, process, lstProcessRoles);
 			_log.info("----Creating dossier info 5...");
 			dossierLocalService.updateDossier(dossier);
-			String actionCode = "1100";
 			_log.info("----Creating dossier info 6...");
 			ObjectMapper objMapper = new ObjectMapper();
 			ProcessAction proAction = getProcessAction(user.getUserId(), groupId, dossier, actionCode,
