@@ -860,7 +860,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					_log.debug(e);
 				}
 			}
-			List<PostConnect> postConnect  = PostConnectLocalServiceUtil.findByPostConnectByDossierId(object.getGroupId(),object.getDossierId());
+			List<PostConnect> postConnect  = PostConnectLocalServiceUtil.fetchPostConnectByDossierId(object.getDossierId());
 			if(postConnect !=null && postConnect.size() >0) {
 				String orderNumber = "";
 				for (PostConnect item : postConnect) {
@@ -871,7 +871,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					}
 				}
 				if (Validator.isNotNull(orderNumber)) {
-					document.addTextSortable(DossierTerm.ORDER_NUMBER,orderNumber);
+					document.addTextSortable(DossierTerm.ORDER_NUMBER,orderNumber.toLowerCase());
 				}
 			}
 

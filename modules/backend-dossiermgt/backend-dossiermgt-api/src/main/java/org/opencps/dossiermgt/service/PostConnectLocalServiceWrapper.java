@@ -228,6 +228,11 @@ public class PostConnectLocalServiceWrapper implements PostConnectLocalService,
 	}
 
 	@Override
+	public List<PostConnect> fetchPostConnectByDossierId(long dossierId) throws PortalException {
+		return _postConnectLocalService.fetchPostConnectByDossierId(dossierId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.PostConnect> getBySyncState(
 		Integer syncState) {
 		return _postConnectLocalService.getBySyncState(syncState);

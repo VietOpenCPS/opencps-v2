@@ -243,6 +243,10 @@ public interface PostConnectLocalService extends BaseLocalService,
 	public List<PostConnect> findByPostConnectByDossierId(long groupId, long dossierId)
 			throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PostConnect> fetchPostConnectByDossierId(long dossierId)
+			throws PortalException;
+
 	/**
 	* Returns a range of all the post connects.
 	*

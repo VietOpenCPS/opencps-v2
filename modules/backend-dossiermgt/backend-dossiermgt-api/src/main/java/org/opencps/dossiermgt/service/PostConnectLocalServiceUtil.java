@@ -275,6 +275,12 @@ public class PostConnectLocalServiceUtil {
 		return getService().findByPostConnectByDossierId( groupId,dossierId);
 	}
 
+	public static List<org.opencps.dossiermgt.model.PostConnect> fetchPostConnectByDossierId (
+			long dossierId)
+			throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().fetchPostConnectByDossierId(dossierId);
+	}
+
 	/**
 	* Returns a range of all the post connects.
 	*

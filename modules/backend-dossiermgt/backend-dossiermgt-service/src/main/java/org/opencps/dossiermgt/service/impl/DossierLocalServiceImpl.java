@@ -3237,7 +3237,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					DossierTerm.CURRENT_ACTION_USER,
 					DossierTerm.ORIGIN_DOSSIER_NO_SEARCH,
 					ServiceInfoTerm.SERVICE_CODE_SEARCH,
-					DossierTerm.DELEGATE_NAME_SEARCH, DossierTerm.DOSSIER_COUNTER_SEARCH,DossierTerm.APPLICANT_ID_NO
+					DossierTerm.DELEGATE_NAME_SEARCH,
+					DossierTerm.DOSSIER_COUNTER_SEARCH,
+					DossierTerm.APPLICANT_ID_NO,
+					DossierTerm.ORDER_NUMBER
 			};
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
