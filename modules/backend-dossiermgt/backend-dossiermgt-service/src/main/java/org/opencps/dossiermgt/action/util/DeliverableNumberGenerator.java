@@ -201,11 +201,11 @@ public class DeliverableNumberGenerator {
 		} else if (ngayQD.split(DOT).length > 1) {
 			ngayquyetdinh = ngayQD.split(DOT);
 		}
-//		_log.info("VAO ngayQD " + ngayquyetdinh);
+		_log.info("VAO ngayQD " + ngayquyetdinh);
 		String day = ngayquyetdinh[0];
 		String month = ngayquyetdinh[1];
 		String year = ngayquyetdinh[2];
-//		_log.info("VAO year " + year);
+		_log.info("VAO year " + year);
 		
 		for (String pattern : patterns) {
 			Pattern r = Pattern.compile(pattern);
