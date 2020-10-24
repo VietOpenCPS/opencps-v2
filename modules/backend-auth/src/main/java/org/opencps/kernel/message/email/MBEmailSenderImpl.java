@@ -28,28 +28,33 @@ public class MBEmailSenderImpl implements MBEmailSender {
 		MBMessageEntry messageEntry, String portletId,
 		ServiceContext... serviceContexts) {
 
-		if (messageEntry != null && messageEntry.isSendEmail() && messageEntry.getToAddress().length > 0) {
-//			_log.debug("===SEND_MAIL_TO_ADD=======" + messageEntry.getToAddress()[0].getAddress());
-			MailMessage mailMessage = new MailMessage();
-			mailMessage.setSubject(messageEntry.getEmailSubject());
-			mailMessage.setTo(messageEntry.getToAddress());
-			mailMessage.setBody(messageEntry.getEmailBody());
-			mailMessage.setHTMLFormat(true);
-//			_log.debug("messageEntry FROM1: " + messageEntry.getFrom().getAddress());
-//			_log.debug("mailMessage FROM1: " + mailMessage.getFrom().getAddress());
-			String smtpUser = PrefsPropsUtil.getString(
-					PropsKeys.MAIL_SESSION_MAIL_SMTP_USER,
-					StringPool.BLANK);
-			if (Validator.isNotNull(smtpUser)) {
-				messageEntry.getFrom().setAddress(smtpUser);				
-				mailMessage.setFrom(messageEntry.getFrom());
+		try {
+			if (messageEntry != null && messageEntry.isSendEmail() && messageEntry.getToAddress().length > 0) {
+				_log.debug("===SEND_MAIL_TO_ADD=======" + messageEntry.getToAddress()[0].getAddress());
+				MailMessage mailMessage = new MailMessage();
+				mailMessage.setSubject(messageEntry.getEmailSubject());
+				mailMessage.setTo(messageEntry.getToAddress());
+				mailMessage.setBody(messageEntry.getEmailBody());
+				mailMessage.setHTMLFormat(true);
+				_log.debug("messageEntry FROM1: " + messageEntry.getFrom().getAddress());
+				//_log.debug("mailMessage FROM1: " + mailMessage.getFrom().getAddress());
+				String smtpUser = PrefsPropsUtil.getString(
+						PropsKeys.MAIL_SESSION_MAIL_SMTP_USER,
+						StringPool.BLANK);
+				_log.debug("smtpUser: " + smtpUser);
+				if (Validator.isNotNull(smtpUser)) {
+					messageEntry.getFrom().setAddress(smtpUser);
+					mailMessage.setFrom(messageEntry.getFrom());
 //				_log.debug("SEND EMAIL FROM2: " + messageEntry.getFrom());
-				// mailMessage.addFileAttachment(file);
+					// mailMessage.addFileAttachment(file);
+				}
+				MailServiceUtil.sendEmail(mailMessage);
+
 			}
-			MailServiceUtil.sendEmail(mailMessage);
-
 		}
-
+		catch (Exception e) {
+			_log.error(e);
+		}
 
 	}
 	
