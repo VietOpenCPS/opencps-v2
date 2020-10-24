@@ -115,6 +115,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
 
             if(status.equals(FrequencyOfficeConstants.STATUS_RECEIVE)) {
+                _log.info("TIEPNHAN|Receiving dossier with ref code: " + profile.getRef_code() + "...");
                 Dossier dossier;
                 dossier = DossierLocalServiceUtil.getByRef(groupId, profile.getRef_code());
                 if(Validator.isNotNull(dossier)) {
@@ -150,6 +151,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
                 //Save file dinh kem
                 this.addDossierFile(profile, groupId, serviceContext, dossier);
+                _log.info("TIEPNHAN|Received dossier with ref code: " + profile.getRef_code());
                 return true;
             }
 
@@ -162,6 +164,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             //Case THANH TOAN
             if(status.equals(FrequencyOfficeConstants.STATUS_PAYMENT) && profile.getIs_request_payment().equals("false")) {
                 //case MCDT
+                _log.info("THANHTOAN|Receiving payment info with ref code: " + profile.getRef_code() + "...");
                 PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
                 if(Validator.isNull(paymentFile)) {
                     throw new Exception("THANHTOAN|No payment file for dossierId: " + dossier.getDossierId());
@@ -189,6 +192,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
                 CPSDossierBusinessLocalServiceUtil.updateDossierFrequencyAction(groupId, serviceContext,
                         dossier, profile, actionCode);
+                _log.info("THANHTOAN|Received payment info with ref code: " + profile.getRef_code());
                 return true;
             } else if (status.equals(FrequencyOfficeConstants.STATUS_PAYMENT) && profile.getIs_request_payment().equals("true")) {
                 //Checklist 2: Luong 3.4
@@ -206,10 +210,12 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
             //Case API RUT, CAP NHAT
             if(status.equals(FrequencyOfficeConstants.STATUS_PULL_OUT) || status.equals(FrequencyOfficeConstants.STATUS_UPDATE)) {
+                _log.info("CAPNHAT|RUT|Updating dossier with ref code: " + profile.getRef_code() + "...");
                 CPSDossierBusinessLocalServiceUtil.updateDossierFrequencyAction(groupId, serviceContext, dossier, profile, actionCode);
                 if(status.equals(FrequencyOfficeConstants.STATUS_UPDATE)) {
                     this.addDossierFile(profile, groupId, serviceContext, dossier);
                 }
+                _log.info("CAPNHAT|RUT|Updated dossier with ref code: " + profile.getRef_code());
             }
             return true;
         } catch (Exception e) {
@@ -430,9 +436,9 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             if(Validator.isNull(dossier.getReferenceUid())) {
                 throw new Exception("No ReferenceId found with id: " + dossierId);
             }
-            //todo remove this line (dang test thanh toan)
-            Integer statusProfile = 5;
-//            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
+
+//            Integer statusProfile = 5;
+            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
             if(statusProfile.equals(0)) {
                 throw new Exception("Status profile: 0");
             }
@@ -530,8 +536,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
 
             Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
-            //todo remove this
-            statusProfile = 2;
+//            statusProfile = 2;
             if(statusProfile.equals(0)) {
                 throw new Exception("Status profile 0 with dossierId: " + dossierId);
             }
@@ -637,7 +642,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     }
 
     @Override
-    public void sendStatusProfile(String token, long dossierId, long status) throws Exception {
+    public void sendStatusProfile(String token, long dossierId) throws Exception {
 
         try {
             Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -659,10 +664,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
 //            Integer statusProfile = Integer.valueOf(status);
             //toto undo this code
-//            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
-//            if(statusProfile.equals(0)) {
-//                throw new Exception("Status profile: 0");
-//            }
+            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
+            if(statusProfile.equals(0)) {
+                throw new Exception("Status profile: 0");
+            }
 
             String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
                     this.configJson.get(FrequencyOfficeConstants.CONFIG_SEND_STATUS_RECEIVER);
@@ -675,7 +680,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             body.put(FrequencyOfficeConstants.TYPE, "status");
             body.put(FrequencyOfficeConstants.SOURCE_ID, dossier.getDossierNo());
             body.put(FrequencyOfficeConstants.REF_CODE, dossier.getReferenceUid());
-            body.put(FrequencyOfficeConstants.STATUS_PROFILE, String.valueOf(status));
+            body.put(FrequencyOfficeConstants.STATUS_PROFILE, String.valueOf(statusProfile));
             body.put(FrequencyOfficeConstants.PROCESS_OFFICIALS, "Admin");
             body.put(FrequencyOfficeConstants.TIME_OF_PROCESS, getCurrentDateStr(FORMAT_DATE_LGSP, new Date()));
             body.put(FrequencyOfficeConstants.FROM_UNIT_CODE, this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
@@ -690,7 +695,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 String fromUnitCode = metaDataJson.getString("fromUnitCode");
                 body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[] { fromUnitCode });
             }
-
+            _log.info("Result send dossier status 1111: ");
             JSONObject response = apiService.callApi(urlSyncDossier, headers, body);
             _log.info("Result send dossier status: " + response);
         } catch (Exception e) {
@@ -714,12 +719,12 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 throw new Exception("No ReferenceId found with id: " + dossierId);
             }
 
-            Integer statusProfile = 2;
+//            Integer statusProfile = 2;
             //toto undo this code
-//            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
-//            if(statusProfile.equals(0)) {
-//                throw new Exception("Status profile: 0");
-//            }
+            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
+            if(statusProfile.equals(0)) {
+                throw new Exception("Status profile: 0");
+            }
 
             String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
                     this.configJson.get(FrequencyOfficeConstants.CONFIG_SEND_STATUS_PROFILE_TO_DVC_BO);
@@ -796,9 +801,9 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                                     InetAddress.getLocalHost().getHostName() +
                                     "/o/rest/v2/dossiers/lgsp/download/"
                                     + fileEntry.getFileEntryId());
-                            //todo remove this
-                            profileAttachment.setContent_type("docx");
-                            profileAttachment.setAttachment_file_url("https://dichvucong3.mic.gov.vn/documents/10180/1432020/2174501.docx?version=1.0");
+
+//                            profileAttachment.setContent_type("docx");
+//                            profileAttachment.setAttachment_file_url("https://dichvucong3.mic.gov.vn/documents/10180/1432020/2174501.docx?version=1.0");
 
 
                             listAttachments.add(profileAttachment);

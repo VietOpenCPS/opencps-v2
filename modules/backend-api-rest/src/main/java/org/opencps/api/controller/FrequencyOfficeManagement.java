@@ -43,10 +43,10 @@ public interface FrequencyOfficeManagement {
     public Response synDossierFake(String profile);
 
     @GET
-    @Path("/{dossierId}/sendStatusProfile/{status}")
+    @Path("/{dossierId}/sendStatusProfile")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response sendStatusProfile(@PathParam("dossierId") long dossierId, @PathParam("status") long status);
+    public Response sendStatusProfile(@PathParam("dossierId") long dossierId);
 
     @GET
     @Path("/{dossierId}/sendStatusProfileToDVCBo")

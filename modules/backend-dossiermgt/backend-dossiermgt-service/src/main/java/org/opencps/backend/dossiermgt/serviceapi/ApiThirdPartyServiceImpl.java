@@ -141,6 +141,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     public JSONObject callApi(String url, HttpHeaders headers, Map<String, Object> body){
         try {
             _log.info("Calling api: " + url);
+            _log.info(body);
             headers.set("Accept", "*");
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
             ResponseEntity<String> response = restTemplate.postForEntity( url, entity , String.class);
@@ -159,6 +160,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     public JSONObject callApi(String url, HttpHeaders headers, Object body) {
         try {
             _log.info("Calling api: " + url);
+            _log.info("Body request: " + body.toString());
             headers.set("Accept", "*");
             HttpEntity<Object> entity = new HttpEntity<>(body, headers);
             ResponseEntity<String> response = restTemplate.postForEntity( url, entity , String.class);

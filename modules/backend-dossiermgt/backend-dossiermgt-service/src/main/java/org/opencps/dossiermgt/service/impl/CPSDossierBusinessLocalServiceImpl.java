@@ -1348,9 +1348,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							payloadObject, flagChanged, actionCode, actionUser, actionNote, serviceProcess, context);
 				}
 
-				if (Validator.isNotNull(postAction)) {
-					processPostAction(postAction, groupId, dossier);
-				}
+//				if (Validator.isNotNull(postAction)) {
+//					processPostAction(postAction, groupId, dossier);
+//				}
 
 				return newAction;
 			}
@@ -1449,8 +1449,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 			//Call API postAction
-			String strPostAction = processPostAction(proAction.getPostAction(), groupId, dossier);
-			_log.info("strPostAction: "+strPostAction);
+//			String strPostAction = processPostAction(proAction.getPostAction(), groupId, dossier);
+//			_log.info("strPostAction: "+strPostAction);
 		}
 
 		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction

@@ -251,13 +251,13 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
     }
 
     @Override
-    public Response sendStatusProfile(long dossierId, long status) {
+    public Response sendStatusProfile(long dossierId) {
         try {
             List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
             ServerConfig serverConfig = listConfig.get(0);
             FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
             String token = integrationAction.getToken();
-            integrationAction.sendStatusProfile(token, dossierId, status);
+            integrationAction.sendStatusProfile(token, dossierId);
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 

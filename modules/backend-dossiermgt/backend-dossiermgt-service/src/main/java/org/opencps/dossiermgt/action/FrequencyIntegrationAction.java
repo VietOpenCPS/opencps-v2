@@ -12,7 +12,7 @@ public interface FrequencyIntegrationAction {
     public void updateStatusReceiver(String token, Integer profileId, String status) throws Exception; // API 3.8
     public List<ProfileReceiver> getDossiers(String token) throws Exception; // API 3.9
     public ProfileInModel getDetailDossier(String token, Integer profileId) throws Exception; //API 3.10
-    public void sendStatusProfile(String token, long dossierId, long status) throws Exception; //API 3.11
+    public void sendStatusProfile(String token, long dossierId) throws Exception; //API 3.11
     public void syncDossierToDVCBoManual(String token, long dossierId) throws Exception; //API 3.12
     public void sendStatusProfileToDVCBo(String token, long dossierId) throws Exception; //API 3.13
 }
