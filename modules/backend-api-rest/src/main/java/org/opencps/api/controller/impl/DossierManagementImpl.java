@@ -45,8 +45,8 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.Serializable;
+import java.io.*;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -116,6 +116,7 @@ import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.*;
@@ -1924,6 +1925,7 @@ public class DossierManagementImpl implements DossierManagement {
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 		DossierAction dossierResult = null;
+		ProcessAction processActionCurrent = null;
 		ErrorMsgModel errorModel = new ErrorMsgModel();
 		String actionUser = input.getActionUser();
 		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(
@@ -1945,13 +1947,16 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 
 			_log.info("TRACE_LOG_INFO doAction dueDate: "+dueDate);
-
+			_log.info(1111);
+			_log.info(dossier);
+			_log.info(111111111);
 			_log.debug("LamTV-input: " + JSONFactoryUtil.looseSerialize(input));
 			_log.debug(
 				"LamTV-Call in groupId: " + groupId + "|dossierId: " + id +
 					" |userId: " + userId);
 
 			if (dossier != null) {
+				_log.info(2222);
 				_log.debug(
 					"Dossier: " + dossier + ", action code: " +
 						input.getActionCode());
@@ -1969,8 +1974,9 @@ public class DossierManagementImpl implements DossierManagement {
 					actionCodes = Arrays.asList(actionCode.split(","));
 					actionCode = getActionCode(groupId, actionCodes, dossier, user);
 				}
-								
+				_log.info(3333);
 				if (Validator.isNotNull(actionCode)) {
+					_log.info(44444);
 					ActionConfig actConfig =
 						ActionConfigLocalServiceUtil.getByCode(
 							groupId, actionCode);
@@ -1979,6 +1985,7 @@ public class DossierManagementImpl implements DossierManagement {
 					String govAgencyCode = dossier.getGovAgencyCode();
 					String dossierTempNo = dossier.getDossierTemplateNo();
 					if (actConfig != null) {
+						_log.info(5555);
 						boolean insideProcess = actConfig.getInsideProcess();
 						ProcessOption option = DossierUtils.getProcessOption(
 							serviceCode, govAgencyCode, dossierTempNo, groupId);
@@ -1993,6 +2000,7 @@ public class DossierManagementImpl implements DossierManagement {
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
+										processActionCurrent = proAction;
 										_log.debug(
 											"DO ACTION: " +
 												proAction.getActionCode());
@@ -2034,6 +2042,7 @@ public class DossierManagementImpl implements DossierManagement {
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
+										processActionCurrent = proAction;
 										_log.debug(
 											"DO ACTION: " +
 												proAction.getActionCode());
@@ -2240,6 +2249,7 @@ public class DossierManagementImpl implements DossierManagement {
 									groupId, dossier, actionCode,
 									serviceProcessId);
 							if (proAction != null) {
+								processActionCurrent = proAction;
 								dossierResult = actions.doAction(
 									groupId, userId, dossier, option, proAction,
 									actionCode, actionUser,
@@ -2285,6 +2295,7 @@ public class DossierManagementImpl implements DossierManagement {
 			// return
 			// Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerializeDeep(dossierAction)).build();
 			if (dossierResult != null) {
+				System.out.println("TRUEEEEEEEEEEEEEEEEEEEEEEEEE");
 				long dossierActionId = dossierResult.getDossierActionId();
 				DossierDocument doc =
 					DossierDocumentLocalServiceUtil.getByActiocId(
@@ -2297,6 +2308,25 @@ public class DossierManagementImpl implements DossierManagement {
 				DossierActionDetailModel dAction =
 					DossierUtils.mappingDossierAction(
 						dossierResult, dossierDocumentId);
+				//add post action
+				System.out.println("Adding post action");
+				System.out.println(input);
+				_log.info(input);
+				System.out.println("Adding post action 11");
+				System.out.println(dossierResult);
+				System.out.println("Adding post action 222");
+
+				System.out.println("Adding post action 3333");
+				String postAction = processActionCurrent.getPostAction();
+				System.out.println("Adding post action 5555");
+				if (Validator.isNotNull(postAction) && !postAction.isEmpty()) {
+					System.out.println("Adding post action 6666");
+					String result = processPostAction(postAction, groupId, dossier);
+					System.out.println("Result: " + result);
+				}
+				System.out.println("Done add post action");
+
+
 				// String strDossierResult =
 				// JSONFactoryUtil.looseSerializeDeep(dossierResult);
 				// JSONObject jsonData = null;
@@ -2309,6 +2339,7 @@ public class DossierManagementImpl implements DossierManagement {
 				return Response.status(HttpURLConnection.HTTP_OK).entity(dAction).build();
 			}
 			else {
+				System.out.println("Wronggggg");
 				JSONObject errorJson = JSONFactoryUtil.createJSONObject();
 				errorJson.put(ConstantUtils.API_DOSSIER_JSON_ERROR_KEY, MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_CANNOT_DO_ACTION));
 				return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(
@@ -2335,6 +2366,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		}
 		catch (Exception e) {
+			_log.info("ERROrrr: " + e.getMessage());
 			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -2350,6 +2382,146 @@ public class DossierManagementImpl implements DossierManagement {
 
 		return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(
 			groupId, dossierTemplateNo, config.getServiceConfigId());
+	}
+
+	private String processPostAction(String postAction, long groupId, Dossier dossier) {
+		try {
+			JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(postAction);
+			if (jsonPostData != null) {
+				JSONObject jsonCallAPI = JSONFactoryUtil.createJSONObject(jsonPostData.getString("CALL_API"));
+				if (jsonCallAPI != null && jsonCallAPI.has(DossierTerm.SERVER_NO)) {
+					String serverNo = jsonCallAPI.getString(DossierTerm.SERVER_NO);
+					if (Validator.isNotNull(serverNo)) {
+						ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
+						if (serverConfig != null) {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+							//
+							String method = StringPool.BLANK;
+							if (configObj != null && configObj.has(KeyPayTerm.METHOD)) {
+								method = configObj.getString(KeyPayTerm.METHOD);
+								System.out.println("method: " + method);
+							}
+							//params
+							JSONObject jsonParams = null;
+							if (configObj != null && configObj.has(KeyPayTerm.PARAMS)) {
+								jsonParams = JSONFactoryUtil
+										.createJSONObject(configObj.getString(KeyPayTerm.PARAMS));
+							}
+							if (jsonParams != null) {
+								JSONObject jsonHeader = JSONFactoryUtil
+										.createJSONObject(jsonParams.getString(KeyPayTerm.HEADER));
+								JSONObject jsonBody = JSONFactoryUtil
+										.createJSONObject(jsonParams.getString(KeyPayTerm.BODY));
+
+								String authStrEnc = StringPool.BLANK;
+								String apiUrl = StringPool.BLANK;
+								StringBuilder sb = new StringBuilder();
+								try {
+									URL urlVal = null;
+									String groupIdRequest = StringPool.BLANK;
+									StringBuilder postData = new StringBuilder();
+									Iterator<?> keys = jsonBody.keys();
+									while (keys.hasNext()) {
+										String key = (String) keys.next();
+										if (!StringPool.BLANK.equals(postData.toString())) {
+											postData.append(StringPool.AMPERSAND);
+										}
+										postData.append(key);
+										postData.append(StringPool.EQUAL);
+										postData.append(jsonBody.get(key));
+									}
+
+									if (configObj.has(SyncServerTerm.SERVER_USERNAME)
+											&& configObj.has(SyncServerTerm.SERVER_SECRET)
+											&& Validator
+											.isNotNull(configObj.getString(SyncServerTerm.SERVER_USERNAME))
+											&& Validator
+											.isNotNull(configObj.getString(SyncServerTerm.SERVER_SECRET))) {
+										authStrEnc = Base64.getEncoder()
+												.encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME)
+														+ StringPool.COLON
+														+ configObj.getString(SyncServerTerm.SERVER_SECRET))
+														.getBytes());
+									}
+									if (configObj.has(SyncServerTerm.SERVER_URL)) {
+										apiUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+										if (apiUrl.contains("{_dossierId}")) {
+											apiUrl = apiUrl.replace("{_dossierId}", String.valueOf(dossier.getDossierId()));
+										}
+										if (apiUrl.contains("{_dossierCounter}")) {
+											apiUrl = apiUrl.replace("{_dossierCounter}",
+													String.valueOf(dossier.getDossierCounter()));
+										}
+										if (apiUrl.contains("{_dossierNo}")) {
+											apiUrl = apiUrl.replace("{_dossierNo}",
+													String.valueOf(dossier.getDossierNo()));
+										}
+									}
+									if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+										groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
+									}
+									if (jsonHeader != null && Validator.isNotNull(groupIdRequest)) {
+										if (jsonHeader.has(Field.GROUP_ID)) {
+											groupIdRequest = String.valueOf(jsonHeader.getLong(Field.GROUP_ID));
+										}
+									}
+
+									if (HttpMethods.GET.equals(method)) {
+										if (Validator.isNotNull(postData.toString())) {
+											urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
+										} else {
+											urlVal = new URL(apiUrl);
+										}
+									} else {
+										urlVal = new URL(apiUrl);
+									}
+									_log.debug("API URL: " + apiUrl);
+									java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal
+											.openConnection();
+									conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
+									conn.setRequestMethod(method);
+									conn.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+									if (Validator.isNotNull(authStrEnc)) {
+										conn.setRequestProperty(HttpHeaders.AUTHORIZATION, "Basic " + authStrEnc);
+									}
+									if (HttpMethods.POST.equals(method) || HttpMethods.PUT.equals(method)) {
+										conn.setRequestProperty(HttpHeaders.CONTENT_TYPE,
+												MediaType.APPLICATION_FORM_URLENCODED);
+										conn.setRequestProperty(HttpHeaders.CONTENT_LENGTH, StringPool.BLANK
+												+ Integer.toString(postData.toString().getBytes().length));
+
+										conn.setUseCaches(false);
+										conn.setDoInput(true);
+										conn.setDoOutput(true);
+										_log.debug("POST DATA: " + postData.toString());
+										OutputStream os = conn.getOutputStream();
+										os.write(postData.toString().getBytes());
+										os.close();
+									}
+
+									BufferedReader brf = new BufferedReader(
+											new InputStreamReader(conn.getInputStream()));
+
+									int cp;
+									while ((cp = brf.read()) != -1) {
+										sb.append((char) cp);
+									}
+									_log.debug("RESULT PROXY: " + sb.toString());
+									return sb.toString();
+								} catch (IOException e) {
+									_log.debug(e);
+									//_log.debug("Something went wrong while reading/writing in stream!!");
+								}
+							}
+						}
+					}
+				}
+			}
+			return "";
+		} catch (Exception e) {
+			System.out.println("Error when process post action: " + e.getMessage());
+			return "";
+		}
 	}
 
 	protected String getDictItemName(

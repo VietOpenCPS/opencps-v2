@@ -358,7 +358,7 @@ public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
     @Modified
     protected void activate(Map<String,Object> properties) throws SchedulerException {
         String listenerClass = getClass().getName();
-        Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 1, TimeUnit.MINUTE);
+        Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 10, TimeUnit.MINUTE);
 
         _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
         _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
