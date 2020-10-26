@@ -2779,6 +2779,639 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 	private static final String _FINDER_COLUMN_F_G_CLNAME_CLPK_CLASSPK_1 = "voting.classPK IS NULL";
 	private static final String _FINDER_COLUMN_F_G_CLNAME_CLPK_CLASSPK_2 = "voting.classPK = ?";
 	private static final String _FINDER_COLUMN_F_G_CLNAME_CLPK_CLASSPK_3 = "(voting.classPK IS NULL OR voting.classPK = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_CLNAME_VC =
+		new FinderPath(VotingModelImpl.ENTITY_CACHE_ENABLED,
+			VotingModelImpl.FINDER_CACHE_ENABLED, VotingImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_CLNAME_VC",
+			new String[] {
+				String.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_CLNAME_VC =
+		new FinderPath(VotingModelImpl.ENTITY_CACHE_ENABLED,
+			VotingModelImpl.FINDER_CACHE_ENABLED, VotingImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByF_CLNAME_VC",
+			new String[] { String.class.getName(), String.class.getName() },
+			VotingModelImpl.CLASSNAME_COLUMN_BITMASK |
+			VotingModelImpl.VOTINGCODE_COLUMN_BITMASK |
+			VotingModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_CLNAME_VC = new FinderPath(VotingModelImpl.ENTITY_CACHE_ENABLED,
+			VotingModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_CLNAME_VC",
+			new String[] { String.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns all the votings where className = &#63; and votingCode = &#63;.
+	 *
+	 * @param className the class name
+	 * @param votingCode the voting code
+	 * @return the matching votings
+	 */
+	@Override
+	public List<Voting> findByF_CLNAME_VC(String className, String votingCode) {
+		return findByF_CLNAME_VC(className, votingCode, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the votings where className = &#63; and votingCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param className the class name
+	 * @param votingCode the voting code
+	 * @param start the lower bound of the range of votings
+	 * @param end the upper bound of the range of votings (not inclusive)
+	 * @return the range of matching votings
+	 */
+	@Override
+	public List<Voting> findByF_CLNAME_VC(String className, String votingCode,
+		int start, int end) {
+		return findByF_CLNAME_VC(className, votingCode, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the votings where className = &#63; and votingCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param className the class name
+	 * @param votingCode the voting code
+	 * @param start the lower bound of the range of votings
+	 * @param end the upper bound of the range of votings (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching votings
+	 */
+	@Override
+	public List<Voting> findByF_CLNAME_VC(String className, String votingCode,
+		int start, int end, OrderByComparator<Voting> orderByComparator) {
+		return findByF_CLNAME_VC(className, votingCode, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the votings where className = &#63; and votingCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param className the class name
+	 * @param votingCode the voting code
+	 * @param start the lower bound of the range of votings
+	 * @param end the upper bound of the range of votings (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching votings
+	 */
+	@Override
+	public List<Voting> findByF_CLNAME_VC(String className, String votingCode,
+		int start, int end, OrderByComparator<Voting> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_CLNAME_VC;
+			finderArgs = new Object[] { className, votingCode };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_CLNAME_VC;
+			finderArgs = new Object[] {
+					className, votingCode,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Voting> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Voting>)finderCache.getResult(finderPath, finderArgs,
+					this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Voting voting : list) {
+					if (!Objects.equals(className, voting.getClassName()) ||
+							!Objects.equals(votingCode, voting.getVotingCode())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_VOTING_WHERE);
+
+			boolean bindClassName = false;
+
+			if (className == null) {
+				query.append(_FINDER_COLUMN_F_CLNAME_VC_CLASSNAME_1);
+			}
+			else if (className.equals("")) {
+				query.append(_FINDER_COLUMN_F_CLNAME_VC_CLASSNAME_3);
+			}
+			else {
+				bindClassName = true;
+
+				query.append(_FINDER_COLUMN_F_CLNAME_VC_CLASSNAME_2);
+			}
+
+			boolean bindVotingCode = false;
+
+			if (votingCode == null) {
+				query.append(_FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_1);
+			}
+			else if (votingCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_3);
+			}
+			else {
+				bindVotingCode = true;
+
+				query.append(_FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(VotingModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindClassName) {
+					qPos.add(className);
+				}
+
+				if (bindVotingCode) {
+					qPos.add(votingCode);
+				}
+
+				if (!pagination) {
+					list = (List<Voting>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Voting>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first voting in the ordered set where className = &#63; and votingCode = &#63;.
+	 *
+	 * @param className the class name
+	 * @param votingCode the voting code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching voting
+	 * @throws NoSuchVotingException if a matching voting could not be found
+	 */
+	@Override
+	public Voting findByF_CLNAME_VC_First(String className, String votingCode,
+		OrderByComparator<Voting> orderByComparator)
+		throws NoSuchVotingException {
+		Voting voting = fetchByF_CLNAME_VC_First(className, votingCode,
+				orderByComparator);
+
+		if (voting != null) {
+			return voting;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("className=");
+		msg.append(className);
+
+		msg.append(", votingCode=");
+		msg.append(votingCode);
+
+		msg.append("}");
+
+		throw new NoSuchVotingException(msg.toString());
+	}
+
+	/**
+	 * Returns the first voting in the ordered set where className = &#63; and votingCode = &#63;.
+	 *
+	 * @param className the class name
+	 * @param votingCode the voting code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching voting, or <code>null</code> if a matching voting could not be found
+	 */
+	@Override
+	public Voting fetchByF_CLNAME_VC_First(String className, String votingCode,
+		OrderByComparator<Voting> orderByComparator) {
+		List<Voting> list = findByF_CLNAME_VC(className, votingCode, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last voting in the ordered set where className = &#63; and votingCode = &#63;.
+	 *
+	 * @param className the class name
+	 * @param votingCode the voting code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching voting
+	 * @throws NoSuchVotingException if a matching voting could not be found
+	 */
+	@Override
+	public Voting findByF_CLNAME_VC_Last(String className, String votingCode,
+		OrderByComparator<Voting> orderByComparator)
+		throws NoSuchVotingException {
+		Voting voting = fetchByF_CLNAME_VC_Last(className, votingCode,
+				orderByComparator);
+
+		if (voting != null) {
+			return voting;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("className=");
+		msg.append(className);
+
+		msg.append(", votingCode=");
+		msg.append(votingCode);
+
+		msg.append("}");
+
+		throw new NoSuchVotingException(msg.toString());
+	}
+
+	/**
+	 * Returns the last voting in the ordered set where className = &#63; and votingCode = &#63;.
+	 *
+	 * @param className the class name
+	 * @param votingCode the voting code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching voting, or <code>null</code> if a matching voting could not be found
+	 */
+	@Override
+	public Voting fetchByF_CLNAME_VC_Last(String className, String votingCode,
+		OrderByComparator<Voting> orderByComparator) {
+		int count = countByF_CLNAME_VC(className, votingCode);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Voting> list = findByF_CLNAME_VC(className, votingCode, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the votings before and after the current voting in the ordered set where className = &#63; and votingCode = &#63;.
+	 *
+	 * @param votingId the primary key of the current voting
+	 * @param className the class name
+	 * @param votingCode the voting code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next voting
+	 * @throws NoSuchVotingException if a voting with the primary key could not be found
+	 */
+	@Override
+	public Voting[] findByF_CLNAME_VC_PrevAndNext(long votingId,
+		String className, String votingCode,
+		OrderByComparator<Voting> orderByComparator)
+		throws NoSuchVotingException {
+		Voting voting = findByPrimaryKey(votingId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Voting[] array = new VotingImpl[3];
+
+			array[0] = getByF_CLNAME_VC_PrevAndNext(session, voting, className,
+					votingCode, orderByComparator, true);
+
+			array[1] = voting;
+
+			array[2] = getByF_CLNAME_VC_PrevAndNext(session, voting, className,
+					votingCode, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Voting getByF_CLNAME_VC_PrevAndNext(Session session,
+		Voting voting, String className, String votingCode,
+		OrderByComparator<Voting> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_VOTING_WHERE);
+
+		boolean bindClassName = false;
+
+		if (className == null) {
+			query.append(_FINDER_COLUMN_F_CLNAME_VC_CLASSNAME_1);
+		}
+		else if (className.equals("")) {
+			query.append(_FINDER_COLUMN_F_CLNAME_VC_CLASSNAME_3);
+		}
+		else {
+			bindClassName = true;
+
+			query.append(_FINDER_COLUMN_F_CLNAME_VC_CLASSNAME_2);
+		}
+
+		boolean bindVotingCode = false;
+
+		if (votingCode == null) {
+			query.append(_FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_1);
+		}
+		else if (votingCode.equals("")) {
+			query.append(_FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_3);
+		}
+		else {
+			bindVotingCode = true;
+
+			query.append(_FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(VotingModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindClassName) {
+			qPos.add(className);
+		}
+
+		if (bindVotingCode) {
+			qPos.add(votingCode);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(voting);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Voting> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the votings where className = &#63; and votingCode = &#63; from the database.
+	 *
+	 * @param className the class name
+	 * @param votingCode the voting code
+	 */
+	@Override
+	public void removeByF_CLNAME_VC(String className, String votingCode) {
+		for (Voting voting : findByF_CLNAME_VC(className, votingCode,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(voting);
+		}
+	}
+
+	/**
+	 * Returns the number of votings where className = &#63; and votingCode = &#63;.
+	 *
+	 * @param className the class name
+	 * @param votingCode the voting code
+	 * @return the number of matching votings
+	 */
+	@Override
+	public int countByF_CLNAME_VC(String className, String votingCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_CLNAME_VC;
+
+		Object[] finderArgs = new Object[] { className, votingCode };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_VOTING_WHERE);
+
+			boolean bindClassName = false;
+
+			if (className == null) {
+				query.append(_FINDER_COLUMN_F_CLNAME_VC_CLASSNAME_1);
+			}
+			else if (className.equals("")) {
+				query.append(_FINDER_COLUMN_F_CLNAME_VC_CLASSNAME_3);
+			}
+			else {
+				bindClassName = true;
+
+				query.append(_FINDER_COLUMN_F_CLNAME_VC_CLASSNAME_2);
+			}
+
+			boolean bindVotingCode = false;
+
+			if (votingCode == null) {
+				query.append(_FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_1);
+			}
+			else if (votingCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_3);
+			}
+			else {
+				bindVotingCode = true;
+
+				query.append(_FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindClassName) {
+					qPos.add(className);
+				}
+
+				if (bindVotingCode) {
+					qPos.add(votingCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_CLNAME_VC_CLASSNAME_1 = "voting.className IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_CLNAME_VC_CLASSNAME_2 = "voting.className = ? AND ";
+	private static final String _FINDER_COLUMN_F_CLNAME_VC_CLASSNAME_3 = "(voting.className IS NULL OR voting.className = '') AND ";
+	private static final String _FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_1 = "voting.votingCode IS NULL";
+	private static final String _FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_2 = "voting.votingCode = ?";
+	private static final String _FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_3 = "(voting.votingCode IS NULL OR voting.votingCode = '')";
 
 	public VotingPersistenceImpl() {
 		setModelClass(Voting.class);
@@ -3128,6 +3761,15 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_G_CLNAME_CLPK,
 				args);
 
+			args = new Object[] {
+					votingModelImpl.getClassName(),
+					votingModelImpl.getVotingCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_CLNAME_VC, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_CLNAME_VC,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -3215,6 +3857,27 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_G_CLNAME_CLPK,
 					args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_G_CLNAME_CLPK,
+					args);
+			}
+
+			if ((votingModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_CLNAME_VC.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						votingModelImpl.getOriginalClassName(),
+						votingModelImpl.getOriginalVotingCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_CLNAME_VC, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_CLNAME_VC,
+					args);
+
+				args = new Object[] {
+						votingModelImpl.getClassName(),
+						votingModelImpl.getVotingCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_CLNAME_VC, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_CLNAME_VC,
 					args);
 			}
 		}

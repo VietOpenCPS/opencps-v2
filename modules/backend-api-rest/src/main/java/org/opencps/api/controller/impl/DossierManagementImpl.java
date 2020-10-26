@@ -2264,6 +2264,35 @@ public class DossierManagementImpl implements DossierManagement {
 							notarization.setNotarizationNo(notarizationNoNumber);
 							notarization = NotarizationLocalServiceUtil.updateNotarization(notarization);
 						}
+					} 
+				}
+				
+				// add delegate to applicant (Thêm thông tin người nộp cho chủ hs doanh nghiệp)
+				JSONObject payloadObj = JSONFactoryUtil.createJSONObject(input.getPayload());
+				if(payloadObj.has("applicantIdNo") && payloadObj.has("delegateIdNo")) {
+					String delegateIdNo = payloadObj.getString("delegateIdNo");
+					String applicantIdNo = payloadObj.getString("applicantIdNo");
+					String delegateName = payloadObj.getString("delegateName");
+					String delegateAddress = payloadObj.getString("delegateAddress");
+					String delegateCityCode = payloadObj.getString("delegateCityCode");
+					String delegateDistrictCode = payloadObj.getString("delegateDistrictCode");
+					String delegateWardCode = payloadObj.getString("delegateWardCode");
+					String delegateEmail = payloadObj.getString("delegateEmail");
+					String delegateTelNo = payloadObj.getString("delegateTelNo");
+					String applicantIdType = "citizen";
+					String applicantIdDate = "1970-01-01";
+					String password = "123456";
+					
+					
+					if (!delegateIdNo.equals(applicantIdNo)) {
+						Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(delegateIdNo);
+						if (Validator.isNull(applicant)) {
+							new ApplicantActionsImpl().register(serviceContext, groupId,
+									delegateName, applicantIdType, delegateIdNo, applicantIdDate,
+									delegateEmail, delegateAddress, delegateCityCode, StringPool.BLANK, delegateDistrictCode, 
+									StringPool.BLANK, delegateWardCode, StringPool.BLANK, StringPool.BLANK, delegateTelNo,
+									StringPool.BLANK, password);
+						}
 					}
 				}
 				
