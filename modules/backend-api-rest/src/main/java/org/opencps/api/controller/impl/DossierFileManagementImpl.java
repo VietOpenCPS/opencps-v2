@@ -298,6 +298,35 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	}
 
 	@Override
+	public Response downloadFromLGSP(HttpServletRequest request, HttpHeaders header, Company company,
+									 Locale locale, User user, ServiceContext serviceContext, long fileEntryId) {
+		try {
+			if(Validator.isNull(fileEntryId) || fileEntryId == 0) {
+				throw new Exception("No file entry id");
+			}
+
+			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+			if(Validator.isNull(fileEntry)) {
+				throw new Exception("No file entry for entryId: " + fileEntryId);
+			}
+			File file = DLFileEntryLocalServiceUtil.getFile(
+					fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
+
+			ResponseBuilder responseBuilder = Response.ok((Object) file);
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
+			responseBuilder.header(
+					ConstantUtils.CONTENT_DISPOSITION,
+					attachmentFilename);
+			responseBuilder.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
+
+			return responseBuilder.build();
+		} catch (Exception e) {
+			_log.error("Error when lgsp download file from fds: " + e.getMessage());
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		}
+	}
+
+	@Override
 	public Response downloadByDossierId_ReferenceUid(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id,

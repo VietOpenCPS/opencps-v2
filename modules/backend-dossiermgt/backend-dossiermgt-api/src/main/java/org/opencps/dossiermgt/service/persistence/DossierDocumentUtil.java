@@ -832,6 +832,209 @@ public class DossierDocumentUtil {
 	}
 
 	/**
+	* Returns all the dossier documents where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @return the matching dossier documents
+	*/
+	public static List<DossierDocument> findByF_GID_DID_DAID(long groupId,
+		long dossierId, long dossierActionId) {
+		return getPersistence()
+				   .findByF_GID_DID_DAID(groupId, dossierId, dossierActionId);
+	}
+
+	/**
+	* Returns a range of all the dossier documents where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierDocumentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param start the lower bound of the range of dossier documents
+	* @param end the upper bound of the range of dossier documents (not inclusive)
+	* @return the range of matching dossier documents
+	*/
+	public static List<DossierDocument> findByF_GID_DID_DAID(long groupId,
+		long dossierId, long dossierActionId, int start, int end) {
+		return getPersistence()
+				   .findByF_GID_DID_DAID(groupId, dossierId, dossierActionId,
+			start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier documents where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierDocumentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param start the lower bound of the range of dossier documents
+	* @param end the upper bound of the range of dossier documents (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier documents
+	*/
+	public static List<DossierDocument> findByF_GID_DID_DAID(long groupId,
+		long dossierId, long dossierActionId, int start, int end,
+		OrderByComparator<DossierDocument> orderByComparator) {
+		return getPersistence()
+				   .findByF_GID_DID_DAID(groupId, dossierId, dossierActionId,
+			start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier documents where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierDocumentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param start the lower bound of the range of dossier documents
+	* @param end the upper bound of the range of dossier documents (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier documents
+	*/
+	public static List<DossierDocument> findByF_GID_DID_DAID(long groupId,
+		long dossierId, long dossierActionId, int start, int end,
+		OrderByComparator<DossierDocument> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_GID_DID_DAID(groupId, dossierId, dossierActionId,
+			start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier document in the ordered set where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier document
+	* @throws NoSuchDossierDocumentException if a matching dossier document could not be found
+	*/
+	public static DossierDocument findByF_GID_DID_DAID_First(long groupId,
+		long dossierId, long dossierActionId,
+		OrderByComparator<DossierDocument> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierDocumentException {
+		return getPersistence()
+				   .findByF_GID_DID_DAID_First(groupId, dossierId,
+			dossierActionId, orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier document in the ordered set where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier document, or <code>null</code> if a matching dossier document could not be found
+	*/
+	public static DossierDocument fetchByF_GID_DID_DAID_First(long groupId,
+		long dossierId, long dossierActionId,
+		OrderByComparator<DossierDocument> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_GID_DID_DAID_First(groupId, dossierId,
+			dossierActionId, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier document in the ordered set where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier document
+	* @throws NoSuchDossierDocumentException if a matching dossier document could not be found
+	*/
+	public static DossierDocument findByF_GID_DID_DAID_Last(long groupId,
+		long dossierId, long dossierActionId,
+		OrderByComparator<DossierDocument> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierDocumentException {
+		return getPersistence()
+				   .findByF_GID_DID_DAID_Last(groupId, dossierId,
+			dossierActionId, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier document in the ordered set where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier document, or <code>null</code> if a matching dossier document could not be found
+	*/
+	public static DossierDocument fetchByF_GID_DID_DAID_Last(long groupId,
+		long dossierId, long dossierActionId,
+		OrderByComparator<DossierDocument> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_GID_DID_DAID_Last(groupId, dossierId,
+			dossierActionId, orderByComparator);
+	}
+
+	/**
+	* Returns the dossier documents before and after the current dossier document in the ordered set where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param DossierDocumentId the primary key of the current dossier document
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier document
+	* @throws NoSuchDossierDocumentException if a dossier document with the primary key could not be found
+	*/
+	public static DossierDocument[] findByF_GID_DID_DAID_PrevAndNext(
+		long DossierDocumentId, long groupId, long dossierId,
+		long dossierActionId,
+		OrderByComparator<DossierDocument> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierDocumentException {
+		return getPersistence()
+				   .findByF_GID_DID_DAID_PrevAndNext(DossierDocumentId,
+			groupId, dossierId, dossierActionId, orderByComparator);
+	}
+
+	/**
+	* Removes all the dossier documents where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	*/
+	public static void removeByF_GID_DID_DAID(long groupId, long dossierId,
+		long dossierActionId) {
+		getPersistence()
+			.removeByF_GID_DID_DAID(groupId, dossierId, dossierActionId);
+	}
+
+	/**
+	* Returns the number of dossier documents where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @return the number of matching dossier documents
+	*/
+	public static int countByF_GID_DID_DAID(long groupId, long dossierId,
+		long dossierActionId) {
+		return getPersistence()
+				   .countByF_GID_DID_DAID(groupId, dossierId, dossierActionId);
+	}
+
+	/**
 	* Caches the dossier document in the entity cache if it is enabled.
 	*
 	* @param dossierDocument the dossier document
