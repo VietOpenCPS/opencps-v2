@@ -882,7 +882,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //														ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceConfig.getServiceInfoId());
 //														ett.setDomainCode(serviceInfo.getDomainCode());
 														DictItemModelInput ett = setData(dict,serviceConfig,agency);
-														_log.info("DictItem :" + JSONFactoryUtil.looseSerialize(ett));
+//														_log.info("DictItem :" + JSONFactoryUtil.looseSerialize(ett));
 														if(Validator.isNotNull(ett)) {
 															lstDictInput.add(ett);
 														}

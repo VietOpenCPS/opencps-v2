@@ -327,7 +327,7 @@ public class DossierUtils {
 //									_log.info("Log Step " + JSONFactoryUtil.looseSerialize(step));
 //								}
 								if(Validator.isNotNull(durationCount)){
-									_log.info("Log duration :" + durationCount);
+//									_log.info("Log duration :" + durationCount);
 									if(durationCount > 0) {
 //										_log.info("Log > 0");
 //										if(Validator.isNotNull(durationUnit)) {
@@ -1374,6 +1374,7 @@ public class DossierUtils {
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
+						_log.info("Vao act " + act.getPreCondition());
 						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user)) {
 							action = act;
 							break;							

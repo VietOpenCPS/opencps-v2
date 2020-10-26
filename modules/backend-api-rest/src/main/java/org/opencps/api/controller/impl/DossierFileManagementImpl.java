@@ -364,7 +364,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				responseBuilder.header(
 					ConstantUtils.CONTENT_DISPOSITION,
 					attachmentFilename);
-				responseBuilder.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE,  ConstantUtils.MEDIA_TYPE_PDF);
 
 				return responseBuilder.build();
 			}else {

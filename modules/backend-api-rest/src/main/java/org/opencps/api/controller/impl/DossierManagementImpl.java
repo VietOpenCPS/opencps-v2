@@ -1682,6 +1682,35 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	@Override
+	public Response updateSampleCountByDossierId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+												 ServiceContext serviceContext, long id, DossierInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		BackendAuth auth = new BackendAuthImpl();
+		DossierDetailModel result = new DossierDetailModel();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if(Validator.isNotNull(input.getSampleCount())) {
+				_log.debug("UPDATE DOSSIER: " + input.getSampleCount());
+				dossier.setSampleCount(input.getSampleCount());
+			}
+
+		DossierLocalServiceUtil.updateDossier(dossier);
+
+		result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+		_log.info("TRACE_LOG_INFO RESULT: "+JSONFactoryUtil.looseSerialize(result));
+
+		}catch (Exception e) {
+			_log.info(e.getMessage());
+		}
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+	}
+
+	@Override
 	public Response updateDossier(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, long id,
@@ -2130,6 +2159,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 
 				if (Validator.isNotNull(actionCode)) {
+					_log.debug("ActionCode " + actionCode);
 					ActionConfig actConfig =
 						ActionConfigLocalServiceUtil.getByCode(
 							groupId, actionCode);
@@ -6860,7 +6890,9 @@ public class DossierManagementImpl implements DossierManagement {
 						groupDossierIdNew += StringPool.COMMA + groupDossierIdStr;
 					}
 				}
-				groupDossierIdNew = groupDossierIdNew.substring(1);
+				if(Validator.isNotNull(groupDossierIdNew)) {
+					groupDossierIdNew = groupDossierIdNew.substring(1);
+				}
 				DossierLocalServiceUtil.updateGroupDossier(dossier, groupDossierIdNew);
 				//Update SampleCount
 				if (Validator.isNotNull(groupDossierId)) {
