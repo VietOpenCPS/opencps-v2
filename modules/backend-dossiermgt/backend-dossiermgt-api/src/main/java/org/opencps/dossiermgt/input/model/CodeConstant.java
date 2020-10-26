@@ -1,0 +1,55 @@
+package org.opencps.dossiermgt.input.model;
+
+public class CodeConstant {
+    public static final String STATUS_SUCCESS = "SUCCESS";
+    public static final String STATUS_FAIL = "FAIL";
+
+    public static final String SUCCESS = "0";
+    public static final String From_unit_code_not_found = "1";
+    public static final String To_unit_code_not_found = "2";
+    public static final String Unit_Code_does_not_exist = "3";
+    public static final String Source_ID_not_found  = "4";
+    public static final String Ref_code_not_found = "5";
+    public static final String Procedures_code_not_found = "6";
+    public static final String Creation_date_not_found = "7";
+    public static final String Creation_date_not_the_format_yyyy_MM_dd = "8";
+    public static final String Data_eform_not_found = "9";
+    public static final String Accept_Date_not_found = "10";
+    public static final String The_status_field_value_is_incorrect = "11";
+    public static final String Profile_Id_does_not_exist = "12";
+    public static final String Source_code_does_not_exist = "13";
+    public static final String data_eform_is_not_base64_encoded = "14";
+    public static final String Data_not_exist = "15";
+    public static final String profile_id_Incorrect_data_type = "16";
+    public static final String The_type_value_is_incorrect = "17";
+    public static final String The_type_of_transmission_does_not_correspond_to_the_data = "18";
+    public static final String Id_input_not_found = "19";
+    public static final String Id_does_not_exist = "20";
+    public static final String No_data_could_be_found_for_the_given_fields = "21";
+    public static final String Form_Unit_Code_does_not_exist = "22";
+    public static final String To_Unit_Code_does_not_exist = "23";
+    public static final String File_already_exist = "24";
+    public static final String source_id_not_null = "25";
+    public static final String title_not_null = "26";
+    public static final String image_url_not_null = "27";
+    public static final String publish_date_not_null = "28";
+    public static final String content_not_null = "29";
+    public static final String organize_not_null = "30";
+    public static final String type_not_null = "31";
+    public static final String title_must_not_exceed_250_characters = "32";
+    public static final String description_must_not_exceed_500_characters = "33";
+    public static final String image_url_must_not_exceed_500_characters = "34";
+    public static final String category_must_not_exceed_250_characters = "35";
+    public static final String organize_must_not_exceed_250_characters = "36";
+    public static final String publish_date_not_the_format_yyyy = "37";
+    public static final String content_must_be_base64_encoded = "38";
+    public static final String type_in_data_false = "171";
+    public static final String name_Owner_not_null = "39";
+    public static final String name_Applicant_not_null = "40";
+    public static final String status_profile_value_is_incorrect = "41";
+    public static final String profile_not_found = "42";
+    public static final String type_not_be_null = "43";
+    public static final String Process_officials_not_be_null = "44";
+    public static final String Time_of_process_not_be_null = "45";
+    public static final String Cannot_be_received_because_the_number_of_allowed_times_is_exceeded = "46";
+}
