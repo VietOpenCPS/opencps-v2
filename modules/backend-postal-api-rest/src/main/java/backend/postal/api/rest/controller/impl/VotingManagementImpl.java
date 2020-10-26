@@ -123,7 +123,6 @@ public class VotingManagementImpl implements VotingManagement {
 			params.put(FROM_VOTING_DATE, fromVotingDate);
 			params.put(TO_VOTING_DATE, toVotingDate);
 
-			_log.info("Param: " + params);
 			JSONObject jsonData = action.getVotingList(user.getUserId(), company.getCompanyId(), groupId, sorts, className, classPK,
 						params, query.getStart(), query.getEnd(), serviceContext);
 

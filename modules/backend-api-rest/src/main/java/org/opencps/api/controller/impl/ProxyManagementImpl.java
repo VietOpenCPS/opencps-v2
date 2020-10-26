@@ -122,7 +122,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 						apiUrl = serverUrl + url;
 					}
 			        if (ConstantUtils.METHOD_GET.equals(method)) {
-						urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
+			        	urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
 			        }
 			        else {
 			        	urlVal = new URL(apiUrl);
@@ -163,7 +163,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 					    while ((cp = brf.read()) != -1) {
 					      sb.append((char) cp);
 					    }
-					    _log.info("sb.tostring : "+ sb.toString());
+					    _log.debug("sb.tostring : "+ sb.toString());
 						return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).
 								build();			        			        	
 			        }
