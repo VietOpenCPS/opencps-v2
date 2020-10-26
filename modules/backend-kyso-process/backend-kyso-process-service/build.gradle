@@ -31,7 +31,7 @@ dependencies {
 	
 	compileOnly project(":modules:backend-communication:backend-communication-service")
 	compileOnly project(":modules:backend-communication:backend-communication-api")
-	
+	testCompile group: "junit", name: "junit", version: "4.12"
 	compile name : "vgca.svrsigner"
 	compile name : "bcpkix"
 	compile name : "bcprov"

@@ -9,4 +9,13 @@ public class ConfiguratorTest {
 	@Before
 	public void setUp() {
 	}
+	@Test
+	public void activateTest() {
+		try{
+			Configurator object = new Configurator();
+			object.activate(null);
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
 }

@@ -84,7 +84,7 @@ dependencies {
 
 	compileOnly project(":modules:backend-auth")
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
-	
+	testCompile group: "junit", name: "junit", version: "4.12"
 }
 repositories {
     flatDir {

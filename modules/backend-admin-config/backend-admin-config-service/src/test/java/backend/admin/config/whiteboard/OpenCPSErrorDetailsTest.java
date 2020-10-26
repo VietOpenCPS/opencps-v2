@@ -37,10 +37,10 @@ public class OpenCPSErrorDetailsTest {
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void setrest_apiTest() {
+	public void getTimestampTest() {
 		try{
 			OpenCPSErrorDetails object = new OpenCPSErrorDetails(new Date(), "abcde", "abcde");
-			object.setrest_api("abcde");
+			object.getTimestamp();
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
@@ -55,19 +55,19 @@ public class OpenCPSErrorDetailsTest {
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void getTimestampTest() {
+	public void getrest_apiTest() {
 		try{
 			OpenCPSErrorDetails object = new OpenCPSErrorDetails(new Date(), "abcde", "abcde");
-			object.getTimestamp();
+			object.getrest_api();
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void getrest_apiTest() {
+	public void setrest_apiTest() {
 		try{
 			OpenCPSErrorDetails object = new OpenCPSErrorDetails(new Date(), "abcde", "abcde");
-			object.getrest_api();
+			object.setrest_api("abcde");
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);

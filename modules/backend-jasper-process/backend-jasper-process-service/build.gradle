@@ -48,6 +48,7 @@ dependencies {
 	compileInclude name : "poi-3.10.1", transitive:false
 	compileInclude name : "poi-ooxml-3.10.1", transitive:false
 	compileInclude name : "poi-ooxml-schemas-3.10.1", transitive:false
+	testCompile group: "junit", name: "junit", version: "4.12"
 }	
 
 repositories {

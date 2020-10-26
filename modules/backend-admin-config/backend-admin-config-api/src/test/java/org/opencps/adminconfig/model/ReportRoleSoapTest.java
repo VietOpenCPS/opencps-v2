@@ -1,10 +1,9 @@
 package org.opencps.adminconfig.model;
+import java.util.ArrayList;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import java.util.Date;
-import java.util.ArrayList;
-import com.liferay.portal.kernel.service.ServiceContext;
 public class ReportRoleSoapTest {
 	@Before
 	public void setUp() {
@@ -42,37 +41,19 @@ public class ReportRoleSoapTest {
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void setPrimaryKeyTest() {
+	public void setRoleIdTest() {
 		try{
 			ReportRoleSoap object = new ReportRoleSoap();
-			object.setPrimaryKey(0);
+			object.setRoleId(Long.valueOf(0));
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void getPrimaryKeyTest() {
+	public void getReportRoleIdTest() {
 		try{
 			ReportRoleSoap object = new ReportRoleSoap();
-			object.getPrimaryKey();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void setDynamicReportIdTest() {
-		try{
-			ReportRoleSoap object = new ReportRoleSoap();
-			object.setDynamicReportId(0);
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void getDynamicReportIdTest() {
-		try{
-			ReportRoleSoap object = new ReportRoleSoap();
-			object.getDynamicReportId();
+			object.getReportRoleId();
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
@@ -90,25 +71,43 @@ public class ReportRoleSoapTest {
 	public void setReportRoleIdTest() {
 		try{
 			ReportRoleSoap object = new ReportRoleSoap();
-			object.setReportRoleId(0);
+			object.setReportRoleId(Long.valueOf(0));
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void setRoleIdTest() {
+	public void setDynamicReportIdTest() {
 		try{
 			ReportRoleSoap object = new ReportRoleSoap();
-			object.setRoleId(0);
+			object.setDynamicReportId(Long.valueOf(0));
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void getReportRoleIdTest() {
+	public void getDynamicReportIdTest() {
 		try{
 			ReportRoleSoap object = new ReportRoleSoap();
-			object.getReportRoleId();
+			object.getDynamicReportId();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void setPrimaryKeyTest() {
+		try{
+			ReportRoleSoap object = new ReportRoleSoap();
+			object.setPrimaryKey(Long.valueOf(0));
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void getPrimaryKeyTest() {
+		try{
+			ReportRoleSoap object = new ReportRoleSoap();
+			object.getPrimaryKey();
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);

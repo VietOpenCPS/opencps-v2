@@ -49,6 +49,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.jdom/jdom2
 	compile group: 'org.jdom', name: 'jdom2', version: '2.0.6', transitive: false
 	
+	testCompile group: "junit", name: "junit", version: "4.12"
+	
 }
 repositories {
 	flatDir {

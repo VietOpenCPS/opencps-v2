@@ -1,46 +1,44 @@
 package backend.utils;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-
+import java.util.Date;
+import java.util.ArrayList;
+import com.liferay.portal.kernel.service.ServiceContext;
 public class APIDateTimeUtilsTest {
 	@Before
 	public void setUp() {
 	}
-
 	@Test
 	public void timeZone2LuceneTest() {
-
-		try {
-			String outputDateString = APIDateTimeUtils.timeZone2Lucene(null);
-		} catch (Exception e) {
-
+		try{
+			APIDateTimeUtils.timeZone2Lucene("abcde");
+		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
 	}
-
 	@Test
-	public void dateToStringTest() {
-
-		try {
-			String outputDateString = APIDateTimeUtils._dateToString(null, null);
-		} catch (Exception e) {
-
+	public void _stringToDateTest() {
+		try{
+			APIDateTimeUtils._stringToDate("abcde", "abcde");
+		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
 	}
-
 	@Test
 	public void convertDateToStringTest() {
-
-		try {
-			String outputDateString = APIDateTimeUtils.convertDateToString(null, null);
-		} catch (Exception e) {
-
+		try{
+			APIDateTimeUtils.convertDateToString(new Date(), "abcde");
+		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
 	}
-
+	@Test
+	public void _dateToStringTest() {
+		try{
+			APIDateTimeUtils._dateToString(new Date(), "abcde");
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
 }

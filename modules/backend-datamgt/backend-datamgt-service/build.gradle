@@ -10,6 +10,7 @@ dependencies {
 
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
 	compileOnly project(":modules:backend-auth")
+	testCompile group: "junit", name: "junit", version: "4.12"
 }
 
 buildService {

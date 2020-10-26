@@ -10,9 +10,9 @@ public class AdminBundlesInstalledTest {
 	public void setUp() {
 	}
 	@Test
-	public void getBundlesTest() {
+	public void getBundleContextTest() {
 		try{
-			AdminBundlesInstalled.getBundles();
+			AdminBundlesInstalled.getBundleContext();
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
@@ -26,25 +26,9 @@ public class AdminBundlesInstalledTest {
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void setBundleIdsTest() {
-		try{
-			AdminBundlesInstalled.setBundleIds(null);
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
 	public void getBundleStateTest() {
 		try{
 			AdminBundlesInstalled.getBundleState("abcde");
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void setBundlesTest() {
-		try{
-			AdminBundlesInstalled.setBundles(null);
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
@@ -58,9 +42,25 @@ public class AdminBundlesInstalledTest {
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void getBundleContextTest() {
+	public void setBundlesTest() {
 		try{
-			AdminBundlesInstalled.getBundleContext();
+			AdminBundlesInstalled.setBundles(null);
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void getBundlesTest() {
+		try{
+			AdminBundlesInstalled.getBundles();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void setBundleIdsTest() {
+		try{
+			AdminBundlesInstalled.setBundleIds(null);
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);

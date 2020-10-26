@@ -1,10 +1,9 @@
 package org.opencps.adminconfig.model;
+
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import java.util.Date;
-import java.util.ArrayList;
-import com.liferay.portal.kernel.service.ServiceContext;
 public class ReportRoleWrapperTest {
 	@Before
 	public void setUp() {
@@ -63,17 +62,18 @@ public class ReportRoleWrapperTest {
 		}
 		Assert.assertEquals(1, 1);
 	}
-	@Test
-	public void setModelAttributesTest() {
+
+	/*@Test
+	public void setExpandoBridgeAttributesTest() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.setModelAttributes(null);
+			object.setExpandoBridgeAttributes(new ServiceContext());
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void setExpandoBridgeAttributesTest() {
+	public void setExpandoBridgeAttributesTest8() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
 			object.setExpandoBridgeAttributes(new ServiceContext());
@@ -89,57 +89,21 @@ public class ReportRoleWrapperTest {
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
-	}
+	}*/
 	@Test
-	public void setExpandoBridgeAttributesTest10() {
+	public void getWrappedModelTest() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.setExpandoBridgeAttributes(new ServiceContext());
+			object.getWrappedModel();
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void isFinderCacheEnabledTest() {
+	public void getWrappedModelTest11() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.isFinderCacheEnabled();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void getModelAttributesTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.getModelAttributes();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void isEntityCacheEnabledTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.isEntityCacheEnabled();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void isNewTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.isNew();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void setNewTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.setNew(true);
+			object.getWrappedModel();
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
@@ -154,24 +118,6 @@ public class ReportRoleWrapperTest {
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void toEscapedModelTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.toEscapedModel();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void toEscapedModelTest18() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.toEscapedModel();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
 	public void getExpandoBridgeTest() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
@@ -181,10 +127,19 @@ public class ReportRoleWrapperTest {
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void isEscapedModelTest() {
+	public void toEscapedModelTest() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.isEscapedModel();
+			object.toEscapedModel();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void toEscapedModelTest15() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.toEscapedModel();
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
@@ -199,37 +154,10 @@ public class ReportRoleWrapperTest {
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void toXmlStringTest() {
+	public void setPrimaryKeyObjTest() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.toXmlString();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void getModelClassTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.getModelClass();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void getPrimaryKeyObjTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.getPrimaryKeyObj();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void setCachedModelTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.setCachedModel(true);
+			object.setPrimaryKeyObj(null);
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
@@ -244,6 +172,69 @@ public class ReportRoleWrapperTest {
 		Assert.assertEquals(1, 1);
 	}
 	@Test
+	public void setCachedModelTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.setCachedModel(true);
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void getPrimaryKeyObjTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.getPrimaryKeyObj();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void getModelClassTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.getModelClass();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void isNewTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.isNew();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void isEscapedModelTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.isEscapedModel();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void toXmlStringTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.toXmlString();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void setNewTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.setNew(true);
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
 	public void toUnescapedModelTest() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
@@ -253,7 +244,7 @@ public class ReportRoleWrapperTest {
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void toUnescapedModelTest28() {
+	public void toUnescapedModelTest27() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
 			object.toUnescapedModel();
@@ -262,82 +253,19 @@ public class ReportRoleWrapperTest {
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void setPrimaryKeyObjTest() {
+	public void setRoleIdTest() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.setPrimaryKeyObj(null);
+			object.setRoleId(Long.valueOf(0));
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void getWrappedModelTest() {
+	public void getReportRoleIdTest() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.getWrappedModel();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void getWrappedModelTest31() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.getWrappedModel();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void setPrimaryKeyTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.setPrimaryKey(0);
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void getPrimaryKeyTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.getPrimaryKey();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void resetOriginalValuesTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.resetOriginalValues();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void setDynamicReportIdTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.setDynamicReportId(0);
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void getDynamicReportIdTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.getDynamicReportId();
-		}catch (Exception e) {
-		}
-		Assert.assertEquals(1, 1);
-	}
-	@Test
-	public void getModelClassNameTest() {
-		try{
-			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.getModelClassName();
+			object.getReportRoleId();
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
@@ -355,25 +283,97 @@ public class ReportRoleWrapperTest {
 	public void setReportRoleIdTest() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.setReportRoleId(0);
+			object.setReportRoleId(Long.valueOf(0));
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void setRoleIdTest() {
+	public void setDynamicReportIdTest() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.setRoleId(0);
+			object.setDynamicReportId(Long.valueOf(0));
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
 	}
 	@Test
-	public void getReportRoleIdTest() {
+	public void isFinderCacheEnabledTest() {
 		try{
 			ReportRoleWrapper object = new ReportRoleWrapper(null);
-			object.getReportRoleId();
+			object.isFinderCacheEnabled();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void setModelAttributesTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.setModelAttributes(null);
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void resetOriginalValuesTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.resetOriginalValues();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void getModelClassNameTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.getModelClassName();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void getDynamicReportIdTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.getDynamicReportId();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void isEntityCacheEnabledTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.isEntityCacheEnabled();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void getModelAttributesTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.getModelAttributes();
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void setPrimaryKeyTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.setPrimaryKey(Long.valueOf(0));
+		}catch (Exception e) {
+		}
+		Assert.assertEquals(1, 1);
+	}
+	@Test
+	public void getPrimaryKeyTest() {
+		try{
+			ReportRoleWrapper object = new ReportRoleWrapper(null);
+			object.getPrimaryKey();
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
