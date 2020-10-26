@@ -314,6 +314,9 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				message.put(DossierDocumentTerm.FORM_REPORT, documentScript);
 				message.put(DossierDocumentTerm.FORM_DATA, formDataJSON.toJSONString());
 //				message.put("className", DossierDocument.class.getName());
+				if(Validator.isNotNull(input.getReportType())){
+					message.put(ConstantUtils.API_JSON_REPORT_TYPE, input.getReportType());
+				}
 
 				try {
 					String previewResponse = (String) MessageBusUtil
@@ -328,8 +331,11 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
 					responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 							attachmentFilename);
-					responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
-
+					if(ConstantUtils.WORD.equals(input.getReportType())){
+						responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_MSWORD);
+					}else {
+						responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
+					}
 					return responseBuilder.build();
 
 				} catch (MessageBusException e) {
