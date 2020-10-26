@@ -27,6 +27,7 @@ import org.opencps.dossiermgt.input.model.*;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.kernel.context.MBServiceContextFactoryUtil;
+import org.opencps.kernel.prop.PropKeys;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -797,10 +798,16 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                             profileAttachment.setIs_verified(0);
                             profileAttachment.setDescription("");
                             profileAttachment.setIs_deleted(0);
-                            profileAttachment.setAttachment_file_url(
-                                    InetAddress.getLocalHost().getHostName() +
-                                    "/o/rest/v2/dossiers/lgsp/download/"
-                                    + fileEntry.getFileEntryId());
+
+//                            profileAttachment.setAttachment_file_url(
+//                                    InetAddress.getLocalHost().getHostName() +
+//                                    "/o/rest/v2/dossiers/lgsp/download/"
+//                                    + fileEntry.getFileEntryId());
+                            System.out.println("InetAddress.getLocalHost().getHostName(): "+InetAddress.getLocalHost().getHostName());
+                            System.out.println("portal_domain: "+PropsUtil.get(PropKeys.PORTAL_DOMAIN));
+
+                            profileAttachment.setAttachment_file_url(PropsUtil.get(PropKeys.PORTAL_DOMAIN) +
+                                    "/c/document_library/get_file?uuid=" + fileEntry.getUuid() + "&groupId=" + fileEntry.getGroupId());
 
 //                            profileAttachment.setContent_type("docx");
 //                            profileAttachment.setAttachment_file_url("https://dichvucong3.mic.gov.vn/documents/10180/1432020/2174501.docx?version=1.0");
