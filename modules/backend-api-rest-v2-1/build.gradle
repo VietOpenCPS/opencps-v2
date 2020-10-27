@@ -84,7 +84,58 @@ dependencies {
 
 	compileOnly project(":modules:backend-auth")
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	
 	testCompile group: "junit", name: "junit", version: "4.12"
+	
+	testCompile group: "javax.ws.rs", name: "javax.ws.rs-api", version: "2.0.1"
+	testCompile group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.3.0"
+	testCompile group: 'io.swagger', name: 'swagger-annotations', version: '1.5.18'
+	testCompile group: 'io.swagger', name: 'swagger-jaxrs', version: '1.5.18'
+	
+	testCompile group: "javax.portlet", name: "portlet-api", version: "2.0"
+	testCompile group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
+	testCompile group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
+	testCompile group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
+	testCompile group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "3.0.0"
+
+	testCompile group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxws', version: '3.0.3'
+	testCompile group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxrs', version: '3.0.3'
+	testCompile group: 'org.apache.cxf', name: 'cxf-rt-transports-http', version: '3.0.3'
+	testCompile group: 'org.apache.cxf', name: 'cxf-rt-rs-client', version: '3.0.3'
+	//testCompile group: 'org.apache.cxf', name: 'cxf-bundle-jaxrs', version: '2.7.18'
+	testCompile group: 'org.apache.cxf', name: 'cxf-bundle', version: '3.0.0-milestone2'
+	testCompile group: 'junit', name: 'junit', version: '4.12'
+	testCompile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+
+	testCompile group: 'commons-codec', name: 'commons-codec', version: '1.9'
+	testCompile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.1'
+	testCompile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.3.1'
+	testCompile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.3.1'
+    testCompile group: 'commons-io', name: 'commons-io', version: '2.0.1'	
+    testCompile group: 'com.google.code.gson', name: 'gson', version: '2.6.2'
+    //testCompile group: 'log4j', name: 'log4j', version: '1.2.17'
+	//testCompile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
+	//testCompile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1'
+	testCompile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.8'
+	testCompile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-json-provider', version: '2.9.8'
+	testCompile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: '2.9.8'
+	testCompile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-base', version: '2.9.8'
+    
+	testCompile group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.0"
+	testCompile group: 'com.liferay', name: 'com.liferay.oauth2.provider.scope.api', version: '1.0.2'
+	testCompile group: 'com.liferay', name: 'com.liferay.petra.string', version: '2.0.1'
+	
+//	testCompile project(":modules:swagger-generate")
+	
+	testCompile project(":modules:backend-dossiermgt:backend-dossiermgt-service")
+	testCompile project(":modules:backend-dossiermgt:backend-dossiermgt-api")
+
+	testCompile project(":modules:backend-usermgt:backend-usermgt-service")
+	testCompile project(":modules:backend-usermgt:backend-usermgt-api")
+
+	testCompile project(":modules:backend-auth")
+	testCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
 }
 repositories {
     flatDir {
