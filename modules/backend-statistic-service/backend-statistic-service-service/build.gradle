@@ -13,6 +13,20 @@ dependencies {
 	
 	compile "com.liferay:com.liferay.osgi.service.tracker.collections:2.0.0"
 	testCompile group: "junit", name: "junit", version: "4.12"
+	
+	testCompile group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+	testCompile group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
+	testCompile group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
+	testCompile group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "3.0.0"
+	testCompile project(":modules:backend-statistic-service:backend-statistic-service-api")
+	testCompile group: "com.liferay", name: "com.liferay.portal.dao.orm.custom.sql.api", version: "1.0.0"
+	testCompile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
+	testCompile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.8'
+	testCompile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.8'
+	testCompile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
+	testCompile group: 'com.liferay', name: 'com.liferay.petra.string', version: '2.0.1'
+	
+	testCompile "com.liferay:com.liferay.osgi.service.tracker.collections:2.0.0"
 }
 
 buildService {
