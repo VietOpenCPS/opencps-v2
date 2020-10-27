@@ -49,6 +49,58 @@ dependencies {
 	compileInclude name : "poi-ooxml-3.10.1", transitive:false
 	compileInclude name : "poi-ooxml-schemas-3.10.1", transitive:false
 	testCompile group: "junit", name: "junit", version: "4.12"
+	
+	testCompile group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+	testCompile group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
+	testCompile group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
+	testCompile group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "3.0.0"
+	testCompile project(":modules:backend-jasper-process:backend-jasper-process-api")
+	
+	testCompile name : "bcmail-jdk14", transitive:false
+	testCompile name : "bcprov-jdk14", transitive:false
+	testCompile name : "bctsp-jdk14", transitive:false
+	testCompile name : "castor-core", transitive:false
+	testCompile name : "castor-xml", transitive:false
+	testCompile name : "commons-beanutils", transitive:false
+	testCompile name : "commons-collections", transitive:false
+	testCompile name : "commons-digester", transitive:false
+	testCompile name : "commons-lang", transitive:false
+	testCompile name : "commons-logging", transitive:false
+	testCompile name : "core", transitive:false
+	testCompile name : "ecj", transitive:false
+	testCompile name : "icu4j", transitive:false
+	testCompile name : "itext", transitive:false
+	testCompile name : "jackson-annotations", transitive:false
+	testCompile name : "jackson-core", transitive:false
+	testCompile name : "jackson-databind", transitive:false
+	testCompile name : "jakarta-regexp", transitive:false
+	testCompile name : "javax.inject", transitive:false
+	testCompile name : "jcommon", transitive:false
+	testCompile name : "jfreechart", transitive:false
+	testCompile name : "olap4j", transitive:false
+	testCompile name : "stax-api", transitive:false
+	testCompile name : "stax", transitive:false
+	testCompile name : "lucene-analyzers-common", transitive:false
+	testCompile name : "lucene-core", transitive:false
+	testCompile name : "lucene-queries", transitive:false
+	testCompile name : "lucene-queryparser", transitive:false
+	testCompile name : "lucene-sandbox", transitive:false
+	testCompile name : "spring-asm", transitive:false
+	testCompile name : "spring-beans", transitive:false
+	testCompile name : "spring-context", transitive:false
+	testCompile name : "spring-core", transitive:false
+	testCompile name : "spring-expression", transitive:false
+	testCompile name : "jasperreports", transitive:false
+	testCompile name : "jasperreports-functions", transitive:false
+	testCompile name : "jasperreports-javaflow", transitive:false
+	testCompile name : "commons-javaflow", transitive:false
+	testCompile name : "jasperreports-fonts-6.2.2", transitive:false
+	testCompile name : "joda-time-2.4", transitive:false
+	testCompile name : "poi-3.10.1", transitive:false
+	testCompile name : "poi-ooxml-3.10.1", transitive:false
+	testCompile name : "poi-ooxml-schemas-3.10.1", transitive:false
+
+	
 }	
 
 repositories {
