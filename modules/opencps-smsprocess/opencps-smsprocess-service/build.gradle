@@ -17,6 +17,22 @@ dependencies {
 	
 	testCompile group: "junit", name: "junit", version: "4.12"
 	
+	testCompile group: "javax.ws.rs", name: "javax.ws.rs-api", version: "2.0.1"
+	testCompile group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.5.0"
+	testCompile group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
+	testCompile group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "3.0.0"
+	// https://mvnrepository.com/artifact/com.liferay/org.apache.axis
+	testCompile group: 'com.liferay', name: 'org.apache.axis', version: '1.4.LIFERAY-PATCHED-1'
+	// https://mvnrepository.com/artifact/javax.xml/jaxrpc-api
+	testCompile group: 'javax.xml', name: 'jaxrpc-api', version: '1.1'
+	testCompile group: 'com.liferay', name: 'com.liferay.portal.dao.orm.custom.sql', version: '1.0.17'
+	testCompile group: 'commons-logging', name: 'commons-logging', version: '1.2'
+	testCompile group: 'commons-discovery', name: 'commons-discovery', version: '0.5'
+	testCompile group: 'wsdl4j', name: 'wsdl4j', version: '1.6.2'
+	
+	testCompile project(":modules:opencps-smsprocess:opencps-smsprocess-api")
+	testCompile project(":modules:backend-statistic-common")
+	
 }
 
 buildService {
