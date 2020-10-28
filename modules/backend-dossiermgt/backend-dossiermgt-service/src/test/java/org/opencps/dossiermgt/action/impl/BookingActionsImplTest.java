@@ -2,7 +2,6 @@ package org.opencps.dossiermgt.action.impl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.opencps.dossiermgt.service.BookingLocalServiceUtil;
 public class BookingActionsImplTest {
 	@Before
 	public void setUp() {
@@ -36,7 +35,7 @@ public class BookingActionsImplTest {
 //		Assert.assertEquals(1, 1);
 //	}
 //	
-	@Test
+	/*@Test
 	public void getByCodeNumberTest() {
 		try{
 			//BookingActionsImpl object = new BookingActionsImpl();
@@ -44,7 +43,7 @@ public class BookingActionsImplTest {
 		}catch (Exception e) {
 		}
 		Assert.assertEquals(1, 1);
-	}
+	}*/
 	@Test
 	public void validateSimpleCaptchaTest() {
 		try{
