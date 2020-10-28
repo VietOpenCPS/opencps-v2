@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserTrackerPath;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -42,6 +43,7 @@ import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserTrackerLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -75,6 +77,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Date;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -119,6 +123,7 @@ import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
+import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.opencps.usermgt.service.util.LGSPRestfulUtils;
 import org.opencps.usermgt.service.util.SendMailLGSPUtils;
 import org.opencps.usermgt.service.util.ServiceProps;
@@ -679,22 +684,20 @@ public class RestfulController {
 					if (userId != 20139) {
 						Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 
-//						String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
-//						
-//						UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, request.getRemoteAddr());
-//						String userAgent = request.getHeader("User-Agent") != null ? request.getHeader("User-Agent") : StringPool.BLANK;
-//						ArrayList<UserTrackerPath> userTrackerPath = new ArrayList<UserTrackerPath>();
-//						UserTrackerLocalServiceUtil.addUserTracker(
-//								user.getCompanyId(), 
-//								userId, 
-//								new Date(), 
-//								sessionId, 
-//								request.getRemoteAddr(), 
-//								request.getRemoteHost(), 
-//								userAgent, 
-//								userTrackerPath);
+						String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
 						if (Validator.isNotNull(employee)) {
-
+							UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), employee.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, request.getRemoteAddr());
+							String userAgent = request.getHeader("User-Agent") != null ? request.getHeader("User-Agent") : StringPool.BLANK;
+							ArrayList<UserTrackerPath> userTrackerPath = new ArrayList<UserTrackerPath>();
+							UserTrackerLocalServiceUtil.addUserTracker(
+									user.getCompanyId(),
+									userId,
+									new Date(),
+									sessionId,
+									request.getRemoteAddr(),
+									request.getRemoteHost(),
+									userAgent,
+									userTrackerPath);
 							if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING && employee.getWorkingStatus() == 0) {
 								response.setStatus(HttpServletResponse.SC_OK);
 								return "pending";
@@ -703,9 +706,10 @@ public class RestfulController {
 								return "/c";
 							}
 						} else {
+							Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+							UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), applicant.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, request.getRemoteAddr());
 							if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
 								_log.info("checkUser: "+JSONFactoryUtil.looseSerialize(user));
-								Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
 								_log.info("applicant: "+JSONFactoryUtil.looseSerialize(applicant));
 								if (applicant != null) {
 									response.setHeader(Field.USER_ID, String.valueOf(applicant.getApplicantId()));
