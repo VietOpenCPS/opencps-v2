@@ -27,6 +27,7 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
@@ -72,15 +73,18 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 
 		// add text fields
 		String deliverableCode = object.getDeliverableCode();
-		if (Validator.isNotNull(deliverableCode)) {
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH,
-					SpecialCharacterUtils.splitSpecial(deliverableCode));
-		} else {
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, StringPool.BLANK);
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, StringPool.BLANK);
-		}
+//		if (Validator.isNotNull(deliverableCode)) {
+//			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+//			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH,
+//					SpecialCharacterUtils.splitSpecial(deliverableCode));
+//		} else {
+//			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, StringPool.BLANK);
+//			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, StringPool.BLANK);
+//		}
 		if (Validator.isNotNull(object.getIssueDate())) {
+//			document.addNumberSortable(DeliverableTerm.ISSUE_DATE, object.getIssueDate().getTime());
+			document.addTextSortable(DeliverableTerm.ISSUE_DATE_SEARCH , SpecialCharacterUtils.splitSpecial(APIDateTimeUtils
+					.convertDateToString(object.getIssueDate(), APIDateTimeUtils._NORMAL_DATE)));
 			document.addNumberSortable(DeliverableTerm.ISSUE_DATE, object.getIssueDate().getTime());
 		} else {
 			document.addNumberSortable(DeliverableTerm.ISSUE_DATE, 0);
@@ -100,6 +104,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addTextSortable(DeliverableTerm.DELIVERABLE_NAME, object.getDeliverableName());
 		document.addTextSortable(DeliverableTerm.DELIVERABLE_TYPE, object.getDeliverableType());
 		document.addTextSortable(DeliverableTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
+		document.addTextSortable(DeliverableTerm.GOV_AGENCY_CODE + StringPool.UNDERLINE + ConstantUtils.DATA, object.getGovAgencyCode());
 		document.addTextSortable(DeliverableTerm.GOV_AGENCY_NAME, object.getGovAgencyName());
 		document.addTextSortable(DeliverableTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
 		document.addTextSortable(DeliverableTerm.APPLICANT_NAME, object.getApplicantName());
@@ -114,8 +119,8 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addTextSortable(DeliverableTerm.FILE_ATTACHS, object.getFileAttachs());
 		document.addTextSortable(DeliverableTerm.FORM_SCRIPT, object.getFormScript());
 		document.addTextSortable(DeliverableTerm.FORM_REPORT, object.getFormReport());
-		document.addNumberSortable(DeliverableTerm.DELIVERABLE_STATE, object.getDeliverableState());
-
+//		document.addNumberSortable(DeliverableTerm.DELIVERABLE_STATE, object.getDeliverableState());
+		document.addNumberSortable(DeliverableTerm.DELIVERABLE_STATE + StringPool.UNDERLINE + ConstantUtils.DATA, object.getDeliverableState());
 		// add form data detail
 		String formData = object.getFormData();
 		if (Validator.isNotNull(formData)) {
@@ -146,9 +151,43 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 			while (keys.hasNext()) {
 				String key = keys.next();
 				String indexKey = key + StringPool.UNDERLINE + ConstantUtils.DATA;
+				if(object.getFormData().contains(DeliverableTerm.DELIVERABLE_CODE)){
+					if(key.equals(DeliverableTerm.DELIVERABLE_CODE)) {
+						if (Validator.isNotNull(jsonObject.getString(key))) {
+							document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, jsonObject.getString(key));
+							document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH,
+									SpecialCharacterUtils.splitSpecial(jsonObject.getString(key).toLowerCase()));
+						} else {
+							document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, StringPool.BLANK);
+							document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, StringPool.BLANK);
+						}
+					}
+				}else{
+					if (Validator.isNotNull(deliverableCode)) {
+						document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+						document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH ,
+								SpecialCharacterUtils.splitSpecial(deliverableCode.toLowerCase()));
+					} else {
+						document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, StringPool.BLANK);
+						document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, StringPool.BLANK);
+					}
+				}
+				if(jsonObject.getString(key).contains(StringPool.FORWARD_SLASH)) {
+					if (key.equals(DeliverableTerm.NGAY_SINH)) {
+						document.addTextSortable(DeliverableTerm.NGAYSINH_SEARCH, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
+					}
+					if (key.equals(DeliverableTerm.NGAY_QD)) {
+						document.addTextSortable(DeliverableTerm.NGAY_QD_SEARCH, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
+					}
+					if (key.equals(DeliverableTerm.NGAY_CAP)) {
+						document.addTextSortable(DeliverableTerm.NGAY_CAP_SEARCH , SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
+					}
+				}
 				if (indexKey.indexOf("_id") != 0) {
 					document.addTextSortable(indexKey, jsonObject.getString(key));
 				}
+				document.addTextSortable(DeliverableTerm.ISSUE_DATE + StringPool.UNDERLINE + ConstantUtils.DATA,
+						APIDateTimeUtils.convertDateToString(object.getIssueDate(),APIDateTimeUtils._NORMAL_DATE));
 			}
 		} catch (Exception e) {
 			_log.error(e);
