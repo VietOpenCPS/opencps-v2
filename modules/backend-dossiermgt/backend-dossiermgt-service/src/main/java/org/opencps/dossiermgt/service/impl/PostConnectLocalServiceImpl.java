@@ -18,6 +18,8 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.model.PostConnect;
@@ -60,7 +62,11 @@ public class PostConnectLocalServiceImpl extends PostConnectLocalServiceBaseImpl
 					postConnect.setSyncState(PublishQueueTerm.STATE_WAITING_SYNC);
 					postConnect.setRetry(0);
 				}
-				return postConnectPersistence.update(postConnect);
+				postConnect =postConnectPersistence.update(postConnect);
+				Indexer<PostConnect> indexer =
+						IndexerRegistryUtil.nullSafeGetIndexer(PostConnect.class);
+				indexer.reindex(postConnect);
+				return postConnect;
 			}
 
 			if(groupId == 0 || dossierId == 0) {
@@ -79,8 +85,11 @@ public class PostConnectLocalServiceImpl extends PostConnectLocalServiceBaseImpl
 			postConnectNew.setPostStatus(postStatus);
 			postConnectNew.setMetadata(metaData);
 			postConnectNew.setSyncState(syncState);
-			return postConnectPersistence.update(postConnectNew);
-
+			postConnectNew = postConnectPersistence.update(postConnectNew);
+			Indexer<PostConnect> indexer =
+					IndexerRegistryUtil.nullSafeGetIndexer(PostConnect.class);
+			indexer.reindex(postConnect);
+			return postConnectNew;
 		}catch (Exception e) {
 			_log.error(e);
 		}
