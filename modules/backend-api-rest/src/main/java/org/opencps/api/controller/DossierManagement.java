@@ -30,7 +30,15 @@ import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.opencps.api.dossier.model.*;
+import org.opencps.api.dossier.model.DossierResultsModel;
+import org.opencps.api.dossier.model.PostConnectDetailModel;
+import org.opencps.api.dossier.model.DossierInputModel;
+import org.opencps.api.dossier.model.DossierDetailModel;
+import org.opencps.api.dossier.model.DoActionModel;
+import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossier.model.DossierMultipleInputModel;
+import org.opencps.api.dossier.model.DossierPublishModel;
+import org.opencps.api.dossier.model.DossierRequestDVCQGModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
