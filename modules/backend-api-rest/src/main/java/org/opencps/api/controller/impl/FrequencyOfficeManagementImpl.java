@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
-import javafx.animation.ScaleTransition;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.FrequencyOfficeManagement;
 import org.opencps.dossiermgt.action.FrequencyIntegrationAction;
