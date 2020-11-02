@@ -306,7 +306,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 					String value = jsonObject.getString(key);
 					if(key.equals(DossierTerm.DATA)){
 						JSONArray dataArray = JSONFactoryUtil.createJSONArray(value);
-						JSONObject currentObject = JSONFactoryUtil.createJSONObject();
+						JSONObject currentObject = null;
 						for (int i = 0; i < dataArray.length(); i++) {
 							currentObject = dataArray.getJSONObject(i);
 							if(Validator.isNotNull(currentObject.getString(ServiceInfoTerm.DOMAIN_CODE))) {
@@ -317,7 +317,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				}
 			}
 		}catch (Exception e){
-			_log.info("EXCEPTION :" + e.getMessage());
+			_log.info(e);
 		}
 		if(jsonObject.length() > 0) {
 			for (Document doc : documents) {

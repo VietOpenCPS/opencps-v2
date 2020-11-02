@@ -69,7 +69,8 @@ public class PayGateTerm {
 	public static final String URL_DOMAIN = "url_domain";
 	public static final String MC_URL = "mcUrl";
 	public static final String USERNAME = "userName";
-	public static final String PAZZWD = "pwd";
+	public static final String SECRECT_PD = "pwd";
+	//public static final String PAZZWD = "pwd";
 	public static final String ACTION_ENPOINT = "actions";
 	
 	//add by TrungNT

@@ -9,6 +9,7 @@ import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
@@ -22,14 +23,53 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 @Component(immediate = true, service = ModelListener.class)
 public class ApplicantListener extends BaseModelListener<Applicant>{
-	
+
+	@Override
+	public void onBeforeCreate(Applicant model) throws ModelListenerException {
+		try {
+			model.setApplicantName(HtmlUtil.escape(model.getApplicantName()));
+			model.setApplicantIdNo(HtmlUtil.escape(model.getApplicantIdNo()));
+			model.setContactTelNo(HtmlUtil.escape(model.getContactTelNo()));
+			model.setApplicantIdType(HtmlUtil.escape(model.getApplicantIdType()));
+			model.setContactEmail(HtmlUtil.escape(model.getContactEmail()));
+			model.setRepresentativeEnterprise(HtmlUtil.escape(model.getRepresentativeEnterprise()));
+			model.setAddress(HtmlUtil.escape(model.getAddress()));
+			model.setActivationCode(HtmlUtil.escape(model.getActivationCode()));
+			model.setTmpPass(HtmlUtil.escape(model.getTmpPass()));
+			
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+	}
+
+	@Override
+	public void onBeforeUpdate(Applicant model) throws ModelListenerException {
+		try {
+			model.setApplicantName(HtmlUtil.escape(model.getApplicantName()));
+			model.setApplicantIdNo(HtmlUtil.escape(model.getApplicantIdNo()));
+			model.setContactTelNo(HtmlUtil.escape(model.getContactTelNo()));
+			model.setApplicantIdType(HtmlUtil.escape(model.getApplicantIdType()));
+			model.setContactEmail(HtmlUtil.escape(model.getContactEmail()));
+			model.setRepresentativeEnterprise(HtmlUtil.escape(model.getRepresentativeEnterprise()));
+			model.setAddress(HtmlUtil.escape(model.getAddress()));
+			model.setActivationCode(HtmlUtil.escape(model.getActivationCode()));
+			model.setTmpPass(HtmlUtil.escape(model.getTmpPass()));
+			
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+	}
+
 	@Override
 	public void onAfterUpdate(Applicant model) throws ModelListenerException {
-		
+
 		/*
 		 * 03/01/2018 ThanhNv: Khong gui thong bao khi cap nhat thong tin doanh nghiep - MR_DUAN
 		if (modelBefore.getActivationCode().length() != 0 && Validator.isNull(model.getActivationCode())) {

@@ -99,7 +99,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             System.out.println(jsonArray);
             return jsonArray;
         } catch (Exception e) {
-            _log.error(e.getMessage());
+        	_log.debug(e);
             return null;
         }
     }

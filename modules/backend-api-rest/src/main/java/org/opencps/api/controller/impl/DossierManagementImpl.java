@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -252,68 +253,68 @@ public class DossierManagementImpl implements DossierManagement {
 		return body.toString();
 	}
 
-	@Override
-	public Response getDirectDossiers(HttpServletRequest request, HttpHeaders header,
-									  Company company, Locale locale, User user, ServiceContext serviceContext,
-									  DossierRequestDVCQGModel dossierRequestDVCQGModel) {
-		try {
-			JSONObject body = JSONFactoryUtil.createJSONObject();
-			String errorBody;
-			ServerConfig serverConfig = null;
-			List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(CONFIG_DVCQG_INTEGRATION);
-
-			if (serverConfigs != null && !serverConfigs.isEmpty()) {
-				serverConfig = serverConfigs.get(0);
-			}
-
-			if (serverConfig == null) {
-				_log.error("------ Log Exception ------ " + " " + "No server config");
-				errorBody = this.getBodyError("-1", "No server config");
-				return Response.status(HttpURLConnection.HTTP_OK).entity(errorBody).build();
-			}
-
-			long groupId = serverConfig.getGroupId();
-			Dossier dossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierRequestDVCQGModel.getMasohoso());
-			if(Validator.isNull(dossier)){
-				_log.error("------ Log Exception ------ " + " " + "masohoso not found");
-				errorBody = this.getBodyError("-1", "masohoso not found");
-				return Response.status(HttpURLConnection.HTTP_OK).entity(errorBody).build();
-			}
-
-			String dossierNo   = dossier.getDossierNo() != null ? dossier.getDossierNo() : "";
-			String serviceCode = dossier.getServiceCode() != null ? dossier.getServiceCode() : "";
-			String serviceName = dossier.getServiceName() != null ? dossier.getServiceName() : "";
-			String dossierStatus = dossier.getDossierStatus() != null ? dossier.getDossierStatus() : "";
-			String isOnline = dossier.getOnline() ? "1" : "0";
-			String govAgencyName = dossier.getGovAgencyName() != null ? dossier.getGovAgencyName() : "";
-
-			ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
-			if(Validator.isNull(serviceInfo)) {
-				_log.error("------ Log Exception ------ " + " " + "MaLinhVuc not found");
-				errorBody = this.getBodyError("-1", "MaLinhVuc not found");
-				return Response.status(HttpURLConnection.HTTP_OK).entity(errorBody).build();
-			}
-
-			String domainCode = serviceInfo.getDomainCode() != null ? serviceInfo.getDomainCode() : "";
-			String domainName = serviceInfo.getDomainName() != null ? serviceInfo.getDomainName() : "";
-
-			body.put("MaHoSo", dossierNo);
-			body.put("MaTTHC", serviceCode);
-			body.put("TenTTHC", serviceName);
-			body.put("MaLinhVuc", domainCode);
-			body.put("TenLinhVuc", domainName);
-			//todo LoaiDoiTuong dang ko biet loai nao, can` ban` lai voi a Duan
-			body.put("LoaiDoiTuong", "3");
-			body.put("TrangThaiHoSo", DossierManagementConstants.mappingDossierStatusWithDVCQG(dossierStatus));
-			body.put("HinhThuc", isOnline);
-			body.put("DonViXuLy", govAgencyName);
-
-			return Response.status(HttpURLConnection.HTTP_OK).entity(body.toJSONString()).build();
-		} catch (Exception e) {
-			_log.error("------ Log Exception ------ " + " " + e.getMessage());
-			return BusinessExceptionImpl.processException(e);
-		}
-	}
+//	@Override
+//	public Response getDirectDossiers(HttpServletRequest request, HttpHeaders header,
+//									  Company company, Locale locale, User user, ServiceContext serviceContext,
+//									  DossierRequestDVCQGModel dossierRequestDVCQGModel) {
+//		try {
+//			JSONObject body = JSONFactoryUtil.createJSONObject();
+//			String errorBody;
+//			ServerConfig serverConfig = null;
+//			List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(CONFIG_DVCQG_INTEGRATION);
+//
+//			if (serverConfigs != null && !serverConfigs.isEmpty()) {
+//				serverConfig = serverConfigs.get(0);
+//			}
+//
+//			if (serverConfig == null) {
+//				_log.error("------ Log Exception ------ " + " " + "No server config");
+//				errorBody = this.getBodyError("-1", "No server config");
+//				return Response.status(HttpURLConnection.HTTP_OK).entity(errorBody).build();
+//			}
+//
+//			long groupId = serverConfig.getGroupId();
+//			Dossier dossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierRequestDVCQGModel.getMasohoso());
+//			if(Validator.isNull(dossier)){
+//				_log.error("------ Log Exception ------ " + " " + "masohoso not found");
+//				errorBody = this.getBodyError("-1", "masohoso not found");
+//				return Response.status(HttpURLConnection.HTTP_OK).entity(errorBody).build();
+//			}
+//
+//			String dossierNo   = dossier.getDossierNo() != null ? dossier.getDossierNo() : "";
+//			String serviceCode = dossier.getServiceCode() != null ? dossier.getServiceCode() : "";
+//			String serviceName = dossier.getServiceName() != null ? dossier.getServiceName() : "";
+//			String dossierStatus = dossier.getDossierStatus() != null ? dossier.getDossierStatus() : "";
+//			String isOnline = dossier.getOnline() ? "1" : "0";
+//			String govAgencyName = dossier.getGovAgencyName() != null ? dossier.getGovAgencyName() : "";
+//
+//			ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
+//			if(Validator.isNull(serviceInfo)) {
+//				_log.error("------ Log Exception ------ " + " " + "MaLinhVuc not found");
+//				errorBody = this.getBodyError("-1", "MaLinhVuc not found");
+//				return Response.status(HttpURLConnection.HTTP_OK).entity(errorBody).build();
+//			}
+//
+//			String domainCode = serviceInfo.getDomainCode() != null ? serviceInfo.getDomainCode() : "";
+//			String domainName = serviceInfo.getDomainName() != null ? serviceInfo.getDomainName() : "";
+//
+//			body.put("MaHoSo", dossierNo);
+//			body.put("MaTTHC", serviceCode);
+//			body.put("TenTTHC", serviceName);
+//			body.put("MaLinhVuc", domainCode);
+//			body.put("TenLinhVuc", domainName);
+//			//todo LoaiDoiTuong dang ko biet loai nao, can` ban` lai voi a Duan
+//			body.put("LoaiDoiTuong", "3");
+//			body.put("TrangThaiHoSo", DossierManagementConstants.mappingDossierStatusWithDVCQG(dossierStatus));
+//			body.put("HinhThuc", isOnline);
+//			body.put("DonViXuLy", govAgencyName);
+//
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(body.toJSONString()).build();
+//		} catch (Exception e) {
+//			_log.error("------ Log Exception ------ " + " " + e.getMessage());
+//			return BusinessExceptionImpl.processException(e);
+//		}
+//	}
 
 	@SuppressWarnings("unchecked")
 	@Override

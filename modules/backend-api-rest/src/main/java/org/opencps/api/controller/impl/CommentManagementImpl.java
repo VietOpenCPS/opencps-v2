@@ -36,6 +36,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.comment.model.CommentInputModel;
 import org.opencps.api.comment.model.CommentListModel;
@@ -45,8 +46,11 @@ import org.opencps.api.comment.model.CommentTopList;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.CommentManagement;
 import org.opencps.api.controller.util.CommentUtils;
+import org.opencps.api.controller.util.ImportZipFileUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.error.model.ErrorMsg;
+import org.opencps.dossiermgt.action.util.CheckFileUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.feedback.constants.CommentTerm;
@@ -92,6 +96,13 @@ public class CommentManagementImpl implements CommentManagement {
 		InputStream inputStream = null;
 
 		try {
+			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
+			boolean flagCheckFile = CheckFileUtils.checkFileUpload(attachment, extFile);
+			_log.info("flagCheckFile: "+flagCheckFile);
+			if (!flagCheckFile) {
+				return Response.status(HttpStatus.SC_FORBIDDEN)
+						.entity(ReadFilePropertiesUtils.get(org.opencps.dossiermgt.action.util.ConstantUtils.ATTACHMENT_ERROR)).build();
+			}
 			DataHandler dataHandler = attachment.getDataHandler();
 			List<String> lstSecureFiles = new ArrayList<>();
 			lstSecureFiles.add(MessageUtil.getMessage(ConstantUtils.MEDIA_TYPE_TEXT_X_SH));

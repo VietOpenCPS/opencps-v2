@@ -11,13 +11,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.backend.dossiermgt.logistic.ViettelPostManagement;
@@ -39,24 +35,10 @@ import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.model.PostConnect;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.ActionConfig;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ProcessAction;
-import org.opencps.dossiermgt.model.ProcessStep;
-import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.rest.model.ViettelPostUpdateOrder;
 import org.opencps.dossiermgt.rest.model.ViettlePostResponse;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PostConnectLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.kernel.context.MBServiceContextFactoryUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -126,13 +108,13 @@ public class VNPostManagementImpl implements VNPostManagement
 			Integer postStatusInPre = null;
 			String actionCode;
 			Dossier dossier;
-			boolean updateStatus;
+//			boolean updateStatus;
 			ServiceContext serviceContext;
-			User user;
-			Company company;
+//			User user;
+//			Company company;
 
 			for(PostConnect postConnect : listPostConnect) {
-				updateStatus = false;
+//				updateStatus = false;
 				dossierId  = postConnect.getDossierId();
 				groupId    = postConnect.getGroupId();
 				//todo change this code
@@ -141,7 +123,7 @@ public class VNPostManagementImpl implements VNPostManagement
 				postStatus = postConnect.getPostStatus();
 				dossier    = DossierLocalServiceUtil.getDossier(dossierId);
 
-				user = UserLocalServiceUtil.getUser(userId);
+//				user = UserLocalServiceUtil.getUser(userId);
 				if(Validator.isNull(dossier)) {
 					_log.error("Not found dossierID: " + dossierId);
 					postConnect.setSyncState(PublishQueueTerm.STATE_ACK_ERROR);
@@ -190,7 +172,7 @@ public class VNPostManagementImpl implements VNPostManagement
 							actionCode = jsonData.getJSONObject(i).getString(ProcessActionTerm.ACTION_CODE);
 							//call do action
 							if(Validator.isNotNull(actionCode)){
-								updateStatus = doAction(actionCode, groupId, dossier, user, null, serviceContext);
+//								updateStatus = doAction(actionCode, groupId, dossier, user, null, serviceContext);
 								break;
 							}
 						}
@@ -211,194 +193,194 @@ public class VNPostManagementImpl implements VNPostManagement
 		return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 	}
 
-	private boolean doAction(String actionCode, long groupId, Dossier dossier, User user
-			, Company company, ServiceContext serviceContext) {
-		try {
-			_log.info("----VIETTEL POST: doing action");
-			DossierActions actions = new DossierActionsImpl();
-			ErrorMsgModel errorModel = new ErrorMsgModel();
-			DossierAction dossierResult = null;
+//	private boolean doAction(String actionCode, long groupId, Dossier dossier, User user
+//			, Company company, ServiceContext serviceContext) {
+//		try {
+//			_log.info("----VIETTEL POST: doing action");
+//			DossierActions actions = new DossierActionsImpl();
+//			ErrorMsgModel errorModel = new ErrorMsgModel();
+//			DossierAction dossierResult = null;
+//
+//			ActionConfig actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+//			String serviceCode = dossier.getServiceCode();
+//			String govAgencyCode = dossier.getGovAgencyCode();
+//			String dossierTempNo = dossier.getDossierTemplateNo();
+//
+//			//case action config null
+//			if(Validator.isNull(actionConfig)) {
+//				_log.info("----VIETTEL POST: case action config null");
+//				ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceCode, govAgencyCode);
+//				if (Validator.isNull(config)) {
+//					throw new Exception("Server config not found for serviceCode "
+//							+ serviceCode + ", govAgencyCode " + govAgencyCode);
+//				}
+//				ProcessOption option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTempNo,
+//						config.getServiceConfigId());
+//
+//				if (Validator.isNull(option)) {
+//					throw new Exception("ProcessOption not found for dossierTempNo " + dossierTempNo
+//							+ ", ServiceConfigId " + config.getServiceConfigId());
+//				}
+//				long serviceProcessId = option.getServiceProcessId();
+//				ProcessAction proAction = getProcessAction(user, groupId, dossier, actionCode, serviceProcessId);
+//				if(Validator.isNull(proAction)) {
+//					throw new Exception("ProcessAction not found for actionCode " + actionCode
+//							+ ", serviceProcessId " + serviceProcessId);
+//				}
+//
+//				dossierResult = actions.doAction(
+//						groupId, user.getUserId(), dossier, option, proAction,
+//						actionCode, "" ,
+//						"", "",
+//						"", "",
+//						0, serviceContext, errorModel);
+//				return Validator.isNotNull(dossierResult);
+//			}
+//
+//			//case action config not null
+//			_log.info("----VIETTEL POST: case action config not null");
+//			boolean insideProcess = actionConfig.getInsideProcess();
+//			ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceCode, govAgencyCode);
+//			if(Validator.isNull(config)){
+//				throw new Exception("Server config not found for serviceCode "
+//						+ serviceCode + ", govAgencyCode " + govAgencyCode);
+//			}
+//			ProcessOption option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTempNo,
+//					config.getServiceConfigId());
+//
+//			if(!insideProcess) {
+//				dossierResult = actions.doAction(
+//						groupId, user.getUserId(), dossier, option, null,
+//						actionCode, "", "",
+//						"", "",
+//						"", actionConfig.getSyncType(),
+//						serviceContext, errorModel);
+//				return Validator.isNotNull(dossierResult);
+//			}
+//
+//			if (dossier.getDossierActionId() == 0) {
+//				if (Validator.isNull(option)) {
+//					throw new Exception("ProcessOption not found for dossierTempNo " + dossierTempNo
+//							+ ", ServiceConfigId " + config.getServiceConfigId());
+//				}
+//				long serviceProcessId = option.getServiceProcessId();
+//				ProcessAction proAction = getProcessAction(user, groupId, dossier, actionCode, serviceProcessId);
+//				if(Validator.isNull(proAction)) {
+//					throw new Exception("ProcessAction not found for actionCode " + actionCode
+//							+ ", serviceProcessId " + serviceProcessId);
+//				}
+//				dossierResult = actions.doAction(
+//						groupId, user.getUserId(), dossier, option, proAction,
+//						actionCode, "" ,
+//						"", "",
+//						"", "",
+//						0, serviceContext, errorModel);
+//				return Validator.isNotNull(dossierResult);
+//			}
+//
+//			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(
+//					dossier.getDossierActionId());
+//
+//			if(Validator.isNull(dossierAction)) {
+//				throw new Exception("Not found dossierAction");
+//			}
+//
+//			long serviceProcessId = dossierAction.getServiceProcessId();
+//			DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(
+//					groupId,
+//					dossier.getDossierTemplateNo());
+//
+//			ProcessOption oldOption = ProcessOptionLocalServiceUtil.fetchBySP_DT(
+//					serviceProcessId,
+//					dossierTemplate.getDossierTemplateId());
+//
+//			ProcessAction proAction = getProcessAction(user, groupId, dossier, actionCode, serviceProcessId);
+//			if(Validator.isNull(proAction)) {
+//				throw new Exception("ProcessAction not found for actionCode " + actionCode
+//						+ ", serviceProcessId " + serviceProcessId);
+//			}
+//
+//			dossierResult = actions.doAction(
+//					groupId, user.getUserId(), dossier, oldOption, proAction,
+//					actionCode, "" ,
+//					"", "",
+//					"", "",
+//					actionConfig.getSyncType(), serviceContext, errorModel);
+//			_log.info("----VIETTEL POST: End do action for dossier " + dossier.getDossierId());
+//			return Validator.isNotNull(dossierResult);
+//		} catch (Exception e) {
+//			_log.debug(e);
+//			return false;
+//		}
+//	}
 
-			ActionConfig actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
-			String serviceCode = dossier.getServiceCode();
-			String govAgencyCode = dossier.getGovAgencyCode();
-			String dossierTempNo = dossier.getDossierTemplateNo();
-
-			//case action config null
-			if(Validator.isNull(actionConfig)) {
-				_log.info("----VIETTEL POST: case action config null");
-				ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceCode, govAgencyCode);
-				if (Validator.isNull(config)) {
-					throw new Exception("Server config not found for serviceCode "
-							+ serviceCode + ", govAgencyCode " + govAgencyCode);
-				}
-				ProcessOption option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTempNo,
-						config.getServiceConfigId());
-
-				if (Validator.isNull(option)) {
-					throw new Exception("ProcessOption not found for dossierTempNo " + dossierTempNo
-							+ ", ServiceConfigId " + config.getServiceConfigId());
-				}
-				long serviceProcessId = option.getServiceProcessId();
-				ProcessAction proAction = getProcessAction(user, groupId, dossier, actionCode, serviceProcessId);
-				if(Validator.isNull(proAction)) {
-					throw new Exception("ProcessAction not found for actionCode " + actionCode
-							+ ", serviceProcessId " + serviceProcessId);
-				}
-
-				dossierResult = actions.doAction(
-						groupId, user.getUserId(), dossier, option, proAction,
-						actionCode, "" ,
-						"", "",
-						"", "",
-						0, serviceContext, errorModel);
-				return Validator.isNotNull(dossierResult);
-			}
-
-			//case action config not null
-			_log.info("----VIETTEL POST: case action config not null");
-			boolean insideProcess = actionConfig.getInsideProcess();
-			ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceCode, govAgencyCode);
-			if(Validator.isNull(config)){
-				throw new Exception("Server config not found for serviceCode "
-						+ serviceCode + ", govAgencyCode " + govAgencyCode);
-			}
-			ProcessOption option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTempNo,
-					config.getServiceConfigId());
-
-			if(!insideProcess) {
-				dossierResult = actions.doAction(
-						groupId, user.getUserId(), dossier, option, null,
-						actionCode, "", "",
-						"", "",
-						"", actionConfig.getSyncType(),
-						serviceContext, errorModel);
-				return Validator.isNotNull(dossierResult);
-			}
-
-			if (dossier.getDossierActionId() == 0) {
-				if (Validator.isNull(option)) {
-					throw new Exception("ProcessOption not found for dossierTempNo " + dossierTempNo
-							+ ", ServiceConfigId " + config.getServiceConfigId());
-				}
-				long serviceProcessId = option.getServiceProcessId();
-				ProcessAction proAction = getProcessAction(user, groupId, dossier, actionCode, serviceProcessId);
-				if(Validator.isNull(proAction)) {
-					throw new Exception("ProcessAction not found for actionCode " + actionCode
-							+ ", serviceProcessId " + serviceProcessId);
-				}
-				dossierResult = actions.doAction(
-						groupId, user.getUserId(), dossier, option, proAction,
-						actionCode, "" ,
-						"", "",
-						"", "",
-						0, serviceContext, errorModel);
-				return Validator.isNotNull(dossierResult);
-			}
-
-			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(
-					dossier.getDossierActionId());
-
-			if(Validator.isNull(dossierAction)) {
-				throw new Exception("Not found dossierAction");
-			}
-
-			long serviceProcessId = dossierAction.getServiceProcessId();
-			DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(
-					groupId,
-					dossier.getDossierTemplateNo());
-
-			ProcessOption oldOption = ProcessOptionLocalServiceUtil.fetchBySP_DT(
-					serviceProcessId,
-					dossierTemplate.getDossierTemplateId());
-
-			ProcessAction proAction = getProcessAction(user, groupId, dossier, actionCode, serviceProcessId);
-			if(Validator.isNull(proAction)) {
-				throw new Exception("ProcessAction not found for actionCode " + actionCode
-						+ ", serviceProcessId " + serviceProcessId);
-			}
-
-			dossierResult = actions.doAction(
-					groupId, user.getUserId(), dossier, oldOption, proAction,
-					actionCode, "" ,
-					"", "",
-					"", "",
-					actionConfig.getSyncType(), serviceContext, errorModel);
-			_log.info("----VIETTEL POST: End do action for dossier " + dossier.getDossierId());
-			return Validator.isNotNull(dossierResult);
-		} catch (Exception e) {
-			_log.debug(e);
-			return false;
-		}
-	}
-
-	private ProcessAction getProcessAction(User user, long groupId, Dossier dossier, String actionCode,
-										   long serviceProcessId) throws Exception{
-		_log.info("----VIETTEL POST: getting process action");
-		try {
-			ProcessAction action = null;
-			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-
-			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
-					serviceProcessId);
-			_log.debug("GET PROCESS ACTION____" + groupId + "," + actionCode + "," + serviceProcessId);
-			String dossierStatus = dossier.getDossierStatus();
-			String dossierSubStatus = dossier.getDossierSubStatus();
-			String preStepCode;
-			String curStepCode = StringPool.BLANK;
-			if (dossier.getDossierActionId() > 0) {
-				DossierAction curAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-				if (curAction != null) {
-					curStepCode = curAction.getStepCode();
-				}
-			}
-			for (ProcessAction act : actions) {
-
-				preStepCode = act.getPreStepCode();
-				_log.debug("LamTV_preStepCode: "+preStepCode);
-				if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
-
-				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
-
-				if (Validator.isNull(step) && dossierAction == null) {
-					action = act;
-					break;
-				} else {
-					String stepStatus = step != null ? step.getDossierStatus() : StringPool.BLANK;
-					String stepSubStatus = step != null ?  step.getDossierSubStatus() : StringPool.BLANK;
-					boolean flagCheck = false;
-
-					if (dossierAction != null) {
-						if (act.getPreStepCode().equals(dossierAction.getStepCode())) {
-							flagCheck = true;
-						}
-					}
-					else {
-						flagCheck = true;
-					}
-					_log.debug("LamTV_preStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + "," + dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
-					if (stepStatus.contentEquals(dossierStatus)
-							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
-							&& flagCheck) {
-						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user)) {
-							action = act;
-							break;
-						}
-						else if (Validator.isNull(act.getPreCondition())) {
-							action = act;
-							break;
-						}
-					}
-				}
-			}
-			_log.info("----VIETTEL POST: End get process action");
-
-			return action;
-		} catch (Exception e) {
-			_log.debug(e);
-			return null;
-		}
-	}
+//	private ProcessAction getProcessAction(User user, long groupId, Dossier dossier, String actionCode,
+//										   long serviceProcessId) throws Exception{
+//		_log.info("----VIETTEL POST: getting process action");
+//		try {
+//			ProcessAction action = null;
+//			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+//
+//			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
+//					serviceProcessId);
+//			_log.debug("GET PROCESS ACTION____" + groupId + "," + actionCode + "," + serviceProcessId);
+//			String dossierStatus = dossier.getDossierStatus();
+//			String dossierSubStatus = dossier.getDossierSubStatus();
+//			String preStepCode;
+//			String curStepCode = StringPool.BLANK;
+//			if (dossier.getDossierActionId() > 0) {
+//				DossierAction curAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+//				if (curAction != null) {
+//					curStepCode = curAction.getStepCode();
+//				}
+//			}
+//			for (ProcessAction act : actions) {
+//
+//				preStepCode = act.getPreStepCode();
+//				_log.debug("LamTV_preStepCode: "+preStepCode);
+//				if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
+//
+//				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
+//
+//				if (Validator.isNull(step) && dossierAction == null) {
+//					action = act;
+//					break;
+//				} else {
+//					String stepStatus = step != null ? step.getDossierStatus() : StringPool.BLANK;
+//					String stepSubStatus = step != null ?  step.getDossierSubStatus() : StringPool.BLANK;
+//					boolean flagCheck = false;
+//
+//					if (dossierAction != null) {
+//						if (act.getPreStepCode().equals(dossierAction.getStepCode())) {
+//							flagCheck = true;
+//						}
+//					}
+//					else {
+//						flagCheck = true;
+//					}
+//					_log.debug("LamTV_preStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + "," + dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
+//					if (stepStatus.contentEquals(dossierStatus)
+//							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
+//							&& flagCheck) {
+//						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user)) {
+//							action = act;
+//							break;
+//						}
+//						else if (Validator.isNull(act.getPreCondition())) {
+//							action = act;
+//							break;
+//						}
+//					}
+//				}
+//			}
+//			_log.info("----VIETTEL POST: End get process action");
+//
+//			return action;
+//		} catch (Exception e) {
+//			_log.debug(e);
+//			return null;
+//		}
+//	}
 
 	@Override
 	public Response updateOrder(HttpHeaders header, ViettelPostUpdateOrder updateInfo) {
