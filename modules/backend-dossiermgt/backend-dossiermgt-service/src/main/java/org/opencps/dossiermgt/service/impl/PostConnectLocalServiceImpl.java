@@ -22,7 +22,9 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PostConnect;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.PostConnectLocalServiceBaseImpl;
 
 import java.util.List;
@@ -54,7 +56,7 @@ public class PostConnectLocalServiceImpl extends PostConnectLocalServiceBaseImpl
 												 Integer retry) {
 		try {
 			PostConnect postConnect =  postConnectPersistence.fetchByF_ORDER_NUMBER(orderNumber);
-
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			if(Validator.isNotNull(postConnect)) {
 				Integer oldPostStatus = postConnect.getPostStatus();
 				postConnect.setPostStatus(postStatus);
@@ -63,9 +65,9 @@ public class PostConnectLocalServiceImpl extends PostConnectLocalServiceBaseImpl
 					postConnect.setRetry(0);
 				}
 				postConnect =postConnectPersistence.update(postConnect);
-				Indexer<PostConnect> indexer =
-						IndexerRegistryUtil.nullSafeGetIndexer(PostConnect.class);
-				indexer.reindex(postConnect);
+				Indexer<Dossier> indexer =
+						IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
+				indexer.reindex(dossier);
 				return postConnect;
 			}
 
@@ -86,9 +88,9 @@ public class PostConnectLocalServiceImpl extends PostConnectLocalServiceBaseImpl
 			postConnectNew.setMetadata(metaData);
 			postConnectNew.setSyncState(syncState);
 			postConnectNew = postConnectPersistence.update(postConnectNew);
-			Indexer<PostConnect> indexer =
-					IndexerRegistryUtil.nullSafeGetIndexer(PostConnect.class);
-			indexer.reindex(postConnect);
+			Indexer<Dossier> indexer =
+					IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
+			indexer.reindex(dossier);
 			return postConnectNew;
 		}catch (Exception e) {
 			_log.error(e);
