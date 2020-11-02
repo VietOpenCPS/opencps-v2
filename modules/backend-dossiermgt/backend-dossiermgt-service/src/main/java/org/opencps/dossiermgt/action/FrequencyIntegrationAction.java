@@ -7,8 +7,8 @@ import java.util.List;
 public interface FrequencyIntegrationAction {
     public boolean crawlDossierLGSP(ProfileInModel profile, String token) throws Exception;
     public String getToken() throws Exception; // API 3.1
-    public void syncDossierToLGSP(String token, ProfileInModel profile) throws Exception; //Case auto sync dossier to CucTanSo
-    public void syncDossierToLGSPManual(String token, long dossierId) throws Exception; //API 3.3, 3.5, 3.6, 3.7
+    public void syncDossierToPMNVManual(String token, ProfileInModel profile) throws Exception; //API 3.2
+    public void syncDossierAndStatusToLGSPManual(String token, long dossierId) throws Exception; //API 3.3, 3.5, 3.6, 3.7
     public void updateStatusReceiver(String token, Integer profileId, String status) throws Exception; // API 3.8
     public List<ProfileReceiver> getDossiers(String token) throws Exception; // API 3.9
     public ProfileInModel getDetailDossier(String token, Integer profileId) throws Exception; //API 3.10

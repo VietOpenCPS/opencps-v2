@@ -245,12 +245,13 @@ public class CPSDossierBusinessLocalServiceWrapper
 	}
 
 	@Override
-	public void updateDossierFrequencyAction(long groupId,
+	public org.opencps.dossiermgt.input.model.FrequencyDoAction updateDossierFrequencyAction(
+		long groupId,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,
 		org.opencps.dossiermgt.model.Dossier dossier,
 		org.opencps.dossiermgt.input.model.ProfileInModel input,
 		String actionCode) throws Exception {
-		_cpsDossierBusinessLocalService.updateDossierFrequencyAction(groupId,
+		return _cpsDossierBusinessLocalService.updateDossierFrequencyAction(groupId,
 			serviceContext, dossier, input, actionCode);
 	}
 

@@ -248,14 +248,15 @@ public class CPSDossierBusinessLocalServiceUtil {
 			id, referenceUid, formdata);
 	}
 
-	public static void updateDossierFrequencyAction(long groupId,
+	public static org.opencps.dossiermgt.input.model.FrequencyDoAction updateDossierFrequencyAction(
+		long groupId,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,
 		org.opencps.dossiermgt.model.Dossier dossier,
 		org.opencps.dossiermgt.input.model.ProfileInModel input,
 		String actionCode) throws Exception {
-		getService()
-			.updateDossierFrequencyAction(groupId, serviceContext, dossier,
-			input, actionCode);
+		return getService()
+				   .updateDossierFrequencyAction(groupId, serviceContext,
+			dossier, input, actionCode);
 	}
 
 	public static CPSDossierBusinessLocalService getService() {

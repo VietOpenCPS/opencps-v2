@@ -2319,6 +2319,8 @@ public class DossierManagementImpl implements DossierManagement {
 				System.out.println("Adding post action 3333");
 				String postAction = processActionCurrent.getPostAction();
 				System.out.println("Adding post action 5555");
+				System.out.println("Post action: " + postAction);
+				System.out.println("processActionCurrent: " + processActionCurrent.getProcessActionId());
 				if (Validator.isNotNull(postAction) && !postAction.isEmpty()) {
 					System.out.println("Adding post action 6666");
 					String result = processPostAction(postAction, groupId, dossier);

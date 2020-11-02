@@ -16,8 +16,6 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
-import javafx.animation.ScaleTransition;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.FrequencyOfficeManagement;
 import org.opencps.dossiermgt.action.FrequencyIntegrationAction;
 import org.opencps.dossiermgt.action.impl.FrequencyIntegrationActionImpl;
@@ -61,13 +59,13 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
                 _log.info("Handling profile: " + oneDossier.getProfileId());
                 ProfileInModel profile = integrationAction.getDetailDossier(token, oneDossier.getProfileId());
                 if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
-                    result = integrationAction.crawlDossierLGSP(profile, token);
-
-                    if(result) {
-                        integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
-                    } else {
-                        integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
-                    }
+//                    result = integrationAction.crawlDossierLGSP(profile, token);
+//
+//                    if(result) {
+//                        integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
+//                    } else {
+//                        integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
+//                    }
                 }
                 _log.info("Done crawl one profile id: " + oneDossier.getProfileId());
             }
@@ -95,7 +93,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             ProfileInModel profile = integrationAction.getDetailDossier(token, Integer.valueOf(profileId));
             if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
 //                integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_SUCCESS);
-                boolean resultCrawl = integrationAction.crawlDossierLGSP(profile, token);
+//                boolean resultCrawl = integrationAction.crawlDossierLGSP(profile, token);
 //                if(resultCrawl) {
 //                    integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_SUCCESS);
 //                } else {
@@ -274,7 +272,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             ServerConfig serverConfig = listConfig.get(0);
             FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
             String token = integrationAction.getToken();
-            integrationAction.sendStatusProfileToDVCBo(token, dossierId);
+//            integrationAction.sendStatusProfileToDVCBo(token, dossierId);
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 
@@ -292,7 +290,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
             String token = integrationAction.getToken();
 
-            integrationAction.syncDossierToLGSPManual(token, dossierId);
+            integrationAction.syncDossierAndStatusToLGSPManual(token, dossierId);
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
         } catch (Exception e) {

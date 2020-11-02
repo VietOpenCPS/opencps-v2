@@ -148,7 +148,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             _log.info("Response api: " + response);
 
             JSONObject jsonObject = JSONFactoryUtil.createJSONObject(response.getBody());
-            System.out.println(jsonObject);
+            System.out.println("Response api: " + jsonObject);
             return jsonObject;
         } catch (Exception e) {
             _log.error(e.getMessage());
