@@ -827,8 +827,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
 
             if(Validator.isNotNull(dossier.getReleaseDate())) {
+                _log.info("Is update");
                 profile.setIs_update("true");
             } else {
+                _log.info("Is create");
                 profile.setIs_update("false");
             }
 

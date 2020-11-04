@@ -76,6 +76,10 @@ public class PublishEventScheduler extends BaseMessageListener {
 							PublishQueueTerm.STATE_ALREADY_SENT},
 					ServerConfigTerm.DVCQG_INTEGRATION, 0, 10);
 
+//			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatuses(new int[] {
+//					PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT
+//			}, 0, 10);
+
 			_log.info("lstPqs  : " + lstPqs.size());
 			for (PublishQueue pq : lstPqs) {
 				try {

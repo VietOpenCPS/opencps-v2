@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.scheduler.*;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -46,12 +47,13 @@ import java.util.Map;
 @Component(immediate = true, service = CrawlDossierFrequencyScheduler.class)
 public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
     private volatile boolean isRunning = false;
-
+    private static final Boolean ENABLE_JOB = Validator.isNotNull(PropsUtil.get("org.opencps.frequency.enable"))
+            ? Boolean.valueOf(PropsUtil.get("org.opencps.frequency.enable")) : false;
     @Override
     protected void doReceive(Message message) throws Exception {
         _log.info("-----Start job crawl dossier frequency---");
 
-        if (!isRunning) {
+        if (!isRunning && ENABLE_JOB) {
             isRunning = true;
         }
         else {

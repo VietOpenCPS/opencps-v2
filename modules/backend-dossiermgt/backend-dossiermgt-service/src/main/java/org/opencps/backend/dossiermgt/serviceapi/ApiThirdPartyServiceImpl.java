@@ -1,5 +1,6 @@
 package org.opencps.backend.dossiermgt.serviceapi;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -26,6 +27,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     private RestTemplate restTemplate;
     private static final Integer timeout = 10000 ;
     private Log _log = LogFactoryUtil.getLog(ApiThirdPartyServiceImpl.class);
+    private ObjectMapper objectMapper = new ObjectMapper();
     private enum ListPaygovUnitLocal {
         DONGTHAP("PAYGOV-DONGTHAP"),
         HAUGIANG("PAYGOV-HAUGIANG");
@@ -160,7 +162,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     public JSONObject callApi(String url, HttpHeaders headers, Object body) {
         try {
             _log.info("Calling api: " + url);
-            _log.info("Body request: " + body.toString());
+            _log.info("Body request: " + objectMapper.writeValueAsString(body));
             headers.set("Accept", "*");
             HttpEntity<Object> entity = new HttpEntity<>(body, headers);
             ResponseEntity<String> response = restTemplate.postForEntity( url, entity , String.class);
