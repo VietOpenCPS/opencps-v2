@@ -256,11 +256,11 @@ public class RestfulController {
 				User user = UserLocalServiceUtil.fetchUser(userId);
 
 				List<Role> roles = user.getRoles();
-
+				_log.debug("Role size" + roles.size());
 				String roleName = StringPool.BLANK;
 
 				for (Role role : roles) {
-
+					_log.debug("Vao role " + role.getName());
 					if ("Administrator".equals(role.getName())) {
 						roleName = "Administrator";
 						break;

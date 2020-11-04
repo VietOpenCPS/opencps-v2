@@ -520,9 +520,13 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	
 					}
 				} else if (message.getString(TYPE).equals(API)) {
+					_log.debug("User" + JSONFactoryUtil.looseSerialize(u));
 					List<Role> userRoles = u.getRoles();
+					_log.debug("Role size" + userRoles.size());
 					boolean isAdmin = false;
 					for (Role r : userRoles) {
+						_log.debug("Role " + JSONFactoryUtil.looseSerialize(r));
+						_log.debug("Vao role " + r.getName());
 						if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 							isAdmin = true;
 							break;
@@ -582,6 +586,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 				    {
 				        URL urlVal = null;
 						apiUrl = OpenCPSConfigUtil.getAdminProxyUrl() + message.getString(API);
+						_log.debug("API " +apiUrl);
 						urlVal = new URL(apiUrl);
 						
 						JSONObject headerObject = message.getJSONObject(HEADERS);
@@ -590,8 +595,8 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						JSONArray keys = headerObject.names();
 
 						for (int i = 0; i < keys.length(); ++i) {
-
 							String key = keys.getString(i);
+							_log.debug("Header " + headerObject.getString(key));
 							String value = headerObject.getString(key);
 
 							conn.setRequestProperty(key, value);
