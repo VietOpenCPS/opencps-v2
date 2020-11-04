@@ -914,12 +914,13 @@ public class UserManagementImpl implements UserManagement {
 
 		try {
 			List<Role> roles = user.getRoles();
+			_log.debug("Role size" + roles.size());
 			long mappingRoleId;
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			JobPos jobPos;
 			String roleCode;
 			for (Role role : roles) {
-//
+				_log.debug("Vao role " + role.getName());
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 				mappingRoleId = role.getRoleId();
 

@@ -21,8 +21,6 @@ import org.osgi.framework.FrameworkUtil;
 
 import org.osgi.util.tracker.ServiceTracker;
 
-import java.util.List;
-
 /**
  * Provides the local service utility for PostConnect. This utility wraps
  * {@link org.opencps.dossiermgt.service.impl.PostConnectLocalServiceImpl} and is the
@@ -193,6 +191,12 @@ public class PostConnectLocalServiceUtil {
 		return getService().fetchPostConnect(postConnectId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.PostConnect> fetchPostConnectByDossierId(
+		long dossierId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().fetchPostConnectByDossierId(dossierId);
+	}
+
 	/**
 	* Returns the post connect matching the UUID and group.
 	*
@@ -203,6 +207,20 @@ public class PostConnectLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.PostConnect fetchPostConnectByUuidAndGroupId(
 		String uuid, long groupId) {
 		return getService().fetchPostConnectByUuidAndGroupId(uuid, groupId);
+	}
+
+	public static org.opencps.dossiermgt.model.PostConnect findByPostByDossierIdAndPostType(
+		long groupId, long dossierId, int postType)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .findByPostByDossierIdAndPostType(groupId, dossierId,
+			postType);
+	}
+//
+	public static java.util.List<org.opencps.dossiermgt.model.PostConnect> findByPostConnectByDossierId(
+		long groupId, long dossierId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().findByPostConnectByDossierId(groupId, dossierId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
@@ -263,16 +281,6 @@ public class PostConnectLocalServiceUtil {
 		String uuid, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getPostConnectByUuidAndGroupId(uuid, groupId);
-	}
-	public static org.opencps.dossiermgt.model.PostConnect findByPostByDossierIdAndPostType(
-			 long groupId, long dossierId, int postType)
-			throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().findByPostByDossierIdAndPostType( groupId,dossierId,postType);
-	}
-	public static List<org.opencps.dossiermgt.model.PostConnect> findByPostConnectByDossierId (
-			 long groupId,long dossierId)
-			throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().findByPostConnectByDossierId( groupId,dossierId);
 	}
 
 	/**

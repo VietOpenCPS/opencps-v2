@@ -52,6 +52,7 @@ import org.opencps.api.employee.model.EmployeeModel;
 import org.opencps.api.employee.model.EmployeeResults;
 import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.user.model.UserResults;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
@@ -212,8 +213,10 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-
-			Date birthdate = DateTimeUtils.convertStringToDateAPI(input.getBirthdate());
+			_log.info("Log info" + input.getBirthdate());
+			Date birthdate = APIDateTimeUtils
+					.convertStringToDate(input.getBirthdate(), APIDateTimeUtils._NORMAL_DATE);
+//			Date birthdate = DateTimeUtils.convertStringToDate(input.getBirthdate());
 			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
 			Date leaveDate = DateTimeUtils.convertStringToDateAPI(input.getLeaveDate());
 

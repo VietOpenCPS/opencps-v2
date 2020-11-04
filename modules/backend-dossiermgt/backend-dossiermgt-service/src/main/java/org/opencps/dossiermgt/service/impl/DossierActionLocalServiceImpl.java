@@ -23,7 +23,19 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.*;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.WildcardQuery;
+import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
@@ -33,13 +45,12 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Date;
 
-import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -316,7 +327,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
-//		String dossierIds = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
 		String dossierNo = (String) params.get(DossierTerm.DOSSIER_NO);
 		String userName = (String) params.get(DossierTerm.USER_NAME);
 		String actionUser = (String) params.get(DossierTerm.ACTION_USER);
@@ -325,17 +335,13 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		String createDateEnd =
 				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 
-
 		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
 		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
-		searchContext.setStart(start);
-		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
-		searchContext.setSorts(sorts);
 
 		BooleanQuery booleanQuery = null;
 
@@ -359,6 +365,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 			}
 		}
+
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
@@ -366,7 +373,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-
 		if (Validator.isNotNull(dossierNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(dossierNo);
 			query.addFields(DossierTerm.DOSSIER_NO);
@@ -377,6 +383,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			query.addFields(DossierTerm.USER_NAME);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+
 		if (Validator.isNotNull(actionUser)) {
 			String actionUserArr[] = actionUser.split(StringPool.SPACE);
 			BooleanQuery query = new BooleanQueryImpl();
@@ -422,6 +429,88 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+
+//		BooleanQuery booleanInput = processSearchInput(
+//				keywords, groupId,  booleanQuery, dossierNo, userName, actionUser, createDateStart, createDateEnd);
+
+	}
+	private BooleanQuery processSearchInput(String keywords, String groupId,
+											BooleanQuery booleanInput, String dossierNo, String userName,
+											String actionUser, String createDateStart, String createDateEnd) throws ParseException {
+		if (Validator.isNotNull(keywords)) {
+
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(DossierActionTerm.DOSSIER_ID);
+
+				booleanInput.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(Field.GROUP_ID);
+
+			booleanInput.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(dossierNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(dossierNo);
+			query.addFields(DossierTerm.DOSSIER_NO);
+			booleanInput.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(userName)) {
+			MultiMatchQuery query = new MultiMatchQuery(userName);
+			query.addFields(DossierTerm.USER_NAME);
+			booleanInput.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(actionUser)) {
+			String actionUserArr[] = actionUser.split(StringPool.SPACE);
+			BooleanQuery query = new BooleanQueryImpl();
+			for(String arr :actionUserArr){
+				WildcardQuery wildQuery = new WildcardQueryImpl(
+						DossierTerm.ACTION_USER_SEARCH,
+						StringPool.STAR + arr.toLowerCase() + StringPool.STAR);
+				query.add(wildQuery,BooleanClauseOccur.SHOULD);
+			}
+			booleanInput.add(query, BooleanClauseOccur.MUST);
+
+		}
+
+		String createDateStartFilter =
+				createDateStart + ConstantsTerm.HOUR_START;
+		String createDateEndFilter = createDateEnd + ConstantsTerm.HOUR_END;
+		if (Validator.isNotNull(createDateStart)) {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						createDateEndFilter, true, true);
+
+				booleanInput.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						null, true, false);
+
+				booleanInput.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+		else {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, null, createDateEndFilter,
+						false, true);
+
+				booleanInput.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+		return booleanInput;
 	}
 
 	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)

@@ -142,11 +142,15 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 		String jobPosCodeSearch = StringPool.BLANK;
 		for (EmployeeJobPos empJobPos : empJobPosList) {
 			JobPos j = JobPosLocalServiceUtil.fetchJobPos(empJobPos.getJobPostId());
-			jobPosCodeSearch += splitSpecial(j.getJobPosCode()) + StringPool.SPACE;
+			if(Validator.isNotNull(j)) {
+				if (Validator.isNotNull(j.getJobPosCode())) {
+					jobPosCodeSearch += splitSpecial(j.getJobPosCode()) + StringPool.SPACE;
+				}
+			}
 		}
-
-		document.addTextSortable(EmployeeTerm.JOB_POS_CODE_SEARCH, jobPosCodeSearch);
-
+		if(Validator.isNotNull(jobPosCodeSearch)) {
+			document.addTextSortable(EmployeeTerm.JOB_POS_CODE_SEARCH, jobPosCodeSearch);
+		}
 		Calendar cal = Calendar.getInstance();
 
 		if (Validator.isNotNull(employee.getBirthdate())) {

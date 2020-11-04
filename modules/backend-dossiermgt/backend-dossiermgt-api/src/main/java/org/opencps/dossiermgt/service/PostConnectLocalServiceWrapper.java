@@ -16,11 +16,7 @@ package org.opencps.dossiermgt.service;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceWrapper;
-import org.opencps.dossiermgt.model.PostConnect;
-
-import java.util.List;
 
 /**
  * Provides a wrapper for {@link PostConnectLocalService}.
@@ -198,6 +194,13 @@ public class PostConnectLocalServiceWrapper implements PostConnectLocalService,
 		return _postConnectLocalService.fetchPostConnect(postConnectId);
 	}
 
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PostConnect> fetchPostConnectByDossierId(
+		long dossierId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _postConnectLocalService.fetchPostConnectByDossierId(dossierId);
+	}
+
 	/**
 	* Returns the post connect matching the UUID and group.
 	*
@@ -213,18 +216,24 @@ public class PostConnectLocalServiceWrapper implements PostConnectLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.PostConnect findByPostByDossierIdAndPostType(
+		long groupId, long dossierId, int postType)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _postConnectLocalService.findByPostByDossierIdAndPostType(groupId,
+			dossierId, postType);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PostConnect> findByPostConnectByDossierId(
+		long groupId, long dossierId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _postConnectLocalService.findByPostConnectByDossierId(groupId,
+			dossierId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _postConnectLocalService.getActionableDynamicQuery();
-	}
-
-	@Override
-	public PostConnect findByPostByDossierIdAndPostType(long groupId, long dossierId, int postType) throws PortalException {
-		return _postConnectLocalService.findByPostByDossierIdAndPostType(groupId,dossierId,postType);
-	}
-
-	@Override
-	public List<PostConnect> findByPostConnectByDossierId(long groupId, long dossierId) throws PortalException {
-		return _postConnectLocalService.findByPostConnectByDossierId(groupId,dossierId);
 	}
 
 	@Override

@@ -30,7 +30,15 @@ import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.opencps.api.dossier.model.*;
+import org.opencps.api.dossier.model.DossierResultsModel;
+import org.opencps.api.dossier.model.PostConnectDetailModel;
+import org.opencps.api.dossier.model.DossierInputModel;
+import org.opencps.api.dossier.model.DossierDetailModel;
+import org.opencps.api.dossier.model.DoActionModel;
+import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossier.model.DossierMultipleInputModel;
+import org.opencps.api.dossier.model.DossierPublishModel;
+import org.opencps.api.dossier.model.DossierRequestDVCQGModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
@@ -1808,5 +1816,28 @@ public interface DossierManagement {
 			@ApiParam(value = "Attachment files", required = false) @Multipart("file") Attachment file,
 			@ApiParam(value = "partno of dossier part", required = true) @PathParam("partNo") String partNo,
 			@ApiParam(value = "Metadata of DossierFile") @Multipart("dossierIds") @Nullable String dossierIds);
+
+	@PUT
+	@Path("/{id}/updateDossier")
+	@Consumes({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+			MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Update a Dossier", response = DossierDetailModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a Dossier was updated", response = DossierDetailModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+
+	public Response updateSampleCountByDossierId(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@BeanParam DossierInputModel input);
 
 }
