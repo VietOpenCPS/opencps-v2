@@ -49,7 +49,7 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
             if(response.getStatusCode().value() < 200 || response.getStatusCode().value() > 300) {
                 throw new Exception("Something happened on TTTT server with response: " + response.getStatusCode().value());
             }
-            _log.info("Sync data to TTTT successfully");
+            _log.debug("Sync data to TTTT successfully");
             return true;
         } catch (Exception e) {
             throw new Exception(e);
@@ -60,7 +60,8 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
         MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
 
         String codeProfile = dossier.getDocumentNo()!= null ? dossier.getDocumentNo() : "";
-        Integer siteId  = IntegrateTTTTConstants.SITE_ID;
+//        Integer siteId  = IntegrateTTTTConstants.SITE_ID;
+        Integer siteId  = serverConfig.has("siteId") ? serverConfig.getInt("siteId"):IntegrateTTTTConstants.SITE_ID;
         String codeTTHC = dossier.getServiceCode()!= null ? dossier.getServiceCode() : "";
         String nameTTHC = dossier.getServiceName()!= null ? dossier.getServiceName() : "";;
         Integer status;

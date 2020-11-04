@@ -276,7 +276,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 			return false;
 		}
 		else if (ServerConfigTerm.TTTT_INTEGRATION.equals(sc.getProtocol())) {
-			_log.info("Integrating dossier to TTTT...");
+			_log.debug("Integrating dossier to TTTT...");
 			try {
 				TTTTIntegrationAction integrationAction = new TTTTIntegrationImpl();
 				return integrationAction.syncDoActionDossier(dossier);
