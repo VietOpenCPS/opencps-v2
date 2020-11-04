@@ -54,6 +54,25 @@ public class VnPostTerm {
 	public static final String SERVER_SENDERTEL = "senderTel";
 	public static final String SERVER_SENDERNAME = "senderName";
 	
+
+	
+	public static final String LGSP_ACTIVE = "lgsp_active";
+	public static final String LGSP_USERNAME = "lgsp_username";
+	public static final String LGSP_PASSWORD = "lgsp_password";
+	public static final String LGSP_SERCUREKEY = "lgsp_sercurekey";
+	public static final String LGSP_CUSTOMERCODE = "lgsp_customercode";
+	public static final String LGSP_CONSUMERKEY = "lgsp_consumerkey";
+	public static final String LGSP_TOKENURL = "lgsp_tokenurl";
+	public static final String LGSP_VNPOSTURL = "lgsp_vnposturl";
+	public static final String LGSP_VNPOST_ORDERPOST = "lgsp_vnpost_orderpost";
+	public static final String LGSP_VNPOST_ORDERCANCEL = "lgsp_vnpost_ordercancel";
+	public static final String LGSP_VNPOST_ORDERTRACKING = "lgsp_vnpost_ordertracking";
+	public static final String LGSP_VNPOST_GETPOSTAGEVAS = "lgsp_vnpost_getpostagevas";
+	public static final String LGSP_VNPOST_GETINFOMATIONPOST = "lgsp_vnpost_getinfomationpost";
+	public static final String LGSP_VNPOST_PRICEHCC = "lgsp_vnpost_pricehcc";
+	public static final String LGSP_VNPOST_DOCUMENT = "lgsp_vnpost_document";
+	public static final String LGSP_VNPOST_GETPRICE = "lgsp_vnpost_getprice";
+
 	public static final String STATUS_CODE = "statusCode";
 	public static final String STATUS_MESSAGE = "statusMessage";
 	

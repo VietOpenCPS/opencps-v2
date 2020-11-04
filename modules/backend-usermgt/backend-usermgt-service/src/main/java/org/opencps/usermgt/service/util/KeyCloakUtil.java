@@ -215,7 +215,7 @@ public class KeyCloakUtil {
 	public  void syncEmployeeUser(int skip) throws InterruptedException {
 		
 		JsonObject keycloakConfig = getKeyCloakConfig();
-		int limit = keycloakConfig.get("limit").getAsInt();
+		int limit = keycloakConfig.has("limit") ? keycloakConfig.get("limit").getAsInt() : 10;
 		
 		_log.debug("*start---skip:"+skip);
 		
