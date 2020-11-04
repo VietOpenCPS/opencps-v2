@@ -99,7 +99,6 @@ public class OneMinute extends BaseMessageListener {
 
 			_log.info("notificationQueues SIZE: "+notificationQueues.size());
 			for (NotificationQueue notificationQueue : notificationQueues) {
-//				_log.info("notificationQueues : "+JSONFactoryUtil.looseSerialize(notificationQueue));
 				Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil.findByF_TYPE_INTER(
 						notificationQueue.getGroupId(), notificationQueue.getNotificationType(),
 						NotificationTemplateTerm.MINUTELY);
