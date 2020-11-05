@@ -239,33 +239,47 @@ public class PublishEventScheduler extends BaseMessageListener {
 			_log.info("AAAAAA");
 			try {
 				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
-				
+
 				JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier, null);
 				_log.info("result DVCQG: "+result);
 				if(result.has("error_code") && "0".equals(result.getString("error_code"))) {
 					PublishQueueLocalServiceUtil.updatePublishQueue(
-							sc.getGroupId(), pq.getPublishQueueId(), 2, dossier.getDossierId(), 
-							sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
+							sc.getGroupId(), pq.getPublishQueueId(), 2, dossier.getDossierId(),
+							sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0,
 							String.valueOf(dossier.getDossierNo()), result.toJSONString(),
-							new ServiceContext());	
+							new ServiceContext());
 					return true;
 				}
-				
+
 				return false;
-					
+
 			} catch (Exception e) {
 				_log.error(e);
-			}				
+			}
 		}
 
-		else if (ServerConfigTerm.TTTT_INTEGRATION.equals(sc.getProtocol())) {
-			_log.info("Integrating dossier to TTTT...");
-			try {
-				TTTTIntegrationAction integrationAction = new TTTTIntegrationImpl();
-				return integrationAction.syncDoActionDossier(dossier);
-			} catch (Exception e) {
-				_log.error(e);
-				return false;
+		else {
+			System.out.println("START SEND TTTT...");
+			boolean isIntegration = ServerConfigTerm.TTTT_INTEGRATION.equals(sc.getProtocol());
+			if (!isIntegration) {
+				List<ServerConfig> listServerConfig = ServerConfigLocalServiceUtil.getByProtocol(0, ServerConfigTerm.TTTT_INTEGRATION);
+				if (listServerConfig != null && listServerConfig.size() > 0) {
+					sc = listServerConfig.get(0);
+					if (ServerConfigTerm.TTTT_INTEGRATION.equals(sc.getProtocol())) {
+						isIntegration = true;
+					}
+				}
+			}
+			System.out.println("isIntegration...: "+isIntegration);
+			if (isIntegration) {
+				_log.info("Integrating dossier to TTTT...");
+				try {
+					TTTTIntegrationAction integrationAction = new TTTTIntegrationImpl();
+					return integrationAction.syncDoActionDossier(dossier);
+				} catch (Exception e) {
+					_log.error(e);
+					return false;
+				}
 			}
 		}
 

@@ -54,7 +54,7 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
             if(response.getStatusCode().value() < 200 || response.getStatusCode().value() > 300) {
                 throw new Exception("Something happened on TTTT server with response: " + response.getStatusCode().value());
             }
-            _log.info("Sync data to TTTT successfully");
+            System.out.println("Sync data to TTTT successfully");
             return true;
         } catch (Exception e) {
             throw new Exception(e);
