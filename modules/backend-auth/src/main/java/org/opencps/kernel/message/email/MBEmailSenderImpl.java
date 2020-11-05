@@ -53,7 +53,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 				MailServiceUtil.sendEmail(mailMessage);
 
 			}
-		}
+		
 		}
 		catch(Exception e) {
 			_log.error(e);
