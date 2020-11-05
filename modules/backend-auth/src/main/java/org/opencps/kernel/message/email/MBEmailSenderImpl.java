@@ -48,16 +48,16 @@ public class MBEmailSenderImpl implements MBEmailSender {
 				messageEntry.getFrom().setAddress(smtpUser);				
 				mailMessage.setFrom(messageEntry.getFrom());
 //				_log.debug("SEND EMAIL FROM2: " + messageEntry.getFrom());
-				// mailMessage.addFileAttachment(file);
-			}
-			MailServiceUtil.sendEmail(mailMessage);
+					// mailMessage.addFileAttachment(file);
+				}
+				MailServiceUtil.sendEmail(mailMessage);
 
+			}
 		}
 		}
 		catch(Exception e) {
 			_log.error(e);
 		}
-
 
 	}
 	
