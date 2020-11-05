@@ -65,7 +65,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 	private static Log _log = LogFactoryUtil.getLog(DossierDocumentManagementImpl.class);
 	@Override
 	public Response getPreview(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id, String typeCode) {
+			User user, ServiceContext serviceContext, String id, String typeCode, String reportType) {
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
@@ -141,6 +141,10 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					Message message = new Message();
 					message.put(DossierDocumentTerm.FORM_REPORT, documentScript);
 					message.put(DossierDocumentTerm.FORM_DATA, jsonData.toJSONString());
+//					String reportType = "word";
+					if(Validator.isNotNull(reportType)){
+						message.put(ConstantUtils.API_JSON_REPORT_TYPE, reportType);
+					}
 					Date dateEnd = new Date();
 					_log.debug("TIME Part 1: "+(dateEnd.getTime() - dateStart.getTime()) +" ms");
 					try {
@@ -148,8 +152,8 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						String previewResponse = (String) MessageBusUtil
 								.sendSynchronousMessage(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW, message, 10000);
 
-						if (Validator.isNotNull(previewResponse)) {
-						}
+//						if (Validator.isNotNull(previewResponse)) {
+//						}
 
 						File file = new File(previewResponse);
 
@@ -157,7 +161,11 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
 						responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 								attachmentFilename);
-						responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
+						if(ConstantUtils.WORD.equals(reportType)){
+							responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_MSWORD);
+						}else {
+							responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
+						}
 						Date dateEnd1 = new Date();
 						_log.debug("TIME Part 2: "+(dateEnd1.getTime() - dateStart1.getTime()) +" ms");
 						return responseBuilder.build();
@@ -306,6 +314,9 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				message.put(DossierDocumentTerm.FORM_REPORT, documentScript);
 				message.put(DossierDocumentTerm.FORM_DATA, formDataJSON.toJSONString());
 //				message.put("className", DossierDocument.class.getName());
+				if(Validator.isNotNull(input.getReportType())){
+					message.put(ConstantUtils.API_JSON_REPORT_TYPE, input.getReportType());
+				}
 
 				try {
 					String previewResponse = (String) MessageBusUtil
@@ -320,8 +331,11 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
 					responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 							attachmentFilename);
-					responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
-
+					if(ConstantUtils.WORD.equals(input.getReportType())){
+						responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_MSWORD);
+					}else {
+						responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
+					}
 					return responseBuilder.build();
 
 				} catch (MessageBusException e) {

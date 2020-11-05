@@ -76,6 +76,10 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		return dossierDocumentPersistence.findByF_DID_DOCTYPE(groupId, dossierId, documentType, start, end);
 	}
 
+	public List<DossierDocument> getByDID_DAIDList(long groupId, long dossierId, long dossierActionId) {
+		return dossierDocumentPersistence.findByF_GID_DID_DAID(groupId, dossierId, dossierActionId);
+	}
+
 	//@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument addDossierDoc(long groupId, Long dossierId, long dossierActionId, String documentType,
 			String documentName, String documentCode, String sourceFileName, long fileSize, InputStream inputStream,

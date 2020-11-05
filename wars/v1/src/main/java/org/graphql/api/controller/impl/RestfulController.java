@@ -1668,9 +1668,9 @@ public class RestfulController {
 
 		try {
 
-			//long userId = 0;
+			long userId = 0;
 			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
-				//userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 				long groupId = 0;
 
 				if (Validator.isNotNull(request.getHeader("groupId"))) {
@@ -1738,7 +1738,7 @@ public class RestfulController {
 				try {
 
 					hits = DeliverableLocalServiceUtil.searchLucene(keySearch, String.valueOf(groupId), type, mapFilter, sorts,
-							start, end, searchContext);
+							start, end, searchContext, userId);
 
 					if (hits != null) {
 						List<Document> docList = hits.toList();
@@ -1764,7 +1764,7 @@ public class RestfulController {
 //						}
 
 						long total = DeliverableLocalServiceUtil.countLucene(keySearch, String.valueOf(groupId), type, mapFilter,
-								searchContext);
+								searchContext, userId);
 
 						result.put(ConstantUtils.TOTAL, total);
 						System.out.println("total: " + total);

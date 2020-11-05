@@ -40,7 +40,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
  "serviceCode",
  "govAgencyCode",
- "dossiers"
+ "dossiers",
+ "reportType"
 })
 @XmlRootElement(name = "DossierDocumentInputModel")
 public class DossierDocumentInputModel {
@@ -51,6 +52,16 @@ public class DossierDocumentInputModel {
 	protected String govAgencyCode;
 	@FormParam(value = "dossiers")
 	protected String dossiers;
+	@FormParam(value = "reportType")
+	protected String reportType;
+
+	public String getReportType() {
+		return reportType;
+	}
+
+	public void setReportType(String reportType) {
+		this.reportType = reportType;
+	}
 
 	public String getServiceCode() {
 		return serviceCode;
