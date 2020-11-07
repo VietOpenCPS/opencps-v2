@@ -54,7 +54,7 @@ public class UpgradeSchema1_0_1 extends UpgradeProcess {
 		
 		if(!hasColumn(DossierTable.TABLE_NAME, "vnpostalProfile")){
 			
-			alter(DossierTable.class,new AlterTableAddColumn("vnpostalProfile TEXT nul"));
+			alter(DossierTable.class,new AlterTableAddColumn("vnpostalProfile TEXT null"));
 			
 		}
 		

@@ -44,6 +44,7 @@ public class DossiermgtServiceUpgrade implements UpgradeStepRegistrator {
 		registry.register("1.0.4", "1.0.5", new UpgradeSchema1_0_5());
 		registry.register("1.0.5", "1.0.6", new UpgradeSchema1_0_6());
 		registry.register("1.0.6", "1.0.7", new UpgradeSchema1_0_7());
+		registry.register("1.0.7", "1.0.8", new UpgradeSchema1_0_8());
 		// See LPS-82746
 		
 	}
