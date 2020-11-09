@@ -667,7 +667,7 @@ public class StatisticEngineFetch {
 	
 	public List<PersonStatisticData> getStatisticPersonData(List<PersonStatisticData> statisticDataList) {
 		List<PersonStatisticData> newStatisticData = new ArrayList<PersonStatisticData>();
-		int totalVoteInSite = 0;
+		//int totalVoteInSite = 0;
 		if (statisticDataList != null && statisticDataList.size() > 0) {
 			List<PersonStatisticData> statisticData = statisticDataList.stream()
 					.sorted(Comparator.comparing(p -> p.getEmployeeId()))
@@ -694,12 +694,20 @@ public class StatisticEngineFetch {
 				totalPersonData.setTotalVoted(data.getBadCount()+data.getGoodCount()+data.getVeryGoodCount());
 				totalPersonData.setVotingCode(StringPool.BLANK);
 				totalPersonData.setVotingSubject(StringPool.BLANK);
-				
-				tempData.add(totalPersonData);
-				
-				totalVoteInSite = totalVoteInSite + totalPersonData.getTotalVoted();
-				newStatisticData.addAll(tempData);
-				
+				int badCount = 0;
+				int goodCount = 0;
+				int veryGoodCount = 0;
+				for (int i = 0; i< tempData.size(); i++) {
+					badCount = badCount + tempData.get(i).getBadCount();
+					goodCount = goodCount + tempData.get(i).getGoodCount();
+					veryGoodCount = veryGoodCount + tempData.get(i).getVeryGoodCount();
+				}
+				totalPersonData.setBadCount(badCount);
+				totalPersonData.setGoodCount(goodCount);
+				totalPersonData.setVeryGoodCount(veryGoodCount);
+				//tempData.add(totalPersonData);				
+				//totalVoteInSite = totalVoteInSite + totalPersonData.getTotalVoted();
+				newStatisticData.add(totalPersonData);				
 				
 			} while (statisticData.size() > 0);
 			
@@ -710,9 +718,23 @@ public class StatisticEngineFetch {
 			eachSitePersonData.setMonth(newStatisticData.get(0).getMonth());
 			eachSitePersonData.setGovAgencyCode(newStatisticData.get(0).getGovAgencyCode());
 			eachSitePersonData.setGovAgencyName(newStatisticData.get(0).getGovAgencyName());
-			eachSitePersonData.setTotalVoted(totalVoteInSite);
+			//eachSitePersonData.setTotalVoted(totalVoteInSite);
 			eachSitePersonData.setVotingCode(StringPool.BLANK);
 			eachSitePersonData.setVotingSubject(StringPool.BLANK);
+			int totalBadCount = 0;
+			int totalGoodCount = 0;
+			int totalVeryGoodCount = 0;
+			int totalVoteInSite = 0;
+			for (int i = 0; i< newStatisticData.size(); i++) {
+				totalBadCount = totalBadCount + newStatisticData.get(i).getBadCount();
+				totalGoodCount = totalGoodCount + newStatisticData.get(i).getGoodCount();
+				totalVeryGoodCount = totalVeryGoodCount + newStatisticData.get(i).getVeryGoodCount();
+				totalVoteInSite = totalVoteInSite + newStatisticData.get(i).getTotalVoted();
+			}
+			eachSitePersonData.setBadCount(totalBadCount);
+			eachSitePersonData.setGoodCount(totalGoodCount);
+			eachSitePersonData.setVeryGoodCount(totalVeryGoodCount);
+			eachSitePersonData.setTotalVoted(totalVoteInSite);
 			newStatisticData.add(0, eachSitePersonData);			
 			
 		}
