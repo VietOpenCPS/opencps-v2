@@ -15,6 +15,7 @@ public class GetPersonData {
 	private String govAgencyCode;
 	private String govAgencyName;
 	private String votingSubject;
+	private long votingId;
 
 	public int getSelected() {
 		return selected;
@@ -93,6 +94,12 @@ public class GetPersonData {
 	}
 	public void setEmployeeName(String employeeName) {
 		this.employeeName = employeeName;
+	}
+	public long getVotingId() {
+		return votingId;
+	}
+	public void setVotingId(long votingId) {
+		this.votingId = votingId;
 	}
 
 }

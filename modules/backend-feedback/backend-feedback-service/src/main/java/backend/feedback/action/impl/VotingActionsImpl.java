@@ -301,7 +301,10 @@ public class VotingActionsImpl implements VotingActions {
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 				// TODO check customer
 				if (employee != null) {
-					votingResult =
+					votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
+							voting.getVotingId(), employee.getFullName(), employee.getEmail(), comment, selected,
+							serviceContext);
+					/*votingResult =
 						VotingResultLocalServiceUtil.fetchByF_votingId_userId(
 							userId, voting.getVotingId());
 					if (Validator.isNotNull(votingResult)) {
@@ -314,11 +317,14 @@ public class VotingActionsImpl implements VotingActions {
 								voting.getVotingId(), employee.getFullName(), employee.getEmail(), comment, selected,
 								serviceContext);
 
-					}
+					}*/
 				} else {
 					Applicant applicant = ApplicantLocalServiceUtil.fetchByEmail(email);
 					if (applicant != null) {
-						votingResult = VotingResultLocalServiceUtil.fetchByF_votingId_userId(userId,
+						votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
+								voting.getVotingId(), applicant.getApplicantName(), applicant.getContactEmail(), comment,
+								selected, serviceContext);
+						/*votingResult = VotingResultLocalServiceUtil.fetchByF_votingId_userId(userId,
 								voting.getVotingId());
 						if (Validator.isNotNull(votingResult)) {
 							votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId,
@@ -329,7 +335,7 @@ public class VotingActionsImpl implements VotingActions {
 									voting.getVotingId(), applicant.getApplicantName(), applicant.getContactEmail(), comment,
 									selected, serviceContext);
 
-						}
+						}*/
 					}
 				}
 			}

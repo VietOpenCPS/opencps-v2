@@ -6,10 +6,15 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.GetDossierData;
@@ -17,23 +22,26 @@ import org.opencps.statistic.rest.dto.GetPersonData;
 import org.opencps.statistic.rest.dto.GetVotingResultData;
 import org.opencps.statistic.rest.dto.PersonStatisticData;
 import org.opencps.statistic.rest.dto.VotingResultStatisticData;
+import org.springframework.util.StringUtils;
 
 public class StatisticEngineFetch {
 
-	//private final static Logger LOG = LoggerFactory.getLogger(StatisticEngineFetch.class);
+	// private final static Logger LOG =
+	// LoggerFactory.getLogger(StatisticEngineFetch.class);
 
 	public void fecthStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
 			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, int reporting) {
 
-		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		// LOG.info("STARTTING TIME " +
+		// LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
 		for (GetDossierData dossierData : lsDossierData) {
 			if (Validator.isNotNull(dossierData.getDomainCode())) {
 				StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
 				// all site, all domain, all system, all group gov
-				
+
 				String type1 = "all@all@all@all@" + groupId;
-	
+
 				DossierStatisticData dataType1 = new DossierStatisticData();
 				dataType1.setGroupId(groupId);
 				dataType1.setGovAgencyCode(StringPool.BLANK);
@@ -49,11 +57,11 @@ public class StatisticEngineFetch {
 				engineFetchEntry.updateDossierStatisticData(dataType1, dossierData, fromStatisticDate, toStatisticDate,
 						reporting);
 				dataType1 = processOnTimePercent(dataType1);
-	
+
 				statisticData.put(type1, dataType1);
 
-				String type2 = "all@all@" + dossierData.getSystem() +"@" + groupId;
-				
+				String type2 = "all@all@" + dossierData.getSystem() + "@" + groupId;
+
 				DossierStatisticData dataType2 = new DossierStatisticData();
 				dataType2.setGroupId(groupId);
 				dataType2.setGovAgencyCode(StringPool.BLANK);
@@ -61,20 +69,20 @@ public class StatisticEngineFetch {
 				dataType2.setDomainCode(StringPool.BLANK);
 				dataType2.setDomainName(StringPool.BLANK);
 				dataType2.setSystem(dossierData.getSystem());
-	
+
 				if (statisticData.containsKey(type2)) {
 					dataType2 = statisticData.get(type2);
 				}
-	
+
 				engineFetchEntry.updateDossierStatisticData(dataType2, dossierData, fromStatisticDate, toStatisticDate,
 						reporting);
 				dataType2 = processOnTimePercent(dataType2);
-	
+
 				statisticData.put(type2, dataType2);
-					
+
 				// all site, each domain, all system
 				String type3 = "all@" + dossierData.getDomainCode() + "@all@" + groupId;
-				
+
 				DossierStatisticData dataType3 = new DossierStatisticData();
 				dataType3.setGroupId(groupId);
 				dataType3.setGovAgencyCode(StringPool.BLANK);
@@ -82,22 +90,22 @@ public class StatisticEngineFetch {
 				dataType3.setDomainCode(dossierData.getDomainCode());
 				dataType3.setDomainName(dossierData.getDomainName());
 				dataType3.setSystem(StringPool.BLANK);
-	
+
 				if (statisticData.containsKey(type3)) {
 					dataType3 = statisticData.get(type3);
 				}
-	
+
 				engineFetchEntry.updateDossierStatisticData(dataType3, dossierData, fromStatisticDate, toStatisticDate,
 						reporting);
 				dataType3 = processOnTimePercent(dataType3);
-	
+
 				statisticData.put(type3, dataType3);
-	
+
 				// each site all domain
-				
+
 				String type4 = dossierData.getGovAgencyCode() + "@all@all@" + groupId;
-				//System.out.println("type3: "+type3);
-	
+				// System.out.println("type3: "+type3);
+
 				DossierStatisticData dataType4 = new DossierStatisticData();
 				dataType4.setGroupId(groupId);
 				dataType4.setGovAgencyCode(dossierData.getGovAgencyCode());
@@ -109,18 +117,19 @@ public class StatisticEngineFetch {
 				if (statisticData.containsKey(type4)) {
 					dataType4 = statisticData.get(type4);
 				}
-	
+
 				engineFetchEntry.updateDossierStatisticData(dataType4, dossierData, fromStatisticDate, toStatisticDate,
 						reporting);
 				dataType4 = processOnTimePercent(dataType4);
-				//System.out.println("dataType3: "+dataType3.getTotalCount());
-	
+				// System.out.println("dataType3: "+dataType3.getTotalCount());
+
 				statisticData.put(type4, dataType4);
-				//System.out.println("statisticData: "+statisticData.get(type3).getTotalCount());
+				// System.out.println("statisticData:
+				// "+statisticData.get(type3).getTotalCount());
 
 				// all site, each domain, each system
-				String type5 = "all@" + dossierData.getDomainCode() + "@" + dossierData.getSystem() + "@"+ groupId;
-				
+				String type5 = "all@" + dossierData.getDomainCode() + "@" + dossierData.getSystem() + "@" + groupId;
+
 				DossierStatisticData dataType5 = new DossierStatisticData();
 				dataType5.setGroupId(groupId);
 				dataType5.setGovAgencyCode(StringPool.BLANK);
@@ -140,8 +149,8 @@ public class StatisticEngineFetch {
 				statisticData.put(type5, dataType5);
 
 				// all site, each domain, each system
-				String type6 = dossierData.getGovAgencyCode() + "@all@" + dossierData.getSystem() + "@"+ groupId;
-				
+				String type6 = dossierData.getGovAgencyCode() + "@all@" + dossierData.getSystem() + "@" + groupId;
+
 				DossierStatisticData dataType6 = new DossierStatisticData();
 				dataType6.setGroupId(groupId);
 				dataType6.setGovAgencyCode(dossierData.getGovAgencyCode());
@@ -161,8 +170,8 @@ public class StatisticEngineFetch {
 				statisticData.put(type6, dataType6);
 
 				// each site, each domain, all system
-				String type7 = dossierData.getGovAgencyCode() + "@" + dossierData.getDomainCode() +"@all@" + groupId;
-				
+				String type7 = dossierData.getGovAgencyCode() + "@" + dossierData.getDomainCode() + "@all@" + groupId;
+
 				DossierStatisticData dataType7 = new DossierStatisticData();
 				dataType7.setGroupId(groupId);
 				dataType7.setGovAgencyCode(dossierData.getGovAgencyCode());
@@ -184,7 +193,7 @@ public class StatisticEngineFetch {
 				// each site, each domain, all system
 				String type8 = dossierData.getGovAgencyCode() + "@" + dossierData.getDomainCode() + "@"
 						+ dossierData.getSystem() + "@" + groupId;
-				
+
 				DossierStatisticData dataType8 = new DossierStatisticData();
 				dataType8.setGroupId(groupId);
 				dataType8.setGovAgencyCode(dossierData.getGovAgencyCode());
@@ -230,38 +239,41 @@ public class StatisticEngineFetch {
 //						statisticData.put(type9, dataType9);											
 //					}
 //				}
-				
+
 			}
 		}
 	}
 
-	//LamTV_Process statistic check
+	// LamTV_Process statistic check
 	private static final String MSG_ALL = "all";
 
 	public Map<String, VotingResultStatisticData> getStatisticVotingData(long groupId,
 			List<GetVotingResultData> votingDataList, Date fromCalDate, Date toCalDate) {
 
-		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		// LOG.info("STARTTING TIME " +
+		// LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		Map<String, VotingResultStatisticData> statisticData = new HashMap<String, VotingResultStatisticData>();
-		String MSG_ALL_SITE_ALL_DOMAIN = MSG_ALL + StringPool.AT + MSG_ALL + StringPool.AT + MSG_ALL + StringPool.AT + groupId;
+		String MSG_ALL_SITE_ALL_DOMAIN = MSG_ALL + StringPool.AT + MSG_ALL + StringPool.AT + MSG_ALL + StringPool.AT
+				+ groupId;
 
 		for (GetVotingResultData votingData : votingDataList) {
-			//System.out.println("DossierDataJSON: "+JSONFactoryUtil.looseSerialize(votingData));
+			// System.out.println("DossierDataJSON:
+			// "+JSONFactoryUtil.looseSerialize(votingData));
 			StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
 
 			/** Calculator all site, all domain - START */
-			
-			//String type1 = "all@all@" + groupId;
-			//System.out.println("type1: "+type1);
+
+			// String type1 = "all@all@" + groupId;
+			// System.out.println("type1: "+type1);
 
 			VotingResultStatisticData dataType1 = new VotingResultStatisticData();
 
 			if (statisticData.containsKey(MSG_ALL_SITE_ALL_DOMAIN)) {
-				//System.out.println("type1: "+MSG_ALL_SITE_ALL_DOMAIN);
+				// System.out.println("type1: "+MSG_ALL_SITE_ALL_DOMAIN);
 				dataType1 = statisticData.get(MSG_ALL_SITE_ALL_DOMAIN);
 			}
 
-			//System.out.println("type1: "+MSG_ALL_SITE_ALL_DOMAIN);
+			// System.out.println("type1: "+MSG_ALL_SITE_ALL_DOMAIN);
 			engineFetchEntry.calculateVotingStatisticData(dataType1, votingData, fromCalDate, toCalDate);
 			dataType1.setGovAgencyCode(StringPool.BLANK);
 			dataType1.setGovAgencyName(StringPool.BLANK);
@@ -271,13 +283,13 @@ public class StatisticEngineFetch {
 			dataType1.setVotingSubject(StringPool.BLANK);
 
 			statisticData.put(MSG_ALL_SITE_ALL_DOMAIN, dataType1);
-			
+
 			/** Calculator all site, all domain - END */
 
 			// all site each domain
 			String type2 = MSG_ALL + StringPool.AT + MSG_ALL + StringPool.AT + votingData.getVotingCode()
 					+ StringPool.AT + groupId;
-			
+
 			VotingResultStatisticData dataType2 = new VotingResultStatisticData();
 
 			dataType2.setVotingCode(votingData.getVotingCode());
@@ -292,14 +304,13 @@ public class StatisticEngineFetch {
 			}
 
 			engineFetchEntry.calculateVotingStatisticData(dataType2, votingData, fromCalDate, toCalDate);
-			//dataType2 = processOnTimePercent(dataType2);
+			// dataType2 = processOnTimePercent(dataType2);
 
 			statisticData.put(type2, dataType2);
 
 			// each site all domain
-			String type3 = MSG_ALL + StringPool.AT + votingData.getDomain() + StringPool.AT
-					+ votingData.getVotingCode() + StringPool.AT + groupId;
-
+			String type3 = MSG_ALL + StringPool.AT + votingData.getDomain() + StringPool.AT + votingData.getVotingCode()
+					+ StringPool.AT + groupId;
 
 			VotingResultStatisticData dataType3 = new VotingResultStatisticData();
 			dataType3.setDomain(votingData.getDomain());
@@ -314,15 +325,15 @@ public class StatisticEngineFetch {
 			}
 
 			engineFetchEntry.calculateVotingStatisticData(dataType3, votingData, fromCalDate, toCalDate);
-			//dataType3 = processOnTimePercent(dataType3);
+			// dataType3 = processOnTimePercent(dataType3);
 
 			statisticData.put(type3, dataType3);
 
 			// each site each domain
-			
+
 			String type4 = votingData.getGovAgencyCode() + StringPool.AT + MSG_ALL + StringPool.AT
 					+ votingData.getVotingCode() + StringPool.AT + groupId;
-			
+
 			VotingResultStatisticData dataType4 = new VotingResultStatisticData();
 			dataType4.setGovAgencyCode(votingData.getGovAgencyCode());
 			dataType4.setGovAgencyName(votingData.getGovAgencyName());
@@ -336,14 +347,14 @@ public class StatisticEngineFetch {
 			}
 
 			engineFetchEntry.calculateVotingStatisticData(dataType4, votingData, fromCalDate, toCalDate);
-			//dataType4 = processOnTimePercent(dataType4);
+			// dataType4 = processOnTimePercent(dataType4);
 
 			statisticData.put(type4, dataType4);
-			
+
 			// each site each domain
 			String type5 = votingData.getGovAgencyCode() + StringPool.AT + votingData.getDomain() + StringPool.AT
 					+ votingData.getVotingCode() + StringPool.AT + groupId;
-			
+
 			VotingResultStatisticData dataType5 = new VotingResultStatisticData();
 			dataType5.setGovAgencyCode(votingData.getGovAgencyCode());
 			dataType5.setGovAgencyName(votingData.getGovAgencyName());
@@ -357,14 +368,14 @@ public class StatisticEngineFetch {
 			}
 
 			engineFetchEntry.calculateVotingStatisticData(dataType5, votingData, fromCalDate, toCalDate);
-			//dataType4 = processOnTimePercent(dataType4);
+			// dataType4 = processOnTimePercent(dataType4);
 
 			statisticData.put(type5, dataType5);
 
 			// each site each domain
-			String type6 = MSG_ALL + StringPool.AT + votingData.getDomain() + StringPool.AT
-					+ MSG_ALL + StringPool.AT + groupId;
-			
+			String type6 = MSG_ALL + StringPool.AT + votingData.getDomain() + StringPool.AT + MSG_ALL + StringPool.AT
+					+ groupId;
+
 			VotingResultStatisticData dataType6 = new VotingResultStatisticData();
 			dataType6.setDomain(votingData.getDomain());
 			dataType6.setDomainName(votingData.getDomainName());
@@ -381,9 +392,9 @@ public class StatisticEngineFetch {
 			statisticData.put(type6, dataType6);
 
 			// each site each domain
-			String type7 = votingData.getGovAgencyCode() + StringPool.AT + MSG_ALL + StringPool.AT
-					+ MSG_ALL + StringPool.AT + groupId;
-			
+			String type7 = votingData.getGovAgencyCode() + StringPool.AT + MSG_ALL + StringPool.AT + MSG_ALL
+					+ StringPool.AT + groupId;
+
 			VotingResultStatisticData dataType7 = new VotingResultStatisticData();
 			dataType7.setGovAgencyCode(votingData.getGovAgencyCode());
 			dataType7.setGovAgencyName(votingData.getGovAgencyName());
@@ -402,7 +413,7 @@ public class StatisticEngineFetch {
 			// each site each domain
 			String type8 = votingData.getGovAgencyCode() + StringPool.AT + votingData.getDomain() + StringPool.AT
 					+ MSG_ALL + StringPool.AT + groupId;
-			
+
 			VotingResultStatisticData dataType8 = new VotingResultStatisticData();
 			dataType8.setGovAgencyCode(votingData.getGovAgencyCode());
 			dataType8.setGovAgencyName(votingData.getGovAgencyName());
@@ -423,27 +434,29 @@ public class StatisticEngineFetch {
 		if (statisticData != null && statisticData.size() > 0) {
 			for (Map.Entry<String, VotingResultStatisticData> entry : statisticData.entrySet()) {
 				VotingResultStatisticData dataType = entry.getValue();
-				//System.out.println("dataType"+ JSONFactoryUtil.looseSerialize(dataType));
+				// System.out.println("dataType"+ JSONFactoryUtil.looseSerialize(dataType));
 				if (dataType != null) {
 					dataType = processVotingPercent(dataType);
 				}
 				votingStatisticData.put(entry.getKey(), dataType);
 			}
 		}
-		
+
 		return votingStatisticData;
 	}
 
-	public Map<String, PersonStatisticData> getStatisticPersonData(long groupId,
-			List<GetPersonData> personDataList, Date fromStatisticDate, Date toStatisticDate) {
+	public Map<String, PersonStatisticData> getOldStatisticPersonData(long groupId, List<GetPersonData> personDataList,
+			Date fromStatisticDate, Date toStatisticDate) {
 
-		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		// LOG.info("STARTTING TIME " +
+		// LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		Map<String, PersonStatisticData> statisticData = new HashMap<String, PersonStatisticData>();
 		String MSG_ALL_SITE_ALL_DOMAIN = MSG_ALL + StringPool.AT + MSG_ALL + StringPool.AT + MSG_ALL + StringPool.AT
 				+ groupId;
 
 		for (GetPersonData personData : personDataList) {
-			//System.out.println("DossierDataJSON: "+JSONFactoryUtil.looseSerialize(votingData));
+			// System.out.println("DossierDataJSON:
+			// "+JSONFactoryUtil.looseSerialize(votingData));
 			StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
 
 			/** Calculator all site, all domain - START */
@@ -460,16 +473,16 @@ public class StatisticEngineFetch {
 				dataType1 = statisticData.get(MSG_ALL_SITE_ALL_DOMAIN);
 			}
 
-			//System.out.println("type1: "+MSG_ALL_SITE_ALL_DOMAIN);
+			// System.out.println("type1: "+MSG_ALL_SITE_ALL_DOMAIN);
 			engineFetchEntry.calculatePersonStatisticData(dataType1, personData, fromStatisticDate, toStatisticDate);
 			statisticData.put(MSG_ALL_SITE_ALL_DOMAIN, dataType1);
-			
+
 			/** Calculator all site, all domain - END */
 
 			// all site each domain
 			String type2 = MSG_ALL + StringPool.AT + MSG_ALL + StringPool.AT + personData.getVotingCode()
 					+ StringPool.AT + groupId;
-			
+
 			PersonStatisticData dataType2 = new PersonStatisticData();
 			dataType2.setVotingCode(personData.getVotingCode());
 			dataType2.setVotingSubject(personData.getVotingSubject());
@@ -489,7 +502,6 @@ public class StatisticEngineFetch {
 			String type3 = MSG_ALL + StringPool.AT + personData.getEmployeeId() + StringPool.AT
 					+ personData.getVotingCode() + StringPool.AT + groupId;
 
-
 			PersonStatisticData dataType3 = new PersonStatisticData();
 			dataType3.setEmployeeId(personData.getEmployeeId());
 			dataType3.setEmployeeName(personData.getEmployeeName());
@@ -506,10 +518,10 @@ public class StatisticEngineFetch {
 			statisticData.put(type3, dataType3);
 
 			// each site each domain
-			
+
 			String type4 = personData.getGovAgencyCode() + StringPool.AT + MSG_ALL + StringPool.AT
 					+ personData.getVotingCode() + StringPool.AT + groupId;
-			
+
 			PersonStatisticData dataType4 = new PersonStatisticData();
 			dataType4.setGovAgencyCode(personData.getGovAgencyCode());
 			dataType4.setGovAgencyName(personData.getGovAgencyName());
@@ -524,11 +536,11 @@ public class StatisticEngineFetch {
 
 			engineFetchEntry.calculatePersonStatisticData(dataType4, personData, fromStatisticDate, toStatisticDate);
 			statisticData.put(type4, dataType4);
-			
+
 			// each site each domain
 			String type5 = personData.getGovAgencyCode() + StringPool.AT + personData.getEmployeeId() + StringPool.AT
 					+ personData.getVotingCode() + StringPool.AT + groupId;
-			
+
 			PersonStatisticData dataType5 = new PersonStatisticData();
 			dataType5.setGovAgencyCode(personData.getGovAgencyCode());
 			dataType5.setGovAgencyName(personData.getGovAgencyName());
@@ -545,9 +557,9 @@ public class StatisticEngineFetch {
 			statisticData.put(type5, dataType5);
 
 			// each site each domain
-			String type6 = MSG_ALL + StringPool.AT + personData.getEmployeeId() + StringPool.AT
-					+ MSG_ALL + StringPool.AT + groupId;
-			
+			String type6 = MSG_ALL + StringPool.AT + personData.getEmployeeId() + StringPool.AT + MSG_ALL
+					+ StringPool.AT + groupId;
+
 			PersonStatisticData dataType6 = new PersonStatisticData();
 			dataType6.setEmployeeId(personData.getEmployeeId());
 			dataType6.setEmployeeName(personData.getEmployeeName());
@@ -564,9 +576,9 @@ public class StatisticEngineFetch {
 			statisticData.put(type6, dataType6);
 
 			// each site each domain
-			String type7 = personData.getGovAgencyCode() + StringPool.AT + MSG_ALL + StringPool.AT
-					+ MSG_ALL + StringPool.AT + groupId;
-			
+			String type7 = personData.getGovAgencyCode() + StringPool.AT + MSG_ALL + StringPool.AT + MSG_ALL
+					+ StringPool.AT + groupId;
+
 			PersonStatisticData dataType7 = new PersonStatisticData();
 			dataType7.setGovAgencyCode(personData.getGovAgencyCode());
 			dataType7.setGovAgencyName(personData.getGovAgencyName());
@@ -585,7 +597,7 @@ public class StatisticEngineFetch {
 			// each site each domain
 			String type8 = personData.getGovAgencyCode() + StringPool.AT + personData.getEmployeeId() + StringPool.AT
 					+ MSG_ALL + StringPool.AT + groupId;
-			
+
 			PersonStatisticData dataType8 = new PersonStatisticData();
 			dataType8.setGovAgencyCode(personData.getGovAgencyCode());
 			dataType8.setGovAgencyName(personData.getGovAgencyName());
@@ -606,28 +618,208 @@ public class StatisticEngineFetch {
 		if (statisticData != null && statisticData.size() > 0) {
 			for (Map.Entry<String, PersonStatisticData> entry : statisticData.entrySet()) {
 				PersonStatisticData dataType = entry.getValue();
-				//System.out.println("dataType"+ JSONFactoryUtil.looseSerialize(dataType));
+				// System.out.println("dataType"+ JSONFactoryUtil.looseSerialize(dataType));
 				if (dataType != null) {
 					dataType = processPersonPercent(dataType);
 				}
 				personStatisticData.put(entry.getKey(), dataType);
 			}
 		}
-		
+
 		return personStatisticData;
 	}
 
+	public Map<String, PersonStatisticData> getStatisticPersonDataForVotingCode(long groupId, List<GetPersonData> personDataList,
+			Date fromStatisticDate, Date toStatisticDate) {
+		Map<String, PersonStatisticData> statisticData = new HashMap<String, PersonStatisticData>();
+		for (GetPersonData personData : personDataList) {
+			
+			StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
+			String type4 = personData.getGovAgencyCode()+ "@" + personData.getEmployeeId() + "@" + personData.getVotingCode() + "@" + groupId;
+			PersonStatisticData dataType4 = new PersonStatisticData();
+			dataType4.setGovAgencyCode(personData.getGovAgencyCode());
+			dataType4.setGovAgencyName(personData.getGovAgencyName());
+			dataType4.setEmployeeId(personData.getEmployeeId());
+			dataType4.setEmployeeName(personData.getEmployeeName());
+			dataType4.setVotingCode(personData.getVotingCode());
+			dataType4.setVotingSubject(personData.getVotingSubject());
+			
+			if (statisticData.containsKey(type4)) {
+				dataType4 = statisticData.get(type4);
+			}
+			engineFetchEntry.calculatePersonStatisticData(dataType4, personData, fromStatisticDate, toStatisticDate);
+			statisticData.put(type4, dataType4);
+		}
+			
+			Map<String, PersonStatisticData> personStatisticData = new HashMap<String, PersonStatisticData>();
+			if (statisticData != null && statisticData.size() > 0) {
+				for (Map.Entry<String, PersonStatisticData> entry : statisticData.entrySet()) {
+					PersonStatisticData dataType = entry.getValue();				
+					if (dataType != null) {
+						dataType = processPersonPercent(dataType);
+					}
+					personStatisticData.put(entry.getKey(), dataType);
+				}
+			}
 
+			return personStatisticData;
+	}
+	
+	public List<PersonStatisticData> getStatisticPersonData(List<PersonStatisticData> statisticDataList) {
+		List<PersonStatisticData> newStatisticData = new ArrayList<PersonStatisticData>();
+		int totalVoteInSite = 0;
+		if (statisticDataList != null && statisticDataList.size() > 0) {
+			List<PersonStatisticData> statisticData = statisticDataList.stream()
+					.sorted(Comparator.comparing(p -> p.getEmployeeId()))
+					.collect(Collectors.toList());
+			do {
+				List<PersonStatisticData> tempData = new ArrayList<PersonStatisticData>();
+				
+				PersonStatisticData data = statisticData.get(0);
+				tempData.add(data);
+				for (int i = 1; i< statisticData.size(); i++) {
+					if (data.getEmployeeId() == statisticData.get(i).getEmployeeId()) {
+						tempData.add(statisticData.get(i));
+					}					
+				}
+				statisticData.removeAll(tempData);
+				
+				PersonStatisticData totalPersonData = new PersonStatisticData();
+				totalPersonData.setEmployeeId(data.getEmployeeId());
+				totalPersonData.setEmployeeName(data.getEmployeeName());
+				totalPersonData.setGroupId(data.getGroupId());
+				totalPersonData.setMonth(data.getMonth());
+				totalPersonData.setGovAgencyCode(data.getGovAgencyCode());
+				totalPersonData.setGovAgencyName(data.getGovAgencyName());
+				totalPersonData.setTotalVoted(data.getBadCount()+data.getGoodCount()+data.getVeryGoodCount());
+				totalPersonData.setVotingCode(StringPool.BLANK);
+				totalPersonData.setVotingSubject(StringPool.BLANK);
+				
+				tempData.add(totalPersonData);
+				
+				totalVoteInSite = totalVoteInSite + totalPersonData.getTotalVoted();
+				newStatisticData.addAll(tempData);
+				
+				
+			} while (statisticData.size() > 0);
+			
+			PersonStatisticData eachSitePersonData = new PersonStatisticData();
+			eachSitePersonData.setEmployeeId(0);
+			eachSitePersonData.setEmployeeName(StringPool.BLANK);
+			eachSitePersonData.setGroupId(newStatisticData.get(0).getGroupId());
+			eachSitePersonData.setMonth(newStatisticData.get(0).getMonth());
+			eachSitePersonData.setGovAgencyCode(newStatisticData.get(0).getGovAgencyCode());
+			eachSitePersonData.setGovAgencyName(newStatisticData.get(0).getGovAgencyName());
+			eachSitePersonData.setTotalVoted(totalVoteInSite);
+			eachSitePersonData.setVotingCode(StringPool.BLANK);
+			eachSitePersonData.setVotingSubject(StringPool.BLANK);
+			newStatisticData.add(0, eachSitePersonData);			
+			
+		}
+		
+		return newStatisticData;
+	}
+	
+	public Map<String, PersonStatisticData> getNewStatisticPersonData(long groupId, List<GetPersonData> personDataList,
+			Date fromStatisticDate, Date toStatisticDate) {
+
+		Map<String, PersonStatisticData> statisticData = new HashMap<String, PersonStatisticData>();
+
+		for (GetPersonData personData : personDataList) {
+			StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
+
+			// all site, all employee, all votingCode
+			String type1 = "all@all@all@" + groupId;
+			PersonStatisticData dataType1 = new PersonStatisticData();
+			dataType1.setGovAgencyCode(StringPool.BLANK);
+			dataType1.setGovAgencyName(StringPool.BLANK);
+			dataType1.setEmployeeId(0);
+			dataType1.setEmployeeName(StringPool.BLANK);
+			dataType1.setVotingCode(StringPool.BLANK);
+			dataType1.setVotingSubject(StringPool.BLANK);
+			
+			if (statisticData.containsKey(type1)) {
+				dataType1 = statisticData.get(type1);
+			}
+			engineFetchEntry.calculatePersonStatisticData(dataType1, personData, fromStatisticDate, toStatisticDate);
+			statisticData.put(type1, dataType1);
+			
+			// each site, all employee, all votingCode
+			String type2 = personData.getGovAgencyCode()+ "@all@all@" + groupId;
+			PersonStatisticData dataType2 = new PersonStatisticData();
+			dataType2.setGovAgencyCode(personData.getGovAgencyCode());
+			dataType2.setGovAgencyName(personData.getGovAgencyName());
+			dataType2.setEmployeeId(0);
+			dataType2.setEmployeeName(StringPool.BLANK);
+			dataType2.setVotingCode(StringPool.BLANK);
+			dataType2.setVotingSubject(StringPool.BLANK);
+			
+			if (statisticData.containsKey(type2)) {
+				dataType2 = statisticData.get(type2);
+			}
+			engineFetchEntry.calculatePersonStatisticData(dataType2, personData, fromStatisticDate, toStatisticDate);
+			statisticData.put(type2, dataType2);
+			
+			// each site, each employee, all votingCode
+			String type3 = personData.getGovAgencyCode()+ "@" + personData.getEmployeeId() + "@" + "all@" + groupId;
+			PersonStatisticData dataType3 = new PersonStatisticData();
+			dataType3.setGovAgencyCode(personData.getGovAgencyCode());
+			dataType3.setGovAgencyName(personData.getGovAgencyName());
+			dataType3.setEmployeeId(personData.getEmployeeId());
+			dataType3.setEmployeeName(personData.getEmployeeName());
+			dataType3.setVotingCode(StringPool.BLANK);
+			dataType3.setVotingSubject(StringPool.BLANK);
+			
+			if (statisticData.containsKey(type3)) {
+				dataType3 = statisticData.get(type3);
+			}
+			engineFetchEntry.calculatePersonStatisticData(dataType3, personData, fromStatisticDate, toStatisticDate);
+			statisticData.put(type3, dataType3);
+			
+			// each site, each employee, each votingCode
+			String type4 = personData.getGovAgencyCode()+ "@" + personData.getEmployeeId() + "@" + personData.getVotingId() + "@" + groupId;
+			PersonStatisticData dataType4 = new PersonStatisticData();
+			dataType4.setGovAgencyCode(personData.getGovAgencyCode());
+			dataType4.setGovAgencyName(personData.getGovAgencyName());
+			dataType4.setEmployeeId(personData.getEmployeeId());
+			dataType4.setEmployeeName(personData.getEmployeeName());
+			dataType4.setVotingCode(personData.getVotingCode());
+			dataType4.setVotingSubject(personData.getVotingSubject());
+			
+			if (statisticData.containsKey(type4)) {
+				dataType4 = statisticData.get(type4);
+			}
+			engineFetchEntry.calculatePersonStatisticData(dataType4, personData, fromStatisticDate, toStatisticDate);
+			statisticData.put(type4, dataType4);
+						
+		}
+
+		//
+		Map<String, PersonStatisticData> personStatisticData = new HashMap<String, PersonStatisticData>();
+		if (statisticData != null && statisticData.size() > 0) {
+			for (Map.Entry<String, PersonStatisticData> entry : statisticData.entrySet()) {
+				PersonStatisticData dataType = entry.getValue();				
+				// System.out.println("dataType"+ JSONFactoryUtil.looseSerialize(dataType));
+				if (dataType != null) {
+					dataType = processPersonPercent(dataType);
+				}
+				personStatisticData.put(entry.getKey(), dataType);
+			}
+		}
+
+		return personStatisticData;
+	}
+	
 	private DossierStatisticData processOnTimePercent(DossierStatisticData dataType) {
 		int ontimePercent = 100;
 		int releaseCount = dataType.getReleaseCount();
-		//_log.info("releaseCount: "+releaseCount);
-		
+		// _log.info("releaseCount: "+releaseCount);
+
 		if (releaseCount > 0) {
 			int betimesCount = dataType.getBetimesCount();
 			int ontimeCount = dataType.getOntimeCount();
 			ontimePercent = (betimesCount + ontimeCount) * 100 / releaseCount;
-			//_log.info("ontimePercent: "+ontimePercent);
+			// _log.info("ontimePercent: "+ontimePercent);
 		}
 		dataType.setOntimePercentage(ontimePercent);
 
@@ -640,7 +832,7 @@ public class StatisticEngineFetch {
 		int thirdPercentage = 0;
 		//
 		int totalVoted = dataType.getTotalVoted();
-		
+
 		if (dataType.getVeryGoodCount() > 0) {
 			firstPercentage = dataType.getVeryGoodCount() * 100 / totalVoted;
 		}
@@ -663,7 +855,7 @@ public class StatisticEngineFetch {
 		int thirdPercentage = 0;
 		//
 		int totalVoted = dataType.getTotalVoted();
-		
+
 		if (dataType.getVeryGoodCount() > 0) {
 			firstPercentage = dataType.getVeryGoodCount() * 100 / totalVoted;
 		}
@@ -683,56 +875,56 @@ public class StatisticEngineFetch {
 	public void fetchSumStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
 			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, int reporting) {
 
-		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		// LOG.info("STARTTING TIME " +
+		// LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
 		for (GetDossierData dossierData : lsDossierData) {
 			if (Validator.isNotNull(dossierData.getDomainCode())) {
 				StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
 				// all site, all domain
-				
+
 				String type1 = "all@all@" + groupId;
-	
+
 				DossierStatisticData dataType1 = new DossierStatisticData();
 				dataType1.setGovAgencyCode(StringPool.BLANK);
 				dataType1.setGovAgencyName(StringPool.BLANK);
 				dataType1.setDomainCode(StringPool.BLANK);
 				dataType1.setDomainName(StringPool.BLANK);
-	
+
 				if (statisticData.containsKey(type1)) {
 					dataType1 = statisticData.get(type1);
 				}
-	
-				engineFetchEntry.updateSumDossierStatisticData(dataType1, dossierData, fromStatisticDate, toStatisticDate,
-						reporting);
+
+				engineFetchEntry.updateSumDossierStatisticData(dataType1, dossierData, fromStatisticDate,
+						toStatisticDate, reporting);
 				dataType1 = processOnTimePercent(dataType1);
-	
+
 				statisticData.put(type1, dataType1);
-				
-	
+
 				// all site each domain
 				String type2 = "all@" + dossierData.getDomainCode() + "@" + groupId;
-				
+
 				DossierStatisticData dataType2 = new DossierStatisticData();
 				dataType2.setGovAgencyCode(StringPool.BLANK);
 				dataType2.setGovAgencyName(StringPool.BLANK);
 				dataType2.setDomainCode(dossierData.getDomainCode());
 				dataType2.setDomainName(dossierData.getDomainName());
-	
+
 				if (statisticData.containsKey(type2)) {
 					dataType2 = statisticData.get(type2);
 				}
-	
-				engineFetchEntry.updateSumDossierStatisticData(dataType2, dossierData, fromStatisticDate, toStatisticDate,
-						reporting);
+
+				engineFetchEntry.updateSumDossierStatisticData(dataType2, dossierData, fromStatisticDate,
+						toStatisticDate, reporting);
 				dataType2 = processOnTimePercent(dataType2);
-	
+
 				statisticData.put(type2, dataType2);
-	
+
 				// each site all domain
-				
+
 				String type3 = dossierData.getGovAgencyCode() + "@all@" + groupId;
-				//System.out.println("type3: "+type3);
-	
+				// System.out.println("type3: "+type3);
+
 				DossierStatisticData dataType3 = new DossierStatisticData();
 				dataType3.setGovAgencyCode(dossierData.getGovAgencyCode());
 				dataType3.setGovAgencyName(dossierData.getGovAgencyName());
@@ -740,40 +932,41 @@ public class StatisticEngineFetch {
 				dataType3.setDomainName(StringPool.BLANK);
 
 				if (statisticData.containsKey(type3)) {
-					//System.out.println("type3_TRUE: "+type3);
+					// System.out.println("type3_TRUE: "+type3);
 					dataType3 = statisticData.get(type3);
 				}
-	
-				engineFetchEntry.updateSumDossierStatisticData(dataType3, dossierData, fromStatisticDate, toStatisticDate,
-						reporting);
-				dataType3 = processOnTimePercent(dataType3);
-				//System.out.println("dataType3: "+dataType3.getTotalCount());
-	
-				statisticData.put(type3, dataType3);
-				//System.out.println("statisticData: "+statisticData.get(type3).getTotalCount());
 
-			// each site each domain
-			
+				engineFetchEntry.updateSumDossierStatisticData(dataType3, dossierData, fromStatisticDate,
+						toStatisticDate, reporting);
+				dataType3 = processOnTimePercent(dataType3);
+				// System.out.println("dataType3: "+dataType3.getTotalCount());
+
+				statisticData.put(type3, dataType3);
+				// System.out.println("statisticData:
+				// "+statisticData.get(type3).getTotalCount());
+
+				// each site each domain
+
 				String type4 = dossierData.getGovAgencyCode() + "@" + dossierData.getDomainCode() + "@" + groupId;
-				
+
 				DossierStatisticData dataType4 = new DossierStatisticData();
 				dataType4.setGovAgencyCode(dossierData.getGovAgencyCode());
 				dataType4.setGovAgencyName(dossierData.getGovAgencyName());
 				dataType4.setDomainCode(dossierData.getDomainCode());
 				dataType4.setDomainName(dossierData.getDomainName());
-				
+
 				if (statisticData.containsKey(type4)) {
 					dataType4 = statisticData.get(type4);
 				}
 
-				engineFetchEntry.updateSumDossierStatisticData(dataType4, dossierData, fromStatisticDate, toStatisticDate,
-						reporting);
+				engineFetchEntry.updateSumDossierStatisticData(dataType4, dossierData, fromStatisticDate,
+						toStatisticDate, reporting);
 				dataType4 = processOnTimePercent(dataType4);
 
 				statisticData.put(type4, dataType4);
 			}
-			
-			//}
+
+			// }
 		}
-	}	
+	}
 }

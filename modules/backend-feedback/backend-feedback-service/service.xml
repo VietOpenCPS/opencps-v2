@@ -187,6 +187,9 @@
             <finder-column name="modifiedDate" comparator="&lt;="></finder-column>
 
 		</finder>
+		<finder return-type="Collection" name="F_votingId">
+			<finder-column name="votingId"></finder-column>
+		</finder>
 	</entity>
 
 </service-builder>
