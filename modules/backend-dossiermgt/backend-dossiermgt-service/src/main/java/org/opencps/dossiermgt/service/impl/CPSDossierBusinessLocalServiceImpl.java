@@ -5335,6 +5335,35 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 		}
+		if(DossierActionTerm.OUTSIDE_ACTION_EDIT.equals(actionCode)){
+			Employee employee = null;
+			Serializable employeeCache = cache.getFromCache(CacheTerm.MASTER_DATA_EMPLOYEE,
+					groupId + StringPool.UNDERLINE + userId);
+			_log.info("EMPLOYEE CACHE: " + employeeCache);
+			if (employeeCache == null) {
+				employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				if (employee != null) {
+					cache.addToCache(CacheTerm.MASTER_DATA_EMPLOYEE, groupId + StringPool.UNDERLINE + userId,
+							(Serializable) employee, ttl);
+				}
+			} else {
+				employee = (Employee) employeeCache;
+			}
+			User user = userLocalService.fetchUser(userId);
+			createDossierDocument(groupId,userId,actionConfig, dossier, dossierAction, payloadObject,employee, user, context);
+		}
+
+		if(DossierActionTerm.ACTION_SPECIAL_WAITING_PAYMENT.equals(actionCode)){
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
+			if (paymentFile != null) {
+				paymentFile.setPaymentStatus(3);
+				paymentFile.setApproveDatetime(new Date());
+			}
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+		}
+		if(DossierActionTerm.ACTION_SPECIAL_CONFIRM_PAYMENT.equals(actionCode)){
+//			POSVCBUtils.saleRequestDataPOSVCB();
+		}
 
 		return dossierAction;
 	}
