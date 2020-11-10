@@ -705,6 +705,8 @@ public class StatisticEngineFetch {
 				totalPersonData.setBadCount(badCount);
 				totalPersonData.setGoodCount(goodCount);
 				totalPersonData.setVeryGoodCount(veryGoodCount);
+				totalPersonData = newProcessPersonPercent(totalPersonData);
+				
 				//tempData.add(totalPersonData);				
 				//totalVoteInSite = totalVoteInSite + totalPersonData.getTotalVoted();
 				newStatisticData.add(totalPersonData);				
@@ -735,6 +737,7 @@ public class StatisticEngineFetch {
 			eachSitePersonData.setGoodCount(totalGoodCount);
 			eachSitePersonData.setVeryGoodCount(totalVeryGoodCount);
 			eachSitePersonData.setTotalVoted(totalVoteInSite);
+			eachSitePersonData = newProcessPersonPercent(eachSitePersonData);
 			newStatisticData.add(0, eachSitePersonData);			
 			
 		}
@@ -894,6 +897,28 @@ public class StatisticEngineFetch {
 		return dataType;
 	}
 
+	private PersonStatisticData newProcessPersonPercent(PersonStatisticData dataType) {
+		int firstPercentage = 0;
+		int secondPercentage = 0;
+		int thirdPercentage = 0;
+		//
+		int totalVoted = dataType.getVeryGoodCount() + dataType.getGoodCount() + dataType.getBadCount();
+
+		if (dataType.getVeryGoodCount() > 0) {
+			firstPercentage = dataType.getVeryGoodCount() * 100 / totalVoted;
+		}
+		if (dataType.getGoodCount() > 0) {
+			secondPercentage = dataType.getGoodCount() * 100 / totalVoted;
+		}
+		if (dataType.getBadCount() > 0) {
+			thirdPercentage = 100 - (secondPercentage + firstPercentage);
+		}
+		dataType.setPercentVeryGood(firstPercentage);
+		dataType.setPercentGood(secondPercentage);
+		dataType.setPercentBad(thirdPercentage);
+
+		return dataType;
+	}
 	public void fetchSumStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
 			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, int reporting) {
 
