@@ -393,13 +393,13 @@ public class PayGateIntegrationApplication extends Application {
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
 
-	@GET
+	@POST
 	@Path("/keypayv3/create")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response createQRTransaction(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("dossierId") long dossierId) throws PortalException {
+			@Context ServiceContext serviceContext, @FormParam("dossierId") long dossierId) throws PortalException {
 
 		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
 		String result = keypayAction.createPaylater(user, dossierId, serviceContext, request);

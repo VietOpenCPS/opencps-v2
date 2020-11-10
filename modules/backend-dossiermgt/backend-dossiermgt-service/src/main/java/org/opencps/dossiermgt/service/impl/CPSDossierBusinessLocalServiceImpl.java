@@ -2644,7 +2644,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	private PaymentFile createPaymentFile(long groupId, long userId, String payment, ProcessOption option,
 										  ProcessAction proAction, DossierAction previousAction, Dossier dossier, ServiceContext context)
 			throws PortalException {
-
 		PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
 
 		String paymentFee =  StringPool.BLANK;
@@ -2755,9 +2754,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
-				_log.info(1231231231);
 				_log.info("==========VTPayTerm.KP_DVCQG_CONFIG========" + epaymentConfigJSON);
-				_log.info(11111);
 				if (epaymentConfigJSON.has(KeyPayTerm.KP_DVCQG_CONFIG)) {
 					try {
 						epaymentProfileJsonNew.put(KeyPayTerm.KPDVCQG, true);
@@ -2934,6 +2931,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
+					createTransactionKeypayV3(dossier, dossier.getDossierActionId());
 //					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 //							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
