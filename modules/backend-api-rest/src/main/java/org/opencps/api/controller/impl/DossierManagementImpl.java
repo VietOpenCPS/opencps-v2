@@ -8937,26 +8937,27 @@ public class DossierManagementImpl implements DossierManagement {
 			if (dossier != null) {
 				// originDossierNo != null -> hslt or hstg
 				if (!StringUtils.isEmpty(dossier.getOriginDossierNo())) {
-					getInterDossierFromOriginDossier(dossier, listDossier);
-					getConnectDossierFromInterDossier(dossier, listDossier);
+					//getInterDossierFromOriginDossier(dossier, listDossier);
+					//getConnectDossierFromInterDossier(dossier, listDossier);
 				}else {
 					// la ho so goc-> tim danh sach hslt
-					getInterDossierFromOriginDossier(dossier, listDossier);
+					//getInterDossierFromOriginDossier(dossier, listDossier);
 				}
 			}
 
-			results.setTotal(listDossier.size());
+			//results.setTotal(listDossier.size());
 
-			results.getData().addAll(
-					DossierUtils.mappingForListDossier(listDossier));
+			//results.getData().addAll(DossierUtils.mappingForListDossier(listDossier));
 
+			results.setTotal(0);
+			results.getData().addAll(new ArrayList<DossierDataModel>());
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
-	private void getInterDossierFromOriginDossier(Dossier dossier, List<Dossier> listDossier) {
+	/*private void getInterDossierFromOriginDossier(Dossier dossier, List<Dossier> listDossier) {
 		// Ds ho so trung gian va lien thong tu ho so goc
 		List<Dossier> aList = DossierLocalServiceUtil.fetchByORIGIN_NO(dossier.getDossierNo());
 		// Lay ho so lien thong la ho so co originDossierId = 0
@@ -8983,7 +8984,7 @@ public class DossierManagementImpl implements DossierManagement {
 			getConnectDossierFromInterDossier(newDossier, listDossier);
 		}
 
-	}
+	}*/
 
 
 	@Override

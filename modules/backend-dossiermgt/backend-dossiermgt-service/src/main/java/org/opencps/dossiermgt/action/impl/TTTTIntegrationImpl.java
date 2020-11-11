@@ -60,7 +60,8 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
         MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
 
         String codeProfile = dossier.getDocumentNo()!= null ? dossier.getDocumentNo() : "";
-        Integer siteId  = IntegrateTTTTConstants.SITE_ID;
+        //Integer siteId  = IntegrateTTTTConstants.SITE_ID;
+        Integer siteId  = serverConfig.has("siteId") ? serverConfig.getInt("siteId"):IntegrateTTTTConstants.SITE_ID;
         String codeTTHC = dossier.getServiceCode()!= null ? dossier.getServiceCode() : "";
         String nameTTHC = dossier.getServiceName()!= null ? dossier.getServiceName() : "";;
         Integer status;

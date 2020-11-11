@@ -51,6 +51,9 @@ public class NotificationMinuteScheduler extends BaseMessageListener {
     private static int timeSendNotify = Validator.isNotNull(PropsUtil.get("opencps.time.send.notification"))
             ? Integer.valueOf(PropsUtil.get("opencps.time.send.notification"))
             : 45;
+    private static boolean notificationEnable = Validator.isNotNull(PropsUtil.get("opencps.notify.enable.minute"))
+            ? GetterUtil.getBoolean(PropsUtil.get("opencps.notify.enable.minute"))
+            : false;
 
     @Override
     protected void doReceive(Message message) throws Exception {
@@ -70,79 +73,80 @@ public class NotificationMinuteScheduler extends BaseMessageListener {
         isRunning = false;
         _log.info("------- END SEND NOTIFICATION: ------: isRunning: "+ isRunning);
     }
-    private void processNotification(Message message){
-        List<Notificationtemplate> notificationtemplates =
-                _notificationTemplateLocalService.findByIntervalLike(
-                        NotificationTemplateTerm.MINUTELY_PATTERN);
-        _log.info("notificationtemplates check SIZE: "+notificationtemplates.size());
-        if(notificationtemplates !=null && notificationtemplates.size() > 0){
-            for(Notificationtemplate temp : notificationtemplates){
-                List<NotificationQueue> notificationQueues =
-                        NotificationQueueBusinessFactoryUtil.fetchByF_Greate_PublicationDate_Less_ExpireDate(
-                                temp.getNotificationType(), new Date(), new Date());
+    private void processNotification(Message message) {
+        if (notificationEnable) {
+            List<Notificationtemplate> notificationtemplates =
+                    _notificationTemplateLocalService.findByIntervalLike(
+                            NotificationTemplateTerm.MINUTELY_PATTERN);
+            _log.info("notificationtemplates check SIZE: " + notificationtemplates.size());
+            if (notificationtemplates != null && notificationtemplates.size() > 0) {
+                for (Notificationtemplate temp : notificationtemplates) {
+                    List<NotificationQueue> notificationQueues =
+                            NotificationQueueBusinessFactoryUtil.fetchByF_Greate_PublicationDate_Less_ExpireDate(
+                                    temp.getNotificationType(), new Date(), new Date());
 
-                _log.info("notificationQueues check SIZE: "+notificationQueues.size());
-                if(notificationQueues != null && notificationQueues.size() > 0){
-                    for(NotificationQueue notificationQueue : notificationQueues){
-                        try {
-                            ServiceContext serviceContext =
-                                    MBServiceContextFactoryUtil.create(
-                                            notificationQueue.getCompanyId(),
-                                            notificationQueue.getGroupId(),
-                                            notificationQueue.getUserId());
+                    _log.info("notificationQueues check SIZE: " + notificationQueues.size());
+                    if (notificationQueues != null && notificationQueues.size() > 0) {
+                        for (NotificationQueue notificationQueue : notificationQueues) {
+                            try {
+                                ServiceContext serviceContext =
+                                        MBServiceContextFactoryUtil.create(
+                                                notificationQueue.getCompanyId(),
+                                                notificationQueue.getGroupId(),
+                                                notificationQueue.getUserId());
 
-                            MBMessageEntry messageEntry =
-                                    NotificationUtil.createMBMessageEntry(
-                                            notificationQueue, temp,
-                                            serviceContext);
+                                MBMessageEntry messageEntry =
+                                        NotificationUtil.createMBMessageEntry(
+                                                notificationQueue, temp,
+                                                serviceContext);
 
-                            _log.info("messageEntry: "+messageEntry);
-                            if (flagJobMail) {
-                                //Process send SMS
-                                Result resultSendSMS = new Result("Success", new Long(1));
-                                if(messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())){
+                                _log.info("messageEntry: " + messageEntry);
+                                if (flagJobMail) {
+                                    //Process send SMS
+                                    Result resultSendSMS = new Result("Success", new Long(1));
+                                    if (messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())) {
 
-                                    if ("BCT".contentEquals(agencySMS)) {
-                                        _log.info("dossierNo: "+ messageEntry.getDossierNo());
-                                        String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(),
-                                                notificationQueue.getClassPK(), messageEntry.getTextMessage(),
-                                                messageEntry.getEmailSubject(), messageEntry.getToTelNo(), messageEntry.getDossierNo());
-                                        JSONObject jsonMsg = JSONFactoryUtil.createJSONObject(rsMsg);
-                                        if (jsonMsg != null && "Success".equalsIgnoreCase(jsonMsg.getString("message"))) {
-                                            resultSendSMS.setMessage("Success");
-                                            resultSendSMS.setResult(1L);
+                                        if ("BCT".contentEquals(agencySMS)) {
+                                            _log.info("dossierNo: " + messageEntry.getDossierNo());
+                                            String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(),
+                                                    notificationQueue.getClassPK(), messageEntry.getTextMessage(),
+                                                    messageEntry.getEmailSubject(), messageEntry.getToTelNo(), messageEntry.getDossierNo());
+                                            JSONObject jsonMsg = JSONFactoryUtil.createJSONObject(rsMsg);
+                                            if (jsonMsg != null && "Success".equalsIgnoreCase(jsonMsg.getString("message"))) {
+                                                resultSendSMS.setMessage("Success");
+                                                resultSendSMS.setResult(1L);
+                                            }
+                                        } else {
+                                            //Send viettel
+                                            resultSendSMS = ViettelSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
+                                                    messageEntry.getEmailSubject(), messageEntry.getToTelNo());
                                         }
-                                    } else {
-                                        //Send viettel
-                                        resultSendSMS = ViettelSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
-                                                messageEntry.getEmailSubject(), messageEntry.getToTelNo());
+                                        _log.info("END SEND SMS");
                                     }
-                                    _log.info("END SEND SMS");
-                                }
 
-                                if(messageEntry.isSendNotify() || messageEntry.isSendZalo()){
-                                    _log.info("messageEntry.isSendNotify(): "+messageEntry.isSendNotify());
-                                    MBNotificationSenderFactoryUtil.send(
-                                            messageEntry, messageEntry.getClassName(),
-                                            serviceContext);
-                                }
-                                /* Remove queue when send SMS success Or telNo is null
-                                 *
-                                 * If Send SMS error, continue until expiredDate
-                                 * */
-                                _log.info("resultSendSMS: "+JSONFactoryUtil.looseSerialize(resultSendSMS));
-                                if (temp.getSendEmail()) {
-                                    Calendar cal = Calendar.getInstance();
-                                    cal.setTime(notificationQueue.getCreateDate());
-                                    cal.add(Calendar.SECOND, 30);
-                                    notificationQueue.setExpireDate(cal.getTime());
-                                    notificationQueue.setModifiedDate(cal.getTime());
-                                    NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
+                                    if (messageEntry.isSendNotify() || messageEntry.isSendZalo()) {
+                                        _log.info("messageEntry.isSendNotify(): " + messageEntry.isSendNotify());
+                                        MBNotificationSenderFactoryUtil.send(
+                                                messageEntry, messageEntry.getClassName(),
+                                                serviceContext);
+                                    }
+                                    /* Remove queue when send SMS success Or telNo is null
+                                     *
+                                     * If Send SMS error, continue until expiredDate
+                                     * */
+                                    _log.info("resultSendSMS: " + JSONFactoryUtil.looseSerialize(resultSendSMS));
+                                    if (temp.getSendEmail()) {
+                                        Calendar cal = Calendar.getInstance();
+                                        cal.setTime(notificationQueue.getCreateDate());
+                                        cal.add(Calendar.SECOND, 30);
+                                        notificationQueue.setExpireDate(cal.getTime());
+                                        notificationQueue.setModifiedDate(cal.getTime());
+                                        NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
+                                    } else {
+                                        NotificationQueueBusinessFactoryUtil
+                                                .delete(notificationQueue.getNotificationQueueId(), serviceContext);
+                                    }
                                 } else {
-                                    NotificationQueueBusinessFactoryUtil
-                                            .delete(notificationQueue.getNotificationQueueId(), serviceContext);
-                                }
-                            }else{
 //                                if (isSendLGSP) {
 //                                    // Process send SMS
 //                                    Result resultSendSMS = new Result("Success", new Long(1));
@@ -237,16 +241,16 @@ public class NotificationMinuteScheduler extends BaseMessageListener {
                                         NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
                                     }
 //                                }
+                                }
+                            } catch (Exception e) {
+                                _log.info(e.getMessage());
+                                _log.error("Can't send message from queue " + e);
                             }
-                        }catch (Exception e){
-                            _log.info(e.getMessage());
-                            _log.error("Can't send message from queue " + e);
                         }
                     }
                 }
             }
         }
-
     }
     /**
      * activate: Called whenever the properties for the component change (ala Config Admin)
