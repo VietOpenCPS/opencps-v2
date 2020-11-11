@@ -15,11 +15,16 @@
 package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PostConnect;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.PostConnectLocalServiceBaseImpl;
 
 import java.util.List;
@@ -51,7 +56,7 @@ public class PostConnectLocalServiceImpl extends PostConnectLocalServiceBaseImpl
 												 Integer retry) {
 		try {
 			PostConnect postConnect =  postConnectPersistence.fetchByF_ORDER_NUMBER(orderNumber);
-
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			if(Validator.isNotNull(postConnect)) {
 				Integer oldPostStatus = postConnect.getPostStatus();
 				postConnect.setPostStatus(postStatus);
@@ -59,7 +64,11 @@ public class PostConnectLocalServiceImpl extends PostConnectLocalServiceBaseImpl
 					postConnect.setSyncState(PublishQueueTerm.STATE_WAITING_SYNC);
 					postConnect.setRetry(0);
 				}
-				return postConnectPersistence.update(postConnect);
+				postConnect =postConnectPersistence.update(postConnect);
+				Indexer<Dossier> indexer =
+						IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
+				indexer.reindex(dossier);
+				return postConnect;
 			}
 
 			if(groupId == 0 || dossierId == 0) {
@@ -78,8 +87,11 @@ public class PostConnectLocalServiceImpl extends PostConnectLocalServiceBaseImpl
 			postConnectNew.setPostStatus(postStatus);
 			postConnectNew.setMetadata(metaData);
 			postConnectNew.setSyncState(syncState);
-			return postConnectPersistence.update(postConnectNew);
-
+			postConnectNew = postConnectPersistence.update(postConnectNew);
+			Indexer<Dossier> indexer =
+					IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
+			indexer.reindex(dossier);
+			return postConnectNew;
 		}catch (Exception e) {
 			_log.error(e);
 		}
@@ -88,5 +100,20 @@ public class PostConnectLocalServiceImpl extends PostConnectLocalServiceBaseImpl
 
 	public List<PostConnect> getBySyncState(Integer syncState) {
 		return postConnectPersistence.findByF_SYNC_STATE(syncState);
+	}
+
+	@Override
+	public PostConnect findByPostByDossierIdAndPostType(long groupId, long dossierId, int postType) throws PortalException {
+		return postConnectPersistence.findByF_POST_BY_D_TYPE(groupId,dossierId,postType);
+	}
+
+	@Override
+	public List<PostConnect> findByPostConnectByDossierId(long groupId, long dossierId) throws PortalException {
+		return postConnectPersistence.findByF_POST_BY_DOSSIER_ID(groupId,dossierId);
+	}
+
+	@Override
+	public List<PostConnect> fetchPostConnectByDossierId(long dossierId) throws PortalException {
+		return postConnectPersistence.findByF_BY_DOS_ID(dossierId);
 	}
 }

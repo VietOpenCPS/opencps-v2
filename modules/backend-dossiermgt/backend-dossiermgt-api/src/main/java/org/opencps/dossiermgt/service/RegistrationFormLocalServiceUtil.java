@@ -43,15 +43,16 @@ public class RegistrationFormLocalServiceUtil {
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.RegistrationFormLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static org.opencps.dossiermgt.model.RegistrationForm addRegistrationForm(
-		long groupId, long companyId, long registrationId, String referenceUid,
-		String formNo, String formName, String formData, String formScript,
-		String formReport, long fileEntryId, boolean isNew, boolean removed,
+		long groupId, long companyId, long registrationId,
+		String referenceUidUnUse, String formNo, String formName,
+		String formData, String formScript, String formReport,
+		long fileEntryId, boolean isNew, boolean removed,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .addRegistrationForm(groupId, companyId, registrationId,
-			referenceUid, formNo, formName, formData, formScript, formReport,
-			fileEntryId, isNew, removed, serviceContext);
+			referenceUidUnUse, formNo, formName, formData, formScript,
+			formReport, fileEntryId, isNew, removed, serviceContext);
 	}
 
 	/**

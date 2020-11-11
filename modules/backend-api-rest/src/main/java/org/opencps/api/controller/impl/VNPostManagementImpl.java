@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import backend.auth.api.exception.ErrorMsgModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.petra.string.StringPool;
@@ -14,25 +15,15 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.backend.dossiermgt.logistic.ViettelPostManagement;
+import org.opencps.backend.dossiermgt.logistic.ViettelPostManagementImpl;
+import org.opencps.backend.dossiermgt.logistic.ViettelPostTerm;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.VNPostManagement;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
-import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.backend.dossiermgt.logistic.ViettelPostManagement;
-import org.opencps.backend.dossiermgt.logistic.ViettelPostManagementImpl;
-import org.opencps.backend.dossiermgt.logistic.ViettelPostTerm;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
@@ -42,13 +33,21 @@ import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
-import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PostConnect;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.rest.model.ViettelPostUpdateOrder;
 import org.opencps.dossiermgt.rest.model.ViettlePostResponse;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PostConnectLocalServiceUtil;
 import org.opencps.kernel.context.MBServiceContextFactoryUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 
 public class VNPostManagementImpl implements VNPostManagement
 {

@@ -795,6 +795,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				// Process update deliverable file Id
 				Message message = new Message();
 
+				if(Validator.isNull(jrxmlTemplate)){
+					_log.info("Log dossierPart :" + dossierPart.getDossierPartId());
+					jrxmlTemplate = dossierPart.getFormReport();
+				}
+				_log.info(" FORM JRXMLTemplate " + jrxmlTemplate);
 				JSONObject msgData = JSONFactoryUtil.createJSONObject();
 				msgData.put(ConstantUtils.CLASS_NAME, Deliverable.class.getName());
 				msgData.put(Field.CLASS_PK, deliverable.getDeliverableId());

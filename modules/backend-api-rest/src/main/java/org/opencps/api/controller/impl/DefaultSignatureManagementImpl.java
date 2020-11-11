@@ -1216,23 +1216,23 @@ public class DefaultSignatureManagementImpl
 		Deliverable deliverable = null;
 
 		if(listDossierHS.size() >0) {
-			long fileEntryId= 0;
-			for (DossierFile dossierFile : listDossierHS) {
-				if (!dossierFile.getEForm()) {
-					fileEntryId = dossierFile.getFileEntryId();
-					_log.info("LOG dossierFile = false -- log fileEntryId :" + dossierFile.getFileEntryId());
-					break;
-				}
-			}
+//			long fileEntryId= 0;
+//			for (DossierFile dossierFile : listDossierHS) {
+//				if (!dossierFile.getEForm()) {
+//					fileEntryId = dossierFile.getFileEntryId();
+//					_log.info("LOG dossierFile = false -- log fileEntryId :" + dossierFile.getFileEntryId());
+//					break;
+//				}
+//			}
+			//A.Duan ưu tiên file đính kèm
 			for (DossierFile item : listDossierHS) {
-//				if (item.getEForm()) {
+				if (!item.getEForm()) {
 					if(Validator.isNotNull(item.getDeliverableCode())) {
 						deliverable = DeliverableLocalServiceUtil.getByCode(
 								item.getDeliverableCode());
-						if (Validator.isNotNull(fileEntryId)) {
+						if (Validator.isNotNull(item.getFileEntryId())) {
 							if(Validator.isNotNull(deliverable)) {
 								_log.info("DeliverableState :" + deliverable.getDeliverableState());
-//							if (deliverable.getDeliverableState() == 1) {
 								DossierPart dossierPart =
 										DossierPartLocalServiceUtil.fetchByTemplatePartNo(
 												item.getGroupId(), item.getDossierTemplateNo(),
@@ -1254,15 +1254,12 @@ public class DefaultSignatureManagementImpl
 										String key = keys.next();
 										String value = formDataContent.getString(key);
 										if (key.equals(DossierTerm.DELIVERABLE_CODE)) {
-											deliverableCode = value;
-											break;
+											_log.info("Value" + value);
+											deliverable.setDeliverableCode(value);
 										}else if(key.equals(DeliverableTerm.ISSUE_DATE)){
-											issueDate = value;
-											break;
+											deliverable.setIssueDate(APIDateTimeUtils.convertStringToDate(value,APIDateTimeUtils._NORMAL_DATE));
 										}
 									}
-									deliverable.setDeliverableCode(deliverableCode);
-									deliverable.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate,APIDateTimeUtils._NORMAL_DATE));
 									if (formDataContent.has(DeliverableTerm.DELIVERABLE_CODE)) {
 										formDataContent.remove(DeliverableTerm.DELIVERABLE_CODE);
 									}
@@ -1279,7 +1276,7 @@ public class DefaultSignatureManagementImpl
 									deliverable.setFormData(formDataContent.toString());
 
 								}
-								deliverable.setFileAttachs(String.valueOf(fileEntryId));
+								deliverable.setFileAttachs(String.valueOf(item.getFileEntryId()));
 								DeliverableLocalServiceUtil.updateDeliverable(
 										deliverable);
 								break;
@@ -1287,7 +1284,7 @@ public class DefaultSignatureManagementImpl
 							}
 						}
 					}
-//				}
+				}
 			}
 		}
 

@@ -75,7 +75,7 @@ public interface RegistrationFormLocalService extends BaseLocalService,
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public RegistrationForm addRegistrationForm(long groupId, long companyId,
-		long registrationId, String referenceUid, String formNo,
+		long registrationId, String referenceUidUnUse, String formNo,
 		String formName, String formData, String formScript, String formReport,
 		long fileEntryId, boolean isNew, boolean removed,
 		ServiceContext serviceContext) throws PortalException;

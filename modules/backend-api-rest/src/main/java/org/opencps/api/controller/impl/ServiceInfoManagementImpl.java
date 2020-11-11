@@ -153,7 +153,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			String keywordSearch = query.getKeyword();
 			String keySearch = StringPool.BLANK;
 			if (Validator.isNotNull(keywordSearch)) {
-				keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
+				keySearch = SpecialCharacterUtils.splitSpecialNoSpace(keywordSearch);
 			}
 			params.put(Field.KEYWORD_SEARCH, keySearch);
 
@@ -811,11 +811,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					}
 				}
 			}
-			_log.info("Vào ..........................." + lstDictInput.size());
+//			_log.info("Vào ..........................." + lstDictInput.size());
 			results.setTotal(lstDictInput.size());
 			results.getDictItemModelInput()
 					.addAll(ServiceInfoUtils.mappingDomain((List<DictItemModelInput>) lstDictInput));
-			_log.info("LOG Results" + JSONFactoryUtil.looseSerialize(results));
+//			_log.info("LOG Results" + JSONFactoryUtil.looseSerialize(results));
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -882,7 +882,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //														ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceConfig.getServiceInfoId());
 //														ett.setDomainCode(serviceInfo.getDomainCode());
 														DictItemModelInput ett = setData(dict,serviceConfig,agency);
-														_log.info("DictItem :" + JSONFactoryUtil.looseSerialize(ett));
+//														_log.info("DictItem :" + JSONFactoryUtil.looseSerialize(ett));
 														if(Validator.isNotNull(ett)) {
 															lstDictInput.add(ett);
 														}

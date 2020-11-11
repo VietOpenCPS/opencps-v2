@@ -29,7 +29,13 @@ import java.util.Map;
 
 import io.swagger.models.auth.In;
 import org.opencps.api.constants.ConstantUtils;
-import org.opencps.api.dossier.model.*;
+
+import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossier.model.DossierDetailModel;
+import org.opencps.api.dossier.model.DossierDataModel;
+import org.opencps.api.dossier.model.PostConnectDetailModel;
+import org.opencps.api.dossier.model.DossierActionDetailModel;
+import org.opencps.api.dossier.model.DossierDataPublishModel;
 import org.opencps.api.dossieraction.model.DossierActionModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
@@ -41,12 +47,35 @@ import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
-import org.opencps.dossiermgt.constants.*;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.DossierPublishModel;
-import org.opencps.dossiermgt.model.*;
-import org.opencps.dossiermgt.service.*;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.model.PostConnect;
+import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierSync;
+import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.ServiceProcessRole;
+import org.opencps.dossiermgt.service.PostConnectLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
@@ -327,7 +356,7 @@ public class DossierUtils {
 //									_log.info("Log Step " + JSONFactoryUtil.looseSerialize(step));
 //								}
 								if(Validator.isNotNull(durationCount)){
-									_log.info("Log duration :" + durationCount);
+//									_log.info("Log duration :" + durationCount);
 									if(durationCount > 0) {
 //										_log.info("Log > 0");
 //										if(Validator.isNotNull(durationUnit)) {
@@ -588,6 +617,7 @@ public class DossierUtils {
 			model.setProcessNo(doc.get(DossierTerm.PROCESS_NO));
 			model.setPostalCodeSend(doc.get(DossierTerm.POSTAL_CODE_SEND));
 			model.setPostalCodeReceived(doc.get(DossierTerm.POSTAL_CODE_RECEIVED));
+			model.setOrderNumber(doc.get(DossierTerm.ORDER_NUMBER));
 			ouputs.add(model);
 		}
 
@@ -1373,6 +1403,7 @@ public class DossierUtils {
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
+						_log.info("Vao act " + act.getPreCondition());
 						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user)) {
 							action = act;
 							break;							

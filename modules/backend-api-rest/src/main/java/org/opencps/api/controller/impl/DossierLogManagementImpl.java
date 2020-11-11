@@ -261,7 +261,7 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 								(List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			}
-			results.setTotal(results.getData().size());
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			if(isExport){
 				HSSFWorkbook workbook = null;
 				FileOutputStream out = null;

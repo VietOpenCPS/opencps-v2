@@ -176,6 +176,10 @@ public interface PostConnectLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PostConnect fetchPostConnect(long postConnectId);
 
+//	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+//	public List<PostConnect> fetchPostConnectByDossierId(long dossierId)
+//		throws PortalException;
+
 	/**
 	* Returns the post connect matching the UUID and group.
 	*
@@ -186,6 +190,12 @@ public interface PostConnectLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PostConnect fetchPostConnectByUuidAndGroupId(String uuid,
 		long groupId);
+
+//	public PostConnect findByPostByDossierIdAndPostType(long groupId,
+//		long dossierId, int postType) throws PortalException;
+//
+//	public List<PostConnect> findByPostConnectByDossierId(long groupId,
+//		long dossierId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -241,6 +251,10 @@ public interface PostConnectLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PostConnect> findByPostConnectByDossierId(long groupId, long dossierId)
+			throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PostConnect> fetchPostConnectByDossierId(long dossierId)
 			throws PortalException;
 
 	/**

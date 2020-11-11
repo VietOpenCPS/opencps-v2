@@ -970,67 +970,70 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			for (int i = 0; i < deliverables.length(); i++) {
 
 				JSONObject deliverable = deliverables.getJSONObject(i);
-				JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
-				String gioitinh = formData.getString(DeliverableTerm.GIOI_TINH_TEXT);
-				if(Validator.isNotNull(gioitinh)){
-					_log.info("Gioi tinh :" + gioitinh);
-				}
-				if(gioitinh.contains(DeliverableTerm.GIOI_TINH_NAM)){
-					_log.info("NAM ......");
-					formData.put(DeliverableTerm.GIOI_TINH, 0);
-				}else if(gioitinh.contains(DeliverableTerm.GIOI_TINH_NU)){
-					_log.info("NU ......");
-					formData.put(DeliverableTerm.GIOI_TINH, 1);
-				}else{
-					_log.info("KO ......");
-					formData.put(DeliverableTerm.GIOI_TINH, 2);
-				}
-				
-				DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableTypeCode);				
-				if (deliverable.has(DeliverableTerm.CMND)) {
-					String applicantIdNo = deliverable.getString(DeliverableTerm.CMND);
-					Deliverable deliverableObj = DeliverableLocalServiceUtil.fetchByGID_AID(groupId, applicantIdNo);
-					deliverable.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
-					
-					if (deliverableObj != null) {				
-						deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
-						deliverable.put(DeliverableTerm.DELIVERABLE_ID, deliverableObj.getDeliverableId());
+				_log.info("Deliverable array " + JSONFactoryUtil.looseSerialize(deliverable));
+				if (Validator.isNotNull(deliverable)) {
+					JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
+					_log.info("FormData " + JSONFactoryUtil.looseSerialize(formData));
+					if (Validator.isNotNull(formData.getString(DeliverableTerm.GIOI_TINH_TEXT))) {
+					String gioitinh = formData.getString(DeliverableTerm.GIOI_TINH_TEXT);
+						if (gioitinh.contains(DeliverableTerm.GIOI_TINH_NAM)) {
+							_log.info("NAM ......");
+							formData.put(DeliverableTerm.GIOI_TINH, 0);
+						} else if (gioitinh.contains(DeliverableTerm.GIOI_TINH_NU)) {
+							_log.info("NU ......");
+							formData.put(DeliverableTerm.GIOI_TINH, 1);
+						} else {
+							_log.info("KO ......");
+							formData.put(DeliverableTerm.GIOI_TINH, 2);
+						}
+
+						DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableTypeCode);
+						if (deliverable.has(DeliverableTerm.CMND)) {
+							String applicantIdNo = deliverable.getString(DeliverableTerm.CMND);
+							Deliverable deliverableObj = DeliverableLocalServiceUtil.fetchByGID_AID(groupId, applicantIdNo);
+							deliverable.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
+
+							if (deliverableObj != null) {
+								deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
+								deliverable.put(DeliverableTerm.DELIVERABLE_ID, deliverableObj.getDeliverableId());
 //						formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
-					} else {
-						String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
-						String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
-						deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-						deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
+							} else {
+								String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
+								String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
+								deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+								deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
 //						formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-					}
-				}else {
-					String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
-					String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
-					deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-					deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
+							}
+						} else {
+							String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
+							_log.info("NgayQD " + ngayQD);
+							String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
+							deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+							deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
 //					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-				}
+						}
 
-				deliverable.put(Field.GROUP_ID, groupId);
-				deliverable.put(Field.USER_ID, userId);
-				deliverable.put(Field.COMPANY_ID, companyId);
-				deliverable.put(Field.USER_NAME, userName);				
-				deliverable.put(DeliverableTerm.DELIVERABLE_TYPE, delType.getTypeCode());		
-				deliverable.put(DeliverableTerm.FILE_ATTACH, false);
-				deliverable.put(DeliverableTerm.FORM_DATA, formData.toString());
-				
-				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-				String scope = employee.getScope();
-				if (scope.split(",").length > 1) {
-					String[] govAgencyCode = scope.split(",");
-					scope = govAgencyCode[0];
+						deliverable.put(Field.GROUP_ID, groupId);
+						deliverable.put(Field.USER_ID, userId);
+						deliverable.put(Field.COMPANY_ID, companyId);
+						deliverable.put(Field.USER_NAME, userName);
+						deliverable.put(DeliverableTerm.DELIVERABLE_TYPE, delType.getTypeCode());
+						deliverable.put(DeliverableTerm.FILE_ATTACH, false);
+						deliverable.put(DeliverableTerm.FORM_DATA, formData.toString());
+
+						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+						String scope = employee.getScope();
+						if (scope.split(",").length > 1) {
+							String[] govAgencyCode = scope.split(",");
+							scope = govAgencyCode[0];
+						}
+						deliverable.put(DeliverableTerm.GOV_AGENCY_CODE, scope);
+
+						DeliverableLocalServiceUtil.adminProcessData(deliverable);
+						size += 1;
+					}
 				}
-				deliverable.put(DeliverableTerm.GOV_AGENCY_CODE, scope);
-					
-				DeliverableLocalServiceUtil.adminProcessData(deliverable);
-				size += 1;
 			}
-
 			result.put(ConstantUtils.TOTAL, size);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(

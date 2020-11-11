@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -58,7 +59,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import java.util.*;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import javax.activation.DataHandler;
@@ -81,7 +82,18 @@ import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierMarkUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
-import org.opencps.api.dossier.model.*;
+import org.opencps.api.dossier.model.DossierRequestDVCQGModel;
+import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossier.model.DossierResultsModel;
+import org.opencps.api.dossier.model.DossierInputModel;
+import org.opencps.api.dossier.model.DossierDetailModel;
+import org.opencps.api.dossier.model.DoActionModel;
+import org.opencps.api.dossier.model.DossierMultipleInputModel;
+import org.opencps.api.dossier.model.DossierDataModel;
+import org.opencps.api.dossier.model.DossierPublishModel;
+import org.opencps.api.dossier.model.PostConnectDetailModel;
+import org.opencps.api.dossier.model.DossierActionDetailModel;
+import org.opencps.api.dossier.model.DossierResultPublishModel;
 import org.opencps.api.dossieraction.model.DossierActionNextActionModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
@@ -109,9 +121,20 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
-import org.opencps.dossiermgt.action.*;
-
-import org.opencps.dossiermgt.action.impl.*;
+import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.DossierMarkActions;
+import org.opencps.dossiermgt.action.DossierFileActions;
+import org.opencps.dossiermgt.action.DossierSyncActions;
+import org.opencps.dossiermgt.action.BookingActions;
+import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierPermission;
+import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierActionUserImpl;
+import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
+import org.opencps.dossiermgt.action.impl.BookingActionsImpl;
+import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
@@ -141,8 +164,8 @@ import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.constants.*;
-import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.model.PostConnect;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -164,7 +187,7 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
-import org.opencps.dossiermgt.service.*;
+import org.opencps.dossiermgt.service.PostConnectLocalServiceUtil;
 import org.opencps.dossiermgt.service.impl.DossierLocalServiceImpl;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.BookingLocalServiceUtil;
@@ -862,6 +885,11 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 					}
 				}
+				// Search mã bưu chính (PostConnect)
+				String orderNumber = query.getOrderNumber();
+				if (Validator.isNotNull(orderNumber)) {
+					params.put(DossierTerm.ORDER_NUMBER, orderNumber);
+				}
 
 				if (Validator.isNotNull(top)) {
 					String querySort;
@@ -1431,6 +1459,11 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 			}
+			// Search mã bưu chính (PostConnect)
+			String orderNumber = query.getOrderNumber();
+			if (Validator.isNotNull(orderNumber)) {
+				params.put(DossierTerm.ORDER_NUMBER, orderNumber);
+			}
 
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -1669,6 +1702,35 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response updateSampleCountByDossierId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+												 ServiceContext serviceContext, long id, DossierInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		BackendAuth auth = new BackendAuthImpl();
+		DossierDetailModel result = new DossierDetailModel();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			if(Validator.isNotNull(input.getSampleCount())) {
+				_log.debug("UPDATE DOSSIER: " + input.getSampleCount());
+				dossier.setSampleCount(input.getSampleCount());
+			}
+
+		DossierLocalServiceUtil.updateDossier(dossier);
+
+		result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+		_log.info("TRACE_LOG_INFO RESULT: "+JSONFactoryUtil.looseSerialize(result));
+
+		}catch (Exception e) {
+			_log.info(e.getMessage());
+		}
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}
 
 	@Override
@@ -2120,6 +2182,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 
 				if (Validator.isNotNull(actionCode)) {
+					_log.debug("ActionCode " + actionCode);
 					ActionConfig actConfig =
 						ActionConfigLocalServiceUtil.getByCode(
 							groupId, actionCode);
@@ -6850,7 +6913,9 @@ public class DossierManagementImpl implements DossierManagement {
 						groupDossierIdNew += StringPool.COMMA + groupDossierIdStr;
 					}
 				}
-				groupDossierIdNew = groupDossierIdNew.substring(1);
+				if(Validator.isNotNull(groupDossierIdNew)) {
+					groupDossierIdNew = groupDossierIdNew.substring(1);
+				}
 				DossierLocalServiceUtil.updateGroupDossier(dossier, groupDossierIdNew);
 				//Update SampleCount
 				if (Validator.isNotNull(groupDossierId)) {
@@ -8525,8 +8590,19 @@ public class DossierManagementImpl implements DossierManagement {
 							if ("7".equals(String.valueOf(dossierPart.getPartType()))) {
 								if (Validator.isNotNull(listDossierFile)) {
 									for (DossierFile item : listDossierFile) {
-//									_log.info("TRACE_LOG_INFO checkCreateFile " + checkCreateFile);
 										_log.info("Log clone file entryId:" + item.getFileEntryId());
+										if (item.getFileEntryId() > 0) {
+											try {
+												FileEntry fileEntry = FileUploadUtils.cloneDossierFile(
+														user.getPrimaryKey(), groupId,
+														item.getFileEntryId(), serviceContext);
+												fileEntryId = fileEntry.getFileEntryId();
+												_log.info("FileEntryId : " + fileEntryId);
+											}
+											catch (Exception e) {
+												throw new SystemException(e);
+											}
+										}
 										DossierFile dossierFile = DossierFileLocalServiceUtil.updateDossierFile(
 												0, groupId, company.getCompanyId(), user.getUserId(), user.getFullName(),
 												dossier.getDossierId(),
@@ -8536,7 +8612,7 @@ public class DossierManagementImpl implements DossierManagement {
 												item.getDossierPartType(),
 												item.getFileTemplateNo(),
 												item.getDisplayName(), item.getFormData(),
-												item.getFileEntryId(), false,
+												fileEntryId, false,
 												item.getEForm(), item.isNew(),
 												item.getRemoved(), item.getSignCheck(),
 												item.getSignInfo(), item.getFormScript(),

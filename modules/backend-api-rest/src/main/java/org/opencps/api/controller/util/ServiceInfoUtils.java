@@ -234,7 +234,7 @@ public class ServiceInfoUtils {
 				lstDictResults.add(ett);
 			}
 		}
-		_log.info("MAPPER : " + lstDictResults.size());
+//		_log.info("MAPPER : " + lstDictResults.size());
 		return lstDictResults;
 	}
 	public static List<FileTemplates> mappingToFileTemplates(List<ServiceFileTemplate> serviceFileTemplates) {

@@ -110,7 +110,7 @@ public class NotificationUtil {
 				baseUrl = PropValues.PORTAL_DOMAIN +
 					PortalUtil.getPathFriendlyURLPrivateGroup() +
 					group.getFriendlyURL();
-				// _log.info("baseUrl: "+baseUrl);
+				 _log.info("baseUrl: "+baseUrl);
 
 			}
 			catch (Exception e) {
@@ -126,7 +126,7 @@ public class NotificationUtil {
 				guestBaseUrl = PropValues.PORTAL_DOMAIN +
 					PortalUtil.getPathFriendlyURLPublic() +
 					group.getFriendlyURL();
-				// _log.info("guestBaseUrl: "+guestBaseUrl);
+				 _log.info("guestBaseUrl: "+guestBaseUrl);
 
 			}
 			catch (Exception e) {

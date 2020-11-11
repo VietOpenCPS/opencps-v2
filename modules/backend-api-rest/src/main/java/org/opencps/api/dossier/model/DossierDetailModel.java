@@ -210,7 +210,8 @@ import javax.xml.bind.annotation.XmlType;
 	"processNo",
 	"dossierSyncState",
 	"postType",
-	"postStatus"
+	"postStatus",
+	"orderNumber"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -328,6 +329,15 @@ public class DossierDetailModel {
 	protected Integer dossierSyncState;
 	protected String postType;
 	protected String postStatus;
+	protected String orderNumber;
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 
 	public String getPostType() {
 		return postType;

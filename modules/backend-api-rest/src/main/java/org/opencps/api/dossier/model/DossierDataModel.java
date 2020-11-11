@@ -220,7 +220,8 @@ import javax.xml.bind.annotation.XmlType;
 	"processNo",
 	"postalCodeSend",
 	"postalCodeReceived",
-	"groupDossierIds"
+	"groupDossierIds",
+	"orderNumber"
 })
 public class DossierDataModel {
 
@@ -347,6 +348,15 @@ public class DossierDataModel {
 	protected String postalCodeSend;
 	protected String postalCodeReceived;
 	protected String groupDossierIds;
+	protected String orderNumber;
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 
 	public String getGroupDossierIds() {
 		return groupDossierIds;
