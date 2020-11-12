@@ -2,6 +2,7 @@ package org.opencps.dossiermgt.action.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -10,9 +11,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -21,17 +24,21 @@ import org.opencps.backend.dossiermgt.service.util.UtilsFile;
 import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyService;
 import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyServiceImpl;
 import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.FrequencyIntegrationAction;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.input.model.*;
 import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.kernel.context.MBServiceContextFactoryUtil;
 import org.opencps.kernel.prop.PropKeys;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-import java.io.InputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -152,14 +159,34 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
                 //Save file dinh kem
                 this.addDossierFile(profile, groupId, serviceContext, dossier);
+                if(profile.getFrom_unit_code().equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
+                    //Check list 2 when sync dossier from DVCBO, have to sync to PMNV
+                    this.syncDossierToPMNVManual(token, profile);
+                }
+
                 _log.info("TIEPNHAN|Received dossier with ref code: " + profile.getRef_code());
                 return true;
             }
 
-            //Case API RUT, CAP NHAT, THANH TOAN
+            //Case API RUT, CAP NHAT, THANH TOAN, TU CHOI, KET QUA
             Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, profile.getRef_code());
             if(Validator.isNull(dossier)) {
                 throw new Exception("No dossier found to update with referenceId = " + profile.getRef_code());
+            }
+            //Lay from unit code cua dossier
+            JSONObject metaDataJson = null;
+            if (Validator.isNotNull(dossier.getMetaData()) && !dossier.getMetaData().isEmpty()) {
+                metaDataJson = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
+            }
+
+            String fromUnitCode = "";
+            if (Validator.isNotNull(metaDataJson)
+                    && !metaDataJson.getString("fromUnitCode").isEmpty()) {
+                fromUnitCode = metaDataJson.getString("fromUnitCode");
+            }
+
+            if(fromUnitCode.isEmpty()) {
+                throw new Exception("Dossier has no fromUnitCode with ref code: " + profile.getRef_code());
             }
 
             //Case THANH TOAN
@@ -191,8 +218,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
                 profile.setPayment(payment);
 
-                CPSDossierBusinessLocalServiceUtil.updateDossierFrequencyAction(groupId, serviceContext,
-                        dossier, profile, actionCode);
+                this.doActionFrequency(groupId, serviceContext, dossier, profile, actionCode);
                 _log.info("THANHTOAN|Received payment info with ref code: " + profile.getRef_code());
                 return true;
             } else if (status.equals(FrequencyOfficeConstants.STATUS_PAYMENT) && profile.getIs_request_payment().equals("true")) {
@@ -202,8 +228,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 if(actionCodeRequestPayment.isEmpty()) {
                     throw new Exception("THANHTOAN|Case send request payment - No action code mapped");
                 }
-                CPSDossierBusinessLocalServiceUtil.updateDossierFrequencyAction(groupId, serviceContext,
-                        dossier, profile, actionCodeRequestPayment);
+                this.doActionFrequency(groupId, serviceContext, dossier, profile, actionCodeRequestPayment);
                 //Sau khi update trang thai ho so 1 cua sang cho` thanh toan, se call api
                 //SyncDossierToLGSPManual de dong bo trang thai ho so len DVC Bo (se de o cau hinh de auto call)
                 return true;
@@ -212,16 +237,202 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             //Case API RUT, CAP NHAT
             if(status.equals(FrequencyOfficeConstants.STATUS_PULL_OUT) || status.equals(FrequencyOfficeConstants.STATUS_UPDATE)) {
                 _log.info("CAPNHAT|RUT|Updating dossier with ref code: " + profile.getRef_code() + "...");
-                CPSDossierBusinessLocalServiceUtil.updateDossierFrequencyAction(groupId, serviceContext, dossier, profile, actionCode);
+                this.doActionFrequency(groupId, serviceContext, dossier, profile, actionCode);
                 if(status.equals(FrequencyOfficeConstants.STATUS_UPDATE)) {
                     this.addDossierFile(profile, groupId, serviceContext, dossier);
                 }
                 _log.info("CAPNHAT|RUT|Updated dossier with ref code: " + profile.getRef_code());
+                return true;
             }
-            return true;
+
+            //Case API TU CHOI
+            if(status.equals(FrequencyOfficeConstants.STATUS_DENIED)) {
+                _log.info("TUCHOI|Updating dossier with ref code: " + profile.getRef_code() + "...");
+                this.doActionFrequency(groupId, serviceContext, dossier, profile, actionCode);
+                _log.info("TUCHOI|Updated dossier with ref code: " + profile.getRef_code());
+                return true;
+            }
+
+            //Case API KET QUA
+            if(status.equals(FrequencyOfficeConstants.STATUS_RESULT)) {
+                //If dossier is from PMNV, when PMNV tra KET QUA, update to MCDT and send dossier KETQUA to DVCBO
+                _log.info("KETQUA|Updating dossier with ref code: " + profile.getRef_code() + "...");
+                this.doActionFrequency(groupId, serviceContext, dossier, profile, actionCode);
+                _log.info("KETQUA|Updated dossier with ref code: " + profile.getRef_code());
+                return true;
+            }
+
+            _log.info("No status match for dossier referenceId " + profile.getRef_code() + ", status: " + status);
+            return false;
         } catch (Exception e) {
             _log.error("Error when crawlDossierLGSP for refCode " + profile.getRef_code() + " | Error: " + e.getMessage());
             return false;
+        }
+    }
+
+    private void doActionFrequency(long groupId, ServiceContext serviceContext,
+                                   Dossier dossier, ProfileInModel profile, String actionCode) throws Exception {
+        try {
+            FrequencyDoAction frequencyDoAction = CPSDossierBusinessLocalServiceUtil.updateDossierFrequencyAction(
+                    groupId, serviceContext, dossier,
+                    profile, actionCode);
+
+            if(Validator.isNotNull(frequencyDoAction.getProcessAction())) {
+                _log.info("Doing postAction with action code: " + actionCode);
+                ProcessAction processAction = frequencyDoAction.getProcessAction();
+                String postAction = processAction.getPostAction();
+                if (Validator.isNotNull(postAction) && !postAction.isEmpty()) {
+                    _log.info("---Post Action data: " + postAction);
+                    String result = processPostAction(postAction, groupId, dossier);
+                    _log.info("---Result post Action: " + result);
+                }
+                _log.info("Done postAction!!!");
+            } else {
+                _log.info("No process action with action code: " + actionCode);
+            }
+
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    private String processPostAction(String postAction, long groupId, Dossier dossier) {
+        try {
+            JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(postAction);
+            if (jsonPostData != null) {
+                JSONObject jsonCallAPI = JSONFactoryUtil.createJSONObject(jsonPostData.getString("CALL_API"));
+                if (jsonCallAPI != null && jsonCallAPI.has(DossierTerm.SERVER_NO)) {
+                    String serverNo = jsonCallAPI.getString(DossierTerm.SERVER_NO);
+                    if (Validator.isNotNull(serverNo)) {
+                        ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
+                        if (serverConfig != null) {
+                            JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+                            //
+                            String method = StringPool.BLANK;
+                            if (configObj != null && configObj.has(KeyPayTerm.METHOD)) {
+                                method = configObj.getString(KeyPayTerm.METHOD);
+                                System.out.println("method: " + method);
+                            }
+                            //params
+                            JSONObject jsonParams = null;
+                            if (configObj != null && configObj.has(KeyPayTerm.PARAMS)) {
+                                jsonParams = JSONFactoryUtil
+                                        .createJSONObject(configObj.getString(KeyPayTerm.PARAMS));
+                            }
+                            if (jsonParams != null) {
+                                JSONObject jsonHeader = JSONFactoryUtil
+                                        .createJSONObject(jsonParams.getString(KeyPayTerm.HEADER));
+                                JSONObject jsonBody = JSONFactoryUtil
+                                        .createJSONObject(jsonParams.getString(KeyPayTerm.BODY));
+
+                                String authStrEnc = StringPool.BLANK;
+                                String apiUrl = StringPool.BLANK;
+                                StringBuilder sb = new StringBuilder();
+                                try {
+                                    URL urlVal = null;
+                                    String groupIdRequest = StringPool.BLANK;
+                                    StringBuilder postData = new StringBuilder();
+                                    Iterator<?> keys = jsonBody.keys();
+                                    while (keys.hasNext()) {
+                                        String key = (String) keys.next();
+                                        if (!StringPool.BLANK.equals(postData.toString())) {
+                                            postData.append(StringPool.AMPERSAND);
+                                        }
+                                        postData.append(key);
+                                        postData.append(StringPool.EQUAL);
+                                        postData.append(jsonBody.get(key));
+                                    }
+
+                                    if (configObj.has(SyncServerTerm.SERVER_USERNAME)
+                                            && configObj.has(SyncServerTerm.SERVER_SECRET)
+                                            && Validator
+                                            .isNotNull(configObj.getString(SyncServerTerm.SERVER_USERNAME))
+                                            && Validator
+                                            .isNotNull(configObj.getString(SyncServerTerm.SERVER_SECRET))) {
+                                        authStrEnc = Base64.getEncoder()
+                                                .encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME)
+                                                        + StringPool.COLON
+                                                        + configObj.getString(SyncServerTerm.SERVER_SECRET))
+                                                        .getBytes());
+                                    }
+                                    if (configObj.has(SyncServerTerm.SERVER_URL)) {
+                                        apiUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+                                        if (apiUrl.contains("{_dossierId}")) {
+                                            apiUrl = apiUrl.replace("{_dossierId}", String.valueOf(dossier.getDossierId()));
+                                        }
+                                        if (apiUrl.contains("{_dossierCounter}")) {
+                                            apiUrl = apiUrl.replace("{_dossierCounter}",
+                                                    String.valueOf(dossier.getDossierCounter()));
+                                        }
+                                        if (apiUrl.contains("{_dossierNo}")) {
+                                            apiUrl = apiUrl.replace("{_dossierNo}",
+                                                    String.valueOf(dossier.getDossierNo()));
+                                        }
+                                    }
+                                    if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+                                        groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
+                                    }
+                                    if (jsonHeader != null && Validator.isNotNull(groupIdRequest)) {
+                                        if (jsonHeader.has(Field.GROUP_ID)) {
+                                            groupIdRequest = String.valueOf(jsonHeader.getLong(Field.GROUP_ID));
+                                        }
+                                    }
+
+                                    if (HttpMethods.GET.equals(method)) {
+                                        if (Validator.isNotNull(postData.toString())) {
+                                            urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
+                                        } else {
+                                            urlVal = new URL(apiUrl);
+                                        }
+                                    } else {
+                                        urlVal = new URL(apiUrl);
+                                    }
+                                    _log.debug("API URL: " + apiUrl);
+                                    java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal
+                                            .openConnection();
+                                    conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
+                                    conn.setRequestMethod(method);
+                                    conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.ACCEPT, javax.ws.rs.core.MediaType.APPLICATION_JSON);
+                                    if (Validator.isNotNull(authStrEnc)) {
+                                        conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.AUTHORIZATION, "Basic " + authStrEnc);
+                                    }
+                                    if (HttpMethods.POST.equals(method) || HttpMethods.PUT.equals(method)) {
+                                        conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.CONTENT_TYPE,
+                                                javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED);
+                                        conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.CONTENT_LENGTH, StringPool.BLANK
+                                                + Integer.toString(postData.toString().getBytes().length));
+
+                                        conn.setUseCaches(false);
+                                        conn.setDoInput(true);
+                                        conn.setDoOutput(true);
+                                        _log.debug("POST DATA: " + postData.toString());
+                                        OutputStream os = conn.getOutputStream();
+                                        os.write(postData.toString().getBytes());
+                                        os.close();
+                                    }
+
+                                    BufferedReader brf = new BufferedReader(
+                                            new InputStreamReader(conn.getInputStream()));
+
+                                    int cp;
+                                    while ((cp = brf.read()) != -1) {
+                                        sb.append((char) cp);
+                                    }
+                                    _log.debug("RESULT PROXY: " + sb.toString());
+                                    return sb.toString();
+                                } catch (IOException e) {
+                                    _log.debug(e);
+                                    //_log.debug("Something went wrong while reading/writing in stream!!");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return "";
+        } catch (Exception e) {
+            _log.info("Error when process post action: " + e.getMessage());
+            return "";
         }
     }
 
@@ -301,7 +512,6 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             String urlGetDossiers = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
                     this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_LIST_DOSSIERS) + "?unit_code=" +
                     this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE);
-//            String urlGetDossiers = "http://localhost:8080/o/rest/v2/hshc/dossiers";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -330,14 +540,12 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
         try{
             String urlGetDetailDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
                     this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_DETAIL_DOSSIERS) + "?profile_id=" + profileId;
-//            String urlGetDetailDossier = "http://localhost:8080/o/rest/v2/hshc/dossier";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + token);
 
             JSONObject response = apiService.get(urlGetDetailDossier, headers);
-//            JSONObject response = apiService.getNew(urlGetDetailDossier, token);
             if(Validator.isNull(response)) {
                 throw new Exception("Response get one dossier null");
             }
@@ -380,15 +588,20 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     }
 
     @Override
-    public void syncDossierToLGSP(String token, ProfileInModel profile) throws Exception {
+    public void syncDossierToPMNVManual(String token, ProfileInModel profile) throws Exception {
         try {
+            _log.info("Syncing dossier to PMNV...");
+            if(!profile.getStatus().equals(FrequencyOfficeConstants.STATUS_RECEIVE)) {
+                throw new Exception("Dossier from DVCBo is not TIEPNHAN: " + profile.getStatus());
+            }
+
             long groupId = serverConfig.getGroupId();
             String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
                     this.configJson.get(FrequencyOfficeConstants.CONFIG_SYNC_DOSSIER);
 
-//            String urlSyncDossier = "http://localhost:8080/o/rest/v2/hshc/synDossierFake";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + token);
 
             Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, profile.getRef_code());
             if(Validator.isNull(dossier)) {
@@ -412,19 +625,24 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             profile.setSource_id(dossier.getDossierNo());
             profile.setType("profile");
             profile.setFrom_unit_code(this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
-            profile.setTo_unit_code(new String[] {this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)});
+            profile.setTo_unit_code(new String[]{
+                    this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
+            });
+
             JSONObject response = apiService.callApi(urlSyncDossier, headers, profile);
             _log.info("Result sync dossier: " + response);
-
+            _log.info("Sync dossier " + dossier.getReferenceUid() + " to PMNV done!!!");
         } catch (Exception e) {
-            _log.error("Sync dossier to lgsp error: " + e.getMessage());
+            _log.warn("Sync dossier to PMNV error: " + e.getMessage());
+            _log.warn("Still running...");
         }
     }
 
     @Override
-    public void syncDossierToLGSPManual(String token, long dossierId) throws Exception {
+    public void syncDossierAndStatusToLGSPManual(String token, long dossierId) throws Exception {
         try {
-            //case 3.5, 3.6
+            //case 3.3, 3.5, 3.6, 3,7
+            _log.info("Calling 3.3, 3.5, 3.6, 3.7...");
             Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
             if(Validator.isNull(dossier)) {
                 throw new Exception("No dossier found with id: " + dossierId);
@@ -438,10 +656,41 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 throw new Exception("No ReferenceId found with id: " + dossierId);
             }
 
-//            Integer statusProfile = 5;
+            //Lay from unit code cua dossier
+            JSONObject metaDataJson = null;
+            if (Validator.isNotNull(dossier.getMetaData()) && !dossier.getMetaData().isEmpty()) {
+                metaDataJson = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
+            }
+
+            String fromUnitCode = "";
+            if (Validator.isNotNull(metaDataJson)
+                    && !metaDataJson.getString("fromUnitCode").isEmpty()) {
+                fromUnitCode = metaDataJson.getString("fromUnitCode");
+            }
+
+            if(fromUnitCode.isEmpty()) {
+                throw new Exception("Dossier has no fromUnitCode with ref code: " + dossier.getReferenceUid());
+            }
+
             Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
             if(statusProfile.equals(0)) {
                 throw new Exception("Status profile: 0");
+            }
+
+            //Check ho so tu dau
+            if(!fromUnitCode.equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
+                //Ho so khong tu DVC BO
+                _log.info("Ho so khong tu DVC BO...");
+                _log.info("Swich to calling 3.12...");
+                if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_DONE)) {
+                    _log.info("Ho so o trang thai cho tra ket qua...");
+                    _log.info("Switch to calling 3.13...");
+                    this.sendStatusProfileToDVCBo(token, dossierId);
+                    return;
+                }
+
+                this.syncDossierToDVCBoManual(token, dossierId);
+                return;
             }
 
             ProfileInModel profile = new ProfileInModel();
@@ -491,9 +740,9 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 urlSyncDossier += this.configJson.getString(FrequencyOfficeConstants.CONFIG_SYNC_DOSSIER);
             }
 
-//            String urlSyncDossier = "http://localhost:8080/o/rest/v2/hshc/synDossierFake";
             JSONObject response = apiService.callApi(urlSyncDossier, headers, profile);
             _log.info("Result sync dossier manual: " + response);
+            _log.info("Done call 3.3, 3.5, 3.6, 3.7");
         } catch (Exception e) {
             throw new Exception("SyncDossierToLGSPManual error with message: " + e.getMessage());
         }
@@ -502,6 +751,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     @Override
     public void syncDossierToDVCBoManual(String token, long dossierId) throws Exception {
         try {
+            _log.info("Calling 3.12 syncing dossier to DVC Bo after receive from PMNV...");
             Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
             if(Validator.isNull(dossier)) {
                 throw new Exception("No dossier found with id: " + dossierId);
@@ -537,7 +787,6 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
 
             Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
-//            statusProfile = 2;
             if(statusProfile.equals(0)) {
                 throw new Exception("Status profile 0 with dossierId: " + dossierId);
             }
@@ -578,10 +827,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
 
             if(Validator.isNotNull(dossier.getReleaseDate())) {
-                profile.setProfiles_status(String.valueOf(FrequencyOfficeConstants.STATUS_LGSP_RETURNED_RESULT));
+                _log.info("Is update");
                 profile.setIs_update("true");
             } else {
-                profile.setProfiles_status(String.valueOf(FrequencyOfficeConstants.STATUS_LGSP_RECEIVED));
+                _log.info("Is create");
                 profile.setIs_update("false");
             }
 
@@ -591,10 +840,9 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
             String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
                     this.configJson.getString(FrequencyOfficeConstants.CONFIG_SYNC_DOSSIER_TO_DVC_BO);
-//            String urlSyncDossier = "http://localhost:8080/o/rest/v2/hshc/synDossierFake";
 
             JSONObject response = apiService.callApi(urlSyncDossier, headers, profile);
-            _log.info("Result sync dossier DVC Bo manual: " + response);
+            _log.info("Result api 3.12 sync dossier DVC Bo manual: " + response);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -614,7 +862,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             listDocFees.add(docFee);
             return listDocFees;
         } catch (Exception e) {
-            _log.error("Error when get profile doc fee: " + e.getMessage());
+            _log.warn("Warning when get profile doc fee fail: " + e.getMessage());
             return null;
         }
     }
@@ -637,7 +885,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
             return "";
         } catch (Exception e) {
-            _log.error("Error when get procedures code from service code " + serviceCode + ": " + e.getMessage());
+            _log.warn("Warning when get procedures code from service code " + serviceCode + " fail: " + e.getMessage());
             return "";
         }
     }
@@ -646,27 +894,26 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     public void sendStatusProfile(String token, long dossierId) throws Exception {
 
         try {
+            _log.info("Calling 3.11...");
             Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
-            if(Validator.isNull(dossier)) {
+            if (Validator.isNull(dossier)) {
                 throw new Exception("No dossier found with id: " + dossierId);
             }
 
-            if(Validator.isNull(dossier.getDossierNo())) {
+            if (Validator.isNull(dossier.getDossierNo())) {
                 throw new Exception("No dossierNo found with id: " + dossierId);
             }
 
-            if(Validator.isNull(dossier.getReferenceUid())) {
+            if (Validator.isNull(dossier.getReferenceUid())) {
                 throw new Exception("No ReferenceId found with id: " + dossierId);
             }
             JSONObject metaDataJson = null;
-            if(Validator.isNotNull(dossier.getMetaData()) && !dossier.getMetaData().isEmpty()) {
+            if (Validator.isNotNull(dossier.getMetaData()) && !dossier.getMetaData().isEmpty()) {
                 metaDataJson = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
             }
 
-//            Integer statusProfile = Integer.valueOf(status);
-            //toto undo this code
             Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
-            if(statusProfile.equals(0)) {
+            if (statusProfile.equals(0)) {
                 throw new Exception("Status profile: 0");
             }
 
@@ -685,20 +932,37 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             body.put(FrequencyOfficeConstants.PROCESS_OFFICIALS, "Admin");
             body.put(FrequencyOfficeConstants.TIME_OF_PROCESS, getCurrentDateStr(FORMAT_DATE_LGSP, new Date()));
             body.put(FrequencyOfficeConstants.FROM_UNIT_CODE, this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
-            if(Validator.isNull(metaDataJson)
-                    || metaDataJson.getString("fromUnitCode").isEmpty()
-                    || Validator.isNotNull(dossier.getDueDate())) {
-                body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[] {
+
+            String fromUnitCode = "";
+            if (Validator.isNull(metaDataJson)
+                    || metaDataJson.getString("fromUnitCode").isEmpty()) {
+                body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{
                         this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
                         this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
                 });
             } else {
-                String fromUnitCode = metaDataJson.getString("fromUnitCode");
-                body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[] { fromUnitCode });
+                fromUnitCode = metaDataJson.getString("fromUnitCode");
+                body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{fromUnitCode});
             }
-            _log.info("Result send dossier status 1111: ");
+
+            if (statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_RECEIVED)) {
+                if (!fromUnitCode.isEmpty() && !fromUnitCode.equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
+                    //Neu ho so ko nhan tu DVC Bo va ho so dang o trang thai new thi gui cho DVC Bo (Checklist 3, luong 1.7)
+                    this.syncDossierToDVCBoManual(token, dossierId);
+                }
+            }
+            else if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_PROCESSING)) {
+                    //Neu trang thai sang dang xu ly, thi gui cho ca hai
+                    _log.info("Sending status to multiple unit");
+                    body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{
+                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
+                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
+                    });
+            }
+
             JSONObject response = apiService.callApi(urlSyncDossier, headers, body);
             _log.info("Result send dossier status: " + response);
+            _log.info("Done 3.11!!!!");
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -707,6 +971,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     @Override
     public void sendStatusProfileToDVCBo(String token, long dossierId) throws Exception {
         try {
+            _log.info("Calling 3.13 sending status profile to DVC BO...");
             Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
             if(Validator.isNull(dossier)) {
                 throw new Exception("No dossier found with id: " + dossierId);
@@ -748,6 +1013,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
             JSONObject response = apiService.callApi(urlSyncDossier, headers, body);
             _log.info("Result send dossier status: " + response);
+            _log.info("Done call 3.13 sent status profile to DVC BO");
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -767,7 +1033,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
             return 0;
         } catch (Exception e) {
-            _log.info("Error when mapping dossier status: " + e.getMessage());
+            _log.error("Error when mapping dossier status: " + e.getMessage());
             return 0;
         }
     }
@@ -798,21 +1064,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                             profileAttachment.setIs_verified(0);
                             profileAttachment.setDescription("");
                             profileAttachment.setIs_deleted(0);
-
-//                            profileAttachment.setAttachment_file_url(
-//                                    InetAddress.getLocalHost().getHostName() +
-//                                    "/o/rest/v2/dossiers/lgsp/download/"
-//                                    + fileEntry.getFileEntryId());
-                            System.out.println("InetAddress.getLocalHost().getHostName(): "+InetAddress.getLocalHost().getHostName());
-                            System.out.println("portal_domain: "+PropsUtil.get(PropKeys.PORTAL_DOMAIN));
-
                             profileAttachment.setAttachment_file_url(PropsUtil.get(PropKeys.PORTAL_DOMAIN) +
                                     "/c/document_library/get_file?uuid=" + fileEntry.getUuid() + "&groupId=" + fileEntry.getGroupId());
-
 //                            profileAttachment.setContent_type("docx");
 //                            profileAttachment.setAttachment_file_url("https://dichvucong3.mic.gov.vn/documents/10180/1432020/2174501.docx?version=1.0");
-
-
                             listAttachments.add(profileAttachment);
                         }
                     }
@@ -862,17 +1117,16 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                         profileAttachment.setIs_verified(0);
                         profileAttachment.setDescription("");
                         profileAttachment.setIs_deleted(0);
-                        profileAttachment.setAttachment_file_url(
-                                InetAddress.getLocalHost().getHostName() +
-                                        "/o/rest/v2/dossiers/lgsp/download/"
-                                        + fileEntry.getFileEntryId());
+                        profileAttachment.setAttachment_file_url(PropsUtil.get(PropKeys.PORTAL_DOMAIN) +
+                                "/c/document_library/get_file?uuid=" + fileEntry.getUuid() + "&groupId=" + fileEntry.getGroupId());
                         listAttachments.add(profileAttachment);
                     }
                 }
             }
             return listAttachments;
         } catch (Exception e) {
-            _log.info("Error when get list attachments: " + e.getMessage());
+            _log.warn("Warning when get list attachments fail: " + e.getMessage());
+            _log.warn("Still running...");
             return null;
         }
     }
@@ -882,7 +1136,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             SimpleDateFormat formatter = new SimpleDateFormat(format);
             return formatter.format(date);
         } catch (Exception e) {
-            _log.error("Error when get current date str: " + e.getMessage());
+            _log.warn("Warning when get format date: " + e.getMessage());
             return "";
         }
     }
