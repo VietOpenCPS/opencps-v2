@@ -442,7 +442,7 @@ public class PayGateIntegrationApplication extends Application {
 			@Context ServiceContext serviceContext, String body) throws PortalException {
 
 		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
-		String result = keypayAction.paylaterCallback(user, serviceContext, body);
+		JSONObject result = keypayAction.paylaterCallback(user, serviceContext, body);
 
 		return Response.status(200).entity(result).build();
 	}
