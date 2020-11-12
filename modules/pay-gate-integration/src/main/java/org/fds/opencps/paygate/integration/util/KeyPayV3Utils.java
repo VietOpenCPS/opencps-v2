@@ -114,8 +114,8 @@ public class KeyPayV3Utils {
 	}
 	public static String createChecksum(String message, String secret) {
 		try {
-			Mac sha256HMAC = Mac.getInstance("HmacSHS256");
-			SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), "HmacSHS256");
+			Mac sha256HMAC = Mac.getInstance("HmacSHA256");
+			SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
 			sha256HMAC.init(secretKey);
 			byte[] hash = sha256HMAC.doFinal(message.getBytes());
 			return toHexString(hash);
