@@ -286,19 +286,16 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
 				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 						.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-				String check_sum = KeyPayV3Utils.genCallbackChecksumReceived(schema.getString(KeyPayV3Term.ADDITION_FEE), schema.getString(KeyPayV3Term.CLIENT_ID), schema.getString(KeyPayV3Term.COMMAND_PAYLATER), schema.getString(KeyPayV3Term.TRANS_AMOUNT), schema.getString(KeyPayV3Term.TRANSACTION_ID), schema.getString(KeyPayV3Term.VERSION), schema.getString(KeyPayV3Term.CLIENT_KEY_1));
-
+				String client_id = schema.getString(KeyPayV3Term.CLIENT_ID);
+				String addition_fee = String.valueOf(paymentFile.getShipAmount());
+				String trans_amount = String.valueOf(paymentFile.getPaymentAmount());
+				String command = schema.getString(KeyPayV3Term.COMMAND_PAYLATER);
+				String version = schema.getString(KeyPayV3Term.VERSION);
+				String hash_key_1 = schema.getString(KeyPayV3Term.CLIENT_KEY_1);
+				String check_sum = KeyPayV3Utils.genCallbackChecksumReceived(addition_fee, client_id, command, trans_amount, transactionId, version, hash_key_1);
+				_log.info("Checksum" + check_sum);
 				if (check_sum.equals(data.getString(KeyPayV3Term.CHECK_SUM))
 						&& KeyPayV3Term.STATUS_DONE.equals(data.getJSONObject("data").getString(KeyPayV3Term.STATUS))) {
-
-//				PaymentFileActions actions = new PaymentFileActionsImpl();
-//
-//				JSONObject confirmPayload = JSONFactoryUtil.createJSONObject(paymentFile.getConfirmPayload());
-//
-//				confirmPayload.put(PaymentFileTerm.PAYMENT_METHOD_KEYPAY_LATE, body);
-//				paymentFile = actions.updateFileConfirm(dossier.getGroupId(), dossier.getDossierId(), paymentFile.getReferenceUid(),
-//						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_KEYPAY_LATE,
-//						confirmPayload.toJSONString(), serviceContext);
 					boolean doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, data, serviceContext);
 
 					if (doAction) {
