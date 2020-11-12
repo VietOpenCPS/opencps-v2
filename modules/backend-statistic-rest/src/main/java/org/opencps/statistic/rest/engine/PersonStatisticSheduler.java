@@ -46,6 +46,7 @@ import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallPersonRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.ServerConfigContants;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.opencps.usermgt.constants.EmployeeTerm;
 import org.osgi.service.component.annotations.Activate;
@@ -64,6 +65,9 @@ public class PersonStatisticSheduler extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if(!ServerConfigContants.isEnableAllScheduler()) {
+			return;
+		}
 		if (!isRunning) {
 			isRunning = true;
 		}

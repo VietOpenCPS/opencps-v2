@@ -16,13 +16,14 @@ import org.osgi.service.component.annotations.*;
 import java.util.Date;
 import java.util.Map;
 
-@Component(immediate = true, service = DailyDVCQGScheduler.class)
+//@Component(immediate = true, service = DailyDVCQGScheduler.class)
 public class DailyDVCQGScheduler extends BaseMessageListener {
     private volatile boolean isRunning = false;
 
     @Override
     protected void doReceive(Message message) throws Exception {
         //turn off Daily sync voting to DVCQG on branch 3.0
+
         if (true) {
             return;
         }

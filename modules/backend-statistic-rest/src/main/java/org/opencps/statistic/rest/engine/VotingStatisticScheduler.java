@@ -53,6 +53,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.ServerConfigContants;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
@@ -80,6 +81,10 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if(!ServerConfigContants.isEnableAllScheduler()) {
+			return;
+		}
+
 		//this scheduler is only used for MCDT
 		if (OpenCPSConfigUtil.isDVC()) {
 			return;

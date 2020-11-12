@@ -11,6 +11,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class OpenCPSConfigUtil {
+
+	public static final String OPENCPS_ENABLE_ALL_SCHEDULER = "org.opencps.scheduler.enable";
 	public static final String OPENCPS_DVC_ENABLE = "org.opencps.dvc.enable";
 	public static final String OPENCPS_NOTIFICATION_ENABLE = "org.opencps.notification.enable";
 	public static final String OPENCPS_CACHE_TTL = "cache.default.ttl.seconds";
@@ -49,6 +51,11 @@ public class OpenCPSConfigUtil {
 	
 	public static int getPortalDomain() {
 		return GetterUtil.getInteger(PropsUtil.get(PORTAL_DOMAIN));
+	}
+
+	public static boolean isEnableAllScheduler() {
+		return Validator.isNotNull(PropsUtil.get(OPENCPS_ENABLE_ALL_SCHEDULER))
+				? Boolean.parseBoolean(PropsUtil.get(OPENCPS_ENABLE_ALL_SCHEDULER)) : false;
 	}
 
 	public static boolean isNotificationEnable() {

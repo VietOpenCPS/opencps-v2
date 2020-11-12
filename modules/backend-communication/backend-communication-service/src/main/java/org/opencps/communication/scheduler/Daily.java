@@ -25,6 +25,7 @@ import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationtemplateLocalService;
+import org.opencps.communication.utils.LoadConfigUtils;
 import org.opencps.communication.utils.NotificationQueueBusinessFactoryUtil;
 import org.opencps.communication.utils.NotificationUtil;
 import org.opencps.kernel.context.MBServiceContextFactoryUtil;
@@ -44,6 +45,9 @@ public class Daily extends BaseMessageListener {
 	
 	@Override
 	protected void doReceive(Message message) {
+		if(!LoadConfigUtils.isEnableAllScheduler()) {
+			return;
+		}
 		if (!isRunning) {
 			isRunning = true;
 		}

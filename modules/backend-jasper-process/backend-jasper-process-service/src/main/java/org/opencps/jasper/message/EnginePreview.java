@@ -39,7 +39,7 @@ public class EnginePreview implements MessageListener {
             else
             	return false;
         } catch (JSONException ex) {
-        	_log.error(ex);
+        	_log.error(ex.getMessage());
             try {
                 JSONObject obj = JSONFactoryUtil.createJSONObject(jsonString);
                 if (obj == null) {
@@ -49,7 +49,7 @@ public class EnginePreview implements MessageListener {
                 	return true;
                 }
             } catch (JSONException e) {
-            	_log.error(e);
+            	_log.error(ex.getMessage());
                 return false;
             }
         }

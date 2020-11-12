@@ -36,6 +36,7 @@ import java.util.Map;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -69,6 +70,9 @@ public class TimerScheduler extends BaseMessageListener {
 	
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if(!OpenCPSConfigUtil.isEnableAllScheduler()) {
+			return;
+		}
 		if (!isRunning) {
 			isRunning = true;
 		}

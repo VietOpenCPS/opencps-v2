@@ -22,6 +22,7 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
@@ -42,6 +43,9 @@ public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
 
     @Override
     protected void doReceive(Message message) throws Exception {
+        if(!OpenCPSConfigUtil.isEnableAllScheduler()) {
+            return;
+        }
         _log.info("-----Start job update Viettel post schedule---");
 
         if (!isRunning) {

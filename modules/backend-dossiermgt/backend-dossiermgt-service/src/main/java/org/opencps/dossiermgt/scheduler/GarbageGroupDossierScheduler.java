@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import java.util.Date;
 import java.util.Map;
 
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.Activate;
@@ -34,6 +35,9 @@ public class GarbageGroupDossierScheduler extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if(!OpenCPSConfigUtil.isEnableAllScheduler()) {
+			return;
+		}
 		if (!isRunning) {
 			isRunning = true;
 		}
