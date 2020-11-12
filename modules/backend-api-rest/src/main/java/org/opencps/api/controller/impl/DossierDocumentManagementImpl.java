@@ -116,6 +116,15 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					} else {
 						jsonData.put(Field.USER_NAME, user.getFullName());
 					}
+					PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+					if(Validator.isNotNull(paymentFile)){
+						String epaymentProfile = paymentFile.getEpaymentProfile();
+						JSONObject jsonObject = JSONFactoryUtil.createJSONObject(epaymentProfile);
+						String qrCode = StringPool.BLANK;
+						if (jsonObject.has("qrcode_pay")) {
+							jsonData.put("qrcode_pay",jsonObject.getString("qrcode_pay"));
+						}
+					}
 					String govAgencyCode = dossier.getGovAgencyCode();
 					if (Validator.isNotNull(govAgencyCode))
 					{

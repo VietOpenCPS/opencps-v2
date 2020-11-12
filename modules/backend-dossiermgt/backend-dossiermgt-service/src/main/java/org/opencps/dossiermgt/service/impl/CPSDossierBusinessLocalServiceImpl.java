@@ -126,6 +126,7 @@ import org.opencps.dossiermgt.action.util.NotificationUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.action.util.VNPostCLSUtils;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
@@ -134,6 +135,7 @@ import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.input.model.ProfileInModel;
+import org.opencps.dossiermgt.input.model.FrequencyDoAction;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.ConfigCounter;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -1387,7 +1389,28 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			//Kiểm tra xem có gửi dịch vụ vận chuyển hay không
 			if (proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_SEND_VIAPOSTAL)) {
-				vnpostEvent(dossier, dossierAction.getDossierActionId());
+				boolean bdhnConnect = false;
+				String senderAddress = StringPool.BLANK;
+				// Kiểm tra có cấu hình VNPOST_CLS không
+				ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.VNPOST_CLS);
+				if(Validator.isNotNull(sc)) {
+					JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
+					bdhnConnect = configObj.getBoolean(ServerConfigTerm.BDHN_CONNECT);
+					senderAddress = configObj.getString(ServerConfigTerm.BDHN_CONNECT);
+				}
+				if(bdhnConnect){
+					if (dossier.getViaPostal() == 2) {
+						_log.info(" Call API VNPOST HN");
+						PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+						String resultHNPost = VNPostCLSUtils.insertCLS(groupId,ServerConfigTerm.VNPOST_CLS ,dossierId,
+								dossier.getServiceCode(),dossier.getServiceName(),dossier.getDossierNo(),
+								paymentFile.getPaymentAmount(),dossier.getApplicantName(), dossier.getDelegateName(),
+								dossier.getApplicantIdNo(), dossier.getAddress(), dossier.getReceiveDate(), senderAddress);
+						_log.info("Result HNPost : " + resultHNPost);
+					}
+				}else{
+					vnpostEvent(dossier, dossierAction.getDossierActionId());
+				}
 			}
 			if (proAction.getPreCondition().toLowerCase()
 					.contains(ProcessActionTerm.PRECONDITION_SEND_COLLECTION_VNPOST)) {
@@ -7378,27 +7401,98 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
 			Exception.class })
-	public void updateDossierFrequencyAction(long groupId, ServiceContext serviceContext, Dossier dossier,
-											 ProfileInModel input, String actionCode) throws Exception{
-		ObjectMapper objMapper = new ObjectMapper();
-		ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-				dossier.getDossierTemplateNo(), groupId);
+	public FrequencyDoAction updateDossierFrequencyAction(long groupId, ServiceContext serviceContext, Dossier dossier,
+														  ProfileInModel input, String actionCode) throws Exception{
+		try {
+			_log.info("Doing action frequency with actionCode: " + actionCode + "...");
 
-		long serviceProcessId = 0;
+			ObjectMapper objMapper = new ObjectMapper();
+			ProcessAction proAction = null;
+			ProcessAction processActionCurrent = null;
+			ProcessOption option = null;
+			DossierAction dossierActionResult;
+			Integer syncType = 0;
+			ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+			long serviceProcessId = 0;
+			if(Validator.isNotNull(actConfig)) {
+				_log.info("---Act config is valid");
+				syncType = actConfig.getSyncType();
+				boolean insideProcess = actConfig.getInsideProcess();
+				option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+						dossier.getDossierTemplateNo(), groupId);
+				if(insideProcess) {
+					_log.info("---Inside process");
+					if(dossier.getDossierActionId() == 0) {
+						_log.info("---Dossier action id = 0");
+						if(Validator.isNotNull(option)) {
+							_log.info("---Option not null with process option id: " + option.getProcessOptionId());
+							serviceProcessId = option.getServiceProcessId();
+							proAction = getProcessAction(serviceContext.getUserId(), groupId, dossier, actionCode,
+									serviceProcessId);
+						}
+					} else {
+						_log.info("---Dossier action id = " + dossier.getDossierActionId());
+						//dossierActionId in dossier = 0
+						DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+						if(Validator.isNotNull(dossierAction)) {
+							_log.info("---Dossier action is not null");
+							serviceProcessId = dossierAction.getServiceProcessId();
+							DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId,
+											dossier.getDossierTemplateNo());
+							if(Validator.isNotNull(dossierTemplate)) {
+								_log.info("---Dossier template is not null");
+								option = ProcessOptionLocalServiceUtil.fetchBySP_DT(serviceProcessId,
+										dossierTemplate.getDossierTemplateId());
+								proAction = getProcessAction(serviceContext.getUserId(), groupId, dossier, actionCode,
+										serviceProcessId);
+							}
+						}
+					}
+				} else {
+					_log.info("---Notttt Inside process");
+					proAction = null;
+				}
+			} else {
+				_log.info("---Act config is nullllll");
+				option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+						dossier.getDossierTemplateNo(), groupId);
+				if(Validator.isNotNull(option)) {
+					_log.info("---Option is not null");
+					serviceProcessId = option.getServiceProcessId();
+					proAction = getProcessAction(serviceContext.getUserId(), groupId, dossier, actionCode,
+							serviceProcessId);
+				}
+			}
 
-		if (option != null) {
-			serviceProcessId = option.getServiceProcessId();
-		}
+			if(Validator.isNull(option)) {
+				_log.info("-----WARNING: Option is null");
+			}
 
-		ProcessAction proAction = getProcessAction(serviceContext.getUserId(), groupId, dossier, actionCode,
-				serviceProcessId);
+			if(Validator.isNull(proAction)) {
+				_log.info("-----WARNING: Pro Action is null");
+			}
 
-		if(Validator.isNull(input.getPayment())) {
-			doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
-					StringPool.BLANK, StringPool.BLANK, null, 0, serviceContext);
-		} else {
-			doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
-					StringPool.BLANK, StringPool.BLANK, objMapper.writeValueAsString(input.getPayment()), 0, serviceContext);
+			processActionCurrent = proAction;
+
+			if(Validator.isNull(input.getPayment())) {
+				dossierActionResult = doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
+						StringPool.BLANK, StringPool.BLANK, null, syncType, serviceContext);
+			} else {
+				dossierActionResult = doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
+						StringPool.BLANK, StringPool.BLANK, objMapper.writeValueAsString(input.getPayment()), syncType, serviceContext);
+			}
+
+			if(Validator.isNull(dossierActionResult)) {
+				throw new Exception("Do action fail with actionCode: " + actionCode);
+			}
+
+			FrequencyDoAction frequencyDoAction = new FrequencyDoAction();
+			frequencyDoAction.setDossierAction(dossierActionResult);
+			frequencyDoAction.setProcessAction(processActionCurrent);
+			_log.info("Done action frequency with actionCode: " + actionCode + "...");
+			return frequencyDoAction;
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
 		}
 	}
 
