@@ -112,20 +112,7 @@ import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
-import org.opencps.dossiermgt.action.util.AccentUtils;
-import org.opencps.dossiermgt.action.util.AutoFillFormData;
-import org.opencps.dossiermgt.action.util.ConfigCounterNumberGenerator;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
-import org.opencps.dossiermgt.action.util.DossierActionUtils;
-import org.opencps.dossiermgt.action.util.DossierMgtUtils;
-import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
-import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
-import org.opencps.dossiermgt.action.util.KeyPay;
-import org.opencps.dossiermgt.action.util.NotificationUtil;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
-import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.action.util.*;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
@@ -1390,7 +1377,28 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			//Kiểm tra xem có gửi dịch vụ vận chuyển hay không
 			if (proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_SEND_VIAPOSTAL)) {
-				vnpostEvent(dossier, dossierAction.getDossierActionId());
+				boolean bdhnConnect = false;
+				String senderAddress = StringPool.BLANK;
+				// Kiểm tra có cấu hình VNPOST_CLS không
+				ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.VNPOST_CLS);
+				if(Validator.isNotNull(sc)) {
+					JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
+					bdhnConnect = configObj.getBoolean(ServerConfigTerm.BDHN_CONNECT);
+					senderAddress = configObj.getString(ServerConfigTerm.BDHN_CONNECT);
+				}
+				if(bdhnConnect){
+					if (dossier.getViaPostal() == 2) {
+						_log.info(" Call API VNPOST HN");
+						PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+						String resultHNPost = VNPostCLSUtils.insertCLS(groupId,ServerConfigTerm.VNPOST_CLS ,dossierId,
+								dossier.getServiceCode(),dossier.getServiceName(),dossier.getDossierNo(),
+								paymentFile.getPaymentAmount(),dossier.getApplicantName(), dossier.getDelegateName(),
+								dossier.getApplicantIdNo(), dossier.getAddress(), dossier.getReceiveDate(), senderAddress);
+						_log.info("Result HNPost : " + resultHNPost);
+					}
+				}else{
+					vnpostEvent(dossier, dossierAction.getDossierActionId());
+				}
 			}
 			if (proAction.getPreCondition().toLowerCase()
 					.contains(ProcessActionTerm.PRECONDITION_SEND_COLLECTION_VNPOST)) {

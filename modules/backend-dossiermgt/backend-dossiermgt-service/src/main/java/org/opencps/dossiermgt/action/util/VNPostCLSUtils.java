@@ -8,9 +8,18 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.auth.api.BackendAuth;
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
@@ -19,9 +28,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Base64;
+import java.util.Date;
 
 public class VNPostCLSUtils {
-    public static String getParcelVNPost( Long groupId, String serverCode, String key, String parcelCode) {
+    public static String getPostalVNPost( Long groupId, String serverCode, String key, String postalCode) {
 
 
         try {
@@ -29,7 +40,7 @@ public class VNPostCLSUtils {
 
             ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverCodeFind);
             StringBuilder sb = new StringBuilder();
-            _log.debug("SERVER PROXY: " + sc.getConfigs());
+            _log.info("SERVER PROXY: " + sc.getConfigs());
             if (sc != null) {
                 JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
                 String apiUrl;
@@ -37,7 +48,7 @@ public class VNPostCLSUtils {
 
                 URL urlVal = null;
                 serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
-                apiUrl = serverUrl + key + StringPool.FORWARD_SLASH + parcelCode;
+                apiUrl = serverUrl + key + StringPool.FORWARD_SLASH + postalCode;
                 urlVal = new URL(apiUrl);
 
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
@@ -61,63 +72,68 @@ public class VNPostCLSUtils {
 
     }
 
-    public static String insertCLS( HttpHeaders header, String serverCode, int dossierId, String serviceCode,
-                                     String serviceName, String dossierNo, int fees, String applicantName,
-                                     String delegateName, String applicantIdNo, String address, String postalAddress) {
-
-        long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+    public static String insertCLS(long groupId, String serverCode, long dossierId, String serviceCode,
+                                   String serviceName, String dossierNo, long fees, String applicantName,
+                                   String delegateName, String applicantIdNo, String address, Date receiveDate, String postalAddress) {
 
         try {
-            String serverCodeFind = Validator.isNotNull(serverCode) ? serverCode : "NHAN_THONG_BAO_KET_QUA";
-
+            String serverCodeFind = Validator.isNotNull(serverCode) ? serverCode : "VNPOST_CLS";
             ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverCodeFind);
-            StringBuilder sb = new StringBuilder();
-            _log.debug("SERVER PROXY: " + sc.getConfigs());
+            MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+
+            RestTemplate restTemplate = new RestTemplate();
+            headers.setContentType(org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED);
+
             if (sc != null) {
                 String serverUrl = StringPool.BLANK;
 
                 JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
-                serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
-                URL urlVoid = new URL(serverUrl);
+                JSONObject jsonObject = JSONFactoryUtil.createJSONObject(configObj.getString(ServerConfigTerm.NHAN_THONG_BAO_KET_QUA));
+                serverUrl = jsonObject.getString(SyncServerTerm.SERVER_URL);
 
-                JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+                String userName = jsonObject.getString(SyncServerTerm.SERVER_USERNAME);
+                String password = jsonObject.getString(SyncServerTerm.SERVER_SECRET);
+                String basicAuth = "Basic " + Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
+                _log.info("basicAuth "+basicAuth);
+                headers.set("Authorization", basicAuth);
+                map.add("dossierId" ,String.valueOf(dossierId));
+                map.add("MaThuTuc",serviceCode);
+                map.add("TenThuTuc",serviceName);
+                map.add("MaHoSo",dossierNo);
+                map.add("LePhi",String.valueOf(fees));
+                map.add("ChuHoSo",applicantName);
+                map.add("NguoiNop",delegateName);
+                map.add("CMT",applicantIdNo);
+                map.add("DiaChi",address);
+                map.add("NgayTiepNhan", APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_DATE));
+                map.add("DiaChiBC",postalAddress);
 
-                jsonBody.put(SyncServerTerm.SERVER_USERNAME, configObj.getString(SyncServerTerm.SERVER_USERNAME));
-                jsonBody.put(SyncServerTerm.SERVER_SECRET, configObj.getString(SyncServerTerm.SERVER_SECRET));
-
-                jsonBody.put("dossierId",dossierId);
-                jsonBody.put("serviceCode",serviceCode);
-                jsonBody.put("serviceName",serviceName);
-                jsonBody.put("dossierNo",dossierNo);
-                jsonBody.put("fees",fees);
-                jsonBody.put("applicantName",applicantName);
-                jsonBody.put("delegateName",delegateName);
-                jsonBody.put("applicantIdNo",applicantIdNo);
-                jsonBody.put("address",address);
-                jsonBody.put("postalAddress",postalAddress);
-
-                _log.debug("POST DATA: " + jsonBody.toString());
-
-                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVoid.openConnection();
-
-                conn.setRequestMethod(HttpMethod.POST);
-                conn.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-                conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-                conn.setRequestProperty("Content-Length",StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
-                conn.setUseCaches(false);
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-                _log.debug("POST DATA: " + jsonBody.toString());
-                OutputStream osLogin = conn.getOutputStream();
-                osLogin.write(jsonBody.toString().getBytes());
-                osLogin.close();
-
-                BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                int cp;
-                while ((cp = brf.read()) != -1) {
-                    sb.append((char) cp);
-                }
-                return sb.toString();
+                _log.info("POST DATA: " + map.toString());
+                HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+                ResponseEntity<String> response = restTemplate.postForEntity(serverUrl, request, String.class);
+                return response.getBody();
+//                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVoid.openConnection();
+//                String basicAuth = Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
+//                _log.info("basicAuth "+basicAuth);
+//                conn.setRequestProperty("Authorization", basicAuth);
+//                conn.setRequestMethod(HttpMethod.POST);
+//                conn.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+//                conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+//                conn.setRequestProperty("Content-Length",StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+//                conn.setUseCaches(false);
+//                conn.setDoInput(true);
+//                conn.setDoOutput(true);
+//                OutputStream osLogin = conn.getOutputStream();
+//                osLogin.write(jsonBody.toString().getBytes());
+//                osLogin.close();
+//
+//                BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//                int cp;
+//                while ((cp = brf.read()) != -1) {
+//                    sb.append((char) cp);
+//                }
+//                return sb.toString();
             }
             return null;
         } catch (Exception e) {
