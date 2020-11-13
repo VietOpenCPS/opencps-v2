@@ -128,6 +128,7 @@ public class VotingManagementImpl implements VotingManagement {
 
 			if (jsonData != null) {
 				result.setTotal(jsonData.getLong(PostalConstantUtils.TOTAL));
+				result.setVotingCount(VotingUtils.getVotingCount((List<Document>) jsonData.get(PostalConstantUtils.DATA)));
 				result.getData()
 						.addAll(VotingUtils.mappingVotingDocList((List<Document>) jsonData.get(PostalConstantUtils.DATA), query.getFromVotingDate(), query.getToVotingDate(), serviceContext));
 			} else {

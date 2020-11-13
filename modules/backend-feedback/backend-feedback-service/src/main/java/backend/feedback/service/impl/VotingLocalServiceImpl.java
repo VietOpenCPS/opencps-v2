@@ -373,8 +373,26 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 		return votingPersistence.countByF_CLNAME_CLPK(className, classPK);
 	}
 
+	@Override
+	public long countVotingByClass_Name_VC(String className, String votingCode) {
+		return votingPersistence.countByF_CLNAME_VC(className,votingCode);
+	}
+
 	public List<Voting> getVotingByG_Class_Name_PK(long groupId, String className, String classPK) {
 		return votingPersistence.findByF_G_CLNAME_CLPK(groupId, className, classPK);
+	}
+
+	@Override
+	public List<Voting> getVotingByClass_Name_VC(String className, String votingCode) {
+		return votingPersistence.findByF_CLNAME_VC(className,votingCode);
+	}
+
+	@Indexable(type = IndexableType.DELETE)
+	public void deleteVoteConfig(long votingId, ServiceContext serviceContext) throws NoSuchVotingException {
+		Voting voting = votingPersistence.fetchByPrimaryKey(votingId);
+		if (voting != null) {
+			votingPersistence.removeByF_CLNAME_VC(voting.getClassName(), voting.getVotingCode());
+		}
 	}
 
 	public long countVotingByG_Class_Name_PK(long groupId, String className, String classPK) {

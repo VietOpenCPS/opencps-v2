@@ -16,7 +16,12 @@ package backend.feedback.service;
 
 import aQute.bnd.annotation.ProviderType;
 
+import backend.feedback.exception.NoSuchVotingException;
+import backend.feedback.model.Voting;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
+
+import java.util.List;
 
 /**
  * Provides a wrapper for {@link VotingLocalService}.
@@ -84,6 +89,21 @@ public class VotingLocalServiceWrapper implements VotingLocalService,
 		String classPK) {
 		return _votingLocalService.countVotingByG_Class_Name_PK(groupId,
 			className, classPK);
+	}
+
+	@Override
+	public long countVotingByClass_Name_VC(String className, String votingCode) {
+		return _votingLocalService.countVotingByClass_Name_VC(className,votingCode);
+	}
+
+	@Override
+	public List<Voting> getVotingByClass_Name_VC(String className, String votingCode) {
+		return _votingLocalService.getVotingByClass_Name_VC(className,votingCode);
+	}
+
+	@Override
+	public void deleteVoteConfig(long votingId, ServiceContext serviceContext) throws NoSuchVotingException {
+		_votingLocalService.deleteVoteConfig(votingId,serviceContext);
 	}
 
 	/**

@@ -391,6 +391,17 @@ public class VotingLocalServiceUtil {
 		backend.feedback.model.Voting voting) {
 		return getService().updateVoting(voting);
 	}
+	public static long countVotingByClass_Name_VC(String className, String votingCode) {
+		return getService().countVotingByClass_Name_VC(className, votingCode);
+	}
+	public static void deleteVoteConfig(long votingId, com.liferay.portal.kernel.service.ServiceContext serviceContext)
+			throws backend.feedback.exception.NoSuchVotingException {
+		getService().deleteVoteConfig(votingId, serviceContext);
+	}
+	public static java.util.List<backend.feedback.model.Voting> getVotingByClass_Name_VC(
+			String className, String votingCode) {
+		return getService().getVotingByClass_Name_VC(className, votingCode);
+	}
 
 	public static VotingLocalService getService() {
 		return _serviceTracker.getService();

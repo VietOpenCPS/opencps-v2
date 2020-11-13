@@ -77,6 +77,10 @@ public class VotingResultLocalServiceUtil {
 		return getService().countByF_votingId_selected(votingId, selected);
 	}
 
+	public static int countByF_votingId(long votingId) {
+		return getService().countByF_votingId(votingId);
+	}
+
 	public static int countByF_votingId_selected_filter_date(long votingId,
 		String selected, java.util.Date fromDate, java.util.Date toDate) {
 		return getService()

@@ -65,5 +65,12 @@ public class GetPersonRequest extends CommonRequest{
 	}
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
-	}	
+	}
+	@Override
+	public String toString() {
+		return "GetPersonRequest [month=" + month + ", year=" + year + ", calculate=" + calculate
+				+ ", fromStatisticDate=" + fromStatisticDate + ", toStatisticDate=" + toStatisticDate + ", votingCode="
+				+ votingCode + ", employeeId=" + employeeId + ", govAgencyCode=" + govAgencyCode + ", className="
+				+ className + "]";
+	}
 }
