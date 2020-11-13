@@ -1,7 +1,5 @@
 package backend.postal.api.rest.controller.impl;
 
-import backend.postal.api.rest.controller.LGSPService;
-
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -15,10 +13,16 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -32,8 +36,8 @@ import org.opencps.api.vnpost.model.VNPostServerConfigModel;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 
+import backend.postal.api.rest.controller.LGSPService;
 import backend.postal.api.rest.controller.VNPostManagement;
-import org.springframework.http.MediaType;
 import vn.mitc.ngsp.sdk.VNPost_N_GSP.IOrder;
 import vn.mitc.ngsp.sdk.VNPost_N_GSP.IToken;
 import vn.mitc.ngsp.sdk.models.MOrder;
@@ -100,11 +104,12 @@ public class VNPostManagementImpl implements VNPostManagement {
 		}
 	}
 
-	public VNPostServerConfigModel getServerConfig(long groupId, String serverNo, String protocol) {
+	public VNPostServerConfigModel getServerConfig(long groupId,String govAgencyCode, String serverNo, String protocol) {
 		VNPostServerConfigModel config = null;
 
 		try {
-			ServerConfig sc = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId, serverNo, protocol);
+			ServerConfig sc = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId,govAgencyCode, serverNo,
+					protocol);
 			_log.debug("Thong tin server config");
 			_log.debug(sc.getConfigs());
 			VNPostServerConfigModel check = fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
@@ -113,7 +118,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 				config = check;
 			}
 			return config;
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			// e.printStackTrace();
 			_log.error(e);
 			return null;
@@ -125,18 +130,10 @@ public class VNPostManagementImpl implements VNPostManagement {
 	public Response sendPostalRequest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, VNPostInputModel input) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		String serverNo = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
-		_log.debug("Info get server config: " + groupId + "|" + serverNo );
-		VNPostServerConfigModel config = getServerConfig(groupId, serverNo, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
-		if (config == null) {
-			config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_VIA_POSTAL_SERVERNO_D, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
-		}
-		//_log.debug("sendPostalRequest groupId ============= " + groupId);
-		//_log.debug("sendPostalRequest lstsc ============= " + JSONFactoryUtil.looseSerialize(config));
+		String govAgencyCode = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
+		_log.debug("Info get server config: " + groupId + "|govAgencyCode:" + govAgencyCode );
+		VNPostServerConfigModel config = getServerConfig(groupId, govAgencyCode,VnPostTerm.SERVER_CONFIG_VIA_POSTAL_SERVERNO_D, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
 
-		// String tokenUrl = "https://api.mitc.vn/token";
-		// String consumer_key = "ddabyJ69AeQyzhFvlnXNROKQs7Ia";
-		// String secret_key = "kFqNeYCoLtr4MMSnfRcXQwhIO3Aa";
 		if (config == null) {
 			return null;
 		} else {
@@ -182,18 +179,24 @@ public class VNPostManagementImpl implements VNPostManagement {
 			User user, ServiceContext serviceContext, VNPostInputModel input) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		String serverNo = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
-		VNPostServerConfigModel config = getServerConfig(groupId, serverNo, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
+		String govAgencyCode = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
+		
+		VNPostServerConfigModel config = null;
+		
+		config = getServerConfig(groupId,govAgencyCode, VnPostTerm.SERVER_CONFIG_VIA_POSTAL_SERVERNO_D, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
+		
+		
 		if (config == null) {
-			config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_VIA_POSTAL_SERVERNO_D, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
-		}
-		if (config == null) {
+			
+			_log.debug("return null:");
 			return null;
 		} else {
 			try {
 				MToken token = this.getMToken(config);
 
 				if(Validator.isNull(token)) {
+					
+					_log.debug("return token null null:");
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(null).build();
 				}
 
@@ -231,116 +234,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 		}
 	}
 	
-	@Override
-	public Response getPostalPrice(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, VNPostInputModel input) {
-		
-		
-		try {
-			
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-			String serverNo = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
-			
-			_log.debug("Info get server config: " + groupId + "|" + serverNo );
-			VNPostServerConfigModel config = null;
-			
-			try {
-				config = getServerConfig(groupId, serverNo, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
-			}catch(Exception e) {
-				
-			}
-			
-			
-			if (config == null) {
-				
-				try {
-				
-				config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_VIA_POSTAL_SERVERNO_D, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
-				}catch(Exception e){
-					
-				}
-			}
 	
-			if (config == null) {
-				return null;
-			} else {
-				
-					
-				String result = StringPool.BLANK;
-				
-				int provinceCodeSender = input.getSenderProvince();
-				int districtCodeSender = input.getSenderDistrict();
-				int provinceCodeReceiver= input.getReceiverProvince();
-				int districtCodeReceiver = input.getReceiverDistrict();
-				
-				_log.debug("+++provinceCodeSender:"+provinceCodeSender);
-				_log.debug("+++districtCodeSender:"+districtCodeSender);
-				
-				_log.debug("+++provinceCodeReceiver:"+provinceCodeReceiver);
-				_log.debug("+++districtCodeReceiver:"+districtCodeReceiver);
-				
-				if(provinceCodeSender > 0) {
-					provinceCodeReceiver = config.getSenderProvince();
-					districtCodeReceiver = config.getSenderDistrict();
-				}else {
-					provinceCodeSender = config.getSenderProvince();
-					districtCodeSender =  config.getSenderDistrict();
-				}
-				
-
-				JSONObject datas = createVNPOSTPriceData(provinceCodeSender, districtCodeSender,provinceCodeReceiver,districtCodeReceiver, input.getWeight());
-				
-				_log.debug("++datas:"+datas);
-				
-				boolean isLGSPActive = config.isLgspActive();
-				
-				if(isLGSPActive) {
-				
-					LGSPService lgspService = new LGSPServiceImpl();
-					String access_token = lgspService.getToken(config.getLgspTokenUrl(), config.getLgspConsumerKey(), config.getLgspSercureKey());
-					
-					StringBuilder serviceURL = new StringBuilder();
-					serviceURL.append(config.getLgspVnpostUrl()).append(StringPool.QUESTION).append("service").append(StringPool.EQUAL).append(config.getLgspVnpostGetPrice());
-
-					result = lgspService.getVNPOSTPrice(serviceURL.toString(), access_token, datas);
-				
-				}
-				
-				if(Validator.isNotNull(result)) {
-					return Response.status(200).entity(result).build();
-				}else {
-					return Response.status(417).entity(result).build();
-				}
-				
-			}
-			
-		} catch (Exception e) {
-			_log.error(e);
-			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
-		}
-	}
-	
-	private JSONObject createVNPOSTPriceData(int provinceCodeSender,int districtCodeSender,int provinceCodeReceiver,int districtCodeReceiver,int weight) {
-		
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-		jsonObject.put("weight", weight);
-		jsonObject.put("mainSrv", "HCC");
-		jsonObject.put("isreturn", 1);
-		
-		JSONObject senderObject = JSONFactoryUtil.createJSONObject();
-		senderObject.put("provCode", provinceCodeSender);
-		senderObject.put("distCode", districtCodeSender);
-		
-		JSONObject receiverObject = JSONFactoryUtil.createJSONObject();
-		receiverObject.put("provCode", provinceCodeReceiver);
-		receiverObject.put("distCode", districtCodeReceiver);
-		
-		jsonObject.put("sender", senderObject);
-		jsonObject.put("receiver", receiverObject);
-
-		
-		return jsonObject;
-	}
 	
 
 	private JSONObject getOrder(VNPostServerConfigModel config,
@@ -409,8 +303,8 @@ public class VNPostManagementImpl implements VNPostManagement {
 		// String secret_key = "kFqNeYCoLtr4MMSnfRcXQwhIO3Aa";
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// _log.debug("groupId = =========" + groupId);
-		String serverNo = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
-		VNPostServerConfigModel config = getServerConfig(groupId, serverNo, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
+		String govAgencyCode = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
+		VNPostServerConfigModel config = getServerConfig(groupId,govAgencyCode, VnPostTerm.SERVER_CONFIG_VIA_POSTAL_SERVERNO_D, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
 
 		try {
 			JSONObject jsondata = getOrder(config, input.getPageSize(), input.getLastId(), input.getOrderNumber());
@@ -435,8 +329,8 @@ public class VNPostManagementImpl implements VNPostManagement {
 			User user, ServiceContext serviceContext, VNPostCancelOrderModel input) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		String serverNo = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
-		VNPostServerConfigModel config = getServerConfig(groupId, serverNo, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
+		String govAgencyCode = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
+		VNPostServerConfigModel config =  getServerConfig(groupId,govAgencyCode, VnPostTerm.SERVER_CONFIG_VIA_POSTAL_SERVERNO_D, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
 		// _log.debug("config ============= " + JSONFactoryUtil.looseSerialize(config));
 
 		// String tokenUrl = "https://api.mitc.vn/token";
@@ -467,7 +361,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 		try {
 			String urlGetToken = config.getApiGetToken();
 			String keyToken    = config.getKeyToken();
-			_log.debug("token: " + urlGetToken + ", key:" + keyToken);
+			
 			LGSPService lgspService = new LGSPServiceImpl();
 			return lgspService.getToken(urlGetToken, keyToken);
 
@@ -480,6 +374,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 	private MToken getMToken(VNPostServerConfigModel config) {
 		try {
 			MToken token;
+
 			if(config.isLGSP()) {
 				token = new MToken();
 				JSONObject jsonToken = this.getTokenLGSP(config);
@@ -498,12 +393,259 @@ public class VNPostManagementImpl implements VNPostManagement {
 				token.setAccessToken(jsonToken.getString("access_token"));
 				token.setTokenType(jsonToken.getString("token_type"));
 			} else {
+				
 				token = IToken.getToken(config.getApiGetToken(), config.getCustomerKey(), config.getSecretKey());
 			}
+			
 			return token;
 		} catch (Exception e) {
 			_log.error(e.getMessage());
 			return null;
+		}
+	}
+	
+	public String getToken(String tokenURL, String consumer_key, String secret_key) throws Exception {
+		
+		HttpsURLConnection  conn = null;
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+			
+			String authString =  consumer_key+StringPool.COLON+secret_key;
+			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+			
+			URL url = new URL(tokenURL);
+			
+			conn = (HttpsURLConnection ) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("Authorization", "Basic "+authStringEnc);
+			conn.setInstanceFollowRedirects(true);
+			conn.setReadTimeout(60 * 1000);
+			
+			StringBuilder body = new StringBuilder();
+			body.append("grant_type").append(StringPool.EQUAL).append("client_credentials");
+
+			byte[] postData = body.toString().toString().getBytes("UTF-8");
+			int postDataLength = postData.length;
+			conn.setRequestProperty("Content-Length",
+					Integer.toString(postDataLength));
+			
+			TrustManager myTrustManager = new TrustManager();
+			conn = myTrustManager.disableSSL(conn);
+			
+			try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+				wr.write(postData);
+			}
+			conn.connect();
+
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			
+
+			String output = StringPool.BLANK;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = bufferedReader.readLine()) != null) {
+				sb.append(output);
+			}
+			
+			if(Validator.isNotNull(sb.toString())){
+				result = JSONFactoryUtil.createJSONObject(sb.toString());
+			}
+			
+			_log.debug("+++++token return:"+result);
+
+			return result.has("access_token") ? result.getString("access_token") : StringPool.BLANK;
+
+			
+
+		} catch (Exception e) {
+			_log.error(e);
+			return null;
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
+		}
+		
+	}
+	
+	@Override
+	public Response getPostalPrice(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, VNPostInputModel input) {
+		
+		
+		try {
+			
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			String govAgencyCode = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
+			
+			_log.debug("Info get server config: " + groupId + "|" + govAgencyCode );
+			VNPostServerConfigModel config = null;
+			
+				config = getServerConfig(groupId,govAgencyCode, VnPostTerm.SERVER_CONFIG_VIA_POSTAL_SERVERNO_D, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
+			
+
+	
+			if (config == null) {
+				return null;
+			} else {
+				
+					
+				String result = StringPool.BLANK;
+				
+				int provinceCodeSender = input.getSenderProvince();
+				int districtCodeSender = input.getSenderDistrict();
+				int provinceCodeReceiver= input.getReceiverProvince();
+				int districtCodeReceiver = input.getReceiverDistrict();
+				
+				_log.debug("+++provinceCodeSender:"+provinceCodeSender);
+				_log.debug("+++districtCodeSender:"+districtCodeSender);
+				
+				_log.debug("+++provinceCodeReceiver:"+provinceCodeReceiver);
+				_log.debug("+++districtCodeReceiver:"+districtCodeReceiver);
+				
+				if(provinceCodeSender > 0) {
+					provinceCodeReceiver = config.getSenderProvince();
+					districtCodeReceiver = config.getSenderDistrict();
+				}else {
+					provinceCodeSender = config.getSenderProvince();
+					districtCodeSender =  config.getSenderDistrict();
+				}
+				
+
+				JSONObject datas = createVNPOSTPriceData(provinceCodeSender, districtCodeSender,provinceCodeReceiver,districtCodeReceiver, input.getWeight());
+				
+				_log.debug("++datas:"+datas);
+				
+				boolean isLGSPActive = config.isLgspActive();
+				
+				if(isLGSPActive) {
+				
+//					LGSPService lgspService = new LGSPServiceImpl();
+					String access_token = getToken(config.getLgspTokenUrl(), config.getLgspConsumerKey(), config.getLgspSercureKey());
+					
+					StringBuilder serviceURL = new StringBuilder();
+					serviceURL.append(config.getLgspVnpostUrl()).append(StringPool.QUESTION).append("service").append(StringPool.EQUAL).append(config.getLgspVnpostGetPrice());
+
+					result = getVNPOSTPrice(serviceURL.toString(), access_token, datas);
+				
+				}
+				
+				if(Validator.isNotNull(result)) {
+					return Response.status(200).entity(result).build();
+				}else {
+					return Response.status(417).entity(result).build();
+				}
+				
+			}
+			
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+		}
+	}
+	
+	private JSONObject createVNPOSTPriceData(int provinceCodeSender,int districtCodeSender,int provinceCodeReceiver,int districtCodeReceiver,int weight) {
+		
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+		jsonObject.put("weight", weight);
+		jsonObject.put("mainSrv", "HCC");
+		jsonObject.put("isreturn", 1);
+		
+		JSONObject senderObject = JSONFactoryUtil.createJSONObject();
+		senderObject.put("provCode", provinceCodeSender);
+		senderObject.put("distCode", districtCodeSender);
+		
+		JSONObject receiverObject = JSONFactoryUtil.createJSONObject();
+		receiverObject.put("provCode", provinceCodeReceiver);
+		receiverObject.put("distCode", districtCodeReceiver);
+		
+		jsonObject.put("sender", senderObject);
+		jsonObject.put("receiver", receiverObject);
+
+		
+		return jsonObject;
+	}
+	
+	public  String getVNPOSTPrice(String endpoint, String access_token, JSONObject datas) {
+		
+		_log.debug("+++getVNPOSTPrice+++");
+
+		HttpsURLConnection conn = null;
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+			
+			URL url = new URL(endpoint);
+
+			conn = (HttpsURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("Authorization", "Bearer "+access_token);
+			conn.setInstanceFollowRedirects(true);
+			conn.setReadTimeout(60 * 1000);
+			
+			_log.debug("==endpoint:"+endpoint);
+
+			byte[] postData = datas.toString().getBytes("UTF-8");
+			int postDataLength = postData.length;
+			conn.setRequestProperty("Content-Length",Integer.toString(postDataLength));
+			
+			TrustManager myTrustManager = new TrustManager();
+			conn = myTrustManager.disableSSL(conn);
+			
+			try (DataOutputStream wr = new DataOutputStream(
+					conn.getOutputStream())) {
+				wr.write(postData);
+			}
+			conn.connect();
+
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			
+			String output = StringPool.BLANK;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = bufferedReader.readLine()) != null) {
+				sb.append(output);
+			}
+			
+			
+			String price = StringPool.BLANK;
+			
+				try {
+					result = JSONFactoryUtil.createJSONObject(sb.toString());
+					
+					price = result.getJSONObject("content").getString("price");
+				}catch(JSONException e) {
+					
+				}
+				
+				_log.debug("+price:"+price);
+		
+
+			return price;
+
+			
+
+		} catch (Exception e) {
+			_log.error(e);
+			return null;
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
 		}
 	}
 }

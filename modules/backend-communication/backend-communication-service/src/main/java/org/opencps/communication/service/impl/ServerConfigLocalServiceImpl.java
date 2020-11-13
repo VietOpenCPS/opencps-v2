@@ -330,5 +330,31 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 	public List<ServerConfig> getByServerAndProtocol(String serverNo, String protocol) {
 		return serverConfigPersistence.findBySNO_PT(serverNo, protocol);
 	}
+	
+	public ServerConfig getByServerNoAndProtocol(long groupId, String govAgencyCode, String serverNo, String protocol) {
+		
+		ServerConfig serverConfig = null;
+		
+		if(Validator.isNotNull(govAgencyCode)) {
+			
+			try {
+				serverConfig = serverConfigPersistence.fetchByF_G_S_P(groupId, govAgencyCode, protocol);
+			}catch(Exception e) {
+				
+			}
+			
+		}
+		
+		if(Validator.isNull(govAgencyCode) || Validator.isNull(serverConfig)) {
+			
+			try {
+				serverConfig = serverConfigPersistence.fetchByF_G_S_P(groupId, serverNo, protocol);
+			}catch(Exception e) {
+				
+			}
+			
+		}
+		return serverConfig;
+	}
 
 }

@@ -45,8 +45,10 @@ public class VnpostEvent implements MessageListener {
 			_log.info("-----RECEIVING MESSAGE LOGISTIC...");
 			JSONObject dossierObj = (JSONObject) message.get("dossier");
 			long groupId = dossierObj.getLong(Field.GROUP_ID);
+			String govAgencyCode = dossierObj.getString("govAgencyCode");
+			
 
-			ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId, ViettelPostTerm.SERVER_NO,
+			ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId,govAgencyCode, ViettelPostTerm.SERVER_NO,
 					ViettelPostTerm.PROTOCOL);
 
 			Integer typePost = getTypeLogistic(serverConfig);
@@ -107,6 +109,8 @@ public class VnpostEvent implements MessageListener {
 	}
 
 	private void vnPostHandle(Message message) {
+		
+		_log.info("===vnPostHandle=====");
 
 		try {
 			JSONObject dossierObj = (JSONObject) message.get("dossier");
@@ -120,9 +124,9 @@ public class VnpostEvent implements MessageListener {
 			} else {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, refId);
 			}
-			if (dossier.getVnpostalStatus() != 1) {
-				return;
-			}
+//			if (dossier.getVnpostalStatus() != 1) {
+//				return;
+//			}
 
 			InvokeREST callRest = new InvokeREST();
 			String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
@@ -156,7 +160,7 @@ public class VnpostEvent implements MessageListener {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			_log.info(e);
+			_log.error(e);
 		}
 	}
 
