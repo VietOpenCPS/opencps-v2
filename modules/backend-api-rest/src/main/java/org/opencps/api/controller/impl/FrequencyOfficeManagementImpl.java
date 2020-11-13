@@ -250,13 +250,13 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
     }
 
     @Override
-    public Response sendStatusProfile(long dossierId) {
+    public Response sendStatusProfile(long dossierId, String isSendMultipleUnit) {
         try {
             List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
             ServerConfig serverConfig = listConfig.get(0);
             FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
             String token = integrationAction.getToken();
-            integrationAction.sendStatusProfile(token, dossierId);
+            integrationAction.sendStatusProfile(token, dossierId, isSendMultipleUnit);
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 
@@ -284,14 +284,14 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
     }
 
     @Override
-    public Response syncDossierToLGSPManual(long dossierId) {
+    public Response syncDossierToLGSPManual(long dossierId, String isSendMultipleUnit) {
         try {
             List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
             ServerConfig serverConfig = listConfig.get(0);
             FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
             String token = integrationAction.getToken();
 
-            integrationAction.syncDossierAndStatusToLGSPManual(token, dossierId);
+            integrationAction.syncDossierAndStatusToLGSPManual(token, dossierId, isSendMultipleUnit);
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
         } catch (Exception e) {
