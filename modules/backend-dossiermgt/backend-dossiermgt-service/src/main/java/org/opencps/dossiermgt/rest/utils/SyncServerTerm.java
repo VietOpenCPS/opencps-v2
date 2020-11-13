@@ -11,4 +11,15 @@ public class SyncServerTerm {
 	public static final String CONSUMER_ADAPTER = "adapter";
 	
 	public static final String WRITE_LOG = "writeLog";
+
+	public static final String APP = "payment_std";
+	public static final String MERCHANT_OUTLET_ID = "000000000000000071000";
+	public static final String MERCHANT_ID = "000000000070000";
+	public static final String CLIENT_ID = "1111";
+	public static final String EVENT_VOID = "void";
+	public static final String EVENT_SETTLEMENT = "settle";
+	public static final String EVENT_SALE = "sale";
+	public static final String ADD_PRINT_SETTLEMENT = "None";
+	public static final String THIRD_PARTY_KEY = "4SSDDQS30TVGGBCYXXZ5YHDF";
+	public static final String THIRD_PARTY_ID = "73371689";
 }
