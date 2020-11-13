@@ -9,4 +9,9 @@ public class ServerConfigTerm {
 	public static final String TTTT_INTEGRATION = "TTTT_INTEGRATION";
 	public static final String SERVER_NO = "serverNo";
 	public static final String SERVER_VNPOST_HN = "SERVER_VNPOST_HN";
+	public static final String TT_VNPOST_HN = "THONG_TIN_MA_BUU_GUI_VNPOST";
+	public static final String TOKEN_VNPOST_HN = "WMPH3Q-O6HMMU-RKDA4Z-JBS49B";
+	public static final String NHAN_THONG_BAO_KET_QUA ="NHAN_THONG_BAO_KET_QUA";
+	public static final String VNPOST_CLS = "VNPOST_CLS";
+	public static final String BDHN_CONNECT = "BDHN_CONNECT";
 }
