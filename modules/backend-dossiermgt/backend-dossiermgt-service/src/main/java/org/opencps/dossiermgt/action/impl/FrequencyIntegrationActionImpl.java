@@ -592,7 +592,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
         try {
             _log.info("Syncing dossier to PMNV...");
             if(!profile.getStatus().equals(FrequencyOfficeConstants.STATUS_RECEIVE)) {
-                throw new Exception("Dossier from DVCBo is not TIEPNHAN: " + profile.getStatus());
+                throw new Exception("Profile status from DVCBO or MCDT is not TIEPNHAN and being: " + profile.getStatus());
             }
 
             long groupId = serverConfig.getGroupId();
@@ -605,21 +605,11 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
             Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, profile.getRef_code());
             if(Validator.isNull(dossier)) {
-                throw new Exception("No dossier found to update with referenceId = " + profile.getRef_code());
+                throw new Exception("No dossier found with referenceId = " + profile.getRef_code());
             }
 
             if(Validator.isNull(dossier.getDossierNo()) || dossier.getDossierNo().isEmpty()) {
                 throw new Exception("DossierNo is null with referenceId = " + profile.getRef_code());
-            }
-
-            if(profile.getStatus().equals(FrequencyOfficeConstants.STATUS_DENIED)) {
-                if(Validator.isNull(profile.getProcess_officials()) || profile.getProcess_officials().isEmpty()) {
-                    profile.setProcess_officials("Not found");
-                }
-
-                if(Validator.isNull(profile.getTime_of_process()) || profile.getTime_of_process().isEmpty()) {
-                    profile.setTime_of_process(getCurrentDateStr(FORMAT_DATE_LGSP, new Date()));
-                }
             }
 
             profile.setSource_id(dossier.getDossierNo());
@@ -638,8 +628,65 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
         }
     }
 
+    private ProfileInModel transformDossierToProfile(Dossier dossier, Integer statusProfile) throws Exception {
+        try {
+            //case 3.3, 3.5, 3.6, 3,7
+            _log.info("---Transforming dossier " + dossier.getDossierNo() + " to profile...");
+            ProfileInModel profile = new ProfileInModel();
+            String proceduresCode = this.getProceduresCodeQGFromServiceCodeFDS(dossier.getServiceCode());
+            if(proceduresCode.isEmpty()) {
+                throw new Exception("No proceduresCode found with dossierNo: " + dossier.getDossierNo());
+            }
+
+            String creationDate = this.getCurrentDateStr(FORMAT_DATE_LGSP, dossier.getCreateDate());
+            String acceptDate = this.getCurrentDateStr(FORMAT_DATE_LGSP, dossier.getReceiveDate());
+            String appointmentDate = this.getCurrentDateStr(FORMAT_DATE_LGSP, dossier.getDueDate());
+
+            if(creationDate.isEmpty()) {
+                throw new Exception("Create date is empty with dossierNo: " + dossier.getDossierNo());
+            }
+
+            ProfileOwner profileOwner = new ProfileOwner();
+            ProfileApplicant profileApplicant = new ProfileApplicant();
+            profileOwner.setName(Validator.isNotNull(dossier.getApplicantName()) ? dossier.getApplicantName() : "");
+            profileOwner.setAddress(Validator.isNotNull(dossier.getAddress()) ? dossier.getAddress() : "");
+            profileOwner.setTel(Validator.isNotNull(dossier.getContactTelNo()) ? dossier.getContactTelNo() : "");
+            profileApplicant.setName(Validator.isNotNull(dossier.getDelegateName()) ? dossier.getDelegateName() : "");
+            profileApplicant.setAddress(Validator.isNotNull(dossier.getDelegateAddress()) ? dossier.getDelegateAddress() : "");
+            profileApplicant.setEmail(Validator.isNotNull(dossier.getDelegateEmail()) ? dossier.getDelegateEmail() : "");
+            profileApplicant.setTel(Validator.isNotNull(dossier.getDelegateTelNo()) ? dossier.getDelegateTelNo() : "");
+            profileApplicant.setIdentify(Validator.isNotNull(dossier.getDelegateIdNo()) ? dossier.getDelegateIdNo() : "");
+            List<ProfileAttachment> listProfileAttachments = this.getProfileAttachments(dossier);
+            List<ProfileDocFee> listProfileDocFees = this.getListProfileDocFee(dossier.getGroupId(), dossier.getDossierId());
+
+            profile.setStatus(FrequencyOfficeConstants.STATUS_RECEIVE);
+            profile.setSource_id(dossier.getDossierNo());
+            profile.setRef_code(dossier.getReferenceUid());
+            profile.setProcedures_code(proceduresCode);
+            profile.setType("profile");
+            profile.setFrom_unit_code(this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
+            profile.setProfileOwner(profileOwner);
+            profile.setProfileApplicant(profileApplicant);
+            profile.setCreation_date(creationDate);
+            profile.setAccept_date(acceptDate);
+            profile.setAppointment_date(appointmentDate);
+            if(Validator.isNotNull(listProfileAttachments) && listProfileAttachments.size() > 0) {
+                profile.setProfileAttachments(listProfileAttachments);
+            }
+
+            if(Validator.isNotNull(listProfileDocFees) && listProfileDocFees.size() > 0) {
+                profile.setProfileDocFees(listProfileDocFees);
+            }
+
+            _log.info("---Transformed dossier " + dossier.getDossierNo() + "!");
+            return profile;
+        } catch (Exception e) {
+            throw new Exception( "Create profile PMNV error: " + e.getMessage());
+        }
+    }
+
     @Override
-    public void syncDossierAndStatusToLGSPManual(String token, long dossierId) throws Exception {
+    public void syncDossierAndStatusToLGSPManual(String token, long dossierId, String isSendMultipleUnit) throws Exception {
         try {
             //case 3.3, 3.5, 3.6, 3,7
             _log.info("Calling 3.3, 3.5, 3.6, 3.7...");
@@ -656,7 +703,6 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 throw new Exception("No ReferenceId found with id: " + dossierId);
             }
 
-            //Lay from unit code cua dossier
             JSONObject metaDataJson = null;
             if (Validator.isNotNull(dossier.getMetaData()) && !dossier.getMetaData().isEmpty()) {
                 metaDataJson = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
@@ -668,8 +714,12 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 fromUnitCode = metaDataJson.getString("fromUnitCode");
             }
 
+            if(dossier.getOriginality() == FrequencyOfficeConstants.HOSO_TRUC_TIEP) {
+                fromUnitCode = this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE);
+            }
+
             if(fromUnitCode.isEmpty()) {
-                throw new Exception("Dossier has no fromUnitCode with ref code: " + dossier.getReferenceUid());
+                throw new Exception("Dossier online has no fromUnitCode with ref code: " + dossier.getReferenceUid());
             }
 
             Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
@@ -677,11 +727,22 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 throw new Exception("Status profile: 0");
             }
 
-            //Check ho so tu dau
+            //Ho so khong tu DVC BO
             if(!fromUnitCode.equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
-                //Ho so khong tu DVC BO
-                _log.info("Ho so khong tu DVC BO...");
-                _log.info("Swich to calling 3.12...");
+                _log.info("Ho so " + dossier.getDossierNo()  +" voi from_unit_code "
+                        + fromUnitCode + " khong tu DVC BO..." );
+                if(fromUnitCode.equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE))
+                        && isSendMultipleUnit.equals("true")) {
+                    //Checklist 5, case 1.5, Ho so tiep nhan tai MOTCUA, xu ly o PMNV
+                    _log.info("Ho so " + dossier.getDossierNo() + " duoc gui truc tiep tai mot cua");
+                    if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_RECEIVED)) {
+                        //Case ho so moi duoc tiep nhan tai mot cua va dong bo sang PMNV
+                        ProfileInModel profilePMNV = this.transformDossierToProfile(dossier, statusProfile);
+                        this.syncDossierToPMNVManual(token, profilePMNV);
+                    }
+                }
+
+                _log.info("Switch to calling 3.12...");
                 if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_DONE)) {
                     _log.info("Ho so o trang thai cho tra ket qua...");
                     _log.info("Switch to calling 3.13...");
@@ -693,6 +754,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 return;
             }
 
+            //Ho so from DVCBO
             ProfileInModel profile = new ProfileInModel();
 
             if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_DENIED)) {
@@ -765,66 +827,13 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 throw new Exception("No ReferenceId found with id: " + dossierId);
             }
 
-            String proceduresCode = this.getProceduresCodeQGFromServiceCodeFDS(dossier.getServiceCode());
-            if(proceduresCode.isEmpty()) {
-                throw new Exception("No proceduresCode found with dossierId: " + dossierId);
-            }
-
-            String creationDate = this.getCurrentDateStr(FORMAT_DATE_LGSP, dossier.getCreateDate());
-            String acceptDate = this.getCurrentDateStr(FORMAT_DATE_LGSP, dossier.getReceiveDate());
-            String appointmentDate = this.getCurrentDateStr(FORMAT_DATE_LGSP, dossier.getDueDate());
-
-            if(creationDate.isEmpty()) {
-                throw new Exception("Create date is empty with dossierId: " + dossierId);
-            }
-
-            if(Validator.isNull(dossier.getApplicantName()) || dossier.getApplicantName().isEmpty()) {
-                throw new Exception("ApplicantName is empty with dossierId: " + dossierId);
-            }
-
-            if(Validator.isNull(dossier.getDelegateName()) || dossier.getDelegateName().isEmpty()) {
-                throw new Exception("DelegateName is empty with dossierId: " + dossierId);
-            }
-
             Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
-            if(statusProfile.equals(0)) {
-                throw new Exception("Status profile 0 with dossierId: " + dossierId);
+            ProfileInModel profile = transformDossierToProfile(dossier, statusProfile);
+            if(Validator.isNull(profile)) {
+                throw new Exception("Profile after transform is null");
             }
-
-            ProfileInModel profile = new ProfileInModel();
-            ProfileOwner profileOwner = new ProfileOwner();
-            ProfileApplicant profileApplicant = new ProfileApplicant();
-            profileOwner.setName(dossier.getApplicantName());
-            profileOwner.setAddress(dossier.getAddress());
-            profileOwner.setTel(dossier.getContactTelNo());
-            profileApplicant.setName(dossier.getDelegateName());
-            profileApplicant.setAddress(dossier.getDelegateAddress());
-            profileApplicant.setEmail(dossier.getDelegateEmail());
-            profileApplicant.setTel(dossier.getDelegateTelNo());
-            profileApplicant.setIdentify(dossier.getDelegateIdNo());
-            List<ProfileAttachment> listProfileAttachments = this.getProfileAttachments(dossier);
-            List<ProfileDocFee> listProfileDocFees = this.getListProfileDocFee(dossier.getGroupId(), dossierId);
-
-            profile.setStatus(FrequencyOfficeConstants.STATUS_RECEIVE);
             profile.setProfiles_status(String.valueOf(statusProfile));
-            profile.setSource_id(dossier.getDossierNo());
-            profile.setRef_code(dossier.getReferenceUid());
-            profile.setProcedures_code(proceduresCode);
-            profile.setType("profile");
-            profile.setCreation_date(creationDate);
-            profile.setFrom_unit_code(this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
             profile.setTo_unit_code(new String[] {this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)});
-            profile.setProfileOwner(profileOwner);
-            profile.setProfileApplicant(profileApplicant);
-            profile.setAccept_date(acceptDate);
-            profile.setAppointment_date(appointmentDate);
-            if(Validator.isNotNull(listProfileAttachments) && listProfileAttachments.size() > 0) {
-                profile.setProfileAttachments(listProfileAttachments);
-            }
-
-            if(Validator.isNotNull(listProfileDocFees) && listProfileDocFees.size() > 0) {
-                profile.setProfileDocFees(listProfileDocFees);
-            }
 
             if(Validator.isNotNull(dossier.getReleaseDate())) {
                 _log.info("Is update");
@@ -891,7 +900,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     }
 
     @Override
-    public void sendStatusProfile(String token, long dossierId) throws Exception {
+    public void sendStatusProfile(String token, long dossierId, String isSendMultipleUnit) throws Exception {
 
         try {
             _log.info("Calling 3.11...");
@@ -945,19 +954,35 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{fromUnitCode});
             }
 
-            if (statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_RECEIVED)) {
-                if (!fromUnitCode.isEmpty() && !fromUnitCode.equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
-                    //Neu ho so ko nhan tu DVC Bo va ho so dang o trang thai new thi gui cho DVC Bo (Checklist 3, luong 1.7)
-                    this.syncDossierToDVCBoManual(token, dossierId);
+            if(dossier.getOriginality() == FrequencyOfficeConstants.HOSO_TRUC_TUYEN) {
+                if (statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_RECEIVED)) {
+                    if (!fromUnitCode.isEmpty()
+                            && !fromUnitCode.equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
+                        //Neu ho so ko nhan tu DVC Bo va ho so dang o trang thai new thi gui cho DVC Bo (Checklist 3, luong 1.7)
+                        this.syncDossierToDVCBoManual(token, dossierId);
+                    }
                 }
-            }
-            else if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_PROCESSING)) {
+                else if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_PROCESSING)) {
                     //Neu trang thai sang dang xu ly, thi gui cho ca hai
                     _log.info("Sending status to multiple unit");
                     body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{
                             this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
                             this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
                     });
+                }
+            } else if(dossier.getOriginality() == FrequencyOfficeConstants.HOSO_TRUC_TIEP) {
+                if(Validator.isNull(isSendMultipleUnit)
+                        || isSendMultipleUnit.isEmpty()
+                        || isSendMultipleUnit.equals("false")) {
+                    body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{
+                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)
+                    });
+                } else if (isSendMultipleUnit.equals("true")) {
+                    body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{
+                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
+                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
+                    });
+                }
             }
 
             JSONObject response = apiService.callApi(urlSyncDossier, headers, body);
@@ -985,8 +1010,6 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 throw new Exception("No ReferenceId found with id: " + dossierId);
             }
 
-//            Integer statusProfile = 2;
-            //toto undo this code
             Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
             if(statusProfile.equals(0)) {
                 throw new Exception("Status profile: 0");
