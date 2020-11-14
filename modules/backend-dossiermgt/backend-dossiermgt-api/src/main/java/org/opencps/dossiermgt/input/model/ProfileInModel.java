@@ -78,6 +78,36 @@ public class ProfileInModel {
 
     public String total_amount;
 
+    public String content_process;
+
+    public String department;
+
+    public String position;
+
+    public String getContent_process() {
+        return content_process;
+    }
+
+    public void setContent_process(String content_process) {
+        this.content_process = content_process;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
     public String getIs_update() {
         return is_update;
     }

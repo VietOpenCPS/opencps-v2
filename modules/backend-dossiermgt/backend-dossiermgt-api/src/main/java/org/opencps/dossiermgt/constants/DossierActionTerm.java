@@ -50,6 +50,8 @@ public class DossierActionTerm {
 	public static final String OUTSIDE_ACTION_ROLLBACK = "9000";
 	public static final String OUTSIDE_ACTION_PAYMENT = "8888";
 	public static final String OUTSIDE_ACTION_EDIT = "6969";
+	public static final String ACTION_SPECIAL_WAITING_PAYMENT = "8282";
+	public static final String ACTION_SPECIAL_CONFIRM_PAYMENT = "8283";
 	
 	public static final String publishImportDossier_fromStepCode = "300";
 	public static final String publishImportDossier_fromStepName = "Trả kết quả";

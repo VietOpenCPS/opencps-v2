@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.scheduler.*;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
@@ -47,10 +48,11 @@ import java.util.Map;
 @Component(immediate = true, service = PublishEventHSKMScheduler.class)
 public class PublishEventHSKMScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
-
+	private static final Boolean ENABLE_JOB = Validator.isNotNull(PropsUtil.get("org.opencps.synchskm.enable"))
+			? Boolean.valueOf(PropsUtil.get("org.opencps.synchskm.enable")) : false;
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		if (!isRunning) {
+		if (!isRunning && ENABLE_JOB) {
 			isRunning = true;
 		}
 		else {
@@ -146,7 +148,7 @@ public class PublishEventHSKMScheduler extends BaseMessageListener {
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 90, TimeUnit.SECOND);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 60, TimeUnit.SECOND);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);

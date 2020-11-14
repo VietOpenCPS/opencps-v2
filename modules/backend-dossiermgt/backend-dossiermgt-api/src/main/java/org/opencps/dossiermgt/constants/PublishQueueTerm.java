@@ -7,5 +7,5 @@ public class PublishQueueTerm {
 	public static final int STATE_RECEIVED_ACK = 3;
 	public static final int STATE_ACK_ERROR = 4;
 	
-	public static final int MAX_RETRY = 10;
+	public static final int MAX_RETRY = 2;
 }
