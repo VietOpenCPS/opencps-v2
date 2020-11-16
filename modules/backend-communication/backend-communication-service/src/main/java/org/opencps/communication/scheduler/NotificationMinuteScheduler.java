@@ -22,6 +22,7 @@ import org.opencps.communication.sms.utils.BCTSMSUtils;
 import org.opencps.communication.sms.utils.LGSPSMSUtils;
 import org.opencps.communication.sms.utils.ViettelSMSUtils;
 import org.opencps.communication.utils.LGSPSendMailUtils;
+import org.opencps.communication.utils.LoadConfigUtils;
 import org.opencps.communication.utils.NotificationQueueBusinessFactoryUtil;
 import org.opencps.communication.utils.NotificationUtil;
 import org.opencps.kernel.context.MBServiceContextFactoryUtil;
@@ -57,6 +58,9 @@ public class NotificationMinuteScheduler extends BaseMessageListener {
 
     @Override
     protected void doReceive(Message message) throws Exception {
+        if(!LoadConfigUtils.isEnableAllScheduler()) {
+            return;
+        }
         _log.info("=======START SEND NOTIFICATION: ====== : isRunning: "+ isRunning);
         if (!isRunning) {
             isRunning = true;

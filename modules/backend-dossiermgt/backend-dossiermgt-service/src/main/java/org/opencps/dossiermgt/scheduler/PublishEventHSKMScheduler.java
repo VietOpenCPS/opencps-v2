@@ -22,6 +22,7 @@ import org.opencps.dossiermgt.action.TTTTIntegrationAction;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.TTTTIntegrationImpl;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
@@ -52,6 +53,9 @@ public class PublishEventHSKMScheduler extends BaseMessageListener {
 			? Boolean.valueOf(PropsUtil.get("org.opencps.synchskm.enable")) : false;
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if(!OpenCPSConfigUtil.isEnableAllScheduler()) {
+			return;
+		}
 		if (!isRunning && ENABLE_JOB) {
 			isRunning = true;
 		}

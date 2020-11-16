@@ -173,13 +173,10 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		StringBuilder acknowlegement = new StringBuilder(); 
 		
 		String payload = dossierSync.getPayload();
-		System.out.println("dossier Inform: "+dossier.getOriginDossierNo());
-		System.out.println("payload Inform: "+payload);
 		try {
 			JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
 			if (Validator.isNotNull(dossier.getOriginDossierNo()) && dossier.getOriginDossierId() == 0) {
 				// Sync file HSLT
-				_log.info("payloadObj LT: " + payloadObj);
 				if (payloadObj.has(DossierSyncTerm.PAYLOAD_SYNC_FILES)) {
 					JSONArray fileArrs = payloadObj.getJSONArray(DossierSyncTerm.PAYLOAD_SYNC_FILES);
 					for (int i = 0; i < fileArrs.length(); i++) {

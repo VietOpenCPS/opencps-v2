@@ -41,6 +41,7 @@ import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.rest.util.LGSPRestClient;
 import org.opencps.statistic.rest.util.OpenCPSConverter;
+import org.opencps.statistic.rest.util.ServerConfigContants;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
@@ -54,6 +55,9 @@ public class StatisticsReportScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if(!ServerConfigContants.isEnableAllScheduler()) {
+			return;
+		}
 		if (!isRunning) {
 			isRunning = true;
 		}

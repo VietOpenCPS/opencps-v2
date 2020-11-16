@@ -80,6 +80,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.DossierStatisticUtils;
+import org.opencps.statistic.rest.util.ServerConfigContants;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 //import org.opencps.systemmgt.constants.SchedulerRecordTerm;
@@ -110,6 +111,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if(!ServerConfigContants.isEnableAllScheduler()) {
+			return;
+		}
 		_log.debug("START STATISTIC DOSSIER: " + isRunningDossier);
 		if (!isRunningDossier && CALCULATE_DOSSIER_STATISTIC_ENABLE) {
 			isRunningDossier = true;

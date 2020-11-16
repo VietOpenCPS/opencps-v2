@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.processor.IMessageProcessor;
@@ -43,6 +44,9 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 			: 45;
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if(!OpenCPSConfigUtil.isEnableAllScheduler()) {
+			return;
+		}
 		if (!isRunning) {
 			isRunning = true;
 		}
@@ -53,12 +57,12 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 			_log.info("OpenCPS SYNC DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 			
 			List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByStates(new int[] { DossierSyncTerm.STATE_WAITING_SYNC, DossierSyncTerm.STATE_ALREADY_SENT }, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-			
+			_log.info("Count dossier sync: " + lstSyncs.size());
 			for (DossierSync ds : lstSyncs) {
 				IMessageProcessor processor = MessageProcessor.getProcessor(ds);
 				if (processor != null) {
 	//				_log.info("Processing: " + ds);
-					processor.process();				
+					processor.process();
 				}
 				else {
 					_log.info("Do not config sync server");
@@ -68,7 +72,7 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 			_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));	
 		}
 		catch (Exception e) {
-			_log.debug(e);
+			_log.info(e.getMessage());
 		}
 		isRunning = false;
 	}

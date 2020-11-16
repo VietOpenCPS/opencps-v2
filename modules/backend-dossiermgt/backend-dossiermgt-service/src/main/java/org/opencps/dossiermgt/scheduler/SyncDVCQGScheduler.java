@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -33,6 +34,9 @@ public class SyncDVCQGScheduler extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) {
+		if(!OpenCPSConfigUtil.isEnableAllScheduler()) {
+			return;
+		}
 		if (!isRunning) {
 			isRunning = true;
 		}

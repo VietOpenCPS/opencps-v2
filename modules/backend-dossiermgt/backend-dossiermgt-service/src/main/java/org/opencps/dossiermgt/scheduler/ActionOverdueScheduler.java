@@ -55,6 +55,9 @@ public class ActionOverdueScheduler extends BaseMessageListener {
 	
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if(!OpenCPSConfigUtil.isEnableAllScheduler()) {
+			return;
+		}
 		if (!isRunning) {
 			isRunning = true;
 		}

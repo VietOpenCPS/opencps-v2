@@ -22,4 +22,5 @@ Export-Package: \
 	org.opencps.backend.dossiermgt.serviceapi,\
 	org.opencps.backend.dossiermgt.logistic,\
 	org.opencps.dossiermgt.rest.model,\
+    org.opencps.dossiermgt.rest.utils,\
 	org.apache.commons.text.*

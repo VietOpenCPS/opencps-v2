@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.service.AccessTokenLocalServiceUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.Activate;
@@ -33,6 +34,9 @@ public class AccesTokenGarbageScheduler extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) {
+		if(!OpenCPSConfigUtil.isEnableAllScheduler()) {
+			return;
+		}
 		if (!isRunning) {
 			isRunning = true;
 		} else {

@@ -35,6 +35,7 @@ import org.opencps.statistic.rest.dto.DossierStatisticKey;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.ServerConfigContants;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -54,6 +55,9 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if(!ServerConfigContants.isEnableAllScheduler()) {
+			return;
+		}
 		System.out.println("START STATISTIC DOSSIER STATISTIC: " + isRunningStatisticSync);
 		if (!isRunningStatisticSync) {
 			isRunningStatisticSync = true;

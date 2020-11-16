@@ -27,6 +27,7 @@ import org.opencps.dossiermgt.action.FrequencyIntegrationAction;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.FrequencyIntegrationActionImpl;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
@@ -51,8 +52,10 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
             ? Boolean.valueOf(PropsUtil.get("org.opencps.frequency.enable")) : false;
     @Override
     protected void doReceive(Message message) throws Exception {
+        if(!OpenCPSConfigUtil.isEnableAllScheduler()) {
+            return;
+        }
         _log.info("-----Start job crawl dossier frequency---");
-
         if (!isRunning && ENABLE_JOB) {
             isRunning = true;
         }

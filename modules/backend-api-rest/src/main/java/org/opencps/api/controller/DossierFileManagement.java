@@ -99,6 +99,23 @@ public interface DossierFileManagement {
 		@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart(value = "modifiedDate", required = false) @Nullable Long modifiedDate);
 
 	@POST
+	@Path("/{id}/repostDossierFile")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@ApiOperation(value = "repostDossierFile)", response = DossierFileModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the DossierFileModel was updated", response = DossierFileResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response repostDossierFile(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id);
+
+	@POST
 	@Path("/{id}/files/copyfile")
 	@Consumes({
 		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,

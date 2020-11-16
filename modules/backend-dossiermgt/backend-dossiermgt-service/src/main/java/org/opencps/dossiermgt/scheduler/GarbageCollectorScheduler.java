@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
@@ -37,6 +38,9 @@ public class GarbageCollectorScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	@Override
 	protected void doReceive(Message message) {
+		if(!OpenCPSConfigUtil.isEnableAllScheduler()) {
+			return;
+		}
 		if (!isRunning) {
 			isRunning = true;
 		}

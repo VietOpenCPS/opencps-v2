@@ -8900,7 +8900,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response getInterconnectionDossier(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id) {
+											  Locale locale, User user, ServiceContext serviceContext, String id) {
 
 		DossierResultsModel results = new DossierResultsModel();
 		List<Dossier> listDossier = new ArrayList<Dossier>();
@@ -8943,19 +8943,19 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
-	private void getConnectDossierFromInterDossier(Dossier dossier, List<Dossier> listDossier) {
-		// Ds ho so goc cua hslt
-		List<Dossier> aList = new ArrayList<Dossier>();
-		if (!StringUtils.isEmpty(dossier.getOriginDossierNo())) {
-		aList = DossierLocalServiceUtil.fetchByNEW_DO_NO(dossier.getOriginDossierNo());
-		}
-		Dossier newDossier = null;
-		if (aList.size() > 0) {
-			newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
-					.findAny().orElse(null);
-			listDossier.add(newDossier);
-			getConnectDossierFromInterDossier(newDossier, listDossier);
-		}
+  private void getConnectDossierFromInterDossier(Dossier dossier, List<Dossier> listDossier) {
+    // Ds ho so goc cua hslt
+    List<Dossier> aList = new ArrayList<Dossier>();
+    if (!StringUtils.isEmpty(dossier.getOriginDossierNo())) {
+    aList = DossierLocalServiceUtil.fetchByNEW_DO_NO(dossier.getOriginDossierNo());
+    }
+    Dossier newDossier = null;
+    if (aList.size() > 0) {
+      newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
+          .findAny().orElse(null);
+      listDossier.add(newDossier);
+      getConnectDossierFromInterDossier(newDossier, listDossier);
+    }
 
 	}*/
 
