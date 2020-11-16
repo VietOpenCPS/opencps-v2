@@ -214,4 +214,19 @@ public interface EFormManagement {
 	public Response getEFormDataByEFormNo(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("eFormNo") String eFormNo);
+	
+	@GET
+	@Path("/saveeforms/{serverNo}/{eformId}/{secret}")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,  MediaType.TEXT_PLAIN})
+	@ApiOperation(value = "Get a formdata of Plugin", response = DossierResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of Plugins have been filtered", response = DossierResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+
+	public Response saveEform(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("serverNo") String serverNo, @PathParam("eformId") long eformId, @PathParam("secret") String secret);
+
 }

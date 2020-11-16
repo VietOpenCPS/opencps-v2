@@ -42,11 +42,13 @@ public interface FrequencyOfficeManagement {
     @Produces(MediaType.APPLICATION_JSON)
     public Response synDossierFake(String profile);
 
+    //API a Duan call
     @GET
     @Path("/{dossierId}/sendStatusProfile")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response sendStatusProfile(@PathParam("dossierId") long dossierId);
+    public Response sendStatusProfile(@PathParam("dossierId") long dossierId,
+                                      @QueryParam("isSendMultipleUnit") String isSendMultipleUnit);
 
     @GET
     @Path("/{dossierId}/sendStatusProfileToDVCBo")
@@ -54,11 +56,13 @@ public interface FrequencyOfficeManagement {
     @Produces(MediaType.APPLICATION_JSON)
     public Response sendStatusProfileToDVCBo(@PathParam("dossierId") long dossierId);
 
+    //API a Duan call
     @GET
     @Path("/{dossierId}/syncDossierToLGSPManual")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response syncDossierToLGSPManual(@PathParam("dossierId") long dossierId);
+    public Response syncDossierToLGSPManual(@PathParam("dossierId") long dossierId,
+                                            @QueryParam("isSendMultipleUnit") String isSendMultipleUnit);
 
     @GET
     @Path("/{dossierId}/syncDossierToDVCBoManual")

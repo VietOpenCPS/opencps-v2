@@ -7872,14 +7872,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						JSONObject jsonFile = dossierFileArr.getJSONObject(j);
 
 						boolean eform = Boolean.valueOf(jsonFile.getString("eform"));
-
-						if (eform) {
+						long fileEntryId = 0;
+						if(jsonFile.has(ConstantUtils.FILE_ENTRY_ID)) {
+							fileEntryId = jsonFile.getLong(ConstantUtils.FILE_ENTRY_ID);
+						}
+						//DuanTV bo kt eform
+						//if (eform) {
 							//EFORM
 							_log.info("In dossier file create by eform");
 							try {
 								//								String referenceUidFile = UUID.randomUUID().toString();
 								String partNo = jsonFile.getString(DossierPartTerm.PART_NO);
 								String formData = jsonFile.getString(ConstantUtils.FORM_DATA);
+
 								DossierFile dossierFile = null;
 								//								DossierFileActions action = new DossierFileActionsImpl();
 								DossierPart dossierPart = dossierPartLocalService.fetchByTemplatePartNo(groupId,
@@ -7894,6 +7899,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 											referenceFileUid, templateNo, partNo, dossierPart.getFileTemplateNo(),
 											dossierPart.getPartName(), dossierPart.getPartName(), 0, null,
 											StringPool.BLANK, "true", serviceContext);
+
+									if(fileEntryId > 0) {
+										dossierFile.setFileEntryId(fileEntryId);
+										dossierFileLocalService.updateDossierFile(dossierFile);
+									}
 								}
 
 								if (Validator.isNotNull(formData)) {
@@ -7913,7 +7923,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							} catch (Exception e) {
 								_log.debug(e);
 							}
-						}
+						//}
 					}
 				}
 			}

@@ -64,6 +64,9 @@ public class FrequencyOfficeConstants {
     public static final Integer STATUS_LGSP_DONE = 9;
     public static final Integer STATUS_LGSP_RETURNED_RESULT = 10;
 
+    public static final Integer HOSO_TRUC_TUYEN = 2;
+    public static final Integer HOSO_TRUC_TIEP = 3;
+
 
     public static final String STATUS_SUCCESS = "done";
     public static final String STATUS_FAIL = "fail";

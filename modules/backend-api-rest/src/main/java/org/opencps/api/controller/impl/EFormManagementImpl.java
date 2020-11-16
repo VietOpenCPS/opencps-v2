@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.messaging.MessageBusException;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +48,10 @@ import org.opencps.api.eform.model.EFormSearchModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.EFormActions;
+import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.impl.EFormActionsImpl;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.EFormTerm;
@@ -613,6 +618,54 @@ public class EFormManagementImpl implements EFormManagement{
 
 		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).entity(MessageUtil.getMessage(ConstantUtils.EFORM_MESSAGE_NOEFORMEXISTS))
 				.build();
+	}
+
+	@Override
+	public Response saveEform(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, String serverNo, long eformId, String secret) {
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long fileEntryId = 0;
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			ProxyManagementImpl proxyManagementImpl = new ProxyManagementImpl();
+
+			ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
+
+			JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+
+			Response response = proxyManagementImpl.proxy(request, header, company, locale, user, serviceContext,
+					"/eforms/" + eformId + "/report/" + secret, "GET", StringPool.BLANK, serverNo, "binary");
+
+			System.out.println(configObj.getString("url") + "/eforms/" + eformId + "/report/" + secret);
+			byte[] bytes = (byte[]) response.getEntity();
+
+			if (bytes != null) {
+				System.out.println("bytes " + bytes.length);
+			}
+
+			InputStream inputStream = new ByteArrayInputStream(bytes);
+
+			if (inputStream != null) {
+				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(user.getUserId(), groupId, inputStream,
+						System.currentTimeMillis() + ".pdf", StringPool.BLANK, bytes.length, serviceContext);
+				if (fileEntry != null) {
+					fileEntryId = fileEntry.getFileEntryId();
+				}
+			}
+
+			_log.debug("=======>>>>>>>>>>>>>>>> fileEntryId " + fileEntryId);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(String.valueOf(fileEntryId)).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+
 	}
 
 }
