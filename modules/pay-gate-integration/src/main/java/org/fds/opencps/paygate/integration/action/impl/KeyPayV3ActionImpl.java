@@ -295,21 +295,24 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 				String check_sum = KeyPayV3Utils.genCallbackChecksumReceived(addition_fee, client_id, command, trans_amount, transactionId, version, hash_key_1);
 				_log.info("Checksum" + check_sum);
 				if (check_sum.equals(data.getString(KeyPayV3Term.CHECK_SUM))
-						&& KeyPayV3Term.STATUS_DONE.equals(data.getJSONObject("data").getString(KeyPayV3Term.STATUS))) {
-					boolean doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, data, serviceContext);
-
+						&& KeyPayV3Term.DA_THANH_TOAN.equals(data.getString(KeyPayV3Term.STATUS))) {
+					boolean doAction = doActionPP(user, dossier.getGroupId(), dossier, paymentFile, data, serviceContext);
 					if (doAction) {
 						result.put(KeyPayV3Term.RETURN_CODE, KeyPayV3Term.RETURN_CODE_SUCCESS);
+						result.put(KeyPayV3Term.RETURN_MSG, "Thành công");
 					} else {
 						result.put(KeyPayV3Term.RETURN_CODE, KeyPayV3Term.RETURN_CODE_ERROR);
+						result.put(KeyPayV3Term.RETURN_MSG, "Thất bại");
 					}
 				}
 			} else {
 				result.put(KeyPayV3Term.RETURN_CODE, KeyPayV3Term.RETURN_CODE_ERROR);
+				result.put(KeyPayV3Term.RETURN_MSG, "Thất bại");
 			}
 		} catch (Exception e) {
 			_log.error(e);
 			result.put(KeyPayV3Term.RETURN_CODE, KeyPayV3Term.RETURN_CODE_ERROR);
+			result.put(KeyPayV3Term.RETURN_MSG, "Thất bại");
 		}
 		return result;
 	}
@@ -406,11 +409,11 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 
 				HashMap<String, String> properties = new HashMap<String, String>();
 
-				properties.put(Field.GROUP_ID, action.getString(Field.GROUP_ID));
-
+				properties.put(Field.GROUP_ID, action.getString(Field.GROUP_ID)); //124302
+//				String endPoint = PayGateTerm.buildPathDoAction("http://192.168.68.78:8080",
+//						String.valueOf(dossier.getDossierId()));
 				String endPoint = PayGateTerm.buildPathDoAction(action.getString(PayGateTerm.URL),
-						dossier.getReferenceUid());
-
+						String.valueOf(dossier.getDossierId()));
 				Map<String, Object> params = new HashMap<String, Object>();
 
 				params.put(PayGateTerm.ACTION_CODE, action.get(PayGateTerm.ACTION_CODE));
@@ -430,8 +433,11 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 						properties, params, action.getString(PayGateTerm.USERNAME), action.getString(PayGateTerm.PWD));
 
 				_log.info("=====resPostDossier=========" + resPostDossier);
-
-				return true;
+				if(resPostDossier.length() >0){
+					return true;
+				}else{
+					return false;
+				}
 			}
 
 		} catch (Exception e) {

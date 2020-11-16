@@ -1214,6 +1214,21 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 //					}
 				}
 			}
+			//A Duẩn cấu hình action 8888
+			// Không có bước trước bước sau thì cập nhật PaymentFile
+			// <==> thì doAction bình thường chuyển bước về trả kết quả
+			// Nếu có cấu hình 8888 thì ưu tiên doAction chuyển bước trả về kết quả
+			if(actionCode.equals(DossierActionTerm.OUTSIDE_ACTION_PAYMENT)){
+				_log.info("actionCode " + actionCode);
+				dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+				if (paymentFile != null) {
+					paymentFile.setPaymentStatus(5);
+					paymentFile.setApproveDatetime(new Date());
+				}
+				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+				return dossierAction;
+			}
 
 			//Bước sau không có thì mặc định quay lại bước trước đó
 			if (Validator.isNull(proAction.getPreStepCode()) && Validator.isNull(postStepCode)) {
@@ -1355,7 +1370,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 
 			ProcessStep curStep = processStepLocalService.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
-
+			_log.info("ProcessStep:" + JSONFactoryUtil.looseSerialize(curStep));
 			//Kiểm tra cấu hình cần tạo hồ sơ liên thông
 			Dossier hsltDossier = createCrossDossier(groupId, proAction, curStep, previousAction, employee, dossier,
 					user, payloadObject, context);
