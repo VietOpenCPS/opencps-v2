@@ -163,6 +163,9 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.model.impl.DossierImpl;
+import org.opencps.dossiermgt.model.impl.DossierModelImpl;
+import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
@@ -829,7 +832,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							dossier.getServerNo(), state);
 				}
 			}
-		} else if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
+		} else if (actionConfig != null && (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT || actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT_FILE)
 				&& OpenCPSConfigUtil.isPublishEventEnable()) {
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
@@ -948,7 +951,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					jsonDataStatusText != null ? jsonDataStatusText.getString(curSubStatus) : StringPool.BLANK,
 					curStep.getLockState(), dossierNote, context);
 
-			//Cập nhật cờ đồng bộ ngày tháng sang các hệ thống khác
+			//Cáº­p nháº­t cá»� Ä‘á»“ng bá»™ ngÃ y thÃ¡ng sang cÃ¡c há»‡ thá»‘ng khÃ¡c
 			Map<String, Boolean> resultFlagChanged = updateProcessingDate(dossierAction, previousAction, curStep,
 					dossier, curStatus, curSubStatus, prevStatus,
 					dateOption != null ? dateOption : (actionConfig != null ? actionConfig.getDateOption() : 0), option,
@@ -4922,6 +4925,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private void publishEvent(Dossier dossier, ServiceContext context, long dossierActionId) {
+		_log.info("=======================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> getOriginDossierNo " + dossier.getOriginDossierId() + "|" + dossier.getOriginDossierNo());
 		if (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo())) {
 			return;
 		}
@@ -4944,14 +4948,52 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//Add publish queue
 		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(),
 				ServerConfigTerm.PUBLISH_PROTOCOL);
+
+		//add by TrungNT - 16/11/2020
+		ActionConfig actionConfig = null;
+		int eventType = 1;
+		DossierAction dossierAction = dossierActionLocalService.fetchDossierAction(dossierActionId);
+		if(dossierAction != null) {
+			actionConfig = ActionConfigLocalServiceUtil.getByCode(dossier.getGroupId(), dossierAction.getActionCode());
+			eventType = actionConfig.getEventType();
+		}
+
+		_log.info("=======================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> eventType " + eventType);
+
+		//--------------------------------
 		for (ServerConfig sc : lstScs) {
+
 			try {
 				List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(),
 						dossier.getDossierId(), sc.getServerNo(),
 						new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
 				if (lstQueues == null || lstQueues.isEmpty()) {
-					publishQueueLocalService.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(),
+
+					PublishQueue publishQueue = publishQueueLocalService.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(),
 							sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);
+
+					//add by TrungNT - 16/11/2020
+					if(eventType == 2) {
+						List<DossierFile> dossierFiles = dossierFileLocalService.findByDID_GROUP(dossier.getGroupId(), dossier.getDossierId());
+						if(dossierFiles != null) {
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							JSONArray dossierFileArrayObj = JSONFactoryUtil.createJSONArray();
+							for(DossierFile dossierFile : dossierFiles) {
+								if(dossierFile.getFileEntryId() > 0){
+									JSONObject object = JSONFactoryUtil.createJSONObject();
+									object.put("referenceUid", dossierFile.getReferenceUid());
+									dossierFileArrayObj.put(object);
+								}
+							}
+
+							dossierFileObj.put("dossierFiles", dossierFileArrayObj);
+
+							publishQueue.setPublishData(dossierFileObj.toJSONString());
+
+							publishQueueLocalService.updatePublishQueue(publishQueue);
+						}
+
+					}
 				}
 				//				PublishQueue pq = PublishQueueLocalServiceUtil.getByG_DID_SN(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo());
 				//				if (pq == null) {
@@ -7876,15 +7918,15 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						if(jsonFile.has(ConstantUtils.FILE_ENTRY_ID)) {
 							fileEntryId = jsonFile.getLong(ConstantUtils.FILE_ENTRY_ID);
 						}
-						//DuanTV bo kt eform
-						//if (eform) {
+						//DuanTV
+						if (eform) {
 							//EFORM
 							_log.info("In dossier file create by eform");
 							try {
 								//								String referenceUidFile = UUID.randomUUID().toString();
 								String partNo = jsonFile.getString(DossierPartTerm.PART_NO);
 								String formData = jsonFile.getString(ConstantUtils.FORM_DATA);
-
+								
 								DossierFile dossierFile = null;
 								//								DossierFileActions action = new DossierFileActionsImpl();
 								DossierPart dossierPart = dossierPartLocalService.fetchByTemplatePartNo(groupId,
@@ -7900,10 +7942,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 											dossierPart.getPartName(), dossierPart.getPartName(), 0, null,
 											StringPool.BLANK, "true", serviceContext);
 
-									if(fileEntryId > 0) {
-										dossierFile.setFileEntryId(fileEntryId);
-										dossierFileLocalService.updateDossierFile(dossierFile);
-									}
 								}
 
 								if (Validator.isNotNull(formData)) {
@@ -7923,7 +7961,24 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							} catch (Exception e) {
 								_log.debug(e);
 							}
-						//}
+						}else {
+							//Update by DuanTV
+							String partNo = jsonFile.getString(DossierPartTerm.PART_NO);
+							DossierPart dossierPart = dossierPartLocalService.fetchByTemplatePartNo(groupId,
+									templateNo, partNo);
+
+							DossierFile dossierFile = dossierFileLocalService.addDossierFileEForm(groupId, dossierId,
+									referenceFileUid, templateNo, partNo, dossierPart.getFileTemplateNo(),
+									dossierPart.getPartName(), dossierPart.getPartName(), 0, null,
+									StringPool.BLANK, "true", serviceContext);
+
+							if(fileEntryId > 0) {
+								dossierFile.setEForm(false);
+								dossierFile.setFileEntryId(fileEntryId);
+								dossierFileLocalService.updateDossierFile(dossierFile);
+							}
+
+						}
 					}
 				}
 			}
