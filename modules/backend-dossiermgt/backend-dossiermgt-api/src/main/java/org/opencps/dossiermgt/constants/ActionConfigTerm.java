@@ -23,6 +23,7 @@ public class ActionConfigTerm {
 	
 	public static final int EVENT_TYPE_NOT_SENT = 0;
 	public static final int EVENT_TYPE_SENT = 1;
+	public static final int EVENT_TYPE_SENT_FILE = 2;
 	
 	public static final int INFO_TYPE_SYSTEM = 0;
 	public static final int INFO_TYPE_NOTIFY = 1;

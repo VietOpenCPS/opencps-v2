@@ -778,7 +778,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
 							dossier.getServerNo(), state);
 				}
-				//Gá»­i thÃ´ng tin há»“ sÆ¡ Ä‘á»ƒ tra cá»©u
+				//Gửi thông tin hồ sơ để tra cứu
 				if (state == DossierSyncTerm.STATE_NOT_SYNC && actionConfig != null
 						&& actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
 						&& OpenCPSConfigUtil.isPublishEventEnable()) {
@@ -832,7 +832,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							dossier.getServerNo(), state);
 				}
 			}
-		} else if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
+		} else if (actionConfig != null && (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT || actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT_FILE)
 				&& OpenCPSConfigUtil.isPublishEventEnable()) {
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
@@ -962,7 +962,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		}
 
-		//Thiáº¿t láº­p quyá»�n thao tÃ¡c há»“ sÆ¡
+		//Thiết lập quyền thao tác hồ sơ
 
 		int allowAssignUser = proAction.getAllowAssignUser();
 		//_log.info("allowAssignUser: "+allowAssignUser);
@@ -1049,7 +1049,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			previousAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		}
 
-		//Cáº­p nháº­t thÃ´ng tin há»“ sÆ¡ dá»±a vÃ o payload truyá»�n vÃ o khi thá»±c hiá»‡n thao tÃ¡c
+		//Cập nhật thông tin hồ sơ dựa vào payload truyền vào khi thực hiện thao tác
 		if (Validator.isNotNull(payload)) {
 			JSONObject pl = payloadObject;
 			updateDossierPayload(dossier, pl);
@@ -1217,8 +1217,23 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 //					}
 				}
 			}
+			//A Duẩn cấu hình action 8888
+			// Không có bước trước bước sau thì cập nhật PaymentFile
+			// <==> thì doAction bình thường chuyển bước về trả kết quả
+			// Nếu có cấu hình 8888 thì ưu tiên doAction chuyển bước trả về kết quả
+			if(actionCode.equals(DossierActionTerm.OUTSIDE_ACTION_PAYMENT)){
+				_log.info("actionCode " + actionCode);
+				dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
+				if (paymentFile != null) {
+					paymentFile.setPaymentStatus(5);
+					paymentFile.setApproveDatetime(new Date());
+				}
+				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+				return dossierAction;
+			}
 
-			//BÆ°á»›c sau khÃ´ng cÃ³ thÃ¬ máº·c Ä‘á»‹nh quay láº¡i bÆ°á»›c trÆ°á»›c Ä‘Ã³
+			//Bước sau không có thì mặc định quay lại bước trước đó
 			if (Validator.isNull(proAction.getPreStepCode()) && Validator.isNull(postStepCode)) {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
 				if (paymentFile != null) {
@@ -1230,7 +1245,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				return dossierAction;
 			}
 			else if (Validator.isNull(postStepCode)) {
-				//Xá»­ lÃ½ phiáº¿u thanh toÃ¡n
+				//Xử lý phiếu thanh toán
 				processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
 
 				postStepCode = previousAction.getFromStepCode();
@@ -1303,7 +1318,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossierAction.setNextActionId(newAction.getDossierActionId());
 				dossierActionLocalService.updateDossierAction(dossierAction);
 
-				// chá»‰ cÃ¡n bá»™ thao tÃ¡c trÆ°á»›c Ä‘Ã³ cÃ³ moderator = 1
+				// chỉ cán bộ thao tác trước đó có moderator = 1
 				_log.info("previousAction.getStepCode(): "+previousAction.getStepCode());
 				_log.info("previousAction.getFromStepCode(): "+previousAction.getFromStepCode());
 				List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil
@@ -1345,7 +1360,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 //						allowAssignUser, newAction, userId, groupId, allowAssignUser);
 
 				if (syncType == 2) {
-					//Táº¡o thÃ´ng tin Ä‘á»“ng bá»™ há»“ sÆ¡
+					//Tạo thông tin đồng bộ hồ sơ
 					createDossierSync(groupId, userId, actionConfig, proAction, newAction, dossier, syncType, option,
 							payloadObject, flagChanged, actionCode, actionUser, actionNote, serviceProcess, context);
 				}
@@ -1358,8 +1373,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 
 			ProcessStep curStep = processStepLocalService.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
-
-			//Kiá»ƒm tra cáº¥u hÃ¬nh cáº§n táº¡o há»“ sÆ¡ liÃªn thÃ´ng
+			_log.info("ProcessStep:" + JSONFactoryUtil.looseSerialize(curStep));
+			//Kiểm tra cấu hình cần tạo hồ sơ liên thông
 			Dossier hsltDossier = createCrossDossier(groupId, proAction, curStep, previousAction, employee, dossier,
 					user, payloadObject, context);
 			if ((payloadObject != null && payloadObject.has("createDossiers")
@@ -1370,16 +1385,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 
-			//Cáº­p nháº­t hÃ nh Ä‘á»™ng vÃ  quyá»�n ngÆ°á»�i dÃ¹ng vá»›i há»“ sÆ¡
+			//Cập nhật hành động và quyền người dùng với hồ sơ
 			dossierAction = createActionAndAssignUser(groupId, userId, curStep, actionConfig, dossierAction,
 					previousAction, proAction, dossier, actionCode, actionUser, actionNote, payload, assignUsers,
 					paymentFee, serviceProcess, option, flagChanged, dateOption, context);
 
 			_log.info("dossier generate_DossierNo: "+JSONFactoryUtil.looseSerialize(dossier));
 
-			//Xá»­ lÃ½ phiáº¿u thanh toÃ¡n
+			//Xử lý phiếu thanh toán
 			processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
-			//Táº¡o vÄƒn báº£n Ä‘Ã­nh kÃ¨m
+			//Tạo văn bản đính kèm
 			if (OpenCPSConfigUtil.isDossierDocumentEnable()) {
 				if (!flagDocument) {
 					createDossierDocument(groupId, userId, actionConfig, dossier, dossierAction, payloadObject,
@@ -1390,7 +1405,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 
-			//Kiá»ƒm tra xem cÃ³ gá»­i dá»‹ch vá»¥ váº­n chuyá»ƒn hay khÃ´ng
+			//Kiểm tra xem có gửi dịch vụ vận chuyển hay không
 			if (proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_SEND_VIAPOSTAL)) {
 				boolean bdhnConnect = false;
 				String senderAddress = StringPool.BLANK;
@@ -1447,7 +1462,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//Create subcription
 		createSubcription(userId, groupId, dossier, actionConfig, dossierAction, context);
 
-		//Táº¡o thÃ´ng tin Ä‘á»“ng bá»™ há»“ sÆ¡
+		//Tạo thông tin đồng bộ hồ sơ
 		createDossierSync(groupId, userId, actionConfig, proAction, dossierAction, dossier, syncType, option,
 				payloadObject, flagChanged, actionCode, actionUser, actionNote, serviceProcess, context);
 
@@ -1476,7 +1491,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 //			_log.info("strPostAction: "+strPostAction);
 		}
 
-		//Thá»±c hiá»‡n thao tÃ¡c lÃªn há»“ sÆ¡ gá»‘c hoáº·c há»“ sÆ¡ liÃªn thÃ´ng trong trÆ°á»�ng há»£p cÃ³ cáº¥u hÃ¬nh mappingAction
+		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
 		if (Validator.isNotNull(actionConfig) && Validator.isNotNull(actionConfig.getMappingAction())) {
 			doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, newObj.toJSONString(),
 					assignUsers, payment, context);
@@ -1939,11 +1954,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				} else {
 					cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
 				}
-				//TÃ­nh publicationDate == now + 120 thá»�i gian cáº¥u hÃ¬nh (MINUTELY#120)
+				//Tính publicationDate == now + 120 thời gian cấu hình (MINUTELY#120)
 				if(notiTemplate.getInterval().contains(KeyPayTerm.MINUTELY_PATTERN)) {
 					String interVal = notiTemplate.getInterval();
 					String intervalSub = interVal.substring(interVal.indexOf('#') + 1);
-					_log.info("TÃ­nh thá»�i gian publicationDate " + intervalSub);
+					_log.info("Tính thời gian publicationDate " + intervalSub);
 					calendar.add(Calendar.MINUTE, Integer.valueOf(intervalSub));
 				}
 
@@ -1951,7 +1966,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				Date publicationDate = calendar.getTime();
 				Date expiredCal = new Date();
-				//TÃ­nh expiredDate == publiCationDate + 1h
+				//Tính expiredDate == publiCationDate + 1h
 				if(Validator.isNotNull(calendar.getTime())){
 					calendar.add(Calendar.HOUR, 1);
 					expiredCal = calendar.getTime();
@@ -2553,7 +2568,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		} catch (Exception e) {
 			_log.debug(e);
 		}
-		//YÃªu cáº§u ná»™p táº¡m á»©ng
+		//Yêu cầu nộp tạm ứng
 		if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
 				|| proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI
 				&& Validator.isNotNull(payment)) {
@@ -3949,7 +3964,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(getDueDateByPayload(payload))) {
 				dossier.setDueDate(getDueDateByPayload(payload));
 			}
-			// Cáº­p nháº­t ngÃ y tiáº¿p nháº­n cuá»‘i cÃ¹ng cho há»“ sÆ¡
+			// Cập nhật ngày tiếp nhận cuối cùng cho hồ sơ
 //			dossier.setLastSendDate(new Date());
 			dossier.setLastReceiveDate(new Date());
 			_log.debug("Log LastReiveDate " + new Date());
@@ -3979,7 +3994,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					bResult.put(DossierTerm.DUE_DATE, true);
 				}
 			}
-			// Cáº­p nháº­t ngÃ y tiáº¿p nháº­n cuá»‘i cÃ¹ng cho há»“ sÆ¡
+			// Cập nhật ngày tiếp nhận cuối cùng cho hồ sơ
 //			dossier.setLastSendDate(new Date());
 			dossier.setLastReceiveDate(new Date());
 			_log.debug("Log LastReiveDate " + new Date());
@@ -4198,7 +4213,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNull(dossier.getSubmitDate())) {
 				dossier.setSubmitDate(new Date());
 			}
-			// Cáº­p nháº­t ngÃ y gá»­i theo submitDate
+			// Cập nhật ngày gửi theo submitDate
 			if(Validator.isNotNull(dossier.getSubmitDate())){
 				dossier.setLastSendDate(dossier.getSubmitDate());
 			}else{
@@ -4910,6 +4925,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private void publishEvent(Dossier dossier, ServiceContext context, long dossierActionId) {
+		_log.info("=======================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> getOriginDossierNo " + dossier.getOriginDossierId() + "|" + dossier.getOriginDossierNo());
 		if (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo())) {
 			return;
 		}
@@ -4932,14 +4948,52 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//Add publish queue
 		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(),
 				ServerConfigTerm.PUBLISH_PROTOCOL);
+
+		//add by TrungNT - 16/11/2020
+		ActionConfig actionConfig = null;
+		int eventType = 1;
+		DossierAction dossierAction = dossierActionLocalService.fetchDossierAction(dossierActionId);
+		if(dossierAction != null) {
+			actionConfig = ActionConfigLocalServiceUtil.getByCode(dossier.getGroupId(), dossierAction.getActionCode());
+			eventType = actionConfig.getEventType();
+		}
+
+		_log.info("=======================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> eventType " + eventType);
+
+		//--------------------------------
 		for (ServerConfig sc : lstScs) {
+
 			try {
 				List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(),
 						dossier.getDossierId(), sc.getServerNo(),
 						new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
 				if (lstQueues == null || lstQueues.isEmpty()) {
-					publishQueueLocalService.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(),
+
+					PublishQueue publishQueue = publishQueueLocalService.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(),
 							sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);
+
+					//add by TrungNT - 16/11/2020
+					if(eventType == 2) {
+						List<DossierFile> dossierFiles = dossierFileLocalService.findByDID_GROUP(dossier.getGroupId(), dossier.getDossierId());
+						if(dossierFiles != null) {
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							JSONArray dossierFileArrayObj = JSONFactoryUtil.createJSONArray();
+							for(DossierFile dossierFile : dossierFiles) {
+								if(dossierFile.getFileEntryId() > 0){
+									JSONObject object = JSONFactoryUtil.createJSONObject();
+									object.put("referenceUid", dossierFile.getReferenceUid());
+									dossierFileArrayObj.put(object);
+								}
+							}
+
+							dossierFileObj.put("dossierFiles", dossierFileArrayObj);
+
+							publishQueue.setPublishData(dossierFileObj.toJSONString());
+
+							publishQueueLocalService.updatePublishQueue(publishQueue);
+						}
+
+					}
 				}
 				//				PublishQueue pq = PublishQueueLocalServiceUtil.getByG_DID_SN(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo());
 				//				if (pq == null) {
@@ -7864,8 +7918,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						if(jsonFile.has(ConstantUtils.FILE_ENTRY_ID)) {
 							fileEntryId = jsonFile.getLong(ConstantUtils.FILE_ENTRY_ID);
 						}
-						//DuanTV bo kt eform
-						//if (eform) {
+						//DuanTV
+						if (eform) {
 							//EFORM
 							_log.info("In dossier file create by eform");
 							try {
@@ -7887,11 +7941,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 											referenceFileUid, templateNo, partNo, dossierPart.getFileTemplateNo(),
 											dossierPart.getPartName(), dossierPart.getPartName(), 0, null,
 											StringPool.BLANK, "true", serviceContext);
-									
-									if(fileEntryId > 0) {
-										dossierFile.setFileEntryId(fileEntryId);
-										dossierFileLocalService.updateDossierFile(dossierFile);
-									}	
+
 								}
 
 								if (Validator.isNotNull(formData)) {
@@ -7911,7 +7961,24 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							} catch (Exception e) {
 								_log.debug(e);
 							}
-						//}
+						}else {
+							//Update by DuanTV
+							String partNo = jsonFile.getString(DossierPartTerm.PART_NO);
+							DossierPart dossierPart = dossierPartLocalService.fetchByTemplatePartNo(groupId,
+									templateNo, partNo);
+
+							DossierFile dossierFile = dossierFileLocalService.addDossierFileEForm(groupId, dossierId,
+									referenceFileUid, templateNo, partNo, dossierPart.getFileTemplateNo(),
+									dossierPart.getPartName(), dossierPart.getPartName(), 0, null,
+									StringPool.BLANK, "true", serviceContext);
+
+							if(fileEntryId > 0) {
+								dossierFile.setEForm(false);
+								dossierFile.setFileEntryId(fileEntryId);
+								dossierFileLocalService.updateDossierFile(dossierFile);
+							}
+
+						}
 					}
 				}
 			}
