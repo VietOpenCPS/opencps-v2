@@ -43,14 +43,18 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 			: 45;
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		if (!isRunning) {
-			isRunning = true;
-		}
-		else {
+		
+		_log.debug("====DossierSyncProcessingScheduler doReceive====");
+		_log.debug("====isRunning ===="+isRunning);
+		if (isRunning) {
+			
 			return;
 		}
+		else {
+			isRunning = true;
+		}
 		try {
-			_log.info("OpenCPS SYNC DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
+			_log.debug("OpenCPS SYNC DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 			
 			List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByStates(new int[] { DossierSyncTerm.STATE_WAITING_SYNC, DossierSyncTerm.STATE_ALREADY_SENT }, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 			
@@ -65,7 +69,7 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 				}
 			}
 			
-			_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));	
+			_log.debug("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));	
 		}
 		catch (Exception e) {
 			_log.debug(e);
@@ -76,6 +80,8 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 	  @Activate
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
+		  
+		  _log.debug("====DossierSyncProcessingScheduler activate====");
 		  String listenerClass = getClass().getName();
 		//Time engine dossier
 		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, timeSyncDossier, TimeUnit.SECOND);
@@ -95,6 +101,9 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 	  
 	@Deactivate
 	protected void deactivate() {
+		
+		_log.debug("====DossierSyncProcessingScheduler deactivate====");
+		
 		if (_initialized) {
 			try {
 				_schedulerEngineHelper.unschedule(_schedulerEntryImpl, getStorageType());

@@ -62,11 +62,18 @@ public class PublishEventScheduler extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		if (!isRunning) {
-			isRunning = true;
+		
+		_log.debug("====PublishEventScheduler doReceive====");
+		_log.debug("====isRunning ===="+isRunning);
+		
+		if (isRunning) {
+			
+			_log.debug("return");
+			return;
 		}
 		else {
-			return;
+			
+			isRunning = true;
 		}
 		try {
 
@@ -124,6 +131,10 @@ public class PublishEventScheduler extends BaseMessageListener {
 		_log.debug("pq: "+JSONFactoryUtil.looseSerialize(pq));
 		long groupId = pq.getGroupId();
 		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, pq.getServerNo());
+		
+		if(Validator.isNull(sc)) {
+			return false;
+		}
 		
 		if (ServerConfigTerm.PUBLISH_PROTOCOL.equals(sc.getProtocol())) {
 			try {
@@ -279,7 +290,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 			_log.debug("Integrating dossier to TTTT...");
 			try {
 				TTTTIntegrationAction integrationAction = new TTTTIntegrationImpl();
-				return integrationAction.syncDoActionDossier(dossier);
+				return integrationAction.syncDoActionDossierUsingHttpConnection(dossier);
 			} catch (Exception e) {
 				_log.error(e);
 				return false;
@@ -292,13 +303,15 @@ public class PublishEventScheduler extends BaseMessageListener {
 	  @Activate
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
+		  
+		  _log.info("====PublishEvent Scheduler Active====");
 		  String listenerClass = getClass().getName();
 		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 45, TimeUnit.SECOND);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
 		  
-//		  _schedulerEntryImpl.setTrigger(jobTrigger);
+		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
 		  if (_initialized) {
 			  deactivate();
