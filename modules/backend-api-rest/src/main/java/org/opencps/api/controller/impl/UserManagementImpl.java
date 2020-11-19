@@ -1111,4 +1111,23 @@ public class UserManagementImpl implements UserManagement {
 		}
 	}
 
+	@Override
+	public Response getLiveUser(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			
+			UserInterface actions = new UserActions();
+
+			JSONObject result = actions.getLiveUser(user.getUserId(), company.getCompanyId(), groupId, serviceContext);
+			
+			return Response.status(200).entity(result.toJSONString()).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
 }
