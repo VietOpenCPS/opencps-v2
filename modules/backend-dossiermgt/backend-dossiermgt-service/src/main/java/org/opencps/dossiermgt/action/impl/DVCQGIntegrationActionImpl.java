@@ -1198,7 +1198,10 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Charset", "utf-8");
-			conn.setRequestProperty("dstcode", dstcode);
+			
+			if(Validator.isNotNull(dstcode)) {
+				conn.setRequestProperty("dstcode", dstcode);
+			}
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);

@@ -46,11 +46,14 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -121,6 +124,7 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.util.LGSPRestfulUtils;
 import org.opencps.usermgt.service.util.SendMailLGSPUtils;
 import org.opencps.usermgt.service.util.ServiceProps;
+import org.osgi.service.component.annotations.Reference;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -280,6 +284,26 @@ public class RestfulController {
 
 		return dataUser.toJSONString();
 	}
+	
+	
+	@RequestMapping(value = "/is-enabled-sso-login", method = RequestMethod.GET, produces = "text/plain; charset=utf-8")
+	public String isEnabledSSOLogin(HttpServletRequest request, HttpServletResponse response) {
+		
+		String isEnabledOpenIdConnect = "/c/opencps/login/openidconnectrequest";
+		
+		long companyId = PortalUtil.getCompanyId(request);
+		
+		OpenIdConnectUtils openIdConnectUtils = new OpenIdConnectUtils();
+		
+		boolean isEnabled =  openIdConnectUtils.isEnabled(companyId);
+		
+		if(isEnabled) {
+			return isEnabledOpenIdConnect;
+		}
+		
+		return null;
+	}
+	
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
 	public String doLogin(HttpServletRequest request, HttpServletResponse response) {
@@ -293,7 +317,7 @@ public class RestfulController {
 				? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
 
 		try {
-
+			
 			String jCaptchaResponse = request.getParameter("j_captcha_response");
 			_log.info("jCaptchaResponse: "+jCaptchaResponse);
 			if (Validator.isNotNull(jCaptchaResponse)) {
@@ -1928,7 +1952,7 @@ public class RestfulController {
 			return null;
 		}
 		
-	}	
+	}
 
 	public static final Log _log = LogFactoryUtil.getLog(RestfulController.class);
 }
