@@ -1876,6 +1876,7 @@ public class DossierManagementImpl implements DossierManagement {
 			payload.put(DossierActionTerm.STEP_NAME, DossierActionTerm.STEP_NAME_UPDATE_DOSSIER);
 			if (Validator.isNotNull(dossierAction)) {
 				payload.put(DossierActionTerm.STEP_CODE, dossierAction.getStepCode());
+				payload.put(DossierActionTerm.STEP_NAME, DossierActionTerm.STEP_NAME_UPDATE_DOSSIER);
 			}
 			if (user.getUserId() > 0) {
 				Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
@@ -1888,8 +1889,8 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 			}
-			payload.put(DossierActionTerm.STEP_NAME, DossierActionTerm.STEP_NAME_UPDATE_DOSSIER);
-			payload.put(DossierActionTerm.STEP_CODE, dossierAction.getStepCode());
+			_log.info("userNameLog :" +userNameLog);
+			_log.info("DossierID "  + dossier.getDossierId());
 			 DossierLogLocalServiceUtil.addDossierLog(groupId, dossier.getDossierId(),
 					userNameLog, "", "PROCESS_TYPE", payload.toString(),
 					serviceContext);

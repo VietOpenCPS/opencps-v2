@@ -2,6 +2,9 @@
 package org.opencps.api.controller.impl;
 
 import java.net.HttpURLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -28,6 +31,7 @@ import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DeliverableLogActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
@@ -938,7 +942,8 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-	
+	private static String CHE_DO_MOT_LAN = "Một lần";
+	private static String CHE_DO = "chedo";
 	@Override
 	public Response importDeliverables3(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Attachment file, String deliverableTypeCode) {
@@ -970,10 +975,10 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			for (int i = 0; i < deliverables.length(); i++) {
 
 				JSONObject deliverable = deliverables.getJSONObject(i);
-				_log.info("Deliverable array " + JSONFactoryUtil.looseSerialize(deliverable));
+//				_log.info("Deliverable array " + JSONFactoryUtil.looseSerialize(deliverable));
 				if (Validator.isNotNull(deliverable)) {
 					JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
-					_log.info("FormData " + JSONFactoryUtil.looseSerialize(formData));
+//					_log.info("FormData " + JSONFactoryUtil.looseSerialize(formData));
 					if (Validator.isNotNull(formData.getString(DeliverableTerm.GIOI_TINH_TEXT))) {
 					String gioitinh = formData.getString(DeliverableTerm.GIOI_TINH_TEXT);
 						if (gioitinh.contains(DeliverableTerm.GIOI_TINH_NAM)) {
@@ -985,6 +990,15 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 						} else {
 							_log.info("KO ......");
 							formData.put(DeliverableTerm.GIOI_TINH, 2);
+						}
+						String chedo = formData.getString(DeliverableTerm.CHE_DO_TC);
+						_log.info("Che do :"  + chedo);
+						if(chedo.equals(CHE_DO_MOT_LAN)){
+							//Chế độ một lần
+							formData.put(CHE_DO, "0");
+						}else{
+							//Chế độ hàng tháng
+							formData.put(CHE_DO, "1");
 						}
 
 						DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableTypeCode);
@@ -1011,6 +1025,20 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 							deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
 							deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
 //					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+						}
+						String ngaysinh = formData.getString(DeliverableTerm.NGAY_SINH);
+						if(Validator.isNotNull(ngaysinh)){
+							Date ngaysinhParse = APIDateTimeUtils.convertStringToDate(ngaysinh,APIDateTimeUtils._NORMAL_DATE);
+							if(Validator.isNotNull(ngaysinhParse)) {
+								System.out.println("Ngay sinh : " + ngaysinhParse);
+
+								DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+								String strDate = dateFormat.format(ngaysinhParse);
+
+								System.out.println("Converted String: " + strDate);
+//								formData.remove(DeliverableTerm.NGAY_SINH);
+								formData.put(DeliverableTerm.NGAY_SINH, strDate);
+							}
 						}
 
 						deliverable.put(Field.GROUP_ID, groupId);
