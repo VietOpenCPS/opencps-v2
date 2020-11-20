@@ -7787,10 +7787,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 	
 	public List<Dossier> fetchByORIGIN_NO(String originDossierNo) {
-		return dossierPersistence.findByORIGIN_NO(originDossierNo);
+		return dossierPersistence.findByORIGIN_NO(originDossierNo, 0, 10);
 	}
 	
 	public List<Dossier> fetchByNEW_DO_NO(String dossierNo) {
-		return dossierPersistence.findByNEW_DO_NO(dossierNo);
+		return dossierPersistence.findByNEW_DO_NO(dossierNo, 0, 10);
 	}
 }
