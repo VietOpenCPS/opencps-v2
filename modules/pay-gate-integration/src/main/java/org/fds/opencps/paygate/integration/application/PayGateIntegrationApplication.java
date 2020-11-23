@@ -439,12 +439,12 @@ public class PayGateIntegrationApplication extends Application {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response paylaterCallback(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, String body) throws PortalException {
+			@Context ServiceContext serviceContext, @FormParam("body") String body) throws PortalException {
 
 		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
-		String result = keypayAction.paylaterCallback(user, serviceContext, body);
+		JSONObject result = keypayAction.paylaterCallback(user, serviceContext, body);
 
-		return Response.status(200).entity(result).build();
+		return Response.status(200).entity(result.toString()).build();
 	}
 
 }
