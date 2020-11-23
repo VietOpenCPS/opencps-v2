@@ -85,6 +85,11 @@ public class VotingLocalServiceUtil {
 		return getService().countVotingByClass_Name_PK(className, classPK);
 	}
 
+	public static long countVotingByClass_Name_VC(String className,
+		String votingCode) {
+		return getService().countVotingByClass_Name_VC(className, votingCode);
+	}
+
 	public static long countVotingByG_Class_Name_PK(long groupId,
 		String className, String classPK) {
 		return getService()
@@ -122,6 +127,12 @@ public class VotingLocalServiceUtil {
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws backend.feedback.exception.NoSuchVotingException {
 		return getService().deleteVote(votingId, serviceContext);
+	}
+
+	public static void deleteVoteConfig(long votingId,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws backend.feedback.exception.NoSuchVotingException {
+		getService().deleteVoteConfig(votingId, serviceContext);
 	}
 
 	/**
@@ -284,6 +295,11 @@ public class VotingLocalServiceUtil {
 	public static java.util.List<backend.feedback.model.Voting> getVotingByClass_Name_PK(
 		String className, String classPK) {
 		return getService().getVotingByClass_Name_PK(className, classPK);
+	}
+
+	public static java.util.List<backend.feedback.model.Voting> getVotingByClass_Name_VC(
+		String className, String votingCode) {
+		return getService().getVotingByClass_Name_VC(className, votingCode);
 	}
 
 	public static java.util.List<backend.feedback.model.Voting> getVotingByG_Class_Name_PK(
