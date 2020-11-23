@@ -14,8 +14,11 @@ import org.opencps.dossiermgt.input.model.ResponseListDossier;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -45,6 +48,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
 
     public ApiThirdPartyServiceImpl(){
         this.restTemplate = new RestTemplate(setConfigRestTemplate(timeout));
+        this.restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
     }
 
     private ClientHttpRequestFactory setConfigRestTemplate(Integer timeout) {
@@ -174,6 +178,19 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
         } catch (Exception e) {
             _log.error(e.getMessage());
             return null;
+        }
+    }
+
+    @Override
+    public JSONObject callApiEncode(String url, HttpHeaders headers, MultiValueMap<String, String> body) throws Exception{
+        try {
+            _log.info("Calling api: " + url);
+            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(url, entity , String.class);
+            _log.info("Response: " + response.getBody());
+            return JSONFactoryUtil.createJSONObject(response.getBody());
+        }catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
 
