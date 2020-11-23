@@ -49,24 +49,32 @@ import java.util.Map;
 public class PublishEventHSKMScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	private static final Boolean ENABLE_JOB = Validator.isNotNull(PropsUtil.get("org.opencps.synchskm.enable"))
-			? Boolean.valueOf(PropsUtil.get("org.opencps.synchskm.enable")) : false;
+			? Boolean.valueOf(PropsUtil.get("org.opencps.synchskm.enable")) : true;
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		if (!isRunning && ENABLE_JOB) {
-			isRunning = true;
-		}
-		else {
+		
+		_log.debug("===PublishEventHSKMScheduler doReceive===");
+		
+		_log.debug("=== isRunning==="+isRunning);
+
+		if (isRunning) {
+			
+			_log.debug("===Return===");
 			return;
 		}
+		else {
+			
+			isRunning = true;
+		}
 		try {
-			_log.info("TASK SEND HSKM to DVCQG: " + APIDateTimeUtils.convertDateToString(new Date()));
+			_log.debug("TASK SEND HSKM to DVCQG: " + APIDateTimeUtils.convertDateToString(new Date()));
 			
 			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatusesAndServerNo(new int[] {
 					PublishQueueTerm.STATE_WAITING_SYNC,
 					PublishQueueTerm.STATE_ALREADY_SENT},
 					ServerConfigTerm.DVCQG_INTEGRATION, 0, 10);
 
-			_log.info("lstPqs  : " + lstPqs.size());
+			_log.debug("lstPqs  : " + lstPqs.size());
 
 			for (PublishQueue pq : lstPqs) {
 				try {
@@ -93,13 +101,13 @@ public class PublishEventHSKMScheduler extends BaseMessageListener {
 					}
 				}
 				catch (Exception e) {
-					_log.debug(e);
+					_log.error(e);
 				}
 			}
-			_log.info("TASK SEND HSKM to DVCQG HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
+			_log.debug("TASK SEND HSKM to DVCQG HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 		catch (Exception e) {
-			_log.debug(e);
+			_log.error(e);
 		}
 		isRunning = false;
 	}
@@ -126,7 +134,7 @@ public class PublishEventHSKMScheduler extends BaseMessageListener {
 					return false;
 				}
 
-				_log.info("result DVCQG: "+result);
+				_log.debug("result DVCQG: "+result);
 				if(result.has("error_code") && "0".equals(result.getString("error_code"))) {
 					PublishQueueLocalServiceUtil.updatePublishQueue(
 							sc.getGroupId(), pq.getPublishQueueId(), 2, dossier.getDossierId(), 

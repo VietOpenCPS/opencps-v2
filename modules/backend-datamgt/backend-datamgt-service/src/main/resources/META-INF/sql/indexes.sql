@@ -1,10 +1,5 @@
 create index IX_9F60A0BE on m_fileattach (groupId, className[$COLUMN_LENGTH:500$], classPK[$COLUMN_LENGTH:255$], docFileId);
 
-create index IX_A4AAE818 on opencps_comment (groupId, className[$COLUMN_LENGTH:75$], classPK[$COLUMN_LENGTH:75$]);
-create index IX_19A6AF20 on opencps_comment (groupId, userId, className[$COLUMN_LENGTH:75$], classPK[$COLUMN_LENGTH:75$], opinion);
-create index IX_354CE276 on opencps_comment (uuid_[$COLUMN_LENGTH:75$], companyId);
-create unique index IX_2E778E78 on opencps_comment (uuid_[$COLUMN_LENGTH:75$], groupId);
-
 create index IX_BD0BDD4F on opencps_dictItemmapping (groupId, collectionId);
 create index IX_23C02E63 on opencps_dictItemmapping (groupId, itemCode[$COLUMN_LENGTH:255$], collectionId);
 create index IX_A1CE1162 on opencps_dictItemmapping (groupId, itemCodeDVCQG[$COLUMN_LENGTH:255$], collectionId);
@@ -42,12 +37,6 @@ create index IX_A0188CE7 on opencps_holiday (groupId, holidayDate);
 create index IX_BCB67973 on opencps_holiday (groupId, holidayType);
 create index IX_FFAC65EF on opencps_holiday (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_93A39C31 on opencps_holiday (uuid_[$COLUMN_LENGTH:75$], groupId);
-
-create index IX_C9800AE4 on opencps_voting (uuid_[$COLUMN_LENGTH:75$], companyId);
-create unique index IX_D095FA66 on opencps_voting (uuid_[$COLUMN_LENGTH:75$], groupId);
-
-create index IX_E8A97B01 on opencps_votingresult (uuid_[$COLUMN_LENGTH:75$], companyId);
-create unique index IX_B0A6CDC3 on opencps_votingresult (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_7002EEE9 on opencps_workTime (groupId, day);
 create index IX_570304FB on opencps_workTime (uuid_[$COLUMN_LENGTH:75$], companyId);

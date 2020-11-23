@@ -204,6 +204,10 @@ public interface ServerConfigLocalService extends BaseLocalService,
 		String protocol);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ServerConfig getByServerNoAndProtocol(long groupId,
+		String govAgencyCode, String serverNo, String protocol);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ServerConfig> getGroupId(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

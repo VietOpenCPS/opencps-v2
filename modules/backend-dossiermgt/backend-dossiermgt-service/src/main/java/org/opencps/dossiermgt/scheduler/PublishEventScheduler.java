@@ -76,23 +76,30 @@ public class PublishEventScheduler extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		if (!isRunning) {
-			isRunning = true;
-		} else {
+		
+		_log.debug("====PublishEventScheduler doReceive====");
+		_log.debug("====isRunning ===="+isRunning);
+		
+		if (isRunning) {
+			
+			_log.debug("return");
 			return;
 		}
+		else {
+			
+			isRunning = true;
+		}
 		try {
-			_log.info("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 
-			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatusesAndNotServerNo(
-					new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT },
+			_log.debug("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
+
+			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatusesAndNotServerNo(new int[] {
+							PublishQueueTerm.STATE_WAITING_SYNC,
+							PublishQueueTerm.STATE_ALREADY_SENT},
 					ServerConfigTerm.DVCQG_INTEGRATION, 0, 10);
 
-//			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatuses(new int[] {
-//					PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT
-//			}, 0, 10);
+			_log.debug("lstPqs  : " + lstPqs.size());
 
-			_log.info("lstPqs  : " + lstPqs.size());
 			for (PublishQueue pq : lstPqs) {
 				try {
 					pq.setStatus(PublishQueueTerm.STATE_ALREADY_SENT);
@@ -118,8 +125,9 @@ public class PublishEventScheduler extends BaseMessageListener {
 					_log.debug(e);
 				}
 			}
-			_log.info("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
-		} catch (Exception e) {
+			_log.debug("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
+		}
+		catch (Exception e) {
 			_log.debug(e);
 		}
 		isRunning = false;
@@ -132,10 +140,14 @@ public class PublishEventScheduler extends BaseMessageListener {
 				&& (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo()))) {
 			return true;
 		}
-		_log.info("pq: " + JSONFactoryUtil.looseSerialize(pq));
+		_log.debug("pq: "+JSONFactoryUtil.looseSerialize(pq));
 		long groupId = pq.getGroupId();
 		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, pq.getServerNo());
-
+		
+		if(Validator.isNull(sc)) {
+			return false;
+		}
+		
 		if (ServerConfigTerm.PUBLISH_PROTOCOL.equals(sc.getProtocol())) {
 			try {
 				if (dossier != null && dossier.getOriginality() > 0) {
@@ -174,9 +186,8 @@ public class PublishEventScheduler extends BaseMessageListener {
 						pfiModel.setAdvanceAmount(paymentFile.getAdvanceAmount());
 						pfiModel.setServiceAmount(paymentFile.getServiceAmount());
 						pfiModel.setShipAmount(paymentFile.getShipAmount());
-
-						// _log.info("SONDT PAYMENT PFIMODEL SYNC INFORM ======================== " +
-						// JSONFactoryUtil.looseSerialize(pfiModel));
+						
+						//_log.debug("SONDT PAYMENT PFIMODEL SYNC INFORM ======================== " + JSONFactoryUtil.looseSerialize(pfiModel));
 						client.postPaymentFiles(pfiModel.getReferenceUid(), pfiModel);
 					}
 
@@ -345,23 +356,25 @@ public class PublishEventScheduler extends BaseMessageListener {
 					return false;
 				}
 
-				_log.info("result DVCQG: " + result);
-				if (result.has("error_code") && "0".equals(result.getString("error_code"))) {
-					PublishQueueLocalServiceUtil.updatePublishQueue(sc.getGroupId(), pq.getPublishQueueId(), 2,
-							dossier.getDossierId(), sc.getServerNo(), StringPool.BLANK,
-							PublishQueueTerm.STATE_RECEIVED_ACK, 0, String.valueOf(dossier.getDossierNo()),
-							result.toJSONString(), new ServiceContext());
+				_log.debug("result DVCQG: "+result);
+				if(result.has("error_code") && "0".equals(result.getString("error_code"))) {
+					PublishQueueLocalServiceUtil.updatePublishQueue(
+							sc.getGroupId(), pq.getPublishQueueId(), 2, dossier.getDossierId(), 
+							sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
+							String.valueOf(dossier.getDossierNo()), result.toJSONString(),
+							new ServiceContext());	
 					return true;
 				}
 			} catch (Exception e) {
 				_log.error(e);
 			}
 			return false;
-		} else if (ServerConfigTerm.TTTT_INTEGRATION.equals(sc.getProtocol())) {
-			_log.info("Integrating dossier to TTTT...");
+		}
+		else if (ServerConfigTerm.TTTT_INTEGRATION.equals(sc.getProtocol())) {
+			_log.debug("Integrating dossier to TTTT...");
 			try {
 				TTTTIntegrationAction integrationAction = new TTTTIntegrationImpl();
-				return integrationAction.syncDoActionDossier(dossier);
+				return integrationAction.syncDoActionDossierUsingHttpConnection(dossier);
 			} catch (Exception e) {
 				_log.error(e);
 				return false;
@@ -370,18 +383,19 @@ public class PublishEventScheduler extends BaseMessageListener {
 
 		return true;
 	}
+	
+	  @Activate
+	  @Modified
+	  protected void activate(Map<String,Object> properties) throws SchedulerException {
+		  
+		  _log.info("====PublishEvent Scheduler Active====");
+		  String listenerClass = getClass().getName();
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 45, TimeUnit.SECOND);
 
-	@Activate
-	@Modified
-	protected void activate(Map<String, Object> properties) throws SchedulerException {
-		String listenerClass = getClass().getName();
-		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 45,
-				TimeUnit.SECOND);
-
-		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
-
-//		  _schedulerEntryImpl.setTrigger(jobTrigger);
+		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
+		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
+		  
+		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
 		if (_initialized) {
 			deactivate();
