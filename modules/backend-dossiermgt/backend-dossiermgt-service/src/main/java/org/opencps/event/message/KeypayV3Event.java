@@ -54,9 +54,9 @@ public class KeypayV3Event implements MessageListener {
 
 			params.put(DossierTerm.DOSSIER_ID, dossierId);
 //			_log.info("DossierId " + dossierId + " GroupId " + groupId);
-			Thread.sleep(5000);
+			Thread.sleep(2000);
 			Dossier dossier3 = DossierLocalServiceUtil.fetchDossier(dossierId);
-//			_log.info(" Log Dossier " + JSONFactoryUtil.looseSerialize(dossier3));
+			_log.info(" Log Dossier " + JSONFactoryUtil.looseSerialize(dossier3));
 			JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON, baseUrl,
 					"o/pgi/keypayv3/create", "", "", properties, params, context);
 			_log.info("baseUrl: " + baseUrl + "o/pgi/keypayv3/create");

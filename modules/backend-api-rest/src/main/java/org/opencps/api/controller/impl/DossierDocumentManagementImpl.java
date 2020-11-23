@@ -170,9 +170,11 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
 						responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 								attachmentFilename);
-						if(ConstantUtils.WORD.equals(reportType)){
-							responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_MSWORD);
-						}else {
+						if(Validator.isNotNull(reportType)){
+							if(ConstantUtils.WORD.equals(reportType)){
+								responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_MSWORD);
+							}
+						}else{
 							responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
 						}
 						Date dateEnd1 = new Date();
