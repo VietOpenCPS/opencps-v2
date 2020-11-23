@@ -25,8 +25,8 @@ import java.net.URL;
 import java.util.Base64;
 
 public class POSVCBUtils {
-    public static String saleRequestDataPOSVCB( Long groupId, String serverCode, String refId, String serialNumber,
-                                     String terminalId, String amount, String currencyCode, String staffId,
+    public static String saleRequestDataPOSVCB( Long groupId, String serverCode, String refId,
+                                     String terminalId, long amount, String currencyCode, String staffId,
                                      String addPrint, String addData, String orderId) {
 
 
@@ -38,9 +38,11 @@ public class POSVCBUtils {
             _log.debug("SERVER PROXY: " + sc.getConfigs());
             if (sc != null) {
                 String serverUrl = StringPool.BLANK;
+                String serialNumber = StringPool.BLANK;
 
                 JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
                 serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+                serialNumber = configObj.getString(SyncServerTerm.SERVER_URL);
                 URL urlSale = new URL(serverUrl);
 
                 JSONObject jsonBody = JSONFactoryUtil.createJSONObject();

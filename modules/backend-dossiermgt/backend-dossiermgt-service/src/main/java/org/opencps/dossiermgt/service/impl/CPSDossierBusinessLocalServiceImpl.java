@@ -112,21 +112,7 @@ import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
-import org.opencps.dossiermgt.action.util.AccentUtils;
-import org.opencps.dossiermgt.action.util.AutoFillFormData;
-import org.opencps.dossiermgt.action.util.ConfigCounterNumberGenerator;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
-import org.opencps.dossiermgt.action.util.DossierActionUtils;
-import org.opencps.dossiermgt.action.util.DossierMgtUtils;
-import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
-import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
-import org.opencps.dossiermgt.action.util.KeyPay;
-import org.opencps.dossiermgt.action.util.NotificationUtil;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
-import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
-import org.opencps.dossiermgt.action.util.VNPostCLSUtils;
+import org.opencps.dossiermgt.action.util.*;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
@@ -5429,14 +5415,27 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		if(DossierActionTerm.ACTION_SPECIAL_WAITING_PAYMENT.equals(actionCode)){
+			// Gửi giao dịch thanh toán lên máy POS
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
+			_log.info(" --- Call API Sale RequestData POSVCB --- ");
+			String result = POSVCBUtils.saleRequestDataPOSVCB(groupId, SyncServerTerm.POS_VCB,"","",
+					paymentFile.getPaymentAmount(),SyncServerTerm.CURRENCY_CODE,"",paymentFile.getPaymentNote(),
+					dossier.getDossierCounter(), dossier.getDossierNo());
 			if (paymentFile != null) {
 				paymentFile.setPaymentStatus(3);
 				paymentFile.setApproveDatetime(new Date());
 			}
 			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+			_log.info(" --- Result VCB ---  : "  + result);
 		}
 		if(DossierActionTerm.ACTION_SPECIAL_CONFIRM_PAYMENT.equals(actionCode)){
+			// Cán bộ xác nhận thanh toán cập nhật lại trạng thái
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
+			if (paymentFile != null) {
+				paymentFile.setPaymentStatus(5);
+				paymentFile.setApproveDatetime(new Date());
+			}
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 //			POSVCBUtils.saleRequestDataPOSVCB();
 		}
 

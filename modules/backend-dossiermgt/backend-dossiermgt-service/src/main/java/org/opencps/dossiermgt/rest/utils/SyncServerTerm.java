@@ -22,4 +22,6 @@ public class SyncServerTerm {
 	public static final String ADD_PRINT_SETTLEMENT = "None";
 	public static final String THIRD_PARTY_KEY = "4SSDDQS30TVGGBCYXXZ5YHDF";
 	public static final String THIRD_PARTY_ID = "73371689";
+	public static final String POS_VCB = "post_vcb";
+	public static final String CURRENCY_CODE = "704";
 }
