@@ -256,6 +256,9 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             ServerConfig serverConfig = listConfig.get(0);
             FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
             String token = integrationAction.getToken();
+            if(Validator.isNull(isSendMultipleUnit)) {
+                isSendMultipleUnit = "false";
+            }
             integrationAction.sendStatusProfile(token, dossierId, isSendMultipleUnit);
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
@@ -290,6 +293,10 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             ServerConfig serverConfig = listConfig.get(0);
             FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
             String token = integrationAction.getToken();
+
+            if(Validator.isNull(isSendMultipleUnit)) {
+                isSendMultipleUnit = "false";
+            }
 
             integrationAction.syncDossierAndStatusToLGSPManual(token, dossierId, isSendMultipleUnit);
 

@@ -7384,7 +7384,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Integer counter = 0;
 			Date appIdDate = null;
 			String metaData = StringPool.BLANK;
-			boolean online = false;
+			boolean online = true;
 			Integer originality = DossierTerm.ORIGINALITY_LIENTHONG;
 
 			dossier = dossierLocalService.initMultipleDossier(groupId, 0l, referenceUid, counter,
