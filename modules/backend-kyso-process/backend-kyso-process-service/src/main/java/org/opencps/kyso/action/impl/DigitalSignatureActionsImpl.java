@@ -15,10 +15,12 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.viettel.signature.plugin.SignPdfFile;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
@@ -30,9 +32,12 @@ import org.opencps.kyso.utils.CertUtil;
 import org.opencps.kyso.utils.ExtractTextLocations;
 import org.opencps.kyso.utils.ImageUtil;
 import org.opencps.kyso.utils.KysoTerm;
+import org.opencps.kyso.utils.ViettelCaUtil;
+import org.opencps.kyso.utils.X509ExtensionUtil;
 
 import backend.kyso.process.service.util.ConfigProps;
 import vgca.svrsigner.ServerSigner;
+
 
 public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 
@@ -118,7 +123,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 //				_log.info("realPath_Dongdau: "+realPath);
 //			}
 			//==
-			String fullPath = StringPool.BLANK;
+			String fullPath = StringPool.BLANK; 
 
 			try {
 //				float offsetX = 1;
@@ -353,6 +358,76 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 			_log.info("Cannot sign the file: " + fileName);
 		}
 		
+		return jsonFeed;
+	}
+
+	@Override
+	public JSONObject hashFile(long fileEntryId, long groupId, String certChainBase64) {
+		
+		String fieldName = StringPool.BLANK;
+		String tempFile = StringPool.BLANK;
+		JSONObject jsonFeed = JSONFactoryUtil.createJSONObject();
+		JSONArray hashComputers = JSONFactoryUtil.getJSONFactory().createJSONArray();
+		JSONArray signFieldNames = JSONFactoryUtil.getJSONFactory().createJSONArray();
+		JSONArray fileNames = JSONFactoryUtil.getJSONFactory().createJSONArray();
+		JSONArray messages = JSONFactoryUtil.getJSONFactory().createJSONArray();
+		JSONArray fullPathOfSignedFiles = JSONFactoryUtil.getJSONFactory().createJSONArray();
+		
+		String realPath = PropsUtil.get(ConfigProps.CER_HOME)+StringPool.SLASH;
+		_log.info("realPath_Kyso: "+realPath);
+		String fullPath = StringPool.BLANK;
+
+		try {
+			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
+			
+			File fileTemp = FileUtil.createTempFile(dlFileEntry.getContentStream());
+			_log.info("fileTemp URL: "+fileTemp.getAbsolutePath());
+			
+			File file = new File(realPath + dlFileEntry.getFileName());
+			
+			FileUtil.move(fileTemp, file);
+			
+			fullPath = file.getAbsolutePath();
+			_log.info("fullPath: "+fullPath);
+			
+			String folderRootCA = realPath + "RootCA";
+	        X509Certificate[] certChain = X509ExtensionUtil.getCertChainOfCert(certChainBase64, folderRootCA);
+	        String fontPath = realPath + "font/times.ttf";
+	        SignPdfFile signPdfFile = new SignPdfFile();
+	        String base64 = ViettelCaUtil.getHashTypeRectangleText(signPdfFile, fullPath, certChain, fontPath);
+	        
+	        fieldName = signPdfFile.getFieldName();
+			tempFile = signPdfFile.getTmpFile();
+			hashComputers.put(base64);
+			signFieldNames.put(fieldName);
+			fileNames.put(dlFileEntry.getFileName());
+			messages.put("success");
+			fullPathOfSignedFiles.put(tempFile);
+			
+			_log.info("hashComputers: "+hashComputers);
+			_log.info("signFieldNames: "+signFieldNames);
+			_log.info("fullPathOfSignedFiles: "+fullPathOfSignedFiles);
+			_log.info("fileNames: "+fileNames);
+			_log.info("messages: "+messages);			
+			_log.info("===KY XONG YCGIAMDIDNH===: "+ tempFile);
+	        
+		} catch (Exception e) {
+			hashComputers.put(StringPool.BLANK);
+			signFieldNames.put(StringPool.BLANK);
+			fileNames.put(StringPool.BLANK);
+			fullPathOfSignedFiles.put(StringPool.BLANK);
+			messages.put(e.getClass().getName());
+			_log.error(e);
+		}
+		
+		jsonFeed.put(HASH_COMPUTERS, hashComputers);
+		jsonFeed.put(SIGN_FIELD_NAMES, signFieldNames);
+		jsonFeed.put(FILE_NAMES, fileNames);
+		jsonFeed.put(MSG, messages);
+		jsonFeed.put(FULL_PATH_SIGNED, fullPathOfSignedFiles);
+		jsonFeed.put(FILE_ENTRY_ID, fileEntryId);
+		_log.info("=====CHECK END kyDuyetYCGiamDinh=====" + jsonFeed.toString());
+
 		return jsonFeed;
 	}
 

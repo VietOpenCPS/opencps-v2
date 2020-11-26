@@ -11,7 +11,10 @@ Liferay-Service: true
 @kysovanban.jar;lib:=true,\
 @pdfbox.jar;lib:=true,\
 @fontbox.jar;lib:=true,\
-@opencpspki.jar;lib:=true
+@opencpspki.jar;lib:=true,\
+@ViettelFileSigner-v2.jar;lib:=true,\
+@additionalbouncycastle.jar;lib:=true,\
+@xmlsec-1.3.0.jar;lib:=true
 Import-Package: *;resolution:=optional
 Export-Package: \
 	org.opencps.kyso.action.impl,\

@@ -40,6 +40,9 @@ dependencies {
 	compile name : "kysovanban"
 	compile name : "pdfbox"
 	compile name : "fontbox"
+	compile name : "ViettelFileSigner-v2"
+	compile name : "additionalbouncycastle"
+	compile name : "xmlsec-1.3.0"
 }	
 
 repositories {

@@ -170,5 +170,31 @@ public class BackendKysoApiRestApplication extends Application {
 //		return "It works signature!";
 //	}
 
+	@POST
+	@Path("/hashFilePDF")
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response hashFilePDF(@Context HttpHeaders header, @BeanParam DigitalSignatureInputModel input) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		_log.info("START: =========");
+			try {
+
+				DigitalSignatureActions action = new DigitalSignatureActionsImpl();
+				
+				long fileEntryId = Long.valueOf(input.getFileEntryId());
+				String certChainBase64 = input.getCertChainBase64();
+				_log.info("fileEntryId Id: "+fileEntryId);
+				_log.info("certChainBase64: "+certChainBase64);
+				
+				JSONObject results = action.hashFile(fileEntryId, groupId, certChainBase64);
+				_log.info("results : "+results);
+
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+			} catch (Exception e) {
+				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+			}
+	}
 
 }

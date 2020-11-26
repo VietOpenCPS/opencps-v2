@@ -60,6 +60,8 @@ public class DigitalSignatureInputModel {
 	protected String typeSignature;
 	@FormParam(value = "postStepCode")
 	protected String postStepCode;
+	@FormParam(value = "certChainBase64")
+	protected String certChainBase64;
 
 	 /**
 	  * Gets the value of the deliverableType property.
@@ -165,4 +167,12 @@ public class DigitalSignatureInputModel {
 		this.postStepCode = postStepCode;
 	}
 
+	public String getCertChainBase64() {
+		return certChainBase64;
+	}
+
+	public void setCertChainBase64(String certChainBase64) {
+		this.certChainBase64 = certChainBase64;
+	}
+	
 }
