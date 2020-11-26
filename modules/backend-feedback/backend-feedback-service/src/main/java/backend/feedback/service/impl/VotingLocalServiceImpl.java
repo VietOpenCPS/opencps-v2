@@ -432,5 +432,23 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		return object;
 	}
+	
+		@Indexable(type = IndexableType.DELETE)
+		public void deleteVoteConfig(long votingId, ServiceContext serviceContext) throws NoSuchVotingException {
+	
+			Voting voting = votingPersistence.fetchByPrimaryKey(votingId);
+			if (voting != null) {
+				votingPersistence.removeByF_CLNAME_VC(voting.getClassName(), voting.getVotingCode());
+			}
+
+	}
+		
+		public List<Voting> getVotingByClass_Name_VC(String className, String votingCode) {		
+			return votingPersistence.findByF_CLNAME_VC(className, votingCode);
+	}
+
+		public long countVotingByClass_Name_VC(String className, String votingCode) {
+			return votingPersistence.countByF_CLNAME_VC(className, votingCode);
+	}
 
 }
