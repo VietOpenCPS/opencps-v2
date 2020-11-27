@@ -7960,6 +7960,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							if(fileEntryId > 0) {
 								dossierFile.setEForm(false);
 								dossierFile.setFileEntryId(fileEntryId);
+								//File sinh từ eForm default PDF
+								String displayName = dossierFile.getDisplayName();
+								dossierFile.setDisplayName(displayName + ".pdf");
+								_log.info("Log dossierFile : " + dossierFile.getDossierFileId() + " DisplayName : " + dossierFile.getDisplayName());
 								dossierFileLocalService.updateDossierFile(dossierFile);
 							}
 							
