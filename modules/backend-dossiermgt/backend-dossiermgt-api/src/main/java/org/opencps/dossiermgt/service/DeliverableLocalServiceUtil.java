@@ -119,7 +119,8 @@ public class DeliverableLocalServiceUtil {
 
 	public static long countLucene(String keywords, String groupId,
 		String type, java.util.Map<String, String> mapFilter,
-		com.liferay.portal.kernel.search.SearchContext searchContext, long userId)
+		com.liferay.portal.kernel.search.SearchContext searchContext,
+		long userId)
 		throws com.liferay.portal.kernel.search.ParseException,
 			com.liferay.portal.kernel.search.SearchException {
 		return getService()
@@ -483,7 +484,8 @@ public class DeliverableLocalServiceUtil {
 		String keywords, String groupId, String type,
 		java.util.Map<String, String> mapFilter,
 		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
-		com.liferay.portal.kernel.search.SearchContext searchContext, long userId)
+		com.liferay.portal.kernel.search.SearchContext searchContext,
+		long userId)
 		throws com.liferay.portal.kernel.search.ParseException,
 			com.liferay.portal.kernel.search.SearchException {
 		return getService()
