@@ -392,7 +392,8 @@ public interface DeliverableLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Hits searchLucene(String keywords, String groupId, String type,
 		Map<String, String> mapFilter, Sort[] sorts, int start, int end,
-		SearchContext searchContext, long userId) throws ParseException, SearchException;
+		SearchContext searchContext, long userId)
+		throws ParseException, SearchException;
 
 	public void setOccurs(List<BooleanClauseOccur> occurs);
 
