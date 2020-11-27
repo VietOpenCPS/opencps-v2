@@ -2317,6 +2317,7 @@ public class DossierManagementImpl implements DossierManagement {
 				System.out.println("Adding post action 222");
 
 				System.out.println("Adding post action 3333");
+				if(Validator.isNotNull(processActionCurrent)){
 				String postAction = processActionCurrent.getPostAction();
 				System.out.println("Adding post action 5555");
 				System.out.println("Post action: " + postAction);
@@ -2327,7 +2328,7 @@ public class DossierManagementImpl implements DossierManagement {
 					System.out.println("Result: " + result);
 				}
 				System.out.println("Done add post action");
-
+				}
 
 				// String strDossierResult =
 				// JSONFactoryUtil.looseSerializeDeep(dossierResult);

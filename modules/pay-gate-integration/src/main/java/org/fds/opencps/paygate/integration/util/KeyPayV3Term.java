@@ -117,4 +117,6 @@ public class KeyPayV3Term {
 	public static final String USERNAME = "userName";
 	public static final String PWD = "pwd";
 	public static final String ACTION_ENPOINT = "actions";
+	public static final String CHUA_THANH_TOAN = "1";
+	public static final String DA_THANH_TOAN = "2";
 }
