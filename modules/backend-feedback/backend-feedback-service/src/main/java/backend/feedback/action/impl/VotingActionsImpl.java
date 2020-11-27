@@ -215,7 +215,9 @@ public class VotingActionsImpl implements VotingActions {
 	public void deleteVoting(long votingId, ServiceContext serviceContext)
 			throws NotFoundException, NoSuchVotingException {
 
-		VotingLocalServiceUtil.deleteVote(votingId, serviceContext);
+		//VotingLocalServiceUtil.deleteVote(votingId, serviceContext);
+		VotingLocalServiceUtil.deleteVoteConfig(votingId, serviceContext);
+
 	}
 
 	@Override
@@ -300,35 +302,15 @@ public class VotingActionsImpl implements VotingActions {
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 				// TODO check customer
 				if (employee != null) {
-					votingResult =
-						VotingResultLocalServiceUtil.fetchByF_votingId_userId(
-							userId, voting.getVotingId());
-					if (Validator.isNotNull(votingResult)) {
-
-						votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId,
-								votingResult.getVotingResultId(), votingId, employee.getFullName(), employee.getEmail(),
-								comment, selected, serviceContext);
-					} else {
-						votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
-								voting.getVotingId(), employee.getFullName(), employee.getEmail(), comment, selected,
-								serviceContext);
-
-					}
+					votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
+							voting.getVotingId(), employee.getFullName(), employee.getEmail(), comment, selected,
+							serviceContext);
 				} else {
 					Applicant applicant = ApplicantLocalServiceUtil.fetchByEmail(email);
 					if (applicant != null) {
-						votingResult = VotingResultLocalServiceUtil.fetchByF_votingId_userId(userId,
-								voting.getVotingId());
-						if (Validator.isNotNull(votingResult)) {
-							votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId,
-									votingResult.getVotingResultId(), votingId, applicant.getApplicantName(),
-									applicant.getContactEmail(), comment, selected, serviceContext);
-						} else {
-							votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
-									voting.getVotingId(), applicant.getApplicantName(), applicant.getContactEmail(), comment,
-									selected, serviceContext);
-
-						}
+						votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
+								voting.getVotingId(), applicant.getApplicantName(), applicant.getContactEmail(), comment,
+								selected, serviceContext);
 					}
 				}
 			}

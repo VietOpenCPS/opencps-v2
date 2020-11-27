@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserTracker;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
+import com.liferay.portal.liveusers.LiveUsers;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +49,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.backend.usermgt.service.util.ConfigConstants;
@@ -78,6 +81,7 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 import org.opencps.usermgt.service.PreferencesLocalServiceUtil;
 import org.opencps.usermgt.service.util.ConstantUtils;
+import org.opencps.usermgt.utils.DateTimeUtils;
 
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
@@ -1374,6 +1378,43 @@ public class UserActions implements UserInterface {
 		}
 
 		return jsonObject;
+	}
+
+	@Override
+	public JSONObject getLiveUser(long userId, long companyId, long groupId, ServiceContext serviceContext) {
+		List<UserTracker> userTrackers = null;
+
+		Map<String, UserTracker> sessionUsers = LiveUsers.getSessionUsers(companyId);
+
+		userTrackers = new ArrayList<UserTracker>(sessionUsers.values());
+
+		// userTrackers = ListUtil.sort(userTrackers, new
+		// UserTrackerModifiedDateComparator(true));
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		JSONArray dataArr = JSONFactoryUtil.createJSONArray();
+		int total = 0;
+		if (userTrackers != null) {
+			total = userTrackers.size();
+			JSONObject userTrackerObj = null;
+
+			for (UserTracker userTracker : userTrackers) {
+				userTrackerObj = JSONFactoryUtil.createJSONObject();
+				userTrackerObj.put("userId", userTracker.getUserId());
+				userTrackerObj.put("email", userTracker.getEmailAddress());
+				userTrackerObj.put("fullName", userTracker.getFullName());
+				userTrackerObj.put("hits", userTracker.getHits());
+				userTrackerObj.put("lastRequest", DateTimeUtils.convertDateToString(userTracker.getModifiedDate(),
+						DateTimeUtils._VN_DATE_TIME_FORMAT));
+				dataArr.put(userTrackerObj);
+			}
+
+		}
+
+		result.put("total", total);
+		result.put("data", dataArr);
+
+		return result;
+
 	}
 
 }

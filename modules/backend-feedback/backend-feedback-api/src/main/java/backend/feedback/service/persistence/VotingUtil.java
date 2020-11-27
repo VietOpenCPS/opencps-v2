@@ -873,6 +873,186 @@ public class VotingUtil {
 	}
 
 	/**
+	* Returns all the votings where className = &#63; and votingCode = &#63;.
+	*
+	* @param className the class name
+	* @param votingCode the voting code
+	* @return the matching votings
+	*/
+	public static List<Voting> findByF_CLNAME_VC(String className,
+		String votingCode) {
+		return getPersistence().findByF_CLNAME_VC(className, votingCode);
+	}
+
+	/**
+	* Returns a range of all the votings where className = &#63; and votingCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param className the class name
+	* @param votingCode the voting code
+	* @param start the lower bound of the range of votings
+	* @param end the upper bound of the range of votings (not inclusive)
+	* @return the range of matching votings
+	*/
+	public static List<Voting> findByF_CLNAME_VC(String className,
+		String votingCode, int start, int end) {
+		return getPersistence()
+				   .findByF_CLNAME_VC(className, votingCode, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the votings where className = &#63; and votingCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param className the class name
+	* @param votingCode the voting code
+	* @param start the lower bound of the range of votings
+	* @param end the upper bound of the range of votings (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching votings
+	*/
+	public static List<Voting> findByF_CLNAME_VC(String className,
+		String votingCode, int start, int end,
+		OrderByComparator<Voting> orderByComparator) {
+		return getPersistence()
+				   .findByF_CLNAME_VC(className, votingCode, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the votings where className = &#63; and votingCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param className the class name
+	* @param votingCode the voting code
+	* @param start the lower bound of the range of votings
+	* @param end the upper bound of the range of votings (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching votings
+	*/
+	public static List<Voting> findByF_CLNAME_VC(String className,
+		String votingCode, int start, int end,
+		OrderByComparator<Voting> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_CLNAME_VC(className, votingCode, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first voting in the ordered set where className = &#63; and votingCode = &#63;.
+	*
+	* @param className the class name
+	* @param votingCode the voting code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching voting
+	* @throws NoSuchVotingException if a matching voting could not be found
+	*/
+	public static Voting findByF_CLNAME_VC_First(String className,
+		String votingCode, OrderByComparator<Voting> orderByComparator)
+		throws backend.feedback.exception.NoSuchVotingException {
+		return getPersistence()
+				   .findByF_CLNAME_VC_First(className, votingCode,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first voting in the ordered set where className = &#63; and votingCode = &#63;.
+	*
+	* @param className the class name
+	* @param votingCode the voting code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching voting, or <code>null</code> if a matching voting could not be found
+	*/
+	public static Voting fetchByF_CLNAME_VC_First(String className,
+		String votingCode, OrderByComparator<Voting> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_CLNAME_VC_First(className, votingCode,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last voting in the ordered set where className = &#63; and votingCode = &#63;.
+	*
+	* @param className the class name
+	* @param votingCode the voting code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching voting
+	* @throws NoSuchVotingException if a matching voting could not be found
+	*/
+	public static Voting findByF_CLNAME_VC_Last(String className,
+		String votingCode, OrderByComparator<Voting> orderByComparator)
+		throws backend.feedback.exception.NoSuchVotingException {
+		return getPersistence()
+				   .findByF_CLNAME_VC_Last(className, votingCode,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last voting in the ordered set where className = &#63; and votingCode = &#63;.
+	*
+	* @param className the class name
+	* @param votingCode the voting code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching voting, or <code>null</code> if a matching voting could not be found
+	*/
+	public static Voting fetchByF_CLNAME_VC_Last(String className,
+		String votingCode, OrderByComparator<Voting> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_CLNAME_VC_Last(className, votingCode,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the votings before and after the current voting in the ordered set where className = &#63; and votingCode = &#63;.
+	*
+	* @param votingId the primary key of the current voting
+	* @param className the class name
+	* @param votingCode the voting code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next voting
+	* @throws NoSuchVotingException if a voting with the primary key could not be found
+	*/
+	public static Voting[] findByF_CLNAME_VC_PrevAndNext(long votingId,
+		String className, String votingCode,
+		OrderByComparator<Voting> orderByComparator)
+		throws backend.feedback.exception.NoSuchVotingException {
+		return getPersistence()
+				   .findByF_CLNAME_VC_PrevAndNext(votingId, className,
+			votingCode, orderByComparator);
+	}
+
+	/**
+	* Removes all the votings where className = &#63; and votingCode = &#63; from the database.
+	*
+	* @param className the class name
+	* @param votingCode the voting code
+	*/
+	public static void removeByF_CLNAME_VC(String className, String votingCode) {
+		getPersistence().removeByF_CLNAME_VC(className, votingCode);
+	}
+
+	/**
+	* Returns the number of votings where className = &#63; and votingCode = &#63;.
+	*
+	* @param className the class name
+	* @param votingCode the voting code
+	* @return the number of matching votings
+	*/
+	public static int countByF_CLNAME_VC(String className, String votingCode) {
+		return getPersistence().countByF_CLNAME_VC(className, votingCode);
+	}
+
+	/**
 	* Caches the voting in the entity cache if it is enabled.
 	*
 	* @param voting the voting
