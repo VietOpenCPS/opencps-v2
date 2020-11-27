@@ -404,6 +404,11 @@ public class VotingResultLocalServiceWrapper implements VotingResultLocalService
 	}
 
 	@Override
+	public void removeByF_votingId_selected(long votingId, String selected) {
+		_votingResultLocalService.removeByF_votingId_selected(votingId, selected);
+	}
+
+	@Override
 	public backend.feedback.model.VotingResult updateVoteResult(long userId,
 		long votingResultId, long votingId, String fullname, String email,
 		String comment, String selected,

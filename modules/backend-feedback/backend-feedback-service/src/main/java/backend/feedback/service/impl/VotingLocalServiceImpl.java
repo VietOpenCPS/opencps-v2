@@ -51,7 +51,9 @@ import org.opencps.dossiermgt.constants.ConstantsTerm;
 
 import backend.feedback.constants.VotingTerm;
 import backend.feedback.exception.NoSuchVotingException;
+import backend.feedback.exception.NoSuchVotingResultException;
 import backend.feedback.model.Voting;
+import backend.feedback.model.VotingResult;
 import backend.feedback.service.base.VotingLocalServiceBaseImpl;
 import backend.feedback.service.util.ConfigConstants;
 
@@ -435,9 +437,30 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 	
 		@Indexable(type = IndexableType.DELETE)
 		public void deleteVoteConfig(long votingId, ServiceContext serviceContext) throws NoSuchVotingException {
-	
+			// lay ban ghi voting config muon remove
 			Voting voting = votingPersistence.fetchByPrimaryKey(votingId);
 			if (voting != null) {
+				// xoa cac ban ghi trong votingresult theo cac buoc :
+				// 1. lay danh sach ban ghi trong bang voting co votingCode = voting.getVotingCode();
+				// 2. lay danh sach ban ghi trong bang votingResult co votingId = buoc1.getVotingId();
+				// 3. Xoa toan bo ban ghi o buoc 2
+				List<Voting> vList = votingPersistence.findByF_CLNAME_VC(voting.getClassName(), voting.getVotingCode(), 0, 15);
+				if (vList != null && vList.size() > 0) {
+					for (Voting vote : vList) {
+						long voId = vote.getVotingId();
+						List<VotingResult>  voResults = votingResultPersistence.findByF_votingId(voId);
+						if (voResults != null && voResults.size() > 0) {
+							for (VotingResult voResult : voResults) {
+								try {
+									votingResultPersistence.remove(voResult.getVotingResultId());
+								} catch (NoSuchVotingResultException e) {
+									_log.error(e);
+								}
+							}
+						}
+					}
+				}
+				// xoa ban ghi trong bang voting co votingCode = voting.getVotingCode();
 				votingPersistence.removeByF_CLNAME_VC(voting.getClassName(), voting.getVotingCode());
 			}
 
@@ -450,5 +473,14 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 		public long countVotingByClass_Name_VC(String className, String votingCode) {
 			return votingPersistence.countByF_CLNAME_VC(className, votingCode);
 	}
+		
+		public Voting getVotingByCLName_CLPK_VC(String className, String classPK, String votingCode) {
+			return votingPersistence.fetchByF_CLNAME_CLPK_VC(className, classPK, votingCode);
+	}
+		
+		@Indexable(type = IndexableType.DELETE)
+		public Voting deleteVote(String className, String classPK, String votingCode) throws NoSuchVotingException {
+			return votingPersistence.removeByF_CLNAME_CLPK_VC(className, classPK, votingCode);
+	} 
 
 }

@@ -374,6 +374,11 @@ public class VotingResultLocalServiceUtil {
 				   .luceneSearchEngine(params, sorts, start, end, searchContext);
 	}
 
+	public static void removeByF_votingId_selected(long votingId,
+		String selected) {
+		getService().removeByF_votingId_selected(votingId, selected);
+	}
+
 	public static backend.feedback.model.VotingResult updateVoteResult(
 		long userId, long votingResultId, long votingId, String fullname,
 		String email, String comment, String selected,
