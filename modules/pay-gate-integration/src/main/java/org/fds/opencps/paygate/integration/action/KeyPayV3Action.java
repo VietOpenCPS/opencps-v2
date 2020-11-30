@@ -21,5 +21,5 @@ public interface KeyPayV3Action {
 	public String createPaylater(User user, long dossierId, ServiceContext serviceContext, HttpServletRequest request);
 	public File getQrCode(User user, long dossierId, ServiceContext serviceContext, HttpServletRequest request, HttpServletResponse response);
 
-	public String paylaterCallback(User user, ServiceContext serviceContext, String body);
+	public JSONObject paylaterCallback(User user, ServiceContext serviceContext, String body);
 }

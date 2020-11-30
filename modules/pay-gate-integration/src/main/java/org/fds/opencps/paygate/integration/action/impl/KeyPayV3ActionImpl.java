@@ -11,35 +11,44 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Base64;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.MediaType;
 
 import com.liferay.portal.kernel.util.Validator;
-import org.apache.cxf.helpers.IOUtils;
 import org.fds.opencps.paygate.integration.action.KeyPayV3Action;
 import org.fds.opencps.paygate.integration.util.KeyPayV3Term;
 import org.fds.opencps.paygate.integration.util.KeyPayV3Utils;
+import org.fds.opencps.paygate.integration.util.PayGateTerm;
 import org.fds.opencps.paygate.integration.util.PayGateUtil;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.model.ServiceInfoMapping;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
+import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.service.*;
 
 /**
  * @author moon
@@ -133,24 +142,18 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 //				MaDonVi: 000.00.00.G17 TenDonVi: Bộ Xây dựng
 //
 //				MaCQ và Ten CQ trùng luôn MaDonVi và TenDonVi
-			// bill_info.put(KeyPayV3Term.MADONVI, dossier.getGovAgencyCode());
-			// bill_info.put(KeyPayV3Term.TENDONVI, dossier.getGovAgencyName());
 			bill_info.put(KeyPayV3Term.MADONVI, schema.getString(KeyPayV3Term.MADONVI));
 			bill_info.put(KeyPayV3Term.TENDONVI, schema.getString(KeyPayV3Term.TENDONVI));
-
 			bill_info.put(KeyPayV3Term.MAHOSO, dossier.getDossierNo());
-			ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(dossier.getGroupId(),
-					dossier.getServiceCode());
-			String serviceCodeDVCQG = serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG()
-					: StringPool.BLANK;
-			String serviceNameDVCQG = serviceInfoMapping != null ? serviceInfoMapping.getServiceNameDVCQG()
+//			ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(dossier.getGroupId(),
+//					dossier.getServiceCode());
+			String serviceCode = dossier != null ? dossier.getServiceCode()
 					: StringPool.BLANK;
 			// TODO validate
-			bill_info.put(KeyPayV3Term.MATTHC, serviceCodeDVCQG);// lay mapping
-			// bill_info.put(KeyPayV3Term.TENTTHC, serviceNameDVCQG);
+			bill_info.put(KeyPayV3Term.MATTHC, dossier.getServiceCode());// ma TTHC  = serviceCode
 			bill_info.put(KeyPayV3Term.TENTTHC, dossier.getServiceName());
 			// TODO: fix
-			bill_info.put(KeyPayV3Term.MADVC, serviceCodeDVCQG + schema.getString(KeyPayV3Term.MADVCAPPEND));// chua xd
+			bill_info.put(KeyPayV3Term.MADVC, serviceCode + schema.getString(KeyPayV3Term.MADVCAPPEND));// chua xd
 			bill_info.put(KeyPayV3Term.TENDVC, dossier.getServiceName());// chua xd
 			bill_info.put(KeyPayV3Term.NOIDUNGTHANHTOAN, paymentFile.getPaymentNote());
 			bill_info.put(KeyPayV3Term.MALOAIHINHTHUPHAT, "");// ko bb;
@@ -161,16 +164,9 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			bill_info.put(KeyPayV3Term.DIACHINGUOINOP, dossier.getAddress());
 			bill_info.put(KeyPayV3Term.HUYENNGUOINOP, dossier.getDistrictName());// ko bb
 			bill_info.put(KeyPayV3Term.TINHNGUOINOP, dossier.getCityName());// ko bb
-
-			// lay trong dictItem
-//				ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, dossier.getServiceCode());
-//				String macoquanqd = serviceInfo != null ? serviceInfo.getAdministrationCode() : StringPool.BLANK;
-//				String tencoquanqd = serviceInfo != null ? serviceInfo.getAdministrationName() : StringPool.BLANK;
-//				bill_info.put(KeyPayV3Term.MACOQUANQD, macoquanqd);//ko xd
-//				bill_info.put(KeyPayV3Term.TENCOQUANQD, tencoquanqd);
 			// TODO: fix MACOQUANQD TENCOQUANQD
-			bill_info.put(KeyPayV3Term.MACOQUANQD, schema.getString(KeyPayV3Term.MACOQUANQD));// ko xd
-			bill_info.put(KeyPayV3Term.TENCOQUANQD, schema.getString(KeyPayV3Term.TENCOQUANQD));
+			bill_info.put(KeyPayV3Term.MACOQUANQD, dossier.getGovAgencyCode());
+			bill_info.put(KeyPayV3Term.TENCOQUANQD, dossier.getGovAgencyName());
 
 			bill_info.put(KeyPayV3Term.KHOBAC, "");// ko bb
 			bill_info.put(KeyPayV3Term.NGAYQD, "");// ko bb
@@ -206,7 +202,9 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 
 			data.put(KeyPayV3Term.ADDITION_FEE, addition_fee);
 
-			String check_sum = KeyPayV3Utils.genCreateChecksum(client_id, command, transactionId, hash_key_1);
+//			String check_sum = KeyPayV3Utils.genCreateChecksum(client_id, command, transactionId, hash_key_1);
+			String check_sum = KeyPayV3Utils.genCallbackChecksumReceived(addition_fee,
+					client_id, command, trans_amount, transactionId, version, hash_key_1);
 			_log.info("keypay check_sum " + check_sum);
 
 			data.put(KeyPayV3Term.CHECK_SUM, check_sum);
@@ -220,11 +218,14 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			JSONObject response = KeyPayV3Utils.postAPI(endpoint, data);
 			_log.info("response " + response.getString(KeyPayV3Term.ERROR));
 			_log.info("response " + JSONFactoryUtil.looseSerialize(response));
+			JSONObject dataJson = response.getJSONObject(KeyPayV3Term.DATA);
+			String qrcode_pay = dataJson.getString(KeyPayV3Term.QRCODE_PAY);
+			_log.info("QRCODE_PAY :" + qrcode_pay);
 			if (response.has(KeyPayV3Term.ERROR)
 					&& KeyPayV3Term.ERROR_0.equals(response.getString(KeyPayV3Term.ERROR))) {
 				JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 				schema.put(KeyPayV3Term.TRANSACTION_ID, transactionId);
-				schema.put(KeyPayV3Term.QRCODE_PAY, response.getString(KeyPayV3Term.QRCODE_PAY));
+				schema.put(KeyPayV3Term.QRCODE_PAY, qrcode_pay);
 				schema.put(KeyPayV3Term.TRANS_AMOUNT, trans_amount);
 				schema.put(KeyPayV3Term.ADDITION_FEE, addition_fee);
 				epaymentProfile.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
@@ -273,42 +274,265 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 		return outputfile;
 	}
 
-	public String paylaterCallback(User user, ServiceContext serviceContext, String body) {
+	public JSONObject paylaterCallback(User user, ServiceContext serviceContext, String body) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-
 		try {
-
-			_log.info("=======body========" + body);
-			JSONObject data = JSONFactoryUtil.createJSONObject(body);
-			String transactionId = data.getString(KeyPayV3Term.TRANSACTION_ID);
-			String dossierId = KeyPayV3Utils.decodeTransactionId(transactionId);
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(Long.parseLong(dossierId));
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
-			JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
-					.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-			String check_sum = KeyPayV3Utils.genCallbackChecksumReceived(schema.getString(KeyPayV3Term.ADDITION_FEE), schema.getString(KeyPayV3Term.CLIENT_ID), schema.getString(KeyPayV3Term.COMMAND_PAYLATER), schema.getString(KeyPayV3Term.TRANS_AMOUNT), schema.getString(KeyPayV3Term.TRANSACTION_ID), schema.getString(KeyPayV3Term.VERSION), schema.getString(KeyPayV3Term.CLIENT_KEY_2));
-			
-			if (check_sum.equals(data.getString(KeyPayV3Term.CHECK_SUM)) &&
-					KeyPayV3Term.ERROR_0.equals(data.getString(KeyPayV3Term.ERROR)) &&
-					KeyPayV3Term.STATUS_DONE.equals(data.getJSONObject("data").getString(KeyPayV3Term.STATUS))) {
-
-				PaymentFileActions actions = new PaymentFileActionsImpl();
-				
-				JSONObject confirmPayload = JSONFactoryUtil.createJSONObject(paymentFile.getConfirmPayload());
-				
-				confirmPayload.put(PaymentFileTerm.PAYMENT_METHOD_KEYPAY_LATE, body);
-				paymentFile = actions.updateFileConfirm(dossier.getGroupId(), dossier.getDossierId(), paymentFile.getReferenceUid(),
-						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_KEYPAY_LATE,
-						confirmPayload.toJSONString(), serviceContext);
-				
-				result.put(KeyPayV3Term.RETURN_CODE, KeyPayV3Term.RETURN_CODE_SUCCESS);
+			if (body != null && body.length() > 0) {
+				_log.info("=======body========" + body);
+				JSONObject data = JSONFactoryUtil.createJSONObject(body);
+				String transactionId = data.getString(KeyPayV3Term.TRANSACTION_ID);
+				String dossierId = KeyPayV3Utils.decodeTransactionId(transactionId);
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(Long.parseLong(dossierId));
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+						.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+				String client_id = schema.getString(KeyPayV3Term.CLIENT_ID);
+				String addition_fee = String.valueOf(paymentFile.getShipAmount());
+				String trans_amount = String.valueOf(paymentFile.getPaymentAmount());
+				String command = schema.getString(KeyPayV3Term.COMMAND_PAYLATER);
+				String version = schema.getString(KeyPayV3Term.VERSION);
+				String hash_key_1 = schema.getString(KeyPayV3Term.CLIENT_KEY_1);
+				String check_sum = KeyPayV3Utils.genCallbackChecksumReceived(addition_fee, client_id, command, trans_amount, transactionId, version, hash_key_1);
+				_log.info("Checksum" + check_sum);
+				if (check_sum.equals(data.getString(KeyPayV3Term.CHECK_SUM))
+						&& KeyPayV3Term.DA_THANH_TOAN.equals(data.getString(KeyPayV3Term.STATUS))) {
+					boolean doAction = doActionPP(user, dossier.getGroupId(), dossier, paymentFile, data, serviceContext);
+					if (doAction) {
+						result.put(KeyPayV3Term.RETURN_CODE, KeyPayV3Term.RETURN_CODE_SUCCESS);
+						result.put(KeyPayV3Term.RETURN_MSG, "Thành công");
+					} else {
+						result.put(KeyPayV3Term.RETURN_CODE, KeyPayV3Term.RETURN_CODE_ERROR);
+						result.put(KeyPayV3Term.RETURN_MSG, "Thất bại");
+					}
+				}
+			} else {
+				result.put(KeyPayV3Term.RETURN_CODE, KeyPayV3Term.RETURN_CODE_ERROR);
+				result.put(KeyPayV3Term.RETURN_MSG, "Thất bại");
 			}
 		} catch (Exception e) {
 			_log.error(e);
 			result.put(KeyPayV3Term.RETURN_CODE, KeyPayV3Term.RETURN_CODE_ERROR);
+			result.put(KeyPayV3Term.RETURN_MSG, "Thất bại");
+		}
+		return result;
+	}
+	private boolean doActionPP(User user, long groupId, Dossier dossier, PaymentFile paymentFile, JSONObject confirmPayload,
+							   ServiceContext serviceContext) {
+
+		try {
+
+			JSONObject config = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+					.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+
+			PaymentFileActions actions = new PaymentFileActionsImpl();
+
+			JSONObject action = JSONFactoryUtil.createJSONObject();
+
+			if (dossier.isOnline()) {
+				// TODO: call api doaction to DVC
+				action = config.getJSONObject(PayGateTerm.ACTION_IS_ONLINE);
+
+				String actionCode = action.getString(PayGateTerm.ACTION_CODE);
+
+				//url doAction
+				String url = action.getString(PayGateTerm.URL);
+
+				String username = action.getString(PayGateTerm.USERNAME);
+
+				String pwd = action.getString(PayGateTerm.PWD);
+
+				// Change payment Status = 5
+				paymentFile = actions.updateFileConfirm(groupId, dossier.getDossierId(), paymentFile.getReferenceUid(),
+						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG,
+						confirmPayload.toJSONString(), serviceContext);
+
+				HashMap<String, String> properties = new HashMap<String, String>();
+
+				properties.put(Field.GROUP_ID, action.getString(Field.GROUP_ID));
+
+				String endPoint = PayGateTerm.buildPathDoAction(url, dossier.getReferenceUid());
+
+				long dossierActionId = dossier.getDossierActionId();
+
+				DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+
+				long serviceProcessId = dossierAction.getServiceProcessId();
+
+				String stepCode = dossierAction.getStepCode();
+
+				Map<String, Object> params = new HashMap<String, Object>();
+
+				params.put(PayGateTerm.ACTION_CODE, actionCode);
+
+				JSONObject payment = JSONFactoryUtil.createJSONObject();
+
+				payment.put(PaymentFileTerm.ADVANCE_AMOUNT, paymentFile.getAdvanceAmount());
+				payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
+				payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
+				payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
+				payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
+				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAYLATER);
+				payment.put(PaymentFileTerm.CONFIRM_PAYLOAD, confirmPayload.toJSONString());
+				payment.put(PaymentFileTerm.PAYMENT_REQUEST, 5);
+				if (stepCode != null) {
+
+					List<ProcessAction> processActionList = ProcessActionLocalServiceUtil
+							.getProcessActionByG_SPID_PRESC(groupId, serviceProcessId, stepCode);
+
+					for (ProcessAction processAction : processActionList) {
+
+						_log.info(processAction.getActionCode());
+						_log.info(processAction.getRequestPayment());
+						if (processAction.getActionCode().equals(actionCode)) {
+
+							payment = JSONFactoryUtil.createJSONObject();
+							payment.put(PaymentFileTerm.PAYMENT_REQUEST, processAction.getRequestPayment());
+						}
+					}
+				}
+
+				params.put(PayGateTerm.PAYMENT, payment.toString());
+
+				_log.info("params============" + params);
+				JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
+						properties, params, username, pwd);
+
+				_log.info("=====resPostDossier=========" + resPostDossier);
+
+				return true;
+			} else {
+				paymentFile = actions.updateFileConfirm(groupId, dossier.getDossierId(), paymentFile.getReferenceUid(),
+						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG,
+						confirmPayload.toJSONString(), serviceContext);
+
+				action = config.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE);
+
+				HashMap<String, String> properties = new HashMap<String, String>();
+
+				properties.put(Field.GROUP_ID, action.getString(Field.GROUP_ID)); //124302
+//				String endPoint = PayGateTerm.buildPathDoAction("http://192.168.68.78:8080",
+//						String.valueOf(dossier.getDossierId()));
+				String endPoint = PayGateTerm.buildPathDoAction(action.getString(PayGateTerm.URL),
+						String.valueOf(dossier.getDossierId()));
+				Map<String, Object> params = new HashMap<String, Object>();
+
+				params.put(PayGateTerm.ACTION_CODE, action.get(PayGateTerm.ACTION_CODE));
+				JSONObject payment = JSONFactoryUtil.createJSONObject();
+				payment.put(PaymentFileTerm.PAYMENT_REQUEST, 5);
+				payment.put(PaymentFileTerm.ADVANCE_AMOUNT, paymentFile.getAdvanceAmount());
+				payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
+				payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
+				payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
+				payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
+				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAYLATER);
+				payment.put(PaymentFileTerm.CONFIRM_PAYLOAD, confirmPayload.toJSONString());
+				params.put(PayGateTerm.PAYMENT, payment.toString());
+
+				_log.info(endPoint);
+				JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
+						properties, params, action.getString(PayGateTerm.USERNAME), action.getString(PayGateTerm.PWD));
+
+				_log.info("=====resPostDossier=========" + resPostDossier);
+				if(resPostDossier.length() >0){
+					return true;
+				}else{
+					return false;
+				}
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+	}
+	@SuppressWarnings("rawtypes")
+	public JSONObject callPostAPI(String httpMethod, String accept, String urlPath, HashMap<String, String> properties,
+								  Map<String, Object> params, String username, String password) {
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+
+		HttpURLConnection conn = null;
+
+		BufferedReader br = null;
+
+		try {
+
+			URL url = new URL(urlPath);
+
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
+			conn.setReadTimeout(OpenCPSConfigUtil.getRestReadTimeout());
+			conn.setRequestMethod(httpMethod);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+
+			conn.setRequestProperty(ConstantUtils.VALUE_ACCEPT, accept);
+
+			if (Validator.isNotNull(username) && Validator.isNotNull(password)) {
+				String authString = username + StringPool.COLON + password;
+
+				String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+
+				conn.setRequestProperty(ConstantUtils.VALUE_AUTHORIZATION, ConstantUtils.VALUE_BASIC + authStringEnc);
+			}
+
+			if (!properties.isEmpty()) {
+				for (Map.Entry m : properties.entrySet()) {
+					conn.setRequestProperty(m.getKey().toString(), m.getValue().toString());
+				}
+			}
+
+			StringBuilder postData = new StringBuilder();
+
+			for (Map.Entry<String, Object> param : params.entrySet()) {
+				if (postData.length() != 0)
+					postData.append(StringPool.AMPERSAND.charAt(0));
+				postData.append(java.net.URLEncoder.encode(param.getKey(), ConstantUtils.UTF_8));
+				postData.append(StringPool.EQUAL.charAt(0));
+				postData.append(java.net.URLEncoder.encode(String.valueOf(param.getValue()), ConstantUtils.UTF_8));
+			}
+
+			byte[] postDataBytes = postData.toString().getBytes(ConstantUtils.UTF_8);
+
+			conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, String.valueOf(postDataBytes.length));
+
+			conn.getOutputStream().write(postDataBytes);
+
+			br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+			String output;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = br.readLine()) != null) {
+				sb.append(output);
+			}
+
+			response = JSONFactoryUtil.createJSONObject(sb.toString());
+
+			conn.disconnect();
+
+		} catch (MalformedURLException e) {
+			_log.error("Can't invoke api " + urlPath);
+		} catch (IOException e) {
+			_log.error("Can't invoke api " + urlPath);
+		} catch (JSONException e) {
+			_log.error("Can't invoke api " + urlPath);
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					_log.error(e);
+				}
+			}
+
 		}
 
-		_log.info("=======result========" + result);
-		return result.toJSONString();
+		return response;
 	}
 }

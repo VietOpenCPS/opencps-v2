@@ -2276,6 +2276,34 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 					}
 				}
+				// add delegate to applicant (Thêm thông tin người nộp cho chủ hs doanh nghiệp)
+				JSONObject payloadObj = JSONFactoryUtil.createJSONObject(input.getPayload());
+				if(payloadObj.has("applicantIdNo") && payloadObj.has("delegateIdNo")) {
+					String delegateIdNo = payloadObj.getString("delegateIdNo");
+					String applicantIdNo = payloadObj.getString("applicantIdNo");
+					String delegateName = payloadObj.getString("delegateName");
+					String delegateAddress = payloadObj.getString("delegateAddress");
+					String delegateCityCode = payloadObj.getString("delegateCityCode");
+					String delegateDistrictCode = payloadObj.getString("delegateDistrictCode");
+					String delegateWardCode = payloadObj.getString("delegateWardCode");
+					String delegateEmail = payloadObj.getString("delegateEmail");
+					String delegateTelNo = payloadObj.getString("delegateTelNo");
+					String applicantIdType = "citizen";
+					String applicantIdDate = "1970-01-01";
+					String password = "Dvc@2020#";
+
+
+					if (!delegateIdNo.equals(applicantIdNo)) {
+						Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(delegateIdNo);
+						if (Validator.isNull(applicant)) {
+							new ApplicantActionsImpl().register(serviceContext, groupId,
+									delegateName, applicantIdType, delegateIdNo, applicantIdDate,
+									delegateEmail, delegateAddress, delegateCityCode, StringPool.BLANK, delegateDistrictCode, 
+									StringPool.BLANK, delegateWardCode, StringPool.BLANK, StringPool.BLANK, delegateTelNo,
+									StringPool.BLANK, password);
+						}
+					}
+				}
 				
 			}
 
@@ -2317,6 +2345,7 @@ public class DossierManagementImpl implements DossierManagement {
 				System.out.println("Adding post action 222");
 
 				System.out.println("Adding post action 3333");
+				if(Validator.isNotNull(processActionCurrent)){
 				String postAction = processActionCurrent.getPostAction();
 				System.out.println("Adding post action 5555");
 				System.out.println("Post action: " + postAction);
@@ -2327,7 +2356,7 @@ public class DossierManagementImpl implements DossierManagement {
 					System.out.println("Result: " + result);
 				}
 				System.out.println("Done add post action");
-
+				}
 
 				// String strDossierResult =
 				// JSONFactoryUtil.looseSerializeDeep(dossierResult);
