@@ -6458,6 +6458,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
 			}
+			if (Validator.isNotNull(input.getDossierNo())) {
+				dossier.setDossierNo(input.getDossierNo());
+			}
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			return dossierLocalService.updateDossier(dossier);
 
@@ -6799,6 +6802,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
+			}
+			if (Validator.isNotNull(input.getDossierNo())) {
+				dossier.setDossierNo(input.getDossierNo());
 			}
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			dossierLocalService.updateDossier(dossier);
