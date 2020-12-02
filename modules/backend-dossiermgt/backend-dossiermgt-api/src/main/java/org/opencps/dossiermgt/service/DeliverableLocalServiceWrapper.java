@@ -112,7 +112,8 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	@Override
 	public long countLucene(String keywords, String groupId, String type,
 		java.util.Map<String, String> mapFilter,
-		com.liferay.portal.kernel.search.SearchContext searchContext, long userId)
+		com.liferay.portal.kernel.search.SearchContext searchContext,
+		long userId)
 		throws com.liferay.portal.kernel.search.ParseException,
 			com.liferay.portal.kernel.search.SearchException {
 		return _deliverableLocalService.countLucene(keywords, groupId, type,
@@ -521,11 +522,12 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	public com.liferay.portal.kernel.search.Hits searchLucene(String keywords,
 		String groupId, String type, java.util.Map<String, String> mapFilter,
 		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
-		com.liferay.portal.kernel.search.SearchContext searchContext, long userId)
+		com.liferay.portal.kernel.search.SearchContext searchContext,
+		long userId)
 		throws com.liferay.portal.kernel.search.ParseException,
 			com.liferay.portal.kernel.search.SearchException {
 		return _deliverableLocalService.searchLucene(keywords, groupId, type,
-			mapFilter, sorts, start, end, searchContext,userId);
+			mapFilter, sorts, start, end, searchContext, userId);
 	}
 
 	@Override
