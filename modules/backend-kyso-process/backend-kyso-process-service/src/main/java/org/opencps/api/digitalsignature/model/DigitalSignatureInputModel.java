@@ -7,6 +7,9 @@
 
 package org.opencps.api.digitalsignature.model;
 
+import com.liferay.portal.kernel.json.JSONObject;
+import com.viettel.signature.plugin.SignPdfFile;
+
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -42,7 +45,9 @@ import javax.xml.bind.annotation.XmlType;
  "fileEntryId",
  "emailUser",
  "typeSignature",
- "postStepCode"
+ "postStepCode",
+ "certChainBase64",
+ "signatureBase64"
 })
 public class DigitalSignatureInputModel {
 
@@ -62,6 +67,8 @@ public class DigitalSignatureInputModel {
 	protected String postStepCode;
 	@FormParam(value = "certChainBase64")
 	protected String certChainBase64;
+	@FormParam(value = "signatureBase64")
+	protected String signatureBase64;
 
 	 /**
 	  * Gets the value of the deliverableType property.
@@ -174,5 +181,13 @@ public class DigitalSignatureInputModel {
 	public void setCertChainBase64(String certChainBase64) {
 		this.certChainBase64 = certChainBase64;
 	}
-	
+
+	public String getSignatureBase64() {
+		return signatureBase64;
+	}
+
+	public void setSignatureBase64(String signatureBase64) {
+		this.signatureBase64 = signatureBase64;
+	}
+
 }

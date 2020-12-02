@@ -10,11 +10,14 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.viettel.signature.pdf.TimestampConfig;
 import com.viettel.signature.plugin.SignPdfFile;
 
 import java.awt.image.BufferedImage;
@@ -22,7 +25,7 @@ import java.io.File;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.List;
-
+import javax.servlet.http.HttpServletRequest;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.kyso.action.DigitalSignatureActions;
@@ -34,7 +37,6 @@ import org.opencps.kyso.utils.ImageUtil;
 import org.opencps.kyso.utils.KysoTerm;
 import org.opencps.kyso.utils.ViettelCaUtil;
 import org.opencps.kyso.utils.X509ExtensionUtil;
-
 import backend.kyso.process.service.util.ConfigProps;
 import vgca.svrsigner.ServerSigner;
 
@@ -362,73 +364,85 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 	}
 
 	@Override
-	public JSONObject hashFile(long fileEntryId, long groupId, String certChainBase64) {
+	public JSONObject hashFile(long fileEntryId, String certChainBase64, HttpServletRequest request) {
 		
-		String fieldName = StringPool.BLANK;
-		String tempFile = StringPool.BLANK;
-		JSONObject jsonFeed = JSONFactoryUtil.createJSONObject();
-		JSONArray hashComputers = JSONFactoryUtil.getJSONFactory().createJSONArray();
-		JSONArray signFieldNames = JSONFactoryUtil.getJSONFactory().createJSONArray();
-		JSONArray fileNames = JSONFactoryUtil.getJSONFactory().createJSONArray();
-		JSONArray messages = JSONFactoryUtil.getJSONFactory().createJSONArray();
-		JSONArray fullPathOfSignedFiles = JSONFactoryUtil.getJSONFactory().createJSONArray();
-		
-		String realPath = PropsUtil.get(ConfigProps.CER_HOME)+StringPool.SLASH;
-		_log.info("realPath_Kyso: "+realPath);
-		String fullPath = StringPool.BLANK;
+		JSONObject results = JSONFactoryUtil.createJSONObject();
 
+		String realPath = PropsUtil.get(ConfigProps.CER_HOME) + "/";
+		String fullPath = "";
+		SignPdfFile signPdfFile = new SignPdfFile();
 		try {
-			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
 			
-			File fileTemp = FileUtil.createTempFile(dlFileEntry.getContentStream());
-			_log.info("fileTemp URL: "+fileTemp.getAbsolutePath());
-			
-			File file = new File(realPath + dlFileEntry.getFileName());
-			
-			FileUtil.move(fileTemp, file);
-			
+			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);			
+			File fileTemp = FileUtil.createTempFile(dlFileEntry.getContentStream());			
+			File file = new File(realPath + dlFileEntry.getFileName());			
+			FileUtil.move(fileTemp, file);			
 			fullPath = file.getAbsolutePath();
-			_log.info("fullPath: "+fullPath);
 			
 			String folderRootCA = realPath + "RootCA";
 	        X509Certificate[] certChain = X509ExtensionUtil.getCertChainOfCert(certChainBase64, folderRootCA);
 	        String fontPath = realPath + "font/times.ttf";
-	        SignPdfFile signPdfFile = new SignPdfFile();
-	        String base64 = ViettelCaUtil.getHashTypeRectangleText(signPdfFile, fullPath, certChain, fontPath);
 	        
-	        fieldName = signPdfFile.getFieldName();
-			tempFile = signPdfFile.getTmpFile();
-			hashComputers.put(base64);
-			signFieldNames.put(fieldName);
-			fileNames.put(dlFileEntry.getFileName());
-			messages.put("success");
-			fullPathOfSignedFiles.put(tempFile);
-			
-			_log.info("hashComputers: "+hashComputers);
-			_log.info("signFieldNames: "+signFieldNames);
-			_log.info("fullPathOfSignedFiles: "+fullPathOfSignedFiles);
-			_log.info("fileNames: "+fileNames);
-			_log.info("messages: "+messages);			
-			_log.info("===KY XONG YCGIAMDIDNH===: "+ tempFile);
+	        String base64Hash = ViettelCaUtil.getHashTypeRectangleText(signPdfFile, fullPath, certChain, fontPath);
 	        
+	        if (base64Hash == null) {
+	        	results.put("status", 403);
+	        	results.put("message", "Tao hash khong thanh cong");
+	        }
+	        
+        	results.put("status", 200);
+        	results.put("message", "success");
+        	results.put("serialNumber", ((X509Certificate) certChain[0]).getSerialNumber().toString(16));
+        	results.put("base64Hash", base64Hash);
+        	request.getSession().setAttribute("PDFSignature", signPdfFile);
+	        	        
 		} catch (Exception e) {
-			hashComputers.put(StringPool.BLANK);
-			signFieldNames.put(StringPool.BLANK);
-			fileNames.put(StringPool.BLANK);
-			fullPathOfSignedFiles.put(StringPool.BLANK);
-			messages.put(e.getClass().getName());
 			_log.error(e);
 		}
-		
-		jsonFeed.put(HASH_COMPUTERS, hashComputers);
-		jsonFeed.put(SIGN_FIELD_NAMES, signFieldNames);
-		jsonFeed.put(FILE_NAMES, fileNames);
-		jsonFeed.put(MSG, messages);
-		jsonFeed.put(FULL_PATH_SIGNED, fullPathOfSignedFiles);
-		jsonFeed.put(FILE_ENTRY_ID, fileEntryId);
-		_log.info("=====CHECK END kyDuyetYCGiamDinh=====" + jsonFeed.toString());
+		return results;
+	}
 
-		return jsonFeed;
+	@Override
+	public JSONObject insertSignnature(String signatureBase64, String signFileName, SignPdfFile signPdfFile) {
+		
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+		
+		String realPath = PropsUtil.get(ConfigProps.CER_HOME)+ "/";
+		try {
+			Base64.decode(signatureBase64);
+			String name = signFileName.split(".pdf")[0] + "_signed";
+	        String ext = "pdf";
+	        String filePath = realPath;
+
+	        File fileDes = new File(filePath + "/" + name + "." + ext);
+	        if (fileDes.exists()) {
+	            int index = 1;
+	            String name_2 = name + "_" + index;
+	            String path = filePath + "/" + name_2 + "." + ext;
+	            fileDes = new File(path);
+	            while (fileDes.exists()) {
+	                index++;
+	                name_2 = name + "_" + index;
+	                path = filePath + "/" + name_2 + "." + ext;
+	                fileDes = new File(path);
+	            }
+	            name = name_2;
+	        }
+	        
+	        TimestampConfig timestampConfig = new TimestampConfig();
+	        timestampConfig.setUseTimestamp(false);		        		        
+	        signPdfFile.insertSignature(signatureBase64, filePath + "/" + name + "." + ext, timestampConfig);
+	                
+	        results.put("signedFileName", name + "." + ext);
+	        results.put("status", 200);
+	        results.put("message", "success");
+	        results.put("signedFileFullPath", filePath);
+	        results.put("fileSigned", filePath + "/" + name + "." + ext);
+			
+			} catch (Exception e) {
+			_log.error(e);
+		}
+		return results;
 	}
 
 }

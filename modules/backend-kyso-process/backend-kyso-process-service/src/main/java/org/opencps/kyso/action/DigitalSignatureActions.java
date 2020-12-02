@@ -1,6 +1,11 @@
 package org.opencps.kyso.action;
 
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.viettel.signature.plugin.SignPdfFile;
+import javax.servlet.http.HttpServletRequest;
+
 
 public interface DigitalSignatureActions {
 
@@ -8,5 +13,7 @@ public interface DigitalSignatureActions {
 
 	public JSONObject completeSignature(String sign, String signFieldName, String fileName);
 	
-	public JSONObject hashFile(long fileEntryId, long groupId, String certChainBase64);
+	public JSONObject hashFile(long fileEntryId, String certChainBase64, HttpServletRequest request);
+	
+	public JSONObject insertSignnature(String signatureBase64, String signFileName, SignPdfFile signPdfFile);
 }

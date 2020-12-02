@@ -1439,4 +1439,33 @@ public class DefaultSignatureManagementImpl
 		}
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();	
 	}	
+		
+	@Override
+	public Response vtcaUpdateFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String fileEntryIdStr, String signedFileName)
+			throws PortalException, Exception {
+		_log.info("START*************");
+		BackendAuth auth = new BackendAuthImpl();
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			long fileEntryId = Long.valueOf(fileEntryIdStr);
+			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
+	        File fileSigned = new File (signedFileName);
+	        
+	        DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), fileEntryId, dlFileEntry.getTitle(),
+	        		dlFileEntry.getMimeType(), dlFileEntry.getTitle(),
+	        		dlFileEntry.getDescription(), StringPool.BLANK, true, fileSigned, serviceContext);
+	        
+	        result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
+	}
+	
 }

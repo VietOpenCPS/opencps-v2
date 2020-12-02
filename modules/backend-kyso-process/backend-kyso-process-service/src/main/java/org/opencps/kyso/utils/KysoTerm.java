@@ -30,4 +30,10 @@ public class KysoTerm {
 	
 	public static final String REPORT = "report";
 	public static final String SUBJECT_DN = "SubjectDN";
+	
+	// HashFilePDF response
+	public static final Integer SUCCESS = 200;
+	public static final Integer ERROR = 500;
+	public static final String SUCCESS_MESSAGE = "success";
+	public static final String ERROR_MESSAGE = "fail";
 }

@@ -130,5 +130,5 @@ public interface SignatureManagement {
 	public Response updateDossierFilesBySignatureDefault(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext, 
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id, @BeanParam DigitalSignatureInputModel input) throws PortalException, Exception;
-
+	
 }
