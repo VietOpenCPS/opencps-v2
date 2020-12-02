@@ -7345,6 +7345,37 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String contactName = "";
 			String contactTelNo = input.getProfileOwner().getTel();
 			String contactEmail = "";
+			Integer returnType ;
+			Integer profileEms;
+			String returnTypeString = Validator.isNotNull(input.getReturn_type()) && !input.getReturn_type().isEmpty()
+					? input.getReturn_type() : "0";
+
+			String profileEmsString = Validator.isNotNull(input.getProfile_ems()) && !input.getProfile_ems().isEmpty()
+					? input.getProfile_ems() : "0";
+
+			if(Validator.isNotNull(returnTypeString) && !returnTypeString.isEmpty()) {
+				try {
+					returnType = Integer.parseInt(returnTypeString);
+				} catch (Exception e) {
+					_log.warn("Error when parse return type " + returnTypeString + ": " + e.getMessage());
+					_log.warn("Still running...");
+					returnType = 0;
+				}
+			} else {
+				returnType = 0;
+			}
+
+			if(Validator.isNotNull(profileEmsString) && !profileEmsString.isEmpty()) {
+				try {
+					profileEms = Integer.parseInt(profileEmsString);
+				} catch (Exception e) {
+					_log.warn("Error when parse profileEms " + profileEmsString + ": " + e.getMessage());
+					_log.warn("Still running...");
+					profileEms = 0;
+				}
+			} else {
+				profileEms = 0;
+			}
 
 			String postalServiceCode = "";
 			String postalServiceName = "";
@@ -7428,6 +7459,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setWardCode(wardCode);
 			if (Validator.isNotNull(wardName))
 				dossier.setWardName(wardName);
+
+			if(returnType == 1) {
+				//Tra ho so vnpost
+				dossier.setViaPostal(2);
+			}
+
+			if(profileEms == 1) {
+				//Nop ho so tai nha dan
+				dossier.setVnpostalStatus(2);
+			}
 
 			dossier.setSystemId(0);
 			_log.info("----Creating dossier info 3...");
