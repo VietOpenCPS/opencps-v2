@@ -48,7 +48,7 @@ public class ProfileInModel {
 
     public String appointment_date;
 
-    public Integer return_type;
+    public String return_type;
 
     public String note;
 
@@ -292,11 +292,11 @@ public class ProfileInModel {
         this.appointment_date = appointment_date;
     }
 
-    public Integer getReturn_type() {
+    public String getReturn_type() {
         return return_type;
     }
 
-    public void setReturn_type(Integer return_type) {
+    public void setReturn_type(String return_type) {
         this.return_type = return_type;
     }
 
