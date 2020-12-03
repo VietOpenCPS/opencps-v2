@@ -1226,10 +1226,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
 				if (paymentFile != null) {
-					paymentFile.setPaymentStatus(5);
+					paymentFile.setPaymentStatus(PaymentFileTerm.PAYMENT_STATUS_HOAN_THANH_THANH_TOAN);
 					paymentFile.setApproveDatetime(new Date());
+					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 				}
-				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 				return dossierAction;
 			}
 
