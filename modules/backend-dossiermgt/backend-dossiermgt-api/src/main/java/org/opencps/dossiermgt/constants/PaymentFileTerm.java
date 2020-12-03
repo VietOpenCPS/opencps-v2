@@ -53,6 +53,7 @@ public class PaymentFileTerm {
 	public static final int PAYMENT_STATUS_TAM_UNG = 1;
 	public static final int PAYMENT_STATUS_QUYET_TOAN_PHI = 2;
 	public static final int PAYMENT_STATUS_HOAN_THANH_PHI = 3;
+	public static final int PAYMENT_STATUS_HOAN_THANH_THANH_TOAN = 5;
 	
 	public static final String PAYMENT_PORTAL = "paymentPortal";
 	public static final String KEYPAY = "KEYPAY";
@@ -62,4 +63,5 @@ public class PaymentFileTerm {
 	public static final String PAYMENT_METHOD_PAY_PLAT_DVCQG = "PayPlatDVCQG";
 	public static final String PAYMENT_METHOD_KEYPAY_LATE = "KeyPayLate";
 	public static final String PAYMENT_METHOD_PAYGOV = "Paygov";
+	public static final String PAYMENT_METHOD_PAYLATER = "Paylater";
 }

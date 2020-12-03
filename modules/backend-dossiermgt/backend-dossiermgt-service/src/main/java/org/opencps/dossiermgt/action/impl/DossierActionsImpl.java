@@ -513,7 +513,7 @@ public class DossierActionsImpl implements DossierActions {
 							enable = 1;
 						}
 					}
-					_log.debug("Enable: " + enable);
+					_log.info("Enable: " + enable);
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 						serviceProcessId, stepCode);
 					// _log.info("processActionList:
@@ -542,16 +542,17 @@ public class DossierActionsImpl implements DossierActions {
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
 							//							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
+							_log.info("Admin :" + isAdministratorData);
 							if (!isAdministratorData) {
 								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)){
-									data.put(ProcessActionTerm.ENABLE, enable);
-							}else {
-									//A.Duẩn autoEvent == SPECIAL vẫn check preCondition
-									if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
-										break;
-									} else {
-										data.put(ProcessActionTerm.ENABLE, 0);
+									//A.Duẩn autoEvent == SPECIAL trả về 1
+									if(AUTO_EVENT_SPECIAL.equals(autoEvent)){
+										data.put(ProcessActionTerm.ENABLE, 1);
+									}else {
+										data.put(ProcessActionTerm.ENABLE, enable);
 									}
+							}else {
+									data.put(ProcessActionTerm.ENABLE, 0);
 								}
 							}
 							else {

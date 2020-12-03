@@ -120,8 +120,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addTextSortable(DeliverableTerm.FORM_SCRIPT, object.getFormScript());
 		document.addTextSortable(DeliverableTerm.FORM_REPORT, object.getFormReport());
 //		document.addNumberSortable(DeliverableTerm.DELIVERABLE_STATE, object.getDeliverableState());
-		document.addNumberSortable(DeliverableTerm.DELIVERABLE_STATE + StringPool.UNDERLINE + ConstantUtils.DATA, object.getDeliverableState());
-		// add form data detail
+		document.addTextSortable(DeliverableTerm.DELIVERABLE_STATE + StringPool.UNDERLINE + ConstantUtils.DATA, String.valueOf(object.getDeliverableState()));		// add form data detail
 		String formData = object.getFormData();
 		if (Validator.isNotNull(formData)) {
 			List<Object[]> keyValues = new ArrayList<Object[]>();

@@ -1328,9 +1328,16 @@ public class DossierUtils {
 			for (ProcessAction act : actions) {
 
 				preStepCode = act.getPreStepCode();
-				_log.debug("LamTV_preStepCode: "+preStepCode);
-				if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
-				
+				// Đối với acion đặc biêt 8888 check preStepCode với postStepCodde
+				if(actionCode.equals(DossierActionTerm.OUTSIDE_ACTION_PAYMENT)){
+					if(Validator.isNull(act.getPreStepCode()) && Validator.isNull(act.getPostStepCode())){
+						action = act;
+						break;
+					}
+				}else {
+					_log.debug("LamTV_preStepCode: " + preStepCode );
+					if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
+				}
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
 //				_log.info("LamTV_ProcessStep: "+step);
 

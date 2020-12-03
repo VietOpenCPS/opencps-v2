@@ -21,6 +21,7 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MediaType;
 
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
@@ -31,7 +32,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
  *
  */
 public class KeypayV3Event implements MessageListener {
-
+	public static final Integer TIME_SLEEP = 2000;
 	@Override
 	public void receive(Message message) throws MessageListenerException {
 		try {
@@ -54,12 +55,13 @@ public class KeypayV3Event implements MessageListener {
 
 			params.put(DossierTerm.DOSSIER_ID, dossierId);
 //			_log.info("DossierId " + dossierId + " GroupId " + groupId);
-			Thread.sleep(5000);
+			//Hồ sơ đẩy sang chưa kịp tạo ==> Để sleep 2s để hồ sơ có thể tạo
+			Thread.sleep(TIME_SLEEP);
 			Dossier dossier3 = DossierLocalServiceUtil.fetchDossier(dossierId);
-//			_log.info(" Log Dossier " + JSONFactoryUtil.looseSerialize(dossier3));
+			_log.info(" Log Dossier " + JSONFactoryUtil.looseSerialize(dossier3));
 			JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON, baseUrl,
-					"o/pgi/keypayv3/create", "", "", properties, params, context);
-			_log.info("baseUrl: " + baseUrl + "o/pgi/keypayv3/create");
+					KeyPayTerm.ENDPOINT_KEYPAY, "", "", properties, params, context);
+			_log.info("baseUrl: " + baseUrl + KeyPayTerm.ENDPOINT_KEYPAY);
 			_log.info("Call post API SEND keypayv3 result: " + resultObj.toJSONString());
 			_log.info(params);
 		} catch (Exception e) {
