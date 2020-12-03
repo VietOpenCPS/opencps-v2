@@ -224,8 +224,7 @@ public class VotingActionsImpl implements VotingActions {
 			ett.setCommentable(commentable);
 		}
 
-		ett = VotingLocalServiceUtil.updateVote(userId, votingId, ett.getClassName(), ett.getClassPK(),
-				ett.getSubject(), ett.getChoices(), ett.getTemplateNo(), ett.getCommentable(), serviceContext);
+		
 
 		// update voting and delete voting result
 		List<String> oldListChoice =  ListUtil.toList(StringUtil.splitLines(oldChoice));
@@ -244,18 +243,23 @@ public class VotingActionsImpl implements VotingActions {
 		if (vList != null && vList.size() > 0) {
 			for (Voting vote : vList) {
 				long voId = vote.getVotingId();
-				for (int index : diffMap.keySet()) {
-					int count = VotingResultLocalServiceUtil.countByF_votingId_selected_filter_date(
-							voId, String.valueOf(index), new Date(), new Date());
-					if (count > 0) {
-					VotingResultLocalServiceUtil.removeByF_votingId_selected(voId, String.valueOf(index));
+				if (voId != votingId) {
+					for (int index : diffMap.keySet()) {
+						int count = VotingResultLocalServiceUtil.countByF_votingId_selected_filter_date(
+								voId, String.valueOf(index), new Date(), new Date());
+						if (count > 0) {
+						VotingResultLocalServiceUtil.removeByF_votingId_selected(voId, String.valueOf(index));
+						}
 					}
-				}
-				VotingLocalServiceUtil.updateVote(userId, voId, vote.getClassName(), vote.getClassPK(),
-						ett.getSubject(), ett.getChoices(), ett.getTemplateNo(), ett.getCommentable(), serviceContext);
+					
+					VotingLocalServiceUtil.updateVote(userId, voId, vote.getClassName(), vote.getClassPK(),
+							ett.getSubject(), ett.getChoices(), ett.getTemplateNo(), ett.getCommentable(), serviceContext);
+				}								
 			}
 		}
 		
+		ett = VotingLocalServiceUtil.updateVote(userId, votingId, ett.getClassName(), ett.getClassPK(),
+				ett.getSubject(), ett.getChoices(), ett.getTemplateNo(), ett.getCommentable(), serviceContext);
 
 		return ett;
 	}
