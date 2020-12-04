@@ -17,6 +17,16 @@
 		<url-pattern>/callback</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>MICSSOCallbackServlet</servlet-name>
+		<servlet-class>org.fds.opencps.dvcqg.authentication.MICSSOCallbackServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>MICSSOCallbackServlet</servlet-name>
+		<url-pattern>/callbackMic</url-pattern>
+	</servlet-mapping>
+
 	<welcome-file-list>
 		<welcome-file>/DocumentPorcessorServlet</welcome-file>
 	</welcome-file-list>

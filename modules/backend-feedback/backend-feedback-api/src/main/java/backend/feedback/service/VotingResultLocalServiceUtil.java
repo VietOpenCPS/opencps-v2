@@ -73,6 +73,10 @@ public class VotingResultLocalServiceUtil {
 		return getService().adminProcessDelete(id);
 	}
 
+	public static int countByF_votingId(long votingId) {
+		return getService().countByF_votingId(votingId);
+	}
+
 	public static int countByF_votingId_selected(long votingId, String selected) {
 		return getService().countByF_votingId_selected(votingId, selected);
 	}

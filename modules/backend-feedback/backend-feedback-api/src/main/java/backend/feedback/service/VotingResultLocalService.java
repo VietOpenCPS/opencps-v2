@@ -96,6 +96,8 @@ public interface VotingResultLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.DELETE)
 	public VotingResult adminProcessDelete(Long id);
 
+	public int countByF_votingId(long votingId);
+
 	public int countByF_votingId_selected(long votingId, String selected);
 
 	public int countByF_votingId_selected_filter_date(long votingId,
