@@ -2496,8 +2496,10 @@ public class OpencpsStatisticRestApplication extends Application {
 			if (LEVEL_4 == serviceLevel && !online) {
 				statisticData.setDossierOnegate4Count(statisticData.getDossierOnegate4Count() + 1);
 			}
-			//
-			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+			//tong so = tong so ho so loai tru case ho so ton co ngay nhan và ngay release truoc fromstatisticDate
+			if (!(receviedDate!=null && receviedDate.before(fromStatisticDate) && releaseDate.before(fromStatisticDate))) {
+				statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+			}
 			String dossierStatus = dossierData.get(DossierTerm.DOSSIER_STATUS);
 			if (dossierStatus.contentEquals(DENIED)) {
 				statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);				

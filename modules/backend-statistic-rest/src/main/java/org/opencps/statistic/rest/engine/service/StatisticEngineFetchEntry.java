@@ -87,8 +87,10 @@ public class StatisticEngineFetchEntry {
 		if (LEVEL_4 == serviceLevel) {
 			statisticData.setDossierOnline4Count(statisticData.getDossierOnline4Count() + 1);
 		}
-		//
-		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		//tong so = tong so ho so loai tru case ho so ton co ngay nhan và ngay release truoc fromstatisticDate
+		if (!(receviedDate!=null && receviedDate.before(fromStatisticDate) && releaseDate.before(fromStatisticDate))) {
+			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		}
 		if (dossierData.getDossierStatus().contentEquals(DossierStatusTerm.DENIED)) {
 			statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);				
 		} else {
@@ -241,8 +243,10 @@ public class StatisticEngineFetchEntry {
 		Date finishDate = Validator.isNull(dossierData.getFinishDate())
 					? null
 					: StatisticUtils.convertStringToDate(dossierData.getFinishDate());
-		//
-		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		//tong so = tong so ho so loai tru case ho so ton co ngay nhan và ngay release truoc fromstatisticDate
+		if (!(receviedDate!=null && receviedDate.before(fromStatisticDate) && releaseDate.before(fromStatisticDate))) {
+			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		}
 		int viaPostalCount = dossierData.getViaPostal();
 		if (viaPostalCount == USED_POSTAL) {
 			statisticData.setViaPostalCount(statisticData.getViaPostalCount() + 1);
