@@ -96,16 +96,20 @@ public class StatisticEngineFetchEntry {
 			statisticData.setProcessCount(statisticData.getProcessCount() + 1);
 
 			//if (receviedDate != null && receviedDate.after(getFirstDay(month, year))) {
-			if (receviedDate != null && receviedDate.after(fromStatisticDate)) {
-				// trong ky
+			if (receviedDate != null && receviedDate.after(fromStatisticDate)
+					&& receviedDate.before(toStatisticDate)) {
+				// ho so tiep nhan trong ky:
+				// ngay nhan thuoc from - to
 				statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 				if (dossierData.getOnline()) {
 					statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
 				} else {
 					statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 				}
-			} else {
-				// ton ky truoc
+			} else if (receviedDate != null && receviedDate.before(fromStatisticDate)
+					&& (releaseDate.after(fromStatisticDate) || releaseDate == null)) {
+				// ho so ton ky truoc:
+				// ngay nhan truoc ngay from, ngay release sau ngay from hoac ko co ngay release
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
 			}
 			
@@ -276,16 +280,20 @@ public class StatisticEngineFetchEntry {
 			statisticData.setProcessCount(statisticData.getProcessCount() + 1);
 
 			//if (receviedDate != null && receviedDate.after(getFirstDay(month, year))) {
-			if (receviedDate != null && receviedDate.after(fromStatisticDate)) {
-				// trong ky
+			if (receviedDate != null && receviedDate.after(fromStatisticDate) 
+					&& receviedDate.before(toStatisticDate)) {
+				// ho so tiep nhan trong ky:
+				// ngay nhan thuoc from - to
 				statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 				if (dossierData.getOnline()) {
 					statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
 				} else {
 					statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 				}			
-			} else {
-				// ton ky truoc
+			} else if (receviedDate != null && receviedDate.before(fromStatisticDate)
+					&& (releaseDate.after(fromStatisticDate)|| releaseDate == null)) {
+				// ho so ton ky truoc:
+				// ngay nhan truoc ngay from, ngay release sau ngay from hoac ko co ngay release
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
 			}
 			
