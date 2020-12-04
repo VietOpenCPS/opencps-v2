@@ -50,6 +50,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
 import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
+import org.opencps.usermgt.exception.NoSuchEmployeeException;
 import org.opencps.usermgt.model.Employee;
 
 import java.io.Serializable;
@@ -250,6 +251,9 @@ public interface EmployeeLocalService extends BaseLocalService,
 	public List<Employee> findByG_EMPID(long groupId, long[] employeeIds);
 
 	public List<Employee> findByG_MUSERID(long groupId, long[] userIds);
+
+	public Employee findByWorkingStatusAndEmployeeNo(int workingStatus,
+		String employeeNo) throws NoSuchEmployeeException;
 
 	public List<Employee> findByWorkstatus(long mappingUserId, int workingStatus);
 

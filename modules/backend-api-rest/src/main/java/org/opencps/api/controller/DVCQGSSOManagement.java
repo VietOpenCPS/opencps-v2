@@ -42,6 +42,19 @@ public interface DVCQGSSOManagement {
 			@FormParam("redirectURL") String redirectURL);
 
 	@GET
+	@Path("/authUrlMic")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.TEXT_HTML, MediaType.APPLICATION_JSON })
+	public Response getAuthURLMic(@Context HttpHeaders header, @QueryParam("state") String state,
+							   @QueryParam("redirectURL") String redirectURL);
+
+	@GET
+	@Path("/authMic")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON })
+	public Response doAuthMic(@Context HttpServletRequest request, @QueryParam("authCode") String authorizationCode);
+
+	@GET
 	@Path("/userinfo")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON })
