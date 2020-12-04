@@ -6,6 +6,7 @@ import javax.ws.rs.NotFoundException;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -47,4 +48,6 @@ public interface VotingActions {
 			throws NotFoundException, NoSuchVotingException;
 	
 	public Voting getVoting(String className, String classPK, String votingCode);
+	
+	public JSONObject getEmployeesVotingStatistic(JSONArray body);
 }
