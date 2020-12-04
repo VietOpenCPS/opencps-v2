@@ -137,16 +137,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactName = HtmlUtil.escape(input.getContactName());
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
-			_log.info("applicantName" + applicantName);
-			_log.info("applicantIdType" + applicantIdType);
-			_log.info("applicantIdNo" + applicantIdNo);
-			_log.info("address" + applicantIdNo);
-			_log.info("cityCode" + cityCode);
-			_log.info("districtCode" + districtCode);
-			_log.info("wardCode" + wardCode);
-			_log.info("contactName" + contactName);
-			_log.info("contactTelNo" + contactTelNo);
-			_log.info("contactEmail" + contactEmail);
+
 
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
@@ -1390,18 +1381,18 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					params.put(ApplicantTerm.CONTACTTELNO,contactTelNo);
 					params.put(ApplicantTerm.PROFILE,StringPool.BLANK);
 					params.put(ApplicantTerm.PASSWORD,input.getPassword());
-					_log.info("JSON : " + properties.toString());
+					_log.debug("JSON : " + properties.toString());
 					ServerConfig sc = lstSc.get(0);
 					JSONObject config = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 					//URL
 					String urlSync = config.getString(ApplicantTerm.URL_SYNC);
-					_log.info("Url :" + urlSync);
+					_log.debug("Url :" + urlSync);
 					//Path
 					String endPointSync = StringPool.FORWARD_SLASH + PATH_APPLICANT;
 
 					JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethods.POST, MediaType.APPLICATION_JSON,
 							urlSync, endPointSync, "", "", properties,params, serviceContext);
-					_log.info("RESULT Object :" + resultObj.toString());
+					_log.debug("RESULT Object :" + resultObj.toString());
 				}
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
