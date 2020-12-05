@@ -2496,8 +2496,8 @@ public class OpencpsStatisticRestApplication extends Application {
 			if (LEVEL_4 == serviceLevel && !online) {
 				statisticData.setDossierOnegate4Count(statisticData.getDossierOnegate4Count() + 1);
 			}
-			//tong so = tong so ho so loai tru case ho so ton co ngay nhan và ngay release truoc fromstatisticDate
-			if (!(receviedDate!=null && receviedDate.before(fromStatisticDate) && releaseDate.before(fromStatisticDate))) {
+			//tong so tiep nhan dau ky
+			if (receviedDate != null && (releaseDate == null || releaseDate.after(fromStatisticDate))) {
 				statisticData.setTotalCount(statisticData.getTotalCount() + 1);
 			}
 			String dossierStatus = dossierData.get(DossierTerm.DOSSIER_STATUS);
@@ -2519,7 +2519,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 					}
 				} else if (receviedDate != null && receviedDate.before(fromStatisticDate)
-						&& (releaseDate.after(fromStatisticDate) || releaseDate == null)) {
+						&& ( releaseDate == null || releaseDate.after(fromStatisticDate))) {
 					// ho so ton ky truoc:
 					// ngay nhan truoc ngay from, ngay release sau ngay from hoac ko co ngay release
 					statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);

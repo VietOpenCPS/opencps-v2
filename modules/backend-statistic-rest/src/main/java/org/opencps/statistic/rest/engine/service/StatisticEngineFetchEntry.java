@@ -87,8 +87,8 @@ public class StatisticEngineFetchEntry {
 		if (LEVEL_4 == serviceLevel) {
 			statisticData.setDossierOnline4Count(statisticData.getDossierOnline4Count() + 1);
 		}
-		//tong so = tong so ho so loai tru case ho so ton co ngay nhan và ngay release truoc fromstatisticDate
-		if (!(receviedDate!=null && receviedDate.before(fromStatisticDate) && releaseDate.before(fromStatisticDate))) {
+		//tong so tiep nhan dau ky
+		if (receviedDate != null && (releaseDate == null || releaseDate.after(fromStatisticDate))) {
 			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
 		}
 		if (dossierData.getDossierStatus().contentEquals(DossierStatusTerm.DENIED)) {
@@ -109,7 +109,7 @@ public class StatisticEngineFetchEntry {
 					statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 				}
 			} else if (receviedDate != null && receviedDate.before(fromStatisticDate)
-					&& (releaseDate.after(fromStatisticDate) || releaseDate == null)) {
+					&& ( releaseDate == null || releaseDate.after(fromStatisticDate))) {
 				// ho so ton ky truoc:
 				// ngay nhan truoc ngay from, ngay release sau ngay from hoac ko co ngay release
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
@@ -243,8 +243,8 @@ public class StatisticEngineFetchEntry {
 		Date finishDate = Validator.isNull(dossierData.getFinishDate())
 					? null
 					: StatisticUtils.convertStringToDate(dossierData.getFinishDate());
-		//tong so = tong so ho so loai tru case ho so ton co ngay nhan và ngay release truoc fromstatisticDate
-		if (!(receviedDate!=null && receviedDate.before(fromStatisticDate) && releaseDate.before(fromStatisticDate))) {
+		//tong so tiep nhan dau ky
+		if (receviedDate != null && (releaseDate == null || releaseDate.after(fromStatisticDate))) {
 			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
 		}
 		int viaPostalCount = dossierData.getViaPostal();
@@ -295,7 +295,7 @@ public class StatisticEngineFetchEntry {
 					statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 				}			
 			} else if (receviedDate != null && receviedDate.before(fromStatisticDate)
-					&& (releaseDate.after(fromStatisticDate)|| releaseDate == null)) {
+					&& (releaseDate == null ||releaseDate.after(fromStatisticDate))) {
 				// ho so ton ky truoc:
 				// ngay nhan truoc ngay from, ngay release sau ngay from hoac ko co ngay release
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
