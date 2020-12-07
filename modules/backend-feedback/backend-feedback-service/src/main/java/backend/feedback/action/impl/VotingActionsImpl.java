@@ -206,65 +206,67 @@ public class VotingActionsImpl implements VotingActions {
 			ServiceContext serviceContext) throws PortalException, SystemException {
 
 		Voting ett = fetchVotingById(votingId);
-		
-		String votingCode = "";
-		if (ett != null) {
-			votingCode = ett.getVotingCode();
-		}
-
-		if (Validator.isNotNull(subject)) {
-			ett.setSubject(subject);
-		}
-
-		if (Validator.isNotNull(templateNo)) {
-			ett.setTemplateNo(templateNo);
-		}
-
-		if (Validator.isNotNull(choices)) {
-			ett.setChoices(choices);
-		}
-
-		if (Validator.isNotNull(commentable)) {
-			ett.setCommentable(commentable);
-		}
-
-		
-
-		// update voting and delete voting result
-		List<String> oldListChoice =  ListUtil.toList(StringUtil.splitLines(oldChoice));
-		List<String> newListChoice =  ListUtil.toList(StringUtil.splitLines(choices));
-		Map<Integer, String> diffMap = new HashMap<>();
-		int i = 1;
-		for (String choice : oldListChoice) {			
-			if (newListChoice.contains(choice)) {
-				i++;
-			}else {
-				diffMap.put(i, choice);
-			}			
-		}
-		
-		List<Voting> vList = VotingLocalServiceUtil.getVotingByClass_Name_VC(className, votingCode);
-		if (vList != null && vList.size() > 0) {
-			for (Voting vote : vList) {
-				long voId = vote.getVotingId();
-				if (voId != votingId) {
-					for (int index : diffMap.keySet()) {
-						int count = VotingResultLocalServiceUtil.countByF_votingId_selected_filter_date(
-								voId, String.valueOf(index), new Date(), new Date());
-						if (count > 0) {
-						VotingResultLocalServiceUtil.removeByF_votingId_selected(voId, String.valueOf(index));
-						}
-					}
-					
-					VotingLocalServiceUtil.updateVote(userId, voId, vote.getClassName(), vote.getClassPK(),
-							ett.getSubject(), ett.getChoices(), ett.getTemplateNo(), ett.getCommentable(), serviceContext);
-				}								
+		try {
+			String votingCode = "";
+			if (ett != null) {
+				votingCode = ett.getVotingCode();
 			}
-		}
-		
-		ett = VotingLocalServiceUtil.updateVote(userId, votingId, ett.getClassName(), ett.getClassPK(),
-				ett.getSubject(), ett.getChoices(), ett.getTemplateNo(), ett.getCommentable(), serviceContext);
 
+			if (Validator.isNotNull(subject)) {
+				ett.setSubject(subject);
+			}
+
+			if (Validator.isNotNull(templateNo)) {
+				ett.setTemplateNo(templateNo);
+			}
+
+			if (Validator.isNotNull(choices)) {
+				ett.setChoices(choices);
+			}
+
+			if (Validator.isNotNull(commentable)) {
+				ett.setCommentable(commentable);
+			}
+
+			
+
+			// update voting and delete voting result
+			List<String> oldListChoice =  ListUtil.toList(StringUtil.splitLines(oldChoice));
+			List<String> newListChoice =  ListUtil.toList(StringUtil.splitLines(choices));
+			Map<Integer, String> diffMap = new HashMap<>();
+			int i = 1;
+			for (String choice : oldListChoice) {			
+				if (newListChoice.contains(choice)) {
+					i++;
+				}else {
+					diffMap.put(i, choice);
+				}			
+			}
+			
+			List<Voting> vList = VotingLocalServiceUtil.getVotingByClass_Name_VC(className, votingCode);
+			if (vList != null && vList.size() > 0) {
+				for (Voting vote : vList) {
+					long voId = vote.getVotingId();
+					if (voId != votingId) {
+						for (int index : diffMap.keySet()) {
+							int count = VotingResultLocalServiceUtil.countByF_votingId_selected_filter_date(
+									voId, String.valueOf(index), new Date(), new Date());
+							if (count > 0) {
+							VotingResultLocalServiceUtil.removeByF_votingId_selected(voId, String.valueOf(index));
+							}
+						}
+						
+						VotingLocalServiceUtil.updateVote(userId, voId, vote.getClassName(), vote.getClassPK(),
+								ett.getSubject(), ett.getChoices(), ett.getTemplateNo(), ett.getCommentable(), serviceContext);
+					}								
+				}
+			}
+			
+			ett = VotingLocalServiceUtil.updateVote(userId, votingId, ett.getClassName(), ett.getClassPK(),
+					ett.getSubject(), ett.getChoices(), ett.getTemplateNo(), ett.getCommentable(), serviceContext);
+		} catch (Exception e) {
+			_log.error(e);
+		}
 		return ett;
 	}
 

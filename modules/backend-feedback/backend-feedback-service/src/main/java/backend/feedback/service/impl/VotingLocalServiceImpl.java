@@ -437,33 +437,37 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 	
 		@Indexable(type = IndexableType.DELETE)
 		public void deleteVoteConfig(long votingId, ServiceContext serviceContext) throws NoSuchVotingException {
-			// lay ban ghi voting config muon remove
-			Voting voting = votingPersistence.fetchByPrimaryKey(votingId);
-			if (voting != null) {
-				// xoa cac ban ghi trong votingresult theo cac buoc :
-				// 1. lay danh sach ban ghi trong bang voting co votingCode = voting.getVotingCode();
-				// 2. lay danh sach ban ghi trong bang votingResult co votingId = buoc1.getVotingId();
-				// 3. Xoa toan bo ban ghi o buoc 2
-				List<Voting> vList = votingPersistence.findByF_CLNAME_VC(voting.getClassName(), voting.getVotingCode(), 0, 15);
-				if (vList != null && vList.size() > 0) {
-					for (Voting vote : vList) {
-						long voId = vote.getVotingId();
-						List<VotingResult>  voResults = votingResultPersistence.findByF_votingId(voId);
-						if (voResults != null && voResults.size() > 0) {
-							for (VotingResult voResult : voResults) {
-								try {
-									votingResultPersistence.remove(voResult.getVotingResultId());
-								} catch (NoSuchVotingResultException e) {
-									_log.error(e);
+			try {
+				// lay ban ghi voting config muon remove
+				Voting voting = votingPersistence.fetchByPrimaryKey(votingId);
+				if (voting != null) {
+					// xoa cac ban ghi trong votingresult theo cac buoc :
+					// 1. lay danh sach ban ghi trong bang voting co votingCode = voting.getVotingCode();
+					// 2. lay danh sach ban ghi trong bang votingResult co votingId = buoc1.getVotingId();
+					// 3. Xoa toan bo ban ghi o buoc 2
+					List<Voting> vList = votingPersistence.findByF_CLNAME_VC(voting.getClassName(), voting.getVotingCode(), 0, 15);
+					if (vList != null && vList.size() > 0) {
+						for (Voting vote : vList) {
+							long voId = vote.getVotingId();
+							List<VotingResult>  voResults = votingResultPersistence.findByF_votingId(voId);
+							if (voResults != null && voResults.size() > 0) {
+								for (VotingResult voResult : voResults) {
+									try {
+										votingResultPersistence.remove(voResult.getVotingResultId());
+									} catch (NoSuchVotingResultException e) {
+										_log.error(e);
+									}
 								}
 							}
 						}
 					}
+					// xoa ban ghi trong bang voting co votingCode = voting.getVotingCode();
+					votingPersistence.removeByF_CLNAME_VC(voting.getClassName(), voting.getVotingCode());
 				}
-				// xoa ban ghi trong bang voting co votingCode = voting.getVotingCode();
-				votingPersistence.removeByF_CLNAME_VC(voting.getClassName(), voting.getVotingCode());
-			}
 
+			} catch (Exception e) {
+				_log.error(e);
+			}			
 	}
 		
 		public List<Voting> getVotingByClass_Name_VC(String className, String votingCode) {		
