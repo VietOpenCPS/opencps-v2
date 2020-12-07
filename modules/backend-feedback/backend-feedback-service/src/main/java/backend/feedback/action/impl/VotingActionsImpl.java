@@ -205,27 +205,27 @@ public class VotingActionsImpl implements VotingActions {
 			String classPK, String subject, String templateNo, String choices, String oldChoice, Boolean commentable,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 
-		Voting ett = fetchVotingById(votingId);
+		Voting voting = fetchVotingById(votingId);
 		try {
 			String votingCode = "";
-			if (ett != null) {
-				votingCode = ett.getVotingCode();
+			if (voting != null) {
+				votingCode = voting.getVotingCode();
 			}
 
 			if (Validator.isNotNull(subject)) {
-				ett.setSubject(subject);
+				voting.setSubject(subject);
 			}
 
 			if (Validator.isNotNull(templateNo)) {
-				ett.setTemplateNo(templateNo);
+				voting.setTemplateNo(templateNo);
 			}
 
 			if (Validator.isNotNull(choices)) {
-				ett.setChoices(choices);
+				voting.setChoices(choices);
 			}
 
 			if (Validator.isNotNull(commentable)) {
-				ett.setCommentable(commentable);
+				voting.setCommentable(commentable);
 			}
 
 			
@@ -257,17 +257,17 @@ public class VotingActionsImpl implements VotingActions {
 						}
 						
 						VotingLocalServiceUtil.updateVote(userId, voId, vote.getClassName(), vote.getClassPK(),
-								ett.getSubject(), ett.getChoices(), ett.getTemplateNo(), ett.getCommentable(), serviceContext);
+								voting.getSubject(), voting.getChoices(), voting.getTemplateNo(), voting.getCommentable(), serviceContext);
 					}								
 				}
 			}
 			
-			ett = VotingLocalServiceUtil.updateVote(userId, votingId, ett.getClassName(), ett.getClassPK(),
-					ett.getSubject(), ett.getChoices(), ett.getTemplateNo(), ett.getCommentable(), serviceContext);
+			voting = VotingLocalServiceUtil.updateVote(userId, votingId, voting.getClassName(), voting.getClassPK(),
+					voting.getSubject(), voting.getChoices(), voting.getTemplateNo(), voting.getCommentable(), serviceContext);
 		} catch (Exception e) {
 			_log.error(e);
 		}
-		return ett;
+		return voting;
 	}
 
 //	@Deprecated
