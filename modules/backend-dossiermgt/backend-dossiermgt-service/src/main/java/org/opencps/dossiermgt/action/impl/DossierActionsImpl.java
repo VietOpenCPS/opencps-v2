@@ -513,7 +513,7 @@ public class DossierActionsImpl implements DossierActions {
 							enable = 1;
 						}
 					}
-					_log.debug("Enable: " + enable);
+					_log.info("Enable: " + enable);
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 						serviceProcessId, stepCode);
 					// _log.info("processActionList:
@@ -542,33 +542,49 @@ public class DossierActionsImpl implements DossierActions {
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
 							//							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
+							_log.info("Admin :" + isAdministratorData);
+							boolean checkEnable = false;
 							if (!isAdministratorData) {
-								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)){
-									data.put(ProcessActionTerm.ENABLE, enable);
-							}else {
-									//A.Duẩn autoEvent == SPECIAL vẫn check preCondition
+								checkEnable = processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user);
+								if (checkEnable) {
+									//A.Duẩn autoEvent == SPECIAL trả về 1
 									if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
-										break;
+										data.put(ProcessActionTerm.ENABLE, 1);
 									} else {
+										data.put(ProcessActionTerm.ENABLE, enable);
+									}
+								} else {
+									if (!AUTO_EVENT_SPECIAL.equals(autoEvent)) {
 										data.put(ProcessActionTerm.ENABLE, 0);
 									}
 								}
-							}
-							else {
+							}else {
 								data.put(ProcessActionTerm.ENABLE, enable);
 							}
-
-							data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
-							data.put(ProcessActionTerm.ACTION_CODE, actionCode);
-							data.put(ProcessActionTerm.ACTION_NAME, actionName);
-							data.put(ProcessActionTerm.PRESTEP_CODE, preStepCode);
-							data.put(ProcessActionTerm.POSTSTEP_CODE, postStepCode);
-							data.put(ProcessActionTerm.AUTO_EVENT, autoEvent);
-							data.put(ProcessActionTerm.PRE_CONDITION, preCondition);
-							data.put(ProcessActionTerm.ALLOW_ASSIGN_USER, processAction.getAllowAssignUser());
-
-							//
-							results.put(data);
+							if(AUTO_EVENT_SPECIAL.equals(autoEvent)){
+								if(checkEnable){
+									data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
+									data.put(ProcessActionTerm.ACTION_CODE, actionCode);
+									data.put(ProcessActionTerm.ACTION_NAME, actionName);
+									data.put(ProcessActionTerm.PRESTEP_CODE, preStepCode);
+									data.put(ProcessActionTerm.POSTSTEP_CODE, postStepCode);
+									data.put(ProcessActionTerm.AUTO_EVENT, autoEvent);
+									data.put(ProcessActionTerm.PRE_CONDITION, preCondition);
+									data.put(ProcessActionTerm.ALLOW_ASSIGN_USER, processAction.getAllowAssignUser());
+								}
+							}else {
+								data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
+								data.put(ProcessActionTerm.ACTION_CODE, actionCode);
+								data.put(ProcessActionTerm.ACTION_NAME, actionName);
+								data.put(ProcessActionTerm.PRESTEP_CODE, preStepCode);
+								data.put(ProcessActionTerm.POSTSTEP_CODE, postStepCode);
+								data.put(ProcessActionTerm.AUTO_EVENT, autoEvent);
+								data.put(ProcessActionTerm.PRE_CONDITION, preCondition);
+								data.put(ProcessActionTerm.ALLOW_ASSIGN_USER, processAction.getAllowAssignUser());
+							}
+							if(Validator.isNotNull(data) && data.length() > 0) {
+								results.put(data);
+							}
 						}
 					}
 				} else {
