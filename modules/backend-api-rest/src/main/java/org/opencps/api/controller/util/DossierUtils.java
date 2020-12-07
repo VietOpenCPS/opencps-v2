@@ -53,6 +53,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -63,6 +64,7 @@ import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -592,6 +594,14 @@ public class DossierUtils {
 			model.setResultVotingCode1(0);
 			model.setResultVotingCode2(0);
 			model.setResultVotingCode3(0);
+			
+			// add fee amount, service amount
+			PaymentFile pf = PaymentFileLocalServiceUtil.getByDossierId(groupId, GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+			if (pf != null) {
+				model.setFeeAmount(pf.getFeeAmount());
+				model.setServiceAmount(pf.getServiceAmount());
+				model.setTotalAmount(pf.getPaymentAmount());
+			}
 			ouputs.add(model);
 		}
 
