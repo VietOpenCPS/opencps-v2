@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -3412,6 +3413,353 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 	private static final String _FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_1 = "voting.votingCode IS NULL";
 	private static final String _FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_2 = "voting.votingCode = ?";
 	private static final String _FINDER_COLUMN_F_CLNAME_VC_VOTINGCODE_3 = "(voting.votingCode IS NULL OR voting.votingCode = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_CLNAME_CLPK_VC = new FinderPath(VotingModelImpl.ENTITY_CACHE_ENABLED,
+			VotingModelImpl.FINDER_CACHE_ENABLED, VotingImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_CLNAME_CLPK_VC",
+			new String[] {
+				String.class.getName(), String.class.getName(),
+				String.class.getName()
+			},
+			VotingModelImpl.CLASSNAME_COLUMN_BITMASK |
+			VotingModelImpl.CLASSPK_COLUMN_BITMASK |
+			VotingModelImpl.VOTINGCODE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_CLNAME_CLPK_VC = new FinderPath(VotingModelImpl.ENTITY_CACHE_ENABLED,
+			VotingModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_CLNAME_CLPK_VC",
+			new String[] {
+				String.class.getName(), String.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns the voting where className = &#63; and classPK = &#63; and votingCode = &#63; or throws a {@link NoSuchVotingException} if it could not be found.
+	 *
+	 * @param className the class name
+	 * @param classPK the class pk
+	 * @param votingCode the voting code
+	 * @return the matching voting
+	 * @throws NoSuchVotingException if a matching voting could not be found
+	 */
+	@Override
+	public Voting findByF_CLNAME_CLPK_VC(String className, String classPK,
+		String votingCode) throws NoSuchVotingException {
+		Voting voting = fetchByF_CLNAME_CLPK_VC(className, classPK, votingCode);
+
+		if (voting == null) {
+			StringBundler msg = new StringBundler(8);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("className=");
+			msg.append(className);
+
+			msg.append(", classPK=");
+			msg.append(classPK);
+
+			msg.append(", votingCode=");
+			msg.append(votingCode);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchVotingException(msg.toString());
+		}
+
+		return voting;
+	}
+
+	/**
+	 * Returns the voting where className = &#63; and classPK = &#63; and votingCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param className the class name
+	 * @param classPK the class pk
+	 * @param votingCode the voting code
+	 * @return the matching voting, or <code>null</code> if a matching voting could not be found
+	 */
+	@Override
+	public Voting fetchByF_CLNAME_CLPK_VC(String className, String classPK,
+		String votingCode) {
+		return fetchByF_CLNAME_CLPK_VC(className, classPK, votingCode, true);
+	}
+
+	/**
+	 * Returns the voting where className = &#63; and classPK = &#63; and votingCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param className the class name
+	 * @param classPK the class pk
+	 * @param votingCode the voting code
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching voting, or <code>null</code> if a matching voting could not be found
+	 */
+	@Override
+	public Voting fetchByF_CLNAME_CLPK_VC(String className, String classPK,
+		String votingCode, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { className, classPK, votingCode };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_CLNAME_CLPK_VC,
+					finderArgs, this);
+		}
+
+		if (result instanceof Voting) {
+			Voting voting = (Voting)result;
+
+			if (!Objects.equals(className, voting.getClassName()) ||
+					!Objects.equals(classPK, voting.getClassPK()) ||
+					!Objects.equals(votingCode, voting.getVotingCode())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_SELECT_VOTING_WHERE);
+
+			boolean bindClassName = false;
+
+			if (className == null) {
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSNAME_1);
+			}
+			else if (className.equals("")) {
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSNAME_3);
+			}
+			else {
+				bindClassName = true;
+
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSNAME_2);
+			}
+
+			boolean bindClassPK = false;
+
+			if (classPK == null) {
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSPK_1);
+			}
+			else if (classPK.equals("")) {
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSPK_3);
+			}
+			else {
+				bindClassPK = true;
+
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSPK_2);
+			}
+
+			boolean bindVotingCode = false;
+
+			if (votingCode == null) {
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_VOTINGCODE_1);
+			}
+			else if (votingCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_VOTINGCODE_3);
+			}
+			else {
+				bindVotingCode = true;
+
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_VOTINGCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindClassName) {
+					qPos.add(className);
+				}
+
+				if (bindClassPK) {
+					qPos.add(classPK);
+				}
+
+				if (bindVotingCode) {
+					qPos.add(votingCode);
+				}
+
+				List<Voting> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_CLNAME_CLPK_VC,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"VotingPersistenceImpl.fetchByF_CLNAME_CLPK_VC(String, String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					Voting voting = list.get(0);
+
+					result = voting;
+
+					cacheResult(voting);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_CLNAME_CLPK_VC,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Voting)result;
+		}
+	}
+
+	/**
+	 * Removes the voting where className = &#63; and classPK = &#63; and votingCode = &#63; from the database.
+	 *
+	 * @param className the class name
+	 * @param classPK the class pk
+	 * @param votingCode the voting code
+	 * @return the voting that was removed
+	 */
+	@Override
+	public Voting removeByF_CLNAME_CLPK_VC(String className, String classPK,
+		String votingCode) throws NoSuchVotingException {
+		Voting voting = findByF_CLNAME_CLPK_VC(className, classPK, votingCode);
+
+		return remove(voting);
+	}
+
+	/**
+	 * Returns the number of votings where className = &#63; and classPK = &#63; and votingCode = &#63;.
+	 *
+	 * @param className the class name
+	 * @param classPK the class pk
+	 * @param votingCode the voting code
+	 * @return the number of matching votings
+	 */
+	@Override
+	public int countByF_CLNAME_CLPK_VC(String className, String classPK,
+		String votingCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_CLNAME_CLPK_VC;
+
+		Object[] finderArgs = new Object[] { className, classPK, votingCode };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_VOTING_WHERE);
+
+			boolean bindClassName = false;
+
+			if (className == null) {
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSNAME_1);
+			}
+			else if (className.equals("")) {
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSNAME_3);
+			}
+			else {
+				bindClassName = true;
+
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSNAME_2);
+			}
+
+			boolean bindClassPK = false;
+
+			if (classPK == null) {
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSPK_1);
+			}
+			else if (classPK.equals("")) {
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSPK_3);
+			}
+			else {
+				bindClassPK = true;
+
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSPK_2);
+			}
+
+			boolean bindVotingCode = false;
+
+			if (votingCode == null) {
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_VOTINGCODE_1);
+			}
+			else if (votingCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_VOTINGCODE_3);
+			}
+			else {
+				bindVotingCode = true;
+
+				query.append(_FINDER_COLUMN_F_CLNAME_CLPK_VC_VOTINGCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindClassName) {
+					qPos.add(className);
+				}
+
+				if (bindClassPK) {
+					qPos.add(classPK);
+				}
+
+				if (bindVotingCode) {
+					qPos.add(votingCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSNAME_1 = "voting.className IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSNAME_2 = "voting.className = ? AND ";
+	private static final String _FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSNAME_3 = "(voting.className IS NULL OR voting.className = '') AND ";
+	private static final String _FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSPK_1 = "voting.classPK IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSPK_2 = "voting.classPK = ? AND ";
+	private static final String _FINDER_COLUMN_F_CLNAME_CLPK_VC_CLASSPK_3 = "(voting.classPK IS NULL OR voting.classPK = '') AND ";
+	private static final String _FINDER_COLUMN_F_CLNAME_CLPK_VC_VOTINGCODE_1 = "voting.votingCode IS NULL";
+	private static final String _FINDER_COLUMN_F_CLNAME_CLPK_VC_VOTINGCODE_2 = "voting.votingCode = ?";
+	private static final String _FINDER_COLUMN_F_CLNAME_CLPK_VC_VOTINGCODE_3 = "(voting.votingCode IS NULL OR voting.votingCode = '')";
 
 	public VotingPersistenceImpl() {
 		setModelClass(Voting.class);
@@ -3447,6 +3795,12 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
 			new Object[] { voting.getUuid(), voting.getGroupId() }, voting);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_CLNAME_CLPK_VC,
+			new Object[] {
+				voting.getClassName(), voting.getClassPK(),
+				voting.getVotingCode()
+			}, voting);
 
 		voting.resetOriginalValues();
 	}
@@ -3525,6 +3879,16 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 			votingModelImpl, false);
+
+		args = new Object[] {
+				votingModelImpl.getClassName(), votingModelImpl.getClassPK(),
+				votingModelImpl.getVotingCode()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_CLNAME_CLPK_VC, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_CLNAME_CLPK_VC, args,
+			votingModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(VotingModelImpl votingModelImpl,
@@ -3547,6 +3911,28 @@ public class VotingPersistenceImpl extends BasePersistenceImpl<Voting>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					votingModelImpl.getClassName(), votingModelImpl.getClassPK(),
+					votingModelImpl.getVotingCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_CLNAME_CLPK_VC, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_CLNAME_CLPK_VC, args);
+		}
+
+		if ((votingModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_CLNAME_CLPK_VC.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					votingModelImpl.getOriginalClassName(),
+					votingModelImpl.getOriginalClassPK(),
+					votingModelImpl.getOriginalVotingCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_CLNAME_CLPK_VC, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_CLNAME_CLPK_VC, args);
 		}
 	}
 
