@@ -129,6 +129,13 @@ public class VotingLocalServiceWrapper implements VotingLocalService,
 	}
 
 	@Override
+	public backend.feedback.model.Voting deleteVote(String className,
+		String classPK, String votingCode)
+		throws backend.feedback.exception.NoSuchVotingException {
+		return _votingLocalService.deleteVote(className, classPK, votingCode);
+	}
+
+	@Override
 	public void deleteVoteConfig(long votingId,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws backend.feedback.exception.NoSuchVotingException {
@@ -319,6 +326,13 @@ public class VotingLocalServiceWrapper implements VotingLocalService,
 		String className, String votingCode) {
 		return _votingLocalService.getVotingByClass_Name_VC(className,
 			votingCode);
+	}
+
+	@Override
+	public backend.feedback.model.Voting getVotingByCLName_CLPK_VC(
+		String className, String classPK, String votingCode) {
+		return _votingLocalService.getVotingByCLName_CLPK_VC(className,
+			classPK, votingCode);
 	}
 
 	@Override
