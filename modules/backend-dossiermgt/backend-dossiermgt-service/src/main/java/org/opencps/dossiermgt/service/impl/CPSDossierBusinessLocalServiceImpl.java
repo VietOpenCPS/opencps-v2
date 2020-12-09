@@ -1226,10 +1226,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
 				if (paymentFile != null) {
-					paymentFile.setPaymentStatus(5);
+					paymentFile.setPaymentStatus(PaymentFileTerm.PAYMENT_STATUS_HOAN_THANH_THANH_TOAN);
 					paymentFile.setApproveDatetime(new Date());
+					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 				}
-				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 				return dossierAction;
 			}
 
@@ -1417,6 +1417,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					senderAddress = configObj.getString(ServerConfigTerm.BDHN_CONNECT);
 				}
 				if(bdhnConnect){
+					//VNPOST thông báo đã có kết quả tại một cửa cho Bưu điện HN
 					if (dossier.getViaPostal() == 2) {
 						_log.info(" Call API VNPOST HN");
 						PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
@@ -1439,15 +1440,15 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setVnpostalStatus(VnpostCollectionTerm.VNPOSTAL_STAUS_3);
 			}
 			//Check buu dien ha noi
-			if (dossier.getViaPostal() == 2) {
-				_log.info("START SEND VNPOST HN");
-				ServerConfig config = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.SERVER_VNPOST_HN);
-				if (config != null){
-					for (int i = 0; i < 3; i++) {
-
-					}
-				}
-			}
+//			if (dossier.getViaPostal() == 2) {
+//				_log.info("START SEND VNPOST HN");
+//				ServerConfig config = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.SERVER_VNPOST_HN);
+//				if (config != null){
+//					for (int i = 0; i < 3; i++) {
+//
+//					}
+//				}
+//			}
 		} else {
 
 		}
@@ -8016,6 +8017,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							if(fileEntryId > 0) {
 								dossierFile.setEForm(false);
 								dossierFile.setFileEntryId(fileEntryId);
+								//File sinh từ eForm default PDF
+								String displayName = dossierFile.getDisplayName();
+								dossierFile.setDisplayName(displayName + ".pdf");
+								_log.info("Log dossierFile : " + dossierFile.getDossierFileId() + " DisplayName : " + dossierFile.getDisplayName());
 								dossierFileLocalService.updateDossierFile(dossierFile);
 							}
 

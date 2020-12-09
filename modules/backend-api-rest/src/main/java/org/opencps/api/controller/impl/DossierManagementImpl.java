@@ -2276,6 +2276,34 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 					}
 				}
+				// add delegate to applicant (Thêm thông tin người nộp cho chủ hs doanh nghiệp)
+				JSONObject payloadObj = JSONFactoryUtil.createJSONObject(input.getPayload());
+				if(payloadObj.has("applicantIdNo") && payloadObj.has("delegateIdNo")) {
+					String delegateIdNo = payloadObj.getString("delegateIdNo");
+					String applicantIdNo = payloadObj.getString("applicantIdNo");
+					String delegateName = payloadObj.getString("delegateName");
+					String delegateAddress = payloadObj.getString("delegateAddress");
+					String delegateCityCode = payloadObj.getString("delegateCityCode");
+					String delegateDistrictCode = payloadObj.getString("delegateDistrictCode");
+					String delegateWardCode = payloadObj.getString("delegateWardCode");
+					String delegateEmail = payloadObj.getString("delegateEmail");
+					String delegateTelNo = payloadObj.getString("delegateTelNo");
+					String applicantIdType = "citizen";
+					String applicantIdDate = "1970-01-01";
+					String password = "Dvc@2020#";
+
+
+					if (!delegateIdNo.equals(applicantIdNo)) {
+						Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(delegateIdNo);
+						if (Validator.isNull(applicant)) {
+							new ApplicantActionsImpl().register(serviceContext, groupId,
+									delegateName, applicantIdType, delegateIdNo, applicantIdDate,
+									delegateEmail, delegateAddress, delegateCityCode, StringPool.BLANK, delegateDistrictCode, 
+									StringPool.BLANK, delegateWardCode, StringPool.BLANK, StringPool.BLANK, delegateTelNo,
+									StringPool.BLANK, password);
+						}
+					}
+				}
 				
 			}
 
@@ -8935,34 +8963,44 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	private void getInterDossierFromOriginDossier(Dossier dossier, List<Dossier> listDossier) {
-		// Ds ho so trung gian va lien thong tu ho so goc
-		if (!StringUtils.isEmpty(dossier.getDossierNo())) {
-			List<Dossier> aList = DossierLocalServiceUtil.fetchByORIGIN_NO(dossier.getDossierNo());
-			// Lay ho so lien thong la ho so co originDossierId = 0
+		try {
+			// Ds ho so trung gian va lien thong tu ho so goc
+			if (!StringUtils.isEmpty(dossier.getDossierNo()) && 
+					!(dossier.getDossierNo().equalsIgnoreCase(dossier.getOriginDossierNo()))) {
+				List<Dossier> aList = DossierLocalServiceUtil.fetchByORIGIN_NO(dossier.getDossierNo());
+				// Lay ho so lien thong la ho so co originDossierId = 0
+				Dossier newDossier = null;
+				if (aList.size() > 0) {
+					newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
+							.findAny().orElse(null);
+					listDossier.add(newDossier);
+					getInterDossierFromOriginDossier(newDossier, listDossier);
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		
+	}
+
+	private void getConnectDossierFromInterDossier(Dossier dossier, List<Dossier> listDossier) {
+		try {
+			// Ds ho so goc cua hslt
+			List<Dossier> aList = new ArrayList<Dossier>();
+			if (!StringUtils.isEmpty(dossier.getOriginDossierNo()) &&
+					!(dossier.getOriginDossierNo().equalsIgnoreCase(dossier.getDossierNo()))) {
+			aList = DossierLocalServiceUtil.fetchByNEW_DO_NO(dossier.getOriginDossierNo());
+			}
 			Dossier newDossier = null;
 			if (aList.size() > 0) {
 				newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
 						.findAny().orElse(null);
 				listDossier.add(newDossier);
-				getInterDossierFromOriginDossier(newDossier, listDossier);
+				getConnectDossierFromInterDossier(newDossier, listDossier);
 			}
-		}
-	}
-
-	private void getConnectDossierFromInterDossier(Dossier dossier, List<Dossier> listDossier) {
-		// Ds ho so goc cua hslt
-		List<Dossier> aList = new ArrayList<Dossier>();
-		if (!StringUtils.isEmpty(dossier.getOriginDossierNo())) {
-		aList = DossierLocalServiceUtil.fetchByNEW_DO_NO(dossier.getOriginDossierNo());
-		}
-		Dossier newDossier = null;
-		if (aList.size() > 0) {
-			newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
-					.findAny().orElse(null);
-			listDossier.add(newDossier);
-			getConnectDossierFromInterDossier(newDossier, listDossier);
-		}
-
+		} catch (Exception e) {
+			_log.error(e);
+		}		
 	}
 
 

@@ -248,4 +248,12 @@ public interface UserManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
 			@PathParam("screenname_email") String screenname_email, @PathParam("code") String code, @QueryParam("j_captcha_response") String jCaptchaResponse);
+	
+	@GET
+	@Path("/liveuser")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getLiveUser(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext);
 }

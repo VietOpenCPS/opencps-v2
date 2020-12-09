@@ -178,6 +178,27 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	}
 
 	@Override
+	public Response tracePdf(long fileId, String body) {
+		try {
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(fileId);
+			if(Validator.isNull(dossierFile)) {
+				throw new Exception("No dossier file was found with id: " + fileId);
+			}
+			if(Validator.isNull(body) || body.isEmpty()) {
+				throw new Exception("No json string was found with id: " + fileId);
+			}
+
+			dossierFile.setSignInfo(body);
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+		} catch (Exception e) {
+			_log.error(e.getMessage());
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
 	public Response addDossierFileByDossierId(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,

@@ -120,7 +120,7 @@ public class VnpostEvent implements MessageListener {
 			} else {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, refId);
 			}
-			if (dossier.getVnpostalStatus() != 1) {
+			if (dossier.getOriginality() != 2 & dossier.getOriginality() != 3) {
 				return;
 			}
 
