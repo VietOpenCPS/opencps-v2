@@ -3,6 +3,7 @@ package backend.feedback.action.impl;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -11,20 +12,27 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.*;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.ws.rs.NotFoundException;
 
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import backend.feedback.action.VotingActions;
 import backend.feedback.constants.VotingTerm;
@@ -215,7 +223,9 @@ public class VotingActionsImpl implements VotingActions {
 	public void deleteVoting(long votingId, ServiceContext serviceContext)
 			throws NotFoundException, NoSuchVotingException {
 
-		VotingLocalServiceUtil.deleteVote(votingId, serviceContext);
+		//VotingLocalServiceUtil.deleteVote(votingId, serviceContext);
+		VotingLocalServiceUtil.deleteVoteConfig(votingId, serviceContext);
+
 	}
 
 	@Override
@@ -300,35 +310,15 @@ public class VotingActionsImpl implements VotingActions {
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 				// TODO check customer
 				if (employee != null) {
-					votingResult =
-						VotingResultLocalServiceUtil.fetchByF_votingId_userId(
-							userId, voting.getVotingId());
-					if (Validator.isNotNull(votingResult)) {
-
-						votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId,
-								votingResult.getVotingResultId(), votingId, employee.getFullName(), employee.getEmail(),
-								comment, selected, serviceContext);
-					} else {
-						votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
-								voting.getVotingId(), employee.getFullName(), employee.getEmail(), comment, selected,
-								serviceContext);
-
-					}
+					votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
+							voting.getVotingId(), employee.getFullName(), employee.getEmail(), comment, selected,
+							serviceContext);
 				} else {
 					Applicant applicant = ApplicantLocalServiceUtil.fetchByEmail(email);
 					if (applicant != null) {
-						votingResult = VotingResultLocalServiceUtil.fetchByF_votingId_userId(userId,
-								voting.getVotingId());
-						if (Validator.isNotNull(votingResult)) {
-							votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId,
-									votingResult.getVotingResultId(), votingId, applicant.getApplicantName(),
-									applicant.getContactEmail(), comment, selected, serviceContext);
-						} else {
-							votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
-									voting.getVotingId(), applicant.getApplicantName(), applicant.getContactEmail(), comment,
-									selected, serviceContext);
-
-						}
+						votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
+								voting.getVotingId(), applicant.getApplicantName(), applicant.getContactEmail(), comment,
+								selected, serviceContext);
 					}
 				}
 			}
@@ -361,6 +351,163 @@ public class VotingActionsImpl implements VotingActions {
 		} catch (ParseException e) {
 			_log.error(e);
 		} catch (SearchException e) {
+			_log.error(e);
+		}
+
+		return result;
+	}
+	
+	@Override
+	public JSONObject getEmployeesVotingStatistic(JSONArray body) {
+		
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		
+		JSONArray data = JSONFactoryUtil.createJSONArray();
+
+		LinkedHashMap<String, JSONObject> votingMap = new LinkedHashMap<String, JSONObject>();
+		
+		try {
+
+			if (body != null) {
+
+				//List<String> tmpJobPosCodes = com.liferay.petra.string.StringUtil.split(jobPosCode);
+
+				JSONObject jobPosObj = null;
+
+				for (int j = 0; j < body.length(); j++) {
+					
+					JSONObject item = body.getJSONObject(j);
+					
+					long groupId = item.getLong("groupId");
+					
+					String tmpJobPosCode = item.getString("jobposCode");
+
+					JobPos jobPos = JobPosLocalServiceUtil.getByJobCode(groupId, tmpJobPosCode);
+
+					if (jobPos != null) {
+
+						List<EmployeeJobPos> empJobList = EmployeeJobPosLocalServiceUtil.getByJobPostId(groupId,
+								jobPos.getJobPosId());
+
+						if (empJobList != null && empJobList.size() > 0) {
+
+							JSONArray empArr = JSONFactoryUtil.createJSONArray();
+
+							JSONObject empObj = null;
+
+							for (EmployeeJobPos employeeJobPos : empJobList) {
+
+								Employee emp = EmployeeLocalServiceUtil.fetchEmployee(employeeJobPos.getEmployeeId());
+
+								if (emp != null) {
+
+									List<Voting> votings = VotingLocalServiceUtil.getVotingByG_Class_Name_PK(groupId,
+											"employee", String.valueOf(emp.getEmployeeId()));
+
+									int totalVote = 0;
+
+									if (votings != null && !votings.isEmpty()) {
+
+										JSONArray votingArr = JSONFactoryUtil.createJSONArray();
+
+										int count = 0;
+
+										for (Voting voting : votings) {
+
+											String choices = voting.getChoices();
+
+											if (Validator.isNull(choices)) {
+												continue;
+											}
+
+											JSONObject votingObj = JSONFactoryUtil.createJSONObject();
+
+				
+											String[] arrChoice = com.liferay.portal.kernel.util.StringUtil.splitLines(choices);
+										
+
+											JSONArray choicesArr = JSONFactoryUtil.createJSONArray();
+
+											JSONArray selectedArr = JSONFactoryUtil.createJSONArray();
+											if (arrChoice != null && arrChoice.length > 0) {
+												int tmpTotal = 0;
+												for (int i = 1; i <= arrChoice.length; i++) {
+													choicesArr.put(arrChoice[i - 1]);
+													int voteCount = VotingResultLocalServiceUtil
+															.countByF_votingId_selected(voting.getVotingId(),
+																	String.valueOf(i));
+													selectedArr.put(voteCount);
+
+													totalVote += voteCount;
+													tmpTotal += voteCount;
+												}
+
+												if(tmpTotal > 0) {
+													votingObj.put("question", voting.getSubject());
+													votingObj.put("choices", choicesArr);
+													votingObj.put("selected", selectedArr);
+													votingObj.put("votingCode", voting.getVotingCode());
+													int pos = 0;
+													if(votingMap.containsKey(voting.getVotingCode())) {
+														pos = ListUtil.toList(votingMap.keySet().toArray()).indexOf(voting.getVotingCode());
+													}else {
+														pos = votingMap.size();
+													}
+													
+													votingObj.put("pos", pos);
+		
+													votingArr.put(votingObj);
+													
+													votingMap.put(voting.getVotingCode(), votingObj);
+													
+													count++;
+													
+												}
+
+											}
+
+										}
+
+										if (votingArr.length() > 0) {
+											empObj = JSONFactoryUtil.createJSONObject();
+											empObj.put("userId", emp.getMappingUserId());
+											empObj.put("name", emp.getFullName());
+											empObj.put("totalVote", (int) totalVote / count);
+											empObj.put("voting", votingArr);
+											empArr.put(empObj);
+										}
+									}
+								}
+							}
+
+							if (empArr.length() > 0) {
+								jobPosObj = JSONFactoryUtil.createJSONObject();
+								jobPosObj.put("jobposCode", tmpJobPosCode);
+								jobPosObj.put("jobposName", jobPos.getTitle());
+								jobPosObj.put("employees", empArr);
+								
+								data.put(jobPosObj);
+							}
+						}
+
+					}
+				}
+				
+				JSONArray voting = JSONFactoryUtil.createJSONArray();
+
+				for (Map.Entry<String, JSONObject> entry : votingMap.entrySet()) {
+					voting.put(entry.getValue());
+				}
+
+				result.put("total", data.length());
+				
+				result.put("voting", voting);
+				
+				result.put("data", data);
+
+			}
+
+		} catch (Exception e) {
 			_log.error(e);
 		}
 

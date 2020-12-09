@@ -125,6 +125,11 @@
 			<finder-column name="className" />
 			<finder-column name="classPK" />
 		</finder>
+		
+		<finder return-type="Collection" name="F_CLNAME_VC">
+			<finder-column name="className" />
+			<finder-column name="votingCode" />
+		</finder>
 	
 </entity>
 
@@ -181,6 +186,10 @@
 			<finder-column name="selected"></finder-column>
             <finder-column name="modifiedDate" comparator="&lt;="></finder-column>
 
+		</finder>
+			<finder return-type="Collection" name="F_votingId">
+			<finder-column name="votingId"></finder-column>
+			
 		</finder>
 	</entity>
 
