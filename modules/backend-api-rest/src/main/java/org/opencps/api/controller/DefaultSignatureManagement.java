@@ -190,5 +190,5 @@ public interface DefaultSignatureManagement {
 	public Response vtcaUpdateFile(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext, 
 			@FormParam("fileEntryIdStr") String fileEntryIdStr, 
-			@FormParam("signedFileName") String signedFileName) throws PortalException, Exception;
+			@FormParam("dossierFileStr") String dossierFileStr) throws PortalException, Exception;
 }
