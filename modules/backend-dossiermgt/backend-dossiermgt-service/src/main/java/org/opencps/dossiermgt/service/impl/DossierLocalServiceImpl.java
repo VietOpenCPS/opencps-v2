@@ -6390,6 +6390,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		desDossier.setDelegateType(srcDossier.getDelegateType());
 		desDossier.setDocumentNo(srcDossier.getDocumentNo());
 		desDossier.setDocumentDate(srcDossier.getDocumentDate());
+		desDossier.setVnpostalProfile(srcDossier.getVnpostalProfile());
+		desDossier.setVnpostalStatus(srcDossier.getVnpostalStatus());
+		desDossier.setPostalCodeSend(srcDossier.getPostalCodeSend());
+		desDossier.setPostalCodeReceived(srcDossier.getPostalCodeReceived());
 
 		return dossierPersistence.update(desDossier);
 	}

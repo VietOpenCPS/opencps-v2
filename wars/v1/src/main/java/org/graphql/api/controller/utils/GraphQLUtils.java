@@ -133,17 +133,17 @@ public class GraphQLUtils {
 				String key = jsonKeys.next();
 				String value = formDataKeyObject.getString(key);
 				if(value.contains(StringPool.FORWARD_SLASH)){
-					if(!key.equals(DeliverableTerm.SO_QD)) {
-						mapFilter.put(key + "_data@EQUAL",
-								Validator.isNotNull(formDataKeyObject.get(key)) ? String.valueOf(formDataKeyObject.get(key))
-										: StringPool.BLANK);
-					}
+					mapFilter.put(key + "_data@EQUAL",
+							Validator.isNotNull(formDataKeyObject.get(key)) ? String.valueOf(formDataKeyObject.get(key))
+									: StringPool.BLANK);
+
 				}else {
 					mapFilter.put(key + "_data@LIKE",
 							Validator.isNotNull(formDataKeyObject.get(key)) ? String.valueOf(formDataKeyObject.get(key))
 									: StringPool.BLANK);
 				}
 			}
+
 		} catch (Exception e) {
 			_log.debug(e);
 		}

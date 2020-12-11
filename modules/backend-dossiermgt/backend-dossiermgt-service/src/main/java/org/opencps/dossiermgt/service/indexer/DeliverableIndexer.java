@@ -177,12 +177,22 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 						document.addTextSortable(DeliverableTerm.NGAY_QD_SEARCH, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
 					}
 					if (key.equals(DeliverableTerm.NGAY_CAP)) {
-						document.addTextSortable(DeliverableTerm.NGAY_CAP_SEARCH , SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
+						document.addTextSortable(DeliverableTerm.NGAY_CAP_SEARCH, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
 					}
 				}
 				if (indexKey.indexOf("_id") != 0) {
 					document.addTextSortable(indexKey, jsonObject.getString(key));
 				}
+				if(jsonObject.getString(key).contains(StringPool.FORWARD_SLASH)) {
+					if (key.equals(DeliverableTerm.SO_QD)) {
+						_log.info("SO_QD :" + jsonObject.getString(key));
+						//Case : So QĐ chứa và không chứa ( /, - )
+						if (jsonObject.getString(key).contains(StringPool.FORWARD_SLASH) || jsonObject.getString(key).contains(StringPool.MINUS)) {
+							document.addTextSortable(DeliverableTerm.SO_QD_SEARCH, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
+						}
+					}
+				}
+
 //				if (key.equals(DeliverableTerm.HO_TEN)) {
 //					document.addTextSortable(indexKey, jsonObject.getString(key).toLowerCase());
 //				}
