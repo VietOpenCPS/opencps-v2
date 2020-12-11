@@ -2179,6 +2179,24 @@ public class DossierManagementImpl implements DossierManagement {
 								input.getPayment(), actConfig.getSyncType(),
 								serviceContext, errorModel);
 						}
+
+						//Add according to Duan's request (11/12/2020)
+						try {
+							if(actConfig.getDateOption() == 3 || actConfig.getDateOption() == 6) {
+								_log.info("Update dossier with actConfig dateOption = " + actConfig.getDateOption());
+								Dossier dossierAfterAction = DossierUtils.getDossier(id, groupId);
+								if(Validator.isNotNull(dueDate)
+										&& Validator.isNotNull(input.getReceiveDate())
+										&& dueDate > 0 && input.getReceiveDate() > 0) {
+									dossierAfterAction.setDueDate(new Date(dueDate));
+									dossierAfterAction.setLastReceiveDate(new Date(input.getReceiveDate()));
+									DossierLocalServiceUtil.updateDossier(dossierAfterAction);
+								}
+							}
+						} catch (Exception e) {
+							_log.warn("Error when update due date and last receive date: " + e.getMessage());
+							_log.warn("Still running...");
+						}
 						// Process send email or sms
 						// if (dossierResult != null) {
 						// String notificationType =
