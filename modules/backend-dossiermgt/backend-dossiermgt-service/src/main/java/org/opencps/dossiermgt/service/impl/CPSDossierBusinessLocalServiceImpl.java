@@ -1226,10 +1226,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
 				if (paymentFile != null) {
-					paymentFile.setPaymentStatus(5);
+					paymentFile.setPaymentStatus(PaymentFileTerm.PAYMENT_STATUS_HOAN_THANH_THANH_TOAN);
 					paymentFile.setApproveDatetime(new Date());
+					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 				}
-				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 				return dossierAction;
 			}
 
@@ -1417,6 +1417,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					senderAddress = configObj.getString(ServerConfigTerm.BDHN_CONNECT);
 				}
 				if(bdhnConnect){
+					//VNPOST thông báo đã có kết quả tại một cửa cho Bưu điện HN
 					if (dossier.getViaPostal() == 2) {
 						_log.info(" Call API VNPOST HN");
 						PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
@@ -1439,15 +1440,15 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setVnpostalStatus(VnpostCollectionTerm.VNPOSTAL_STAUS_3);
 			}
 			//Check buu dien ha noi
-			if (dossier.getViaPostal() == 2) {
-				_log.info("START SEND VNPOST HN");
-				ServerConfig config = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.SERVER_VNPOST_HN);
-				if (config != null){
-					for (int i = 0; i < 3; i++) {
-
-					}
-				}
-			}
+//			if (dossier.getViaPostal() == 2) {
+//				_log.info("START SEND VNPOST HN");
+//				ServerConfig config = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.SERVER_VNPOST_HN);
+//				if (config != null){
+//					for (int i = 0; i < 3; i++) {
+//
+//					}
+//				}
+//			}
 		} else {
 
 		}
@@ -7345,6 +7346,37 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String contactName = "";
 			String contactTelNo = input.getProfileOwner().getTel();
 			String contactEmail = "";
+			Integer returnType ;
+			Integer profileEms;
+			String returnTypeString = Validator.isNotNull(input.getReturn_type()) && !input.getReturn_type().isEmpty()
+					? input.getReturn_type() : "0";
+
+			String profileEmsString = Validator.isNotNull(input.getProfile_ems()) && !input.getProfile_ems().isEmpty()
+					? input.getProfile_ems() : "0";
+
+			if(Validator.isNotNull(returnTypeString) && !returnTypeString.isEmpty()) {
+				try {
+					returnType = Integer.parseInt(returnTypeString);
+				} catch (Exception e) {
+					_log.warn("Error when parse return type " + returnTypeString + ": " + e.getMessage());
+					_log.warn("Still running...");
+					returnType = 0;
+				}
+			} else {
+				returnType = 0;
+			}
+
+			if(Validator.isNotNull(profileEmsString) && !profileEmsString.isEmpty()) {
+				try {
+					profileEms = Integer.parseInt(profileEmsString);
+				} catch (Exception e) {
+					_log.warn("Error when parse profileEms " + profileEmsString + ": " + e.getMessage());
+					_log.warn("Still running...");
+					profileEms = 0;
+				}
+			} else {
+				profileEms = 0;
+			}
 
 			String postalServiceCode = "";
 			String postalServiceName = "";
@@ -7384,7 +7416,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Integer counter = 0;
 			Date appIdDate = null;
 			String metaData = StringPool.BLANK;
-			boolean online = false;
+			boolean online = true;
 			Integer originality = DossierTerm.ORIGINALITY_LIENTHONG;
 
 			dossier = dossierLocalService.initMultipleDossier(groupId, 0l, referenceUid, counter,
@@ -7428,6 +7460,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setWardCode(wardCode);
 			if (Validator.isNotNull(wardName))
 				dossier.setWardName(wardName);
+
+			if(returnType == 1) {
+				//Tra ho so vnpost
+				dossier.setViaPostal(2);
+			}
+
+			if(profileEms == 1) {
+				//Nop ho so tai nha dan
+				dossier.setVnpostalStatus(2);
+			}
 
 			dossier.setSystemId(0);
 			_log.info("----Creating dossier info 3...");

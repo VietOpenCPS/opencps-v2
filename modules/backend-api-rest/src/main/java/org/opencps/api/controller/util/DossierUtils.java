@@ -1328,6 +1328,7 @@ public class DossierUtils {
 			for (ProcessAction act : actions) {
 
 				preStepCode = act.getPreStepCode();
+				// Đối với acion đặc biêt 8888 check preStepCode với postStepCodde
 				if(actionCode.equals(DossierActionTerm.OUTSIDE_ACTION_PAYMENT)){
 					if(Validator.isNull(act.getPreStepCode()) && Validator.isNull(act.getPostStepCode())){
 						action = act;

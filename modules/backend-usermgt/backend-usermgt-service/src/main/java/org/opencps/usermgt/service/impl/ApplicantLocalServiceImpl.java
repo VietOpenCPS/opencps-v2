@@ -564,14 +564,15 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			throw new NoApplicantNameException("NoApplicantNameException");
 		}
 
-		if (Validator.isNull(applicantIdType))
+		if (Validator.isNull(applicantIdType)) {
 			throw new NoApplicantIdTypeException("NoApplicantIdTypeException");
-
-		if (Validator.isNull(applicantIdNo))
+		}
+		if (Validator.isNull(applicantIdNo)) {
 			throw new NoApplicantIdNoException("NoApplicantIdNoException");
-
-		if (Validator.isNull(applicantIdDate))
+		}
+		if (Validator.isNull(applicantIdDate)) {
 			throw new NoApplicantIdDateException("NoApplicantIdDateException");
+		}
 	}
 
 	// private void validateDuplicate(long companyId, String contactTelNo,

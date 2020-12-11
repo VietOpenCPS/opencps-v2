@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.*;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.*;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
@@ -59,6 +60,8 @@ import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.kernel.prop.PropValues;
 import org.opencps.usermgt.action.ApplicantActions;
@@ -84,6 +87,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import java.awt.image.BufferedImage;
@@ -133,6 +137,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactName = HtmlUtil.escape(input.getContactName());
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
+
 
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
@@ -1123,7 +1128,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-
+	public static final String PATH_APPLICANT = "applicants";
 	@Override
 	public Response registerWithCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, ApplicantInputModel input, String jCaptchaResponse) {
@@ -1346,6 +1351,49 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						input.getPassword());
 				_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
 				result = ApplicantUtils.mappingToApplicantModel(applicant);
+
+				// Công dân đăng ký bên DVC ==> Đẩy thông tin sang một cửa
+//				String serverConfigDetail = "serverconfigs/" + serverNo;
+//
+//				JSONObject resServerDetail = rest.callAPI(0l, HttpMethods.GET, "application/json",
+//						org.opencps.dossiermgt.scheduler.RESTFulConfiguration.SERVER_PATH_BASE, serverConfigDetail,
+//						org.opencps.dossiermgt.scheduler.RESTFulConfiguration.SERVER_USER, RESTFulConfiguration.SERVER_PASS, properties,
+//						serviceContext);
+				List<ServerConfig> lstSc =  ServerConfigLocalServiceUtil.getByProtocol(ApplicantTerm.SERVER_PROTOCOL);
+				HashMap<String, String> properties = new HashMap<String, String>();
+				InvokeREST callRest = new InvokeREST();
+				Map<String, Object> params = new HashMap<>();
+				if(lstSc !=null && !lstSc.isEmpty()){
+					params.put(ApplicantTerm.GROUP_ID,"0");
+					params.put(ApplicantTerm.APPLICANTNAME,applicantName);
+					params.put(ApplicantTerm.APPLICANTIDTYPE,applicantIdType);
+					params.put(ApplicantTerm.APPLICANTIDNO,applicantIdNo);
+					params.put(ApplicantTerm.APPLICANTIDDATE,applicantIdDate);
+					params.put(ApplicantTerm.CONTACTEMAIL,contactEmail);
+					params.put(ApplicantTerm.ADDRESS,address);
+					params.put(ApplicantTerm.CITYCODE,cityCode);
+					params.put(ApplicantTerm.CITYNAME,cityName);
+					params.put(ApplicantTerm.DISTRICTCODE,districtCode);
+					params.put(ApplicantTerm.DISTRICTNAME,districtName);
+					params.put(ApplicantTerm.WARDCODE,wardCode);
+					params.put(ApplicantTerm.WARDNAME,wardName);
+					params.put(ApplicantTerm.CONTACTNAME,contactName);
+					params.put(ApplicantTerm.CONTACTTELNO,contactTelNo);
+					params.put(ApplicantTerm.PROFILE,StringPool.BLANK);
+					params.put(ApplicantTerm.PASSWORD,input.getPassword());
+					_log.debug("JSON : " + properties.toString());
+					ServerConfig sc = lstSc.get(0);
+					JSONObject config = JSONFactoryUtil.createJSONObject(sc.getConfigs());
+					//URL
+					String urlSync = config.getString(ApplicantTerm.URL_SYNC);
+					_log.debug("Url :" + urlSync);
+					//Path
+					String endPointSync = StringPool.FORWARD_SLASH + PATH_APPLICANT;
+
+					JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethods.POST, MediaType.APPLICATION_JSON,
+							urlSync, endPointSync, "", "", properties,params, serviceContext);
+					_log.debug("RESULT Object :" + resultObj.toString());
+				}
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}
