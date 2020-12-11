@@ -1990,7 +1990,10 @@ public class DossierManagementImpl implements DossierManagement {
 						ProcessOption option = DossierUtils.getProcessOption(
 							serviceCode, govAgencyCode, dossierTempNo, groupId);
 						if (insideProcess) {
+							_log.info(6666);
 							if (dossier.getDossierActionId() == 0) {
+
+								_log.info(6666111);
 								if (option != null) {
 									long serviceProcessId =
 										option.getServiceProcessId();
@@ -2000,6 +2003,7 @@ public class DossierManagementImpl implements DossierManagement {
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
+										_log.info(66661112);
 										processActionCurrent = proAction;
 										_log.debug(
 											"DO ACTION: " +
@@ -2020,10 +2024,13 @@ public class DossierManagementImpl implements DossierManagement {
 								}
 							}
 							else {
+								_log.info(6666222);
 								DossierAction dossierAction =
 									DossierActionLocalServiceUtil.fetchDossierAction(
 										dossier.getDossierActionId());
+								_log.info(dossierAction);
 								if (dossierAction != null) {
+									_log.info(666622222);
 									long serviceProcessId =
 										dossierAction.getServiceProcessId();
 									DossierTemplate dossierTemplate =
@@ -2042,6 +2049,7 @@ public class DossierManagementImpl implements DossierManagement {
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
+										_log.info(6666333);
 										processActionCurrent = proAction;
 										_log.debug(
 											"DO ACTION: " +
@@ -2057,6 +2065,7 @@ public class DossierManagementImpl implements DossierManagement {
 											serviceContext, errorModel);
 									}
 									else {
+										_log.info(666644444);
 										// TODO: Error
 									}
 								}
@@ -2162,6 +2171,7 @@ public class DossierManagementImpl implements DossierManagement {
 							// }
 						}
 						else {
+							_log.info(77777);
 							dossierResult = actions.doAction(
 								groupId, userId, dossier, option, null,
 								actionCode, actionUser, input.getActionNote(),
