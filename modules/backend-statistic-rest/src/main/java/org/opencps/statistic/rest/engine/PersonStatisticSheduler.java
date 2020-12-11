@@ -177,7 +177,9 @@ public class PersonStatisticSheduler extends BaseMessageListener {
 				Date firstDay = StatisticUtils.getFirstDay(month, year);
 				Date lastDay = StatisticUtils.getLastDay(month, year);
 				// Calculate
-				Map<String, PersonStatisticData> statisticData = engineFetch.getStatisticPersonData(
+//				Map<String, PersonStatisticData> statisticData = engineFetch.getStatisticPersonData(
+//						groupId, personDataList, firstDay, lastDay);
+				Map<String, PersonStatisticData> statisticData = engineFetch.getOldStatisticPersonData(
 						groupId, personDataList, firstDay, lastDay);
 				
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();

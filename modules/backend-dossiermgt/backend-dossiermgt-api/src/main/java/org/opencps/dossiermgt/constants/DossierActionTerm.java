@@ -75,4 +75,5 @@ public class DossierActionTerm {
 	public static final String ACTION_NAME_EXPORT = "Thao tác";
 	public static final String CREATE_DATE_EXPORT = "Người tạo";
 	public static final String ACTION_NOTE_EXPORT = "Ghi chú";
+	public static final String STEP_NAME_UPDATE_DOSSIER = "Cập nhật hồ sơ";
 }

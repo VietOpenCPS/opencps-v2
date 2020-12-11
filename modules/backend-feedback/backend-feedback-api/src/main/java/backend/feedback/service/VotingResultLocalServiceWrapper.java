@@ -73,6 +73,11 @@ public class VotingResultLocalServiceWrapper implements VotingResultLocalService
 	}
 
 	@Override
+	public int countByF_votingId(long votingId) {
+		return _votingResultLocalService.countByF_votingId(votingId);
+	}
+
+	@Override
 	public int countByF_votingId_selected_filter_date(long votingId,
 		String selected, java.util.Date fromDate, java.util.Date toDate) {
 		return _votingResultLocalService.countByF_votingId_selected_filter_date(votingId,

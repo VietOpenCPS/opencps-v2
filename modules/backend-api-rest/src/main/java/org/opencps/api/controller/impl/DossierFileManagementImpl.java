@@ -203,16 +203,16 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.debug("==dossierfile dossierId===" + id + "In dossier file create");
 		try {
-			String extFile = StringPool.BLANK;
-			if (Validator.isNotNull(displayName)) {
-				extFile = ImportZipFileUtils.getExtendFileName(displayName);
-			}
-			boolean flagCheck = CheckFileUtils.checkFileUpload(file, extFile);
-//			
-			if (!flagCheck) {
-				return Response.status(HttpStatus.SC_FORBIDDEN)
-						.entity(ReadFilePropertiesUtils.get(org.opencps.dossiermgt.action.util.ConstantUtils.ATTACHMENT_ERROR)).build();
-			}
+//			String extFile = StringPool.BLANK;
+//			if (Validator.isNotNull(displayName)) {
+//				extFile = ImportZipFileUtils.getExtendFileName(displayName);
+//			}
+//			boolean flagCheck = CheckFileUtils.checkFileUpload(file, extFile);
+//
+//			if (!flagCheck) {
+//				return Response.status(HttpStatus.SC_FORBIDDEN)
+//						.entity(ReadFilePropertiesUtils.get(org.opencps.dossiermgt.action.util.ConstantUtils.ATTACHMENT_ERROR)).build();
+//			}
 			if (modifiedDate == null) {
 				modifiedDate = (new Date()).getTime();
 			}

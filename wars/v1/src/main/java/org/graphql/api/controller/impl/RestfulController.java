@@ -82,12 +82,15 @@ import java.util.Date;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.utils.CaptchaServiceSingleton;
@@ -324,7 +327,6 @@ public class RestfulController {
 			}
 
 			Enumeration<String> headerNames = request.getHeaderNames();
-
 			String strBasic = StringPool.BLANK;
 
 			if (headerNames != null) {
@@ -333,6 +335,7 @@ public class RestfulController {
 					String value = request.getHeader(key);
 					if (key.trim().equalsIgnoreCase(WebKeys.AUTHORIZATION)) {
 						strBasic = value;
+						_log.info("Authen Header -----: "+ strBasic);
 						break;
 					}
 				}
@@ -341,6 +344,8 @@ public class RestfulController {
 			String authorization = request.getParameter(WebKeys.AUTHORIZATION);
 			if (Validator.isNotNull(authorization)) {
 				strBasic = authorization;
+				_log.info("authorization -----: "+ authorization);
+				_log.info("Authen Form -----: "+ strBasic);
 			}
 
 			_log.info("syncUserLGSP: "+ syncUserLGSP);
@@ -657,6 +662,8 @@ public class RestfulController {
 			} else {
 				// Get encoded user and password, comes after "BASIC "
 				String userpassEncoded = strBasic.substring(6);
+				_log.info("strBasic " + strBasic);
+				_log.info("userpassEncoded " + userpassEncoded);
 				String decodetoken = new String(Base64.decode(userpassEncoded), StringPool.UTF8);
 
 				String account[] = decodetoken.split(":");

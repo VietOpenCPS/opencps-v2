@@ -98,6 +98,8 @@ public interface VotingResultLocalService extends BaseLocalService,
 
 	public int countByF_votingId_selected(long votingId, String selected);
 
+	public int countByF_votingId(long votingId);
+
 	public int countByF_votingId_selected_filter_date(long votingId,
 		String selected, Date fromDate, Date toDate);
 

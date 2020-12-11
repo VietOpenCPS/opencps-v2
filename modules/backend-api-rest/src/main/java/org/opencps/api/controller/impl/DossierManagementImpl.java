@@ -1757,8 +1757,8 @@ public class DossierManagementImpl implements DossierManagement {
 			// }
 
 			dossierPermission.hasCreateDossier(
-				groupId, user.getUserId(), input.getServiceCode(),
-				input.getGovAgencyCode(), input.getDossierTemplateNo());
+					groupId, user.getUserId(), input.getServiceCode(),
+					input.getGovAgencyCode(), input.getDossierTemplateNo());
 
 			// int counter = 0;
 			// String referenceUid = StringPool.BLANK;
@@ -1788,28 +1788,28 @@ public class DossierManagementImpl implements DossierManagement {
 
 			if (Validator.isNotNull(input.getCityCode()))
 				cityName = getDictItemName(
-					groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+						groupId, ADMINISTRATIVE_REGION, input.getCityCode());
 			if (Validator.isNotNull(input.getDistrictCode()))
 				districtName = getDictItemName(
-					groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+						groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
 			if (Validator.isNotNull(input.getWardCode()))
 				wardName = getDictItemName(
-					groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+						groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 
 			if (Validator.isNotNull(input.getPostalCityCode())) {
 				postalCityName = getDictItemName(
-					groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
+						groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
 			}
 			if (Validator.isNotNull(input.getPostalDistrictCode())) {
 				postalDistrictName = getDictItemName(
-					groupId, VNPOST_CITY_CODE, input.getPostalDistrictCode());
+						groupId, VNPOST_CITY_CODE, input.getPostalDistrictCode());
 			}
 			Integer delegateType =
-				(input.getDelegateType() != null ? input.getDelegateType() : 0);
+					(input.getDelegateType() != null ? input.getDelegateType() : 0);
 			String documentNo = input.getDocumentNo();
 			Date documentDate = null;
 			if (input.getDocumentDate() != null &&
-				Validator.isNotNull(input.getDocumentDate())) {
+					Validator.isNotNull(input.getDocumentDate())) {
 				documentDate = new Date(input.getDocumentDate());
 			}
 
@@ -1833,8 +1833,7 @@ public class DossierManagementImpl implements DossierManagement {
 						if (durationCount == 4) durationCount += 1;
 					}
 				}
-			}
-			catch (JSONException ex) {
+			} catch (JSONException ex) {
 				_log.debug(ex);
 			}
 			// Dossier dossier = actions.initDossier(groupId, id, referenceUid,
@@ -1869,6 +1868,32 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getDossierName(), input.getBriefNote(), delegateType, documentNo, documentDate, systemId,
 					vnpostalStatus, vnpostalProfile, input.getFromViaPostal(), input.getFormMeta(), input.getDueDate(),
 					durationCount, serviceContext);
+			String userNameLog = StringPool.BLANK;
+			JSONObject payload = JSONFactoryUtil.createJSONObject();
+			// Ghi log cập nhật hồ sơ
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+
+			payload.put(DossierActionTerm.STEP_NAME, DossierActionTerm.STEP_NAME_UPDATE_DOSSIER);
+			if (Validator.isNotNull(dossierAction)) {
+				payload.put(DossierActionTerm.STEP_CODE, dossierAction.getStepCode());
+				payload.put(DossierActionTerm.STEP_NAME, DossierActionTerm.STEP_NAME_UPDATE_DOSSIER);
+			}
+			if (user.getUserId() > 0) {
+				Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+				if(Validator.isNotNull(emp)) {
+					userNameLog = emp.getFullName();
+				}else{
+					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+					if(Validator.isNotNull(applicant)){
+						userNameLog = applicant.getApplicantName();
+					}
+				}
+			}
+			_log.info("userNameLog :" +userNameLog);
+			_log.info("DossierID "  + dossier.getDossierId());
+			 DossierLogLocalServiceUtil.addDossierLog(groupId, dossier.getDossierId(),
+					userNameLog, "", "PROCESS_TYPE", payload.toString(),
+					serviceContext);
 
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());

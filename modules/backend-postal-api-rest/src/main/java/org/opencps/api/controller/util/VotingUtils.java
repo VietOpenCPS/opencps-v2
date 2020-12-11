@@ -581,5 +581,28 @@ public class VotingUtils {
 
 		return results;
 	}
+	public static Long getVotingCount(List<Document> votingList) {
+		Long result = 0L;
+		int count;
+		int countTem = 0;
+		int countVotingId = 0;
+		if (votingList == null) return result;
+		if(votingList !=null && !votingList.isEmpty()) {
+			System.out.println("VotingId " + votingList.size());
+			for (Document doc : votingList) {
+				Long votingId = Long.valueOf(doc.get(VotingTerm.VOTING_ID));
+				System.out.println("VotingId " + votingId);
+				countVotingId++;
+				if(Validator.isNotNull(votingId)) {
+					count = VotingResultLocalServiceUtil.countByF_votingId(votingId);
+					countTem = countTem + count;
+				}
+			}
+		}
+		if (countVotingId > 0) {
+			result = Long.valueOf(countTem/countVotingId);
+		}
+		return result;
+	}
 
 }

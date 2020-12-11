@@ -100,6 +100,8 @@ public interface VotingLocalService extends BaseLocalService,
 
 	public long countVotingByClass_Name_PK(String className, String classPK);
 
+	public long countVotingByClass_Name_VC(String className, String votingCode);
+
 	public long countVotingByG_Class_Name_PK(long groupId, String className,
 		String classPK);
 
@@ -287,6 +289,14 @@ public interface VotingLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Voting> getVotings(int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Voting> getVotingByClass_Name_VC(String className,
+												 String votingCode);
+
+	@Indexable(type = IndexableType.DELETE)
+	public void deleteVoteConfig(long votingId, ServiceContext serviceContext)
+			throws NoSuchVotingException;
 
 	/**
 	* Returns all the votings matching the UUID and company.
