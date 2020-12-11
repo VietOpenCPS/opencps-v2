@@ -38,6 +38,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
     private static final String PARSE_CONFIG_JSON_FAIL= "Create object json from config error";
     private ObjectMapper objectMapper;
     private ServerConfig serverConfig;
+    private String base64LgspToken;
 
     public QLVBIntegrationActionImpl(ServerConfig serverConfig) throws Exception{
         this.apiService = new ApiThirdPartyServiceImpl();
@@ -51,6 +52,12 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
         if(Validator.isNull(this.configJson)) {
             throw new Exception(PARSE_CONFIG_JSON_FAIL);
         }
+        String  lgspAccessToken = "{\"AccessKey\":\"" + this.configJson.getString(QLVBConstants.CONFIG_ACCESS_KEY)
+                + "\",\"SecretKey\":\"" + this.configJson.getString(QLVBConstants.CONFIG_SECRET_KEY) +
+                "\",\"AppName\":\"" + this.configJson.getString(QLVBConstants.CONFIG_APP_NAME)
+                + "\",\"PartnerCode\":\"" + this.configJson.getString(QLVBConstants.CONFIG_PARTNER_CODE)
+                + "\",\"PartnerCodeCus\":\"" + this.configJson.getString(QLVBConstants.CONFIG_PARTNER_CODE_CUS) + "\"}";
+        this.base64LgspToken = Base64.getEncoder().encodeToString(lgspAccessToken.getBytes());
     }
 
     @Override
@@ -60,19 +67,12 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
                     + this.configJson.getString(QLVBConstants.CONFIG_GET_TOKEN)
                     + this.configJson.getString(QLVBConstants.CONFIG_USER_ID);
 
-            String  lgspAccessToken = "{\"AccessKey\":\"" + this.configJson.getString(QLVBConstants.CONFIG_ACCESS_KEY)
-                    + "\",\"SecretKey\":\"" + this.configJson.getString(QLVBConstants.CONFIG_SECRET_KEY) +
-                    "\",\"AppName\":\"" + this.configJson.getString(QLVBConstants.CONFIG_APP_NAME)
-                    + "\",\"PartnerCode\":\"" + this.configJson.getString(QLVBConstants.CONFIG_PARTNER_CODE)
-                    + "\",\"PartnerCodeCus\":\"" + this.configJson.getString(QLVBConstants.CONFIG_PARTNER_CODE_CUS) + "\"}";
-
-            String base64LgspToken = Base64.getEncoder().encodeToString(lgspAccessToken.getBytes());
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.add("lgspaccesstoken", base64LgspToken);
+            headers.add("lgspaccesstoken", this.base64LgspToken);
             headers.add("X-Authentication-Token", this.configJson.getString(QLVBConstants.CONFIG_X_AUTHENTICATION_TOKEN));
 
-            JSONObject result = this.apiService.get(urlGetToken, headers);
+            JSONObject result = this.apiService.get(urlGetToken, headers, null);
 
             if(Validator.isNotNull(result.getJSONObject("data").getString("token"))) {
                 return result.getJSONObject("data").getString("token");
@@ -147,18 +147,19 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
             String urlSendVB = this.configJson.getString(QLVBConstants.CONFIG_URL)
                     + this.configJson.getString(QLVBConstants.CONFIG_SEND_VB);
 
-            String trichYeu = "luongtest";
+            String trichYeu = dossier.getDossierName();
             List<FileVBHGModel> listVBHG = this.getListVBHG(dossierId);
             QLVBHGModel qlvbhgModel = new QLVBHGModel();
             qlvbhgModel.trichYeu = trichYeu;
-            qlvbhgModel.maHoSo = Validator.isNull(dossier.getDossierNo()) ? dossier.getDossierNo() : "";
+            qlvbhgModel.maHoSo = Validator.isNotNull(dossier.getDossierNo()) ? dossier.getDossierNo() : "";
             qlvbhgModel.files = listVBHG;
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.add("lgspaccesstoken", this.base64LgspToken);
             headers.add("X-Authentication-Token", token);
 
-            this.apiService.callApi(urlSendVB, headers, qlvbhgModel);
+            this.apiService.callApiAndTracking(urlSendVB, null, headers, qlvbhgModel);
             return true;
         } catch (Exception e) {
             throw new Exception(e.getMessage());

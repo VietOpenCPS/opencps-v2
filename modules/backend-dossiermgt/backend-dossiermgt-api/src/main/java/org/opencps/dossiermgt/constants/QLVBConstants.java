@@ -11,5 +11,6 @@ public class QLVBConstants {
     public static final String CONFIG_PARTNER_CODE_CUS = "partnerCodeCus";
     public static final String CONFIG_X_AUTHENTICATION_TOKEN = "xToken";
     public static final String CONFIG_USER_ID = "userId";
+    public static final String CONFIG_DOSSIER_PART_NO = "dossierPartNo";
 
 }
