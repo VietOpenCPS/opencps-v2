@@ -564,8 +564,9 @@ public class DossierActionsImpl implements DossierActions {
 							if (!isAdministratorData) {
 								//Special check không check dossierActionUser đối với action đặc biệt
 								if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
-									_log.info("autoEvent : " + autoEvent);
+									_log.debug("autoEvent : " + autoEvent);
 									checkEnable =processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user);
+									_log.debug("CheckEnable: " + checkEnable);
 									if(checkEnable){
 										data.put(ProcessActionTerm.ENABLE, 1);
 									}
@@ -780,7 +781,7 @@ public class DossierActionsImpl implements DossierActions {
 								if (Validator.isNotNull(psr.getCondition())) {
 									String[] conditions = StringUtil.split(psr.getCondition());
 
-									if (DossierMgtUtils.checkPreCondition(conditions, dossier, user)) {
+									if (DossierMgtUtils.checkPreCondition(conditions, dossier, user,"")) {
 										lstStepRoles.add(psr);
 									}
 								}
@@ -1638,7 +1639,7 @@ public class DossierActionsImpl implements DossierActions {
 						// String returnDossierFiles =
 						// processAction.getReturnDossierFiles();
 
-						boolean checkPreCondition = DossierMgtUtils.checkPreCondition(preConditions, dossier, curUser);
+						boolean checkPreCondition = DossierMgtUtils.checkPreCondition(preConditions, dossier, curUser,"");
 
 						if (!checkPreCondition) {
 							continue;
@@ -3483,11 +3484,12 @@ public class DossierActionsImpl implements DossierActions {
 		//		_log.info("SONDT processCheckEnable PRECONDISTIONARR ========= " + JSONFactoryUtil.looseSerialize(preConditionArr));
 		//		_log.info("SONDT processCheckEnable dossier ========= " + JSONFactoryUtil.looseSerialize(dossier));
 		if (preConditionArr != null && preConditionArr.length > 0) {
-			if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
-				return DossierMgtUtils.checkPreConditionSpecial(preConditionArr, dossier, curUser);
-			}else{
-				return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, curUser);
-			}
+			_log.info("Vaooooo preeeeeeeee");
+//			if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+//				return DossierMgtUtils.checkPreConditionSpecial(preConditionArr, dossier, curUser);
+//			}else{
+				return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, curUser,autoEvent);
+//			}
 		}
 
 		//		int originality = dossier.getOriginality();
@@ -3943,7 +3945,7 @@ public class DossierActionsImpl implements DossierActions {
 						if (Validator.isNotNull(psr.getCondition())) {
 							String[] conditions = StringUtil.split(psr.getCondition());
 
-							if (DossierMgtUtils.checkPreCondition(conditions, dossier, user)) {
+							if (DossierMgtUtils.checkPreCondition(conditions, dossier, user,"")) {
 								lstStepRoles.add(psr);
 							}
 						}

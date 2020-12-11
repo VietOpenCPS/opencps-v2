@@ -6881,7 +6881,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 		String[] preConditionArr = StringUtil.split(preCondition);
 		if (preConditionArr != null && preConditionArr.length > 0) {
-			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, user);
+			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, user,"");
 		}
 
 		return true;
@@ -7309,7 +7309,7 @@ public class DossierManagementImpl implements DossierManagement {
 													psr.getCondition());
 
 											if (DossierMgtUtils.checkPreCondition(
-												conditions, dossier, user)) {
+												conditions, dossier, user,"")) {
 												lstStepRoles.add(psr);
 											}
 										}
@@ -8922,7 +8922,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String[] preConditionArr = StringUtil.split(preCondition);
 			if (preConditionArr != null && preConditionArr.length > 0) {
 
-				return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, curUser);
+				return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, curUser,"");
 			}
 			return true;
 		}

@@ -1361,7 +1361,7 @@ public class DossierUtils {
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
-						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user)) {
+						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user,Validator.isNotNull(act.getAutoEvent()) ? act.getAutoEvent() : "")) {
 							action = act;
 							break;							
 						}
