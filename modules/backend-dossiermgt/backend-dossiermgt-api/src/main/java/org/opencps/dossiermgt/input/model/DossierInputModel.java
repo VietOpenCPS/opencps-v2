@@ -78,6 +78,15 @@ public class DossierInputModel {
 	private String vnpostalProfile;
 	private Integer fromViaPostal;
 	private String formMeta;
+	private String releaseDate;
+
+	public String getReleaseDate() {
+		return releaseDate;
+	}
+
+	public void setReleaseDate(String releaseDate) {
+		this.releaseDate = releaseDate;
+	}
 
 	public String getFormMeta() {
 		return formMeta;

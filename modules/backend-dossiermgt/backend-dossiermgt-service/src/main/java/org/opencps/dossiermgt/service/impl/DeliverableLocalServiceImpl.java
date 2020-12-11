@@ -1725,7 +1725,7 @@ public class DeliverableLocalServiceImpl
 						}
 					}
 				} else if (key.contains("@EQUAL")) {
-					 if(entry.getValue().contains(StringPool.FORWARD_SLASH)){
+					 if(entry.getValue().contains(StringPool.FORWARD_SLASH) || entry.getValue().contains(StringPool.MINUS)){
 					 	String keywordDate = SpecialCharacterUtils.splitSpecial(entry.getValue());
 
 //					 	MultiMatchQuery query = new MultiMatchQuery(keywordDate);
@@ -1749,8 +1749,19 @@ public class DeliverableLocalServiceImpl
 							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
 							query.addFields(DeliverableTerm.NGAY_CAP_SEARCH);
 							queryBool.add(query, BooleanClauseOccur.MUST);
+						}else if(key.split("@")[0].contains(DeliverableTerm.SO_QD)){
+							_log.info("Keyword :" + keywordDate);
+//							WildcardQuery wildQuery = new WildcardQueryImpl(
+//									DeliverableTerm.SO_QD_SEARCH,
+//									StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
+//							queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+
+							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+							query.addFields(DeliverableTerm.SO_QD_SEARCH);
+							queryBool.add(query, BooleanClauseOccur.MUST);
 						}
-					}else {
+
+					 }else {
 						 MultiMatchQuery query = new MultiMatchQuery(entry.getValue());
 						 query.addFields(key.split("@")[0]);
 						 queryBool.add(query, BooleanClauseOccur.MUST);
