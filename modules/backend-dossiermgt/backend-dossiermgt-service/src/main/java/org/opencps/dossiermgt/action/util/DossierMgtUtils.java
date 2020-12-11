@@ -699,6 +699,14 @@ public class DossierMgtUtils {
 				if (splitRoles.length == 2) {
 					result = result && checkRoleCode(splitRoles[1], curUser, dossier);
 				}
+			}else{
+				// roleCode
+				if(preCondition.contains(DossierTerm.ROLE_CODE)){
+					String[] splitRoles = preCondition.split(StringPool.EQUAL);
+					if (splitRoles.length == 2) {
+						result = result && checkRoleCode(splitRoles[1], curUser, dossier);
+					}
+				}
 			}
 			if (preCondition.contains(DossierTerm.CONTAIN_WAITING_OVERDUE_THAN)) {
 				String[] splitDuration = preCondition.split(StringPool.GREATER_THAN);

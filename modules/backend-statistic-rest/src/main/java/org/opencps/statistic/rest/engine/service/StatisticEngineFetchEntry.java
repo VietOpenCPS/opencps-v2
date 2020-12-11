@@ -87,8 +87,10 @@ public class StatisticEngineFetchEntry {
 		if (LEVEL_4 == serviceLevel) {
 			statisticData.setDossierOnline4Count(statisticData.getDossierOnline4Count() + 1);
 		}
-		//
-		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		//tong so tiep nhan dau ky
+		if (receviedDate != null && (releaseDate == null || releaseDate.after(fromStatisticDate))) {
+			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		}
 		if (dossierData.getDossierStatus().contentEquals(DossierStatusTerm.DENIED)) {
 			statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);				
 		} else {
@@ -96,16 +98,20 @@ public class StatisticEngineFetchEntry {
 			statisticData.setProcessCount(statisticData.getProcessCount() + 1);
 
 			//if (receviedDate != null && receviedDate.after(getFirstDay(month, year))) {
-			if (receviedDate != null && receviedDate.after(fromStatisticDate)) {
-				// trong ky
+			if (receviedDate != null && receviedDate.after(fromStatisticDate)
+					&& receviedDate.before(toStatisticDate)) {
+				// ho so tiep nhan trong ky:
+				// ngay nhan thuoc from - to
 				statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 				if (dossierData.getOnline()) {
 					statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
 				} else {
 					statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 				}
-			} else {
-				// ton ky truoc
+			} else if (receviedDate != null && receviedDate.before(fromStatisticDate)
+					&& ( releaseDate == null || releaseDate.after(fromStatisticDate))) {
+				// ho so ton ky truoc:
+				// ngay nhan truoc ngay from, ngay release sau ngay from hoac ko co ngay release
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
 			}
 			
@@ -237,8 +243,10 @@ public class StatisticEngineFetchEntry {
 		Date finishDate = Validator.isNull(dossierData.getFinishDate())
 					? null
 					: StatisticUtils.convertStringToDate(dossierData.getFinishDate());
-		//
-		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		//tong so tiep nhan dau ky
+		if (receviedDate != null && (releaseDate == null || releaseDate.after(fromStatisticDate))) {
+			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		}
 		int viaPostalCount = dossierData.getViaPostal();
 		if (viaPostalCount == USED_POSTAL) {
 			statisticData.setViaPostalCount(statisticData.getViaPostalCount() + 1);
@@ -276,16 +284,20 @@ public class StatisticEngineFetchEntry {
 			statisticData.setProcessCount(statisticData.getProcessCount() + 1);
 
 			//if (receviedDate != null && receviedDate.after(getFirstDay(month, year))) {
-			if (receviedDate != null && receviedDate.after(fromStatisticDate)) {
-				// trong ky
+			if (receviedDate != null && receviedDate.after(fromStatisticDate) 
+					&& receviedDate.before(toStatisticDate)) {
+				// ho so tiep nhan trong ky:
+				// ngay nhan thuoc from - to
 				statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 				if (dossierData.getOnline()) {
 					statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
 				} else {
 					statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 				}			
-			} else {
-				// ton ky truoc
+			} else if (receviedDate != null && receviedDate.before(fromStatisticDate)
+					&& (releaseDate == null ||releaseDate.after(fromStatisticDate))) {
+				// ho so ton ky truoc:
+				// ngay nhan truoc ngay from, ngay release sau ngay from hoac ko co ngay release
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
 			}
 			
