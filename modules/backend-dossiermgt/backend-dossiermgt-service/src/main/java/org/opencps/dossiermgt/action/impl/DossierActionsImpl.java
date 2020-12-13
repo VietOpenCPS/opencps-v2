@@ -3484,12 +3484,7 @@ public class DossierActionsImpl implements DossierActions {
 		//		_log.info("SONDT processCheckEnable PRECONDISTIONARR ========= " + JSONFactoryUtil.looseSerialize(preConditionArr));
 		//		_log.info("SONDT processCheckEnable dossier ========= " + JSONFactoryUtil.looseSerialize(dossier));
 		if (preConditionArr != null && preConditionArr.length > 0) {
-			_log.info("Vaooooo preeeeeeeee");
-//			if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
-//				return DossierMgtUtils.checkPreConditionSpecial(preConditionArr, dossier, curUser);
-//			}else{
 				return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, curUser,autoEvent);
-//			}
 		}
 
 		//		int originality = dossier.getOriginality();
