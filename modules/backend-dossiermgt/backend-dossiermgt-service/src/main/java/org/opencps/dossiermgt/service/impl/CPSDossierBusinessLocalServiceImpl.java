@@ -1914,7 +1914,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				isSendNotiEmail = notiTemplate.getSendEmail();
 			}
 			if (Validator.isNotNull(preCondition)) {
-				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition }, dossier, null)) {
+				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition }, dossier, null,"")) {
 					if (isSendSMS) {
 						isSendNotiSMS = false;
 						isSendNotiEmail = true;
@@ -5542,7 +5542,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			boolean isSendNotiSMS = true;
 			boolean isSendNotiEmail = true;
 			if (Validator.isNotNull(preCondition)) {
-				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition }, dossier, null)) {
+				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition }, dossier, null,"")) {
 					if (isSendSMS) {
 						isSendNotiSMS = false;
 						isSendNotiEmail = true;
@@ -7573,12 +7573,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			processActionCurrent = proAction;
 
-			if(Validator.isNull(input.getPayment())) {
-				dossierActionResult = doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
-						StringPool.BLANK, StringPool.BLANK, null, syncType, serviceContext);
+			if(Validator.isNotNull(input)) {
+				if(Validator.isNull(input.getPayment())) {
+					dossierActionResult = doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
+							StringPool.BLANK, StringPool.BLANK, null, syncType, serviceContext);
+				} else {
+					dossierActionResult = doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
+							StringPool.BLANK, StringPool.BLANK, objMapper.writeValueAsString(input.getPayment()), syncType, serviceContext);
+				}
 			} else {
 				dossierActionResult = doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
-						StringPool.BLANK, StringPool.BLANK, objMapper.writeValueAsString(input.getPayment()), syncType, serviceContext);
+						StringPool.BLANK, StringPool.BLANK, null, syncType, serviceContext);
 			}
 
 			if(Validator.isNull(dossierActionResult)) {
@@ -8310,6 +8315,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 											   String formData, String removed, String eForm) throws Exception {
 		try {
 			String dossierPartNo = "TP99";
+
+			if(Validator.isNotNull(formData) && !formData.isEmpty()) {
+				dossierPartNo = formData;
+			}
 			String dossierTemplateNo = dossier.getDossierTemplateNo();
 			String fileTemplateNo = "";
 			List<DossierPart> lstParts = dossierPartLocalService.getByTemplateNo(groupId,
@@ -8341,7 +8350,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				try {
 					inputStream.close();
 				} catch (Exception io) {
-					_log.error(io);
+
 				}
 			}
 		}
@@ -9548,7 +9557,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus) && flagCheck) {
 						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(
-								act.getPreCondition().split(StringPool.COMMA), dossier, systemUser)) {
+								act.getPreCondition().split(StringPool.COMMA), dossier, systemUser,Validator.isNotNull(act.getAutoEvent()) ? act.getAutoEvent() : "")) {
 							action = act;
 							break;
 						} else if (Validator.isNull(act.getPreCondition())) {

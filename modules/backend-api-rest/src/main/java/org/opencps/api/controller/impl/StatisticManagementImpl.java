@@ -39,6 +39,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.constants.StatisticManagementConstants;
@@ -683,6 +684,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 			int headerRows = 0;
 			workbook = new HSSFWorkbook();
 			HSSFSheet mainSheet = workbook.createSheet(StatisticManagementConstants.REPORT);
+			mainSheet.setDefaultColumnWidth(20);
+			//Trick:  To set the width as 8 we need to pass the parameter as 8 * 256
+			mainSheet.setColumnWidth(0, 8* 256);
+
 			int maxCol = 0;
 	
 			for (int i = 0; i < contentArr.length(); i++) {
@@ -779,6 +784,8 @@ public class StatisticManagementImpl implements StatisticManagement {
 								row.createCell(startCol).setCellValue(columnObj != null ? columnObj.getString(StatisticManagementConstants.TEXT) : StringPool.BLANK);						
 								CellStyle cellStyle = row.getCell(startCol).getCellStyle();
 								cellStyle.setWrapText(true);
+								cellStyle.setAlignment(HorizontalAlignment.LEFT);
+								cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 								if (columnObj.has(StatisticManagementConstants.ALIGNMENT)) {
 									String alignment = columnObj.getString(StatisticManagementConstants.ALIGNMENT);
 									if (StatisticManagementConstants.ALIGNMENT_LEFT.equals(alignment)) {
