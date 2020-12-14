@@ -394,6 +394,8 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
         	results.put("message", "success");
         	results.put("serialNumber", ((X509Certificate) certChain[0]).getSerialNumber().toString(16));
         	results.put("base64Hash", base64Hash);
+        	results.put("fileName", dlFileEntry.getFileName());
+        	results.put("fileEntryId", dlFileEntry.getFileEntryId());
         	request.getSession().setAttribute("PDFSignature", signPdfFile);
 	        	        
 		} catch (Exception e) {
@@ -403,7 +405,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 	}
 
 	@Override
-	public JSONObject insertSignnature(String signatureBase64, String signFileName, SignPdfFile signPdfFile) {
+	public JSONObject insertSignnature(String signatureBase64, String signFileName, SignPdfFile signPdfFile, long fileEntryId) {
 		
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		
@@ -438,6 +440,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 	        results.put("message", "success");
 	        results.put("signedFileFullPath", filePath);
 	        results.put("fileSigned", filePath + "/" + name + "." + ext);
+	        results.put("fileEntryIdStr", String.valueOf(fileEntryId));
 			
 			} catch (Exception e) {
 			_log.error(e);

@@ -1442,29 +1442,30 @@ public class DefaultSignatureManagementImpl
 		
 	@Override
 	public Response vtcaUpdateFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String fileEntryIdStr, String dossierFileStr)
+			User user, ServiceContext serviceContext, String fileEntryIdStr, String signedFileName)
 			throws PortalException, Exception {
+		
 		_log.info("START*************");
+		
 		BackendAuth auth = new BackendAuthImpl();
 		JSONObject result = JSONFactoryUtil.createJSONObject();
+		
 		try {
 			
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			
 			long fileEntryId = Long.valueOf(fileEntryIdStr);
+
 			if (fileEntryId > 0) {
-				DossierFile df = DossierFileLocalServiceUtil.fetchDossierFile(Long.parseLong(dossierFileStr));
-				long oldFileEntryId = df.getFileEntryId();
-				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(oldFileEntryId);
-				DLFileEntry newFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
-				File fileSigned = DLFileEntryLocalServiceUtil.getFile(fileEntryId, newFileEntry.getVersion(), false);
 				
-				DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
-						dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
-						StringPool.BLANK, true, fileSigned, serviceContext);
-				
-				DLAppLocalServiceUtil.deleteFileEntry(newFileEntry.getFileEntryId());
+				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
+		        File fileSigned = new File (signedFileName);
+		        
+		        DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), fileEntryId, dlFileEntry.getTitle(),
+		        		dlFileEntry.getMimeType(), dlFileEntry.getTitle(),
+		        		dlFileEntry.getDescription(), StringPool.BLANK, true, fileSigned, serviceContext);
 				
 				result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 

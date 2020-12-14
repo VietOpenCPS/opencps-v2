@@ -8,6 +8,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -24,6 +26,7 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
@@ -32,12 +35,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.kyso.action.DigitalSignatureActions;
 import org.opencps.kyso.action.impl.DigitalSignatureActionsImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * @author GIAHUY
@@ -180,23 +188,52 @@ public class BackendKysoApiRestApplication extends Application {
 //	}
 
 	@POST
-	@Path("/hashFilePDF")
+	@Path("/{id}/hashFilePDF/{referenceUid}")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response hashFilePDF(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
+			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
 			@BeanParam DigitalSignatureInputModel input) {
 		
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		DigitalSignatureActions action = new DigitalSignatureActionsImpl();
+		
 		try {
-
-			DigitalSignatureActions action = new DigitalSignatureActionsImpl();
 			
-			long fileEntryId = Long.valueOf(input.getFileEntryId());
-			String certChainBase64 = input.getCertChainBase64();
+			long dossierId = GetterUtil.getLong(id);
+			if (dossierId == 0) {
+				Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+				if (dossier != null) {
+					dossierId = dossier.getDossierId();
+				}
+			}
 			
-			JSONObject results = action.hashFile(fileEntryId, certChainBase64, request);
-
-			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build(); 
-
+			DossierFile dossierFile =
+					DossierFileLocalServiceUtil.getDossierFileByReferenceUid(
+							dossierId, referenceUid);
+			
+			if (Validator.isNull(dossierFile) &&
+					Validator.isNumber(referenceUid)) {
+					dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(
+						Long.valueOf(referenceUid));
+				}
+			
+			if (dossierFile.getFileEntryId() > 0) {
+				
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
+						dossierFile.getFileEntryId());
+				
+				String certChainBase64 = input.getCertChainBase64();
+				
+				JSONObject results = action.hashFile(fileEntry.getFileEntryId(), certChainBase64, request);
+				
+				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build(); 
+				
+			} else {
+				return Response.status(
+						HttpURLConnection.HTTP_NO_CONTENT).build();
+			} 
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}
@@ -206,23 +243,28 @@ public class BackendKysoApiRestApplication extends Application {
 	@Path("/insertSignature")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response insertSignatureFile(@Context HttpServletRequest request, @Context HttpHeaders header,
-			 @BeanParam DigitalSignatureInputModel input ) {
+	public Response insertSignatureFile(@Context HttpServletRequest request, @Context HttpHeaders header, 
+			@BeanParam DigitalSignatureInputModel input ) {
+
+		DigitalSignatureActions action = new DigitalSignatureActionsImpl();
 
 		try {
-			
-			DigitalSignatureActions action = new DigitalSignatureActionsImpl();
-			String signFileName = input.getFileName();
-			String signatureBase64 = input.getSignatureBase64();
-			SignPdfFile signPdfFile = (SignPdfFile) request.getSession().getAttribute("PDFSignature");
-			
-			JSONObject results = JSONFactoryUtil.createJSONObject();
-			if (Validator.isNotNull(signatureBase64) && Validator.isNotNull(signFileName) 
-					&& Validator.isNotNull(signPdfFile) ) {
-				results = action.insertSignnature(signatureBase64, signFileName, signPdfFile);			
+			Long fileEntryId = Long.valueOf(input.getFileEntryId());
+			if (fileEntryId > 0) {
+				String signatureBase64 = input.getSignatureBase64();
+				SignPdfFile signPdfFile = (SignPdfFile) request.getSession().getAttribute("PDFSignature");
+				
+				JSONObject results = JSONFactoryUtil.createJSONObject();
+				if (Validator.isNotNull(signatureBase64) && Validator.isNotNull(input.getFileName()) 
+						&& Validator.isNotNull(signPdfFile) ) {
+					results = action.insertSignnature(signatureBase64, input.getFileName(), signPdfFile, fileEntryId);			
+				}
+				
+				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			} else {
+				return Response.status(
+						HttpURLConnection.HTTP_NO_CONTENT).build();
 			}
-			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
-
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}
