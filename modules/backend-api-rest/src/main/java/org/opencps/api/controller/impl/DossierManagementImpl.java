@@ -2317,6 +2317,7 @@ public class DossierManagementImpl implements DossierManagement {
 				System.out.println("Adding post action 222");
 
 				System.out.println("Adding post action 3333");
+				if(Validator.isNotNull(processActionCurrent)){
 				String postAction = processActionCurrent.getPostAction();
 				System.out.println("Adding post action 5555");
 				System.out.println("Post action: " + postAction);
@@ -2327,7 +2328,7 @@ public class DossierManagementImpl implements DossierManagement {
 					System.out.println("Result: " + result);
 				}
 				System.out.println("Done add post action");
-
+				}
 
 				// String strDossierResult =
 				// JSONFactoryUtil.looseSerializeDeep(dossierResult);
@@ -4450,6 +4451,10 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierPublishModel input) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		_log.info("1111111111111111111");
+		_log.info(Validator.isNotNull(input.getDossierNo()) ? input.getDossierNo() : "No dossierNo");
+		_log.info(Validator.isNotNull(input.getDossierCounter()) ? input.getDossierCounter() : "NO dossierCOunter");
+		_log.info("2222222222222222222222222");
 
 		try {
 			Dossier dossier =
@@ -8904,42 +8909,47 @@ public class DossierManagementImpl implements DossierManagement {
 
 		DossierResultsModel results = new DossierResultsModel();
 		List<Dossier> listDossier = new ArrayList<Dossier>();
+		BackendAuth auth = new BackendAuthImpl();
 		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
 			// get dossier by dossierId
 			Dossier dossier = DossierLocalServiceUtil.getDossier(Long.valueOf(id));
 			if (dossier != null) {
 				// originDossierNo != null -> hslt or hstg
 				if (!StringUtils.isEmpty(dossier.getOriginDossierNo())) {
-					//getInterDossierFromOriginDossier(dossier, listDossier);
-					//getConnectDossierFromInterDossier(dossier, listDossier);
+					getInterDossierFromOriginDossier(dossier, listDossier);
+					getConnectDossierFromInterDossier(dossier, listDossier);
 				}else {
 					// la ho so goc-> tim danh sach hslt
-					//getInterDossierFromOriginDossier(dossier, listDossier);
+					getInterDossierFromOriginDossier(dossier, listDossier);
 				}
 			}
 
-			//results.setTotal(listDossier.size());
+			results.setTotal(listDossier.size());
 
-			//results.getData().addAll(DossierUtils.mappingForListDossier(listDossier));
+			results.getData().addAll(DossierUtils.mappingForListDossier(listDossier));
 
-			results.setTotal(0);
-			results.getData().addAll(new ArrayList<DossierDataModel>());
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
-	/*private void getInterDossierFromOriginDossier(Dossier dossier, List<Dossier> listDossier) {
+	private void getInterDossierFromOriginDossier(Dossier dossier, List<Dossier> listDossier) {
 		// Ds ho so trung gian va lien thong tu ho so goc
-		List<Dossier> aList = DossierLocalServiceUtil.fetchByORIGIN_NO(dossier.getDossierNo());
-		// Lay ho so lien thong la ho so co originDossierId = 0
-		Dossier newDossier = null;
-		if (aList.size() > 0) {
-			newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
-					.findAny().orElse(null);
-			listDossier.add(newDossier);
-			getInterDossierFromOriginDossier(newDossier, listDossier);
+		if (!StringUtils.isEmpty(dossier.getDossierNo())) {
+			List<Dossier> aList = DossierLocalServiceUtil.fetchByORIGIN_NO(dossier.getDossierNo());
+			// Lay ho so lien thong la ho so co originDossierId = 0
+			Dossier newDossier = null;
+			if (aList.size() > 0) {
+				newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
+						.findAny().orElse(null);
+				listDossier.add(newDossier);
+				getInterDossierFromOriginDossier(newDossier, listDossier);
+			}
 		}
 	}
 
@@ -8957,7 +8967,7 @@ public class DossierManagementImpl implements DossierManagement {
 			getConnectDossierFromInterDossier(newDossier, listDossier);
 		}
 
-	}*/
+	}
 
 
 	@Override

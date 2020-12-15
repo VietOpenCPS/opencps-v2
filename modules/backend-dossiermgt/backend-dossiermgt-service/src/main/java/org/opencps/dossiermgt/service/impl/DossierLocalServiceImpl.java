@@ -5884,7 +5884,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String delegateDistrictName, String delegateWardCode,
 			String delegateWardName, double durationCount, int durationUnit,
 			String dossierName, String processNo, String metaData,
-			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal, ServiceContext context)
+			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
+			String dossierCounter, ServiceContext context)
 			throws PortalException {
 
 		long userId = context.getUserId();
@@ -5997,6 +5998,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			if (Validator.isNotNull(fromViaPostal)) {
 				dossier.setFromViaPostal(fromViaPostal);
 			}
+			if (Validator.isNotNull(dossierCounter)) {
+				dossier.setDossierCounter(dossierCounter);
+			}
 
 			dossier = dossierPersistence.update(dossier);
 		}
@@ -6082,6 +6086,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setProcessNo(processNo);
 			if (Validator.isNotNull(metaData))
 				dossier.setProcessNo(metaData);
+			if (Validator.isNotNull(dossierCounter)) {
+				dossier.setDossierCounter(dossierCounter);
+			}
 
 			dossier.setViaPostal(viaPostal);
 			if (viaPostal == 1) {
@@ -7787,10 +7794,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 	
 	public List<Dossier> fetchByORIGIN_NO(String originDossierNo) {
-		return dossierPersistence.findByORIGIN_NO(originDossierNo);
+		return dossierPersistence.findByORIGIN_NO(originDossierNo, 0, 10);
 	}
 	
 	public List<Dossier> fetchByNEW_DO_NO(String dossierNo) {
-		return dossierPersistence.findByNEW_DO_NO(dossierNo);
+		return dossierPersistence.findByNEW_DO_NO(dossierNo, 0, 10);
 	}
 }
