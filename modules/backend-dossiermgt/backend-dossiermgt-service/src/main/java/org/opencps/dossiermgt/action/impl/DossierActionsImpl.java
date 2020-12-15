@@ -897,12 +897,10 @@ public class DossierActionsImpl implements DossierActions {
 				if (processAction != null) {
 					createDossierFiles = processAction.getCreateDossierFiles();
 					returnDossierFiles = processAction.getReturnDossierFiles();
-				}
-				
+				}				
 
 				List<String> createFileTempNoList = ListUtil.toList(StringUtil.split(createDossierFiles));
-				List<String> returnFileTempNoList = ListUtil.toList(StringUtil.split(returnDossierFiles));
-				
+				List<String> returnFileTempNoList = ListUtil.toList(StringUtil.split(returnDossierFiles));				
 
 				DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId,
 					dossier.getDossierTemplateNo());

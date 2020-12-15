@@ -502,8 +502,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				if (dau != null && dau.getDelegacy() == 1 &&
 					(pa.getAllowAssignUser() > 2)) {
 					result.setAllowAssignUser(2);
-				}
-				
+				}				
 				
 				// danh sach thanh phan cua ho so lien thong
 				List<DossierTemplatePartDataModel> dossierParts =
