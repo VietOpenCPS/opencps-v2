@@ -142,7 +142,7 @@ public class TimerScheduler extends BaseMessageListener {
 							String perConditionStr = processAction.getPreCondition();
 
 							boolean checkPreCondition = DossierMgtUtils
-									.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier, systemUser);
+									.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier, systemUser,"");
 
 							// do action
 
@@ -207,7 +207,7 @@ public class TimerScheduler extends BaseMessageListener {
 							String perConditionStr = processAction.getPreCondition();
 
 							boolean checkPreCondition = DossierMgtUtils
-									.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier, systemUser);
+									.checkPreCondition(StringUtil.split(perConditionStr, StringPool.COMMA), dossier, systemUser,"");
 
 							// do action
 

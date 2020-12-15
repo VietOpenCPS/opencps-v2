@@ -1990,7 +1990,10 @@ public class DossierManagementImpl implements DossierManagement {
 						ProcessOption option = DossierUtils.getProcessOption(
 							serviceCode, govAgencyCode, dossierTempNo, groupId);
 						if (insideProcess) {
+							_log.info(6666);
 							if (dossier.getDossierActionId() == 0) {
+
+								_log.info(6666111);
 								if (option != null) {
 									long serviceProcessId =
 										option.getServiceProcessId();
@@ -2000,6 +2003,7 @@ public class DossierManagementImpl implements DossierManagement {
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
+										_log.info(66661112);
 										processActionCurrent = proAction;
 										_log.debug(
 											"DO ACTION: " +
@@ -2020,10 +2024,13 @@ public class DossierManagementImpl implements DossierManagement {
 								}
 							}
 							else {
+								_log.info(6666222);
 								DossierAction dossierAction =
 									DossierActionLocalServiceUtil.fetchDossierAction(
 										dossier.getDossierActionId());
+								_log.info(dossierAction);
 								if (dossierAction != null) {
+									_log.info(666622222);
 									long serviceProcessId =
 										dossierAction.getServiceProcessId();
 									DossierTemplate dossierTemplate =
@@ -2042,6 +2049,7 @@ public class DossierManagementImpl implements DossierManagement {
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
+										_log.info(6666333);
 										processActionCurrent = proAction;
 										_log.debug(
 											"DO ACTION: " +
@@ -2057,6 +2065,7 @@ public class DossierManagementImpl implements DossierManagement {
 											serviceContext, errorModel);
 									}
 									else {
+										_log.info(666644444);
 										// TODO: Error
 									}
 								}
@@ -2162,12 +2171,31 @@ public class DossierManagementImpl implements DossierManagement {
 							// }
 						}
 						else {
+							_log.info(77777);
 							dossierResult = actions.doAction(
 								groupId, userId, dossier, option, null,
 								actionCode, actionUser, input.getActionNote(),
 								input.getPayload(), input.getAssignUsers(),
 								input.getPayment(), actConfig.getSyncType(),
 								serviceContext, errorModel);
+						}
+
+						//Add according to Duan's request (11/12/2020)
+						try {
+							if(actConfig.getDateOption() == 3 || actConfig.getDateOption() == 6) {
+								_log.info("Update dossier with actConfig dateOption = " + actConfig.getDateOption());
+								Dossier dossierAfterAction = DossierUtils.getDossier(id, groupId);
+								if(Validator.isNotNull(dueDate)
+										&& Validator.isNotNull(input.getReceiveDate())
+										&& dueDate > 0 && input.getReceiveDate() > 0) {
+									dossierAfterAction.setDueDate(new Date(dueDate));
+									dossierAfterAction.setLastReceiveDate(new Date(input.getReceiveDate()));
+									DossierLocalServiceUtil.updateDossier(dossierAfterAction);
+								}
+							}
+						} catch (Exception e) {
+							_log.warn("Error when update due date and last receive date: " + e.getMessage());
+							_log.warn("Still running...");
 						}
 						// Process send email or sms
 						// if (dossierResult != null) {
@@ -6881,7 +6909,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 		String[] preConditionArr = StringUtil.split(preCondition);
 		if (preConditionArr != null && preConditionArr.length > 0) {
-			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, user);
+			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, user,"");
 		}
 
 		return true;
@@ -7309,7 +7337,7 @@ public class DossierManagementImpl implements DossierManagement {
 													psr.getCondition());
 
 											if (DossierMgtUtils.checkPreCondition(
-												conditions, dossier, user)) {
+												conditions, dossier, user,"")) {
 												lstStepRoles.add(psr);
 											}
 										}
@@ -8922,7 +8950,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String[] preConditionArr = StringUtil.split(preCondition);
 			if (preConditionArr != null && preConditionArr.length > 0) {
 
-				return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, curUser);
+				return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, curUser,"");
 			}
 			return true;
 		}
@@ -8963,10 +8991,37 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	private void getInterDossierFromOriginDossier(Dossier dossier, List<Dossier> listDossier) {
-		// Ds ho so trung gian va lien thong tu ho so goc
-		if (!StringUtils.isEmpty(dossier.getDossierNo())) {
-			List<Dossier> aList = DossierLocalServiceUtil.fetchByORIGIN_NO(dossier.getDossierNo());
-			// Lay ho so lien thong la ho so co originDossierId = 0
+		try {
+			// Ds ho so trung gian va lien thong tu ho so goc
+			if (!StringUtils.isEmpty(dossier.getDossierNo()) &&
+					!(dossier.getDossierNo().equalsIgnoreCase(dossier.getOriginDossierNo()))) {
+				List<Dossier> aList = DossierLocalServiceUtil.fetchByORIGIN_NO(dossier.getDossierNo());
+				// Lay ho so lien thong la ho so co originDossierId = 0
+				Dossier newDossier = null;
+				if (aList.size() > 0) {
+					for (Dossier dossier2 : aList) {
+						if (dossier2.getOriginDossierId() == 0) {
+							newDossier = dossier2;
+							listDossier.add(newDossier);
+						}
+					}
+					getInterDossierFromOriginDossier(newDossier, listDossier);
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+	}
+
+	private void getConnectDossierFromInterDossier(Dossier dossier, List<Dossier> listDossier) {
+		try {
+			// Ds ho so goc cua hslt
+			List<Dossier> aList = new ArrayList<Dossier>();
+			if (!StringUtils.isEmpty(dossier.getOriginDossierNo()) &&
+					!(dossier.getOriginDossierNo().equalsIgnoreCase(dossier.getDossierNo()))) {
+			aList = DossierLocalServiceUtil.fetchByNEW_DO_NO(dossier.getOriginDossierNo());
+			}
 			Dossier newDossier = null;
 			if (aList.size() > 0) {
 				for (Dossier dossier2 : aList) {
@@ -8975,28 +9030,11 @@ public class DossierManagementImpl implements DossierManagement {
 						listDossier.add(newDossier);
 					}
 				}
-				getInterDossierFromOriginDossier(newDossier, listDossier);
+				getConnectDossierFromInterDossier(newDossier, listDossier);
 			}
+		} catch (Exception e) {
+			_log.error(e);
 		}
-	}
-
-	private void getConnectDossierFromInterDossier(Dossier dossier, List<Dossier> listDossier) {
-		// Ds ho so goc cua hslt
-		List<Dossier> aList = new ArrayList<Dossier>();
-		if (!StringUtils.isEmpty(dossier.getOriginDossierNo())) {
-		aList = DossierLocalServiceUtil.fetchByNEW_DO_NO(dossier.getOriginDossierNo());
-		}
-		Dossier newDossier = null;
-		if (aList.size() > 0) {
-			for (Dossier dossier2 : aList) {
-				if (dossier2.getOriginDossierId() == 0) {
-					newDossier = dossier2;
-					listDossier.add(newDossier);
-				}
-			}
-			getConnectDossierFromInterDossier(newDossier, listDossier);
-		}
-
 	}
 
 

@@ -49,7 +49,8 @@ import javax.xml.bind.annotation.XmlType;
     "security",
     "payment",
     "createDossiers",
-    "dossierIds"
+    "dossierIds",
+    "receiveDate"
 })
 @XmlRootElement(name = "DoActionModel")
 public class DoActionModel {
@@ -71,6 +72,16 @@ public class DoActionModel {
 	protected String createDossiers;
     @FormParam(value = "dossierIds")
     protected String dossierIds;
+    @FormParam(value = "receiveDate")
+    protected Long receiveDate;
+
+    public Long getReceiveDate() {
+        return receiveDate;
+    }
+
+    public void setReceiveDate(Long receiveDate) {
+        this.receiveDate = receiveDate;
+    }
 
     public String getDossierIds() {
         return dossierIds;

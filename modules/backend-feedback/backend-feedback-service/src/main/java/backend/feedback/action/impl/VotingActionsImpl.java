@@ -13,14 +13,16 @@ import com.liferay.portal.kernel.search.*;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.NotFoundException;
 
@@ -96,7 +98,13 @@ public class VotingActionsImpl implements VotingActions {
 							templateNo = votingConfig.getTemplateNo();
 							commentable = votingConfig.getCommentable();
 							votingCode = votingConfig.getVotingCode();
-
+							
+							// check exist votingcode of classPK
+							Voting existVoting = getVoting(className, classPK, votingCode);
+							if (existVoting != null) {
+								deleteVoting(className, classPK, votingCode);
+							}
+									
 							Voting votingAdd = VotingLocalServiceUtil.addVoting(userId, groupId, className, classPK, subject, choices,
 									templateNo, commentable, serviceContext);
 
@@ -112,8 +120,19 @@ public class VotingActionsImpl implements VotingActions {
 			// Add this case: When list vote renew, elastic search wont able to reload new vote(take some minute)
 			// immediately so we will return new list here.
 			if(isGetFromDB) {
-				List<Voting> votingList;
-				votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
+				List<Voting> listVotingConfig = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, "0");
+				List<Voting> listVotingByClassPk = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
+				List<Voting> votingList = new ArrayList<Voting>();
+				if (listVotingByClassPk.size() > listVotingConfig.size()) {
+					votingList = listVotingByClassPk.stream()
+								.filter(voting -> listVotingConfig.stream()
+												.anyMatch(votingConfig ->
+												 voting.getVotingCode().equals(votingConfig.getVotingCode())))
+								.collect(Collectors.toList());
+				} else {
+					votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
+				}
+				
 				List<Document> votingListDocument = new ArrayList<>();
 				Document document;
 
@@ -183,31 +202,72 @@ public class VotingActionsImpl implements VotingActions {
 
 	@Override
 	public Voting updateVoting(long userId, long companyId, long groupId, long votingId, String className,
-			String classPK, String subject, String templateNo, String choices, Boolean commentable,
+			String classPK, String subject, String templateNo, String choices, String oldChoice, Boolean commentable,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 
-		Voting ett = fetchVotingById(votingId);
+		Voting voting = fetchVotingById(votingId);
+		try {
+			String votingCode = "";
+			if (voting != null) {
+				votingCode = voting.getVotingCode();
+			}
 
-		if (Validator.isNotNull(subject)) {
-			ett.setSubject(subject);
+			if (Validator.isNotNull(subject)) {
+				voting.setSubject(subject);
+			}
+
+			if (Validator.isNotNull(templateNo)) {
+				voting.setTemplateNo(templateNo);
+			}
+
+			if (Validator.isNotNull(choices)) {
+				voting.setChoices(choices);
+			}
+
+			if (Validator.isNotNull(commentable)) {
+				voting.setCommentable(commentable);
+			}
+
+			
+
+			// update voting and delete voting result
+			List<String> oldListChoice =  ListUtil.toList(StringUtil.splitLines(oldChoice));
+			List<String> newListChoice =  ListUtil.toList(StringUtil.splitLines(choices));
+			Map<Integer, String> diffMap = new HashMap<>();
+			int i = 1;
+			for (String choice : oldListChoice) {			
+				if (newListChoice.contains(choice)) {
+					i++;
+				}else {
+					diffMap.put(i, choice);
+				}			
+			}
+			
+			List<Voting> vList = VotingLocalServiceUtil.getVotingByClass_Name_VC(className, votingCode);
+			if (vList != null && vList.size() > 0) {
+				for (Voting vote : vList) {
+					long voId = vote.getVotingId();
+					if (voId != votingId) {
+						for (int index : diffMap.keySet()) {
+							int count = VotingResultLocalServiceUtil.countByF_votingId_selected_filter_date(
+									voId, String.valueOf(index), new Date(), new Date());
+							if (count > 0) {
+							VotingResultLocalServiceUtil.removeByF_votingId_selected(voId, String.valueOf(index));
+							}
+						}
+						
+						VotingLocalServiceUtil.updateVote(userId, voId, vote.getClassName(), vote.getClassPK(),
+								voting.getSubject(), voting.getChoices(), voting.getTemplateNo(), voting.getCommentable(), serviceContext);
+					}								
+				}
+			}
+			
+			voting = VotingLocalServiceUtil.updateVote(userId, votingId, voting.getClassName(), voting.getClassPK(),
+					voting.getSubject(), voting.getChoices(), voting.getTemplateNo(), voting.getCommentable(), serviceContext);
+		} catch (Exception e) {
+			_log.error(e);
 		}
-
-		if (Validator.isNotNull(templateNo)) {
-			ett.setTemplateNo(templateNo);
-		}
-
-		if (Validator.isNotNull(choices)) {
-			ett.setChoices(choices);
-		}
-
-		if (Validator.isNotNull(commentable)) {
-			ett.setCommentable(commentable);
-		}
-
-		ett = VotingLocalServiceUtil.updateVote(userId, votingId, ett.getClassName(), ett.getClassPK(),
-				ett.getSubject(), ett.getChoices(), ett.getTemplateNo(), ett.getCommentable(), serviceContext);
-
-		return ett;
+		return voting;
 	}
 
 //	@Deprecated
@@ -512,6 +572,18 @@ public class VotingActionsImpl implements VotingActions {
 		}
 
 		return result;
+	}
+
+	@Override
+	public void deleteVoting(String className, String classPK, String votingCode)
+			throws NotFoundException, NoSuchVotingException {
+		VotingLocalServiceUtil.deleteVote(className, classPK, votingCode);
+		
+	}
+
+	@Override
+	public Voting getVoting(String className, String classPK, String votingCode) {
+		return VotingLocalServiceUtil.getVotingByCLName_CLPK_VC(className, classPK, votingCode);
 	}
 
 }
