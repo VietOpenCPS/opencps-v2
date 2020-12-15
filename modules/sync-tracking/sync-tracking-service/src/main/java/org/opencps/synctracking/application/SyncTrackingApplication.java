@@ -83,6 +83,7 @@ public class SyncTrackingApplication extends Application{
     }
 
     @POST
+    @Path("/resend")
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_JSON })
     public Response resend(@HeaderParam("groupId") long groupId, SyncTrackingQuery query) {

@@ -168,7 +168,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
                 throw new Exception("No state sync found");
             }
 
-            String listToUnit[] = syncTrackingQuery.toUnit;
+            String[] listToUnit = syncTrackingQuery.toUnit;
             for(String toUnitSingle: listToUnit) {
                 syncTrackingQuery.toUnitSingle = toUnitSingle;
                 SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
