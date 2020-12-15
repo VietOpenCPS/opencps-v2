@@ -4241,7 +4241,7 @@ public class DossierActionsImpl implements DossierActions {
 		String delegateAddress, String delegateCityCode, String delegateCityName, String delegateDistrictCode,
 		String delegateDistrictName, String delegateWardCode, String delegateWardName, double durationCount,
 		int durationUnit, String dossierName, String processNo, String metaData, Integer vnpostalStauts, String vnpostalProfile,
-		Integer fromViaPostal, ServiceContext context) throws PortalException {
+		Integer fromViaPostal,  String dossierCounter, ServiceContext context) throws PortalException {
 
 		Date appIdDate = null;
 		SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
@@ -4263,7 +4263,8 @@ public class DossierActionsImpl implements DossierActions {
 				dossierStatusText, dossierSubStatus, dossierSubStatusText, dossierActionId, submissionNote,
 				lockState, delegateName, delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
 				delegateCityCode, delegateCityName, delegateDistrictCode, delegateDistrictName, delegateWardCode,
-				delegateWardName, durationCount, durationUnit, dossierName, processNo, metaData, vnpostalStauts, vnpostalProfile, fromViaPostal, context);
+				delegateWardName, durationCount, durationUnit, dossierName, processNo, metaData, vnpostalStauts,
+					vnpostalProfile, fromViaPostal, dossierCounter, context);
 
 		} catch (Exception e) {
 			_log.debug(e);
