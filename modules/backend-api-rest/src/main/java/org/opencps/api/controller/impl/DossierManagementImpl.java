@@ -8969,9 +8969,12 @@ public class DossierManagementImpl implements DossierManagement {
 			// Lay ho so lien thong la ho so co originDossierId = 0
 			Dossier newDossier = null;
 			if (aList.size() > 0) {
-				newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
-						.findAny().orElse(null);
-				listDossier.add(newDossier);
+				for (Dossier dossier2 : aList) {
+					if (dossier2.getOriginDossierId() == 0) {
+						newDossier = dossier2;
+						listDossier.add(newDossier);
+					}
+				}
 				getInterDossierFromOriginDossier(newDossier, listDossier);
 			}
 		}
@@ -8985,9 +8988,12 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 		Dossier newDossier = null;
 		if (aList.size() > 0) {
-			newDossier = aList.stream().filter(x -> x.getOriginDossierId()== 0)
-					.findAny().orElse(null);
-			listDossier.add(newDossier);
+			for (Dossier dossier2 : aList) {
+				if (dossier2.getOriginDossierId() == 0) {
+					newDossier = dossier2;
+					listDossier.add(newDossier);
+				}
+			}
 			getConnectDossierFromInterDossier(newDossier, listDossier);
 		}
 
