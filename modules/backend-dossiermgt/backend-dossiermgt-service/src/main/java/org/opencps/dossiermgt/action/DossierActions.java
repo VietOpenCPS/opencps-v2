@@ -148,7 +148,8 @@ public interface DossierActions {
 			long dossierActionId, String submissionNote, String lockState, String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
 			String delegateAddress, String delegateCityCode, String delegateCityName, String delegateDistrictCode, String delegateDistrictName,
 			String delegateWardCode, String delegateWardName, double durationCount, int durationUnit, String dossierName, String processNo,
-			String metaData, Integer vnpostalStauts, String vnpostalProfile, Integer fromViaPostal, ServiceContext context) throws PortalException;
+			String metaData, Integer vnpostalStauts, String vnpostalProfile, Integer fromViaPostal, String dossierCounter
+			,ServiceContext context) throws PortalException;
 
 	public List<User> getAssignUsersByStep(long userId, Dossier dossier, ProcessStep ps);
 	public ProcessOption getProcessOption(long serviceProcessId, long dossierTemplateId);

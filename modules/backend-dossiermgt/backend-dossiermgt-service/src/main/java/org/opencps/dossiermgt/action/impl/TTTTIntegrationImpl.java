@@ -45,7 +45,7 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
 	
 	private Log _log = LogFactoryUtil.getLog(TTTTIntegrationImpl.class);
 
-	public JSONObject syncDataToEMCTracking(String endpoint, JSONObject datas) {
+	private JSONObject syncDataToEMCTracking(String endpoint, JSONObject datas) {
 
 		_log.debug("+++syncDataToEMCTracking+++");
 
@@ -143,12 +143,12 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
 	private JSONObject creatJsonParamForCheckActionDossier(Dossier dossier, JSONObject serverConfig) {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
-		String codeProfile = dossier.getDocumentNo() != null ? dossier.getDocumentNo() : "";
+		String codeProfile = dossier.getDossierNo();
 		// Integer siteId = IntegrateTTTTConstants.SITE_ID;
 		Integer siteId = serverConfig.has("siteId") ? serverConfig.getInt("siteId") : IntegrateTTTTConstants.SITE_ID;
 		String codeTTHC = dossier.getServiceCode() != null ? dossier.getServiceCode() : "";
 		String nameTTHC = dossier.getServiceName() != null ? dossier.getServiceName() : "";
-		;
+		
 		Integer status;
 		Integer formsReception;
 		Integer formsPayments = IntegrateTTTTConstants.FormsPaymentDirect;
@@ -176,7 +176,7 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
 			status = IntegrateTTTTConstants.STATUS_ANOTHER;
 		}
 		
-		if (statusDossier.equals("processing") && dossier.getDossierSubStatus().equals("processing_200")){
+		if (statusDossier.equals("processing") && (dossier.getDossierSubStatus().equals("processing_200") || dossier.getDossierSubStatus().equals("processing_201"))){
 			status = IntegrateTTTTConstants.STATUS_ASSIGNED;
 		}
 

@@ -162,9 +162,10 @@ public class KeyPayV3Utils {
 	}
 
 	public static String genCallbackChecksumReceived(String addition_fee, String client_id, String command,
-			String trans_amount, String transaction_id, String version, String CLIENT_KEY_2) {
+			String trans_amount, String transaction_id, String version, String CLIENT_KEY_1) {
 		String chuoi_du_lieu = addition_fee + "|" + client_id + "|" + command + "|" + trans_amount + "|"
 				+ transaction_id + "|" + version;
-		return createChecksum(chuoi_du_lieu, CLIENT_KEY_2);
+		_log.info("Chuoi du liệu " + chuoi_du_lieu);
+		return createChecksum(chuoi_du_lieu, CLIENT_KEY_1);
 	}
 }

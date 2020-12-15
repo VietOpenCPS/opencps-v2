@@ -118,7 +118,7 @@ public class PublishEventHSKMScheduler extends BaseMessageListener {
 		if (Validator.isNotNull(dossier) && Validator.isNotNull(dossier.getOriginDossierId()) && (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo()))) {
 			return true;
 		}
-		_log.info("pq: "+JSONFactoryUtil.looseSerialize(pq));
+		_log.debug("pq: "+JSONFactoryUtil.looseSerialize(pq));
 		long groupId = pq.getGroupId();
 		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, pq.getServerNo());
 
