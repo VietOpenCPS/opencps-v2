@@ -507,5 +507,9 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 	public int countByF_votingId(long votingId) {
 		return votingResultPersistence.countByF_votingId(votingId);
 	}
+	
+	public void removeByF_votingId_selected(long votingId, String selected) {
+		votingResultPersistence.removeByF_votingId_selected(votingId, selected);
+	}
 
 }
