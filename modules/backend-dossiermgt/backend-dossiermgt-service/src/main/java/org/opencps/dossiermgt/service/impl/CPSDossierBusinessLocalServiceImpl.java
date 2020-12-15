@@ -701,6 +701,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if (Validator.isNotNull(dossier.getDossierNo())) {
 					payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 				}
+				if (Validator.isNotNull(dossier.getDossierCounter())) {
+					payloadObject.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
+				}
 			}
 
 			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST
@@ -2334,6 +2337,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if (obj.has(DossierTerm.BRIEF_NOTE)) {
 			if (!obj.getString(DossierTerm.BRIEF_NOTE).equals(dossier.getBriefNote())) {
 				dossier.setBriefNote(obj.getString(DossierTerm.BRIEF_NOTE));
+			}
+		}
+		if (obj.has(DossierTerm.DOSSIER_COUNTER)) {
+			//_log.info("Sync dossier no");
+			if (Validator.isNotNull(obj.getString(DossierTerm.DOSSIER_COUNTER))
+					&& !obj.getString(DossierTerm.DOSSIER_COUNTER).equals(dossier.getDossierCounter())) {
+				//_log.info("Sync set dossier no");
+				dossier.setDossierCounter(obj.getString(DossierTerm.DOSSIER_COUNTER));
 			}
 		}
 		if (obj.has(DossierTerm.REGISTER_BOOK_CODE)) {
@@ -8838,6 +8849,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		String submissionNote = input.getSubmissionNote();
 		String lockState = input.getLockState();
 		String dossierNo = input.getDossierNo();
+		String dossierCounter = input.getDossierCounter();
 
 		Dossier oldDossier = null;
 		if (Validator.isNotNull(input.getReferenceUid())) {
@@ -8873,7 +8885,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(),
 					input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(),
 					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(), input.getVnpostalStatus(), input.getVnpostalProfile(),
-					input.getFromViaPostal(), serviceContext);
+					input.getFromViaPostal(), dossierCounter, serviceContext);
 
 			return dossier;
 		}

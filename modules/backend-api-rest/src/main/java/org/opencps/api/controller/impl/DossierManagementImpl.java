@@ -4451,6 +4451,10 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierPublishModel input) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		_log.info("1111111111111111111");
+		_log.info(Validator.isNotNull(input.getDossierNo()) ? input.getDossierNo() : "No dossierNo");
+		_log.info(Validator.isNotNull(input.getDossierCounter()) ? input.getDossierCounter() : "NO dossierCOunter");
+		_log.info("2222222222222222222222222");
 
 		try {
 			Dossier dossier =
