@@ -1658,6 +1658,7 @@ public class DossierUtils {
 		model.setVnpostalProfile(input.getVnpostalProfile());
 		model.setFromViaPostal(input.getFromViaPostal());
 		model.setFormMeta(input.getFormMeta());
+		model.setReleaseDate(input.getReleaseDate());
 
 		return model;
 	}
