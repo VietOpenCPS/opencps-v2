@@ -199,6 +199,27 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	}
 
 	@Override
+	public Response updateSignCheck(long fileId, int signCheck) {
+		try {
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(fileId);
+			if(Validator.isNull(dossierFile)) {
+				throw new Exception("No dossier file was found with id: " + fileId);
+			}
+			if(Validator.isNull(signCheck) || signCheck == 0) {
+				throw new Exception("No signCheck was found with id: " + fileId);
+			}
+
+			dossierFile.setSignCheck(signCheck);
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+		} catch (Exception e) {
+			_log.error(e.getMessage());
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
 	public Response addDossierFileByDossierId(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
