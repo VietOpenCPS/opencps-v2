@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -24,10 +25,13 @@ import javax.net.ssl.HttpsURLConnection;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.TTTTIntegrationAction;
+import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.action.util.TrustManager;
 import org.opencps.dossiermgt.constants.IntegrateTTTTConstants;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -41,7 +45,7 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
 	
 	private Log _log = LogFactoryUtil.getLog(TTTTIntegrationImpl.class);
 
-	public JSONObject syncDataToEMCTracking(String endpoint, JSONObject datas) {
+	private JSONObject syncDataToEMCTracking(String endpoint, JSONObject datas) {
 
 		_log.debug("+++syncDataToEMCTracking+++");
 
@@ -139,12 +143,12 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
 	private JSONObject creatJsonParamForCheckActionDossier(Dossier dossier, JSONObject serverConfig) {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
-		String codeProfile = dossier.getDocumentNo() != null ? dossier.getDocumentNo() : "";
+		String codeProfile = dossier.getDossierNo();
 		// Integer siteId = IntegrateTTTTConstants.SITE_ID;
 		Integer siteId = serverConfig.has("siteId") ? serverConfig.getInt("siteId") : IntegrateTTTTConstants.SITE_ID;
 		String codeTTHC = dossier.getServiceCode() != null ? dossier.getServiceCode() : "";
 		String nameTTHC = dossier.getServiceName() != null ? dossier.getServiceName() : "";
-		;
+		
 		Integer status;
 		Integer formsReception;
 		Integer formsPayments = IntegrateTTTTConstants.FormsPaymentDirect;
@@ -152,10 +156,13 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
 		Integer isFromDVCQG = IntegrateTTTTConstants.IS_FROM_DVCQG;
 		Integer isDVCBC;
 		String data = "";
+		
 
 		String statusDossier = dossier.getDossierStatus() != null ? dossier.getDossierStatus() : "";
 		_log.debug("====dossier.getDossierId():"+dossier.getDossierId());
+		_log.debug("====dossier.getReferenceUid():"+dossier.getReferenceUid());
 		_log.debug("====dossier.getDossierStatus():"+dossier.getDossierStatus());
+		_log.debug("====dossier.getDossierSubStatus():"+dossier.getDossierSubStatus());
 		if (statusDossier.equals("processing")) {
 			status = IntegrateTTTTConstants.STATUS_RECEIVED;
 		} else if (statusDossier.equals("interoperating") || statusDossier.equals("releasing")
@@ -163,8 +170,14 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
 			status = IntegrateTTTTConstants.STATUS_PROCESSING;
 		} else if (statusDossier.equals("done")) {
 			status = IntegrateTTTTConstants.STATUS_DONE;
-		} else {
+		} 
+		
+		else {
 			status = IntegrateTTTTConstants.STATUS_ANOTHER;
+		}
+		
+		if (statusDossier.equals("processing") && (dossier.getDossierSubStatus().equals("processing_200") || dossier.getDossierSubStatus().equals("processing_201"))){
+			status = IntegrateTTTTConstants.STATUS_ASSIGNED;
 		}
 
 		if (dossier.getOnline()) {
@@ -177,6 +190,20 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
 			isDVCBC = IntegrateTTTTConstants.DVBC_VNPOST;
 		} else {
 			isDVCBC = IntegrateTTTTConstants.DVBC_DIRECT;
+		}
+		
+		try {
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getPaymentFileByReferenceUid(dossier.getDossierId(), dossier.getReferenceUid());
+			
+			String paymentMethod = paymentFile.getPaymentMethod();
+			
+			if(Validator.isNotNull(paymentMethod)) {
+				
+				formsPayments = IntegrateTTTTConstants.FormsPaymentOnline;
+				
+			}
+		}catch(Exception e) {
+			_log.debug(e);
 		}
 
 		jsonObject.put("codeProfile", codeProfile);
@@ -209,6 +236,7 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
 
 			JSONObject datas = creatJsonParamForCheckActionDossier(dossier, config);
 			JSONObject result = syncDataToEMCTracking(config.getString("url"), datas);
+			
 			
 			if(result.has("response") && (result.getInt("response") == 204)){
 				
