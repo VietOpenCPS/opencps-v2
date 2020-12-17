@@ -177,6 +177,18 @@ public interface DefaultSignatureManagement {
 			@FormParam(value = "assignUsers") String assignUsers,
 			@FormParam(value = "userNote") String userNote) throws PortalException, Exception;
 	
+	@POST
+	@Path("/vtca/fileupload")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	public Response vtcaUploadController(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@ApiParam(value = "Upload sign files", required = true) @Multipart("uploadfile") Attachment file);
+	
 	@PUT
 	@Path("/vtca/updateFile")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
@@ -190,5 +202,5 @@ public interface DefaultSignatureManagement {
 	public Response vtcaUpdateFile(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext, 
 			@FormParam("fileEntryIdStr") String fileEntryIdStr, 
-			@FormParam("signedFileName") String signedFileName) throws PortalException, Exception;
+			@FormParam("dossierFileIdStr") String dossierFileIdStr) throws PortalException, Exception;
 }

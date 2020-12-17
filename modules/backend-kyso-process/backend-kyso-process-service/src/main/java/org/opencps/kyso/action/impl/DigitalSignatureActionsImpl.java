@@ -435,7 +435,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 	        timestampConfig.setUseTimestamp(false);		        		        
 	        signPdfFile.insertSignature(signatureBase64, filePath + "/" + name + "." + ext, timestampConfig);
 	                
-	        results.put("signedFileName", name + "." + ext);
+	        results.put("signedFileName", filePath + name + "." + ext);
 	        results.put("status", 200);
 	        results.put("message", "success");
 	        results.put("signedFileFullPath", filePath);
