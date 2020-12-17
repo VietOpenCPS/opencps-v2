@@ -170,8 +170,10 @@ public class VnpostCollectionEvent implements MessageListener {
 									&& !dossierObj.getString(DossierTerm.SUBMIT_DATE).isEmpty()) {
 
 								long submitDateLong = Long.parseLong(dossierObj.getString(DossierTerm.SUBMIT_DATE));
-								date = new Date(submitDateLong);
-								dossier.setSubmitDate(date);
+								if(submitDateLong != 0L) {
+									date = new Date(submitDateLong);
+									dossier.setSubmitDate(date);
+								}
 							}
 						}
 
@@ -180,8 +182,10 @@ public class VnpostCollectionEvent implements MessageListener {
 									&& !dossierObj.getString(DossierTerm.RECEIVE_DATE).isEmpty()) {
 
 								long receiveDateLong = Long.parseLong(dossierObj.getString(DossierTerm.RECEIVE_DATE));
-								date = new Date(receiveDateLong);
-								dossier.setReceiveDate(date);
+								if(receiveDateLong != 0L) {
+									date = new Date(receiveDateLong);
+									dossier.setReceiveDate(date);
+								}
 							}
 						}
 
@@ -190,8 +194,10 @@ public class VnpostCollectionEvent implements MessageListener {
 									&& !dossierObj.getString(DossierTerm.DUE_DATE).isEmpty()) {
 
 								long dueDateLong = Long.parseLong(dossierObj.getString(DossierTerm.DUE_DATE));
-								date = new Date(dueDateLong);
-								dossier.setDueDate(date);
+								if(dueDateLong != 0L) {
+									date = new Date(dueDateLong);
+									dossier.setDueDate(date);
+								}
 							}
 						}
 
