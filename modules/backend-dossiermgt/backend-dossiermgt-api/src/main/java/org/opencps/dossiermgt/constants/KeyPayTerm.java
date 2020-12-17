@@ -126,4 +126,5 @@ public class KeyPayTerm {
 	public static final String KEYPAY_LATE_CONFIG = "KEYPAY_LATE_CONFIG";
 	public static final String KEYPAY_LATE= "keypay_late";
 	public static final String MINUTELY_PATTERN = "minutely#";
+	public static final String ENDPOINT_KEYPAY = "o/pgi/keypayv3/create";
 }

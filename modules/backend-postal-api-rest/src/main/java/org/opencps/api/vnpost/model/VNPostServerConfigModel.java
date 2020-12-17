@@ -41,6 +41,16 @@ public class VNPostServerConfigModel {
 
 	private String keyToken;
 
+	private String lgspType;
+
+	public String getLgspType() {
+		return lgspType;
+	}
+
+	public void setLgspType(String lgspType) {
+		this.lgspType = lgspType;
+	}
+
 	public boolean isActive() {
 		return active;
 	}

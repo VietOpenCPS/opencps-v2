@@ -362,7 +362,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 					long companyId = company.getCompanyId();
 
-					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, 29999, new ServiceContext());
+					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
 					List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 					List<GetDossierData> dossierData = new ArrayList<>();
 					_log.debug("GET DOSSIER SIZE: " + datas.size());
@@ -2496,8 +2496,10 @@ public class OpencpsStatisticRestApplication extends Application {
 			if (LEVEL_4 == serviceLevel && !online) {
 				statisticData.setDossierOnegate4Count(statisticData.getDossierOnegate4Count() + 1);
 			}
-			//
-			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+			//tong so tiep nhan dau ky
+			if (receviedDate != null && (releaseDate == null || releaseDate.after(fromStatisticDate))) {
+				statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+			}
 			String dossierStatus = dossierData.get(DossierTerm.DOSSIER_STATUS);
 			if (dossierStatus.contentEquals(DENIED)) {
 				statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);				
@@ -2506,16 +2508,20 @@ public class OpencpsStatisticRestApplication extends Application {
 				statisticData.setProcessCount(statisticData.getProcessCount() + 1);
 
 				//if (receviedDate != null && receviedDate.after(getFirstDay(month, year))) {
-				if (receviedDate != null && receviedDate.after(fromStatisticDate)) {
-					// trong ky
+				if (receviedDate != null && receviedDate.after(fromStatisticDate)
+						&& receviedDate.before(toStatisticDate)) {
+					// ho so tiep nhan trong ky:
+					// ngay nhan thuoc from - to
 					statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 					if (online) {
 						statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
 					} else {
 						statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 					}
-				} else {
-					// ton ky truoc
+				} else if (receviedDate != null && receviedDate.before(fromStatisticDate)
+						&& ( releaseDate == null || releaseDate.after(fromStatisticDate))) {
+					// ho so ton ky truoc:
+					// ngay nhan truoc ngay from, ngay release sau ngay from hoac ko co ngay release
 					statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
 				}
 				

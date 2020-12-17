@@ -4,7 +4,6 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,8 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.swagger.annotations.Api;
-import org.opencps.statistic.model.OpencpsVotingStatistic;
-import org.opencps.statistic.model.OpencpsVotingStatisticModel;
+
 
 @Path("/votings")
 @Api(value = "/votings", tags = "votings")
@@ -42,6 +40,24 @@ public interface VotingManagement {
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response syncStatisticVoteToDVC(@Context HttpServletRequest request, @Context HttpHeaders header,
+									  @Context Company company, @Context Locale locale, @Context User user,
+									  @Context ServiceContext serviceContext, String body);
+	
+	
+	@POST
+	@Path("/employee/statistic")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getEmployeeVotingReport(@Context HttpServletRequest request, @Context HttpHeaders header,
+									  @Context Company company, @Context Locale locale, @Context User user,
+									  @Context ServiceContext serviceContext, String body);
+	
+	
+	@POST
+	@Path("/employee/statistic/export")
+	@Consumes({ MediaType.APPLICATION_OCTET_STREAM })
+	@Produces({ MediaType.APPLICATION_OCTET_STREAM })
+	public Response exportEmployeeVotingReport(@Context HttpServletRequest request, @Context HttpHeaders header,
 									  @Context Company company, @Context Locale locale, @Context User user,
 									  @Context ServiceContext serviceContext, String body);
 }

@@ -26,6 +26,7 @@ import org.opencps.api.voting.model.VotingTopModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.springframework.util.StringUtils;
 
 import backend.feedback.constants.VotingResultTerm;
 import backend.feedback.constants.VotingTerm;
@@ -580,6 +581,26 @@ public class VotingUtils {
 		}
 
 		return results;
+	}
+	
+	public static Long getVotingCount(List<Document> votingList) {
+		Long result = 0L;
+		int count;
+		int countTem = 0;
+		int countVotingId = 0;
+		if (votingList == null || votingList.size() < 1) return result;
+		for (Document doc : votingList) {
+			Long votingId = Long.valueOf(doc.get(VotingTerm.VOTING_ID));
+			countVotingId ++;
+			if (!StringUtils.isEmpty(votingId)) {
+			count = VotingResultLocalServiceUtil.countByF_votingId(votingId);
+			countTem = countTem + count;
+			}
+		}
+		if (countVotingId > 0) {
+			result = Long.valueOf(countTem/countVotingId);
+		}
+		return result;
 	}
 
 }
