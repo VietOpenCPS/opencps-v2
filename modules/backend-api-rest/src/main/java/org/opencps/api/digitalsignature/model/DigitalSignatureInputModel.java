@@ -49,9 +49,7 @@ import javax.xml.bind.annotation.XmlType;
  "postStepCode",
  "payload",
  "payment",
- "assignUsers",
- "certChainBase64",
- "signatureBase64"
+ "assignUsers"
 })
 public class DigitalSignatureInputModel {
 
@@ -85,10 +83,6 @@ public class DigitalSignatureInputModel {
 	protected String assignUsers;
 	@FormParam(value = "userNote")
 	protected String userNote;
-	@FormParam(value = "certChainBase64")
-	protected String certChainBase64;
-	@FormParam(value = "signatureBase64")
-	protected String signatureBase64;
 	
 	
 	 public String getUserNote() {
@@ -257,22 +251,6 @@ public class DigitalSignatureInputModel {
 
 	public void setAssignUsers(String assignUsers) {
 		this.assignUsers = assignUsers;
-	}
-
-	public String getCertChainBase64() {
-		return certChainBase64;
-	}
-
-	public void setCertChainBase64(String certChainBase64) {
-		this.certChainBase64 = certChainBase64;
-	}
-
-	public String getSignatureBase64() {
-		return signatureBase64;
-	}
-
-	public void setSignatureBase64(String signatureBase64) {
-		this.signatureBase64 = signatureBase64;
 	}
 	
 }

@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.net.HttpURLConnection;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -902,6 +901,5 @@ public class SignatureManagementImpl implements SignatureManagement{
 			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
 		}
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
-	}
-	
+	}	
 }

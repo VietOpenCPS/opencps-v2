@@ -368,7 +368,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 		
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 
-		String realPath = PropsUtil.get(ConfigProps.CER_HOME) + "/";
+		String realPath = PropsUtil.get(ConfigProps.CER_HOME) + FORWARD_SLASH;
 		String fullPath = "";
 		SignPdfFile signPdfFile = new SignPdfFile();
 		try {
@@ -379,9 +379,9 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 			FileUtil.move(fileTemp, file);			
 			fullPath = file.getAbsolutePath();
 			
-			String folderRootCA = realPath + "RootCA";
+			String folderRootCA = realPath + ROOT_CA;
 	        X509Certificate[] certChain = X509ExtensionUtil.getCertChainOfCert(certChainBase64, folderRootCA);
-	        String fontPath = realPath + "font/times.ttf";
+	        String fontPath = realPath + FONT_PATH;
 	        
 	        String base64Hash = ViettelCaUtil.getHashTypeRectangleText(signPdfFile, fullPath, certChain, fontPath);
 	        
@@ -391,7 +391,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 	        }
 	        
         	results.put("status", 200);
-        	results.put("message", "success");
+        	results.put("message", SUCCESS);
         	results.put("serialNumber", ((X509Certificate) certChain[0]).getSerialNumber().toString(16));
         	results.put("base64Hash", base64Hash);
         	results.put("fileName", dlFileEntry.getFileName());
@@ -409,23 +409,23 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 		
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		
-		String realPath = PropsUtil.get(ConfigProps.CER_HOME)+ "/";
+		String realPath = PropsUtil.get(ConfigProps.CER_HOME)+ FORWARD_SLASH;
 		try {
 			Base64.decode(signatureBase64);
-			String name = signFileName.split(".pdf")[0] + "_signed";
-	        String ext = "pdf";
+			String name = signFileName.split(PDF_EXTENSION)[0] + "_signed";
+	        String ext = KysoTerm.PDF_TYPE;
 	        String filePath = realPath;
 
-	        File fileDes = new File(filePath + "/" + name + "." + ext);
+	        File fileDes = new File(filePath + FORWARD_SLASH + name + "." + ext);
 	        if (fileDes.exists()) {
 	            int index = 1;
 	            String name_2 = name + "_" + index;
-	            String path = filePath + "/" + name_2 + "." + ext;
+	            String path = filePath + FORWARD_SLASH + name_2 + "." + ext;
 	            fileDes = new File(path);
 	            while (fileDes.exists()) {
 	                index++;
 	                name_2 = name + "_" + index;
-	                path = filePath + "/" + name_2 + "." + ext;
+	                path = filePath + FORWARD_SLASH + name_2 + "." + ext;
 	                fileDes = new File(path);
 	            }
 	            name = name_2;
@@ -433,13 +433,13 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 	        
 	        TimestampConfig timestampConfig = new TimestampConfig();
 	        timestampConfig.setUseTimestamp(false);		        		        
-	        signPdfFile.insertSignature(signatureBase64, filePath + "/" + name + "." + ext, timestampConfig);
+	        signPdfFile.insertSignature(signatureBase64, filePath + FORWARD_SLASH + name + "." + ext, timestampConfig);
 	                
 	        results.put("signedFileName", filePath + name + "." + ext);
 	        results.put("status", 200);
-	        results.put("message", "success");
+	        results.put("message", SUCCESS);
 	        results.put("signedFileFullPath", filePath);
-	        results.put("fileSigned", filePath + "/" + name + "." + ext);
+	        results.put("fileSigned", filePath + FORWARD_SLASH + name + "." + ext);
 	        results.put("fileEntryIdStr", String.valueOf(fileEntryId));
 			
 			} catch (Exception e) {
@@ -448,4 +448,8 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 		return results;
 	}
 
+	private static final String FORWARD_SLASH = "/";
+	private static final String ROOT_CA = "RootCA";
+	private static final String FONT_PATH = "font/times.ttf";
+	
 }
