@@ -134,6 +134,10 @@ public interface VotingLocalService extends BaseLocalService,
 		throws NoSuchVotingException;
 
 	@Indexable(type = IndexableType.DELETE)
+	public Voting deleteVote(String className, String classPK, String votingCode)
+		throws NoSuchVotingException;
+
+	@Indexable(type = IndexableType.DELETE)
 	public void deleteVoteConfig(long votingId, ServiceContext serviceContext)
 		throws NoSuchVotingException;
 
@@ -266,6 +270,10 @@ public interface VotingLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Voting> getVotingByClass_Name_VC(String className,
+		String votingCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Voting getVotingByCLName_CLPK_VC(String className, String classPK,
 		String votingCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

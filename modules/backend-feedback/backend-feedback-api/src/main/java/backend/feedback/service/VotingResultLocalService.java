@@ -326,6 +326,8 @@ public interface VotingResultLocalService extends BaseLocalService,
 		Sort[] sorts, int start, int end, SearchContext searchContext)
 		throws ParseException, SearchException;
 
+	public void removeByF_votingId_selected(long votingId, String selected);
+
 	@Indexable(type = IndexableType.REINDEX)
 	public VotingResult updateVoteResult(long userId, long votingResultId,
 		long votingId, String fullname, String email, String comment,

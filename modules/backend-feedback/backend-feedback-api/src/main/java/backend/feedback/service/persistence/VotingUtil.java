@@ -1053,6 +1053,81 @@ public class VotingUtil {
 	}
 
 	/**
+	* Returns the voting where className = &#63; and classPK = &#63; and votingCode = &#63; or throws a {@link NoSuchVotingException} if it could not be found.
+	*
+	* @param className the class name
+	* @param classPK the class pk
+	* @param votingCode the voting code
+	* @return the matching voting
+	* @throws NoSuchVotingException if a matching voting could not be found
+	*/
+	public static Voting findByF_CLNAME_CLPK_VC(String className,
+		String classPK, String votingCode)
+		throws backend.feedback.exception.NoSuchVotingException {
+		return getPersistence()
+				   .findByF_CLNAME_CLPK_VC(className, classPK, votingCode);
+	}
+
+	/**
+	* Returns the voting where className = &#63; and classPK = &#63; and votingCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param className the class name
+	* @param classPK the class pk
+	* @param votingCode the voting code
+	* @return the matching voting, or <code>null</code> if a matching voting could not be found
+	*/
+	public static Voting fetchByF_CLNAME_CLPK_VC(String className,
+		String classPK, String votingCode) {
+		return getPersistence()
+				   .fetchByF_CLNAME_CLPK_VC(className, classPK, votingCode);
+	}
+
+	/**
+	* Returns the voting where className = &#63; and classPK = &#63; and votingCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param className the class name
+	* @param classPK the class pk
+	* @param votingCode the voting code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching voting, or <code>null</code> if a matching voting could not be found
+	*/
+	public static Voting fetchByF_CLNAME_CLPK_VC(String className,
+		String classPK, String votingCode, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_CLNAME_CLPK_VC(className, classPK, votingCode,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes the voting where className = &#63; and classPK = &#63; and votingCode = &#63; from the database.
+	*
+	* @param className the class name
+	* @param classPK the class pk
+	* @param votingCode the voting code
+	* @return the voting that was removed
+	*/
+	public static Voting removeByF_CLNAME_CLPK_VC(String className,
+		String classPK, String votingCode)
+		throws backend.feedback.exception.NoSuchVotingException {
+		return getPersistence()
+				   .removeByF_CLNAME_CLPK_VC(className, classPK, votingCode);
+	}
+
+	/**
+	* Returns the number of votings where className = &#63; and classPK = &#63; and votingCode = &#63;.
+	*
+	* @param className the class name
+	* @param classPK the class pk
+	* @param votingCode the voting code
+	* @return the number of matching votings
+	*/
+	public static int countByF_CLNAME_CLPK_VC(String className, String classPK,
+		String votingCode) {
+		return getPersistence()
+				   .countByF_CLNAME_CLPK_VC(className, classPK, votingCode);
+	}
+
+	/**
 	* Caches the voting in the entity cache if it is enabled.
 	*
 	* @param voting the voting
