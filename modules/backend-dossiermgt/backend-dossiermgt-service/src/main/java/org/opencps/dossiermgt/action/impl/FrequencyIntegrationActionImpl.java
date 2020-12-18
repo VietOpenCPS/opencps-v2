@@ -555,6 +555,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                     ? profileReceiver.getFromUnitCode() : "";
             syncTrackingInfo.toUnit   = new String[]{this.configJson.getString(
                     FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE)};
+            syncTrackingInfo.groupId  = this.serverConfig.getGroupId();
 
             JSONObject response = apiService.get(urlGetDetailDossier, headers, syncTrackingInfo);
             if(Validator.isNull(response)) {
