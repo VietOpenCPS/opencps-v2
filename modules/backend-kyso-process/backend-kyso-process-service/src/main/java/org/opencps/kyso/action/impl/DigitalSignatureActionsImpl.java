@@ -3,6 +3,7 @@ package org.opencps.kyso.action.impl;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfSignatureAppearance;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -414,18 +415,17 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 			Base64.decode(signatureBase64);
 			String name = signFileName.split(PDF_EXTENSION)[0] + "_signed";
 	        String ext = KysoTerm.PDF_TYPE;
-	        String filePath = realPath;
 
-	        File fileDes = new File(filePath + FORWARD_SLASH + name + "." + ext);
+	        File fileDes = new File(realPath + name + "." + ext);
 	        if (fileDes.exists()) {
 	            int index = 1;
 	            String name_2 = name + "_" + index;
-	            String path = filePath + FORWARD_SLASH + name_2 + "." + ext;
+	            String path = realPath + name_2 + "." + ext;
 	            fileDes = new File(path);
 	            while (fileDes.exists()) {
 	                index++;
 	                name_2 = name + "_" + index;
-	                path = filePath + FORWARD_SLASH + name_2 + "." + ext;
+	                path = realPath + name_2 + "." + ext;
 	                fileDes = new File(path);
 	            }
 	            name = name_2;
@@ -433,13 +433,13 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 	        
 	        TimestampConfig timestampConfig = new TimestampConfig();
 	        timestampConfig.setUseTimestamp(false);		        		        
-	        signPdfFile.insertSignature(signatureBase64, filePath + FORWARD_SLASH + name + "." + ext, timestampConfig);
-	                
-	        results.put("signedFileName", filePath + name + "." + ext);
+	        signPdfFile.insertSignature(signatureBase64, realPath + name + "." + ext, timestampConfig);	               
+	        
+	        results.put("signedFileName", realPath + name + "." + ext);
 	        results.put("status", 200);
 	        results.put("message", SUCCESS);
-	        results.put("signedFileFullPath", filePath);
-	        results.put("fileSigned", filePath + FORWARD_SLASH + name + "." + ext);
+	        results.put("signedFileFullPath", realPath);
+	        results.put("fileSigned", realPath + name + "." + ext);
 	        results.put("fileEntryIdStr", String.valueOf(fileEntryId));
 			
 			} catch (Exception e) {

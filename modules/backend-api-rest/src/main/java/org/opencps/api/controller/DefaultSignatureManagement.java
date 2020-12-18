@@ -28,6 +28,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
 import org.opencps.exception.model.ExceptionModel;
 
+import io.jsonwebtoken.io.IOException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -179,7 +180,7 @@ public interface DefaultSignatureManagement {
 	
 	@POST
 	@Path("/vtca/fileupload")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces({
 		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
 	})
@@ -187,7 +188,8 @@ public interface DefaultSignatureManagement {
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
-		@ApiParam(value = "Upload sign files", required = true) @Multipart("uploadfile") Attachment file);
+		@ApiParam(value = "Upload sign files", required = true) @FormParam("uploadfile") String singedFileName) 
+		throws PortalException, Exception;
 	
 	@PUT
 	@Path("/vtca/updateFile")

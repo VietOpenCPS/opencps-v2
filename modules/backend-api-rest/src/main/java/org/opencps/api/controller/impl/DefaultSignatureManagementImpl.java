@@ -30,9 +30,15 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
@@ -43,9 +49,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
+import org.apache.cxf.jaxrs.impl.MetadataMap;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DefaultSignatureManagement;
 import org.opencps.api.controller.util.DossierUtils;
@@ -1457,20 +1466,25 @@ public class DefaultSignatureManagementImpl
 		
 	@Override
 	public Response vtcaUploadController(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, Attachment file) {
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-
+			User user, ServiceContext serviceContext, String singedFileName) throws IOException {
+		JSONObject result = JSONFactoryUtil.createJSONObject();		
+		File pdfFile  = new File(singedFileName);
+		ContentDisposition cd = new ContentDisposition(
+			      "form-data; name=\"input\"; filename=\"" + pdfFile.getName() + "\"");
+		Attachment file = new Attachment("input", new FileInputStream(pdfFile ), cd);
+		
 		if (file.getDataHandler() != null) {
 			result.put(ConstantUtils.VGCA_STATUS, true);		
-//			System.out.println("User: " + user.getUserId());
 			try {
 				FileEntry fileEntry = null;
 				InputStream inputStream = file.getDataHandler().getInputStream();
 				String sourceFileName = file.getDataHandler().getName();
+				if (sourceFileName == null || sourceFileName.length() == 0) {
+					sourceFileName = pdfFile.getName();
+				}
 				String fileType = StringPool.BLANK;
 				long fileSize = 0;
 				String destination = StringPool.BLANK;
-//				System.out.println("FILE NAME: " + sourceFileName);
 				if (inputStream != null && Validator.isNotNull(sourceFileName)) {
 					
 					if(Validator.isNull(fileType)) {
@@ -1480,7 +1494,6 @@ public class DefaultSignatureManagementImpl
 					if(fileSize == 0) {
 						fileSize = inputStream.available();
 					}
-//					System.out.println("FILE NAME: " + fileType);
 					String ext = FileUtil.getExtension(sourceFileName);					
 					String title = Validator.isNotNull(ext) ? (System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
 
