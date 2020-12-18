@@ -1535,7 +1535,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DossierActions actions = new DossierActionsImpl();
 			DossierResultsModel results = new DossierResultsModel();
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-			String dossierIds = StringPool.BLANK;
 			String createDateStart =
 					APIDateTimeUtils.convertNormalDateToLuceneDate(
 							query.getCreateDateStart());
@@ -1569,24 +1568,24 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
 						lstData = DossierUtils.mappingForGetList((List<Document>) jsonData.get(ConstantUtils.DATA),
 								user.getUserId(),query.getAssigned(),query);
-						_log.info("DossierIds: " + lstData.size());
+						_log.debug("DossierIds: " + lstData.size());
 					}
 					if(lstData !=null && lstData.size() >0) {
-						long[] dossierIdss = new long[lstData.size()];
+						long[] dossierIds = new long[lstData.size()];
 						int i = 0;
 						for (DossierDataModel d : lstData) {
-							dossierIdss[i++] = d.getDossierId();
-							_log.info("Size: " + d.getDossierId());
+							dossierIds[i++] = d.getDossierId();
+							_log.debug("Size: " + d.getDossierId());
 						}
-						listDossierFile = DossierFileLocalServiceUtil.getService().getByG_DID_FILE(groupId, dossierIdss, "TP01");
+						listDossierFile = DossierFileLocalServiceUtil.getService().getByG_DID_FILE(groupId, dossierIds, "TP01");
 						if (Validator.isNotNull(listDossierFile) && !listDossierFile.isEmpty()) {
-							_log.info("Size File: " + listDossierFile.size());
+							_log.debug("Size File: " + listDossierFile.size());
 							for (DossierFile item : listDossierFile) {
+								_log.debug("Size FileId: " + item.getDossierFileId());
 								if (Validator.isNotNull(item.getFormData())) {
 									JSONObject object = JSONFactoryUtil.createJSONObject(item.getFormData());
 									//Object
 									Iterator<String> keys = object.keys();
-
 									while (keys.hasNext()) {
 										String key = keys.next();
 										String value = object.getString(key);
@@ -1599,7 +1598,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 													Iterator<String> keyLstGiayTo = lstGiayTo.keys();
 													while (keyLstGiayTo.hasNext()) {
 														String keyLst = keyLstGiayTo.next();
-														_log.info("Key: " + keyLst);
+														_log.debug("Key: " + keyLst);
 														if (lstGiayTo.has(DossierFileTerm.ANH_CON_DAU) || lstGiayTo.has(DossierFileTerm.ANH_CHU_KY)) {
 															if(keyLst.equals(DossierFileTerm.ANH_CON_DAU) || keyLst.equals(DossierFileTerm.ANH_CHU_KY)) {
 																if (keyLst.equals(DossierFileTerm.ANH_CON_DAU)) {
@@ -1614,21 +1613,19 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 																		lstGiayTo.put(DossierFileTerm.ANH_CHU_KY, "");
 																	}
 																}
-																_log.info("-------------------------------");
-																_log.info("-------------------------------");
-																_log.info("-------------------------------");
-																_log.info("-------------------------------");
-																_log.info("-------------------------------");
-																_log.info("Form Data: " + object);
 																//Update DossierFile
-																object.put(DossierFileTerm.LIST_GIAY_TO,lstGiayTo);
+																JSONArray arrayDataNew = JSONFactoryUtil.createJSONArray();
+																arrayDataNew.put(lstGiayTo);
+																object.put(DossierFileTerm.LIST_GIAY_TO, arrayDataNew);
+																_log.debug("Object ---- ArrayData ------: " + arrayDataNew);
 																item.setFormData(object.toString());
-																_log.info(object.toString());
-//																DossierFileLocalServiceUtil.updateDossierFile(item);
 															}
 														} else {
 															break;
 														}
+													}
+													if(Validator.isNotNull(object)) {
+														DossierFileLocalServiceUtil.updateDossierFile(item);
 													}
 												}
 											}
@@ -1638,18 +1635,19 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 									}
 								}
 							}
+						}else{
+							return Response.status(HttpURLConnection.HTTP_OK).entity("ERROR").build();
 						}
 					}
-
 				}catch (Exception e){
 					e.getMessage();
 				}
-				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity("Success").build();
+			}else{
+				return Response.status(HttpURLConnection.HTTP_OK).entity("ERROR").build();
 			}
-
 		}catch (Exception e){
 			return BusinessExceptionImpl.processException(e);
 		}
-		return null;
 	}
 }
