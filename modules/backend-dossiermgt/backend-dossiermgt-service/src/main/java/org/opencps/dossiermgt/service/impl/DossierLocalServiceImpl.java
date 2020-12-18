@@ -3555,11 +3555,21 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(service)) {
-			MultiMatchQuery query = new MultiMatchQuery(service);
-
-			query.addFields(ServiceInfoTerm.SERVICE_CODE_SEARCH);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			String[] lstServiceCode = StringUtil.split(service);
+			if(lstServiceCode != null && lstServiceCode.length >0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for(int i = 0; i< lstServiceCode.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstServiceCode[i]);
+					query.addField(ServiceInfoTerm.SERVICE_CODE_SEARCH);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(service);
+				query.addFields(ServiceInfoTerm.SERVICE_CODE_SEARCH);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (DossierTerm.STATISTIC.equals(top.toLowerCase())) {
