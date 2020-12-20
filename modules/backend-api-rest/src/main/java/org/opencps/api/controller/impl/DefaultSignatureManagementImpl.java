@@ -1502,8 +1502,6 @@ public class DefaultSignatureManagementImpl
 					if(fileSize == 0) {
 						fileSize = inputStream.available();
 					}
-					String ext = FileUtil.getExtension(sourceFileName);					
-					//String title = Validator.isNotNull(ext) ? (System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
 					String title = sourceFileName;
 					serviceContext.setAddGroupPermissions(true);
 					serviceContext.setAddGuestPermissions(true);
@@ -1543,9 +1541,7 @@ public class DefaultSignatureManagementImpl
 						fileServerObj.put(ConstantUtils.VGCA_URL, urlPath);
 						result.put(ConstantUtils.VGCA_FILESERVER, fileServerObj.toJSONString());
 					}
-				}
-				
-				
+				}			
 			} catch (IOException e) {
 				_log.debug(e);
 			} catch (Exception e) {
@@ -1561,78 +1557,6 @@ public class DefaultSignatureManagementImpl
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
 	
-	/*@Override
-	public Response vtcaUpdateFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String fileEntryIdStr, String dossierFileIdStr)
-			throws PortalException, Exception {
-		
-		_log.info("START*************");
-		
-		BackendAuth auth = new BackendAuthImpl();
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-		InputStream inputStream = null;
-		try {
-			
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-			
-			long fileEntryId = Long.valueOf(fileEntryIdStr);
-			FileEntry fileEntry = null;
-			String fileName = null;
-			long fileSize = 0;
-			String fileType = null;
-			if (fileEntryId > 0) {
-				
-				DLFileEntry newFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
-				if (newFileEntry != null) {
-					inputStream = newFileEntry.getContentStream();
-					fileName = newFileEntry.getFileName();
-					fileSize = newFileEntry.getSize();
-					fileType = newFileEntry.getMimeType();
-				}
-				
-				DossierFile df = DossierFileLocalServiceUtil.fetchDossierFile(Long.parseLong(dossierFileIdStr));
-				long oldFileEntryId = df.getFileEntryId();
-				
-				if (inputStream != null && fileSize >0 && Validator.isNotNull(fileName)) {
-					fileEntry = DLAppLocalServiceUtil.getFileEntry(oldFileEntryId);
-					serviceContext.setAddGroupPermissions(true);
-					serviceContext.setAddGuestPermissions(true);
-					serviceContext.setAttribute("manualCheckInRequired", Boolean.TRUE);
-
-					PermissionChecker checker =
-							PermissionCheckerFactoryUtil.create(user);
-						PermissionThreadLocal.setPermissionChecker(checker);
-					
-					fileEntry = DLAppLocalServiceUtil.updateFileEntry(
-							user.getUserId(), oldFileEntryId, fileName, fileType,
-							System.currentTimeMillis() + StringPool.DASH + fileName, fileEntry.getDescription(),
-							StringPool.BLANK, true, inputStream, fileSize, serviceContext);
-				}				
-				//result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
-			}else {
-				
-				//result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
-			}
-			return Response.status(HttpURLConnection.HTTP_OK).
-					entity(JSONFactoryUtil.looseSerialize(fileEntry)).build();
-			
-		} catch (Exception e) {
-			_log.info(e);
-			return BusinessExceptionImpl.processException(e);
-		} finally {
-			if (inputStream != null) {
-				try {
-					inputStream.close();
-				} catch (Exception io) {
-					_log.error(io);
-				}
-			}
-		}
-		//return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
-	}*/
-
 	@Override
 	public Response vtcaUpdateFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String fileEntryIdStr, String dossierFileIdStr)
