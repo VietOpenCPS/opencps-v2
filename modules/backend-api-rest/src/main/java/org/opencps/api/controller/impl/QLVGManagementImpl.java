@@ -54,19 +54,50 @@ public class QLVGManagementImpl implements QLVGManagement {
     public static final String MIME_PDF  = "application/pdf";
     public static final String MIME_XLS  = "application/vnd.ms-excel";
     public static final String MIME_XLSX  = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    private static final String SERVER_EOFFICE_TTTT = "TTTT";
+    private static final String SERVER_EOFFICE_HAUGIANG = "HAUGIANG";
+
     private static final double MAX_FILE_SIZE = 10;
+    private List<ServerConfig> listConfig;
+
+    public QLVGManagementImpl() {
+        this.listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(API_SYNC_QLVB, API_SYNC_QLVB);
+    }
+
     @Override
     public Response sendProfile(long dossierId) {
         try {
-            List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(API_SYNC_QLVB, API_SYNC_QLVB);
-            if(Validator.isNull(listConfig) || listConfig.isEmpty()) {
+            if(Validator.isNull(this.listConfig) || this.listConfig.isEmpty()
+                    || Validator.isNull(this.listConfig.get(0))) {
                 throw new Exception("No config was found with protocol: " + API_SYNC_QLVB);
             }
-            ServerConfig serverConfig = listConfig.get(0);
-            QLVBIntegrationAction qlvbAction = new QLVBIntegrationActionImpl(serverConfig);
-            String token = qlvbAction.getTokenHG();
 
-            qlvbAction.sendVBHG(token, dossierId);
+            ServerConfig serverConfig = this.listConfig.get(0);
+            if(Validator.isNull(serverConfig.getConfigs())
+                    || serverConfig.getConfigs().isEmpty()) {
+                throw new Exception("No config in server config");
+            }
+
+            JSONObject configJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+            if(Validator.isNull(configJson)) {
+                throw new Exception("Parse config json error");
+            }
+
+            String eOfficeServer = configJson.getString(QLVBConstants.CONFIG_SERVER_EOFFICE);
+            if(Validator.isNull(eOfficeServer) || eOfficeServer.isEmpty()) {
+                throw new Exception("No eOffice server config");
+            }
+
+            QLVBIntegrationAction qlvbAction = new QLVBIntegrationActionImpl(serverConfig);
+            String token;
+            if(eOfficeServer.equals(SERVER_EOFFICE_HAUGIANG)) {
+                token = qlvbAction.getTokenHG();
+                qlvbAction.sendVBHG(token, dossierId);
+            } else if(eOfficeServer.equals(SERVER_EOFFICE_TTTT)) {
+                token = qlvbAction.getTokenTTTT();
+                qlvbAction.sendDocTTTT(token, dossierId);
+            }
+
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
         } catch (Exception e) {
             _log.error("Error when sync dossier: " + e.getMessage());
@@ -155,6 +186,28 @@ public class QLVGManagementImpl implements QLVGManagement {
             jsonObject.put("message", "Server internal error");
             jsonObject.put("code", "05");
             _log.error("Error when update profile from Eoffice with id " + id + ": " + e.getMessage());
+            return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(jsonObject.toJSONString()).build();
+        }
+    }
+
+    @Override
+    public Response testQlvbCTS(long dossierId) {
+        JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+        try {
+            if(Validator.isNull(this.listConfig) || this.listConfig.isEmpty()) {
+                throw new Exception("No config was found with protocol: " + API_SYNC_QLVB);
+            }
+            ServerConfig serverConfig = this.listConfig.get(0);
+            QLVBIntegrationAction docAction = new QLVBIntegrationActionImpl(serverConfig);
+            docAction.getDocEOfficeTTTT();
+            jsonObject.put("message", "Success");
+            jsonObject.put("code", "00");
+
+            return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject.toJSONString()).build();
+        } catch (Exception e) {
+            jsonObject.put("message", "Server internal error");
+            jsonObject.put("code", "05");
+            _log.error("Error when update profile from Eoffice with id " + dossierId + ": " + e.getMessage());
             return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(jsonObject.toJSONString()).build();
         }
     }
