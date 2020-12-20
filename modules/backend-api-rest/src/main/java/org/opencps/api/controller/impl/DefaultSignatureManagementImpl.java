@@ -1473,6 +1473,7 @@ public class DefaultSignatureManagementImpl
 	@Override
 	public Response vtcaUploadController(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String singedFileName) throws IOException {
+		
 		JSONObject result = JSONFactoryUtil.createJSONObject();		
 		File pdfFile  = new File(singedFileName);
 		ContentDisposition cd = new ContentDisposition(
@@ -1502,8 +1503,8 @@ public class DefaultSignatureManagementImpl
 						fileSize = inputStream.available();
 					}
 					String ext = FileUtil.getExtension(sourceFileName);					
-					String title = Validator.isNotNull(ext) ? (System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
-
+					//String title = Validator.isNotNull(ext) ? (System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
+					String title = sourceFileName;
 					serviceContext.setAddGroupPermissions(true);
 					serviceContext.setAddGuestPermissions(true);
 
@@ -1637,13 +1638,8 @@ public class DefaultSignatureManagementImpl
 			User user, ServiceContext serviceContext, String fileEntryIdStr, String dossierFileIdStr)
 			throws PortalException, Exception {
 		
-		_log.info("START*************");
-		
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-
+		_log.info("START*************");		
 		BackendAuth auth = new BackendAuthImpl();
-		
-		InputStream inputStream = null;
 		try {
 			
 			if (!auth.isAuth(serviceContext)) {
@@ -1653,16 +1649,17 @@ public class DefaultSignatureManagementImpl
 			long newFileEntryId = Long.valueOf(fileEntryIdStr);
 			DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.parseLong(dossierFileIdStr));							
 			
-			Date now = new Date();
-
-			// Add audit fields
-			dossierFile.setModifiedDate(now);
-
-			// Add other fields
-			dossierFile.setFileEntryId(newFileEntryId);
-
-			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);			
-			_log.info("Test" + dossierFile.toXmlString());				
+			if (dossierFile != null) {
+				Date now = new Date();
+				dossierFile.setModifiedDate(now);
+				
+				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(newFileEntryId);
+				if (dlFileEntry != null) {
+					dossierFile.setFileEntryId(dlFileEntry.getFileEntryId());
+					dossierFile.setDisplayName(dlFileEntry.getFileName());
+				}
+				DossierFileLocalServiceUtil.updateDossierFile(dossierFile);			
+			}
 			DossierFileModel result =
 					DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
@@ -1671,14 +1668,6 @@ public class DefaultSignatureManagementImpl
 		} catch (Exception e) {
 			_log.info(e);
 			return BusinessExceptionImpl.processException(e);
-		} finally {
-			if (inputStream != null) {
-				try {
-					inputStream.close();
-				} catch (Exception io) {
-					_log.error(io);
-				}
-			}
 		}
 	}
 
