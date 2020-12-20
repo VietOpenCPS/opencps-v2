@@ -19,7 +19,7 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 
 public class StatisticEngineFetch {
 
-	private final static Log _log = LogFactoryUtil.getLog(StatisticEngineFetchEntry.class);
+	private final static Log _log = LogFactoryUtil.getLog(StatisticEngineFetch.class);
 
 	public void fecthStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
 			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, int reporting) {
