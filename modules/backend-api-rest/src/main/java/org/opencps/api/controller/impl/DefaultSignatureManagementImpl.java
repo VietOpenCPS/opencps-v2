@@ -4,6 +4,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
@@ -57,9 +58,11 @@ import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
 import org.apache.cxf.jaxrs.impl.MetadataMap;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DefaultSignatureManagement;
+import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
+import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -82,6 +85,7 @@ import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.osgi.service.component.annotations.Reference;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -92,6 +96,8 @@ import backend.auth.api.exception.ErrorMsgModel;
 public class DefaultSignatureManagementImpl
 	implements DefaultSignatureManagement {
 
+	@Reference
+	private DLAppService _dlAppService;
 	Log _log = LogFactoryUtil.getLog(SignatureManagementImpl.class.getName());
 	// private static final String TYPE_KYSO = "1135, 1158, 1160, 1032";
 	// private static final String TYPE_DONGDAU = "1137, 1162, 105";
@@ -1472,6 +1478,7 @@ public class DefaultSignatureManagementImpl
 		ContentDisposition cd = new ContentDisposition(
 			      "form-data; name=\"input\"; filename=\"" + pdfFile.getName() + "\"");
 		Attachment file = new Attachment("input", new FileInputStream(pdfFile ), cd);
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		if (file.getDataHandler() != null) {
 			result.put(ConstantUtils.VGCA_STATUS, true);		
@@ -1512,16 +1519,16 @@ public class DefaultSignatureManagementImpl
 					destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
 					destination += calendar.get(Calendar.DAY_OF_MONTH);
 //					System.out.println("FILE NAME: " + destination);
-					DLFolder dlFolder = DLFolderUtil.getTargetFolder(user.getUserId(), serviceContext.getScopeGroupId(), serviceContext.getScopeGroupId(), false, 0, destination,
+					DLFolder dlFolder = DLFolderUtil.getTargetFolder(user.getUserId(), groupId, groupId, false, 0, destination,
 							StringPool.BLANK, false, serviceContext);
-
 					PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 					PermissionThreadLocal.setPermissionChecker(checker);
 					JSONObject fileServerObj = JSONFactoryUtil.createJSONObject();
 					
-					fileEntry = DLAppLocalServiceUtil.addFileEntry(user.getUserId(), serviceContext.getScopeGroupId(), dlFolder.getFolderId(), title,
+					fileEntry = DLAppLocalServiceUtil.addFileEntry(user.getUserId(), groupId, dlFolder.getFolderId(), title,
 						fileType, title, title,
 						StringPool.BLANK, inputStream, fileSize, serviceContext);
+
 //					System.out.println("File entry: " + fileEntry);
 					String fileName = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
 //					System.out.println("File name: " + fileName);
@@ -1553,7 +1560,7 @@ public class DefaultSignatureManagementImpl
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
 	
-	@Override
+	/*@Override
 	public Response vtcaUpdateFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String fileEntryIdStr, String dossierFileIdStr)
 			throws PortalException, Exception {
@@ -1562,7 +1569,7 @@ public class DefaultSignatureManagementImpl
 		
 		BackendAuth auth = new BackendAuthImpl();
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		
+		InputStream inputStream = null;
 		try {
 			
 			if (!auth.isAuth(serviceContext)) {
@@ -1570,31 +1577,109 @@ public class DefaultSignatureManagementImpl
 			}
 			
 			long fileEntryId = Long.valueOf(fileEntryIdStr);
-
+			FileEntry fileEntry = null;
+			String fileName = null;
+			long fileSize = 0;
+			String fileType = null;
 			if (fileEntryId > 0) {
+				
+				DLFileEntry newFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
+				if (newFileEntry != null) {
+					inputStream = newFileEntry.getContentStream();
+					fileName = newFileEntry.getFileName();
+					fileSize = newFileEntry.getSize();
+					fileType = newFileEntry.getMimeType();
+				}
 				
 				DossierFile df = DossierFileLocalServiceUtil.fetchDossierFile(Long.parseLong(dossierFileIdStr));
 				long oldFileEntryId = df.getFileEntryId();
-				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(oldFileEntryId);
-				DLFileEntry newFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
-				File fileSigned = DLFileEntryLocalServiceUtil.getFile(fileEntryId, newFileEntry.getVersion(), false);
 				
-				DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
-						dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
-						StringPool.BLANK, true, fileSigned, serviceContext);
-				
-				DLAppLocalServiceUtil.deleteFileEntry(newFileEntry.getFileEntryId());
-				
-				result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
+				if (inputStream != null && fileSize >0 && Validator.isNotNull(fileName)) {
+					fileEntry = DLAppLocalServiceUtil.getFileEntry(oldFileEntryId);
+					serviceContext.setAddGroupPermissions(true);
+					serviceContext.setAddGuestPermissions(true);
+					serviceContext.setAttribute("manualCheckInRequired", Boolean.TRUE);
 
+					PermissionChecker checker =
+							PermissionCheckerFactoryUtil.create(user);
+						PermissionThreadLocal.setPermissionChecker(checker);
+					
+					fileEntry = DLAppLocalServiceUtil.updateFileEntry(
+							user.getUserId(), oldFileEntryId, fileName, fileType,
+							System.currentTimeMillis() + StringPool.DASH + fileName, fileEntry.getDescription(),
+							StringPool.BLANK, true, inputStream, fileSize, serviceContext);
+				}				
+				//result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 			}else {
-				result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
-			}	        
+				
+				//result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
+			}
+			return Response.status(HttpURLConnection.HTTP_OK).
+					entity(JSONFactoryUtil.looseSerialize(fileEntry)).build();
 			
 		} catch (Exception e) {
+			_log.info(e);
 			return BusinessExceptionImpl.processException(e);
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (Exception io) {
+					_log.error(io);
+				}
+			}
 		}
-		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
+		//return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
+	}*/
+
+	@Override
+	public Response vtcaUpdateFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String fileEntryIdStr, String dossierFileIdStr)
+			throws PortalException, Exception {
+		
+		_log.info("START*************");
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		BackendAuth auth = new BackendAuthImpl();
+		
+		InputStream inputStream = null;
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			long newFileEntryId = Long.valueOf(fileEntryIdStr);
+			DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.parseLong(dossierFileIdStr));							
+			
+			Date now = new Date();
+
+			// Add audit fields
+			dossierFile.setModifiedDate(now);
+
+			// Add other fields
+			dossierFile.setFileEntryId(newFileEntryId);
+
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);			
+			_log.info("Test" + dossierFile.toXmlString());				
+			DossierFileModel result =
+					DossierFileUtils.mappingToDossierFileModel(dossierFile);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+			
+		} catch (Exception e) {
+			_log.info(e);
+			return BusinessExceptionImpl.processException(e);
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (Exception io) {
+					_log.error(io);
+				}
+			}
+		}
 	}
-	
+
 }
