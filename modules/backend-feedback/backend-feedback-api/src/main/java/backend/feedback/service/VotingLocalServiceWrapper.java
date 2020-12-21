@@ -80,6 +80,12 @@ public class VotingLocalServiceWrapper implements VotingLocalService,
 	}
 
 	@Override
+	public long countVotingByClass_Name_VC(String className, String votingCode) {
+		return _votingLocalService.countVotingByClass_Name_VC(className,
+			votingCode);
+	}
+
+	@Override
 	public long countVotingByG_Class_Name_PK(long groupId, String className,
 		String classPK) {
 		return _votingLocalService.countVotingByG_Class_Name_PK(groupId,
@@ -120,6 +126,20 @@ public class VotingLocalServiceWrapper implements VotingLocalService,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws backend.feedback.exception.NoSuchVotingException {
 		return _votingLocalService.deleteVote(votingId, serviceContext);
+	}
+
+	@Override
+	public backend.feedback.model.Voting deleteVote(String className,
+		String classPK, String votingCode)
+		throws backend.feedback.exception.NoSuchVotingException {
+		return _votingLocalService.deleteVote(className, classPK, votingCode);
+	}
+
+	@Override
+	public void deleteVoteConfig(long votingId,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws backend.feedback.exception.NoSuchVotingException {
+		_votingLocalService.deleteVoteConfig(votingId, serviceContext);
 	}
 
 	/**
@@ -299,6 +319,20 @@ public class VotingLocalServiceWrapper implements VotingLocalService,
 	public java.util.List<backend.feedback.model.Voting> getVotingByClass_Name_PK(
 		String className, String classPK) {
 		return _votingLocalService.getVotingByClass_Name_PK(className, classPK);
+	}
+
+	@Override
+	public java.util.List<backend.feedback.model.Voting> getVotingByClass_Name_VC(
+		String className, String votingCode) {
+		return _votingLocalService.getVotingByClass_Name_VC(className,
+			votingCode);
+	}
+
+	@Override
+	public backend.feedback.model.Voting getVotingByCLName_CLPK_VC(
+		String className, String classPK, String votingCode) {
+		return _votingLocalService.getVotingByCLName_CLPK_VC(className,
+			classPK, votingCode);
 	}
 
 	@Override

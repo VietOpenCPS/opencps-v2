@@ -517,7 +517,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + token);
 
-            JSONObject response = apiService.get(urlGetDossiers, headers);
+            JSONObject response = apiService.get(urlGetDossiers, headers, null);
 
             if(Validator.isNull(response)) {
                 throw new Exception("Response get list dossier null");
@@ -536,8 +536,9 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     }
 
     @Override
-    public ProfileInModel getDetailDossier(String token, Integer profileId) throws Exception {
+    public ProfileInModel getDetailDossier(String token, ProfileReceiver profileReceiver) throws Exception {
         try{
+            Integer profileId = profileReceiver.getProfileId();
             String urlGetDetailDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
                     this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_DETAIL_DOSSIERS) + "?profile_id=" + profileId;
 
@@ -545,7 +546,18 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + token);
 
-            JSONObject response = apiService.get(urlGetDetailDossier, headers);
+            SyncTrackingInfo syncTrackingInfo = new SyncTrackingInfo();
+            syncTrackingInfo.urlSaveTracking = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL_LOCAL)
+                    + this.configJson.getString(FrequencyOfficeConstants.CONFIG_SAVE_SYNC_TRACKING);
+            syncTrackingInfo.groupId = this.configJson.getLong(FrequencyOfficeConstants.CONFIG_GROUP_ID);
+            syncTrackingInfo.api     = urlGetDetailDossier;
+            syncTrackingInfo.fromUnit = Validator.isNotNull(profileReceiver.getFromUnitCode())
+                    ? profileReceiver.getFromUnitCode() : "";
+            syncTrackingInfo.toUnit   = new String[]{this.configJson.getString(
+                    FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE)};
+            syncTrackingInfo.groupId  = this.serverConfig.getGroupId();
+
+            JSONObject response = apiService.get(urlGetDetailDossier, headers, syncTrackingInfo);
             if(Validator.isNull(response)) {
                 throw new Exception("Response get one dossier null");
             }
@@ -618,13 +630,54 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             profile.setTo_unit_code(new String[]{
                     this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
             });
+            SyncTrackingInfo syncTrackingInfo = this.transformDataToSyncTrackingInfo(profile, null,
+                    dossier.getGroupId(), dossier.getServiceCode(), null, urlSyncDossier);
 
-            JSONObject response = apiService.callApi(urlSyncDossier, headers, profile);
+            JSONObject response = apiService.callApiAndTracking(urlSyncDossier, syncTrackingInfo, headers, profile);
             _log.info("Result sync dossier: " + response);
             _log.info("Sync dossier " + dossier.getReferenceUid() + " to PMNV done!!!");
         } catch (Exception e) {
             _log.warn("Sync dossier to PMNV error: " + e.getMessage());
             _log.warn("Still running...");
+        }
+    }
+
+    private SyncTrackingInfo transformDataToSyncTrackingInfo(ProfileInModel profile, Map<String, Object> map,
+                                                             long groupId, String serviceCode, String[] listToUnitCode
+            , String urlCallLgsp) {
+        try {
+            if(Validator.isNull(map) && Validator.isNull(profile)) {
+                return null;
+            }
+            SyncTrackingInfo syncTrackingInfo = new SyncTrackingInfo();
+            syncTrackingInfo.groupId = groupId;
+            syncTrackingInfo.urlSaveTracking = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL_LOCAL)
+                    + this.configJson.getString(FrequencyOfficeConstants.CONFIG_SAVE_SYNC_TRACKING);
+            syncTrackingInfo.serviceCode = serviceCode;
+            syncTrackingInfo.api = urlCallLgsp;
+
+            if(Validator.isNotNull(profile)) {
+                syncTrackingInfo.dossierNo = Validator.isNotNull(profile.getSource_id()) ? profile.getSource_id() : "";
+                syncTrackingInfo.referenceUid = Validator.isNotNull(profile.getRef_code()) ? profile.getRef_code() : "";
+                syncTrackingInfo.fromUnit = Validator.isNotNull(profile.getFrom_unit_code())
+                        ? profile.getFrom_unit_code() : "";
+                syncTrackingInfo.toUnit = Validator.isNotNull(profile.getTo_unit_code())
+                        ? profile.getTo_unit_code() : new String[]{};
+                return syncTrackingInfo;
+            }
+
+            syncTrackingInfo.dossierNo = Validator.isNotNull(map.get(FrequencyOfficeConstants.SOURCE_ID))
+                    ? map.get(FrequencyOfficeConstants.SOURCE_ID).toString() : "";
+            syncTrackingInfo.referenceUid = Validator.isNotNull(map.get(FrequencyOfficeConstants.REF_CODE))
+                    ? map.get(FrequencyOfficeConstants.REF_CODE).toString() : "";
+            syncTrackingInfo.fromUnit = Validator.isNotNull(map.get(FrequencyOfficeConstants.FROM_UNIT_CODE))
+                    ? map.get(FrequencyOfficeConstants.FROM_UNIT_CODE).toString() : "";
+            syncTrackingInfo.toUnit   = Validator.isNotNull(listToUnitCode) ? listToUnitCode: new String[]{};
+            return syncTrackingInfo;
+        } catch (Exception e) {
+            _log.warn("Error when transform data to sync tracking: " + e.getMessage());
+            _log.warn("Still running...");
+            return null;
         }
     }
 
@@ -802,7 +855,9 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 urlSyncDossier += this.configJson.getString(FrequencyOfficeConstants.CONFIG_SYNC_DOSSIER);
             }
 
-            JSONObject response = apiService.callApi(urlSyncDossier, headers, profile);
+            SyncTrackingInfo syncTrackingInfo = this.transformDataToSyncTrackingInfo(profile, null,
+                    dossier.getGroupId(), dossier.getServiceCode(), null, urlSyncDossier);
+            JSONObject response = apiService.callApiAndTracking(urlSyncDossier, syncTrackingInfo, headers, profile);
             _log.info("Result sync dossier manual: " + response);
             _log.info("Done call 3.3, 3.5, 3.6, 3.7");
         } catch (Exception e) {
@@ -850,7 +905,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
                     this.configJson.getString(FrequencyOfficeConstants.CONFIG_SYNC_DOSSIER_TO_DVC_BO);
 
-            JSONObject response = apiService.callApi(urlSyncDossier, headers, profile);
+            SyncTrackingInfo syncTrackingInfo = this.transformDataToSyncTrackingInfo(profile, null,
+                    dossier.getGroupId(), dossier.getServiceCode(), null, urlSyncDossier);
+
+            JSONObject response = apiService.callApiAndTracking(urlSyncDossier, syncTrackingInfo, headers, profile);
             _log.info("Result api 3.12 sync dossier DVC Bo manual: " + response);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -933,6 +991,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + token);
 
+            String listToUnitCode[];
             Map<String, Object> body = new HashMap<>();
             body.put(FrequencyOfficeConstants.TYPE, "status");
             body.put(FrequencyOfficeConstants.SOURCE_ID, dossier.getDossierNo());
@@ -941,7 +1000,6 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             body.put(FrequencyOfficeConstants.PROCESS_OFFICIALS, "Admin");
             body.put(FrequencyOfficeConstants.TIME_OF_PROCESS, getCurrentDateStr(FORMAT_DATE_LGSP, new Date()));
             body.put(FrequencyOfficeConstants.FROM_UNIT_CODE, this.configJson.getString(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
-
             String fromUnitCode = "";
             if (Validator.isNull(metaDataJson)
                     || metaDataJson.getString("fromUnitCode").isEmpty()) {
@@ -949,9 +1007,16 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                         this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
                         this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
                 });
+                listToUnitCode = new String[]{
+                        this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
+                        this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
+                };
             } else {
                 fromUnitCode = metaDataJson.getString("fromUnitCode");
                 body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{fromUnitCode});
+                listToUnitCode = new String[]{
+                        fromUnitCode
+                };
             }
 
             if(dossier.getOriginality() == FrequencyOfficeConstants.HOSO_TRUC_TUYEN) {
@@ -969,6 +1034,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                             this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
                             this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
                     });
+                    listToUnitCode = new String[]{
+                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
+                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
+                    };
                 }
             } else if(dossier.getOriginality() == FrequencyOfficeConstants.HOSO_TRUC_TIEP) {
                 if(Validator.isNull(isSendMultipleUnit)
@@ -977,15 +1046,25 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                     body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{
                             this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)
                     });
+                    listToUnitCode = new String[]{
+                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)
+                    };
                 } else if (isSendMultipleUnit.equals("true")) {
                     body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{
                             this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
                             this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
                     });
+                    listToUnitCode = new String[]{
+                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
+                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
+                    };
                 }
             }
 
-            JSONObject response = apiService.callApi(urlSyncDossier, headers, body);
+            SyncTrackingInfo syncTrackingInfo = this.transformDataToSyncTrackingInfo(null, body,
+                    dossier.getGroupId(), dossier.getServiceCode(), listToUnitCode, urlSyncDossier);
+
+            JSONObject response = apiService.callApiAndTrackingWithMapBody(urlSyncDossier, syncTrackingInfo, headers, body);
             _log.info("Result send dossier status: " + response);
             _log.info("Done 3.11!!!!");
         } catch (Exception e) {
@@ -1034,7 +1113,13 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                     this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)
             });
 
-            JSONObject response = apiService.callApi(urlSyncDossier, headers, body);
+            String[] listToUnitCode = new String[] {
+                    this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)
+            };
+
+            SyncTrackingInfo syncTrackingInfo = this.transformDataToSyncTrackingInfo(null, body,
+                    dossier.getGroupId(), dossier.getServiceCode(), listToUnitCode, urlSyncDossier);
+            JSONObject response = apiService.callApiAndTrackingWithMapBody(urlSyncDossier, syncTrackingInfo, headers, body);
             _log.info("Result send dossier status: " + response);
             _log.info("Done call 3.13 sent status profile to DVC BO");
         } catch (Exception e) {

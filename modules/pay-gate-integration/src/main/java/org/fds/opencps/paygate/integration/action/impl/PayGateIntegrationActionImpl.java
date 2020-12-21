@@ -1836,7 +1836,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
 				payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
 				payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
-				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG);
+				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAYGOV);
 				payment.put(PaymentFileTerm.CONFIRM_PAYLOAD, confirmPayload.toJSONString());
 				params.put(PayGateTerm.PAYMENT, payment.toString());
 
@@ -1865,7 +1865,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 							payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
 							payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
 							payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
-							payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG);
+							payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAYGOV);
 							payment.put(PaymentFileTerm.CONFIRM_PAYLOAD, confirmPayload.toJSONString());
 							params.put(PayGateTerm.PAYMENT, payment.toString());
 						}
@@ -1899,7 +1899,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
 				payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
 				payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
-				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG);
+				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAYGOV);
 				payment.put(PaymentFileTerm.CONFIRM_PAYLOAD, confirmPayload.toJSONString());
 				params.put(PayGateTerm.PAYMENT, payment.toString());
 

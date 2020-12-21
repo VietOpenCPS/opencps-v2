@@ -14,8 +14,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.net.HttpURLConnection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -69,6 +68,12 @@ public class VNPostManagementImpl implements VNPostManagement {
 				_log.info("server is though lgsp");
 				//case integrate VNPOST through LGSP(not NGSP)
 				vnPostConfig.setLGSP(true);
+				if(configObj.has(VnPostTerm.SERVER_LGSP_TYPE) && !configObj.getString(VnPostTerm.SERVER_LGSP_TYPE).isEmpty()) {
+					vnPostConfig.setLgspType(configObj.getString(VnPostTerm.SERVER_LGSP_TYPE));
+				} else {
+					vnPostConfig.setLgspType("");
+				}
+				//key token dong thap
 				vnPostConfig.setKeyToken(configObj.getString(VnPostTerm.SERVER_KEY_TOKEN_LGSP));
 			} else {
 				_log.info("server is ngsp");
@@ -95,7 +100,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 				config = check;
 			}
 			return config;
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			// e.printStackTrace();
 			_log.error(e);
 			return null;
@@ -113,12 +118,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 		if (config == null) {
 			config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_VIA_POSTAL_SERVERNO_D, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
 		}
-		//_log.info("sendPostalRequest groupId ============= " + groupId);
-		//_log.info("sendPostalRequest lstsc ============= " + JSONFactoryUtil.looseSerialize(config));
 
-		// String tokenUrl = "https://api.mitc.vn/token";
-		// String consumer_key = "ddabyJ69AeQyzhFvlnXNROKQs7Ia";
-		// String secret_key = "kFqNeYCoLtr4MMSnfRcXQwhIO3Aa";
 		if (config == null) {
 			return null;
 		} else {
@@ -128,9 +128,6 @@ public class VNPostManagementImpl implements VNPostManagement {
 				if(Validator.isNull(token)) {
 					return null;
 				}
-				// String apiUrl = "https://api.mitc.vn/apiVNPostNGSP/p1.0/order/post";
-
-				// _log.info("token ============= " + JSONFactoryUtil.looseSerialize(token));
 
 				String senderName = Validator.isNotNull(config.getSenderName()) ? config.getSenderName()
 						: input.getSenderName();
@@ -141,6 +138,14 @@ public class VNPostManagementImpl implements VNPostManagement {
 						input.getReceiverName(), input.getReceiverAddress(), input.getReceiverTel(),
 						input.getReceiverProvince(), input.getReceiverDistrict(), input.getReceiverEmail());
 				_log.info("THONG TIN order: " + order);
+
+				if(config.isLGSP() && config.getLgspType().equals("TTTT")) {
+					LGSPService lgspService = new LGSPServiceImpl();
+					JSONObject result = lgspService.postTTTT(config.getApiPostOrder(), token.getAccessToken(),
+							this.parseMOrderToMap(order), "vnpost_post_order");
+					return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+				}
+
 				MResult result = IOrder.postOrder(config.getApiPostOrder(), token.getAccessToken(),
 						token.getTokenType(), order);
 				_log.info("THONG TIN result: " + result);
@@ -158,7 +163,29 @@ public class VNPostManagementImpl implements VNPostManagement {
 			}
 		}
 	}
-	
+
+	private Map<String, Object> parseMOrderToMap(MOrder order) {
+		Map<String, Object> body = new HashMap<>();
+		body.put(VnPostTerm.CUSTOMER_CODE, order.getCustomerCode());
+		body.put(VnPostTerm.ORDER_NUMBER, order.getOrderNumber());
+		body.put(VnPostTerm.COD_AMOUNT, order.getCODAmount());
+		body.put(VnPostTerm.SENDER_PROVINCE, order.getSenderProvince());
+		body.put(VnPostTerm.SENDER_DISTRICT, order.getSenderDistrict());
+		body.put(VnPostTerm.SENDER_ADDRESS, order.getSenderAddress());
+		body.put(VnPostTerm.SENDER_NAME, order.getSenderName());
+		body.put(VnPostTerm.SENDER_EMAIL, order.getSenderEmail());
+		body.put(VnPostTerm.SENDER_TEL, order.getSenderTel());
+		body.put(VnPostTerm.SENDER_DESC, order.getSenderDesc());
+		body.put(VnPostTerm.DESCRIPTION, order.getDescription());
+		body.put(VnPostTerm.RECEIVER_NAME, order.getReceiverName());
+		body.put(VnPostTerm.RECEIVER_ADDRESS, order.getReceiverAddress());
+		body.put(VnPostTerm.RECEIVER_TEL, order.getReceiverTel());
+		body.put(VnPostTerm.RECEIVER_PROVINCE, order.getReceiverProvince());
+		body.put(VnPostTerm.RECEIVER_DISTRICT, order.getReceiverDistrict());
+		body.put(VnPostTerm.RECEIVER_EMAIL, order.getReceiverEmail());
+		return body;
+	}
+
 	@Override
 	public Response sendCollectionVNPostalRequest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, VNPostInputModel input) {
@@ -195,7 +222,14 @@ public class VNPostManagementImpl implements VNPostManagement {
 						input.getSenderName(), input.getSenderEmail(), input.getSenderTel(), input.getSenderDesc(),
 						input.getDescription(), receiverName, receiverAddress, receiverTel, receiverProvince,
 						receiverDistrict, receiverEmail);
-				
+
+				if(config.isLGSP() && config.getLgspType().equals("TTTT")) {
+					LGSPService lgspService = new LGSPServiceImpl();
+					JSONObject result = lgspService.postTTTT(config.getApiPostOrder(), token.getAccessToken(),
+							this.parseMOrderToMap(order), "vnpost_post_order");
+					return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+				}
+
 				MResult result = IOrder.postOrder(config.getApiPostOrder(), token.getAccessToken(),
 						token.getTokenType(), order);
 				_log.info(config.getCustomerCode() + "-----" + input.getOrderNumber() + "-----" + input.getCodAmount()
@@ -335,12 +369,30 @@ public class VNPostManagementImpl implements VNPostManagement {
 
 	private JSONObject getTokenLGSP(VNPostServerConfigModel config) {
 		try {
-			String urlGetToken = config.getApiGetToken();
-			String keyToken    = config.getKeyToken();
-			_log.info("token: " + urlGetToken + ", key:" + keyToken);
 			LGSPService lgspService = new LGSPServiceImpl();
-			return lgspService.getToken(urlGetToken, keyToken);
 
+			if(Validator.isNotNull(config.getLgspType()) && config.getLgspType().equals("TTTT")) {
+				String customerKey = config.getCustomerKey();
+				String secretKey   = config.getSecretKey();
+
+				String keyLogin = "";
+				if(!customerKey.isEmpty() && !secretKey.isEmpty()) {
+					String keyBeforeEncode = customerKey + ":" + secretKey;
+					keyLogin = Base64.getEncoder().encodeToString(keyBeforeEncode.getBytes());
+				}
+
+				if(keyLogin.isEmpty()) {
+					throw new Exception("No keylogin");
+				}
+
+				_log.info("token: " + config.getApiGetToken() + ", key:" + keyLogin);
+				return lgspService.getTokenTTTT(config.getApiGetToken(), keyLogin);
+			} else {
+				String urlGetToken = config.getApiGetToken();
+				String keyToken    = config.getKeyToken();
+				_log.info("token: " + urlGetToken + ", key:" + keyToken);
+				return lgspService.getToken(urlGetToken, keyToken);
+			}
 		} catch (Exception e) {
 			_log.error("Error when get token LGSP: " + e.getMessage());
 			return null;

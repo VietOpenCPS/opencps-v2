@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.application;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -183,7 +184,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	public Set<Object> getSingletons() {
 		return Collections.<Object>singleton(this);
 	}
-	
+
 	private static Log _log = LogFactoryUtil.getLog(OpencpsStatisticRestApplication.class);
 
 	@GET
@@ -202,6 +203,15 @@ public class OpencpsStatisticRestApplication extends Application {
 		int month = query.getMonth();
 		int year = query.getYear();
 		String govAgencyCode = query.getAgency();
+		boolean isGetReportServiceCode = false;
+
+		if(Validator.isNotNull(query.getIsReportServiceCode())
+				&& !query.getIsReportServiceCode().isEmpty()) {
+			if(query.getIsReportServiceCode().equals("true")) {
+				isGetReportServiceCode = true;
+			}
+		}
+
 		String domain = query.getDomain();
 		String system = query.getSystem();
 		if (Validator.isNull(system)) {
@@ -348,7 +358,8 @@ public class OpencpsStatisticRestApplication extends Application {
 					}
 					params.put(DossierConstants.DOSSIER_STATUS, payload.getStatus());
 					params.put(DossierConstants.DOSSIER_SUB_STATUS, payload.getSubstatus());
-					params.put(DossierConstants.SERVICECODE, payload.getServiceCode());
+//					params.put(DossierConstants.SERVICECODE, payload.getServiceCode());
+					params.put(DossierConstants.SERVICE, payload.getServiceCode());
 					params.put(DossierConstants.ONLINE, payload.getOnlineStatistic());
 					params.put(DossierConstants.ORIGINALITY, payload.getOriginality());
 					params.put(DossierConstants.TEMPLATE, payload.getTemplate());
@@ -358,11 +369,11 @@ public class OpencpsStatisticRestApplication extends Application {
 
 					params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
 					params.put(DossierTerm.DOMAIN_CODE, domain);
-					
+
 					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 					long companyId = company.getCompanyId();
 
-					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, 29999, new ServiceContext());
+					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
 					List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 					List<GetDossierData> dossierData = new ArrayList<>();
 					_log.debug("GET DOSSIER SIZE: " + datas.size());
@@ -370,6 +381,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						GetDossierData model = new GetDossierData();
 						model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
 						model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+						model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
 						model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
 						model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
 						if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
@@ -405,7 +417,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
 						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 						engineFetch.fetchSumStatisticData(groupId, statisticData, dossierDataList, fromCalDate, toCalDate,
-								0);
+								0, isGetReportServiceCode);
 						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 						//statisticEngineUpdate.updateStatisticData(statisticData);
 						//
@@ -2496,8 +2508,10 @@ public class OpencpsStatisticRestApplication extends Application {
 			if (LEVEL_4 == serviceLevel && !online) {
 				statisticData.setDossierOnegate4Count(statisticData.getDossierOnegate4Count() + 1);
 			}
-			//
-			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+			//tong so tiep nhan dau ky
+			if (receviedDate != null && (releaseDate == null || releaseDate.after(fromStatisticDate))) {
+				statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+			}
 			String dossierStatus = dossierData.get(DossierTerm.DOSSIER_STATUS);
 			if (dossierStatus.contentEquals(DENIED)) {
 				statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);				
@@ -2506,16 +2520,20 @@ public class OpencpsStatisticRestApplication extends Application {
 				statisticData.setProcessCount(statisticData.getProcessCount() + 1);
 
 				//if (receviedDate != null && receviedDate.after(getFirstDay(month, year))) {
-				if (receviedDate != null && receviedDate.after(fromStatisticDate)) {
-					// trong ky
+				if (receviedDate != null && receviedDate.after(fromStatisticDate)
+						&& receviedDate.before(toStatisticDate)) {
+					// ho so tiep nhan trong ky:
+					// ngay nhan thuoc from - to
 					statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 					if (online) {
 						statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
 					} else {
 						statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 					}
-				} else {
-					// ton ky truoc
+				} else if (receviedDate != null && receviedDate.before(fromStatisticDate)
+						&& ( releaseDate == null || releaseDate.after(fromStatisticDate))) {
+					// ho so ton ky truoc:
+					// ngay nhan truoc ngay from, ngay release sau ngay from hoac ko co ngay release
 					statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
 				}
 				

@@ -125,7 +125,17 @@ public class DossierSearchModel {
 	protected String parentAgency;
 	@QueryParam(value = "serviceLevel")
 	protected String serviceLevel;
-	
+	@QueryParam(value = "isReportServiceCode")
+	protected String isReportServiceCode;
+
+	public String getIsReportServiceCode() {
+		return isReportServiceCode;
+	}
+
+	public void setIsReportServiceCode(String isReportServiceCode) {
+		this.isReportServiceCode = isReportServiceCode;
+	}
+
 	public String getGroupCode() {
 		return groupCode;
 	}
