@@ -6458,6 +6458,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
 			}
+			if (Validator.isNotNull(input.getDossierNo())) {
+				dossier.setDossierNo(input.getDossierNo());
+			}
+			if (Validator.isNotNull(input.getDueDate())) {
+				dossier.setDueDate(APIDateTimeUtils
+						.convertStringToDate(input.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
+			if (Validator.isNotNull(input.getReceiveDate())) {
+				dossier.setReceiveDate(APIDateTimeUtils
+						.convertStringToDate(input.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			return dossierLocalService.updateDossier(dossier);
 
@@ -6799,6 +6810,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
+			}
+			if (Validator.isNotNull(input.getDossierNo())) {
+				dossier.setDossierNo(input.getDossierNo());
+			}
+			if (Validator.isNotNull(input.getDueDate())) {
+				dossier.setDueDate(APIDateTimeUtils
+						.convertStringToDate(input.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
+			if (Validator.isNotNull(input.getReceiveDate())) {
+				dossier.setReceiveDate(APIDateTimeUtils
+						.convertStringToDate(input.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 			}
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			dossierLocalService.updateDossier(dossier);
