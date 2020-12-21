@@ -595,17 +595,21 @@ public class DossierUtils {
 			model.setResultVotingCode2(0);
 			model.setResultVotingCode3(0);
 			
-			// add fee amount, service amount
-			PaymentFile pf = PaymentFileLocalServiceUtil.getByDossierId(groupId, GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
-			if (pf != null) {
-				model.setFeeAmount(pf.getFeeAmount());
-				model.setServiceAmount(pf.getServiceAmount());
-				model.setTotalAmount(pf.getPaymentAmount());
-			}else {
-				model.setFeeAmount(0L);
-				model.setServiceAmount(0L);
-				model.setTotalAmount(0L);
+			// add fee amount, service amount, total amount
+			if(doc.hasField(Field.ENTRY_CLASS_PK) && 
+					Validator.isNotNull(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)))) {
+				PaymentFile pf = PaymentFileLocalServiceUtil.getByDossierId(groupId, GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+				if (pf != null) {
+					model.setFeeAmount(pf.getFeeAmount());
+					model.setServiceAmount(pf.getServiceAmount());
+					model.setTotalAmount(pf.getPaymentAmount());
+				}else {
+					model.setFeeAmount(0L);
+					model.setServiceAmount(0L);
+					model.setTotalAmount(0L);
+				}
 			}
+			
 			ouputs.add(model);
 		}
 
