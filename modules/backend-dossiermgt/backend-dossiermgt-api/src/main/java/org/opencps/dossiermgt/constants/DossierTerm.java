@@ -343,6 +343,7 @@ public class DossierTerm {
 	public static final String CONTAIN_VIA_POSTAL = "viapostal=";
 	public static final String CONTAIN_ROLE_DONE = "roledone=";
 	public static final String CONTAIN_ROLE_CODE = "rolecode=";
+	public static final String ROLE_CODE = "roleCode=";
 	public static final String CONTAIN_WAITING_OVERDUE_THAN = "waiting_overdue>";
 	public static final String CONTAIN_WAITING_OVERDUE_LESS = "waiting_overdue<=";
 	public static final String CONTAIN_DURATION_COUNT_GREATER_THAN = "durationCount>";

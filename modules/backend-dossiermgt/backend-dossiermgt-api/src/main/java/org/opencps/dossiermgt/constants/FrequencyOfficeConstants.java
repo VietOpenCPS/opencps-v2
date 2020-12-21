@@ -27,6 +27,9 @@ public class FrequencyOfficeConstants {
     //Server config
     public static final String CONFIG_URL = "adapter_url";
     public static final String CONFIG_GET_TOKEN = "getToken";
+    public static final String CONFIG_SAVE_SYNC_TRACKING = "saveSyncTracking";
+    public static final String CONFIG_URL_LOCAL = "urlLocal";
+    public static final String CONFIG_GROUP_ID = "groupId";
     public static final String CONFIG_GET_LIST_DOSSIERS = "getListDossier";
     public static final String CONFIG_GET_DETAIL_DOSSIERS = "getDetailDossier";
     public static final String CONFIG_UPDATE_STATUS_RECEIVER = "updateStatusReceiver";

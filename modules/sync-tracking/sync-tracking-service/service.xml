@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder auto-namespace-tables="false" package-path="org.opencps.synctracking">
+	<author>giaonn</author>
+	<namespace>logReport</namespace>
+	<entity name="SyncTracking" uuid="true" local-service="true"
+			remote-service="false" table="opencps_synctracking">
+		<!-- PK fields -->
+		<column name="trackingId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="dossierNo" type="String" />
+		<column name="referenceUid" type="String" />
+		<column name="serverNo" type="String" />
+		<column name="protocol" type="String" />
+		<column name="stateSync" type="int" />
+		<column name="serviceCode" type="String" />
+		<column name="api" type="String" />
+		<column name="fromUnit" type="String" />
+		<column name="toUnit" type="String" />
+		<column name="bodyRequest" type="String" />
+		<column name="response" type="String" />
+		<column name="metaData" type="String" />
+
+		<!-- Order -->
+		<order>
+			<order-column name="createDate" order-by="desc" />
+		</order>
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+
+		<finder name="F_GID_Protocol" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="protocol"></finder-column>
+		</finder>
+
+		<finder name="F_GID_Protocol_DossierNo" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="protocol"></finder-column>
+			<finder-column name="dossierNo"></finder-column>
+		</finder>
+
+		<finder name="F_GID_Protocol_ServiceCode" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="protocol"></finder-column>
+			<finder-column name="serviceCode"></finder-column>
+		</finder>
+		
+		<finder name="F_GID_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+
+		<finder name="F_GID_DOSSIERNO_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="dossierNo"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+
+		<finder name="F_GID_SERVICECODE_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="serviceCode"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+
+		<finder name="F_GID_SERVICECODE_DOSSIERNO_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="serviceCode"></finder-column>
+			<finder-column name="dossierNo"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+	</entity>
+</service-builder>

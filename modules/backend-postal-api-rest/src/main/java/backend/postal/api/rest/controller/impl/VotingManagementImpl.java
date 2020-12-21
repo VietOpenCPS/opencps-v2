@@ -127,6 +127,7 @@ public class VotingManagementImpl implements VotingManagement {
 						params, query.getStart(), query.getEnd(), serviceContext);
 
 			if (jsonData != null) {
+				result.setVotingCount(VotingUtils.getVotingCount((List<Document>) jsonData.get(PostalConstantUtils.DATA)));
 				result.setTotal(jsonData.getLong(PostalConstantUtils.TOTAL));
 				result.getData()
 						.addAll(VotingUtils.mappingVotingDocList((List<Document>) jsonData.get(PostalConstantUtils.DATA), query.getFromVotingDate(), query.getToVotingDate(), serviceContext));
@@ -161,6 +162,11 @@ public class VotingManagementImpl implements VotingManagement {
 			String commentable = HtmlUtil.escape(String.valueOf(input.getCommentable()));
 			String votingCode = input.getVotingCode();
 			
+			// Check exist votingCode of classPK
+			Voting existVoting = actions.getVoting(className, classPK, votingCode);
+			if (existVoting != null) {
+				return Response.status(400).entity(result).build();
+			}
 			Voting voting = actions.addVote(user.getUserId(), company.getCompanyId(), groupId, className,
 					classPK, subject, templateNo, choices,
 					Boolean.valueOf(commentable), serviceContext);
@@ -187,19 +193,25 @@ public class VotingManagementImpl implements VotingManagement {
 		VotingModel result = new VotingModel();
 
 		try {
-
+			String votingCode = input.getVotingCode();	
+			String oldChoice = "";
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			Voting vote = VotingLocalServiceUtil.fetchVoting(votingId);
+			if (vote != null) {
+				votingCode = vote.getVotingCode();
+				oldChoice = vote.getChoices();
+			}
+			
 			String className = HtmlUtil.escape(input.getClassName());
 			String classPK = HtmlUtil.escape(input.getClassPK());
 			String subject = HtmlUtil.escape(input.getSubject());
 			String choices = HtmlUtil.escape(input.getChoices());
 			String templateNo = HtmlUtil.escape(input.getTemplateNo());
 			String commentable = HtmlUtil.escape(String.valueOf(input.getCommentable()));
-			String votingCode = input.getVotingCode();
 
 			Voting voting = actions.updateVoting(user.getUserId(), company.getCompanyId(), groupId, votingId,
 					className, classPK, subject, templateNo,
-					choices, Boolean.valueOf(commentable), serviceContext);
+					choices, oldChoice, Boolean.valueOf(commentable), serviceContext);
 			if (voting != null) {
 				voting.setVotingCode(votingCode);
 				VotingLocalServiceUtil.updateVoting(voting);

@@ -69,6 +69,12 @@ public interface DossierFileManagement {
 		@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
 
 	@POST
+	@Path("/{fileId}/tracePdf")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response tracePdf(@PathParam("fileId") long fileId, String body);
+
+	@POST
 	@Path("/{id}/files")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({
