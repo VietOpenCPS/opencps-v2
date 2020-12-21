@@ -1537,4 +1537,106 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		}
 	}
 
+	@Override
+	public Response downloadAllFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id) {
+		String pathName = StringPool.BLANK;
+		String realPath = StringPool.BLANK;
+		BackendAuth auth = new BackendAuthImpl();
+		DossierFileActions action = new DossierFileActionsImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getAllDossierFile(id);
+
+			if (dossierFiles != null && dossierFiles.size() > 0) {
+				if (dossierFiles.size() > 0) {
+					if (dossierFiles.get(0).getFileEntryId() > 0) {
+						FileEntry fileEntry =
+							DLAppLocalServiceUtil.getFileEntry(
+								dossierFiles.get(0).getFileEntryId());
+
+						File file = DLFileEntryLocalServiceUtil.getFile(
+							fileEntry.getFileEntryId(), fileEntry.getVersion(),
+							true);
+						realPath = file.getPath();
+						pathName = file.getPath() + StringPool.UNDERLINE + String.valueOf(id);
+					}
+				}
+				// int index = realPath.lastIndexOf("\\");
+				int index = realPath.lastIndexOf(StringPool.SLASH);
+				File d = null;
+				if (index > 0) {
+					d = new File(pathName.substring(0, index));
+				}
+				if (d != null) {
+					for (File f : d.listFiles()) {
+						if (ConstantUtils.ZIP.equals(
+							f.getName().substring(
+								f.getName().lastIndexOf(StringPool.COMMA) + 1))) {
+							f.delete();
+						}
+						if (f.isDirectory()) {
+							f.delete();
+						}
+
+					}
+				}
+
+				for (DossierFile dossierFile : dossierFiles) {
+					if (dossierFile.getFileEntryId() > 0) {
+						FileEntry fileEntry =
+							DLAppLocalServiceUtil.getFileEntry(
+								dossierFile.getFileEntryId());
+
+						File file = DLFileEntryLocalServiceUtil.getFile(
+							fileEntry.getFileEntryId(), fileEntry.getVersion(),
+							true);
+
+						String fileName =
+							pathName + StringPool.SLASH + fileEntry.getFileName();
+						File dir = new File(pathName);
+						if (!dir.exists()) {
+							dir.mkdirs();
+						}
+						action.copyFile(file.getPath(), fileName);
+					}
+				}
+
+				File dirName = new File(pathName);
+
+				action.zipDirectory(
+					dirName,
+						pathName.substring(index + 1, pathName.length()) +
+						ConstantUtils.EXTENTION_ZIP);
+				// TODO:
+				// Nen danh sach dossierFiles thanh file zip sau day gui lai
+				// client
+				File fi = new File(
+						pathName.substring(index + 1, pathName.length()) +
+						ConstantUtils.EXTENTION_ZIP);
+				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fi.getName());
+				ResponseBuilder responseBuilder = Response.ok(fi);
+				responseBuilder.header(
+					ConstantUtils.CONTENT_DISPOSITION,
+					attachmentFilename);
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_ZIP);
+
+				return responseBuilder.build();
+			}
+			else {
+				return Response.status(
+					HttpURLConnection.HTTP_NO_CONTENT).entity(
+						MessageUtil.getMessage(ConstantUtils.API_JSON_NOCONTENT)).build();
+			}
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
 }

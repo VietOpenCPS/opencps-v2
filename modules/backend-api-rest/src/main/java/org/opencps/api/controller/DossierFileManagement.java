@@ -684,4 +684,23 @@ public interface DossierFileManagement {
 		@ApiParam(value = "url get file by applicant Data Id", required = true) @FormParam("uri") String uri,
 		@ApiParam(value = "display name dossier file", required = true) @FormParam("displayName") String displayName,
 		@ApiParam(value = "file type dossier file", required = true) @FormParam("fileType") String fileType);
+	
+	@GET
+	@Path("/{id}/downloadAllFile")
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "downloadAllFileByDossierId")
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "downloadAllFileByDossierId"),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+
+	public Response downloadAllFileByDossierId(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id);
 }
