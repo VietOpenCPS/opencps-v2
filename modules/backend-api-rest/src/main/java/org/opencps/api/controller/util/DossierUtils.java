@@ -602,9 +602,9 @@ public class DossierUtils {
 				model.setServiceAmount(pf.getServiceAmount());
 				model.setTotalAmount(pf.getPaymentAmount());
 			}else {
-				model.setFeeAmount(null);
-				model.setServiceAmount(null);
-				model.setTotalAmount(null);
+				model.setFeeAmount(0L);
+				model.setServiceAmount(0L);
+				model.setTotalAmount(0L);
 			}
 			ouputs.add(model);
 		}
