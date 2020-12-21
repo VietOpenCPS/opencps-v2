@@ -85,6 +85,7 @@ public class AutoFillFormData {
 			String _sampleCount = StringPool.BLANK;
 			String _documentDate = StringPool.BLANK;
 			String _documentNo = StringPool.BLANK;
+			String _govAgencyCode = StringPool.BLANK;
 
 			SimpleDateFormat sfd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE_TIME);
 
@@ -94,6 +95,7 @@ public class AutoFillFormData {
 				_receiveDate = Validator.isNotNull(dossier.getReceiveDate()) ? dossier.getReceiveDate().toGMTString()
 						: StringPool.BLANK;
 				_dossierNo = dossier.getDossierNo();
+				_govAgencyCode = dossier.getGovAgencyCode();
 
 				// get data applicant or employee
 				ApplicantActions applicantActions = new ApplicantActionsImpl();
@@ -238,6 +240,8 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _receiveDate);
 					} else if ((StringPool.UNDERLINE + DossierTerm.DOSSIER_NO).equals(value)) {
 						jsonMap.put(entry.getKey(), _dossierNo);
+					} else if ((StringPool.UNDERLINE + DossierTerm.GOV_AGENCY_CODE).equals(value)) {
+						jsonMap.put(entry.getKey(), _govAgencyCode);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_EMPLOYEE_NO).equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_employeeNo);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_FULL_NAME).equals(value)) {
@@ -325,6 +329,8 @@ public class AutoFillFormData {
 							resultBinding += StringPool.COMMA_AND_SPACE + _receiveDate;
 						} else if ((StringPool.UNDERLINE + DossierTerm.DOSSIER_NO).equals(value)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _dossierNo;
+						}else if ((StringPool.UNDERLINE + DossierTerm.GOV_AGENCY_CODE).equals(value)) {
+								resultBinding += StringPool.COMMA_AND_SPACE + _govAgencyCode;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_EMPLOYEE_NO).equals(value)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _employee_employeeNo;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_FULL_NAME).equals(value)) {
