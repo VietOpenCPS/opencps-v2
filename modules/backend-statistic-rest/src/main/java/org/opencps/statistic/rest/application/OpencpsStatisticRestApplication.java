@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.application;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -348,7 +349,8 @@ public class OpencpsStatisticRestApplication extends Application {
 					}
 					params.put(DossierConstants.DOSSIER_STATUS, payload.getStatus());
 					params.put(DossierConstants.DOSSIER_SUB_STATUS, payload.getSubstatus());
-					params.put(DossierConstants.SERVICECODE, payload.getServiceCode());
+//					params.put(DossierConstants.SERVICECODE, payload.getServiceCode());
+					params.put(DossierConstants.SERVICE, payload.getServiceCode());
 					params.put(DossierConstants.ONLINE, payload.getOnlineStatistic());
 					params.put(DossierConstants.ORIGINALITY, payload.getOriginality());
 					params.put(DossierConstants.TEMPLATE, payload.getTemplate());
@@ -358,11 +360,11 @@ public class OpencpsStatisticRestApplication extends Application {
 
 					params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
 					params.put(DossierTerm.DOMAIN_CODE, domain);
-					
+
 					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 					long companyId = company.getCompanyId();
 
-					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, 29999, new ServiceContext());
+					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
 					List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 					List<GetDossierData> dossierData = new ArrayList<>();
 					_log.debug("GET DOSSIER SIZE: " + datas.size());
@@ -370,6 +372,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						GetDossierData model = new GetDossierData();
 						model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
 						model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+						model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
 						model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
 						model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
 						if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {

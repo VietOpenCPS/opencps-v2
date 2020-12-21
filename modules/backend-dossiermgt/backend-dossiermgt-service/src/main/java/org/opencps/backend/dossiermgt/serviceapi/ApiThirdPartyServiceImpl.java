@@ -227,7 +227,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
                     syncTrackingInfo.bodyRequest  = Validator.isNotNull(body)
                             ? objectMapper.writeValueAsString(body) : "-";
                     syncTrackingInfo.bodyResponse = Validator.isNotNull(response.getBody())
-                            ? objectMapper.writeValueAsString(response.getBody()) : "-";
+                            ? response.getBody() : "-";
 
                     if(statusCode == 200) {
                         syncTrackingInfo.stateSync = SYNC_SUCCESS;
@@ -267,7 +267,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
                     syncTrackingInfo.bodyRequest  = Validator.isNotNull(body)
                             ? objectMapper.writeValueAsString(body) : "-";
                     syncTrackingInfo.bodyResponse = Validator.isNotNull(response.getBody())
-                            ? objectMapper.writeValueAsString(response.getBody()) : "-";
+                            ? response.getBody() : "-";
 
                     if(statusCode == 200) {
                         syncTrackingInfo.stateSync = SYNC_SUCCESS;
@@ -335,7 +335,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
                     Integer statusCode = response.getStatusCode().value();
                     syncTrackingInfo.bodyRequest  = "-";
                     syncTrackingInfo.bodyResponse = Validator.isNotNull(response.getBody())
-                            ? objectMapper.writeValueAsString(response.getBody()) : "-";
+                           ? response.getBody() : "-";
 
                     if(statusCode == 200) {
                         syncTrackingInfo.stateSync = SYNC_SUCCESS;
