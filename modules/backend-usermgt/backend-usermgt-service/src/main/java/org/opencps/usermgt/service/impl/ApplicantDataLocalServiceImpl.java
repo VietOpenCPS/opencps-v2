@@ -148,7 +148,33 @@ public class ApplicantDataLocalServiceImpl
 		
 		return applicantData;
 	}
-	
+
+	@Override
+	public ApplicantData updateApplicantData(long groupId, long applicantDataId, String fileTemplateNo, String fileNo, String fileName, String applicantIdNo, int status, ServiceContext serviceContext) throws PortalException, SystemException {
+		ApplicantData applicantData = null;
+
+		Date now = new Date();
+		User auditUser = userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
+
+		applicantData = applicantDataPersistence.fetchByPrimaryKey(applicantDataId);
+		applicantData.setModifiedDate(now);
+		applicantData.setCompanyId(serviceContext.getCompanyId());
+		applicantData.setGroupId(groupId);
+		applicantData.setUserId(auditUser.getUserId());
+		applicantData.setUserName(auditUser.getScreenName());
+		applicantData.setFileTemplateNo(fileTemplateNo);
+		applicantData.setFileNo(fileNo);
+		applicantData.setFileName(fileName);
+		applicantData.setApplicantIdNo(applicantIdNo);
+		applicantData.setStatus(status);
+		applicantData.setApplicantDataType(0);
+
+		applicantData = applicantDataPersistence.update(applicantData);
+
+		return applicantData;
+
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData updateApplicantData(ServiceContext context, long groupId, 
 			String fileTemplateNo,

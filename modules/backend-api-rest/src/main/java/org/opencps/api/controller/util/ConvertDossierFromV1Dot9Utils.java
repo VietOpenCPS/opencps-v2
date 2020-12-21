@@ -286,14 +286,14 @@ public class ConvertDossierFromV1Dot9Utils {
 			_log.debug(e);
 		}
 		finally {
-//			if (br != null) {
-//				try {
-//					br.close();
-//				}
-//				catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
+			if (result != null) {
+				try {
+					result.close();
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return result;
 	}
