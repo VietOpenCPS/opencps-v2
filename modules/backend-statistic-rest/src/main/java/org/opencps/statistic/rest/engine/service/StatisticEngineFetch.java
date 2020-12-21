@@ -696,8 +696,6 @@ public class StatisticEngineFetch {
 					dataType1.setGovAgencyName(StringPool.BLANK);
 					dataType1.setDomainCode(StringPool.BLANK);
 					dataType1.setDomainName(StringPool.BLANK);
-					dataType1.setServiceCode(StringPool.BLANK);
-					dataType1.setServiceName(StringPool.BLANK);
 
 					if (statisticData.containsKey(type1)) {
 						dataType1 = statisticData.get(type1);
