@@ -155,7 +155,14 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 		
 		try {
 			int statusInt = Validator.isNotNull(status) ? Integer.parseInt(status) : 0;
-			applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
+			if(dataHandler.getInputStream() != null){
+				applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt,
+						dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
+			}else{
+
+				applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, serviceContext);
+			}
+
 			ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();

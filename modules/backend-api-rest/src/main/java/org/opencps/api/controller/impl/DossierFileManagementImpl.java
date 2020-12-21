@@ -60,6 +60,7 @@ import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.util.CheckFileUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -1493,8 +1494,19 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		try {
 			DossierFileActions action = new DossierFileActionsImpl();
 
-			InputStream inputStream =
-					ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(uri);
+			// SubString Ip http://119.17.200.66:8174/ ==> IP local
+			InputStream inputStream = null;
+			String uriSub = StringPool.BLANK;
+			if(uri.contains(DossierFileTerm.IP_PUBLIC)) {
+				if (Validator.isNotNull(uri)) {
+					uriSub = uri.substring(25);
+				}
+				uriSub = DossierFileTerm.IP_LOCAL + uriSub;
+				inputStream = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(uriSub);
+			}else {
+				inputStream = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(uri);
+			}
+
 			String fileTemplateNo = dossierTemplateNo + dossierPartNo;
 			String sourceFileName = displayName + StringPool.PERIOD + fileType;
 			DossierFile dossierFile = action.addDossierFile(
