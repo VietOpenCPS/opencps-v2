@@ -597,7 +597,7 @@ public class DossierUtils {
 			
 			// add fee amount, service amount, total amount
 			if(doc.hasField(Field.ENTRY_CLASS_PK) && 
-					Validator.isNotNull(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)))) {
+					Validator.isNotNull(doc.get(Field.ENTRY_CLASS_PK))) {
 				PaymentFile pf = PaymentFileLocalServiceUtil.getByDossierId(groupId, GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 				if (pf != null) {
 					model.setFeeAmount(pf.getFeeAmount());
