@@ -1922,5 +1922,10 @@ public class DossierFileLocalServiceImpl
 		return dossierFilePersistence.findByDID_GROUP(groupId,dossierId);
 	}
 
+	@Override
+	public List<DossierFile> getByG_DID_FILE(long groupId, long[] dossierIds, String dossierPartNo) {
+		return dossierFilePersistence.findByG_DID_FILE(groupId,dossierIds,dossierPartNo);
+	}
+
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

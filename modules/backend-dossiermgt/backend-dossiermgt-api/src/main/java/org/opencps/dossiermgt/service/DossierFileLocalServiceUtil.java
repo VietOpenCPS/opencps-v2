@@ -774,6 +774,10 @@ public class DossierFileLocalServiceUtil {
 				   .updateFormData(groupId, dossierId, referenceUid, formData,
 			serviceContext);
 	}
+	public static java.util.List<org.opencps.dossiermgt.model.DossierFile> getByG_DID_FILE(
+			long groupId, long[] dossierIds,String dossierPartNo) {
+		return getService().getByG_DID_FILE(groupId,dossierIds,dossierPartNo);
+	}
 
 	public static DossierFileLocalService getService() {
 		return _serviceTracker.getService();
