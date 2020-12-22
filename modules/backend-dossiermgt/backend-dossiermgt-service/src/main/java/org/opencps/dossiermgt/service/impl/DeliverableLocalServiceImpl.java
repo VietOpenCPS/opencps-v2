@@ -118,6 +118,11 @@ public class DeliverableLocalServiceImpl
 		return deliverablePersistence.fetchByF_GID_DID(groupId, dossierId);
 	}
 
+	@Override
+	public Deliverable fetchByGID_AID(long groupId, String applicantIdNo) {
+		return  deliverablePersistence.fetchByF_GID_AID(groupId, applicantIdNo);
+	}
+
 	public List<Deliverable> getListDeliverable(
 		int deliverableState, String govAgencyCode, String deliverableType,
 		String applicant) {
