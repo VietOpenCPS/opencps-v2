@@ -41,6 +41,7 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.usermgt.action.ApplicantDataActions;
 import org.opencps.usermgt.action.impl.ApplicantDataActionsImpl;
 import org.opencps.usermgt.constants.ApplicantDataTerm;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.ApplicantData;
 import org.opencps.usermgt.service.ApplicantDataLocalServiceUtil;
 
@@ -52,7 +53,8 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 	public Response addApplicantData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Attachment file, String fileTemplateNo, String fileNo, String fileName,
 			String applicantIdNo, String status) {
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		//Mặc định groupId =0
+		long groupId = ApplicantTerm.GROUP_ID_DEFAULT;
 		DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 		ApplicantData applicantData = null;
 		
@@ -111,8 +113,8 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 				query.setEnd(QueryUtil.ALL_POS);
 
 			}
-
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			//Mặc định groupId = 0
+			long groupId = ApplicantTerm.GROUP_ID_DEFAULT;
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
