@@ -61,7 +61,7 @@ public interface DVCQGSSOManagement {
 	public Response getUserInfo(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @QueryParam("authToken") String authToken,
-			@QueryParam("state") String state);
+			@QueryParam("state") String state, @QueryParam("provider") String provider);
 
 	@Deprecated
 	@POST

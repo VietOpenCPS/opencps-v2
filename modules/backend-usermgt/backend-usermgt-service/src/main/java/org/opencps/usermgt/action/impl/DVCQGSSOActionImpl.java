@@ -48,67 +48,65 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 	@Override
 	public String getAuthURL(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String state, String redirectURL, String provider) {
+			String state, String redirectURL, String ... providers) {
 
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
 
+		String provider = StringPool.BLANK;
+		
+		if(providers != null && providers.length > 0) {
+			provider = providers[0];
+		}
+		
+		_log.debug("=======>>> getAuthURL provider " + provider);
+		
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
 			try {
-
+				
 				state = state + "@" + redirectURL;
+			
 				state = Base64.getEncoder().encodeToString(state.getBytes());
 				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-
-				if (Validator.isNotNull(provider) && provider.equals("ssocs")) {
+				
+				if (Validator.isNotNull(provider) && provider.equalsIgnoreCase("ssocs")) {
 					String auth_server = config.getString("ssocs_auth_server");
-					String username = config.getString("ssocs_username");
-					String password = config.getString("ssocs_password");
-					String clientid = config.getString("ssocs_clientid");
-					String client_secret = config.getString("ssocs_client_secret");
 					String accesstoken_endpoint = config.getString("ssocs_accesstoken_endpoint");
 					String scope = config.getString("ssocs_scope");
 					String auth_endpoint = config.getString("ssocs_auth_endpoint");
 
 					JSONObject headerNode = JSONFactoryUtil.createJSONObject();
-					headerNode.put("Accept", "application/json");
-					headerNode.put("Content-Type", "application/json");
-
-					headerNode.put("Authorization",
-							"Basic " + Base64.getEncoder().encode((clientid + ":" + client_secret).getBytes()));
 
 					JSONObject bodyNode = JSONFactoryUtil.createJSONObject();
 
-					bodyNode.put("username", username);
-					bodyNode.put("password", password);
-					bodyNode.put("scope", scope);
-
 					String endpoint = auth_server + accesstoken_endpoint;
 
-					String result = doConnect(endpoint, "POST", true, 10, "payload", headerNode, bodyNode);
+					JSONObject resultObj = getAccessToken(serverConfig);
 
 					String authorizeEndpoint = StringPool.BLANK;
 
-					if (Validator.isNotNull(result)) {
-						JSONObject resultObj = JSONFactoryUtil.createJSONObject(result);
-						if (resultObj.has("token")) {
-							String token = resultObj.getString("token");
-							endpoint = auth_server + auth_endpoint;
+					if (resultObj.has("access_token")) {
+						
+						String token = resultObj.getString("access_token");
 
-							headerNode.put("Authorization", "Bearer " + token);
-							headerNode.put("scope", scope);
+						endpoint = auth_server + auth_endpoint;
 
-							bodyNode = JSONFactoryUtil.createJSONObject();
+						headerNode.put("Authorization", "Bearer " + token);
+						headerNode.put("scope", scope);
 
-							result = doConnect(endpoint, "POST", false, 10, StringPool.BLANK, headerNode, bodyNode);
+						bodyNode = JSONFactoryUtil.createJSONObject();
 
-							if (Validator.isNotNull(result)) {
-								resultObj = JSONFactoryUtil.createJSONObject(result);
+						//get AuthorizeEndpoint
+						String  authorizeEndpointData = doConnect(endpoint, "POST", false, 10 * 1000, StringPool.BLANK, headerNode, bodyNode);
 
-								authorizeEndpoint = resultObj.has("authorize_endpoint")
-										? resultObj.getString("authorize_endpoint")
-										: StringPool.BLANK;
-							}
+						if (Validator.isNotNull(authorizeEndpointData)) {
+							resultObj = JSONFactoryUtil.createJSONObject(authorizeEndpointData);
+
+							authorizeEndpoint = resultObj.has("authorize_endpoint")
+									? resultObj.getString("authorize_endpoint")
+									: StringPool.BLANK;
+							
+							_log.debug("=======>>> authorizeEndpoint " + authorizeEndpoint);
 						}
 					}
 
@@ -205,7 +203,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 	@Override
 	public JSONObject getUserInfo(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String authToken, String state) {
+			String authToken, String state, String... providers) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
@@ -213,8 +211,19 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		String accessToken = StringPool.BLANK;
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
+			
+			String provider = (providers != null && providers.length > 0) ? providers[0] : StringPool.BLANK; 
+			
+			_log.debug("=====>>> getUserInfo: providers " + com.liferay.portal.kernel.util.StringUtil.merge(providers));
 
-			JSONObject accessTokenInfo = getAccessToken(user, groupId, serviceContext, authToken, serverConfig);
+			JSONObject accessTokenInfo  = null;
+			
+			if(Validator.isNotNull(provider) && provider.equalsIgnoreCase("ssocs")) {
+				accessTokenInfo = getAccessToken(serverConfig);
+				_log.debug("=====>>> getUserInfo: accessTokenInfo " + accessTokenInfo);
+			}else {
+				accessTokenInfo = getAccessToken(user, groupId, serviceContext, authToken, serverConfig);
+			}
 
 			if (accessTokenInfo.length() > 0 && accessTokenInfo.has("access_token")) {
 				accessToken = accessTokenInfo.getString("access_token");
@@ -228,7 +237,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				String SoDinhDanh;// = StringPool.BLANK;
 				String TechID;// = StringPool.BLANK;
 
-				result = invokeUserInfo(user, groupId, serviceContext, accessToken, serverConfig);
+				result = invokeUserInfo(user, groupId, serviceContext, accessToken, serverConfig, providers);
 
 				if (result == null || result.length() == 0) {
 					result = JSONFactoryUtil.createJSONObject();
@@ -310,16 +319,43 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 	}
 
 	private JSONObject invokeUserInfo(User user, long groupId, ServiceContext serviceContext, String accessToken,
-			ServerConfig serverConfig) {
+			ServerConfig serverConfig, String ...providers) {
 
 		HttpURLConnection conn = null;
+		
+		String provider = (providers != null && providers.length > 0) ? providers[0] : StringPool.BLANK;
+		String code =  (providers != null && providers.length > 1) ? providers[1] : StringPool.BLANK;
+		
 		try {
 
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-			String auth_server = config.getString("auth_server");
-			String userinfo_endpoint = config.getString("userinfo_endpoint");
-
+			
+			String auth_server = StringPool.BLANK;
+			
+			String userinfo_endpoint = StringPool.BLANK;
+			
+			String scope = StringPool.BLANK;
+			
+			if(provider != null && provider.equalsIgnoreCase("ssocs")) {
+				auth_server = config.getString("ssocs_auth_server");
+				
+				userinfo_endpoint = config.getString("ssocs_userinfo_endpoint");
+				
+				scope = config.getString("ssocs_scope");
+				
+			}else {
+				auth_server = config.getString("auth_server");
+				
+				userinfo_endpoint = config.getString("userinfo_endpoint");
+			}
+			
 			String endpoint = auth_server + userinfo_endpoint;
+			
+			if(provider != null && provider.equalsIgnoreCase("ssocs")) {
+				endpoint += "?code=" + code;
+			}
+			
+			System.out.println("invokeUserInfo " + endpoint);
 
 			URL url = new URL(endpoint);
 
@@ -330,6 +366,10 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
+			if(provider != null && provider.equalsIgnoreCase("ssocs")) {
+				conn.setRequestProperty("scope", scope);
+				conn.setRequestMethod(HttpMethod.GET);
+			}
 			conn.setReadTimeout(60 * 1000);
 
 			conn.setUseCaches(false);
@@ -529,6 +569,50 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			if (conn != null) {
 				conn.disconnect();
 			}
+		}
+	}
+	
+	private JSONObject getAccessToken(
+			ServerConfig serverConfig) {
+
+		try {
+			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			String auth_server = config.getString("ssocs_auth_server");
+			String username = config.getString("ssocs_username");
+			String password = config.getString("ssocs_password");
+			String clientid = config.getString("ssocs_clientid");
+			String client_secret = config.getString("ssocs_client_secret");
+			String accesstoken_endpoint = config.getString("ssocs_accesstoken_endpoint");
+			String scope = config.getString("ssocs_scope");
+			
+			JSONObject headerNode = JSONFactoryUtil.createJSONObject();
+			headerNode.put("Accept", "application/json");
+			headerNode.put("Content-Type", "application/json");
+			String authorization = Base64.getEncoder().encodeToString((clientid + ":" + client_secret).getBytes()).toString();
+			_log.debug("=====>>> getAccessToken authorization " + authorization);
+			headerNode.put("Authorization",
+					"Basic " + authorization);
+
+			JSONObject bodyNode = JSONFactoryUtil.createJSONObject();
+
+			bodyNode.put("username", username);
+			bodyNode.put("password", password);
+			bodyNode.put("scope", scope);
+
+			String endpoint = auth_server + accesstoken_endpoint;
+			
+			System.out.println(headerNode);
+			
+			System.out.println(bodyNode);
+
+			String result = doConnect(endpoint, "POST", true, 10 * 1000, "payload", headerNode, bodyNode);
+		
+			return JSONFactoryUtil.createJSONObject(result);
+
+			
+		} catch (Exception e) {
+			_log.error(e);
+			return JSONFactoryUtil.createJSONObject();
 		}
 	}
 
@@ -993,6 +1077,8 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		InputStreamReader inputStreamReader = null;
 
 		try {
+			
+			_log.debug("=====>>> doConnect endpoint " + endpoint);
 
 			URL url = new URL(endpoint);
 			conn = (HttpURLConnection) url.openConnection();
@@ -1095,5 +1181,5 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 	private String _DEFAULT_CLASS_NAME = "dvcqg";
 	
-	private String _SSOCS_CLASS_NAME = "ssocs";
+	//private String _SSOCS_CLASS_NAME = "ssocs";
 }
