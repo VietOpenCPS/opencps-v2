@@ -2334,26 +2334,35 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			representatives = data.has("Representatives")?data.getJSONArray("Representatives"):JSONFactoryUtil.createJSONArray();
 			businessActivity = data.has("BusinessActivities")?data.getJSONArray("BusinessActivities"):JSONFactoryUtil.createJSONArray();
 			
+			if(Validator.isNotNull(mainInformation)) {
+				results.put("NAME",mainInformation.has("NAME") ? mainInformation.getString("NAME"):StringPool.BLANK);
+				results.put("SHORT_NAME",mainInformation.has("SHORT_NAME") ? mainInformation.getString("SHORT_NAME"):StringPool.BLANK);
+				results.put("ENTERPRISE_GDT_CODE",mainInformation.has("ENTERPRISE_GDT_CODE") ? mainInformation.getString("ENTERPRISE_GDT_CODE"):StringPool.BLANK);
+				results.put("IMP_BUSINESS_CODE",mainInformation.has("IMP_BUSINESS_CODE") ? mainInformation.getString("IMP_BUSINESS_CODE"):StringPool.BLANK);
+				results.put("NAME_F", mainInformation.has("NAME_F") ? mainInformation.getString("NAME_F"):StringPool.BLANK);
+				results.put("ENTERPRISE_STATUS_NAME", mainInformation.has("ENTERPRISE_STATUS_NAME") ? mainInformation.getString("ENTERPRISE_STATUS_NAME"):StringPool.BLANK);
+				results.put("FOUNDING_DATE", (mainInformation.has("FOUNDING_DATE") && Validator.isNotNull( mainInformation.getString("FOUNDING_DATE"))) ? APIDateTimeUtils.convertDateToString(APIDateTimeUtils.convertStringToDate(mainInformation.getString("FOUNDING_DATE"),APIDateTimeUtils._TIMESTAMP_LGSP), APIDateTimeUtils._NORMAL_DATE)  :StringPool.BLANK);
+				results.put("LAST_AMEND_DATE", (mainInformation.has("LAST_AMEND_DATE") && Validator.isNotNull( mainInformation.getString("LAST_AMEND_DATE"))) ? APIDateTimeUtils.convertDateToString(APIDateTimeUtils.convertStringToDate(mainInformation.getString("LAST_AMEND_DATE"),APIDateTimeUtils._TIMESTAMP_LGSP), APIDateTimeUtils._NORMAL_DATE) :StringPool.BLANK);
+				results.put("NUMBER_CHANGES",mainInformation.has("NUMBER_CHANGES") ? mainInformation.getString("NUMBER_CHANGES"):StringPool.BLANK);
+				results.put("ENTERPRISE_TYPE_NAME", mainInformation.has("ENTERPRISE_TYPE_NAME") ? mainInformation.getString("ENTERPRISE_TYPE_NAME"):StringPool.BLANK);
+			}
 			
-			results.put("NAME", mainInformation.getString("NAME"));
-			results.put("SHORT_NAME", mainInformation.getString("SHORT_NAME"));
-			results.put("ENTERPRISE_GDT_CODE", mainInformation.getString("ENTERPRISE_GDT_CODE"));
-			results.put("IMP_BUSINESS_CODE", mainInformation.getString("IMP_BUSINESS_CODE"));
-			results.put("NAME_F", mainInformation.getString("NAME_F"));
-			results.put("ENTERPRISE_STATUS", mainInformation.getString("ENTERPRISE_STATUS"));
-			results.put("FOUNDING_DATE", (mainInformation.has("FOUNDING_DATE") && Validator.isNotNull( mainInformation.getString("FOUNDING_DATE"))) ? APIDateTimeUtils.convertDateToString(APIDateTimeUtils.convertStringToDate(mainInformation.getString("FOUNDING_DATE"),APIDateTimeUtils._TIMESTAMP_LGSP), APIDateTimeUtils._NORMAL_DATE)  :StringPool.BLANK);
-			results.put("LAST_AMEND_DATE", (mainInformation.has("LAST_AMEND_DATE") && Validator.isNotNull( mainInformation.getString("FOUNDING_DATE"))) ? APIDateTimeUtils.convertDateToString(APIDateTimeUtils.convertStringToDate(mainInformation.getString("LAST_AMEND_DATE"),APIDateTimeUtils._TIMESTAMP_LGSP), APIDateTimeUtils._NORMAL_DATE) :StringPool.BLANK);
-			results.put("NUMBER_CHANGES", mainInformation.getString("NUMBER_CHANGES"));
-			results.put("ENTERPRISE_TYPE_NAME", mainInformation.getString("ENTERPRISE_TYPE_NAME"));
-			results.put("AddressFullText",hoAdress.getString("AddressFullText") );
-			results.put("FULL_NAME", representatives.getJSONObject(0).get("FULL_NAME"));
+			if(Validator.isNotNull(hoAdress)) {
+				results.put("AddressFullText",  hoAdress.has("AddressFullText") ? hoAdress.getString("AddressFullText") :StringPool.BLANK);
+			}
+			
+			if(Validator.isNotNull(representatives)) {
+				results.put("FULL_NAME", representatives.getJSONObject(0).get("FULL_NAME"));
+			}
 			
 			JSONArray loaiHinhKinhDoanhs = JSONFactoryUtil.createJSONArray();
 			
-			for(int i=0;i < businessActivity.length();i++) {
-				JSONObject loaiHinhKinhDoanh = businessActivity.getJSONObject(i);
-				
-				loaiHinhKinhDoanhs.put(loaiHinhKinhDoanh);
+			if(Validator.isNotNull(businessActivity)) {
+				for(int i=0;i < businessActivity.length();i++) {
+					JSONObject loaiHinhKinhDoanh = businessActivity.getJSONObject(i);
+					
+					loaiHinhKinhDoanhs.put(loaiHinhKinhDoanh);
+				}
 			}
 			
 			results.put("BusinessActivities", loaiHinhKinhDoanhs);
