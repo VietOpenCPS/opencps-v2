@@ -1305,15 +1305,14 @@ public class DossierUtils {
 	public static ProcessAction getProcessAction(User user, long groupId, Dossier dossier, String actionCode,
 			long serviceProcessId) throws PortalException {
 
-		_log.debug("GET PROCESS ACTION____");
+		_log.info("GET PROCESS ACTION for dossierId " + dossier.getDossierId() +" and info: "
+				+ groupId + "," + actionCode + "," + serviceProcessId);
 		ProcessAction action = null;
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		
 		try {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);
-
-			_log.debug("GET PROCESS ACTION____" + groupId + "," + actionCode + "," + serviceProcessId);
 
 			String dossierStatus = dossier.getDossierStatus();
 			String dossierSubStatus = dossier.getDossierSubStatus();
@@ -1335,7 +1334,7 @@ public class DossierUtils {
 						break;
 					}
 				}else {
-					_log.debug("LamTV_preStepCode: " + preStepCode );
+					_log.info("LamTV_preStepCode: " + preStepCode );
 					if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
 				}
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
@@ -1357,7 +1356,8 @@ public class DossierUtils {
 					else {
 						flagCheck = true;
 					}
-					_log.debug("LamTV_preStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + "," + dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
+					_log.info("LogPreStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + ","
+							+ dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
