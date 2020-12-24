@@ -128,6 +128,7 @@ public class DossierFileLocalServiceImpl
 		InputStream inputStream, String fileType, String isSync,
 		ServiceContext serviceContext)
 		throws PortalException, SystemException {
+		_log.info("FileSize add: " + fileSize);
 
 		long userId = serviceContext.getUserId();
 
@@ -160,6 +161,7 @@ public class DossierFileLocalServiceImpl
 				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
 					userId, groupId, inputStream, sourceFileName, fileType,
 					fileSize, serviceContext);
+				_log.info("FileEntry: " + JSONFactoryUtil.looseSerialize(fileEntry));
 
 				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();

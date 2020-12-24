@@ -677,5 +677,6 @@ public interface DossierFileManagement {
 		@ApiParam(value = "dossier PartNo", required = true) @FormParam("dossierPartNo") String dossierPartNo,
 		@ApiParam(value = "url get file by applicant Data Id", required = true) @FormParam("uri") String uri,
 		@ApiParam(value = "display name dossier file", required = true) @FormParam("displayName") String displayName,
-		@ApiParam(value = "file type dossier file", required = true) @FormParam("fileType") String fileType);
+		@ApiParam(value = "file type dossier file", required = true) @FormParam("fileType") String fileType,
+		@ApiParam(value = "file type dossier file", required = true) @FormParam("fileType") long fileEntryId);
 }
