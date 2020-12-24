@@ -142,6 +142,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String ACCEPT = "Accept";
 	private static final String SORT = "sort";
 	private static final String SORT_ASC = "asc";
+	private static final String FILE_ITEM = "opencps_fileitem";
 
 	@Override
 	public Response onMessage(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User u,
@@ -311,10 +312,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						JSONObject headersObj = JSONFactoryUtil.createJSONObject(adminConfig.getHeadersName());
 	
 	//					System.out.println("code: " + code.equals("opencps_employee"));
-						_log.debug("code: " + "opencps_employee".equalsIgnoreCase(code));
 						
 						if (message.getBoolean(CONFIG)) {
-	
+
 							JSONObject config = JSONFactoryUtil.createJSONObject();
 							config.put(CODE, adminConfig.getCode());
 							config.put(NAME, adminConfig.getName());
@@ -335,7 +335,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							messageData.put(message.getString(RESPONE), methodCounter.invoke(model, dynamicQuery));
 	
 						} else {
-	
+
 							int start = Validator.isNotNull(message.getString(START)) ? message.getInt(START) : 0;
 							int end = Validator.isNotNull(message.getString(END)) ? message.getInt(END) : 1;
 							if (CLASSNAME_EMPLOYEE.equals(code)) {
@@ -380,13 +380,17 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							messageData.put(STATUS, HttpStatus.OK);
 	
 						} else {
-//							_log.debug("SERVICE CLASS: " + serviceUtilStr);
+//							_log.info("SERVICE CLASS: " + serviceUtilStr);
 							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
 									JSONObject.class);
 	
 							JSONObject postData = message.getJSONObject(DATA);
-							
-							postData.put(Field.GROUP_ID, groupId);
+
+							if(FILE_ITEM.equals(code)){
+								postData.put(Field.GROUP_ID, 0L);
+							}else{
+								postData.put(Field.GROUP_ID, groupId);
+							}
 							postData.put(COMPANY_ID, company.getCompanyId());
 							postData.put(Field.USER_ID, u.getUserId());
 							postData.put(Field.USER_NAME, u.getFullName());
