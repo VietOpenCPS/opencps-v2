@@ -303,6 +303,10 @@ public interface DossierFileLocalService extends BaseLocalService,
 	public DossierFile getByFileTemplateNo(long id, String fileTemplateNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierFile> getByG_DID_FILE(long groupId, long[] dossierIds,
+		String dossierPartNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierFile> getByG_DID_FTN_R(long groupId, long[] dossierIds,
 		String fileTemplateNo, boolean removed);
 
@@ -387,9 +391,6 @@ public interface DossierFileLocalService extends BaseLocalService,
 	public List<DossierFile> getDossierFileByDID_FTNO_DPTS(long dossierId,
 		String fileTemplateNo, int[] dossierPartType, boolean removed,
 		int start, int end, OrderByComparator orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DossierFile> getByG_DID_FILE(long groupId, long[] dossierIds,String dossierPartNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierFile getDossierFileByDID_FTNO_DPTS_First(long dossierId,

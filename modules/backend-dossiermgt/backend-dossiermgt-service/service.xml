@@ -150,6 +150,7 @@
 		<column name="eFormData" type="String" />
 		<column name="email" type="String" />
 		<column name="secret" type="String" />
+		<column name="govAgencyCode" type="String" />
 <!-- 		<column name="checkinDate" type="Date" /> -->
 <!-- 		<column name="gateNumber" type="String" /> -->
 <!-- 		<column name="state" type="int" /> -->
@@ -202,6 +203,7 @@
 		<column name="online" type="boolean" />
 		<column name="bookingInTime" type="String" />
 		<column name="telNo" type="String" />
+		<column name="govAgencyCode" type="String" />
 
 		<!-- Order -->
 		<order>
