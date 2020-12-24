@@ -2953,6 +2953,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String matokhai = GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI));
 		String serviceLevel = params.get(DossierTerm.SERVICE_LEVEL) != null
 				? GetterUtil.getString(params.get(DossierTerm.SERVICE_LEVEL)) : null;
+		String createDateStart =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
+		String createDateEnd =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2995,7 +2999,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
-				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel);
+				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel,createDateStart,createDateEnd);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3165,6 +3169,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				: null;
 		String serviceLevel = params.get(DossierTerm.SERVICE_LEVEL) != null
 				? GetterUtil.getString(params.get(DossierTerm.SERVICE_LEVEL)) : null;
+		String createDateStart =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
+		String createDateEnd =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -3204,7 +3212,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
-				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel);
+				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel,createDateStart,createDateEnd);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3334,9 +3342,35 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String documentNo, String documentDate, String strSystemId,
 			String viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
 			String delegate, String vnpostalStatus, Integer fromViaPostal,
-			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai, String serviceLevel)
+			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai, String serviceLevel,
+			String createDateStart, String createDateEnd)
 			throws ParseException {
 
+		String createDateStartFilter =
+				createDateStart + ConstantsTerm.HOUR_START;
+		String createDateEndFilter = createDateEnd + ConstantsTerm.HOUR_END;
+		if (Validator.isNotNull(createDateStart)) {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						createDateEndFilter, true, true);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						null, true, false);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+		else {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, null, createDateEndFilter,
+						false, true);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
 		//Dossier Counter
 		if (Validator.isNotNull(dossierCounterSearch)) {
 			MultiMatchQuery query =
