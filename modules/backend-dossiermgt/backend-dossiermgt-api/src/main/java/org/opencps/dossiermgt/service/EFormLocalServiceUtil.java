@@ -343,12 +343,13 @@ public class EFormLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.EForm updateEForm(long userId,
 		long groupId, long eFormId, String eFormNo, String serviceCode,
 		String fileTemplateNo, String eFormName, long formScriptFileId,
-		long formReportFileId, String eFormData, String email, String secret,String govAgencyCode,
+		long formReportFileId, String eFormData, String email, String secret,
+		String govAgencyCode,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .updateEForm(userId, groupId, eFormId, eFormNo, serviceCode,
 			fileTemplateNo, eFormName, formScriptFileId, formReportFileId,
-			eFormData, email, secret,govAgencyCode, serviceContext);
+			eFormData, email, secret, govAgencyCode, serviceContext);
 	}
 
 	public static EFormLocalService getService() {

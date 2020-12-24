@@ -313,6 +313,6 @@ public interface BookingLocalService extends BaseLocalService,
 		String className, long classPK, String serviceCode, String codeNumber,
 		String bookingName, String gateNumber, Integer state, Date checkinDate,
 		Date bookingDate, boolean speaking, String serviceGroupCode,
-		Boolean online, String bookingInTime, String telNo, String govAgencyCode,
-		ServiceContext serviceContext);
+		Boolean online, String bookingInTime, String telNo,
+		String govAgencyCode, ServiceContext serviceContext);
 }

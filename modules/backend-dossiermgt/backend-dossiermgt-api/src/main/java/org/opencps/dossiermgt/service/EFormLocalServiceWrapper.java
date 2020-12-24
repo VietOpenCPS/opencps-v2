@@ -360,11 +360,13 @@ public class EFormLocalServiceWrapper implements EFormLocalService,
 	public org.opencps.dossiermgt.model.EForm updateEForm(long userId,
 		long groupId, long eFormId, String eFormNo, String serviceCode,
 		String fileTemplateNo, String eFormName, long formScriptFileId,
-		long formReportFileId, String eFormData, String email, String secret,String govAgencyCode,
+		long formReportFileId, String eFormData, String email, String secret,
+		String govAgencyCode,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return _eFormLocalService.updateEForm(userId, groupId, eFormId,
 			eFormNo, serviceCode, fileTemplateNo, eFormName, formScriptFileId,
-			formReportFileId, eFormData, email, secret,govAgencyCode, serviceContext);
+			formReportFileId, eFormData, email, secret, govAgencyCode,
+			serviceContext);
 	}
 
 	@Override
