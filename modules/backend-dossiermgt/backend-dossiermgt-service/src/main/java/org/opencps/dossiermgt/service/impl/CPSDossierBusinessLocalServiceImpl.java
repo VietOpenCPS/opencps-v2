@@ -966,7 +966,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		int allowAssignUser = proAction.getAllowAssignUser();
 		//_log.info("allowAssignUser: "+allowAssignUser);
-		JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
+		JSONArray assignedUsersArray;
+		if(proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_ASSIGN_ONLY_CREATED)) {
+			String listSubUserString = "[{\"userId\":"+ userId + ",\"assigned\":"
+					+ DossierActionUserTerm.ASSIGNED_TH + "}]";
+			allowAssignUser = ProcessActionTerm.ASSIGNED_TH;
+			assignedUsersArray = JSONFactoryUtil.createJSONArray(listSubUserString);
+		} else {
+			assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
+		}
+
 		if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
 			if (Validator.isNotNull(assignUsers) && assignedUsersArray.length() > 0) {
 				//				JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
