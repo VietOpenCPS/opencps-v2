@@ -47,6 +47,7 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 //import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -487,6 +488,13 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			if (jsonSequenceArr != null) {
 				jsonData.put(ConstantUtils.DOSSIERDOCUMENT_PROCESSSEQUENCEARR_KEY, jsonSequenceArr);
 			}
+			//processSequenceArrDone
+			List<DossierAction> doActionList = DossierActionLocalServiceUtil.findByG_DID(groupId,
+					dossier.getDossierId());
+			JSONArray jsonSequenceDoneArr = getProcessDossierActionJSON(sequenceArr, sequenceList,doActionList);
+			if (jsonSequenceDoneArr != null) {
+				jsonData.put(ConstantUtils.DOSSIERDOCUMENT_PROCESSSEQUENCEARRDONE_KEY, jsonSequenceDoneArr);
+			}
 		}
 
 		return jsonData;
@@ -524,6 +532,48 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		return jsonSequenceArr;
 	}
 
+	private static JSONArray getProcessDossierActionJSON(String[] sequenceArr, List<ProcessSequence> sequenceList, List<DossierAction> dossierActionList) {
+
+		JSONArray jsonSequenceArr = JSONFactoryUtil.createJSONArray();
+		if (sequenceArr != null && sequenceArr.length > 0) {
+			for (int i = 0; i < sequenceArr.length - 1; i++) {
+				String sequenceNo = sequenceArr[i];
+				JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
+				for (ProcessSequence proSeq : sequenceList) {
+					if (sequenceNo.equals(proSeq.getSequenceNo())) {
+						sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NO, proSeq.getSequenceNo());
+						sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NAME, proSeq.getSequenceName());
+						sequenceObj.put(ProcessSequenceTerm.SEQUENCE_ROLE, proSeq.getSequenceRole());
+						sequenceObj.put(ProcessSequenceTerm.DURATION_COUNT, proSeq.getDurationCount());
+						sequenceObj.put(ProcessSequenceTerm.CREATE_DATE, proSeq.getCreateDate());
+					}
+				}
+				String nextSequenceNo = sequenceArr[i + 1];
+				for (ProcessSequence proSeq : sequenceList) {
+					if (nextSequenceNo.equals(proSeq.getSequenceNo())) {
+						sequenceObj.put(ProcessSequenceTerm.NEXT_SEQUENCE_NO, proSeq.getSequenceNo());
+						sequenceObj.put(ProcessSequenceTerm.NEXT_SEQUENCE_NAME, proSeq.getSequenceName());
+						sequenceObj.put(DossierTerm.NEXT_SEQUENCE_ROLE, proSeq.getSequenceRole());
+						sequenceObj.put(ProcessSequenceTerm.NEXT_CREATE_DATE, proSeq.getCreateDate());
+					}
+				}
+				for (DossierAction actions : dossierActionList) {
+					sequenceObj.put(DossierActionTerm.ACTION_NAME, actions.getActionName());
+					sequenceObj.put(DossierActionTerm.ACTION_USER, actions.getActionUser());
+					sequenceObj.put(DossierActionTerm.NEXT_ACTION_ID, actions.getNextActionId());
+					if (Validator.isNotNull(actions.getNextActionId())) {
+						DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(actions.getNextActionId());
+						sequenceObj.put(DossierActionTerm.ACTION_NAME, dossierAction.getActionName());
+						sequenceObj.put(DossierActionTerm.ACTION_USER, dossierAction.getActionUser());
+						sequenceObj.put(DossierActionTerm.NEXT_ACTION_ID, dossierAction.getNextActionId());
+					}
+				}
+				jsonSequenceArr.put(sequenceObj);
+			}
+		}
+
+		return jsonSequenceArr;
+	}
 	@Override
 	public Response getPreviewByPartNo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, String templateNo, String partNo) {
