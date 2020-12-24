@@ -184,7 +184,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	public Set<Object> getSingletons() {
 		return Collections.<Object>singleton(this);
 	}
-	
+
 	private static Log _log = LogFactoryUtil.getLog(OpencpsStatisticRestApplication.class);
 
 	@GET
@@ -203,6 +203,15 @@ public class OpencpsStatisticRestApplication extends Application {
 		int month = query.getMonth();
 		int year = query.getYear();
 		String govAgencyCode = query.getAgency();
+		boolean isGetReportServiceCode = false;
+
+		if(Validator.isNotNull(query.getIsReportServiceCode())
+				&& !query.getIsReportServiceCode().isEmpty()) {
+			if(query.getIsReportServiceCode().equals("true")) {
+				isGetReportServiceCode = true;
+			}
+		}
+
 		String domain = query.getDomain();
 		String system = query.getSystem();
 		if (Validator.isNull(system)) {
@@ -408,7 +417,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
 						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 						engineFetch.fetchSumStatisticData(groupId, statisticData, dossierDataList, fromCalDate, toCalDate,
-								0);
+								0, isGetReportServiceCode);
 						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 						//statisticEngineUpdate.updateStatisticData(statisticData);
 						//
