@@ -983,7 +983,8 @@ public class AutoFillFormData {
 						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
 //						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
-						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
+						//Lấy thông tin chủ hồ sơ quyết định cấp phép
+						_applicantIdNo = dossier.getApplicantIdNo();
 						_applicantIdDate = applicantJSON.getString(ApplicantTerm.APPLICANTIDDATE);
 						_representative = applicantJSON.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE);
 

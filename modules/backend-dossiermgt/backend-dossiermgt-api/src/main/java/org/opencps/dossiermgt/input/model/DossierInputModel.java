@@ -8,6 +8,8 @@
 
 package org.opencps.dossiermgt.input.model;
 
+import java.util.Date;
+
 public class DossierInputModel {
     protected String referenceUid;
     protected String serviceCode;
