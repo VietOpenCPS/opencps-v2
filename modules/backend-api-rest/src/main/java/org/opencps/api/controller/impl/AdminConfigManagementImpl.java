@@ -190,7 +190,6 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						DynamicQuery dynamicQuery = (DynamicQuery) method.invoke(model);
 	
 						if (Validator.isNotNull(adminConfig) && !DETAIL.equals(message.getString(RESPONSE_TYPE))) {
-							_log.info("!DETAIL ----- :" + message.getString(RESPONSE_TYPE));
 							String columns = adminConfig.getColumns();
 	
 							JSONArray arraysColumn = JSONFactoryUtil.createJSONArray(columns);
@@ -218,7 +217,6 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							}
 
 						} else if (MENU.equals(message.getString(RESPONSE_TYPE))) {
-							_log.info("RESPONSE_TYPE ----- :");
 							ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
 
 							projectionList.add(ProjectionFactoryUtil.property(CODE));
@@ -284,13 +282,11 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						}
 	
 						if (groupId > 0 && adminConfig.getGroupFilter()) {
-							_log.info("GroupId : " + groupId);
 							Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
 							if (Validator.isNotNull(code)
 									&& (CLASSNAME_WORKING_UNIT.equals(code) || CLASSNAME_APPLICANT.equals(code))) {
 								disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, groupId));
 							} else {
-								_log.info("GroupId : " + groupId);
 								disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, 0l));
 								disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, groupId));
 							}
@@ -316,11 +312,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						JSONObject headersObj = JSONFactoryUtil.createJSONObject(adminConfig.getHeadersName());
 	
 	//					System.out.println("code: " + code.equals("opencps_employee"));
-						_log.info("code: " + "opencps_employee".equalsIgnoreCase(code));
 						
 						if (message.getBoolean(CONFIG)) {
-							_log.info("Config ----- :" + headersObj.getJSONArray(HEADERS));
-	
+
 							JSONObject config = JSONFactoryUtil.createJSONObject();
 							config.put(CODE, adminConfig.getCode());
 							config.put(NAME, adminConfig.getName());
@@ -386,7 +380,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							messageData.put(STATUS, HttpStatus.OK);
 	
 						} else {
-							_log.info("SERVICE CLASS: " + serviceUtilStr);
+//							_log.info("SERVICE CLASS: " + serviceUtilStr);
 							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
 									JSONObject.class);
 	
