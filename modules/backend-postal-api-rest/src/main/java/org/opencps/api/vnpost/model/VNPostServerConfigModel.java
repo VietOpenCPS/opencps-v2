@@ -188,6 +188,16 @@ public class VNPostServerConfigModel {
 		this.lgspVnpostGetPrice = lgspVnpostGetPrice;
 	}
 
+	private String lgspType;
+
+	public String getLgspType() {
+		return lgspType;
+	}
+
+	public void setLgspType(String lgspType) {
+		this.lgspType = lgspType;
+	}
+
 	public boolean isActive() {
 		return active;
 	}

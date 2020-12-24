@@ -46,6 +46,7 @@ public class VnPostTerm {
 	public static final String SERVER_ACTIVE = "active";
 	public static final String SERVER_KEY_TOKEN_LGSP = "keyToken";
 	public static final String SERVER_IS_THROUGH_LGSP = "isThroughLGSP";
+	public static final String SERVER_LGSP_TYPE = "lgspType";
 	public static final String SERVER_CUSTOMERCODE = "customerCode";
 	public static final String SERVER_SENDERPROVINCE = "senderProvince";
 	public static final String SERVER_SENDERDISTRICT = "senderDistrict";
@@ -72,6 +73,25 @@ public class VnPostTerm {
 	public static final String LGSP_VNPOST_PRICEHCC = "lgsp_vnpost_pricehcc";
 	public static final String LGSP_VNPOST_DOCUMENT = "lgsp_vnpost_document";
 	public static final String LGSP_VNPOST_GETPRICE = "lgsp_vnpost_getprice";
+
+
+	public static final String CUSTOMER_CODE = "CustomerCode";
+	public static final String ORDER_NUMBER = "OrderNumber";
+	public static final String COD_AMOUNT = "CODAmount";
+	public static final String SENDER_PROVINCE = "SenderProvince";
+	public static final String SENDER_DISTRICT = "SenderDistrict";
+	public static final String SENDER_ADDRESS = "SenderAddress";
+	public static final String SENDER_NAME = "SenderName";
+	public static final String SENDER_EMAIL = "SenderEmail";
+	public static final String SENDER_TEL = "SenderTel";
+	public static final String SENDER_DESC = "SenderDesc";
+	public static final String DESCRIPTION = "Description";
+	public static final String RECEIVER_NAME = "ReceiverName";
+	public static final String RECEIVER_ADDRESS = "ReceiverAddress";
+	public static final String RECEIVER_TEL = "ReceiverTel";
+	public static final String RECEIVER_PROVINCE = "ReceiverProvince";
+	public static final String RECEIVER_DISTRICT = "ReceiverDistrict";
+	public static final String RECEIVER_EMAIL = "ReceiverEmail";
 
 	public static final String STATUS_CODE = "statusCode";
 	public static final String STATUS_MESSAGE = "statusMessage";

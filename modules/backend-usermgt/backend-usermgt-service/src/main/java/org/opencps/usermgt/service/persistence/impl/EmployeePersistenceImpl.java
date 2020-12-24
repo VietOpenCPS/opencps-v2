@@ -3558,6 +3558,265 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 	private static final String _FINDER_COLUMN_F_GID_EMPNO_EMPLOYEENO_1 = "employee.employeeNo IS NULL";
 	private static final String _FINDER_COLUMN_F_GID_EMPNO_EMPLOYEENO_2 = "employee.employeeNo = ?";
 	private static final String _FINDER_COLUMN_F_GID_EMPNO_EMPLOYEENO_3 = "(employee.employeeNo IS NULL OR employee.employeeNo = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_WS_EMPNO = new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, EmployeeImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_WS_EMPNO",
+			new String[] { Integer.class.getName(), String.class.getName() },
+			EmployeeModelImpl.WORKINGSTATUS_COLUMN_BITMASK |
+			EmployeeModelImpl.EMPLOYEENO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_WS_EMPNO = new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_WS_EMPNO",
+			new String[] { Integer.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the employee where workingStatus = &#63; and employeeNo = &#63; or throws a {@link NoSuchEmployeeException} if it could not be found.
+	 *
+	 * @param workingStatus the working status
+	 * @param employeeNo the employee no
+	 * @return the matching employee
+	 * @throws NoSuchEmployeeException if a matching employee could not be found
+	 */
+	@Override
+	public Employee findByF_WS_EMPNO(int workingStatus, String employeeNo)
+		throws NoSuchEmployeeException {
+		Employee employee = fetchByF_WS_EMPNO(workingStatus, employeeNo);
+
+		if (employee == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("workingStatus=");
+			msg.append(workingStatus);
+
+			msg.append(", employeeNo=");
+			msg.append(employeeNo);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchEmployeeException(msg.toString());
+		}
+
+		return employee;
+	}
+
+	/**
+	 * Returns the employee where workingStatus = &#63; and employeeNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param workingStatus the working status
+	 * @param employeeNo the employee no
+	 * @return the matching employee, or <code>null</code> if a matching employee could not be found
+	 */
+	@Override
+	public Employee fetchByF_WS_EMPNO(int workingStatus, String employeeNo) {
+		return fetchByF_WS_EMPNO(workingStatus, employeeNo, true);
+	}
+
+	/**
+	 * Returns the employee where workingStatus = &#63; and employeeNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param workingStatus the working status
+	 * @param employeeNo the employee no
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching employee, or <code>null</code> if a matching employee could not be found
+	 */
+	@Override
+	public Employee fetchByF_WS_EMPNO(int workingStatus, String employeeNo,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { workingStatus, employeeNo };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_WS_EMPNO,
+					finderArgs, this);
+		}
+
+		if (result instanceof Employee) {
+			Employee employee = (Employee)result;
+
+			if ((workingStatus != employee.getWorkingStatus()) ||
+					!Objects.equals(employeeNo, employee.getEmployeeNo())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_EMPLOYEE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_WS_EMPNO_WORKINGSTATUS_2);
+
+			boolean bindEmployeeNo = false;
+
+			if (employeeNo == null) {
+				query.append(_FINDER_COLUMN_F_WS_EMPNO_EMPLOYEENO_1);
+			}
+			else if (employeeNo.equals("")) {
+				query.append(_FINDER_COLUMN_F_WS_EMPNO_EMPLOYEENO_3);
+			}
+			else {
+				bindEmployeeNo = true;
+
+				query.append(_FINDER_COLUMN_F_WS_EMPNO_EMPLOYEENO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(workingStatus);
+
+				if (bindEmployeeNo) {
+					qPos.add(employeeNo);
+				}
+
+				List<Employee> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_WS_EMPNO,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"EmployeePersistenceImpl.fetchByF_WS_EMPNO(int, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					Employee employee = list.get(0);
+
+					result = employee;
+
+					cacheResult(employee);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_WS_EMPNO,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Employee)result;
+		}
+	}
+
+	/**
+	 * Removes the employee where workingStatus = &#63; and employeeNo = &#63; from the database.
+	 *
+	 * @param workingStatus the working status
+	 * @param employeeNo the employee no
+	 * @return the employee that was removed
+	 */
+	@Override
+	public Employee removeByF_WS_EMPNO(int workingStatus, String employeeNo)
+		throws NoSuchEmployeeException {
+		Employee employee = findByF_WS_EMPNO(workingStatus, employeeNo);
+
+		return remove(employee);
+	}
+
+	/**
+	 * Returns the number of employees where workingStatus = &#63; and employeeNo = &#63;.
+	 *
+	 * @param workingStatus the working status
+	 * @param employeeNo the employee no
+	 * @return the number of matching employees
+	 */
+	@Override
+	public int countByF_WS_EMPNO(int workingStatus, String employeeNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_WS_EMPNO;
+
+		Object[] finderArgs = new Object[] { workingStatus, employeeNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_EMPLOYEE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_WS_EMPNO_WORKINGSTATUS_2);
+
+			boolean bindEmployeeNo = false;
+
+			if (employeeNo == null) {
+				query.append(_FINDER_COLUMN_F_WS_EMPNO_EMPLOYEENO_1);
+			}
+			else if (employeeNo.equals("")) {
+				query.append(_FINDER_COLUMN_F_WS_EMPNO_EMPLOYEENO_3);
+			}
+			else {
+				bindEmployeeNo = true;
+
+				query.append(_FINDER_COLUMN_F_WS_EMPNO_EMPLOYEENO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(workingStatus);
+
+				if (bindEmployeeNo) {
+					qPos.add(employeeNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_WS_EMPNO_WORKINGSTATUS_2 = "employee.workingStatus = ? AND ";
+	private static final String _FINDER_COLUMN_F_WS_EMPNO_EMPLOYEENO_1 = "employee.employeeNo IS NULL";
+	private static final String _FINDER_COLUMN_F_WS_EMPNO_EMPLOYEENO_2 = "employee.employeeNo = ?";
+	private static final String _FINDER_COLUMN_F_WS_EMPNO_EMPLOYEENO_3 = "(employee.employeeNo IS NULL OR employee.employeeNo = '')";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_EMAIL = new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
 			EmployeeModelImpl.FINDER_CACHE_ENABLED, EmployeeImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_email",
@@ -7310,6 +7569,10 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 			new Object[] { employee.getGroupId(), employee.getEmployeeNo() },
 			employee);
 
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_WS_EMPNO,
+			new Object[] { employee.getWorkingStatus(), employee.getEmployeeNo() },
+			employee);
+
 		employee.resetOriginalValues();
 	}
 
@@ -7407,6 +7670,16 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_EMPNO, args,
 			employeeModelImpl, false);
+
+		args = new Object[] {
+				employeeModelImpl.getWorkingStatus(),
+				employeeModelImpl.getEmployeeNo()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_WS_EMPNO, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_WS_EMPNO, args,
+			employeeModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -7471,6 +7744,27 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_EMPNO, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_EMPNO, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					employeeModelImpl.getWorkingStatus(),
+					employeeModelImpl.getEmployeeNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_WS_EMPNO, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_WS_EMPNO, args);
+		}
+
+		if ((employeeModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_WS_EMPNO.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					employeeModelImpl.getOriginalWorkingStatus(),
+					employeeModelImpl.getOriginalEmployeeNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_WS_EMPNO, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_WS_EMPNO, args);
 		}
 	}
 

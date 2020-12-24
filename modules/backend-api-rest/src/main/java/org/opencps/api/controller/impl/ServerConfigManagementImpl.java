@@ -430,6 +430,8 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			String dossierCounter = query.get_dossierCounter();
 			String imageName = query.getImageName();
 			_log.debug("eFormNo: "+eFormNo);
+			String machuky = query.getMa_chu_ky();
+			String macondau = query.getMa_con_dau();
 			StringBuilder sb = new StringBuilder();
 			if ("API_CONNECT".equals(protocolCode)) {
 				_log.debug("protocolCode: "+protocolCode);
@@ -473,6 +475,9 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 								if (urlGet.contains("{ma_cqql}")) {
 									urlGet = urlGet.replace("{ma_cqql}", maCQQL);
 								}
+								if (urlGet.contains("{ma_chu_ky}")) {
+									urlGet = urlGet.replace("{ma_chu_ky}", machuky);
+								}
 								//HCTN
 								if (urlGet.contains("{loai}")) {
 									urlGet = urlGet.replace("{loai}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(loai), "UTF-8") : StringPool.BLANK);
@@ -510,6 +515,9 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 								if (urlGet.contains("{imageName}"))
 									urlGet = urlGet.replace("{imageName}",Validator.isNotNull(imageName) ? URLEncoder.encode(String.valueOf(imageName) ,"UTF-8") : StringPool.BLANK);
 
+								if (urlGet.contains("{ma_con_dau}")) {
+									urlGet = urlGet.replace("{ma_con_dau}", Validator.isNotNull(macondau) ? URLEncoder.encode(String.valueOf(macondau), "UTF-8") : StringPool.BLANK);
+								}
 //								urlGet = jsonConfig.getString("url").replaceAll("{eFormNo}", eFormNo).
 //										replaceAll("{maCha}", maCha)
 //										.replaceAll("{parentId}", parentId)
