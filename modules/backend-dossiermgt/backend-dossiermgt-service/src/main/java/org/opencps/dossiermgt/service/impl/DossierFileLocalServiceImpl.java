@@ -161,7 +161,7 @@ public class DossierFileLocalServiceImpl
 				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
 					userId, groupId, inputStream, sourceFileName, fileType,
 					fileSize, serviceContext);
-				_log.info("FileEntry: " + JSONFactoryUtil.looseSerialize(fileEntry));
+				_log.debug("FileEntry: " + JSONFactoryUtil.looseSerialize(fileEntry));
 
 				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();
