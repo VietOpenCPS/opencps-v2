@@ -106,7 +106,7 @@ public class VNPostCLSUtils {
                 jsonBody.put("NguoiNop",delegateName);
                 jsonBody.put("CMT",applicantIdNo);
                 jsonBody.put("DiaChi",address);
-                jsonBody.put("NgayTiepNhan",APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_DATE));
+                jsonBody.put("NgayTiepNhan",APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._MONTH_DAY_YEAR_DATE));
                 jsonBody.put("DiaChiBC",postalAddress);
 
                 _log.debug("POST DATA: " + jsonBody.toString());
