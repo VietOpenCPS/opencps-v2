@@ -1495,12 +1495,12 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			String url = PropsUtil.get("org.opencps.admin.proxy.ip");
-			_log.info("Url: " + url);
+			_log.debug("Url: " + url);
 			DossierFileActions action = new DossierFileActionsImpl();
 			// SubString Ip http://119.17.200.66:8174/ ==> IP local
 //			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
 			url = FileUploadUtil.getFileEntryPreviewPath(fileEntryId);
-			_log.info("Url: " + url);
+			_log.debug("Url: " + url);
 			InputStream inputStream = null;
 //			String uriSub = StringPool.BLANK;
 			if(Validator.isNotNull(url)) {
@@ -1512,7 +1512,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			String fileTemplateNo = dossierTemplateNo + dossierPartNo;
 			String sourceFileName = displayName + StringPool.PERIOD + fileType;
 			if(Validator.isNotNull(inputStream)) {
-				_log.info("inputStream: " + JSONFactoryUtil.looseSerialize(inputStream));
+				_log.debug("inputStream: " + JSONFactoryUtil.looseSerialize(inputStream));
 			}
 			DossierFile dossierFile = action.addDossierFile(
 				groupId, id, UUID.randomUUID().toString(),

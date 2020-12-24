@@ -128,7 +128,7 @@ public class DossierFileLocalServiceImpl
 		InputStream inputStream, String fileType, String isSync,
 		ServiceContext serviceContext)
 		throws PortalException, SystemException {
-		_log.info("FileSize add: " + fileSize);
+		_log.debug("FileSize add: " + fileSize);
 
 		long userId = serviceContext.getUserId();
 
