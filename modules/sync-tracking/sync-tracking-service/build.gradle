@@ -16,6 +16,8 @@ dependencies {
 	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.8'
 	compileOnly project(":modules:sync-tracking:sync-tracking-api")
 	compileOnly project(":modules:backend-communication:backend-communication-api")
+	
+	compileOnly group: 'com.liferay', name: 'com.liferay.portal.upgrade.api', version: '2.0.0'
 }
 
 buildService {
