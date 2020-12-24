@@ -229,7 +229,10 @@ import javax.xml.bind.annotation.XmlType;
 	"votingName3",
 	"resultVotingCode1",
 	"resultVotingCode2",
-	"resultVotingCode3"
+	"resultVotingCode3",
+	"feeAmount",
+	"serviceAmount",
+	"totalAmount"
 })
 public class DossierDataModel {
 
@@ -365,6 +368,9 @@ public class DossierDataModel {
 	protected Integer resultVotingCode1;
 	protected Integer resultVotingCode2;
 	protected Integer resultVotingCode3;
+	protected Long feeAmount;
+	protected Long serviceAmount;
+	protected Long totalAmount;
 
 	public String getVotingCode1() {
 		return votingCode1;
@@ -2430,5 +2436,29 @@ public class DossierDataModel {
 	public void setMetaData(String metaData) {
 		this.metaData = metaData;
 	}
+
+	public Long getFeeAmount() {
+		return feeAmount;
+	}
+
+	public void setFeeAmount(Long feeAmount) {
+		this.feeAmount = feeAmount;
+	}
+
+	public Long getServiceAmount() {
+		return serviceAmount;
+	}
+
+	public void setServiceAmount(Long serviceAmount) {
+		this.serviceAmount = serviceAmount;
+	}
+
+	public Long getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(Long totalAmount) {
+		this.totalAmount = totalAmount;
+	}		
 
 }

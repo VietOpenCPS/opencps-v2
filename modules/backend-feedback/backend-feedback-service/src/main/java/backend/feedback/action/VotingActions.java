@@ -6,6 +6,7 @@ import javax.ws.rs.NotFoundException;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -34,7 +35,7 @@ public interface VotingActions {
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 
 	public Voting updateVoting(long userId, long companyId, long groupId, long votingId, String className, String classPK,
-			String subject, String templateNo, String choices, Boolean commentable, ServiceContext serviceContext)
+			String subject, String templateNo, String choices, String oldChoice, Boolean commentable, ServiceContext serviceContext)
 			throws PortalException, SystemException;
 
 	public void deleteVoting(long votingId, ServiceContext serviceContext)
@@ -42,4 +43,11 @@ public interface VotingActions {
 
 	public JSONObject getVotingResultStatistic(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
+	
+	public void deleteVoting(String className, String classPK, String votingCode)
+			throws NotFoundException, NoSuchVotingException;
+	
+	public Voting getVoting(String className, String classPK, String votingCode);
+	
+	public JSONObject getEmployeesVotingStatistic(JSONArray body);
 }

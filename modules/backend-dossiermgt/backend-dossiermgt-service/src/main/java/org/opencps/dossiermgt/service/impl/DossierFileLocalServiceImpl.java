@@ -151,6 +151,7 @@ public class DossierFileLocalServiceImpl
 		long fileEntryId = 0;
 		try {
 			DLValidatorUtil.validateFileName(sourceFileName);
+			sourceFileName = displayName;
 		}
 		catch (FileNameException e) {
 			sourceFileName = displayName;
@@ -1921,6 +1922,11 @@ public class DossierFileLocalServiceImpl
 	@Override
 	public List<DossierFile> findByDID_GROUP(long groupId, long dossierId) {
 		return dossierFilePersistence.findByDID_GROUP(groupId,dossierId);
+	}
+
+	@Override
+	public List<DossierFile> getByG_DID_FILE(long groupId, long[] dossierIds, String dossierPartNo) {
+		return dossierFilePersistence.findByG_DID_FILE(groupId,dossierIds,dossierPartNo);
 	}
 
 	public static final String CLASS_NAME = DossierFile.class.getName();

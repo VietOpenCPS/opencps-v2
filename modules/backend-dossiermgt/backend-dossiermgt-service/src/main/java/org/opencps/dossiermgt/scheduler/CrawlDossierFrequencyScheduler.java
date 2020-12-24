@@ -81,17 +81,22 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
 
             for(ProfileReceiver oneDossier : listDossiers) {
                 _log.info("Handling profile: " + oneDossier.getProfileId());
-                ProfileInModel profile = integrationAction.getDetailDossier(token, oneDossier.getProfileId());
-                if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
-                    result = integrationAction.crawlDossierLGSP(profile, token);
+                try {
+                    ProfileInModel profile = integrationAction.getDetailDossier(token, oneDossier);
+                    if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
+                        result = integrationAction.crawlDossierLGSP(profile, token);
 
-                    if(result) {
-                        integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
-                    } else {
-                        integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
+                        if(result) {
+                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
+                        } else {
+                            _log.error("Crawl profile id: " + oneDossier.getProfileId() + " error");
+                        }
                     }
+                    _log.info("Done crawl one profile id: " + oneDossier.getProfileId());
+                } catch (Exception e) {
+                    _log.warn("Error when crawl profile id: " + oneDossier.getProfileId());
+                    _log.warn("Still running...");
                 }
-                _log.info("Done crawl one profile id: " + oneDossier.getProfileId());
             }
 
             _log.info("End crawl dossier frequency!!!");
@@ -106,7 +111,7 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
     @Modified
     protected void activate(Map<String,Object> properties) throws SchedulerException {
         String listenerClass = getClass().getName();
-        Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 2, TimeUnit.MINUTE);
+        Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 30, TimeUnit.SECOND);
 
         _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
         _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);

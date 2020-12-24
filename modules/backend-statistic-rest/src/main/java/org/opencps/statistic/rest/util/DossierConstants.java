@@ -4,6 +4,7 @@ public interface DossierConstants {
 	String REGISTERBOOKCODE = "registerBookCode";
 	String PROCESSNO = "processNo";
 	String SERVICECODE = "serviceCode";
+	String SERVICE = "service";
 	String GOVAGENCYCODE = "govAgencyCode";
 	String APPLICANTIDTYPE = "applicantIdType";
 	String APPLICANTIDNO = "applicantIdNo";

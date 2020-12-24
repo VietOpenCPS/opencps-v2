@@ -39,13 +39,17 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "total",
-    "data"
+    "data",
+    "votingCount"
+
 })
 @XmlRootElement(name = "data")
 public class VotingResults {
 
     protected Long total;
     protected List<VotingDataModel> data;
+    protected Long votingCount;
+
 
     /**
      * Gets the value of the total property.
@@ -99,5 +103,13 @@ public class VotingResults {
         }
         return this.data;
     }
+    
+	public Long getVotingCount() {
+		return votingCount;
+	}
+
+	public void setVotingCount(Long votingCount) {
+		this.votingCount = votingCount;
+	}
 
 }
