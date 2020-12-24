@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -80,6 +81,7 @@ import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import org.opencps.kernel.util.FileUploadUtil;
 import service.ImportFile;
 import service.dependencies.ImportFileImpl;
 
@@ -1520,27 +1522,30 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext,
 			long id, String dossierTemplateNo, String dossierPartNo, String uri,
-			String displayName, String fileType) {
+			String displayName, String fileType, long fileEntryId) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
+			String url = PropsUtil.get("org.opencps.admin.proxy.ip");
+			_log.debug("Url: " + url);
 			DossierFileActions action = new DossierFileActionsImpl();
-
 			// SubString Ip http://119.17.200.66:8174/ ==> IP local
+//			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+			url = FileUploadUtil.getFileEntryPreviewPath(fileEntryId);
+			_log.debug("Url: " + url);
 			InputStream inputStream = null;
-			String uriSub = StringPool.BLANK;
-			if(uri.contains(DossierFileTerm.IP_PUBLIC)) {
-				if (Validator.isNotNull(uri)) {
-					uriSub = uri.substring(25);
-				}
-				uriSub = DossierFileTerm.IP_LOCAL + uriSub;
-				inputStream = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(uriSub);
+//			String uriSub = StringPool.BLANK;
+			if(Validator.isNotNull(url)) {
+				inputStream = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(url);
 			}else {
 				inputStream = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(uri);
 			}
 
 			String fileTemplateNo = dossierTemplateNo + dossierPartNo;
 			String sourceFileName = displayName + StringPool.PERIOD + fileType;
+			if(Validator.isNotNull(inputStream)) {
+				_log.debug("inputStream: " + JSONFactoryUtil.looseSerialize(inputStream));
+			}
 			DossierFile dossierFile = action.addDossierFile(
 				groupId, id, UUID.randomUUID().toString(),
 				dossierTemplateNo, dossierPartNo, fileTemplateNo,
