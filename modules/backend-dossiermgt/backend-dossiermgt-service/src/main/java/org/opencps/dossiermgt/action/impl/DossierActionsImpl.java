@@ -513,7 +513,6 @@ public class DossierActionsImpl implements DossierActions {
 							enable = 1;
 						}
 					}
-					_log.info("Enable: " + enable);
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 						serviceProcessId, stepCode);
 					// _log.info("processActionList:
@@ -542,7 +541,6 @@ public class DossierActionsImpl implements DossierActions {
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
 							//							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
-							_log.info("Admin :" + isAdministratorData);
 							boolean checkEnable = false;
 //							if (!isAdministratorData) {
 //								checkEnable = processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user);
@@ -1723,7 +1721,7 @@ public class DossierActionsImpl implements DossierActions {
 							for (User user1: lstUser) {
 								Map<String, Object> moderator = user1.getModelAttributes();
 								//Map<String, Object> moderator = user1.getModelAttributes();
-								_log.info("moderator: "+moderator);
+//								_log.info("moderator: "+moderator);
 							}
 						}
 
@@ -3575,7 +3573,6 @@ public class DossierActionsImpl implements DossierActions {
 			for (User user1: lstUser) {
 				Map<String, Object> moderator = user1.getModelAttributes();
 				//Map<String, Object> moderator = user1.getModelAttributes();
-				_log.info("moderator: "+moderator);
 			}
 		}
 		return lstUser;
@@ -3658,7 +3655,7 @@ public class DossierActionsImpl implements DossierActions {
 			for (User user1: lstUser) {
 				Map<String, Object> moderator = user1.getModelAttributes();
 				//Map<String, Object> moderator = user1.getModelAttributes();
-				_log.info("moderator: "+moderator);
+//				_log.info("moderator: "+moderator);
 			}
 		}
 		return lstUser;
@@ -3701,7 +3698,7 @@ public class DossierActionsImpl implements DossierActions {
 			for (User user1: lstUser) {
 				Map<String, Object> moderator = user1.getModelAttributes();
 				//Map<String, Object> moderator = user1.getModelAttributes();
-				_log.info("moderator: "+moderator);
+//				_log.info("moderator: "+moderator);
 			}
 		}
 		return lstUser;

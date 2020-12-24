@@ -1004,8 +1004,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String payload, String assignUsers, String payment, int syncType, ServiceContext context)
 			throws PortalException, SystemException, Exception {
 
-		System.out.println("payload Action: "+ payload);
-		_log.info("payload Action: "+ payload);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 		Map<String, Boolean> flagChanged = new HashMap<>();
@@ -1390,7 +1388,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					previousAction, proAction, dossier, actionCode, actionUser, actionNote, payload, assignUsers,
 					paymentFee, serviceProcess, option, flagChanged, dateOption, context);
 
-			_log.info("dossier generate_DossierNo: "+JSONFactoryUtil.looseSerialize(dossier));
+//			_log.info("dossier generate_DossierNo: "+JSONFactoryUtil.looseSerialize(dossier));
 
 			//Xử lý phiếu thanh toán
 			processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
@@ -1414,7 +1412,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if(Validator.isNotNull(sc)) {
 					JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 					bdhnConnect = configObj.getBoolean(ServerConfigTerm.BDHN_CONNECT);
-					senderAddress = configObj.getString(ServerConfigTerm.BDHN_CONNECT);
+					senderAddress = configObj.getString(ServerConfigTerm.SENDER_ADDRESS);
 				}
 				if(bdhnConnect){
 					//VNPOST thông báo đã có kết quả tại một cửa cho Bưu điện HN
@@ -6103,7 +6101,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 									for (User u : users) {
 										if (mapEmps.containsKey(u.getUserId())) {
 											Employee emp = mapEmps.get(u.getUserId());
-											_log.info("user: "+ u.getEmailAddress() + "|checkGovDossierEmployee: "+ checkGovDossierEmployee(dossier, emp));
+//											_log.info("user: "+ u.getEmailAddress() + "|checkGovDossierEmployee: "+ checkGovDossierEmployee(dossier, emp));
 											if (checkGovDossierEmployee(dossier, emp)) {
 												DossierUserPK duPk = new DossierUserPK();
 												duPk.setDossierId(dossier.getDossierId());
@@ -6173,12 +6171,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		long userId = serviceContext.getUserId();
 		_log.info("userId: "+userId);
 		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-		_log.info("employee: "+JSONFactoryUtil.looseSerialize(employee));
+//		_log.info("employee: "+JSONFactoryUtil.looseSerialize(employee));
 		if (employee != null) {
 			long employeeId = employee.getEmployeeId();
 			if (employeeId > 0) {
 				List<EmployeeJobPos> empJobList = EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
-				_log.info("empJobList: "+JSONFactoryUtil.looseSerialize(empJobList));
+//				_log.info("empJobList: "+JSONFactoryUtil.looseSerialize(empJobList));
 				if (empJobList != null && empJobList.size() > 0) {
 					for (EmployeeJobPos employeeJobPos : empJobList) {
 						_log.info("employeeJobPos: "+JSONFactoryUtil.looseSerialize(employeeJobPos));
