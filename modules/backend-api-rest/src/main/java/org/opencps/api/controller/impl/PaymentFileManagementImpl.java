@@ -1463,16 +1463,16 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					String partnerCode = paygovConfig.getString("partnerCode");
 					String accessKey   = paygovConfig.getString("accessKey");
 					String secretKey   = paygovConfig.getString("secretKey");
-					String payerId     = Validator.isNotNull(dossier.getDelegateIdNo())
-							? dossier.getDelegateIdNo() : "";
-					String payerName   = Validator.isNotNull(dossier.getDelegateName())
-							? StringUtils.stripAccents(dossier.getDelegateName()) : "";
-					String payerAddress  = Validator.isNotNull(dossier.getDelegateAddress())
-							? StringUtils.stripAccents(dossier.getDelegateAddress()) : "";
-					String payerDistrict = Validator.isNotNull(dossier.getDelegateDistrictName())
-							? StringUtils.stripAccents(dossier.getDelegateDistrictName()) : "";
-					String payerProvince = Validator.isNotNull(dossier.getDelegateCityName())
-							? StringUtils.stripAccents(dossier.getDelegateCityName()) : "";
+					String payerId     = Validator.isNotNull(dossier.getApplicantIdNo())
+							? dossier.getApplicantIdNo() : "";
+					String payerName   = Validator.isNotNull(dossier.getApplicantName())
+							? StringUtils.stripAccents(dossier.getApplicantName()) : "";
+					String payerAddress  = Validator.isNotNull(dossier.getAddress())
+							? StringUtils.stripAccents(dossier.getAddress()) : "";
+					String payerDistrict = Validator.isNotNull(dossier.getDistrictName())
+							? StringUtils.stripAccents(dossier.getDistrictName()) : "";
+					String payerProvince = Validator.isNotNull(dossier.getCityName())
+							? StringUtils.stripAccents(dossier.getCityName()) : "";
 
 					String docCode = Validator.isNotNull(dossier.getDossierNo()) ? dossier.getDossierNo(): "";
 					String procedureName = Validator.isNotNull(dossier.getServiceName()) ? dossier.getServiceName():"";
@@ -1496,9 +1496,10 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					otherInfo.put("beneficiaryUnitName", paygovConfig.getString("beneficiaryUnitName"));
 
 					String base64OtherInfo = Base64.getEncoder().encodeToString(otherInfo.toString().getBytes());
+					String decisionDate = APIDateTimeUtils.convertDateToString(new Date(), "dd-MM-yyyy");
 					String checkSumBeforeHash = secretKey + partnerCode + accessKey + payerId + payerName
 							+ payerAddress + payerDistrict + payerProvince + docCode + procedureName + base64Paids
-							+ base64OtherInfo;
+							+ base64OtherInfo + decisionDate;
 					String shs256CheckSum = this.generateCheckSumHG(checkSumBeforeHash);
 					org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
 					headers.setContentType(MediaType.APPLICATION_JSON);
@@ -1516,6 +1517,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					body.put("paids", base64Paids);
 					body.put("otherInfo", base64OtherInfo);
 					body.put("checksum", shs256CheckSum);
+					body.put("decisionDate", decisionDate);
 					_log.info("Body get bien lai: " + body);
 					JSONObject response = serviceApi.callApiAndTrackingWithMapBody(paygovConfig.getString("urlBienLai"),
 							null, headers, body);
