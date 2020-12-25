@@ -198,7 +198,7 @@ public class BackendKysoApiRestApplication extends Application {
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DigitalSignatureActions action = new DigitalSignatureActionsImpl();
-		
+		JSONObject results = JSONFactoryUtil.createJSONObject();
 		try {
 			
 			long dossierId = GetterUtil.getLong(id);
@@ -226,14 +226,9 @@ public class BackendKysoApiRestApplication extends Application {
 				
 				String certChainBase64 = input.getCertChainBase64();
 				
-				JSONObject results = action.hashFile(fileEntry.getFileEntryId(), certChainBase64, request);
-				
-				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build(); 
-				
-			} else {
-				return Response.status(
-						HttpURLConnection.HTTP_NO_CONTENT).build();
+				results = action.hashFile(fileEntry.getFileEntryId(), certChainBase64, request);				
 			} 
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build(); 
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}
@@ -247,6 +242,7 @@ public class BackendKysoApiRestApplication extends Application {
 			@BeanParam DigitalSignatureInputModel input ) {
 
 		DigitalSignatureActions action = new DigitalSignatureActionsImpl();
+		JSONObject results = JSONFactoryUtil.createJSONObject();
 
 		try {
 			Long fileEntryId = Long.valueOf(input.getFileEntryId());
@@ -254,17 +250,12 @@ public class BackendKysoApiRestApplication extends Application {
 				String signatureBase64 = input.getSignatureBase64();
 				SignPdfFile signPdfFile = (SignPdfFile) request.getSession().getAttribute("PDFSignature");
 				
-				JSONObject results = JSONFactoryUtil.createJSONObject();
 				if (Validator.isNotNull(signatureBase64) && Validator.isNotNull(input.getFileName()) 
 						&& Validator.isNotNull(signPdfFile) ) {
 					results = action.insertSignnature(signatureBase64, input.getFileName(), signPdfFile, fileEntryId);			
-				}
-				
-				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
-			} else {
-				return Response.status(
-						HttpURLConnection.HTTP_NO_CONTENT).build();
+				}				
 			}
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
 		}

@@ -1474,87 +1474,93 @@ public class DefaultSignatureManagementImpl
 	public Response vtcaUploadController(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String singedFileName) throws IOException {
 		
-		JSONObject result = JSONFactoryUtil.createJSONObject();		
-		File pdfFile  = new File(singedFileName);
-		ContentDisposition cd = new ContentDisposition(
-			      "form-data; name=\"input\"; filename=\"" + pdfFile.getName() + "\"");
-		Attachment file = new Attachment("input", new FileInputStream(pdfFile ), cd);
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		
-		if (file.getDataHandler() != null) {
-			result.put(ConstantUtils.VGCA_STATUS, true);		
-			try {
-				FileEntry fileEntry = null;
-				InputStream inputStream = file.getDataHandler().getInputStream();
-				String sourceFileName = file.getDataHandler().getName();
-				if (sourceFileName == null || sourceFileName.length() == 0) {
-					sourceFileName = pdfFile.getName();
-				}
-				String fileType = StringPool.BLANK;
-				long fileSize = 0;
-				String destination = StringPool.BLANK;
-				if (inputStream != null && Validator.isNotNull(sourceFileName)) {
-					
-					if(Validator.isNull(fileType)) {
-						fileType = MimeTypesUtil.getContentType(sourceFileName);
+		try {
+			JSONObject result = JSONFactoryUtil.createJSONObject();		
+			File pdfFile  = new File(singedFileName);
+			ContentDisposition cd = new ContentDisposition(
+				      "form-data; name=\"input\"; filename=\"" + pdfFile.getName() + "\"");
+			Attachment file = new Attachment("input", new FileInputStream(pdfFile ), cd);
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			
+			if (file.getDataHandler() != null) {
+				result.put(ConstantUtils.VGCA_STATUS, true);		
+				try {
+					FileEntry fileEntry = null;
+					InputStream inputStream = file.getDataHandler().getInputStream();
+					String sourceFileName = file.getDataHandler().getName();
+					if (sourceFileName == null || sourceFileName.length() == 0) {
+						sourceFileName = pdfFile.getName();
 					}
-					
-					if(fileSize == 0) {
-						fileSize = inputStream.available();
-					}
-					String title = sourceFileName;
-					serviceContext.setAddGroupPermissions(true);
-					serviceContext.setAddGuestPermissions(true);
-
-					Calendar calendar = Calendar.getInstance();
-
-					calendar.setTime(new Date());
-					
-					if (destination == null) {
-						destination = StringPool.BLANK;
-					}
-
-					destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;
-					destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
-					destination += calendar.get(Calendar.DAY_OF_MONTH);
-//					System.out.println("FILE NAME: " + destination);
-					DLFolder dlFolder = DLFolderUtil.getTargetFolder(user.getUserId(), groupId, groupId, false, 0, destination,
-							StringPool.BLANK, false, serviceContext);
-					PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
-					PermissionThreadLocal.setPermissionChecker(checker);
-					JSONObject fileServerObj = JSONFactoryUtil.createJSONObject();
-					
-					fileEntry = DLAppLocalServiceUtil.addFileEntry(user.getUserId(), groupId, dlFolder.getFolderId(), title,
-						fileType, title, title,
-						StringPool.BLANK, inputStream, fileSize, serviceContext);
-
-//					System.out.println("File entry: " + fileEntry);
-					String fileName = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
-//					System.out.println("File name: " + fileName);
-					URL url = new URL(request.getAttribute(WebKeys.CURRENT_COMPLETE_URL).toString());
-			        String host = url.getHost();
-					result.put(ConstantUtils.VGCA_FILENAME, fileName);
-					if (fileEntry != null) {
-						fileServerObj.put(ConstantUtils.VGCA_FILEENTRYID, fileEntry.getFileEntryId());
-						String urlPath = String.format(MessageUtil.getMessage(ConstantUtils.VGCA_URL_PATH), url.getProtocol(), host, (url.getPort() == -1 ? 80 : url.getPort()), fileName);
+					String fileType = StringPool.BLANK;
+					long fileSize = 0;
+					String destination = StringPool.BLANK;
+					if (inputStream != null && Validator.isNotNull(sourceFileName)) {
 						
-						fileServerObj.put(ConstantUtils.VGCA_URL, urlPath);
-						result.put(ConstantUtils.VGCA_FILESERVER, fileServerObj.toJSONString());
-					}
-				}			
-			} catch (IOException e) {
-				_log.debug(e);
-			} catch (Exception e) {
-				_log.debug(e);
+						if(Validator.isNull(fileType)) {
+							fileType = MimeTypesUtil.getContentType(sourceFileName);
+						}
+						
+						if(fileSize == 0) {
+							fileSize = inputStream.available();
+						}
+						String title = sourceFileName;
+						serviceContext.setAddGroupPermissions(true);
+						serviceContext.setAddGuestPermissions(true);
+
+						Calendar calendar = Calendar.getInstance();
+
+						calendar.setTime(new Date());
+						
+						if (destination == null) {
+							destination = StringPool.BLANK;
+						}
+
+						destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;
+						destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
+						destination += calendar.get(Calendar.DAY_OF_MONTH);
+//						System.out.println("FILE NAME: " + destination);
+						DLFolder dlFolder = DLFolderUtil.getTargetFolder(user.getUserId(), groupId, groupId, false, 0, destination,
+								StringPool.BLANK, false, serviceContext);
+						PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
+						PermissionThreadLocal.setPermissionChecker(checker);
+						JSONObject fileServerObj = JSONFactoryUtil.createJSONObject();
+						
+						fileEntry = DLAppLocalServiceUtil.addFileEntry(user.getUserId(), groupId, dlFolder.getFolderId(), title,
+							fileType, title, title,
+							StringPool.BLANK, inputStream, fileSize, serviceContext);
+
+//						System.out.println("File entry: " + fileEntry);
+						String fileName = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
+//						System.out.println("File name: " + fileName);
+						URL url = new URL(request.getAttribute(WebKeys.CURRENT_COMPLETE_URL).toString());
+				        String host = url.getHost();
+						result.put(ConstantUtils.VGCA_FILENAME, fileName);
+						if (fileEntry != null) {
+							fileServerObj.put(ConstantUtils.VGCA_FILEENTRYID, fileEntry.getFileEntryId());
+							String urlPath = String.format(MessageUtil.getMessage(ConstantUtils.VGCA_URL_PATH), url.getProtocol(), host, (url.getPort() == -1 ? 80 : url.getPort()), fileName);
+							
+							fileServerObj.put(ConstantUtils.VGCA_URL, urlPath);
+							result.put(ConstantUtils.VGCA_FILESERVER, fileServerObj.toJSONString());
+						}
+					}			
+				} catch (IOException e) {
+					_log.debug(e);
+				} catch (Exception e) {
+					_log.debug(e);
+				}
+				
+				result.put(ConstantUtils.VGCA_DOCUMENTNUMBER, StringPool.BLANK);	
+			}
+			else {
+				result.put(ConstantUtils.VGCA_STATUS, false);			
 			}
 			
-			result.put(ConstantUtils.VGCA_DOCUMENTNUMBER, StringPool.BLANK);	
-		}
-		else {
-			result.put(ConstantUtils.VGCA_STATUS, false);			
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
 		}
 		
-		return Response.status(200).entity(result.toJSONString()).build();
 	}
 	
 	@Override
@@ -1590,7 +1596,7 @@ public class DefaultSignatureManagementImpl
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			
 		} catch (Exception e) {
-			_log.info(e);
+			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
