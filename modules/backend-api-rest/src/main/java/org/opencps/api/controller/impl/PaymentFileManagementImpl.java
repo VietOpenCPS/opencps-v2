@@ -1434,7 +1434,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 							"Content-Disposition", "attachment; filename=\"" + new Date().getTime() + ".pdf" + "\"").build();
 			} else if (Validator.isNotNull(paymentFile)
 					&& PaymentFileTerm.PAYMENT_METHOD_PAYGOV.equals(paymentFile.getPaymentMethod())) {
-
+				_log.info("Getting url bien lai paygov...");
 				if(Validator.isNull(paymentFile.getConfirmPayload())
 						|| paymentFile.getConfirmPayload().isEmpty()) {
 					throw new Exception("No confirm payload was found with payment file: " + paymentFile.getPaymentFileId());
@@ -1458,6 +1458,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				ApiThirdPartyService serviceApi = new ApiThirdPartyServiceImpl();
 				//Case in bien lai paygov Hau Giang
 				if(paygovConfig.getString("partnerCode").equals("PAYGOV-HAUGIANG")) {
+					_log.info("Paygov hau giang");
 					String token = serviceApi.getTokenLGSP(paygovConfig);
 					String partnerCode = paygovConfig.getString("partnerCode");
 					String accessKey   = paygovConfig.getString("accessKey");
@@ -1476,17 +1477,28 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					String docCode = Validator.isNotNull(dossier.getDossierNo()) ? dossier.getDossierNo(): "";
 					String procedureName = Validator.isNotNull(dossier.getServiceName()) ? dossier.getServiceName():"";
 
+					//create paids
 					JSONObject onePaid = JSONFactoryUtil.createJSONObject();
 					JSONArray paids = JSONFactoryUtil.createJSONArray();
-					onePaid.put("orderInfo", confirmPayload.getString("orderInfo"));
-					onePaid.put("amount", confirmPayload.getLong("amount"));
+//					onePaid.put("orderInfo", confirmPayload.getString("orderInfo"));
+//					onePaid.put("amount", confirmPayload.getLong("amount"));
 					onePaid.put("transactionCode", confirmPayload.getString("transactionCode"));
-					onePaid.put("payTransactionNo", String.valueOf(dossierId) + System.currentTimeMillis());
+//					onePaid.put("payTransactionNo", String.valueOf(dossierId) + System.currentTimeMillis());
 
 					paids.put(onePaid);
 					String base64Paids = Base64.getEncoder().encodeToString(paids.toString().getBytes());
+
+					//create other info
+					JSONObject otherInfo = JSONFactoryUtil.createJSONObject();
+//					otherInfo.put("type", paygovConfig.getString("typeBill"));
+//					otherInfo.put("subType", "THUPHI");
+					otherInfo.put("beneficiaryUnitCode", paygovConfig.getString("beneficiaryUnitCode"));
+					otherInfo.put("beneficiaryUnitName", paygovConfig.getString("beneficiaryUnitName"));
+
+					String base64OtherInfo = Base64.getEncoder().encodeToString(otherInfo.toString().getBytes());
 					String checkSumBeforeHash = secretKey + partnerCode + accessKey + payerId + payerName
-							+ payerAddress + payerDistrict + payerProvince + docCode + procedureName + base64Paids;
+							+ payerAddress + payerDistrict + payerProvince + docCode + procedureName + base64Paids
+							+ base64OtherInfo;
 					String shs256CheckSum = this.generateCheckSumHG(checkSumBeforeHash);
 					org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
 					headers.setContentType(MediaType.APPLICATION_JSON);
@@ -1502,8 +1514,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					body.put("docCode", docCode);
 					body.put("procedureName", procedureName);
 					body.put("paids", base64Paids);
+					body.put("otherInfo", base64OtherInfo);
 					body.put("checksum", shs256CheckSum);
-
+					_log.info("Body get bien lai: " + body);
 					JSONObject response = serviceApi.callApiAndTrackingWithMapBody(paygovConfig.getString("urlBienLai"),
 							null, headers, body);
 					if(Validator.isNotNull(response)
