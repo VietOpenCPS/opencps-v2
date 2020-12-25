@@ -17,6 +17,9 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import org.opencps.dossiermgt.model.DossierFile;
+
+import java.util.List;
 
 /**
  * Provides a wrapper for {@link DossierFileLocalService}.
@@ -826,6 +829,11 @@ public class DossierFileLocalServiceWrapper implements DossierFileLocalService,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _dossierFileLocalService.updateFormData(groupId, dossierId,
 			referenceUid, formData, serviceContext);
+	}
+
+	@Override
+	public List<DossierFile> getByG_DID_FILE(long groupId, long[] dossierIds, String dossierPartNo) {
+		return _dossierFileLocalService.getByG_DID_FILE(groupId,dossierIds,dossierPartNo);
 	}
 
 	@Override
