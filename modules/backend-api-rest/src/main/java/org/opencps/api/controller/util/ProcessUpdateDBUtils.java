@@ -3,6 +3,7 @@ package org.opencps.api.controller.util;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -275,6 +276,7 @@ public class ProcessUpdateDBUtils {
 				if (deliverableTypeList != null && deliverableTypeList.size() > 0) {
 					for (DeliverableType deliType : deliverableTypeList) {
 						String typeCode = deliType.getTypeCode();
+						_log.info("1111111111111111111: " + JSONFactoryUtil.looseSerialize(deliType));
 						String typeName = deliType.getTypeName();
 						String codePattern = deliType.getCodePattern();
 						Integer docSync = deliType.getDocSync();
@@ -304,6 +306,9 @@ public class ProcessUpdateDBUtils {
 							
 							FileEntry fileEntryScript = FileUploadUtils.uploadDossierFile(userId, groupId, jsonFile, 
 									UUID.randomUUID() + "_" + jsonFile.getName(), serviceContext);
+							if(Validator.isNotNull(deliType.getGroupId())){
+								groupId = deliType.getGroupId();
+							}
 
 							// Check record exits DB
 							DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
