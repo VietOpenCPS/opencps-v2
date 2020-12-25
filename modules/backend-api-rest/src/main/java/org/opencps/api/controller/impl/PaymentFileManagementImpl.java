@@ -1502,7 +1502,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					String shs256CheckSum = this.generateCheckSumHG(checkSumBeforeHash);
 					org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
 					headers.setContentType(MediaType.APPLICATION_JSON);
-					headers.set("Authorization", "Bearer " + token);
+					headers.set("lgspaccesstoken", paygovConfig.getString("lgspAccessToken"));
 					Map<String, Object> body = new HashMap<>();
 					body.put("partnerCode", partnerCode);
 					body.put("accessKey", accessKey);
