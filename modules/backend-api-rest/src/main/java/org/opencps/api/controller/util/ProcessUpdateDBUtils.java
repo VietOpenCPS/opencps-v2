@@ -276,7 +276,6 @@ public class ProcessUpdateDBUtils {
 				if (deliverableTypeList != null && deliverableTypeList.size() > 0) {
 					for (DeliverableType deliType : deliverableTypeList) {
 						String typeCode = deliType.getTypeCode();
-						_log.info("1111111111111111111: " + JSONFactoryUtil.looseSerialize(deliType));
 						String typeName = deliType.getTypeName();
 						String codePattern = deliType.getCodePattern();
 						Integer docSync = deliType.getDocSync();
@@ -327,8 +326,14 @@ public class ProcessUpdateDBUtils {
 											String moderator = roleType.getModerator();
 											boolean moderatorBool = Validator.isNotNull(moderator) ? Boolean.valueOf(moderator) : false;
 											if (Validator.isNotNull(roleCode)) {
-												org.opencps.usermgt.model.JobPos jobPos = JobPosLocalServiceUtil
-														.getByJobCode(groupId, roleCode);
+												org.opencps.usermgt.model.JobPos jobPos = null;
+												if(groupId == 0L){
+													jobPos = JobPosLocalServiceUtil
+															.getByJobPosCode(roleCode);
+												}else {
+													 jobPos = JobPosLocalServiceUtil
+															.getByJobCode(groupId, roleCode);
+												}
 												if (jobPos != null) {
 													actions.updateDeliverableTypeRoleDB(userId, groupId,
 															deliverableType.getDeliverableTypeId(),
@@ -826,6 +831,10 @@ public class ProcessUpdateDBUtils {
 				String collectionNameEN = dicts.getCollectionNameEN();
 				String description = dicts.getDescription();
 				Integer status = dicts.getStatus();
+				if(Validator.isNotNull(dicts.getGroupId())){
+					groupId = dicts.getGroupId();
+				}
+				_log.debug("DictCollection: " + groupId);
 				DictcollectionInterface actionCollection = new DictCollectionActions();
 				long dictCollectionId = actionCollection.updateDictCollectionDB(userId, groupId, collectionCode,
 						collectionName, collectionNameEN, description, status);

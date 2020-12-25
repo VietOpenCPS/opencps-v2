@@ -146,6 +146,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String SORT_ASC = "asc";
 	private static final String CLASSNAME_DELIVERABLE_TYPE = "opencps_deliverabletype";
 	private static final String TYPE_CODE = "typeCode";
+	private static final String NOK = "NOK";
 
 	@Override
 	public Response onMessage(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User u,
@@ -389,25 +390,23 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 									JSONObject.class);
 	
 							JSONObject postData = message.getJSONObject(DATA);
-//							_log.info("DeliverableType: 11111111111 " + postData.get(Field.GROUP_ID));
-							if (Validator.isNotNull(code) && (CLASSNAME_DELIVERABLE_TYPE.equals(code))){
-								DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(postData.getLong(Field.GROUP_ID),postData.getString(TYPE_CODE));
-								if(Validator.isNull(deliverableType)){
-									messageData.put(message.getString(RESPONE), method.invoke(model, message.getJSONObject(DATA)));
-									messageData.put(STATUS, HttpStatus.OK);
-								}else{
-//									DeliverableTypeLocalServiceUtil.updateDeliverableType(message.getJSONObject(DATA));
-								}
-							}else{
-								postData.put(Field.GROUP_ID, groupId);
-								postData.put(COMPANY_ID, company.getCompanyId());
-								postData.put(Field.USER_ID, u.getUserId());
-								postData.put(Field.USER_NAME, u.getFullName());
+							JSONObject messageError = JSONFactoryUtil.createJSONObject();
 
-								messageData.put(message.getString(RESPONE), method.invoke(model, message.getJSONObject(DATA)));
-
-								messageData.put(STATUS, HttpStatus.OK);
+							if (Validator.isNotNull(code) && (CLASSNAME_DELIVERABLE_TYPE.equals(code))) {
+									DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(postData.getLong(Field.GROUP_ID), postData.getString(TYPE_CODE));
+									if (Validator.isNotNull(deliverableType)) {
+										messageError.put(STATUS, NOK);
+										return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+									}
 							}
+							postData.put(Field.GROUP_ID, groupId);
+							postData.put(COMPANY_ID, company.getCompanyId());
+							postData.put(Field.USER_ID, u.getUserId());
+							postData.put(Field.USER_NAME, u.getFullName());
+
+							messageData.put(message.getString(RESPONE), method.invoke(model, message.getJSONObject(DATA)));
+
+							messageData.put(STATUS, HttpStatus.OK);
 	
 						}
 	

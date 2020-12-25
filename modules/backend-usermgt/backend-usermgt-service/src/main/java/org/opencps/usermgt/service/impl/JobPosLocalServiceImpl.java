@@ -541,6 +541,11 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		return jobPosPersistence.fetchByF_CODE(groupId, jobCode);
 	}
 
+	@Override
+	public JobPos getByJobPosCode(String jobCode) {
+		return jobPosPersistence.fetchByF_JOB_POS_CODE(jobCode);
+	}
+
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public JobPos adminProcessDelete(Long id) {
@@ -589,10 +594,12 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			Role role;
 
 			try {
-
-				role = RoleLocalServiceUtil.addRole(objectData.getLong(JobPosTerm.USER_ID), Role.class.getName(),
-						counterLocalService.increment(), objectData.getString(JobPosTerm.JOBPOS_CODE), titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK,
-						serviceContext);
+				role = RoleLocalServiceUtil.fetchRole(20099, objectData.getString(JobPosTerm.JOBPOS_CODE));
+				if(Validator.isNull(role)) {
+					role = RoleLocalServiceUtil.addRole(objectData.getLong(JobPosTerm.USER_ID), Role.class.getName(),
+							counterLocalService.increment(), objectData.getString(JobPosTerm.JOBPOS_CODE), titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK,
+							serviceContext);
+				}
 
 				object.setMappingRoleId(role.getRoleId());
 

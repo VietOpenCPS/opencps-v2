@@ -513,6 +513,51 @@ public interface JobPosPersistence extends BasePersistence<JobPos> {
 	public int countByF_CODE(long groupId, String jobPosCode);
 
 	/**
+	* Returns the job pos where jobPosCode = &#63; or throws a {@link NoSuchJobPosException} if it could not be found.
+	*
+	* @param jobPosCode the job pos code
+	* @return the matching job pos
+	* @throws NoSuchJobPosException if a matching job pos could not be found
+	*/
+	public JobPos findByF_JOB_POS_CODE(String jobPosCode)
+		throws NoSuchJobPosException;
+
+	/**
+	* Returns the job pos where jobPosCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param jobPosCode the job pos code
+	* @return the matching job pos, or <code>null</code> if a matching job pos could not be found
+	*/
+	public JobPos fetchByF_JOB_POS_CODE(String jobPosCode);
+
+	/**
+	* Returns the job pos where jobPosCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param jobPosCode the job pos code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching job pos, or <code>null</code> if a matching job pos could not be found
+	*/
+	public JobPos fetchByF_JOB_POS_CODE(String jobPosCode,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the job pos where jobPosCode = &#63; from the database.
+	*
+	* @param jobPosCode the job pos code
+	* @return the job pos that was removed
+	*/
+	public JobPos removeByF_JOB_POS_CODE(String jobPosCode)
+		throws NoSuchJobPosException;
+
+	/**
+	* Returns the number of job poses where jobPosCode = &#63;.
+	*
+	* @param jobPosCode the job pos code
+	* @return the number of matching job poses
+	*/
+	public int countByF_JOB_POS_CODE(String jobPosCode);
+
+	/**
 	* Returns all the job poses where groupId = &#63; and mappingRoleId = &#63;.
 	*
 	* @param groupId the group ID
