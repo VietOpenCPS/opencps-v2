@@ -316,7 +316,7 @@ public class DossierManagementImpl implements DossierManagement {
 										results.setTotal(0);
 									} else {
 										JSONArray arrayData = JSONFactoryUtil.createJSONArray(resultObj.getString(RESTFulConfiguration.MESSAGE));
-										_log.info("arrayData: "+arrayData);
+//										_log.info("arrayData: "+arrayData);
 
 										for (int i = 0; i < arrayData.length(); i++) {
 											JSONObject object = arrayData.getJSONObject(i);
@@ -829,7 +829,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				results = new DossierResultsModel();
 
-				_log.info("params: "+params);
+//				_log.info("params: "+params);
 				JSONObject jsonData = actions.getDossiers(
 						user.getUserId(), company.getCompanyId(), groupId, params,
 						sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -1946,20 +1946,11 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 
-			_log.info("TRACE_LOG_INFO doAction dueDate: "+dueDate);
-			_log.info(1111);
-			_log.info(dossier);
-			_log.info(111111111);
-			_log.debug("LamTV-input: " + JSONFactoryUtil.looseSerialize(input));
-			_log.debug(
-				"LamTV-Call in groupId: " + groupId + "|dossierId: " + id +
-					" |userId: " + userId);
-
 			if (dossier != null) {
-				_log.info(2222);
-				_log.debug(
-					"Dossier: " + dossier + ", action code: " +
-						input.getActionCode());
+				_log.info("Doing action for dossierId: " + dossier.getDossierId());
+				if(Validator.isNotNull(input) && Validator.isNotNull(input.getActionCode())) {
+					_log.info("Action code: " + input.getActionCode());
+				}
 
 				if (Validator.isNotNull(dueDate)) {
 					DossierLocalServiceUtil.updateDueDate(

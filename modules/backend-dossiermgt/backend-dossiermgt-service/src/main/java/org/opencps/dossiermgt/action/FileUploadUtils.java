@@ -161,7 +161,8 @@ public class FileUploadUtils {
 				//fileSize = bytes.length;
 			}
 			
-			String title = getFileName(sourceFileName);
+			//String title = getFileName(sourceFileName);
+			String title = sourceFileName;
 
 			serviceContext.setAddGroupPermissions(true);
 			serviceContext.setAddGuestPermissions(true);
@@ -189,7 +190,7 @@ public class FileUploadUtils {
 				fileEntry = DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, sourceFileName, 
 						fileType, title, title, title, true, inputStream, fileSize, serviceContext);
 			} else {
-				fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), title,
+				fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), sourceFileName,
 					fileType, title, title,
 					StringPool.BLANK, inputStream, fileSize, serviceContext);
 			}

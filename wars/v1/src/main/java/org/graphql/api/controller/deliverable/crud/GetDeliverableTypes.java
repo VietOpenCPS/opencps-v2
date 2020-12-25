@@ -21,6 +21,7 @@ import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DeliverableTypeRole;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,13 +49,13 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableTypeDyna
 
 		DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
 
+		long groupId = 0;
 		int start = dataFetchingEnvironment.getArgument(WebKeys.START);
 		int end = dataFetchingEnvironment.getArgument(WebKeys.END);
 
-		long groupId = 0;
 
 		if (Validator.isNotNull(request.getHeader(WebKeys.GROUPID))) {
-			groupId = Long.valueOf(request.getHeader(WebKeys.GROUPID));
+				groupId = Long.valueOf(request.getHeader(WebKeys.GROUPID));
 		}
 		long userId = 0;
 		
@@ -66,7 +67,8 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableTypeDyna
 		
 		if (userId > 0) {
 			
-			List<DeliverableType> resultsTemp = actions.getDeliverableTypesList(groupId, start, end);
+			List<DeliverableType> resultsTemp = DeliverableTypeLocalServiceUtil.getDeliverableTypes(start, end);
+			_log.info("Size: " + resultsTemp.size());
 			
 			try {
 				

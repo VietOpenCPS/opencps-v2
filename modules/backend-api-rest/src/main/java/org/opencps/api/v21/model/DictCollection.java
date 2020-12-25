@@ -72,7 +72,8 @@ import javax.xml.bind.annotation.XmlType;
     "description",
     "status",
     "items",
-    "groups"
+    "groups",
+    "groupId"
 })
 @XmlRootElement(name = "DictCollection")
 public class DictCollection {
@@ -90,6 +91,16 @@ public class DictCollection {
     protected Items items;
     @XmlElement(required = true)
     protected Groups groups;
+    @XmlElement(required = false)
+    protected Integer groupId;
+
+    public Integer getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
+    }
 
     /**
      * Gets the value of the collectionCode property.
