@@ -408,7 +408,7 @@ public interface DeliverablesManagement {
 		@ApiParam(value = "id of DossierFile", required = true) @FormParam("dossierFileId") Long dossierFileId);
 
 	@POST
-	@Path("/deliverables/import/files-v3")
+	@Path("/deliverables/import/file/v3")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({
 			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
