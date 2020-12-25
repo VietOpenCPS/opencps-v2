@@ -131,7 +131,7 @@ public class DeliverableNumberGenerator {
 		return deliverableNumber;
 	}
 	public static String generateDeliverableNumber(long groupId, String serialNumberPattern, String ngayQD) {
-
+		try {
 		String codePattern = CODE_PATTERN;
 		String dayPattern = DAY_PATTERN;
 		String monthPattern = MONTH_PATTERN;
@@ -215,48 +215,56 @@ public class DeliverableNumberGenerator {
 		}
 		String deliverableNumber = serialNumberPattern;
 		return deliverableNumber;
+		}catch (Exception e){
+			_log.debug(e);
+		}
+		return null;
 	}
 
 	private static String counterByNumber(String pattern, String tmp) {
+		try {
+			//long counter = CounterLocalServiceUtil.increment(pattern);
+			int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
+			String format = PERCENT_ZERO + lengthPatern + NUMBER_FORMAT;
 
-		//long counter = CounterLocalServiceUtil.increment(pattern);
-		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
-		String format = PERCENT_ZERO + lengthPatern + NUMBER_FORMAT;
+			long _counterNumber = 0;
+			Counter counter = null;
+			_log.debug("pattern" + pattern);
+			Counter counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
+			if (Validator.isNotNull(counterDetail)) {
+				// create counter config
+				_counterNumber = counterDetail.getCurrentId() + 1;
+				do {
+					counterDetail.setCurrentId(_counterNumber);
+					try {
+						counter = CounterLocalServiceUtil.updateCounter(counterDetail);
+					} catch (Exception e) {
+						_counterNumber += 1;
+						_log.debug(e);
+					}
+				} while (counter == null);
 
-		long _counterNumber = 0;
-		Counter counter = null;
-		_log.debug("pattern" + pattern);
-		Counter counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
-		if (Validator.isNotNull(counterDetail)) {
-			// create counter config
-			_counterNumber = counterDetail.getCurrentId() + 1;
-			do {
-				counterDetail.setCurrentId(_counterNumber);
-				try {
-					counter = CounterLocalServiceUtil.updateCounter(counterDetail);
-				} catch (Exception e) {
-					_counterNumber += 1;
-					_log.debug(e);
-				}
-			} while (counter == null);
+			} else {
+				_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+				counterDetail = CounterLocalServiceUtil.createCounter(pattern);
+				// increment CurrentCounter
+				_counterNumber = counterDetail.getCurrentId() + 1;
+				do {
+					counterDetail.setCurrentId(_counterNumber);
+					try {
+						counter = CounterLocalServiceUtil.updateCounter(counterDetail);
+					} catch (Exception e) {
+						_counterNumber += 1;
+						_log.debug(e);
+					}
+				} while (counter == null);
+			}
 
-		} else {
-			_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
-			counterDetail = CounterLocalServiceUtil.createCounter(pattern);
-			// increment CurrentCounter
-			_counterNumber = counterDetail.getCurrentId() + 1;
-			do {
-				counterDetail.setCurrentId(_counterNumber);
-				try {
-					counter = CounterLocalServiceUtil.updateCounter(counterDetail);
-				} catch (Exception e) {
-					_counterNumber += 1;
-					_log.debug(e);
-				}
-			} while (counter == null);
+			return String.format(format, _counterNumber);
+		}catch (Exception e){
+			_log.debug(e);
 		}
-
-		return String.format(format, _counterNumber);
+		return null;
 	}
 	
 	private static final String YEAR_DATEFORMAT = "yyyy";
