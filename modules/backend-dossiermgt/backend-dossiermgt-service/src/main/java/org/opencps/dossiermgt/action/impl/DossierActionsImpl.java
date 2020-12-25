@@ -513,7 +513,7 @@ public class DossierActionsImpl implements DossierActions {
 							enable = 1;
 						}
 					}
-					_log.debug("Enable: " + enable);
+					_log.info("Enable: " + enable);
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 						serviceProcessId, stepCode);
 					// _log.info("processActionList:
@@ -542,33 +542,68 @@ public class DossierActionsImpl implements DossierActions {
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
 							//							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
+							_log.info("Admin :" + isAdministratorData);
+							boolean checkEnable = false;
+//							if (!isAdministratorData) {
+//								checkEnable = processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user);
+//								if (checkEnable) {
+//									//A.Duẩn autoEvent == SPECIAL trả về 1
+//									if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+//										data.put(ProcessActionTerm.ENABLE, 1);
+//									} else {
+//										data.put(ProcessActionTerm.ENABLE, enable);
+//									}
+//								} else {
+//									if (!AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+//										data.put(ProcessActionTerm.ENABLE, 0);
+//									}
+//								}
+//							}else {
+//								data.put(ProcessActionTerm.ENABLE, enable);
+//							}
 							if (!isAdministratorData) {
-								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)){
-									data.put(ProcessActionTerm.ENABLE, enable);
-							}else {
-									//A.Duẩn autoEvent == SPECIAL vẫn check preCondition
-									if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
-										break;
+								//Special check không check dossierActionUser đối với action đặc biệt
+								if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+									_log.debug("autoEvent : " + autoEvent);
+									checkEnable =processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user);
+									_log.debug("CheckEnable: " + checkEnable);
+									if(checkEnable){
+										data.put(ProcessActionTerm.ENABLE, 1);
+									}
+								} else {
+									if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)) {
+										data.put(ProcessActionTerm.ENABLE, enable);
 									} else {
 										data.put(ProcessActionTerm.ENABLE, 0);
 									}
 								}
-							}
-							else {
+							} else {
 								data.put(ProcessActionTerm.ENABLE, enable);
 							}
-
-							data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
-							data.put(ProcessActionTerm.ACTION_CODE, actionCode);
-							data.put(ProcessActionTerm.ACTION_NAME, actionName);
-							data.put(ProcessActionTerm.PRESTEP_CODE, preStepCode);
-							data.put(ProcessActionTerm.POSTSTEP_CODE, postStepCode);
-							data.put(ProcessActionTerm.AUTO_EVENT, autoEvent);
-							data.put(ProcessActionTerm.PRE_CONDITION, preCondition);
-							data.put(ProcessActionTerm.ALLOW_ASSIGN_USER, processAction.getAllowAssignUser());
-
-							//
-							results.put(data);
+							if(AUTO_EVENT_SPECIAL.equals(autoEvent)){
+								if(checkEnable){
+									data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
+									data.put(ProcessActionTerm.ACTION_CODE, actionCode);
+									data.put(ProcessActionTerm.ACTION_NAME, actionName);
+									data.put(ProcessActionTerm.PRESTEP_CODE, preStepCode);
+									data.put(ProcessActionTerm.POSTSTEP_CODE, postStepCode);
+									data.put(ProcessActionTerm.AUTO_EVENT, autoEvent);
+									data.put(ProcessActionTerm.PRE_CONDITION, preCondition);
+									data.put(ProcessActionTerm.ALLOW_ASSIGN_USER, processAction.getAllowAssignUser());
+								}
+							}else {
+								data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
+								data.put(ProcessActionTerm.ACTION_CODE, actionCode);
+								data.put(ProcessActionTerm.ACTION_NAME, actionName);
+								data.put(ProcessActionTerm.PRESTEP_CODE, preStepCode);
+								data.put(ProcessActionTerm.POSTSTEP_CODE, postStepCode);
+								data.put(ProcessActionTerm.AUTO_EVENT, autoEvent);
+								data.put(ProcessActionTerm.PRE_CONDITION, preCondition);
+								data.put(ProcessActionTerm.ALLOW_ASSIGN_USER, processAction.getAllowAssignUser());
+							}
+							if(Validator.isNotNull(data) && data.length() > 0) {
+								results.put(data);
+							}
 						}
 					}
 				} else {
@@ -746,7 +781,7 @@ public class DossierActionsImpl implements DossierActions {
 								if (Validator.isNotNull(psr.getCondition())) {
 									String[] conditions = StringUtil.split(psr.getCondition());
 
-									if (DossierMgtUtils.checkPreCondition(conditions, dossier, user)) {
+									if (DossierMgtUtils.checkPreCondition(conditions, dossier, user,"")) {
 										lstStepRoles.add(psr);
 									}
 								}
@@ -1604,7 +1639,7 @@ public class DossierActionsImpl implements DossierActions {
 						// String returnDossierFiles =
 						// processAction.getReturnDossierFiles();
 
-						boolean checkPreCondition = DossierMgtUtils.checkPreCondition(preConditions, dossier, curUser);
+						boolean checkPreCondition = DossierMgtUtils.checkPreCondition(preConditions, dossier, curUser,"");
 
 						if (!checkPreCondition) {
 							continue;
@@ -3449,8 +3484,7 @@ public class DossierActionsImpl implements DossierActions {
 		//		_log.info("SONDT processCheckEnable PRECONDISTIONARR ========= " + JSONFactoryUtil.looseSerialize(preConditionArr));
 		//		_log.info("SONDT processCheckEnable dossier ========= " + JSONFactoryUtil.looseSerialize(dossier));
 		if (preConditionArr != null && preConditionArr.length > 0) {
-
-			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, curUser);
+				return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, curUser,autoEvent);
 		}
 
 		//		int originality = dossier.getOriginality();
@@ -3470,7 +3504,6 @@ public class DossierActionsImpl implements DossierActions {
 
 		return true;
 	}
-
 	// LamTV_Process role list user
 	private List<User> processRoleListUser(Dossier dossier, List<ProcessStepRole> processStepRoleList, long serviceProcessId) {
 		List<User> lstUser = null;
@@ -3907,7 +3940,7 @@ public class DossierActionsImpl implements DossierActions {
 						if (Validator.isNotNull(psr.getCondition())) {
 							String[] conditions = StringUtil.split(psr.getCondition());
 
-							if (DossierMgtUtils.checkPreCondition(conditions, dossier, user)) {
+							if (DossierMgtUtils.checkPreCondition(conditions, dossier, user,"")) {
 								lstStepRoles.add(psr);
 							}
 						}
