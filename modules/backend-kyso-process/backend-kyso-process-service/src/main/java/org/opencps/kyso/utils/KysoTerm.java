@@ -29,5 +29,5 @@ public class KysoTerm {
 	public static final String DOCX_TYPE = "docx";
 	
 	public static final String REPORT = "report";
-	public static final String SUBJECT_DN = "SubjectDN";
+	public static final String SUBJECT_DN = "SubjectDN";	
 }

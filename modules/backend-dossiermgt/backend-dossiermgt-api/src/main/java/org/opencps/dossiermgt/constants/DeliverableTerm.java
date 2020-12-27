@@ -39,6 +39,11 @@ public class DeliverableTerm {
 	public static final int DELIVERABLE_STATE_INVALID_INT = 2;
 	public static final String SO_CHUNG_CHI = "so_chung_chi";
 	public static final String NGAY_KY_CC = "ngay_ky_cc";
+	public static final String GIOI_TINH = "gioitinh";
+	public static final String GIOI_TINH_TEXT = "gioitinh_text";
+	public static final String GIOI_TINH_NU = "Nữ";
+	public static final String GIOI_TINH_NAM = "Nam";
+	public static final String CHE_DO_TC = "chedo_text";
 
 
 	public static final String SO_QD = "soquyetdinh";
