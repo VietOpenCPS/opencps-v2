@@ -276,6 +276,11 @@ public class JobPosLocalServiceWrapper implements JobPosLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.JobPos getByJobPosCode(String jobCode) {
+		return _jobPosLocalService.getByJobPosCode(jobCode);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
 		return _jobPosLocalService.getExportActionableDynamicQuery(portletDataContext);

@@ -75,6 +75,12 @@ public interface DossierFileManagement {
 	public Response tracePdf(@PathParam("fileId") long fileId, String body);
 
 	@POST
+	@Path("/{fileId}/signCheck/{signCheck}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateSignCheck(@PathParam("fileId") long fileId,  @PathParam("signCheck") int signCheck);
+
+	@POST
 	@Path("/{id}/files")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({

@@ -161,8 +161,8 @@ public class FileUploadUtils {
 				//fileSize = bytes.length;
 			}
 			
-			//String title = getFileName(sourceFileName);
-			String title = sourceFileName;
+			String title = getFileName(sourceFileName);
+			System.out.println("Title: " + title);
 
 			serviceContext.setAddGroupPermissions(true);
 			serviceContext.setAddGuestPermissions(true);
@@ -182,17 +182,20 @@ public class FileUploadUtils {
 			DLFolder dlFolder = DLFolderUtil.getTargetFolder(userId, groupId, groupId, false, 0, destination,
 					StringPool.BLANK, false, serviceContext);
 			User user = UserLocalServiceUtil.getUser(serviceContext.getUserId());
+			System.out.println("dlFolder.getFolderId(): " + dlFolder.getFolderId());
 
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 			PermissionThreadLocal.setPermissionChecker(checker);
-			
+			System.out.println("FileEntryIdOld: " + fileEntryId);
 			if(fileEntryId > 0) {
 				fileEntry = DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, sourceFileName, 
 						fileType, title, title, title, true, inputStream, fileSize, serviceContext);
 			} else {
-				fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), sourceFileName,
+				System.out.println("fileType: " + fileType);
+				fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), title,
 					fileType, title, title,
 					StringPool.BLANK, inputStream, fileSize, serviceContext);
+				System.out.println("fileEntryId: " + fileEntry.getFileEntryId());
 			}
 
 		}
@@ -275,7 +278,7 @@ public class FileUploadUtils {
 	private static String getFileName(String sourceFileName) {
 		String ext = FileUtil.getExtension(sourceFileName);
 		
-		return Validator.isNotNull(ext) ? (System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
+		return Validator.isNotNull(ext) ? (sourceFileName + StringPool.UNDERLINE + System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
 	}
 
 	// Upload Payment File
