@@ -1527,25 +1527,37 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			String url = PropsUtil.get("org.opencps.admin.proxy.ip");
-			_log.debug("Url: " + url);
+			fileEntryId = 1244004;
 			DossierFileActions action = new DossierFileActionsImpl();
 			// SubString Ip http://119.17.200.66:8174/ ==> IP local
-//			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
-			url = FileUploadUtil.getFileEntryPreviewPath(fileEntryId);
-			_log.debug("Url: " + url);
+			String pathName = FileUploadUtil.getFileEntryPreviewPath(fileEntryId);
+			String path = url + StringPool.FORWARD_SLASH + pathName;
+			_log.info("path: " + path);
 			InputStream inputStream = null;
+
+
 //			String uriSub = StringPool.BLANK;
-			if(Validator.isNotNull(url)) {
-				inputStream = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(url);
+//			if(uri.contains("http://119.17.200.66:8174/")) {
+//				if (Validator.isNotNull(uri)) {
+//					uriSub = uri.substring(25);
+//				}
+//				uriSub = url + uriSub;
+//				_log.info("uriSub: " + uriSub);
+//				inputStream = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(uriSub);
+//			}
+
+			if(Validator.isNotNull(path)) {
+				inputStream = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(path);
 			}else {
 				inputStream = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(uri);
 			}
 
 			String fileTemplateNo = dossierTemplateNo + dossierPartNo;
 			String sourceFileName = displayName + StringPool.PERIOD + fileType;
-			if(Validator.isNotNull(inputStream)) {
-				_log.debug("inputStream: " + JSONFactoryUtil.looseSerialize(inputStream));
+			if(inputStream != null) {
+				_log.info("inputStream: " + JSONFactoryUtil.looseSerialize(inputStream));
 			}
+			_log.info("inputStreamNOK: " + JSONFactoryUtil.looseSerialize(inputStream));
 			DossierFile dossierFile = action.addDossierFile(
 				groupId, id, UUID.randomUUID().toString(),
 				dossierTemplateNo, dossierPartNo, fileTemplateNo,
