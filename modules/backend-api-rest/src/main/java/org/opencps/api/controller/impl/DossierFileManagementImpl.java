@@ -1526,25 +1526,15 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
-			String url = PropsUtil.get("org.opencps.admin.proxy.ip");
-			fileEntryId = 1244004;
+//			String urlProxy = PropsUtil.get("org.opencps.admin.proxy.ip");
+			String urlProxy = "http://127.0.0.1:8081";
+//			String urlDomain = PropsUtil.get("portal.domain");
 			DossierFileActions action = new DossierFileActionsImpl();
-			// SubString Ip http://119.17.200.66:8174/ ==> IP local
 			String pathName = FileUploadUtil.getFileEntryPreviewPath(fileEntryId);
-			String path = url + StringPool.FORWARD_SLASH + pathName;
+			String path = urlProxy + StringPool.FORWARD_SLASH + pathName;
 			_log.info("path: " + path);
 			InputStream inputStream = null;
 
-
-//			String uriSub = StringPool.BLANK;
-//			if(uri.contains("http://119.17.200.66:8174/")) {
-//				if (Validator.isNotNull(uri)) {
-//					uriSub = uri.substring(25);
-//				}
-//				uriSub = url + uriSub;
-//				_log.info("uriSub: " + uriSub);
-//				inputStream = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(uriSub);
-//			}
 
 			if(Validator.isNotNull(path)) {
 				inputStream = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(path);

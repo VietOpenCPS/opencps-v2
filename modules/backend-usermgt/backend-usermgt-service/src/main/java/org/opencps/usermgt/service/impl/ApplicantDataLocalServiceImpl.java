@@ -253,7 +253,7 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setModifiedDate(now);
 		applicantData.setCreateDate(now);
 		applicantData.setCompanyId(serviceContext.getCompanyId());
-		applicantData.setGroupId(groupId);
+
 		applicantData.setUserId(auditUser.getUserId());
 		applicantData.setUserName(auditUser.getScreenName());
 		applicantData.setFileTemplateNo(fileTemplateNo);
@@ -277,7 +277,8 @@ public class ApplicantDataLocalServiceImpl
 				_log.debug(e);
 			}
 		}
-
+		// Mặc định groupId =0
+		applicantData.setGroupId(ApplicantTerm.GROUP_ID_DEFAULT);
 		if (fileEntryId != 0) {
 			applicantData.setFileEntryId(fileEntryId);
 		}

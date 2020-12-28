@@ -266,6 +266,7 @@ public class ConvertDossierFromV1Dot9Utils {
 
 			result = oracle.openStream();
 			_log.info(url);
+			_log.info("result: " + result);
 			// if (url.indexOf("txt") > 0) {
 			// br = new BufferedReader(new InputStreamReader(result));
 			//
