@@ -2005,7 +2005,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								JSONObject filesAttach = getFileAttachMailForApplicant(dossier, proAction);
 								payloadObj.put("filesAttach", filesAttach);
 								payloadObj = verifyPayloadMail(payloadObj);
-								_log.info("====================payloadattach2=========" + payloadObj);
+								_log.debug("====================payloadattach2=========" + payloadObj);
 								String fromFullName = user.getFullName();
 								if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
 									fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();

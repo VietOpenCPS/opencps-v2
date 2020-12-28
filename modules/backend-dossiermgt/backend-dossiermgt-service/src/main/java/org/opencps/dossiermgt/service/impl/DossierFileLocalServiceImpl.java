@@ -150,7 +150,6 @@ public class DossierFileLocalServiceImpl
 		long fileEntryId = 0;
 		try {
 			DLValidatorUtil.validateFileName(sourceFileName);
-			sourceFileName = displayName;
 		}
 		catch (FileNameException e) {
 			sourceFileName = displayName;

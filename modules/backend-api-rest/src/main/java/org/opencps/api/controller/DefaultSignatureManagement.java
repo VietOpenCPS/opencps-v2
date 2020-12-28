@@ -28,6 +28,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
 import org.opencps.exception.model.ExceptionModel;
 
+import io.jsonwebtoken.io.IOException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -177,4 +178,31 @@ public interface DefaultSignatureManagement {
 			@FormParam(value = "assignUsers") String assignUsers,
 			@FormParam(value = "userNote") String userNote) throws PortalException, Exception;
 	
+	@POST
+	@Path("/vtca/fileupload")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	public Response vtcaUploadController(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@ApiParam(value = "Upload sign files", required = true) @FormParam("uploadfile") String singedFileName) 
+		throws PortalException, Exception;
+	
+	@PUT
+	@Path("/vtca/updateFile")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Digital Signature")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = ""),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+	public Response vtcaUpdateFile(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext, 
+			@FormParam("fileEntryIdStr") String fileEntryIdStr, 
+			@FormParam("dossierFileIdStr") String dossierFileIdStr) throws PortalException, Exception;
 }

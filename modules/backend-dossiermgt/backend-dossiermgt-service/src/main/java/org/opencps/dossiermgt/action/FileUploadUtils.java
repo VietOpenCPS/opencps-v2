@@ -161,8 +161,7 @@ public class FileUploadUtils {
 				//fileSize = bytes.length;
 			}
 			
-			//String title = getFileName(sourceFileName);
-			String title = sourceFileName;
+			String title = getFileName(sourceFileName);
 
 			serviceContext.setAddGroupPermissions(true);
 			serviceContext.setAddGuestPermissions(true);
@@ -190,7 +189,7 @@ public class FileUploadUtils {
 				fileEntry = DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, sourceFileName, 
 						fileType, title, title, title, true, inputStream, fileSize, serviceContext);
 			} else {
-				fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), sourceFileName,
+				fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), title,
 					fileType, title, title,
 					StringPool.BLANK, inputStream, fileSize, serviceContext);
 			}
@@ -275,7 +274,7 @@ public class FileUploadUtils {
 	private static String getFileName(String sourceFileName) {
 		String ext = FileUtil.getExtension(sourceFileName);
 		
-		return Validator.isNotNull(ext) ? (System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
+		return Validator.isNotNull(ext) ? (sourceFileName + StringPool.UNDERLINE + System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
 	}
 
 	// Upload Payment File

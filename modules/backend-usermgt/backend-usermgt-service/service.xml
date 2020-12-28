@@ -238,6 +238,9 @@
 			<finder-column name="groupId" />
 			<finder-column name="jobPosCode" />
 		</finder>
+		<finder return-type="JobPos" name="F_JOB_POS_CODE">
+			<finder-column name="jobPosCode" />
+		</finder>
 		<finder return-type="Collection" name="F_mappingRoleIds">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="mappingRoleId" comparator="=" arrayable-operator="OR"></finder-column>
