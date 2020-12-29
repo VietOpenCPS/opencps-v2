@@ -461,9 +461,10 @@ public class DeliverableUtils {
 
 				JSONObject formDataFormat = JSONFactoryUtil.createJSONObject();
 				for (int i = 0; i < nOfColumns; i++) {
+					_log.info("nOfRows: " + i);
 					Cell celli = datatypeSheet.getRow(0).getCell(i);
-					_log.debug("Cell" + celli + "CellValue " + celli.getStringCellValue());
 					if (Validator.isNotNull(celli) && Validator.isNotNull(celli.getStringCellValue())) {
+						_log.info("Cell" + celli + "CellValue " + celli.getStringCellValue());
 						formDataFormat.put(String.valueOf(i),
 								sheetConfig.getRow(0).getCell(i).getStringCellValue());
 					} else {

@@ -951,9 +951,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			BackendAuth auth = new BackendAuthImpl();
 
 			// Check user is login
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
 			long groupId =
 					GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
@@ -962,7 +962,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			DataHandler dataHandle = file.getDataHandler();
 			JSONArray deliverables = DeliverableUtils.readExcelDeliverableV3(dataHandle.getInputStream());
-
+			_log.info("Deliverables: " + JSONFactoryUtil.looseSerialize(deliverables));
 			int size = 0;
 			for (int i = 0; i < deliverables.length(); i++) {
 
@@ -983,27 +983,27 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 						}
 
 						DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableTypeCode);
-						if (deliverable.has(DeliverableTerm.CMND)) {
-							String applicantIdNo = deliverable.getString(DeliverableTerm.CMND);
-							Deliverable deliverableObj = DeliverableLocalServiceUtil.fetchByGID_AID(groupId, applicantIdNo);
-							deliverable.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
-
-							if (deliverableObj != null) {
-								deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
-								deliverable.put(DeliverableTerm.DELIVERABLE_ID, deliverableObj.getDeliverableId());
-							} else {
-								String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
-								String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
-								deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-								deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
-							}
-						} else {
-							String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
-							_log.info("NgayQD " + ngayQD);
-							String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
-							deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-							deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
-						}
+//						if (deliverable.has(DeliverableTerm.CMND)) {
+//							String applicantIdNo = deliverable.getString(DeliverableTerm.CMND);
+//							Deliverable deliverableObj = DeliverableLocalServiceUtil.fetchByGID_AID(groupId, applicantIdNo);
+//							deliverable.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
+//
+//							if (deliverableObj != null) {
+//								deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
+//								deliverable.put(DeliverableTerm.DELIVERABLE_ID, deliverableObj.getDeliverableId());
+//							} else {
+//								String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
+//								String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
+//								deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+//								deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
+//							}
+//						} else {
+//							String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
+//							_log.info("NgayQD " + ngayQD);
+//							String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
+//							deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+//							deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
+//						}
 						String ngaysinh = formData.getString(DeliverableTerm.NGAY_SINH);
 						if(Validator.isNotNull(ngaysinh)){
 							Date ngaysinhParse = APIDateTimeUtils.convertStringToDate(ngaysinh,APIDateTimeUtils._NORMAL_DATE);
@@ -1027,13 +1027,14 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 						deliverable.put(DeliverableTerm.FORM_DATA, formData.toString());
 
 						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-						String scope = employee.getScope();
-						if (scope.split(",").length > 1) {
-							String[] govAgencyCode = scope.split(",");
-							scope = govAgencyCode[0];
+						if(Validator.isNotNull(employee)) {
+							String scope = employee.getScope();
+							if (scope.split(",").length > 1) {
+								String[] govAgencyCode = scope.split(",");
+								scope = govAgencyCode[0];
+							}
+							deliverable.put(DeliverableTerm.GOV_AGENCY_CODE, scope);
 						}
-						deliverable.put(DeliverableTerm.GOV_AGENCY_CODE, scope);
-
 						DeliverableLocalServiceUtil.adminProcessData(deliverable);
 						size += 1;
 //					}
