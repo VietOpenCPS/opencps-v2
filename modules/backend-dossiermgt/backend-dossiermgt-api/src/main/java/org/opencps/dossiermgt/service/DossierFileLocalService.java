@@ -92,6 +92,12 @@ public interface DossierFileLocalService extends BaseLocalService,
 		long fileSize, InputStream inputStream, String fileType, String isSync,
 		ServiceContext serviceContext) throws PortalException, SystemException;
 
+	public DossierFile addDossierFileByFileEntryId(long groupId, long dossierId,
+	String referenceUid, String dossierTemplateNo, String dossierPartNo,
+	String fileTemplateNo, String displayName, String sourceFileName,
+	long fileSize, InputStream inputStream, String fileType, String isSync, long fileEntryId,
+	ServiceContext serviceContext) throws PortalException, SystemException;
+
 	public DossierFile addDossierFile(long groupId, long dossierId,
 		String referenceUid, String dossierTemplateNo, String dossierPartNo,
 		String fileTemplateNo, String displayName, String sourceFileName,

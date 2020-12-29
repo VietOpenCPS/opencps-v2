@@ -2,8 +2,11 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -15,31 +18,55 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
+import org.apache.cxf.jaxrs.impl.MetadataMap;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DefaultSignatureManagement;
+import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
+import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.utils.DLFolderUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
@@ -58,6 +85,7 @@ import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.osgi.service.component.annotations.Reference;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -68,6 +96,8 @@ import backend.auth.api.exception.ErrorMsgModel;
 public class DefaultSignatureManagementImpl
 	implements DefaultSignatureManagement {
 
+	@Reference
+	private DLAppService _dlAppService;
 	Log _log = LogFactoryUtil.getLog(SignatureManagementImpl.class.getName());
 	// private static final String TYPE_KYSO = "1135, 1158, 1160, 1032";
 	// private static final String TYPE_DONGDAU = "1137, 1162, 105";
@@ -1439,4 +1469,136 @@ public class DefaultSignatureManagementImpl
 		}
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();	
 	}	
+		
+	@Override
+	public Response vtcaUploadController(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String singedFileName) throws IOException {
+		
+		try {
+			JSONObject result = JSONFactoryUtil.createJSONObject();		
+			File pdfFile  = new File(singedFileName);
+			ContentDisposition cd = new ContentDisposition(
+				      "form-data; name=\"input\"; filename=\"" + pdfFile.getName() + "\"");
+			Attachment file = new Attachment("input", new FileInputStream(pdfFile ), cd);
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			
+			if (file.getDataHandler() != null) {
+				result.put(ConstantUtils.VGCA_STATUS, true);		
+				try {
+					FileEntry fileEntry = null;
+					InputStream inputStream = file.getDataHandler().getInputStream();
+					String sourceFileName = file.getDataHandler().getName();
+					if (sourceFileName == null || sourceFileName.length() == 0) {
+						sourceFileName = pdfFile.getName();
+					}
+					String fileType = StringPool.BLANK;
+					long fileSize = 0;
+					String destination = StringPool.BLANK;
+					if (inputStream != null && Validator.isNotNull(sourceFileName)) {
+						
+						if(Validator.isNull(fileType)) {
+							fileType = MimeTypesUtil.getContentType(sourceFileName);
+						}
+						
+						if(fileSize == 0) {
+							fileSize = inputStream.available();
+						}
+						String title = sourceFileName;
+						serviceContext.setAddGroupPermissions(true);
+						serviceContext.setAddGuestPermissions(true);
+
+						Calendar calendar = Calendar.getInstance();
+
+						calendar.setTime(new Date());
+						
+						if (destination == null) {
+							destination = StringPool.BLANK;
+						}
+
+						destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;
+						destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
+						destination += calendar.get(Calendar.DAY_OF_MONTH);
+//						System.out.println("FILE NAME: " + destination);
+						DLFolder dlFolder = DLFolderUtil.getTargetFolder(user.getUserId(), groupId, groupId, false, 0, destination,
+								StringPool.BLANK, false, serviceContext);
+						PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
+						PermissionThreadLocal.setPermissionChecker(checker);
+						JSONObject fileServerObj = JSONFactoryUtil.createJSONObject();
+						
+						fileEntry = DLAppLocalServiceUtil.addFileEntry(user.getUserId(), groupId, dlFolder.getFolderId(), title,
+							fileType, title, title,
+							StringPool.BLANK, inputStream, fileSize, serviceContext);
+
+//						System.out.println("File entry: " + fileEntry);
+						String fileName = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
+//						System.out.println("File name: " + fileName);
+						URL url = new URL(request.getAttribute(WebKeys.CURRENT_COMPLETE_URL).toString());
+				        String host = url.getHost();
+						result.put(ConstantUtils.VGCA_FILENAME, fileName);
+						if (fileEntry != null) {
+							fileServerObj.put(ConstantUtils.VGCA_FILEENTRYID, fileEntry.getFileEntryId());
+							String urlPath = String.format(MessageUtil.getMessage(ConstantUtils.VGCA_URL_PATH), url.getProtocol(), host, (url.getPort() == -1 ? 80 : url.getPort()), fileName);
+							
+							fileServerObj.put(ConstantUtils.VGCA_URL, urlPath);
+							result.put(ConstantUtils.VGCA_FILESERVER, fileServerObj.toJSONString());
+						}
+					}			
+				} catch (IOException e) {
+					_log.debug(e);
+				} catch (Exception e) {
+					_log.debug(e);
+				}
+				
+				result.put(ConstantUtils.VGCA_DOCUMENTNUMBER, StringPool.BLANK);	
+			}
+			else {
+				result.put(ConstantUtils.VGCA_STATUS, false);			
+			}
+			
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+		
+	}
+	
+	@Override
+	public Response vtcaUpdateFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String fileEntryIdStr, String dossierFileIdStr)
+			throws PortalException, Exception {
+		
+		_log.info("START*************");		
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			long newFileEntryId = Long.valueOf(fileEntryIdStr);
+			DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(Long.parseLong(dossierFileIdStr));							
+			
+			if (dossierFile != null) {
+				Date now = new Date();
+				dossierFile.setModifiedDate(now);
+				
+				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(newFileEntryId);
+				if (dlFileEntry != null) {
+					dossierFile.setFileEntryId(dlFileEntry.getFileEntryId());
+					dossierFile.setDisplayName(dlFileEntry.getFileName());
+				}
+				DossierFileLocalServiceUtil.updateDossierFile(dossierFile);			
+			}
+			DossierFileModel result =
+					DossierFileUtils.mappingToDossierFileModel(dossierFile);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+			
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
 }

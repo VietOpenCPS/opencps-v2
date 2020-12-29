@@ -54,17 +54,19 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 			User user, ServiceContext serviceContext, Attachment file, String fileTemplateNo, String fileNo, String fileName,
 			String applicantIdNo, String status) {
 		//Mặc định groupId =0
-		long groupId = ApplicantTerm.GROUP_ID_DEFAULT;
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 		ApplicantData applicantData = null;
 		
 		try {
 			int statusInt = Validator.isNotNull(status) ? Integer.parseInt(status) : 0;
-			
-			applicantData = ApplicantDataLocalServiceUtil.createApplicantData(groupId, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
-			ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
+			if(dataHandler.getInputStream() != null) {
+				applicantData = ApplicantDataLocalServiceUtil.createApplicantData(groupId, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
+				ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
 
-			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+			}
+			return null;
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
