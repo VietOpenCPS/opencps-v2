@@ -726,7 +726,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 
-			dossier.setSubmitDate(new Date());
+//			dossier.setSubmitDate(new Date());
 			dossier.setSubmitting(true);
 
 			dossierLocalService.updateDossier(dossier);

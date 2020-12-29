@@ -389,6 +389,9 @@ public interface DossierFileLocalService extends BaseLocalService,
 		int start, int end, OrderByComparator orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierFile> getByG_DID_FILE(long groupId, long[] dossierIds,String dossierPartNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierFile getDossierFileByDID_FTNO_DPTS_First(long dossierId,
 		String fileTemplateNo, int dossierPartType, boolean removed,
 		OrderByComparator orderByComparator) throws NoSuchDossierFileException;

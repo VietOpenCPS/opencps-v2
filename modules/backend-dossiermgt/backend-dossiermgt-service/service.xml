@@ -1002,6 +1002,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />
 		</finder>
+		<finder return-type="Collection" name="G_DID_FILE">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" comparator="=" arrayable-operator="OR"/>
+			<finder-column name="dossierPartNo" />
+		</finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -2229,6 +2234,10 @@
 		<finder return-type="Deliverable" name="F_GID_DID">
 			<finder-column name="groupId"/>
 			<finder-column name="dossierId"/>
+		</finder>
+		<finder return-type="Deliverable" name="F_GID_AID">
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo"/>
 		</finder>
 <!-- 		<order> -->
 <!-- 			<order-column name="modifiedDate" order-by="asc" /> -->

@@ -313,6 +313,8 @@ public class DossierStatisticData {
 	private String govAgencyName;
 	private String domainCode;
 	private String domainName;
+	private String serviceCode;
+	private String serviceName;
 	private int reporting;
 	private long companyId;
 	private long groupId;
@@ -342,9 +344,24 @@ public class DossierStatisticData {
 	private int onlineReleaseOvertimeCount = 0;
 	private int onegateReleaseBetimesCount = 0;
 	private int onegateReleaseOntimeCount = 0;
-	private int onegateReleaseOvertimeCount = 0;	
-		
-	
+	private int onegateReleaseOvertimeCount = 0;
+
+	public String getServiceCode() {
+		return serviceCode;
+	}
+
+	public void setServiceCode(String serviceCode) {
+		this.serviceCode = serviceCode;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
 	public int getFromViaPostalCount() {
 		return fromViaPostalCount;
 	}
