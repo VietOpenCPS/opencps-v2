@@ -92,7 +92,7 @@ public class FileUploadUtils {
 		
 		return cloneFile(userId, groupId, fileEntryId, FOLDER_NAME_DOSSIER_FILE, serviceContext);
 	}
-	
+
 	public static FileEntry cloneFile(long userId, long groupId, long fileEntryId, 
 			String destination, ServiceContext serviceContext) 
 		throws Exception {
@@ -162,7 +162,6 @@ public class FileUploadUtils {
 			}
 			
 			String title = getFileName(sourceFileName);
-			System.out.println("Title: " + title);
 
 			serviceContext.setAddGroupPermissions(true);
 			serviceContext.setAddGuestPermissions(true);
@@ -182,20 +181,16 @@ public class FileUploadUtils {
 			DLFolder dlFolder = DLFolderUtil.getTargetFolder(userId, groupId, groupId, false, 0, destination,
 					StringPool.BLANK, false, serviceContext);
 			User user = UserLocalServiceUtil.getUser(serviceContext.getUserId());
-			System.out.println("dlFolder.getFolderId(): " + dlFolder.getFolderId());
 
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 			PermissionThreadLocal.setPermissionChecker(checker);
-			System.out.println("FileEntryIdOld: " + fileEntryId);
 			if(fileEntryId > 0) {
 				fileEntry = DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, sourceFileName, 
 						fileType, title, title, title, true, inputStream, fileSize, serviceContext);
 			} else {
-				System.out.println("fileType: " + fileType);
 				fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), title,
 					fileType, title, title,
 					StringPool.BLANK, inputStream, fileSize, serviceContext);
-				System.out.println("fileEntryId: " + fileEntry.getFileEntryId());
 			}
 
 		}

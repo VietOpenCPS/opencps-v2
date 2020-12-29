@@ -16,7 +16,13 @@ package org.opencps.dossiermgt.service;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import org.opencps.dossiermgt.model.DossierFile;
+
+import java.io.InputStream;
 
 /**
  * Provides a wrapper for {@link DossierFileLocalService}.
@@ -76,6 +82,14 @@ public class DossierFileLocalServiceWrapper implements DossierFileLocalService,
 			referenceUid, dossierTemplateNo, dossierPartNo, fileTemplateNo,
 			displayName, sourceFileName, fileSize, inputStream, fileType,
 			isSync, serviceContext);
+	}
+
+	@Override
+	public DossierFile addDossierFileByFileEntryId(long groupId, long dossierId, String referenceUid, String dossierTemplateNo, String dossierPartNo, String fileTemplateNo, String displayName, String sourceFileName, long fileSize, InputStream inputStream, String fileType, String isSync, long fileEntryId, ServiceContext serviceContext) throws PortalException, SystemException {
+		return _dossierFileLocalService.addDossierFileByFileEntryId(groupId, dossierId,
+				referenceUid, dossierTemplateNo, dossierPartNo, fileTemplateNo,
+				displayName, sourceFileName, fileSize, inputStream, fileType,
+				isSync, fileEntryId, serviceContext);
 	}
 
 	@Override
