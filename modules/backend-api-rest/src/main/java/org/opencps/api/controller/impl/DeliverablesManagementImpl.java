@@ -962,7 +962,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			DataHandler dataHandle = file.getDataHandler();
 			JSONArray deliverables = DeliverableUtils.readExcelDeliverableV3(dataHandle.getInputStream());
-			_log.info("Deliverables: " + JSONFactoryUtil.looseSerialize(deliverables));
+			_log.debug("Deliverables: " + JSONFactoryUtil.looseSerialize(deliverables));
 			int size = 0;
 			for (int i = 0; i < deliverables.length(); i++) {
 
