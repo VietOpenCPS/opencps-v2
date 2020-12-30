@@ -951,9 +951,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			BackendAuth auth = new BackendAuthImpl();
 
 			// Check user is login
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException();
-//			}
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
 			long groupId =
 					GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
