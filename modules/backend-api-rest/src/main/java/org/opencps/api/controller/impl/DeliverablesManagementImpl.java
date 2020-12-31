@@ -962,14 +962,14 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			DataHandler dataHandle = file.getDataHandler();
 			JSONArray deliverables = DeliverableUtils.readExcelDeliverableV3(dataHandle.getInputStream());
-			_log.debug("Deliverables: " + JSONFactoryUtil.looseSerialize(deliverables));
-			int size = 0;
-			for (int i = 0; i < deliverables.length(); i++) {
 
-				JSONObject deliverable = deliverables.getJSONObject(i);
-				if (Validator.isNotNull(deliverable)) {
-					JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
-//					if (Validator.isNotNull(formData.getString(DeliverableTerm.GIOI_TINH_TEXT))) {
+			int size = 0;
+			if(Validator.isNotNull(deliverables)) {
+				_log.debug("Deliverables: " + JSONFactoryUtil.looseSerialize(deliverables));
+				for (int i = 0; i < deliverables.length(); i++) {
+					JSONObject deliverable = deliverables.getJSONObject(i);
+					if (Validator.isNotNull(deliverable)) {
+						JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
 						String gioitinh = formData.getString(DeliverableTerm.GIOI_TINH_TEXT);
 						if (gioitinh.contains(DeliverableTerm.GIOI_TINH_NAM)) {
 							_log.debug("NAM ......");
@@ -984,9 +984,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 						DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableTypeCode);
 						String ngaysinh = formData.getString(DeliverableTerm.NGAY_SINH);
-						if(Validator.isNotNull(ngaysinh)){
-							Date ngaysinhParse = APIDateTimeUtils.convertStringToDate(ngaysinh,APIDateTimeUtils._NORMAL_DATE);
-							if(Validator.isNotNull(ngaysinhParse)) {
+						if (Validator.isNotNull(ngaysinh)) {
+							Date ngaysinhParse = APIDateTimeUtils.convertStringToDate(ngaysinh, APIDateTimeUtils._NORMAL_DATE);
+							if (Validator.isNotNull(ngaysinhParse)) {
 								System.out.println("Ngay sinh : " + ngaysinhParse);
 
 								DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
@@ -1006,7 +1006,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 						deliverable.put(DeliverableTerm.FORM_DATA, formData.toString());
 
 						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-						if(Validator.isNotNull(employee)) {
+						if (Validator.isNotNull(employee)) {
 							String scope = employee.getScope();
 							if (scope.split(",").length > 1) {
 								String[] govAgencyCode = scope.split(",");
@@ -1016,7 +1016,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 						}
 						DeliverableLocalServiceUtil.adminProcessData(deliverable);
 						size += 1;
-//					}
+					}
 				}
 			}
 			result.put(ConstantUtils.TOTAL, size);
