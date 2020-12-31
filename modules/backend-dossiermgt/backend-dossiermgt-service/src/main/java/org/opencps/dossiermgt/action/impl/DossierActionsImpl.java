@@ -482,7 +482,6 @@ public class DossierActionsImpl implements DossierActions {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
 						.getByDossierAndUser(dossierActionId, userId);
 					_log.debug("User id: " + userId);
-//					_log.debug("Dossier action user :" + JSONFactoryUtil.looseSerialize(dActionUser));
 					// GS.AnhTT_Process
 					int enable = 2;
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
@@ -491,6 +490,7 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}
 					if (dActionUser != null) {
+						_log.debug("Dossier action user :" + JSONFactoryUtil.looseSerialize(dActionUser));
 						_log.debug("Dossier action user :" + dActionUser.getAssigned() + ", " + dossierAction.getPending());
 						int assign = dActionUser.getAssigned();
 						if (assign == 1 && !pending)

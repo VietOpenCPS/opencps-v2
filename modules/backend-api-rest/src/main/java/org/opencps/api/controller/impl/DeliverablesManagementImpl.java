@@ -983,27 +983,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 						}
 
 						DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableTypeCode);
-//						if (deliverable.has(DeliverableTerm.CMND)) {
-//							String applicantIdNo = deliverable.getString(DeliverableTerm.CMND);
-//							Deliverable deliverableObj = DeliverableLocalServiceUtil.fetchByGID_AID(groupId, applicantIdNo);
-//							deliverable.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
-//
-//							if (deliverableObj != null) {
-//								deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
-//								deliverable.put(DeliverableTerm.DELIVERABLE_ID, deliverableObj.getDeliverableId());
-//							} else {
-//								String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
-//								String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
-//								deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-//								deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
-//							}
-//						} else {
-//							String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
-//							_log.info("NgayQD " + ngayQD);
-//							String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
-//							deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-//							deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
-//						}
 						String ngaysinh = formData.getString(DeliverableTerm.NGAY_SINH);
 						if(Validator.isNotNull(ngaysinh)){
 							Date ngaysinhParse = APIDateTimeUtils.convertStringToDate(ngaysinh,APIDateTimeUtils._NORMAL_DATE);
