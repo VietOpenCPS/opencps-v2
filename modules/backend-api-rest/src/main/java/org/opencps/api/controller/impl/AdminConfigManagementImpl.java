@@ -163,6 +163,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 				if (message.getString(TYPE).equals(ADMIN)) {
 
 					String code = message.getString(CODE);
+					String id = message.getString(ID);
 	
 					AdminConfig adminConfig = AdminConfigLocalServiceUtil.fetchByCode(code);
 	
@@ -392,12 +393,14 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							JSONObject postData = message.getJSONObject(DATA);
 							JSONObject messageError = JSONFactoryUtil.createJSONObject();
 
-							if (Validator.isNotNull(code) && (CLASSNAME_DELIVERABLE_TYPE.equals(code))) {
+							if("0".equals(id)) {
+								if (Validator.isNotNull(code) && (CLASSNAME_DELIVERABLE_TYPE.equals(code))) {
 									DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(postData.getLong(Field.GROUP_ID), postData.getString(TYPE_CODE));
 									if (Validator.isNotNull(deliverableType)) {
 										messageError.put(STATUS, NOK);
 										return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
 									}
+								}
 							}
 							postData.put(Field.GROUP_ID, groupId);
 							postData.put(COMPANY_ID, company.getCompanyId());
