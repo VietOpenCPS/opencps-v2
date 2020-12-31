@@ -1459,7 +1459,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				//Case in bien lai paygov Hau Giang
 				if(paygovConfig.getString("partnerCode").equals("PAYGOV-HAUGIANG")) {
 					_log.info("Paygov hau giang");
-					String token = serviceApi.getTokenLGSP(paygovConfig);
 					String partnerCode = paygovConfig.getString("partnerCode");
 					String accessKey   = paygovConfig.getString("accessKey");
 					String secretKey   = paygovConfig.getString("secretKey");
@@ -1478,15 +1477,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					String procedureName = Validator.isNotNull(dossier.getServiceName()) ? dossier.getServiceName():"";
 
 					//create paids
-					JSONObject onePaid = JSONFactoryUtil.createJSONObject();
-					JSONArray paids = JSONFactoryUtil.createJSONArray();
-//					onePaid.put("orderInfo", confirmPayload.getString("orderInfo"));
-//					onePaid.put("amount", confirmPayload.getLong("amount"));
-					onePaid.put("transactionCode", confirmPayload.getString("transactionCode"));
-//					onePaid.put("payTransactionNo", String.valueOf(dossierId) + System.currentTimeMillis());
-
-					paids.put(onePaid);
-					String base64Paids = Base64.getEncoder().encodeToString(paids.toString().getBytes());
+					String paids = "[\"" + confirmPayload.getString("transactionCode") + "\"]";
+					String base64Paids = Base64.getEncoder().encodeToString(paids.getBytes());
 
 					//create other info
 					JSONObject otherInfo = JSONFactoryUtil.createJSONObject();
@@ -1500,6 +1492,12 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					String checkSumBeforeHash = secretKey + partnerCode + accessKey + payerId + payerName
 							+ payerAddress + payerDistrict + payerProvince + docCode + procedureName + base64Paids
 							+ base64OtherInfo + decisionDate;
+
+					_log.info("Checksum: " + secretKey + " | " + partnerCode + " | " + accessKey
+							+ " | " + payerId + " | " + payerName
+							+ " | " + payerAddress + " | " + payerDistrict + " | " +payerProvince + " | " +docCode
+							+ " | " + procedureName + " | " + base64Paids
+							+ " | " + base64OtherInfo + " | " + decisionDate);
 					String shs256CheckSum = this.generateCheckSumHG(checkSumBeforeHash);
 					org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
 					headers.setContentType(MediaType.APPLICATION_JSON);
