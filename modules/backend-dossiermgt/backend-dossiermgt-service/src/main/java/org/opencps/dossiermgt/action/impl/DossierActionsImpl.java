@@ -541,7 +541,7 @@ public class DossierActionsImpl implements DossierActions {
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
 							//							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
-							boolean checkEnable = false;
+//							boolean checkEnable = false;
 //							if (!isAdministratorData) {
 //								checkEnable = processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user);
 //								if (checkEnable) {
@@ -561,18 +561,15 @@ public class DossierActionsImpl implements DossierActions {
 //							}
 							if (!isAdministratorData) {
 								//Special check không check dossierActionUser đối với action đặc biệt
+								data.put(ProcessActionTerm.ENABLE, 0);
 								if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
 									_log.debug("autoEvent : " + autoEvent);
-									checkEnable =processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user);
-									_log.debug("CheckEnable: " + checkEnable);
-									if(checkEnable){
+									if( processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)){
 										data.put(ProcessActionTerm.ENABLE, 1);
 									}
 								} else {
 									if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)) {
 										data.put(ProcessActionTerm.ENABLE, enable);
-									} else {
-										data.put(ProcessActionTerm.ENABLE, 0);
 									}
 								}
 							} else {
