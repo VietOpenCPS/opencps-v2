@@ -561,20 +561,17 @@ public class DossierActionsImpl implements DossierActions {
 //							}
 							if (!isAdministratorData) {
 								//Special check không check dossierActionUser đối với action đặc biệt
+								data.put(ProcessActionTerm.ENABLE, 0);
 								if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
 									_log.debug("autoEvent : " + autoEvent);
 									checkEnable =processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user);
 									_log.debug("CheckEnable: " + checkEnable);
 									if(checkEnable){
 										data.put(ProcessActionTerm.ENABLE, 1);
-									}else{
-										data.put(ProcessActionTerm.ENABLE, 0);
 									}
 								} else {
 									if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)) {
 										data.put(ProcessActionTerm.ENABLE, enable);
-									} else {
-										data.put(ProcessActionTerm.ENABLE, 0);
 									}
 								}
 							} else {
