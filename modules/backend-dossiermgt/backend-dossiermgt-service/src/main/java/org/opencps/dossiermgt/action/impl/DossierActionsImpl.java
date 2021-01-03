@@ -567,6 +567,8 @@ public class DossierActionsImpl implements DossierActions {
 									_log.debug("CheckEnable: " + checkEnable);
 									if(checkEnable){
 										data.put(ProcessActionTerm.ENABLE, 1);
+									}else{
+										data.put(ProcessActionTerm.ENABLE, 0);
 									}
 								} else {
 									if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)) {
