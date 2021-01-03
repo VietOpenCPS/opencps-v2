@@ -1421,7 +1421,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if(Validator.isNotNull(sc)) {
 					JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 					bdhnConnect = configObj.getBoolean(ServerConfigTerm.BDHN_CONNECT);
-					senderAddress = configObj.getString(ServerConfigTerm.BDHN_CONNECT);
+					senderAddress = configObj.getString(ServerConfigTerm.SENDER_ADDRESS);
 				}
 				if(bdhnConnect){
 					//VNPOST thông báo đã có kết quả tại một cửa cho Bưu điện HN
@@ -2002,7 +2002,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								JSONObject filesAttach = getFileAttachMailForApplicant(dossier, proAction);
 								payloadObj.put("filesAttach", filesAttach);
 								payloadObj = verifyPayloadMail(payloadObj);
-								_log.info("====================payloadattach2=========" + payloadObj);
+								_log.debug("====================payloadattach2=========" + payloadObj);
 								String fromFullName = user.getFullName();
 								if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
 									fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();
@@ -6466,6 +6466,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
 			}
+			if (Validator.isNotNull(input.getDossierNo())) {
+				dossier.setDossierNo(input.getDossierNo());
+			}
+			if (Validator.isNotNull(input.getDueDate())) {
+				dossier.setDueDate(APIDateTimeUtils
+						.convertStringToDate(input.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
+			if (Validator.isNotNull(input.getReceiveDate())) {
+				dossier.setReceiveDate(APIDateTimeUtils
+						.convertStringToDate(input.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			return dossierLocalService.updateDossier(dossier);
 
@@ -6807,6 +6818,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
+			}
+			if (Validator.isNotNull(input.getDossierNo())) {
+				dossier.setDossierNo(input.getDossierNo());
+			}
+			if (Validator.isNotNull(input.getDueDate())) {
+				dossier.setDueDate(APIDateTimeUtils
+						.convertStringToDate(input.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
+			if (Validator.isNotNull(input.getReceiveDate())) {
+				dossier.setReceiveDate(APIDateTimeUtils
+						.convertStringToDate(input.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 			}
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			dossierLocalService.updateDossier(dossier);

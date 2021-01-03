@@ -79,15 +79,10 @@ public class VNPostCLSUtils {
         try {
             String serverCodeFind = Validator.isNotNull(serverCode) ? serverCode : "VNPOST_CLS";
             ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverCodeFind);
-            MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
-            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-
-            RestTemplate restTemplate = new RestTemplate();
-            headers.setContentType(org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED);
+            StringBuilder sb = new StringBuilder();
 
             if (sc != null) {
                 String serverUrl = StringPool.BLANK;
-
                 JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
                 JSONObject jsonObject = JSONFactoryUtil.createJSONObject(configObj.getString(ServerConfigTerm.NHAN_THONG_BAO_KET_QUA));
                 serverUrl = jsonObject.getString(SyncServerTerm.SERVER_URL);
@@ -95,52 +90,53 @@ public class VNPostCLSUtils {
                 String userName = jsonObject.getString(SyncServerTerm.SERVER_USERNAME);
                 String password = jsonObject.getString(SyncServerTerm.SERVER_SECRET);
                 String basicAuth = "Basic " + Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
-                _log.info("basicAuth "+basicAuth);
-                headers.set("Authorization", basicAuth);
-                map.add("dossierId" ,String.valueOf(dossierId));
-                map.add("MaThuTuc",serviceCode);
-                map.add("TenThuTuc",serviceName);
-                map.add("MaHoSo",dossierNo);
-                map.add("LePhi",String.valueOf(fees));
-                map.add("ChuHoSo",applicantName);
-                map.add("NguoiNop",delegateName);
-                map.add("CMT",applicantIdNo);
-                map.add("DiaChi",address);
-                map.add("NgayTiepNhan", APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_DATE));
-                map.add("DiaChiBC",postalAddress);
+                _log.debug("basicAuth "+basicAuth);
 
-                _log.info("POST DATA: " + map.toString());
-                HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-                ResponseEntity<String> response = restTemplate.postForEntity(serverUrl, request, String.class);
-                return response.getBody();
-//                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVoid.openConnection();
-//                String basicAuth = Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
-//                _log.info("basicAuth "+basicAuth);
-//                conn.setRequestProperty("Authorization", basicAuth);
-//                conn.setRequestMethod(HttpMethod.POST);
-//                conn.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-//                conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-//                conn.setRequestProperty("Content-Length",StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
-//                conn.setUseCaches(false);
-//                conn.setDoInput(true);
-//                conn.setDoOutput(true);
-//                OutputStream osLogin = conn.getOutputStream();
-//                osLogin.write(jsonBody.toString().getBytes());
-//                osLogin.close();
-//
-//                BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//                int cp;
-//                while ((cp = brf.read()) != -1) {
-//                    sb.append((char) cp);
-//                }
-//                return sb.toString();
+                URL urlVoid = new URL(serverUrl);
+                JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+
+                jsonBody.put(SyncServerTerm.SERVER_USERNAME, configObj.getString(SyncServerTerm.SERVER_USERNAME));
+                jsonBody.put(SyncServerTerm.SERVER_SECRET, configObj.getString(SyncServerTerm.SERVER_SECRET));
+                jsonBody.put("dossierId",dossierId);
+                jsonBody.put("MaThuTuc",serviceCode);
+                jsonBody.put("TenThuTuc",serviceName);
+                jsonBody.put("MaHoSo",dossierNo);
+                jsonBody.put("LePhi",fees);
+                jsonBody.put("ChuHoSo",applicantName);
+                jsonBody.put("NguoiNop",delegateName);
+                jsonBody.put("CMT",applicantIdNo);
+                jsonBody.put("DiaChi",address);
+                jsonBody.put("NgayTiepNhan",APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._MONTH_DAY_YEAR_DATE));
+                jsonBody.put("DiaChiBC",postalAddress);
+
+                _log.debug("POST DATA: " + jsonBody.toString());
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVoid.openConnection();
+
+                conn.setRequestProperty ("Authorization", basicAuth);
+                conn.setRequestMethod(HttpMethod.POST);
+                conn.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+                conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+                conn.setRequestProperty("Content-Length",StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+                conn.setUseCaches(false);
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                _log.debug("POST DATA: " + jsonBody.toString());
+                OutputStream osLogin = conn.getOutputStream();
+                osLogin.write(jsonBody.toString().getBytes());
+                osLogin.close();
+
+                BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                int cp;
+                while ((cp = brf.read()) != -1) {
+                    sb.append((char) cp);
+                }
+                return sb.toString();
             }
             return null;
         } catch (Exception e) {
             _log.debug(e);
             return null;
         }
-
     }
     private static Log _log = LogFactoryUtil.getLog(DossierActionUtils.class.getName());
 

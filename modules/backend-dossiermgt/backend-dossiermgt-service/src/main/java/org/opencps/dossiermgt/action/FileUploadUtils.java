@@ -92,7 +92,7 @@ public class FileUploadUtils {
 		
 		return cloneFile(userId, groupId, fileEntryId, FOLDER_NAME_DOSSIER_FILE, serviceContext);
 	}
-	
+
 	public static FileEntry cloneFile(long userId, long groupId, long fileEntryId, 
 			String destination, ServiceContext serviceContext) 
 		throws Exception {
@@ -184,7 +184,6 @@ public class FileUploadUtils {
 
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 			PermissionThreadLocal.setPermissionChecker(checker);
-			
 			if(fileEntryId > 0) {
 				fileEntry = DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, sourceFileName, 
 						fileType, title, title, title, true, inputStream, fileSize, serviceContext);
