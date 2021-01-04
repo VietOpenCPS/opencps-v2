@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.liferay.portal.kernel.util.Validator;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileSearchResultModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
