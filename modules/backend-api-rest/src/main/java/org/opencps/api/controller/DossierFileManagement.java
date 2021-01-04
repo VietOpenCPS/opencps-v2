@@ -75,6 +75,12 @@ public interface DossierFileManagement {
 	public Response tracePdf(@PathParam("fileId") long fileId, String body);
 
 	@POST
+	@Path("/{fileId}/signCheck/{signCheck}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateSignCheck(@PathParam("fileId") long fileId,  @PathParam("signCheck") int signCheck);
+
+	@POST
 	@Path("/{id}/files")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({
@@ -684,7 +690,8 @@ public interface DossierFileManagement {
 		@ApiParam(value = "dossier PartNo", required = true) @FormParam("dossierPartNo") String dossierPartNo,
 		@ApiParam(value = "url get file by applicant Data Id", required = true) @FormParam("uri") String uri,
 		@ApiParam(value = "display name dossier file", required = true) @FormParam("displayName") String displayName,
-		@ApiParam(value = "file type dossier file", required = true) @FormParam("fileType") String fileType);
+		@ApiParam(value = "file type dossier file", required = true) @FormParam("fileType") String fileType,
+	    @ApiParam(value = "file entry id dossier file", required = true) @FormParam("fileEntryId") long fileEntryId);
 
 	@GET
 	@Path("/{id}/downloadAllFile")

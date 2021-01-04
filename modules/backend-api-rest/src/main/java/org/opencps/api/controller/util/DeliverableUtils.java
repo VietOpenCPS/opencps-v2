@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -375,10 +376,10 @@ public class DeliverableUtils {
 			String fileName = dataHandle.getName();
 			String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
 			File fileOld = new File(pathFolder);
-			_log.info("fileOld: " + fileOld);
+			_log.debug("fileOld: " + fileOld);
 			if (fileOld.exists()) {
 				boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
-				_log.info("LamTV_Delete DONE: " + flag);
+				_log.debug("LamTV_Delete DONE: " + flag);
 			}
 			ImportZipFileUtils.unzip(fileInputStream, ConstantUtils.DEST_DIRECTORY);
 
@@ -386,8 +387,8 @@ public class DeliverableUtils {
 
 			for (File fileEntry : fileList.listFiles()) {
 
-				_log.info("excelFile: " + fileEntry);
-				_log.info("LamTV_fileList: " + fileEntry.getPath());
+				_log.debug("excelFile: " + fileEntry);
+				_log.debug("LamTV_fileList: " + fileEntry.getPath());
 
 				if (fileEntry.isDirectory()) {
 					System.out.println("folder " + fileEntry.getName());
@@ -437,10 +438,143 @@ public class DeliverableUtils {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			// _log.error(e);
+			 _log.debug(e);
 		}
 		return deliverablesArr;
+	}
+	public static JSONArray readExcelDeliverableV3(InputStream excelInputStream) {
+
+		Workbook workbook = null;
+		JSONArray results = JSONFactoryUtil.createJSONArray();
+
+		try {
+
+			workbook = new XSSFWorkbook(excelInputStream);
+			//
+			Sheet datatypeSheet = workbook.getSheetAt(0);
+			Sheet sheetConfig = workbook.getSheetAt(1);
+			int nOfRows = datatypeSheet.getPhysicalNumberOfRows();
+			int nOfColumns = 1000;
+			_log.debug("nOfRows: " + nOfRows);
+
+			if (nOfRows > 1 && nOfRows < 10000) {
+
+				JSONObject formDataFormat = JSONFactoryUtil.createJSONObject();
+				for (int i = 0; i < nOfColumns; i++) {
+					_log.debug("nOfRows: " + i);
+					Cell celli = datatypeSheet.getRow(0).getCell(i);
+					if (Validator.isNotNull(celli) && Validator.isNotNull(celli.getStringCellValue())) {
+						formDataFormat.put(String.valueOf(i),
+								sheetConfig.getRow(0).getCell(i).getStringCellValue());
+					} else {
+						nOfColumns = i - 1;
+						break;
+					}
+				}
+				_log.debug("====dataForm__" + formDataFormat);
+				_log.debug("====nOfColumns===" + nOfColumns);
+				for (int i = 1; i < nOfRows; i++) {
+					Row currentRow = datatypeSheet.getRow(i);
+
+					if (currentRow != null) {
+
+						// todo convert
+						JSONObject deliverableObj = convertRowToDeliverableV3(currentRow, nOfColumns, formDataFormat);
+						if (Validator.isNotNull(deliverableObj)) {
+							results.put(deliverableObj);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		} finally {
+			if (workbook != null) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
+		}
+		return results;
+	}
+	public static JSONObject convertRowToDeliverableV3(Row currentRow, int nOfColumns, JSONObject formDataFormat) {
+
+		JSONObject formData = JSONFactoryUtil.createJSONObject();
+		JSONObject deliverableObj = JSONFactoryUtil.createJSONObject();
+
+		try {
+			for (int i = 0; i <= nOfColumns; i++) {
+				_log.debug("FormData :" + formDataFormat);
+				String key = formDataFormat.getString(String.valueOf(i));
+				Object objectValue = getCellValueV3(currentRow.getCell(i));
+				_log.debug("Object Value" + JSONFactoryUtil.looseSerialize(objectValue));
+				if (Validator.isNotNull(objectValue) && currentRow.getCell(i).getCellType() == CellType.STRING && key.split(",").length > 1) {
+					String value = currentRow.getCell(i).getStringCellValue();
+					int size = key.split(",").length;
+					if (value.split(",").length > 0) {
+						String[] newValue = value.split(",");
+						int sizeofNewValue = newValue.length;
+						for (int index = size; index > 0; index--) {
+							if(sizeofNewValue > 0) {
+								formData.put(key.split(",")[index-1], newValue[sizeofNewValue-1]);
+								deliverableObj.put(key.split(",")[index-1], newValue[sizeofNewValue-1]);
+								sizeofNewValue--;
+							}
+						}
+					}
+				}/*else if (objectValue != null && currentRow.getCell(i).getCellType() == CellType.STRING && currentRow.getCell(i).getStringCellValue().split("\\.").length > 1) {
+					String cellStringValue = currentRow.getCell(i).getStringCellValue();
+					Date date = APIDateTimeUtils.convertSpecialVNStrToDate(cellStringValue);
+					formData.put(key, new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(date));
+					deliverableObj.put(key, new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(date));
+				}*/else {
+					formData.put(key, objectValue);
+					deliverableObj.put(key, objectValue);
+				}
+			}
+			if(Validator.isNotNull(formData)) {
+				deliverableObj.put("formData", formData);
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+
+		return deliverableObj;
+	}
+	private static Object getCellValueV3(Cell cell) {
+
+		if (cell == null) {
+
+			return null;
+		} else if (CellType.STRING == cell.getCellType()) {
+
+			return cell.getStringCellValue();
+		} else if (CellType.BOOLEAN == cell.getCellType()) {
+
+			return cell.getBooleanCellValue();
+		} else if (CellType.ERROR == cell.getCellType()) {
+
+			return cell.getErrorCellValue();
+		} else if (CellType.NUMERIC == cell.getCellType()) {
+			if (DateUtil.isCellDateFormatted(cell)) {
+				return new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(cell.getDateCellValue());
+			} else {
+				return BigDecimal.valueOf(cell.getNumericCellValue());
+			}
+		} else if (CellType.FORMULA == cell.getCellType()) {
+			if (cell.getCachedFormulaResultType() == CellType.NUMERIC) {
+				return cell.getNumericCellValue();
+			}else if (cell.getCachedFormulaResultType() == CellType.STRING) {
+				return cell.getRichStringCellValue();
+			}else {
+				return null;
+			}
+		}else {
+
+			return null;
+		}
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(DeliverableUtils.class);

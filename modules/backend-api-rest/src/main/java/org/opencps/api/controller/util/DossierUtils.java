@@ -53,6 +53,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -63,6 +64,7 @@ import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -592,6 +594,22 @@ public class DossierUtils {
 			model.setResultVotingCode1(0);
 			model.setResultVotingCode2(0);
 			model.setResultVotingCode3(0);
+			
+			// add fee amount, service amount, total amount
+			if(doc.hasField(Field.ENTRY_CLASS_PK) && 
+					Validator.isNotNull(doc.get(Field.ENTRY_CLASS_PK))) {
+				PaymentFile pf = PaymentFileLocalServiceUtil.getByDossierId(groupId, GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+				if (pf != null) {
+					model.setFeeAmount(pf.getFeeAmount());
+					model.setServiceAmount(pf.getServiceAmount());
+					model.setTotalAmount(pf.getPaymentAmount());
+				}else {
+					model.setFeeAmount(0L);
+					model.setServiceAmount(0L);
+					model.setTotalAmount(0L);
+				}
+			}
+			
 			ouputs.add(model);
 		}
 
@@ -1305,15 +1323,14 @@ public class DossierUtils {
 	public static ProcessAction getProcessAction(User user, long groupId, Dossier dossier, String actionCode,
 			long serviceProcessId) throws PortalException {
 
-		_log.debug("GET PROCESS ACTION____");
+		_log.info("GET PROCESS ACTION for dossierId " + dossier.getDossierId() +" and info: "
+				+ groupId + "," + actionCode + "," + serviceProcessId);
 		ProcessAction action = null;
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		
 		try {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);
-
-			_log.debug("GET PROCESS ACTION____" + groupId + "," + actionCode + "," + serviceProcessId);
 
 			String dossierStatus = dossier.getDossierStatus();
 			String dossierSubStatus = dossier.getDossierSubStatus();
@@ -1335,7 +1352,7 @@ public class DossierUtils {
 						break;
 					}
 				}else {
-					_log.debug("LamTV_preStepCode: " + preStepCode );
+					_log.info("LamTV_preStepCode: " + preStepCode );
 					if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
 				}
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
@@ -1357,7 +1374,8 @@ public class DossierUtils {
 					else {
 						flagCheck = true;
 					}
-					_log.debug("LamTV_preStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + "," + dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
+					_log.info("LogPreStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + ","
+							+ dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {

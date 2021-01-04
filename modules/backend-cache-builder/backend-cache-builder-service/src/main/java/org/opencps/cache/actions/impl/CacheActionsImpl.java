@@ -17,7 +17,7 @@ public class CacheActionsImpl implements CacheActions{
 
 	@Override
 	public void clearCache(String cacheName) throws PortalException {
-		_log.debug("START Liferay Cache: Clearing cache. CacheName = " + cacheName);
+//		_log.debug("START Liferay Cache: Clearing cache. CacheName = " + cacheName);
 		//CacheLocalServiceUtil.clearCache(cacheName);
 		if (Validator.isNotNull(cacheName)) {
 			try {
@@ -29,7 +29,7 @@ public class CacheActionsImpl implements CacheActions{
 				_log.error("CacheName = " + cacheName + " : Error clearing the cache. Error = " + ex.getMessage());
 			}
 		} else {
-			_log.debug("CacheName = " + cacheName + " : Error clearing the cache. = ");
+//			_log.debug("CacheName = " + cacheName + " : Error clearing the cache. = ");
 		}
 
 	}

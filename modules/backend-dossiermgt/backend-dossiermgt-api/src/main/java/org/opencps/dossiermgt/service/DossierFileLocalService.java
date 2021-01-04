@@ -92,6 +92,12 @@ public interface DossierFileLocalService extends BaseLocalService,
 		long fileSize, InputStream inputStream, String fileType, String isSync,
 		ServiceContext serviceContext) throws PortalException, SystemException;
 
+	public DossierFile addDossierFileByFileEntryId(long groupId, long dossierId,
+	String referenceUid, String dossierTemplateNo, String dossierPartNo,
+	String fileTemplateNo, String displayName, String sourceFileName,
+	long fileSize, InputStream inputStream, String fileType, String isSync, long fileEntryId,
+	ServiceContext serviceContext) throws PortalException, SystemException;
+
 	public DossierFile addDossierFile(long groupId, long dossierId,
 		String referenceUid, String dossierTemplateNo, String dossierPartNo,
 		String fileTemplateNo, String displayName, String sourceFileName,
@@ -303,6 +309,10 @@ public interface DossierFileLocalService extends BaseLocalService,
 	public DossierFile getByFileTemplateNo(long id, String fileTemplateNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierFile> getByG_DID_FILE(long groupId, long[] dossierIds,
+		String dossierPartNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierFile> getByG_DID_FTN_R(long groupId, long[] dossierIds,
 		String fileTemplateNo, boolean removed);
 
@@ -387,9 +397,6 @@ public interface DossierFileLocalService extends BaseLocalService,
 	public List<DossierFile> getDossierFileByDID_FTNO_DPTS(long dossierId,
 		String fileTemplateNo, int[] dossierPartType, boolean removed,
 		int start, int end, OrderByComparator orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DossierFile> getByG_DID_FILE(long groupId, long[] dossierIds,String dossierPartNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierFile getDossierFileByDID_FTNO_DPTS_First(long dossierId,

@@ -677,6 +677,62 @@ public class JobPosUtil {
 	}
 
 	/**
+	* Returns the job pos where jobPosCode = &#63; or throws a {@link NoSuchJobPosException} if it could not be found.
+	*
+	* @param jobPosCode the job pos code
+	* @return the matching job pos
+	* @throws NoSuchJobPosException if a matching job pos could not be found
+	*/
+	public static JobPos findByF_JOB_POS_CODE(String jobPosCode)
+		throws org.opencps.usermgt.exception.NoSuchJobPosException {
+		return getPersistence().findByF_JOB_POS_CODE(jobPosCode);
+	}
+
+	/**
+	* Returns the job pos where jobPosCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param jobPosCode the job pos code
+	* @return the matching job pos, or <code>null</code> if a matching job pos could not be found
+	*/
+	public static JobPos fetchByF_JOB_POS_CODE(String jobPosCode) {
+		return getPersistence().fetchByF_JOB_POS_CODE(jobPosCode);
+	}
+
+	/**
+	* Returns the job pos where jobPosCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param jobPosCode the job pos code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching job pos, or <code>null</code> if a matching job pos could not be found
+	*/
+	public static JobPos fetchByF_JOB_POS_CODE(String jobPosCode,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_JOB_POS_CODE(jobPosCode, retrieveFromCache);
+	}
+
+	/**
+	* Removes the job pos where jobPosCode = &#63; from the database.
+	*
+	* @param jobPosCode the job pos code
+	* @return the job pos that was removed
+	*/
+	public static JobPos removeByF_JOB_POS_CODE(String jobPosCode)
+		throws org.opencps.usermgt.exception.NoSuchJobPosException {
+		return getPersistence().removeByF_JOB_POS_CODE(jobPosCode);
+	}
+
+	/**
+	* Returns the number of job poses where jobPosCode = &#63;.
+	*
+	* @param jobPosCode the job pos code
+	* @return the number of matching job poses
+	*/
+	public static int countByF_JOB_POS_CODE(String jobPosCode) {
+		return getPersistence().countByF_JOB_POS_CODE(jobPosCode);
+	}
+
+	/**
 	* Returns all the job poses where groupId = &#63; and mappingRoleId = &#63;.
 	*
 	* @param groupId the group ID

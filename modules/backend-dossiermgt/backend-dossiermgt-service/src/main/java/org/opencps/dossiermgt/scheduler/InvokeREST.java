@@ -155,7 +155,7 @@ public class InvokeREST {
 				postData.append(StringPool.EQUAL.charAt(0));
 				postData.append(java.net.URLEncoder.encode(String.valueOf(param.getValue()), ConstantUtils.UTF_8));
 			}
-			_log.info("PostData :" + postData.toString());
+			_log.debug("PostData :" + postData.toString());
 
 			byte[] postDataBytes = postData.toString().getBytes(ConstantUtils.UTF_8);
 
