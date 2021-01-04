@@ -491,7 +491,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			//processSequenceArrDone
 			List<DossierAction> doActionList = DossierActionLocalServiceUtil.findByG_DID(groupId,
 					dossier.getDossierId());
-			JSONArray jsonSequenceDoneArr = getProcessDossierActionJSON(sequenceArr, sequenceList,doActionList);
+			JSONArray jsonSequenceDoneArr = getProcessSequenceArrDoneJSON(sequenceArr, sequenceList,doActionList);
 			if (jsonSequenceDoneArr != null) {
 				jsonData.put(ConstantUtils.DOSSIERDOCUMENT_PROCESSSEQUENCEARRDONE_KEY, jsonSequenceDoneArr);
 			}
@@ -532,7 +532,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		return jsonSequenceArr;
 	}
 
-	private static JSONArray getProcessDossierActionJSON(String[] sequenceArr, List<ProcessSequence> sequenceList, List<DossierAction> dossierActionList) {
+	private static JSONArray getProcessSequenceArrDoneJSON(String[] sequenceArr, List<ProcessSequence> sequenceList, List<DossierAction> dossierActionList) {
 
 		JSONArray jsonSequenceArr = JSONFactoryUtil.createJSONArray();
 		if (sequenceArr != null && sequenceArr.length > 0) {
