@@ -803,7 +803,8 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                     return;
                 }
 
-                this.syncDossierToDVCBoManual(token, dossierId);
+                //Dong bo trang thai ho so sang DVC Bo
+                this.syncDossierToDVCBoManual(token, dossierId, true);
                 return;
             }
 
@@ -866,7 +867,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     }
 
     @Override
-    public void syncDossierToDVCBoManual(String token, long dossierId) throws Exception {
+    public void syncDossierToDVCBoManual(String token, long dossierId, boolean isUpdate) throws Exception {
         try {
             _log.info("Calling 3.12 syncing dossier to DVC Bo after receive from PMNV...");
             Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -890,7 +891,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             profile.setProfiles_status(String.valueOf(statusProfile));
             profile.setTo_unit_code(new String[] {this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)});
 
-            if(Validator.isNotNull(dossier.getReleaseDate())) {
+            if(isUpdate) {
                 _log.info("Is update");
                 profile.setIs_update("true");
             } else {
@@ -1012,6 +1013,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                         this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
                 };
             } else {
+                //Neu co fromUnitCode thi ho so gui tu dau, se gui trang thai lai don vi do
                 fromUnitCode = metaDataJson.getString("fromUnitCode");
                 body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{fromUnitCode});
                 listToUnitCode = new String[]{
@@ -1024,20 +1026,31 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                     if (!fromUnitCode.isEmpty()
                             && !fromUnitCode.equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
                         //Neu ho so ko nhan tu DVC Bo va ho so dang o trang thai new thi gui cho DVC Bo (Checklist 3, luong 1.7)
-                        this.syncDossierToDVCBoManual(token, dossierId);
+                        this.syncDossierToDVCBoManual(token, dossierId, false);
                     }
                 }
                 else if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_PROCESSING)) {
-                    //Neu trang thai sang dang xu ly, thi gui cho ca hai
                     _log.info("Sending status to multiple unit");
-                    body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{
-                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
-                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
-                    });
-                    listToUnitCode = new String[]{
-                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
-                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
-                    };
+                    if (!fromUnitCode.isEmpty()
+                            && !fromUnitCode.equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
+                        //Neu ho so ko nhan tu DVC Bo thi ko gui trang thai cho Bo qua API 3.11 nay
+                        body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{
+                                this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
+                        });
+                        listToUnitCode = new String[]{
+                                this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
+                        };
+                    } else {
+                        //Neu ho so nhan tu DVC Bo thi gui cho ca hai
+                        body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{
+                                this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
+                                this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
+                        });
+                        listToUnitCode = new String[]{
+                                this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
+                                this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
+                        };
+                    }
                 }
             } else if(dossier.getOriginality() == FrequencyOfficeConstants.HOSO_TRUC_TIEP) {
                 if(Validator.isNull(isSendMultipleUnit)
