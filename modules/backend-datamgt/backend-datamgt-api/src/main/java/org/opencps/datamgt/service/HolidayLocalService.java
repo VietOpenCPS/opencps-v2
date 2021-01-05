@@ -311,6 +311,10 @@ public interface HolidayLocalService extends BaseLocalService,
 	public List<Holiday> getHolidayGtThan(long groupId, Date holidayDate);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Holiday> getHolidayGtThanByGroupIdAndType(long groupId,
+		int holidayType, Date holidayDate);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**

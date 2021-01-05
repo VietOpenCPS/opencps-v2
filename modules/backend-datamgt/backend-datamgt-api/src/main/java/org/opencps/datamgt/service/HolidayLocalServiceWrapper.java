@@ -363,6 +363,13 @@ public class HolidayLocalServiceWrapper implements HolidayLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.datamgt.model.Holiday> getHolidayGtThanByGroupIdAndType(
+		long groupId, int holidayType, java.util.Date holidayDate) {
+		return _holidayLocalService.getHolidayGtThanByGroupIdAndType(groupId,
+			holidayType, holidayDate);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return _holidayLocalService.getIndexableActionableDynamicQuery();
 	}

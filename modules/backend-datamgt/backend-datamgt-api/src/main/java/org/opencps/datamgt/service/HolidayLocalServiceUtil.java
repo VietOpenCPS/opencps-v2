@@ -345,6 +345,13 @@ public class HolidayLocalServiceUtil {
 		return getService().getHolidayGtThan(groupId, holidayDate);
 	}
 
+	public static java.util.List<org.opencps.datamgt.model.Holiday> getHolidayGtThanByGroupIdAndType(
+		long groupId, int holidayType, java.util.Date holidayDate) {
+		return getService()
+				   .getHolidayGtThanByGroupIdAndType(groupId, holidayType,
+			holidayDate);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return getService().getIndexableActionableDynamicQuery();
 	}
