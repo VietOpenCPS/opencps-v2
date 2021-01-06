@@ -66,6 +66,7 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 public class DossierMgtUtils {
 	private static final Log _log = LogFactoryUtil.getLog(DossierMgtUtils.class);
+	public static final String AUTO_EVENT_SPECIAL = "special";
 	
 	public static String _dateToString(Date date, String format) {
 
@@ -560,8 +561,31 @@ public class DossierMgtUtils {
 
 		return dossier;
 	}
+	public static boolean checkPreConditionSpecial(String[] preConditions, Dossier dossier, User curUser) {
+		boolean result = true;
+		for (String preCondition : preConditions) {
 
-	public static boolean checkPreCondition(String[] preConditions, Dossier dossier, User curUser) {
+			preCondition = preCondition.trim();
+			if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
+				String[] splitRoles = preCondition.split(StringPool.EQUAL);
+				if (splitRoles.length == 2) {
+					result = result && checkRoleCodeSpecial(splitRoles[1], curUser, dossier);
+				}
+			}else{
+				// roleCode
+				if(preCondition.contains(DossierTerm.ROLE_CODE)){
+					String[] splitRoles = preCondition.split(StringPool.EQUAL);
+					if (splitRoles.length == 2) {
+						result = result && checkRoleCodeSpecial(splitRoles[1], curUser, dossier);
+					}
+				}
+			}
+
+		}
+		return result;
+	}
+
+	public static boolean checkPreCondition(String[] preConditions, Dossier dossier, User curUser,String autoEvent) {
 		boolean result = true;
 		
 		for (String preCondition : preConditions) {
@@ -691,18 +715,36 @@ public class DossierMgtUtils {
 					result = result && checkRoleDone(splitRoles[1], curUser, dossier);
 				}																			
 			}
-			if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
-				String[] splitRoles = preCondition.split(StringPool.EQUAL);
-				System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
-				if (splitRoles.length == 2) {
-					result = result && checkRoleCode(splitRoles[1], curUser, dossier);
-				}
-			}else{
-				// roleCode
-				if(preCondition.contains(DossierTerm.ROLE_CODE)){
+			if(Validator.isNotNull(autoEvent) && AUTO_EVENT_SPECIAL.equals(autoEvent)){
+				if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
 					String[] splitRoles = preCondition.split(StringPool.EQUAL);
+					System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
+					if (splitRoles.length == 2) {
+						result = result && checkRoleCodeSpecial(splitRoles[1], curUser, dossier);
+					}
+				} else {
+					// roleCode
+					if (preCondition.contains(DossierTerm.ROLE_CODE)) {
+						String[] splitRoles = preCondition.split(StringPool.EQUAL);
+						if (splitRoles.length == 2) {
+							result = result && checkRoleCodeSpecial(splitRoles[1], curUser, dossier);
+						}
+					}
+				}
+			}else {
+				if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
+					String[] splitRoles = preCondition.split(StringPool.EQUAL);
+					System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
 					if (splitRoles.length == 2) {
 						result = result && checkRoleCode(splitRoles[1], curUser, dossier);
+					}
+				} else {
+					// roleCode
+					if (preCondition.contains(DossierTerm.ROLE_CODE)) {
+						String[] splitRoles = preCondition.split(StringPool.EQUAL);
+						if (splitRoles.length == 2) {
+							result = result && checkRoleCode(splitRoles[1], curUser, dossier);
+						}
 					}
 				}
 			}
@@ -869,6 +911,33 @@ public class DossierMgtUtils {
 			return false;
 		}
 	}
+	private static boolean checkRoleDoneSpecial(String roleCode, User user, Dossier dossier) {
+		JobPos jobPos = JobPosLocalServiceUtil.getByJobCode(dossier.getGroupId(), roleCode);
+		if (jobPos != null) {
+//			List<DossierActionUser> dActionUsers = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
+
+			boolean flag = false;
+//			for (DossierActionUser dau : dActionUsers) {
+//				if (dau.getUserId() == user.getUserId()) {
+					List<Role> lstRoles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
+					for (Role r : lstRoles) {
+						if (r.getRoleId() == jobPos.getMappingRoleId()) {
+							flag = true;
+							break;
+						}
+					}
+					if (flag) {
+						return true;
+					}
+//				}
+//			}
+
+			return flag;
+		} else {
+			return false;
+		}
+	}
+
 
 	private static boolean checkRoleCode(String roleCode, User user, Dossier dossier) {
 		boolean flag = false;
@@ -883,6 +952,24 @@ public class DossierMgtUtils {
 				}
 			} else {
 				flag = checkRoleDone(roleCode, user, dossier);
+			}
+		}
+		return flag;
+	}
+
+	private static boolean checkRoleCodeSpecial(String roleCode, User user, Dossier dossier) {
+		boolean flag = false;
+		if (Validator.isNotNull(roleCode)) {
+			if (roleCode.contains(StringPool.PLUS)) {
+				String[] splitRole = StringUtil.split(StringPool.PLUS);
+				if (splitRole != null && splitRole.length > 0) {
+					for (String role : splitRole) {
+						flag = checkRoleDoneSpecial(role, user, dossier);
+						if (flag) break;
+					}
+				}
+			} else {
+				flag = checkRoleDoneSpecial(roleCode, user, dossier);
 			}
 		}
 		return flag;
