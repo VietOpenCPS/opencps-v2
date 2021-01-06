@@ -6,9 +6,21 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import org.apache.commons.lang3.ArrayUtils;
+import org.graphql.api.model.DeliverableTypeDynamic;
+import org.opencps.dossiermgt.action.DeliverableTypesActions;
+import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.DeliverableTypeRole;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,29 +39,52 @@ public class DeliverableUtils {
 //		return data;
 //	}
 
-	public static JSONArray mappingToDeliverableResult(List<Document> documents) {
+	public static JSONArray mappingToDeliverableResult(List<Document> documents, long userId, long groupId) {
 
 		JSONArray data = JSONFactoryUtil.createJSONArray();
 
 		for (Document doc : documents) {
-			JSONObject model = mappingToDeliverable(doc);
+			JSONObject model = mappingToDeliverable(doc, userId, groupId);
 			data.put(model);
 		}
 
 		return data;
 	}
 
-	public static JSONObject mappingToDeliverable(Document doc) {
+	public static JSONObject mappingToDeliverable(Document doc, long userId, long groupId) {
 
 		JSONObject model = JSONFactoryUtil.createJSONObject();
-
-		Map<String, Field> mapDoc = doc.getFields();
-		if (mapDoc != null && mapDoc.size() > 0) {
-			for (Map.Entry<String, Field> entry: mapDoc.entrySet()) {
-				model.put(entry.getKey(), entry.getValue().getValue());
+		DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
+		try {
+			User user = UserLocalServiceUtil.getUser(userId);
+			Long[] longObjects = ArrayUtils.toObject(user.getRoleIds());
+			List<Long> roleIds = Arrays.asList(longObjects);
+			Map<String, Field> mapDoc = doc.getFields();
+			if (mapDoc != null && mapDoc.size() > 0) {
+				for (Map.Entry<String, Field> entry : mapDoc.entrySet()) {
+					String key = entry.getKey();
+					String value = entry.getValue().getValue();
+					if (key.equals(DeliverableTerm.DELIVERABLE_TYPE)) {
+						DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(groupId, value);
+						if (Validator.isNotNull(deliverableType)) {
+							List<DeliverableTypeRole> deliverableTypeRoles = actions.getRolesByType(deliverableType.getDeliverableTypeId());
+							if (deliverableTypeRoles != null && deliverableTypeRoles.size() > 0) {
+								for (DeliverableTypeRole deliverableTypeRole : deliverableTypeRoles) {
+									if (roleIds.contains(deliverableTypeRole.getRoleId())) {
+										if (deliverableTypeRole.getModerator()) {
+											model.put(DeliverableTerm.MODERATOR, deliverableTypeRole.getModerator());
+										}
+									}
+								}
+							}
+						}
+					}
+					model.put(entry.getKey(), entry.getValue().getValue());
+				}
 			}
+		}catch (Exception e){
+			e.printStackTrace();
 		}
-
 		return model;
 	}
 

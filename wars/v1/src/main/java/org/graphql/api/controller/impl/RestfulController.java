@@ -93,6 +93,8 @@ import org.graphql.api.controller.utils.WebKeys;
 import org.graphql.api.errors.OpenCPSNotFoundException;
 import org.graphql.api.model.FileTemplateMiniItem;
 import org.graphql.api.model.UsersUserItem;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -102,14 +104,20 @@ import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 import org.opencps.usermgt.action.impl.UserActions;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.UserRegisterTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
@@ -1466,6 +1474,47 @@ public class RestfulController {
 			if (Validator.isNull(userData)) {
 				throw new OpenCPSNotFoundException(User.class.getName());
 			}
+			List<Dossier> dossiers = DossierLocalServiceUtil.findByG_U_DO(groupId,userId);
+			try {
+				if (dossiers != null) {
+					for (Dossier dossier : dossiers) {
+						Applicant checkApplicant = dossier.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId()) : null;
+						if (checkApplicant != null) {
+							if (DossierTerm.DOSSIER_STATUS_RECEIVING.contentEquals(dossier.getDossierStatus())
+									&& dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+								_log.debug("DOSSIER_STATUS_RECEIVING " );
+								int countDossier = DossierLocalServiceUtil.countByG_UID_DS(dossier.getGroupId(), dossier.getUserId(),
+										DossierTerm.DOSSIER_STATUS_RECEIVING);
+								_log.debug("APPLICANT NUMBER OF CREATE DOSSIER: " + countDossier);
+								ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.COUNTER_VERIFY_CREATEDOSSIER);
+								if(Validator.isNotNull(serverConfig)) {
+									JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+									int counter = Integer.valueOf(configObj.getString(DossierTerm.COUNTER));
+									_log.debug("CONFIG COUNTER " + counter);
+									if (Validator.isNotNull(counter)) {
+										if (countDossier >= counter) {
+											if (checkApplicant.getVerification() != ApplicantTerm.UNLOCKED) {
+												checkApplicant.setVerification(ApplicantTerm.LOCKED_DOSSIER);
+												ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
+											}
+										}
+									}
+								}
+							} else if (DossierTerm.DOSSIER_STATUS_DONE.contentEquals(dossier.getDossierStatus())
+									&& dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+								_log.debug(" DOSSIER_STATUS_DONE");
+								if (checkApplicant.getVerification() == ApplicantTerm.LOCKED
+										|| checkApplicant.getVerification() == ApplicantTerm.LOCKED_DOSSIER) {
+									checkApplicant.setVerification(ApplicantTerm.UNLOCKED);
+									ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
+								}
+							}
+						}
+					}
+				}
+			}catch (Exception e){
+				e.getMessage();
+			}
 
 			String token = GraphQLUtils.buildTokenLogin(userData, groupId);
 			response.setHeader("jwt-token", token);
@@ -1716,9 +1765,9 @@ public class RestfulController {
 					hits = DeliverableLocalServiceUtil.searchLucene(keySearch, String.valueOf(groupId), type, mapFilter, sorts,
 							start, end, searchContext, userId);
 
-					if (hits != null) {
+					if 	(hits != null) {
 						List<Document> docList = hits.toList();
-						JSONArray data = DeliverableUtils.mappingToDeliverableResult(docList);
+						JSONArray data = DeliverableUtils.mappingToDeliverableResult(docList,userId,groupId);
 						result.put(ConstantUtils.DATA, data);
 						//System.out.println("hits: " + hits.toList());
 						//
