@@ -818,6 +818,34 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	 */
 	public void setFromViaPostalCount(int fromViaPostalCount);
 
+	/**
+	 * Returns the processing in a period count of this opencps dossier statistic.
+	 *
+	 * @return the processing in a period count of this opencps dossier statistic
+	 */
+	public int getProcessingInAPeriodCount();
+
+	/**
+	 * Sets the processing in a period count of this opencps dossier statistic.
+	 *
+	 * @param processingInAPeriodCount the processing in a period count of this opencps dossier statistic
+	 */
+	public void setProcessingInAPeriodCount(int processingInAPeriodCount);
+
+	/**
+	 * Returns the release in a period count of this opencps dossier statistic.
+	 *
+	 * @return the release in a period count of this opencps dossier statistic
+	 */
+	public int getReleaseInAPeriodCount();
+
+	/**
+	 * Sets the release in a period count of this opencps dossier statistic.
+	 *
+	 * @param releaseInAPeriodCount the release in a period count of this opencps dossier statistic
+	 */
+	public void setReleaseInAPeriodCount(int releaseInAPeriodCount);
+
 	@Override
 	public boolean isNew();
 
