@@ -55,6 +55,7 @@ import java.util.LinkedHashMap;
 import org.opencps.auth.utils.DLFolderUtil;
 import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.usermgt.constants.ApplicantDataTerm;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.exception.NoSuchApplicantDataException;
 import org.opencps.usermgt.model.ApplicantData;
 import org.opencps.usermgt.service.base.ApplicantDataLocalServiceBaseImpl;
@@ -148,7 +149,33 @@ public class ApplicantDataLocalServiceImpl
 		
 		return applicantData;
 	}
-	
+
+	@Override
+	public ApplicantData updateApplicantData(long groupId, long applicantDataId, String fileTemplateNo, String fileNo, String fileName, String applicantIdNo, int status, ServiceContext serviceContext) throws PortalException, SystemException {
+		ApplicantData applicantData = null;
+
+		Date now = new Date();
+		User auditUser = userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
+
+		applicantData = applicantDataPersistence.fetchByPrimaryKey(applicantDataId);
+		applicantData.setModifiedDate(now);
+		applicantData.setCompanyId(serviceContext.getCompanyId());
+		applicantData.setGroupId(groupId);
+		applicantData.setUserId(auditUser.getUserId());
+		applicantData.setUserName(auditUser.getScreenName());
+		applicantData.setFileTemplateNo(fileTemplateNo);
+		applicantData.setFileNo(fileNo);
+		applicantData.setFileName(fileName);
+		applicantData.setApplicantIdNo(applicantIdNo);
+		applicantData.setStatus(status);
+		applicantData.setApplicantDataType(0);
+
+		applicantData = applicantDataPersistence.update(applicantData);
+
+		return applicantData;
+
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData updateApplicantData(ServiceContext context, long groupId, 
 			String fileTemplateNo,
@@ -226,7 +253,7 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setModifiedDate(now);
 		applicantData.setCreateDate(now);
 		applicantData.setCompanyId(serviceContext.getCompanyId());
-		applicantData.setGroupId(groupId);
+
 		applicantData.setUserId(auditUser.getUserId());
 		applicantData.setUserName(auditUser.getScreenName());
 		applicantData.setFileTemplateNo(fileTemplateNo);
@@ -250,7 +277,8 @@ public class ApplicantDataLocalServiceImpl
 				_log.debug(e);
 			}
 		}
-
+		// Mặc định groupId =0
+		applicantData.setGroupId(ApplicantTerm.GROUP_ID_DEFAULT);
 		if (fileEntryId != 0) {
 			applicantData.setFileEntryId(fileEntryId);
 		}
@@ -281,7 +309,6 @@ public class ApplicantDataLocalServiceImpl
 		applicantData = applicantDataPersistence.fetchByPrimaryKey(applicantDataId);
 		applicantData.setModifiedDate(now);
 		applicantData.setCompanyId(serviceContext.getCompanyId());
-		applicantData.setGroupId(groupId);
 		applicantData.setUserId(auditUser.getUserId());
 		applicantData.setUserName(auditUser.getScreenName());
 		applicantData.setFileTemplateNo(fileTemplateNo);
@@ -309,7 +336,7 @@ public class ApplicantDataLocalServiceImpl
 				_log.debug(e);
 			}
 		}
-
+		applicantData.setGroupId(ApplicantTerm.GROUP_ID_DEFAULT);
 		if (fileEntryId != 0) {
 			applicantData.setFileEntryId(fileEntryId);
 		}

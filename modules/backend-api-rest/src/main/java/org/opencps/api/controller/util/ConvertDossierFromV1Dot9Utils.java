@@ -257,44 +257,16 @@ public class ConvertDossierFromV1Dot9Utils {
 	}
 
 	public static InputStream getFileFromDVCOld(String url) {
-
 		URL oracle;
-//		BufferedReader br = null;
 		InputStream result = null;
 		try {
 			oracle = new URL(url);
-
 			result = oracle.openStream();
-			_log.info(url);
-			// if (url.indexOf("txt") > 0) {
-			// br = new BufferedReader(new InputStreamReader(result));
-			//
-			// String line = null;
-			//
-			// while ((line = br.readLine()) != null) {
-			// if (line.equalsIgnoreCase("quit")) {
-			// break;
-			// }
-			// System.out.println("Line entered : " + line);
-			// }
-			// }
-
 		}
 		catch (Exception e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
 			_log.debug(e);
 		}
-		finally {
-//			if (br != null) {
-//				try {
-//					br.close();
-//				}
-//				catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-		}
+
 		return result;
 	}
 

@@ -11,6 +11,7 @@ public class GetDossierData {
 	private String releaseDate;
 	private String finishDate;
 	private String serviceCode;
+	private String serviceName;
 	private String govAgencyCode;
 	private String govAgencyName;
 	private long groupId;
@@ -22,6 +23,18 @@ public class GetDossierData {
 	private int serviceLevel;
 	private int fromViaPostal;
 	private String dossierNo;
+
+	public boolean isOnline() {
+		return online;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
 
 	public String getDossierNo() {
 		return dossierNo;

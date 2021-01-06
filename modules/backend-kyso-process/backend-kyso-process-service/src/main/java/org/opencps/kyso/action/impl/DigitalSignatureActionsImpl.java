@@ -3,6 +3,7 @@ package org.opencps.kyso.action.impl;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfSignatureAppearance;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -10,17 +11,22 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.viettel.signature.pdf.TimestampConfig;
+import com.viettel.signature.plugin.SignPdfFile;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.List;
-
+import javax.servlet.http.HttpServletRequest;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.kyso.action.DigitalSignatureActions;
@@ -30,9 +36,11 @@ import org.opencps.kyso.utils.CertUtil;
 import org.opencps.kyso.utils.ExtractTextLocations;
 import org.opencps.kyso.utils.ImageUtil;
 import org.opencps.kyso.utils.KysoTerm;
-
+import org.opencps.kyso.utils.ViettelCaUtil;
+import org.opencps.kyso.utils.X509ExtensionUtil;
 import backend.kyso.process.service.util.ConfigProps;
 import vgca.svrsigner.ServerSigner;
+
 
 public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 
@@ -118,7 +126,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 //				_log.info("realPath_Dongdau: "+realPath);
 //			}
 			//==
-			String fullPath = StringPool.BLANK;
+			String fullPath = StringPool.BLANK; 
 
 			try {
 //				float offsetX = 1;
@@ -356,4 +364,92 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 		return jsonFeed;
 	}
 
+	@Override
+	public JSONObject hashFile(long fileEntryId, String certChainBase64, HttpServletRequest request) {
+		
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+
+		String realPath = PropsUtil.get(ConfigProps.CER_HOME) + FORWARD_SLASH;
+		String fullPath = "";
+		SignPdfFile signPdfFile = new SignPdfFile();
+		try {
+			
+			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);			
+			File fileTemp = FileUtil.createTempFile(dlFileEntry.getContentStream());			
+			File file = new File(realPath + dlFileEntry.getFileName());			
+			FileUtil.move(fileTemp, file);			
+			fullPath = file.getAbsolutePath();
+			
+			String folderRootCA = realPath + ROOT_CA;
+	        X509Certificate[] certChain = X509ExtensionUtil.getCertChainOfCert(certChainBase64, folderRootCA);
+	        String fontPath = realPath + FONT_PATH;
+	        
+	        String base64Hash = ViettelCaUtil.getHashTypeRectangleText(signPdfFile, fullPath, certChain, fontPath);
+	        
+	        if (base64Hash == null) {
+	        	results.put("status", 403);
+	        	results.put("message", "Tao hash khong thanh cong");
+	        }
+	        
+        	results.put("status", 200);
+        	results.put("message", SUCCESS);
+        	results.put("serialNumber", ((X509Certificate) certChain[0]).getSerialNumber().toString(16));
+        	results.put("base64Hash", base64Hash);
+        	results.put("fileName", dlFileEntry.getFileName());
+        	results.put("fileEntryId", dlFileEntry.getFileEntryId());
+        	request.getSession().setAttribute("PDFSignature", signPdfFile);
+	        	        
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return results;
+	}
+
+	@Override
+	public JSONObject insertSignnature(String signatureBase64, String signFileName, SignPdfFile signPdfFile, long fileEntryId) {
+		
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+		
+		String realPath = PropsUtil.get(ConfigProps.CER_HOME)+ FORWARD_SLASH;
+		try {
+			Base64.decode(signatureBase64);
+			String name = signFileName.split(PDF_EXTENSION)[0] + "_signed";
+	        String ext = KysoTerm.PDF_TYPE;
+
+	        File fileDes = new File(realPath + name + "." + ext);
+	        if (fileDes.exists()) {
+	            int index = 1;
+	            String name_2 = name + "_" + index;
+	            String path = realPath + name_2 + "." + ext;
+	            fileDes = new File(path);
+	            while (fileDes.exists()) {
+	                index++;
+	                name_2 = name + "_" + index;
+	                path = realPath + name_2 + "." + ext;
+	                fileDes = new File(path);
+	            }
+	            name = name_2;
+	        }
+	        
+	        TimestampConfig timestampConfig = new TimestampConfig();
+	        timestampConfig.setUseTimestamp(false);		        		        
+	        signPdfFile.insertSignature(signatureBase64, realPath + name + "." + ext, timestampConfig);	               
+	        
+	        results.put("signedFileName", realPath + name + "." + ext);
+	        results.put("status", 200);
+	        results.put("message", SUCCESS);
+	        results.put("signedFileFullPath", realPath);
+	        results.put("fileSigned", realPath + name + "." + ext);
+	        results.put("fileEntryIdStr", String.valueOf(fileEntryId));
+			
+			} catch (Exception e) {
+			_log.error(e);
+		}
+		return results;
+	}
+
+	private static final String FORWARD_SLASH = "/";
+	private static final String ROOT_CA = "RootCA";
+	private static final String FONT_PATH = "font/times.ttf";
+	
 }
