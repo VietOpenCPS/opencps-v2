@@ -608,11 +608,9 @@ public class DossierMgtUtils {
 					break;
 			case DossierTerm.FROMPOSTAL_TRUE:
 				result = result && checkUsedVNPostCollection(dossier);
-				_log.info("PhucHN :" + checkUsedVNPostCollection(dossier));
 				break;
 			case DossierTerm.FROMPOSTAL_FALSE:
 				result = result && checkUnUsedVNPostCollection(dossier);
-				_log.info("PhucHN :" + checkUnUsedVNPostCollection(dossier));
 				break;
 				default:
 					break;
