@@ -66,6 +66,7 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 public class DossierMgtUtils {
 	private static final Log _log = LogFactoryUtil.getLog(DossierMgtUtils.class);
+	public static final String AUTO_EVENT_SPECIAL = "special";
 	
 	public static String _dateToString(Date date, String format) {
 
@@ -584,7 +585,7 @@ public class DossierMgtUtils {
 		return result;
 	}
 
-	public static boolean checkPreCondition(String[] preConditions, Dossier dossier, User curUser) {
+	public static boolean checkPreCondition(String[] preConditions, Dossier dossier, User curUser,String autoEvent) {
 		boolean result = true;
 		
 		for (String preCondition : preConditions) {
@@ -708,18 +709,36 @@ public class DossierMgtUtils {
 					result = result && checkRoleDone(splitRoles[1], curUser, dossier);
 				}																			
 			}
-			if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
-				String[] splitRoles = preCondition.split(StringPool.EQUAL);
-				System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
-				if (splitRoles.length == 2) {
-					result = result && checkRoleCode(splitRoles[1], curUser, dossier);
-				}
-			}else{
-				// roleCode
-				if(preCondition.contains(DossierTerm.ROLE_CODE)){
+			if(Validator.isNotNull(autoEvent) && AUTO_EVENT_SPECIAL.equals(autoEvent)){
+				if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
 					String[] splitRoles = preCondition.split(StringPool.EQUAL);
+					System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
+					if (splitRoles.length == 2) {
+						result = result && checkRoleCodeSpecial(splitRoles[1], curUser, dossier);
+					}
+				} else {
+					// roleCode
+					if (preCondition.contains(DossierTerm.ROLE_CODE)) {
+						String[] splitRoles = preCondition.split(StringPool.EQUAL);
+						if (splitRoles.length == 2) {
+							result = result && checkRoleCodeSpecial(splitRoles[1], curUser, dossier);
+						}
+					}
+				}
+			}else {
+				if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
+					String[] splitRoles = preCondition.split(StringPool.EQUAL);
+					System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
 					if (splitRoles.length == 2) {
 						result = result && checkRoleCode(splitRoles[1], curUser, dossier);
+					}
+				} else {
+					// roleCode
+					if (preCondition.contains(DossierTerm.ROLE_CODE)) {
+						String[] splitRoles = preCondition.split(StringPool.EQUAL);
+						if (splitRoles.length == 2) {
+							result = result && checkRoleCode(splitRoles[1], curUser, dossier);
+						}
 					}
 				}
 			}
