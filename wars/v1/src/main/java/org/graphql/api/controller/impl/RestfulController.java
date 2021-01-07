@@ -75,6 +75,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -84,6 +85,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.graphql.api.controller.utils.CaptchaServiceSingleton;
 import org.graphql.api.controller.utils.CheckFileUtils;
 import org.graphql.api.controller.utils.DeliverableUtils;
@@ -106,10 +108,7 @@ import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
-import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.DeliverableType;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
@@ -1816,16 +1815,17 @@ public class RestfulController {
 	public String getDeliverableById(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("id") Long id) {
 
-		//JSONObject result = JSONFactoryUtil.createJSONObject();
+		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		try {
-			//long userId = 0;
-			//if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
-				//userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
-
-				//long groupId = 0;
-				//if (Validator.isNotNull(request.getHeader("groupId"))) {
-				//}
+			long userId = 0;
+			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+			}
+				long groupId = 0;
+			if (Validator.isNotNull(request.getHeader("groupId"))) {
+				groupId = Long.valueOf(request.getHeader("groupId"));
+			}
 
 				//JSONObject query = JSONFactoryUtil.createJSONObject(
 				//		" { \"from\" : 0, \"size\" : 1, \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
@@ -1833,8 +1833,34 @@ public class RestfulController {
 				//result = ElasticQueryWrapUtil.query(query.toJSONString());
 
 			Deliverable deliverable = DeliverableLocalServiceUtil.fetchDeliverable(id);
-			if (deliverable != null) {
-				return JSONFactoryUtil.looseSerialize(deliverable);
+			JSONObject jsonObject = DeliverableUtils.mappingToDeliverable(deliverable);
+			DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
+			try {
+				User user = UserLocalServiceUtil.getUser(userId);
+				Long[] longObjects = ArrayUtils.toObject(user.getRoleIds());
+				List<Long> roleIds = Arrays.asList(longObjects);
+				String typeValue = jsonObject.getString(DeliverableTerm.DELIVERABLE_TYPE);
+				if (Validator.isNotNull(typeValue)) {
+					DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(groupId, typeValue);
+					if (Validator.isNotNull(deliverableType)) {
+						List<DeliverableTypeRole> deliverableTypeRoles = actions.getRolesByType(deliverableType.getDeliverableTypeId());
+						if (deliverableTypeRoles != null && deliverableTypeRoles.size() > 0) {
+							for (DeliverableTypeRole deliverableTypeRole : deliverableTypeRoles) {
+								if (roleIds.contains(deliverableTypeRole.getRoleId())) {
+									if (deliverableTypeRole.getModerator()) {
+										jsonObject.put(DeliverableTerm.MODERATOR, deliverableTypeRole.getModerator());
+									}
+								}
+							}
+						}
+					}
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+			if (jsonObject != null) {
+				result.put(ConstantUtils.DATA,jsonObject);
+				return JSONFactoryUtil.looseSerialize(result);
 			}
 
 		} catch (Exception e) {
