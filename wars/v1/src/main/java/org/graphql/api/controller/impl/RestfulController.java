@@ -1506,10 +1506,10 @@ public class RestfulController {
 								_log.debug("CONFIG COUNTER " + counter);
 								if (Validator.isNotNull(counter)) {
 									if (countDossier >= counter) {
-										if (checkApplicant.getVerification() != ApplicantTerm.UNLOCKED) {
+//										if (checkApplicant.getVerification() != ApplicantTerm.UNLOCKED) {
 											checkApplicant.setVerification(ApplicantTerm.LOCKED_DOSSIER);
 											ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
-										}
+//										}
 									} else if (countDossier < counter) {
 										checkApplicant.setVerification(ApplicantTerm.UNLOCKED);
 										ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
