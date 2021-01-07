@@ -43,6 +43,7 @@ dependencies {
 	compileInclude name : "org.apache.servicemix.bundles.okhttp-4.8.1_1", transitive:false
 	
 	compile group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.okhttp', version: '4.8.1_1'
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "3.0.0"
 }
 
 repositories {

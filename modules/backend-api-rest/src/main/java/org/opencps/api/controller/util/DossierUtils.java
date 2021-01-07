@@ -1305,15 +1305,14 @@ public class DossierUtils {
 	public static ProcessAction getProcessAction(User user, long groupId, Dossier dossier, String actionCode,
 			long serviceProcessId) throws PortalException {
 
-		_log.debug("GET PROCESS ACTION____");
+		_log.info("GET PROCESS ACTION for dossierId " + dossier.getDossierId() +" and info: "
+				+ groupId + "," + actionCode + "," + serviceProcessId);
 		ProcessAction action = null;
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		
 		try {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);
-
-			_log.debug("GET PROCESS ACTION____" + groupId + "," + actionCode + "," + serviceProcessId);
 
 			String dossierStatus = dossier.getDossierStatus();
 			String dossierSubStatus = dossier.getDossierSubStatus();
@@ -1328,13 +1327,14 @@ public class DossierUtils {
 			for (ProcessAction act : actions) {
 
 				preStepCode = act.getPreStepCode();
+				// Đối với acion đặc biêt 8888 check preStepCode với postStepCodde
 				if(actionCode.equals(DossierActionTerm.OUTSIDE_ACTION_PAYMENT)){
 					if(Validator.isNull(act.getPreStepCode()) && Validator.isNull(act.getPostStepCode())){
 						action = act;
 						break;
 					}
 				}else {
-					_log.debug("LamTV_preStepCode: " + preStepCode );
+					_log.info("LamTV_preStepCode: " + preStepCode );
 					if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
 				}
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
@@ -1356,11 +1356,12 @@ public class DossierUtils {
 					else {
 						flagCheck = true;
 					}
-					_log.debug("LamTV_preStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + "," + dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
+					_log.info("LogPreStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + ","
+							+ dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
-						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user)) {
+						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user,Validator.isNotNull(act.getAutoEvent()) ? act.getAutoEvent() : "")) {
 							action = act;
 							break;							
 						}

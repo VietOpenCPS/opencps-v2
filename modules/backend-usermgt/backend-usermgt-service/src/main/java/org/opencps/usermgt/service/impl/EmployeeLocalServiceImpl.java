@@ -1320,6 +1320,10 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			mappingUserId, workingStatus);
 	}
 
+	public Employee findByWorkingStatusAndEmployeeNo(int workingStatus, String employeeNo) throws NoSuchEmployeeException {
+		return employeePersistence.findByF_WS_EMPNO(workingStatus, employeeNo);
+	}
+
 	public List<Employee> findByG_MUSERID(long groupId, long[] userIds) {
 
 		return employeePersistence.findByG_MUSERID(groupId, userIds);

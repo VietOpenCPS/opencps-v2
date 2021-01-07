@@ -339,6 +339,8 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 			
 			try {
 				serverConfig = serverConfigPersistence.fetchByF_G_S_P(groupId, govAgencyCode, protocol);
+				
+				
 			}catch(Exception e) {
 				
 			}
@@ -354,6 +356,29 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 			}
 			
 		}
+		
+		if(Validator.isNull(serverConfig)) {
+			
+			try {
+				
+				List<ServerConfig> serverConfigs = serverConfigPersistence.findByG_P(groupId, protocol);
+				
+				if(serverConfigs.size() > 0) {
+					serverConfig = serverConfigs.get(0);
+				}
+			}catch(Exception e) {
+				
+			}
+		}
+		if(Validator.isNull(serverConfig)) {
+			
+			try {
+				serverConfig = serverConfigPersistence.fetchByCF_CD(serverNo);
+			}catch(Exception e) {
+				
+			}
+		}
+		
 		return serverConfig;
 	}
 

@@ -4,6 +4,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -14,6 +15,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -23,6 +25,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.LinkedHashMap;
+import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +49,9 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierFileManagement;
 import org.opencps.api.controller.util.*;
+import org.opencps.api.dossier.model.DossierDataModel;
+import org.opencps.api.dossier.model.DossierResultsModel;
+import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.dossierfile.model.DossierFileCopyInputModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
@@ -53,13 +60,18 @@ import org.opencps.api.dossierfile.model.DossierFileSearchResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.cache.actions.CacheActions;
 import org.opencps.cache.actions.impl.CacheActionsImpl;
+import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.util.CheckFileUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -173,6 +185,48 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		}
 		catch (Exception e) {
 			_log.debug(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response tracePdf(long fileId, String body) {
+		try {
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(fileId);
+			if(Validator.isNull(dossierFile)) {
+				throw new Exception("No dossier file was found with id: " + fileId);
+			}
+			if(Validator.isNull(body) || body.isEmpty()) {
+				throw new Exception("No json string was found with id: " + fileId);
+			}
+
+			dossierFile.setSignInfo(body);
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+		} catch (Exception e) {
+			_log.error(e.getMessage());
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response updateSignCheck(long fileId, int signCheck) {
+		try {
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(fileId);
+			if(Validator.isNull(dossierFile)) {
+				throw new Exception("No dossier file was found with id: " + fileId);
+			}
+			if(Validator.isNull(signCheck) || signCheck == 0) {
+				throw new Exception("No signCheck was found with id: " + fileId);
+			}
+
+			dossierFile.setSignCheck(signCheck);
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+		} catch (Exception e) {
+			_log.error(e.getMessage());
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -1512,6 +1566,231 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 		}
 		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response downloadAllFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id) {
+		String pathName = StringPool.BLANK;
+		String realPath = StringPool.BLANK;
+		BackendAuth auth = new BackendAuthImpl();
+		DossierFileActions action = new DossierFileActionsImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getAllDossierFile(id);
+
+			if (dossierFiles != null && dossierFiles.size() > 0) {
+				if (dossierFiles.size() > 0) {
+					if (dossierFiles.get(0).getFileEntryId() > 0) {
+						FileEntry fileEntry =
+							DLAppLocalServiceUtil.getFileEntry(
+								dossierFiles.get(0).getFileEntryId());
+
+						File file = DLFileEntryLocalServiceUtil.getFile(
+							fileEntry.getFileEntryId(), fileEntry.getVersion(),
+							true);
+						realPath = file.getPath();
+						pathName = file.getPath() + StringPool.UNDERLINE + String.valueOf(id);
+					}
+				}
+				// int index = realPath.lastIndexOf("\\");
+				int index = realPath.lastIndexOf(StringPool.SLASH);
+				File d = null;
+				if (index > 0) {
+					d = new File(pathName.substring(0, index));
+				}
+				if (d != null) {
+					for (File f : d.listFiles()) {
+						if (ConstantUtils.ZIP.equals(
+							f.getName().substring(
+								f.getName().lastIndexOf(StringPool.COMMA) + 1))) {
+							f.delete();
+						}
+						if (f.isDirectory()) {
+							f.delete();
+						}
+
+					}
+				}
+
+				for (DossierFile dossierFile : dossierFiles) {
+					if (dossierFile.getFileEntryId() > 0) {
+						FileEntry fileEntry =
+							DLAppLocalServiceUtil.getFileEntry(
+								dossierFile.getFileEntryId());
+
+						File file = DLFileEntryLocalServiceUtil.getFile(
+							fileEntry.getFileEntryId(), fileEntry.getVersion(),
+							true);
+
+						String fileName =
+							pathName + StringPool.SLASH + fileEntry.getFileName();
+						File dir = new File(pathName);
+						if (!dir.exists()) {
+							dir.mkdirs();
+						}
+						action.copyFile(file.getPath(), fileName);
+					}
+				}
+
+				File dirName = new File(pathName);
+
+				action.zipDirectory(
+					dirName,
+						pathName.substring(index + 1, pathName.length()) +
+						ConstantUtils.EXTENTION_ZIP);
+				// TODO:
+				// Nen danh sach dossierFiles thanh file zip sau day gui lai
+				// client
+				File fi = new File(
+						pathName.substring(index + 1, pathName.length()) +
+						ConstantUtils.EXTENTION_ZIP);
+				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fi.getName());
+				ResponseBuilder responseBuilder = Response.ok(fi);
+				responseBuilder.header(
+					ConstantUtils.CONTENT_DISPOSITION,
+					attachmentFilename);
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_ZIP);
+
+				return responseBuilder.build();
+			}
+			else {
+				return Response.status(
+					HttpURLConnection.HTTP_NO_CONTENT).entity(
+						MessageUtil.getMessage(ConstantUtils.API_JSON_NOCONTENT)).build();
+			}
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response updateDossierFileFormDataByDossierId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+														 ServiceContext serviceContext, DossierSearchModel query) {
+		try {
+			DossierActions actions = new DossierActionsImpl();
+			DossierResultsModel results = new DossierResultsModel();
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			String createDateStart =
+					APIDateTimeUtils.convertNormalDateToLuceneDate(
+							query.getCreateDateStart());
+			String createDateEnd =
+					APIDateTimeUtils.convertNormalDateToLuceneDate(
+							query.getCreateDateEnd());
+			Sort[] sorts = null;
+			List<DossierDataModel> lstData = new ArrayList<>();
+			// Lấy danh sách file
+			if(Validator.isNotNull(createDateStart) & Validator.isNotNull(createDateEnd)){
+
+				LinkedHashMap<String, Object> params = new LinkedHashMap<>();
+				params.put(Field.GROUP_ID, String.valueOf(groupId));
+				String keywordSearch = query.getKeyword();
+				String keySearch = StringPool.BLANK;
+				if (Validator.isNotNull(keywordSearch)) {
+					keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
+				}
+				params.put(Field.KEYWORD_SEARCH, keySearch);
+				if(Validator.isNotNull(createDateStart)){
+					params.put(DossierTerm.CREATE_DATE_START, createDateStart);
+				}
+				if(Validator.isNotNull(createDateEnd)){
+					params.put(DossierTerm.CREATE_DATE_END, createDateEnd);
+				}
+				try {
+					JSONObject jsonData = actions.getDossiers(user.getUserId(),
+							company.getCompanyId(), groupId, params,
+							sorts, 0, 10, serviceContext);
+					List<DossierFile> listDossierFile = new ArrayList<>();
+					if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
+						lstData = DossierUtils.mappingForGetList((List<Document>) jsonData.get(ConstantUtils.DATA),
+								user.getUserId(),query.getAssigned(),query);
+						_log.debug("DossierIds: " + lstData.size());
+					}
+					if(lstData !=null && lstData.size() >0) {
+						long[] dossierIds = new long[lstData.size()];
+						int i = 0;
+						for (DossierDataModel d : lstData) {
+							dossierIds[i++] = d.getDossierId();
+							_log.debug("Size: " + d.getDossierId());
+						}
+						listDossierFile = DossierFileLocalServiceUtil.getService().getByG_DID_FILE(groupId, dossierIds, "TP01");
+						if (Validator.isNotNull(listDossierFile) && !listDossierFile.isEmpty()) {
+							_log.debug("Size File: " + listDossierFile.size());
+							for (DossierFile item : listDossierFile) {
+								_log.debug("Size FileId: " + item.getDossierFileId());
+								if (Validator.isNotNull(item.getFormData())) {
+									JSONObject object = JSONFactoryUtil.createJSONObject(item.getFormData());
+									//Object
+									Iterator<String> keys = object.keys();
+									while (keys.hasNext()) {
+										String key = keys.next();
+										String value = object.getString(key);
+										if (object.has(DossierFileTerm.LIST_GIAY_TO)) {
+											if (key.equals(DossierFileTerm.LIST_GIAY_TO)) {
+												//Object list giấy tờ
+												JSONArray arrayData = JSONFactoryUtil.createJSONArray(value);
+												for (int j = 0; j < arrayData.length(); j++) {
+													JSONObject lstGiayTo = arrayData.getJSONObject(j);
+													Iterator<String> keyLstGiayTo = lstGiayTo.keys();
+													while (keyLstGiayTo.hasNext()) {
+														String keyLst = keyLstGiayTo.next();
+														_log.debug("Key: " + keyLst);
+														if (lstGiayTo.has(DossierFileTerm.ANH_CON_DAU) || lstGiayTo.has(DossierFileTerm.ANH_CHU_KY)) {
+															if(keyLst.equals(DossierFileTerm.ANH_CON_DAU) || keyLst.equals(DossierFileTerm.ANH_CHU_KY)) {
+																if (keyLst.equals(DossierFileTerm.ANH_CON_DAU)) {
+																	String valueLst = lstGiayTo.getString(keyLst);
+																	if (Validator.isNotNull(valueLst)) {
+																		lstGiayTo.put(DossierFileTerm.ANH_CON_DAU, "");
+																	}
+																}
+																if (keyLst.equals(DossierFileTerm.ANH_CHU_KY)) {
+																	String valueLst = lstGiayTo.getString(keyLst);
+																	if (Validator.isNotNull(valueLst)) {
+																		lstGiayTo.put(DossierFileTerm.ANH_CHU_KY, "");
+																	}
+																}
+																//Update DossierFile
+																JSONArray arrayDataNew = JSONFactoryUtil.createJSONArray();
+																arrayDataNew.put(lstGiayTo);
+																object.put(DossierFileTerm.LIST_GIAY_TO, arrayDataNew);
+																_log.debug("Object ---- ArrayData ------: " + arrayDataNew);
+																item.setFormData(object.toString());
+															}
+														} else {
+															break;
+														}
+													}
+													if(Validator.isNotNull(object)) {
+														DossierFileLocalServiceUtil.updateDossierFile(item);
+													}
+												}
+											}
+										}else{
+											break;
+										}
+									}
+								}
+							}
+						}else{
+							return Response.status(HttpURLConnection.HTTP_OK).entity("ERROR").build();
+						}
+					}
+				}catch (Exception e){
+					e.getMessage();
+				}
+				return Response.status(HttpURLConnection.HTTP_OK).entity("Success").build();
+			}else{
+				return Response.status(HttpURLConnection.HTTP_OK).entity("ERROR").build();
+			}
+		}catch (Exception e){
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

@@ -343,6 +343,7 @@ public class DossierTerm {
 	public static final String CONTAIN_VIA_POSTAL = "viapostal=";
 	public static final String CONTAIN_ROLE_DONE = "roledone=";
 	public static final String CONTAIN_ROLE_CODE = "rolecode=";
+	public static final String ROLE_CODE = "roleCode=";
 	public static final String CONTAIN_WAITING_OVERDUE_THAN = "waiting_overdue>";
 	public static final String CONTAIN_WAITING_OVERDUE_LESS = "waiting_overdue<=";
 	public static final String CONTAIN_DURATION_COUNT_GREATER_THAN = "durationCount>";
@@ -424,4 +425,6 @@ public class DossierTerm {
 	public static final String KQGP = "@KQGP";
 	public static final String DELIVERABLE_STATE = "deliverableState";
 	public static final String DELIVERABLE_NAME = "deliverableName";
+	public static final String CREATE_DATE_START = "createDateStart";
+	public static final String CREATE_DATE_END = "createDateEnd";
 }

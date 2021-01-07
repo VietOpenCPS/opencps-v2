@@ -13,10 +13,10 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Base64;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -211,4 +211,43 @@ public class LGSPServiceImpl implements LGSPService {
 			}
 		}
 	}
+
+    @Override
+    public JSONObject getTokenTTTT(String urlToken, String authorizationKey) throws Exception {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.set("Authorization", "Basic " + authorizationKey);
+
+            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(null, headers);
+
+            _log.info("Calling api lgsp: " + urlToken);
+            ResponseEntity<String> response = restTemplate.postForEntity(urlToken, entity , String.class);
+            JSONObject jsonObject = JSONFactoryUtil.createJSONObject(response.getBody());
+            _log.info("Response: " + jsonObject);
+            return jsonObject;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public JSONObject postTTTT(String url, String token, Map<String, Object> body, String serviceCode) throws Exception {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + token);
+            headers.set("service-code", serviceCode);
+            headers.set("Accept", "*");
+
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity( url, entity , String.class);
+            _log.info("Response api: " + response.getBody());
+
+            return JSONFactoryUtil.createJSONObject(response.getBody());
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
 }

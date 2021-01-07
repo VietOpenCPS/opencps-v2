@@ -20,6 +20,8 @@ public class APIDateTimeUtils {
 
 	public static final String _TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
+	public static final String _TIMESTAMP_LGSP = "yyyy-MM-dd'T'HH:mm:ss";
+	
 	public static final String _NORMAL_PARTTERN = "dd/MM/yyyy HH:mm:ss";
 
 	public static final String _NORMAL_DATE = "dd/MM/yyyy";

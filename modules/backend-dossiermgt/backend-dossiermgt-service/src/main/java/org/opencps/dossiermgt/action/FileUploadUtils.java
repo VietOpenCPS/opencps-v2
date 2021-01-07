@@ -274,7 +274,7 @@ public class FileUploadUtils {
 	private static String getFileName(String sourceFileName) {
 		String ext = FileUtil.getExtension(sourceFileName);
 		
-		return Validator.isNotNull(ext) ? (System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
+		return Validator.isNotNull(ext) ? (sourceFileName + StringPool.UNDERLINE + System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
 	}
 
 	// Upload Payment File
