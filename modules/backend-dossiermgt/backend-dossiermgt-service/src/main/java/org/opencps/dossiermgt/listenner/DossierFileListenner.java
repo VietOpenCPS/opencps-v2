@@ -614,11 +614,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			String revalidate = formDataContent.getString(DossierFileTerm.REVALIDATE);
 
 			// check exits deliverable
-			Deliverable deliverable = Validator.isNotNull(dDeliverableCode)
-				? DeliverableLocalServiceUtil.getByF_GID_DCODE(
-					model.getGroupId(), dDeliverableCode)
-				: DeliverableLocalServiceUtil.fetchByGID_DID(
-					model.getGroupId(), model.getDossierId());
+			Deliverable deliverable = Validator.isNotNull(model.getDossierId())
+				? DeliverableLocalServiceUtil.fetchByGID_DID(
+					model.getGroupId(), model.getDossierId())
+					:DeliverableLocalServiceUtil.getByF_GID_DCODE(
+					model.getGroupId(), dDeliverableCode);
 
 			if (dossierPart.getDeliverableAction() == 0 &&
 				Validator.isNull(deliverable)) {
@@ -711,7 +711,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					deliverable.getFormData(), formDataContent.toString());
 				deliverable.setFormData(formDataContent.toString());
 
-				deliverable.setFileAttachs(fileAttachs);
+				deliverable.setFileAttachs(fileAttachs !=null ? fileAttachs :
+						String.valueOf(dossierFileAttach.getFileEntryId()));
 
 				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 			}
