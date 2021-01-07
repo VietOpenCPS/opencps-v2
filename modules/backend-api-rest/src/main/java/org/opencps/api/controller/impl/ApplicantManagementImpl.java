@@ -2390,6 +2390,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				results.put("IMP_BUSINESS_CODE",mainInformation.has("IMP_BUSINESS_CODE") ? mainInformation.getString("IMP_BUSINESS_CODE"):StringPool.BLANK);
 				results.put("NAME_F", mainInformation.has("NAME_F") ? mainInformation.getString("NAME_F"):StringPool.BLANK);
 				results.put("ENTERPRISE_STATUS_NAME", mainInformation.has("ENTERPRISE_STATUS_NAME") ? mainInformation.getString("ENTERPRISE_STATUS_NAME"):StringPool.BLANK);
+				results.put("ENTERPRISE_STATUS_ID", mainInformation.has("ENTERPRISE_STATUS_ID") ? mainInformation.getString("ENTERPRISE_STATUS_ID"):StringPool.BLANK);
 				results.put("FOUNDING_DATE", (mainInformation.has("FOUNDING_DATE") && Validator.isNotNull( mainInformation.getString("FOUNDING_DATE"))) ? APIDateTimeUtils.convertDateToString(APIDateTimeUtils.convertStringToDate(mainInformation.getString("FOUNDING_DATE"),APIDateTimeUtils._TIMESTAMP_LGSP), APIDateTimeUtils._NORMAL_DATE)  :StringPool.BLANK);
 				results.put("LAST_AMEND_DATE", (mainInformation.has("LAST_AMEND_DATE") && Validator.isNotNull( mainInformation.getString("LAST_AMEND_DATE"))) ? APIDateTimeUtils.convertDateToString(APIDateTimeUtils.convertStringToDate(mainInformation.getString("LAST_AMEND_DATE"),APIDateTimeUtils._TIMESTAMP_LGSP), APIDateTimeUtils._NORMAL_DATE) :StringPool.BLANK);
 				results.put("NUMBER_CHANGES",mainInformation.has("NUMBER_CHANGES") ? mainInformation.getString("NUMBER_CHANGES"):StringPool.BLANK);
