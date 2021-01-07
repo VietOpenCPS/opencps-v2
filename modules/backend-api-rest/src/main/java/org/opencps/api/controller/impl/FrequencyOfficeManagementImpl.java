@@ -315,7 +315,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
             String token = integrationAction.getToken();
 
-            integrationAction.syncDossierToDVCBoManual(token, dossierId);
+//            integrationAction.syncDossierToDVCBoManual(token, dossierId);
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
         } catch (Exception e) {
