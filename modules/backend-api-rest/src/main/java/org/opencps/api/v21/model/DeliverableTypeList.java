@@ -269,7 +269,8 @@ public class DeliverableTypeList {
         "formScript",
         "formReport",
         "roleCode",
-        "deliverableTypeRoleList"
+        "deliverableTypeRoleList",
+        "groupId"
     })
     public static class DeliverableType {
 
@@ -297,8 +298,19 @@ public class DeliverableTypeList {
         protected String formReport;
         @XmlElement(required = true)
         protected String roleCode;
+        @XmlElement(required = false)
+        protected Integer groupId;
         @XmlElement(required = true)
         protected DeliverableTypeRoleList deliverableTypeRoleList;
+
+
+        public Integer getGroupId() {
+            return groupId;
+        }
+
+        public void setGroupId(Integer groupId) {
+            this.groupId = groupId;
+        }
 
         /**
          * Gets the value of the typeCode property.

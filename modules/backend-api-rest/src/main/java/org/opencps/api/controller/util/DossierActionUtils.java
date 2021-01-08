@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.dossier.model.ActionExecutedModel;
 import org.opencps.api.dossier.model.ListContacts;
@@ -383,6 +384,8 @@ public class DossierActionUtils {
 			for (int i = 0; i < jsonData.length(); i++) {
 
 				JSONObject jsonObject = jsonData.getJSONObject(i);
+				_log.debug("JSONObject when mapping next action: "
+						+ JSONFactoryUtil.looseSerialize(jsonObject));
 				DossierNextActionModel model = new DossierNextActionModel();
 
 				model.setProcessActionId(

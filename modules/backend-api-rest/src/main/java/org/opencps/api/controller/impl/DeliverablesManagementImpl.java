@@ -2,6 +2,9 @@
 package org.opencps.api.controller.impl;
 
 import java.net.HttpURLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -27,17 +30,17 @@ import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DeliverableLogActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.DeliverableLog;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
@@ -66,6 +69,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import io.swagger.annotations.ApiParam;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 public class DeliverablesManagementImpl implements DeliverablesManagement {
 
@@ -930,5 +935,97 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
+//	private static String CHE_DO_MOT_LAN = "Một lần";
+//	private static String CHE_DO = "chedo";
+	@Override
+	public Response importDeliverables3(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, Attachment file, String deliverableTypeCode) {
+		try {
 
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+
+			if (Validator.isNull(deliverableTypeCode) || Validator.isNull(file)) {
+				return Response.status(204).entity(
+						JSONFactoryUtil.looseSerialize(result)).build();
+			}
+
+			BackendAuth auth = new BackendAuthImpl();
+
+			// Check user is login
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			long groupId =
+					GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			long userId = user.getUserId();
+			long companyId = user.getCompanyId();
+			String userName = user.getFullName();
+
+			DataHandler dataHandle = file.getDataHandler();
+			JSONArray deliverables = DeliverableUtils.readExcelDeliverableV3(dataHandle.getInputStream());
+
+			int size = 0;
+			if(Validator.isNotNull(deliverables)) {
+				_log.debug("Deliverables: " + JSONFactoryUtil.looseSerialize(deliverables));
+				for (int i = 0; i < deliverables.length(); i++) {
+					JSONObject deliverable = deliverables.getJSONObject(i);
+					if (Validator.isNotNull(deliverable)) {
+						JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
+						String gioitinh = formData.getString(DeliverableTerm.GIOI_TINH_TEXT);
+						if (gioitinh.contains(DeliverableTerm.GIOI_TINH_NAM)) {
+							_log.debug("NAM ......");
+							formData.put(DeliverableTerm.GIOI_TINH, 0);
+						} else if (gioitinh.contains(DeliverableTerm.GIOI_TINH_NU)) {
+							_log.debug("NU ......");
+							formData.put(DeliverableTerm.GIOI_TINH, 1);
+						} else {
+							_log.debug("KO ......");
+							formData.put(DeliverableTerm.GIOI_TINH, 2);
+						}
+
+						DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableTypeCode);
+						String ngaysinh = formData.getString(DeliverableTerm.NGAY_SINH);
+						if (Validator.isNotNull(ngaysinh)) {
+							Date ngaysinhParse = APIDateTimeUtils.convertStringToDate(ngaysinh, APIDateTimeUtils._NORMAL_DATE);
+							if (Validator.isNotNull(ngaysinhParse)) {
+								System.out.println("Ngay sinh : " + ngaysinhParse);
+
+								DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+								String strDate = dateFormat.format(ngaysinhParse);
+
+								System.out.println("Converted String: " + strDate);
+								formData.put(DeliverableTerm.NGAY_SINH, strDate);
+							}
+						}
+
+						deliverable.put(Field.GROUP_ID, groupId);
+						deliverable.put(Field.USER_ID, userId);
+						deliverable.put(Field.COMPANY_ID, companyId);
+						deliverable.put(Field.USER_NAME, userName);
+						deliverable.put(DeliverableTerm.DELIVERABLE_TYPE, delType.getTypeCode());
+						deliverable.put(DeliverableTerm.FILE_ATTACH, false);
+						deliverable.put(DeliverableTerm.FORM_DATA, formData.toString());
+
+						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+						if (Validator.isNotNull(employee)) {
+							String scope = employee.getScope();
+							if (scope.split(",").length > 1) {
+								String[] govAgencyCode = scope.split(",");
+								scope = govAgencyCode[0];
+							}
+							deliverable.put(DeliverableTerm.GOV_AGENCY_CODE, scope);
+						}
+						DeliverableLocalServiceUtil.adminProcessData(deliverable);
+						size += 1;
+					}
+				}
+			}
+			result.put(ConstantUtils.TOTAL, size);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
+					JSONFactoryUtil.looseSerialize(result)).build();
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
 }

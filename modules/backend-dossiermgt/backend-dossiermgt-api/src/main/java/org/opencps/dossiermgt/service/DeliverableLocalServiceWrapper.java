@@ -17,6 +17,7 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import org.opencps.dossiermgt.model.Deliverable;
 
 /**
  * Provides a wrapper for {@link DeliverableLocalService}.
@@ -257,6 +258,11 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	public org.opencps.dossiermgt.model.Deliverable fetchByGID_DID(
 		long groupId, long dossierId) {
 		return _deliverableLocalService.fetchByGID_DID(groupId, dossierId);
+	}
+
+	@Override
+	public Deliverable fetchByGID_AID(long groupId, String applicantIdNo) {
+		return _deliverableLocalService.fetchByGID_AID(groupId, applicantIdNo);
 	}
 
 	@Override

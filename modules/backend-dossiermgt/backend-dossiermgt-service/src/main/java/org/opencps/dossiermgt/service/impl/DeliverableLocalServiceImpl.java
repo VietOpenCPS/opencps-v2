@@ -118,6 +118,11 @@ public class DeliverableLocalServiceImpl
 		return deliverablePersistence.fetchByF_GID_DID(groupId, dossierId);
 	}
 
+	@Override
+	public Deliverable fetchByGID_AID(long groupId, String applicantIdNo) {
+		return  deliverablePersistence.fetchByF_GID_AID(groupId, applicantIdNo);
+	}
+
 	public List<Deliverable> getListDeliverable(
 		int deliverableState, String govAgencyCode, String deliverableType,
 		String applicant) {
@@ -1410,8 +1415,8 @@ public class DeliverableLocalServiceImpl
 		object.setFormScript(objectData.getString(DeliverableTerm.FORM_SCRIPT));
 		object.setFormReport(objectData.getString(DeliverableTerm.FORM_REPORT));
 		// new field to save QD
-		object.setFileAttachs(objectData.getString(DeliverableTerm.FILE_ATTACHS));
 		if (objectData.getLong(DeliverableTerm.FILE_ENTRY_ID) > 0) {
+			object.setFileAttachs(objectData.getString(DeliverableTerm.FILE_ENTRY_ID));
 			object.setFileEntryId(objectData.getLong(DeliverableTerm.FILE_ENTRY_ID));
 		}
 		object.setDeliverableState(Integer.valueOf(objectData.getInt(DeliverableTerm.DELIVERABLE_STATE, 1)));
@@ -1698,8 +1703,7 @@ public class DeliverableLocalServiceImpl
 							queryBool.add(wildQuery, BooleanClauseOccur.MUST);
 						}
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
-					}else
-					if(entry.getValue().contains(StringPool.SPACE) && !"".equals(entry.getValue())){
+					}else if(entry.getValue().contains(StringPool.SPACE) && !"".equals(entry.getValue())){
 						String[] keywordArr = entry.getValue().split(StringPool.SPACE);
 						BooleanQuery query = new BooleanQueryImpl();
 						for (String keyValue : keywordArr) {
@@ -1731,34 +1735,53 @@ public class DeliverableLocalServiceImpl
 								queryBool.add(wildQuery, BooleanClauseOccur.MUST);
 							}
 						}else {
-							if(Validator.isNotNull(entry.getValue())) {
-								WildcardQuery wildQuery = new WildcardQueryImpl(
-										key.split("@")[0],
-										StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
-								queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+							if(key.contains(DeliverableTerm.DELIVERABLE_CODE_SEARCH)) {
+								String[] subQuerieArr = new String[]{
+										DeliverableTerm.DELIVERABLE_CODE_SEARCH
+								};
+								String keywordArr = SpecialCharacterUtils.splitSpecial(entry.getValue());
+								for (String fieldSearch : subQuerieArr) {
+									WildcardQuery wildQuery = new WildcardQueryImpl(
+											fieldSearch,
+											StringPool.STAR + keywordArr.toLowerCase() + StringPool.STAR);
+									queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+								}
+								booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+							}else {
+								if (Validator.isNotNull(entry.getValue())) {
+									WildcardQuery wildQuery = new WildcardQueryImpl(
+											key.split("@")[0],
+											StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
+									queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+								}
 							}
 						}
 					}
 				} else if (key.contains("@EQUAL")) {
 					if(entry.getValue().contains(StringPool.FORWARD_SLASH)){
 						String keywordDate = SpecialCharacterUtils.splitSpecial(entry.getValue());
-
-						if(key.split("@")[0].contains(DeliverableTerm.NGAY_SINH)){
+//						if(key.split("@")[0].contains(DeliverableTerm.NGAY_SINH)){
+//							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+//							query.addFields(DeliverableTerm.NGAYSINH_SEARCH);
+//							queryBool.add(query, BooleanClauseOccur.MUST);
+//						} else if(key.split("@")[0].contains(DeliverableTerm.NGAY_QD)){
+//							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+//							query.addFields(DeliverableTerm.NGAY_QD_SEARCH);
+//							queryBool.add(query, BooleanClauseOccur.MUST);
+//						}else if(key.split("@")[0].contains(DeliverableTerm.ISSUE_DATE)){
+//							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+//							query.addFields(DeliverableTerm.ISSUE_DATE_SEARCH);
+//							queryBool.add(query, BooleanClauseOccur.MUST);
+//						}else if(key.split("@")[0].contains(DeliverableTerm.NGAY_CAP)){
+//							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+//							query.addFields(DeliverableTerm.NGAY_CAP_SEARCH);
+//							queryBool.add(query, BooleanClauseOccur.MUST);
+//						}else
+//							if(DeliverableTerm.NGAY_CAP_CNDKKD.equals(ngayCapCND)) {
+						if(key.split("@")[0].contains(DeliverableTerm.NGAY_CAP_CNDKKD)){
+							_log.debug("NgaycapCNDKKD: " + keywordDate);
 							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
-							query.addFields(DeliverableTerm.NGAYSINH_SEARCH);
-							queryBool.add(query, BooleanClauseOccur.MUST);
-						}
-						else if(key.split("@")[0].contains(DeliverableTerm.NGAY_QD)){
-							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
-							query.addFields(DeliverableTerm.NGAY_QD_SEARCH);
-							queryBool.add(query, BooleanClauseOccur.MUST);
-						}else if(key.split("@")[0].contains(DeliverableTerm.ISSUE_DATE)){
-							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
-							query.addFields(DeliverableTerm.ISSUE_DATE_SEARCH);
-							queryBool.add(query, BooleanClauseOccur.MUST);
-						}else if(key.split("@")[0].contains(DeliverableTerm.NGAY_CAP)){
-							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
-							query.addFields(DeliverableTerm.NGAY_CAP_SEARCH);
+							query.addFields(DeliverableTerm.NGAY_CAP_CNDKKD_SEARCH);
 							queryBool.add(query, BooleanClauseOccur.MUST);
 						}
 					}else {
