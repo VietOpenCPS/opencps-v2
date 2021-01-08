@@ -31,8 +31,10 @@ public class UpgradeSchema1_0_4 extends UpgradeProcess {
 	protected void doUpgrade() throws Exception {
 
 		upgrade(new UpgradeMVCCVersion());
-
-		alter(EmployeeJobPosTable.class, new AlterTableAddColumn("status INTEGER"));
+		
+		if(!hasColumn(EmployeeJobPosTable.TABLE_NAME, "status")) {
+			alter(EmployeeJobPosTable.class, new AlterTableAddColumn("status INTEGER"));
+		}
 
 	}
 

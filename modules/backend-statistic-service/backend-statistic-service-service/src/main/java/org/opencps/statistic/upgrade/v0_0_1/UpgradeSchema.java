@@ -32,13 +32,11 @@ public class UpgradeSchema extends UpgradeProcess {
 	protected void doUpgrade() throws Exception {
 		
 		upgrade(new UpgradeMVCCVersion());
-		alter(
-				StatisticTable.class, 
-				new AlterTableAddColumn("fromViaPostalCount INTEGER")
-		);
 		
-
-
+		if(!hasColumn(StatisticTable.TABLE_NAME, "fromViaPostalCount")) {
+			alter(StatisticTable.class,new AlterTableAddColumn("fromViaPostalCount INTEGER"));
+		}
+		
 	}
 
 }

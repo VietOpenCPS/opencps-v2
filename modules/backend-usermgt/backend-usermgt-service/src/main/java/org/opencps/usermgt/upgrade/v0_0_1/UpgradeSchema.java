@@ -43,8 +43,10 @@ public class UpgradeSchema extends UpgradeProcess {
 					EmployeeTable.TABLE_SQL_ADD_INDEXES);
 
 		}
-
-		alter(EmployeeTable.class, new AlterTableAddColumn("jobPosTitle VARCHAR(75) null"));
+		
+		if(!hasColumn(EmployeeTable.TABLE_NAME, "jobPosTitle")) {
+			alter(EmployeeTable.class, new AlterTableAddColumn("jobPosTitle VARCHAR(75) null"));
+		}
 		
 		if (!hasTable(EmployeeJobPosTable.TABLE_NAME)) {
 			runSQL(EmployeeJobPosTable.TABLE_SQL_CREATE);
