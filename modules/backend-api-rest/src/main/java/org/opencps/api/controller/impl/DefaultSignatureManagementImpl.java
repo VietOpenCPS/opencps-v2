@@ -1151,27 +1151,42 @@ public class DefaultSignatureManagementImpl
 							DeliverableLocalServiceUtil.getByCode(
 								deliverableCode);
 						if (deliverable != null && Validator.isNotNull(deliverable.getFormData())) {
+							_log.info("Vao 11111111111");
+							_log.info("Deliverable: " + JSONFactoryUtil.looseSerialize(deliverable));
 							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
 							if (formData.has(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)){
 								
 								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)));
+								deliverable.setFileEntryId(fileEntryId);
+								deliverable.setFileAttachs(String.valueOf(fileEntryId));
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
 							} else if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 								deliverable.setDeliverableState(DeliverableTerm.DELIVERABLE_STATE_VALID_INT);
+								deliverable.setFileEntryId(fileEntryId);
+								deliverable.setFileAttachs(String.valueOf(fileEntryId));
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
 							}
+							if(Validator.isNotNull(deliverable)){
+								result.put("Deliverable", deliverable);
+							}
 						} else if (deliverable != null) {
-							
+							_log.info("Vao 222222222");
+							_log.info("Deliverable: " + JSONFactoryUtil.looseSerialize(deliverable));
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
 							if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 								deliverable.setDeliverableState(DeliverableTerm.DELIVERABLE_STATE_VALID_INT);
+								deliverable.setFileEntryId(fileEntryId);
+								deliverable.setFileAttachs(String.valueOf(fileEntryId));
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
+							}
+							if(Validator.isNotNull(deliverable)){
+								result.put("Deliverable", deliverable);
 							}
 						}
 					}

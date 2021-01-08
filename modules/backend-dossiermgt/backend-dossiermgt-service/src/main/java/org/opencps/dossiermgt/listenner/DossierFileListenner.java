@@ -642,7 +642,9 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 							? dossierFileAttach.getFileEntryId() : 0l,
 						dlvType.getFormScriptFileId(),
 						dlvType.getFormReportFileId(),
-						formDataContent.toString(), fileAttachs,
+						formDataContent.toString(),
+						dossierFileAttach != null
+						? String.valueOf(dossierFileAttach.getFileEntryId()) : "0",
 						serviceContext);
 			}
 			else if (Validator.isNotNull(deliverable)) {
@@ -711,8 +713,9 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					deliverable.getFormData(), formDataContent.toString());
 				deliverable.setFormData(formDataContent.toString());
 
-				deliverable.setFileAttachs(fileAttachs !=null ? fileAttachs :
+				deliverable.setFileAttachs(deliverable !=null ? String.valueOf(deliverable.getFileEntryId()) :
 						String.valueOf(dossierFileAttach.getFileEntryId()));
+				_log.info("Deliverable: " + JSONFactoryUtil.looseSerialize(deliverable));
 
 				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 			}

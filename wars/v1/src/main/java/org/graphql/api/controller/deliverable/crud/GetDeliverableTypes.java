@@ -67,6 +67,7 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableTypeDyna
 		}
 		
 		List<DeliverableTypeDynamic> results = new ArrayList<>();
+		_log.info("Log info : " + JSONFactoryUtil.looseSerialize(groupIds));
 		
 		if (userId > 0) {
 			//getDeliverableTypesList
@@ -80,6 +81,7 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableTypeDyna
 				//List<Long> rIds = new ArrayList<>();
 				
 				for (DeliverableType openCPSDeliverableType : resultsTemp) {
+					openCPSDeliverableType.setGroupId(openCPSDeliverableType.getGroupId());
 					
 					// List<Long> rIds = actions.getRoleIdByTypes(openCPSDeliverableType.getDeliverableTypeId());
 					List<DeliverableTypeRole> deliverableTypeRoles = actions.getRolesByType(openCPSDeliverableType.getDeliverableTypeId());
