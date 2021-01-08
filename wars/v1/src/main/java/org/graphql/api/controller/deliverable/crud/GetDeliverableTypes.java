@@ -67,7 +67,6 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableTypeDyna
 		}
 		
 		List<DeliverableTypeDynamic> results = new ArrayList<>();
-		_log.info("Log info : " + JSONFactoryUtil.looseSerialize(groupIds));
 		
 		if (userId > 0) {
 			//getDeliverableTypesList

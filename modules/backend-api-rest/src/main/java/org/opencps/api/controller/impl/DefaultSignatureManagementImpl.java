@@ -1151,8 +1151,6 @@ public class DefaultSignatureManagementImpl
 							DeliverableLocalServiceUtil.getByCode(
 								deliverableCode);
 						if (deliverable != null && Validator.isNotNull(deliverable.getFormData())) {
-							_log.info("Vao 11111111111");
-							_log.info("Deliverable: " + JSONFactoryUtil.looseSerialize(deliverable));
 							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
@@ -1174,8 +1172,6 @@ public class DefaultSignatureManagementImpl
 								result.put("Deliverable", deliverable);
 							}
 						} else if (deliverable != null) {
-							_log.info("Vao 222222222");
-							_log.info("Deliverable: " + JSONFactoryUtil.looseSerialize(deliverable));
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
 							if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
