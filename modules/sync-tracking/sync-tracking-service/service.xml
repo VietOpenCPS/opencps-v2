@@ -40,6 +40,16 @@
 			<finder-column name="groupId" />
 		</finder>
 
+		<finder name="F_GID_ReferenceUid" return-type="SyncTracking">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="referenceUid"></finder-column>
+		</finder>
+
+		<finder name="F_GID_DossierNo" return-type="SyncTracking">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="dossierNo"></finder-column>
+		</finder>
+
 		<finder name="F_GID_Protocol" return-type="Collection">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="protocol"></finder-column>
@@ -66,6 +76,13 @@
 		<finder name="F_GID_DOSSIERNO_CREATED_BETWEEN" return-type="Collection">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="dossierNo"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+
+		<finder name="F_GID_REFERENCE_UID_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="referenceUid"></finder-column>
 			<finder-column name="createDate" comparator="&gt;="/>
 			<finder-column name="modifiedDate" comparator="&lt;="/>
 		</finder>
