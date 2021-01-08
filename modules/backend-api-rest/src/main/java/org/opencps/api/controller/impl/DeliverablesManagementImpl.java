@@ -964,12 +964,12 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			JSONArray deliverables = DeliverableUtils.readExcelDeliverableV3(dataHandle.getInputStream());
 
 			int size = 0;
-			for (int i = 0; i < deliverables.length(); i++) {
-
-				JSONObject deliverable = deliverables.getJSONObject(i);
-				if (Validator.isNotNull(deliverable)) {
-					JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
-//					if (Validator.isNotNull(formData.getString(DeliverableTerm.GIOI_TINH_TEXT))) {
+			if(Validator.isNotNull(deliverables)) {
+				_log.debug("Deliverables: " + JSONFactoryUtil.looseSerialize(deliverables));
+				for (int i = 0; i < deliverables.length(); i++) {
+					JSONObject deliverable = deliverables.getJSONObject(i);
+					if (Validator.isNotNull(deliverable)) {
+						JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
 						String gioitinh = formData.getString(DeliverableTerm.GIOI_TINH_TEXT);
 						if (gioitinh.contains(DeliverableTerm.GIOI_TINH_NAM)) {
 							_log.debug("NAM ......");
@@ -983,31 +983,10 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 						}
 
 						DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableTypeCode);
-						if (deliverable.has(DeliverableTerm.CMND)) {
-							String applicantIdNo = deliverable.getString(DeliverableTerm.CMND);
-							Deliverable deliverableObj = DeliverableLocalServiceUtil.fetchByGID_AID(groupId, applicantIdNo);
-							deliverable.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
-
-							if (deliverableObj != null) {
-								deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
-								deliverable.put(DeliverableTerm.DELIVERABLE_ID, deliverableObj.getDeliverableId());
-							} else {
-								String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
-								String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
-								deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-								deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
-							}
-						} else {
-							String ngayQD = deliverable.getString(DeliverableTerm.ISSUE_DATE);
-							_log.info("NgayQD " + ngayQD);
-							String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
-							deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-							deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
-						}
 						String ngaysinh = formData.getString(DeliverableTerm.NGAY_SINH);
-						if(Validator.isNotNull(ngaysinh)){
-							Date ngaysinhParse = APIDateTimeUtils.convertStringToDate(ngaysinh,APIDateTimeUtils._NORMAL_DATE);
-							if(Validator.isNotNull(ngaysinhParse)) {
+						if (Validator.isNotNull(ngaysinh)) {
+							Date ngaysinhParse = APIDateTimeUtils.convertStringToDate(ngaysinh, APIDateTimeUtils._NORMAL_DATE);
+							if (Validator.isNotNull(ngaysinhParse)) {
 								System.out.println("Ngay sinh : " + ngaysinhParse);
 
 								DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
@@ -1027,16 +1006,17 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 						deliverable.put(DeliverableTerm.FORM_DATA, formData.toString());
 
 						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-						String scope = employee.getScope();
-						if (scope.split(",").length > 1) {
-							String[] govAgencyCode = scope.split(",");
-							scope = govAgencyCode[0];
+						if (Validator.isNotNull(employee)) {
+							String scope = employee.getScope();
+							if (scope.split(",").length > 1) {
+								String[] govAgencyCode = scope.split(",");
+								scope = govAgencyCode[0];
+							}
+							deliverable.put(DeliverableTerm.GOV_AGENCY_CODE, scope);
 						}
-						deliverable.put(DeliverableTerm.GOV_AGENCY_CODE, scope);
-
 						DeliverableLocalServiceUtil.adminProcessData(deliverable);
 						size += 1;
-//					}
+					}
 				}
 			}
 			result.put(ConstantUtils.TOTAL, size);

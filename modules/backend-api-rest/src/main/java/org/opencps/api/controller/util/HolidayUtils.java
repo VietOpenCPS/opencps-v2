@@ -51,6 +51,7 @@ public class HolidayUtils {
 					String.valueOf(holiday.getHolidayDate().getTime())
 					: StringPool.BLANK);
 			ett.setDescription(holiday.getDescription());
+			ett.setHolidayType(holiday.getHolidayType());
 
 		} catch (Exception e) {
 			_log.error(e);
