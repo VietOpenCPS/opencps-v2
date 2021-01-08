@@ -77,10 +77,8 @@ public class DeliverableUtils {
 							List<DeliverableTypeRole> deliverableTypeRoles = actions.getRolesByType(deliverableType.getDeliverableTypeId());
 							if (deliverableTypeRoles != null && deliverableTypeRoles.size() > 0) {
 								for (DeliverableTypeRole deliverableTypeRole : deliverableTypeRoles) {
-									if (roleIds.contains(deliverableTypeRole.getRoleId())) {
-										if (deliverableTypeRole.getModerator()) {
+									if (roleIds.contains(deliverableTypeRole.getRoleId()) && deliverableTypeRole.getModerator()) {
 											model.put(DeliverableTerm.MODERATOR, deliverableTypeRole.getModerator());
-										}
 									}
 								}
 							}
@@ -118,17 +116,11 @@ public class DeliverableUtils {
 		if (Validator.isNotNull(strIssueDate)) {
 			model.put(DeliverableTerm.ISSUE_DATE, strIssueDate);
 		}
-		else {
-			model.put(DeliverableTerm.ISSUE_DATE,strIssueDate);
-		}
 
 		Date strExpireDate = deliverable.getExpireDate();
 		if (Validator.isNotNull(strExpireDate)) {
 			model.put(DeliverableTerm.EXPIRE_DATE,
 					strExpireDate);
-		}
-		else {
-			model.put(DeliverableTerm.EXPIRE_DATE, strExpireDate);
 		}
 
 		model.put(DeliverableTerm.REVALIDATE,deliverable.getRevalidate());

@@ -1506,10 +1506,8 @@ public class RestfulController {
 								_log.debug("CONFIG COUNTER " + counter);
 								if (Validator.isNotNull(counter)) {
 									if (countDossier >= counter) {
-//										if (checkApplicant.getVerification() != ApplicantTerm.UNLOCKED) {
 											checkApplicant.setVerification(ApplicantTerm.LOCKED_DOSSIER);
 											ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
-//										}
 									} else if (countDossier < counter) {
 										checkApplicant.setVerification(ApplicantTerm.UNLOCKED);
 										ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
@@ -1861,10 +1859,8 @@ public class RestfulController {
 						List<DeliverableTypeRole> deliverableTypeRoles = actions.getRolesByType(deliverableType.getDeliverableTypeId());
 						if (deliverableTypeRoles != null && deliverableTypeRoles.size() > 0) {
 							for (DeliverableTypeRole deliverableTypeRole : deliverableTypeRoles) {
-								if (roleIds.contains(deliverableTypeRole.getRoleId())) {
-									if (deliverableTypeRole.getModerator()) {
+								if (roleIds.contains(deliverableTypeRole.getRoleId()) && deliverableTypeRole.getModerator()) {
 										jsonObject.put(DeliverableTerm.MODERATOR, deliverableTypeRole.getModerator());
-									}
 								}
 							}
 						}

@@ -65,9 +65,6 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			if (Validator.isNull(publish)) {
 				sql = StringUtil.replace(sql, CONDITION_PUBLISH, StringPool.BLANK);
 		}
-//			if (Validator.isNull(questionType)) {
-//				sql = StringUtil.replace(sql, CONDITION_QUESTION_TYPE, StringPool.BLANK);
-//		}
 			if (Validator.isNull(subDomainCode)) {
 				sql = StringUtil.replace(sql, CONDITION_SUB_DOMAIN_CODE, StringPool.BLANK);
 		}
@@ -107,10 +104,8 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 				qPos.add(publish);
 		}
 		
-			/* add publish parameter */
-//			if (Validator.isNotNull(questionType)) {
+			/* add publish parameter questionType */
 				qPos.add(questionType);
-//		}
 			
 			/* add publish parameter */
 			if (Validator.isNotNull(subDomainCode)) {
