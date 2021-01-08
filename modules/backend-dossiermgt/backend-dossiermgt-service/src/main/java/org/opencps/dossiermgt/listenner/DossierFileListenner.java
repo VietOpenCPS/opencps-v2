@@ -715,6 +715,10 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 				deliverable.setFileAttachs(deliverable !=null ? String.valueOf(deliverable.getFileEntryId()) :
 						String.valueOf(dossierFileAttach.getFileEntryId()));
+				String deliverableState = formDataContent.getString(DeliverableTerm.DELIVERABLE_STATE);
+				if(Validator.isNotNull(deliverableState)){
+					deliverable.setDeliverableState(Integer.valueOf(deliverableState));
+				}
 
 				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 			}
