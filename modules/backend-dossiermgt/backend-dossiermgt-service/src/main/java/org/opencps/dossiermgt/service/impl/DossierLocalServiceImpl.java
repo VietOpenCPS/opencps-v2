@@ -6037,7 +6037,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setDossierName(dossierName);
 			dossier.setProcessNo(processNo);
 			dossier.setMetaData(metaData);
-			dossier.setVnpostalStatus(vnpostalStatus);
+			
+			if(Validator.isNotNull(vnpostalStatus)) {
+				dossier.setVnpostalStatus(vnpostalStatus);
+			}
 			dossier.setVnpostalProfile(vnpostalProfile);
 			if (Validator.isNotNull(fromViaPostal)) {
 				dossier.setFromViaPostal(fromViaPostal);
