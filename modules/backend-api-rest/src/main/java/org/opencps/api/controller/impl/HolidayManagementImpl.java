@@ -1,7 +1,10 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -40,7 +43,7 @@ import backend.auth.api.exception.BusinessExceptionImpl;
 public class HolidayManagementImpl implements HolidayManagement {
 
 //	private static final Log _log = LogFactoryUtil.getLog(HolidayManagementImpl.class);
-
+	Log _log = LogFactoryUtil.getLog(HolidayManagementImpl.class);
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response getHolidays(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -119,7 +122,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 		HolidayModel holidayModel = new HolidayModel();
 		
 		try {
-
+			_log.info("Phuchn :" + JSONFactoryUtil.looseSerialize(input));
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			String description = HtmlUtil.escape(input.getDescription());
 			

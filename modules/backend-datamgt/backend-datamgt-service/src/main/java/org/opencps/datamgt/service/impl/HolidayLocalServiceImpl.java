@@ -414,6 +414,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 		object.setHolidayDate(new Date(objectData.getLong(HolidayTerm.HOLIDAY_DATE)));
 		object.setDescription(objectData.getString(HolidayTerm.DESCRIPTION));
+		object.setHolidayType(objectData.getInt(HolidayTerm.HOLIDAY_TYPE));
 
 		holidayPersistence.update(object);
 
