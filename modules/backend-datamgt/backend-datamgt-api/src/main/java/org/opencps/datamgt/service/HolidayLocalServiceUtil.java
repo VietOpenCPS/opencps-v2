@@ -56,13 +56,14 @@ public class HolidayLocalServiceUtil {
 
 	public static org.opencps.datamgt.model.Holiday addHoliday(long userId,
 		long groupId, java.util.Date holidayDate, String description,
+		int holidayType,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws org.opencps.auth.api.exception.UnauthenticationException,
 			org.opencps.auth.api.exception.UnauthorizationException,
 			com.liferay.portal.kernel.exception.NoSuchUserException {
 		return getService()
 				   .addHoliday(userId, groupId, holidayDate, description,
-			serviceContext);
+			holidayType, serviceContext);
 	}
 
 	public static org.opencps.datamgt.model.Holiday adminProcessData(

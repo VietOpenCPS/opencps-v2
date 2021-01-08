@@ -123,7 +123,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			String description = HtmlUtil.escape(input.getDescription());
 			
-			Holiday holiday = actions.create(user.getUserId(), groupId, input.getHolidayDate(), description,
+			Holiday holiday = actions.create(user.getUserId(), groupId, input.getHolidayDate(), description, input.getHolidayType(),
 					serviceContext);
 
 			holidayModel = HolidayUtils.mapperHolidayModel(holiday);

@@ -86,7 +86,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public Holiday addHoliday(long userId, long groupId, Date holidayDate, String description,
+	public Holiday addHoliday(long userId, long groupId, Date holidayDate, String description, int holidayType,
 			ServiceContext serviceContext)
 			throws UnauthenticationException, UnauthorizationException, NoSuchUserException {
 		// authen
@@ -126,6 +126,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 		holiday.setHolidayDate(holidayDate);
 		holiday.setDescription(description);
+		holiday.setHolidayType(holidayType);
 
 		holiday.setExpandoBridgeAttributes(serviceContext);
 		return holidayPersistence.update(holiday);

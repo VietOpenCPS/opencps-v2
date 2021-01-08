@@ -47,12 +47,13 @@ public class HolidayLocalServiceWrapper implements HolidayLocalService,
 	@Override
 	public org.opencps.datamgt.model.Holiday addHoliday(long userId,
 		long groupId, java.util.Date holidayDate, String description,
+		int holidayType,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws org.opencps.auth.api.exception.UnauthenticationException,
 			org.opencps.auth.api.exception.UnauthorizationException,
 			com.liferay.portal.kernel.exception.NoSuchUserException {
 		return _holidayLocalService.addHoliday(userId, groupId, holidayDate,
-			description, serviceContext);
+			description, holidayType, serviceContext);
 	}
 
 	@Override

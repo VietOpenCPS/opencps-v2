@@ -89,7 +89,7 @@ public interface HolidayLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Holiday addHoliday(long userId, long groupId, Date holidayDate,
-		String description, ServiceContext serviceContext)
+		String description, int holidayType, ServiceContext serviceContext)
 		throws UnauthenticationException, UnauthorizationException,
 			NoSuchUserException;
 
