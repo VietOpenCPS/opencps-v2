@@ -399,7 +399,12 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 										return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
 									}
 							}
-							postData.put(Field.GROUP_ID, groupId);
+//							postData.put(Field.GROUP_ID, groupId);
+							if(FILE_ITEM.equals(code)){
+								postData.put(Field.GROUP_ID, 0L);
+							}else{
+								postData.put(Field.GROUP_ID, groupId);
+							}
 							postData.put(COMPANY_ID, company.getCompanyId());
 							postData.put(Field.USER_ID, u.getUserId());
 							postData.put(Field.USER_NAME, u.getFullName());

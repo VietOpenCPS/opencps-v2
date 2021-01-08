@@ -54,7 +54,8 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 			User user, ServiceContext serviceContext, Attachment file, String fileTemplateNo, String fileNo, String fileName,
 			String applicantIdNo, String status) {
 		//Mặc định groupId =0
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long groupId = ApplicantTerm.GROUP_ID_DEFAULT;
 		DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 		ApplicantData applicantData = null;
 		
