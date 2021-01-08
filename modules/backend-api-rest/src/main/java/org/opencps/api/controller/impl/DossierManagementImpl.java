@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -69,6 +70,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import io.swagger.util.Json;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.constants.DossierManagementConstants;
@@ -101,6 +103,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
+import org.opencps.datamgt.util.DateTimeUtils;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.*;
@@ -909,6 +912,33 @@ public class DossierManagementImpl implements DossierManagement {
 								dossierModel.setVotingCode3(votingCode);
 								dossierModel.setVotingName3(votingName);
 								dossierModel.setResultVotingCode3(point);
+							} else if(indexVoting == 4) {
+								dossierModel.setVotingCode4("");
+								dossierModel.setVotingName4("");
+								
+								Date dueDate = Validator.isNull(dossierModel.getDueDate())
+										? null
+										: DateTimeUtils.convertStringToFullDate(dossierModel.getDueDate());
+								Date extendDate = Validator.isNull(dossierModel.getExtendDate())
+											? null
+											: DateTimeUtils.convertStringToFullDate(dossierModel.getExtendDate());
+								Date releaseDate = Validator.isNull(dossierModel.getReleaseDate())
+											? null
+											: DateTimeUtils.convertStringToFullDate(dossierModel.getReleaseDate());
+								Date finishDate = Validator.isNull(dossierModel.getFinishDate())
+											? null
+											: DateTimeUtils.convertStringToFullDate(dossierModel.getFinishDate());
+								int overdue = 1;
+								if (dueDate != null) {
+									//Check extendDate != null and releaseDate < dueDate
+									if (releaseDate != null && releaseDate.before(dueDate) && extendDate != null) overdue = 2;
+									//Or check finishDate < dueDate
+									if (finishDate != null && finishDate.before(dueDate)) overdue = 2;
+
+									//Check overTime condition releaseDate > dueDate
+									if (releaseDate != null && releaseDate.after(dueDate)) overdue = 0;
+								}
+								dossierModel.setResultVotingCode4(overdue);
 								break;
 							}
 							indexVoting++;
