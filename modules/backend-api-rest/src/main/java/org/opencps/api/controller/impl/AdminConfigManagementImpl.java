@@ -386,7 +386,6 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							messageData.put(STATUS, HttpStatus.OK);
 	
 						} else {
-
 							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
 									JSONObject.class);
 	
@@ -402,7 +401,12 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 									}
 								}
 							}
-							postData.put(Field.GROUP_ID, groupId);
+//							postData.put(Field.GROUP_ID, groupId);
+							if(FILE_ITEM.equals(code)){
+								postData.put(Field.GROUP_ID, 0L);
+							}else{
+								postData.put(Field.GROUP_ID, groupId);
+							}
 							postData.put(COMPANY_ID, company.getCompanyId());
 							postData.put(Field.USER_ID, u.getUserId());
 							postData.put(Field.USER_NAME, u.getFullName());

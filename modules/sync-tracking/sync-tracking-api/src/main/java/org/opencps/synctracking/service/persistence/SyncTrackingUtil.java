@@ -655,6 +655,136 @@ public class SyncTrackingUtil {
 	}
 
 	/**
+	* Returns the sync tracking where groupId = &#63; and referenceUid = &#63; or throws a {@link NoSuchSyncTrackingException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @return the matching sync tracking
+	* @throws NoSuchSyncTrackingException if a matching sync tracking could not be found
+	*/
+	public static SyncTracking findByF_GID_ReferenceUid(long groupId,
+		String referenceUid)
+		throws org.opencps.synctracking.exception.NoSuchSyncTrackingException {
+		return getPersistence().findByF_GID_ReferenceUid(groupId, referenceUid);
+	}
+
+	/**
+	* Returns the sync tracking where groupId = &#63; and referenceUid = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	*/
+	public static SyncTracking fetchByF_GID_ReferenceUid(long groupId,
+		String referenceUid) {
+		return getPersistence().fetchByF_GID_ReferenceUid(groupId, referenceUid);
+	}
+
+	/**
+	* Returns the sync tracking where groupId = &#63; and referenceUid = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	*/
+	public static SyncTracking fetchByF_GID_ReferenceUid(long groupId,
+		String referenceUid, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_GID_ReferenceUid(groupId, referenceUid,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes the sync tracking where groupId = &#63; and referenceUid = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @return the sync tracking that was removed
+	*/
+	public static SyncTracking removeByF_GID_ReferenceUid(long groupId,
+		String referenceUid)
+		throws org.opencps.synctracking.exception.NoSuchSyncTrackingException {
+		return getPersistence().removeByF_GID_ReferenceUid(groupId, referenceUid);
+	}
+
+	/**
+	* Returns the number of sync trackings where groupId = &#63; and referenceUid = &#63;.
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @return the number of matching sync trackings
+	*/
+	public static int countByF_GID_ReferenceUid(long groupId,
+		String referenceUid) {
+		return getPersistence().countByF_GID_ReferenceUid(groupId, referenceUid);
+	}
+
+	/**
+	* Returns the sync tracking where groupId = &#63; and dossierNo = &#63; or throws a {@link NoSuchSyncTrackingException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @return the matching sync tracking
+	* @throws NoSuchSyncTrackingException if a matching sync tracking could not be found
+	*/
+	public static SyncTracking findByF_GID_DossierNo(long groupId,
+		String dossierNo)
+		throws org.opencps.synctracking.exception.NoSuchSyncTrackingException {
+		return getPersistence().findByF_GID_DossierNo(groupId, dossierNo);
+	}
+
+	/**
+	* Returns the sync tracking where groupId = &#63; and dossierNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	*/
+	public static SyncTracking fetchByF_GID_DossierNo(long groupId,
+		String dossierNo) {
+		return getPersistence().fetchByF_GID_DossierNo(groupId, dossierNo);
+	}
+
+	/**
+	* Returns the sync tracking where groupId = &#63; and dossierNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	*/
+	public static SyncTracking fetchByF_GID_DossierNo(long groupId,
+		String dossierNo, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_GID_DossierNo(groupId, dossierNo, retrieveFromCache);
+	}
+
+	/**
+	* Removes the sync tracking where groupId = &#63; and dossierNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @return the sync tracking that was removed
+	*/
+	public static SyncTracking removeByF_GID_DossierNo(long groupId,
+		String dossierNo)
+		throws org.opencps.synctracking.exception.NoSuchSyncTrackingException {
+		return getPersistence().removeByF_GID_DossierNo(groupId, dossierNo);
+	}
+
+	/**
+	* Returns the number of sync trackings where groupId = &#63; and dossierNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @return the number of matching sync trackings
+	*/
+	public static int countByF_GID_DossierNo(long groupId, String dossierNo) {
+		return getPersistence().countByF_GID_DossierNo(groupId, dossierNo);
+	}
+
+	/**
 	* Returns all the sync trackings where groupId = &#63; and protocol = &#63;.
 	*
 	* @param groupId the group ID
@@ -1661,6 +1791,225 @@ public class SyncTrackingUtil {
 		return getPersistence()
 				   .countByF_GID_DOSSIERNO_CREATED_BETWEEN(groupId, dossierNo,
 			createDate, modifiedDate);
+	}
+
+	/**
+	* Returns all the sync trackings where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @param createDate the create date
+	* @param modifiedDate the modified date
+	* @return the matching sync trackings
+	*/
+	public static List<SyncTracking> findByF_GID_REFERENCE_UID_CREATED_BETWEEN(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate) {
+		return getPersistence()
+				   .findByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId,
+			referenceUid, createDate, modifiedDate);
+	}
+
+	/**
+	* Returns a range of all the sync trackings where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @param createDate the create date
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of sync trackings
+	* @param end the upper bound of the range of sync trackings (not inclusive)
+	* @return the range of matching sync trackings
+	*/
+	public static List<SyncTracking> findByF_GID_REFERENCE_UID_CREATED_BETWEEN(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		int start, int end) {
+		return getPersistence()
+				   .findByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId,
+			referenceUid, createDate, modifiedDate, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the sync trackings where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @param createDate the create date
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of sync trackings
+	* @param end the upper bound of the range of sync trackings (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching sync trackings
+	*/
+	public static List<SyncTracking> findByF_GID_REFERENCE_UID_CREATED_BETWEEN(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		int start, int end, OrderByComparator<SyncTracking> orderByComparator) {
+		return getPersistence()
+				   .findByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId,
+			referenceUid, createDate, modifiedDate, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the sync trackings where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @param createDate the create date
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of sync trackings
+	* @param end the upper bound of the range of sync trackings (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching sync trackings
+	*/
+	public static List<SyncTracking> findByF_GID_REFERENCE_UID_CREATED_BETWEEN(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		int start, int end, OrderByComparator<SyncTracking> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId,
+			referenceUid, createDate, modifiedDate, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first sync tracking in the ordered set where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @param createDate the create date
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching sync tracking
+	* @throws NoSuchSyncTrackingException if a matching sync tracking could not be found
+	*/
+	public static SyncTracking findByF_GID_REFERENCE_UID_CREATED_BETWEEN_First(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		OrderByComparator<SyncTracking> orderByComparator)
+		throws org.opencps.synctracking.exception.NoSuchSyncTrackingException {
+		return getPersistence()
+				   .findByF_GID_REFERENCE_UID_CREATED_BETWEEN_First(groupId,
+			referenceUid, createDate, modifiedDate, orderByComparator);
+	}
+
+	/**
+	* Returns the first sync tracking in the ordered set where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @param createDate the create date
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	*/
+	public static SyncTracking fetchByF_GID_REFERENCE_UID_CREATED_BETWEEN_First(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		OrderByComparator<SyncTracking> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_GID_REFERENCE_UID_CREATED_BETWEEN_First(groupId,
+			referenceUid, createDate, modifiedDate, orderByComparator);
+	}
+
+	/**
+	* Returns the last sync tracking in the ordered set where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @param createDate the create date
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching sync tracking
+	* @throws NoSuchSyncTrackingException if a matching sync tracking could not be found
+	*/
+	public static SyncTracking findByF_GID_REFERENCE_UID_CREATED_BETWEEN_Last(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		OrderByComparator<SyncTracking> orderByComparator)
+		throws org.opencps.synctracking.exception.NoSuchSyncTrackingException {
+		return getPersistence()
+				   .findByF_GID_REFERENCE_UID_CREATED_BETWEEN_Last(groupId,
+			referenceUid, createDate, modifiedDate, orderByComparator);
+	}
+
+	/**
+	* Returns the last sync tracking in the ordered set where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @param createDate the create date
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	*/
+	public static SyncTracking fetchByF_GID_REFERENCE_UID_CREATED_BETWEEN_Last(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		OrderByComparator<SyncTracking> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_GID_REFERENCE_UID_CREATED_BETWEEN_Last(groupId,
+			referenceUid, createDate, modifiedDate, orderByComparator);
+	}
+
+	/**
+	* Returns the sync trackings before and after the current sync tracking in the ordered set where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	*
+	* @param trackingId the primary key of the current sync tracking
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @param createDate the create date
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next sync tracking
+	* @throws NoSuchSyncTrackingException if a sync tracking with the primary key could not be found
+	*/
+	public static SyncTracking[] findByF_GID_REFERENCE_UID_CREATED_BETWEEN_PrevAndNext(
+		long trackingId, long groupId, String referenceUid, Date createDate,
+		Date modifiedDate, OrderByComparator<SyncTracking> orderByComparator)
+		throws org.opencps.synctracking.exception.NoSuchSyncTrackingException {
+		return getPersistence()
+				   .findByF_GID_REFERENCE_UID_CREATED_BETWEEN_PrevAndNext(trackingId,
+			groupId, referenceUid, createDate, modifiedDate, orderByComparator);
+	}
+
+	/**
+	* Removes all the sync trackings where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @param createDate the create date
+	* @param modifiedDate the modified date
+	*/
+	public static void removeByF_GID_REFERENCE_UID_CREATED_BETWEEN(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate) {
+		getPersistence()
+			.removeByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId, referenceUid,
+			createDate, modifiedDate);
+	}
+
+	/**
+	* Returns the number of sync trackings where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	*
+	* @param groupId the group ID
+	* @param referenceUid the reference uid
+	* @param createDate the create date
+	* @param modifiedDate the modified date
+	* @return the number of matching sync trackings
+	*/
+	public static int countByF_GID_REFERENCE_UID_CREATED_BETWEEN(long groupId,
+		String referenceUid, Date createDate, Date modifiedDate) {
+		return getPersistence()
+				   .countByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId,
+			referenceUid, createDate, modifiedDate);
 	}
 
 	/**

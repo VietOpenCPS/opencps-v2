@@ -1728,7 +1728,10 @@ public class RestfulController {
 				} else {
 					//DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
 					DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getByTypeCode(type, groupId);
-					
+					//Lấy danh sách deliverable theo deliverableType ==> null ==> lấy theo groupId = 0
+					if(Validator.isNull(deliverableType)){
+						deliverableType = DeliverableTypeLocalServiceUtil.getByTypeCode(type, 0);
+					}
 
 					JSONArray filterData = JSONFactoryUtil.createJSONArray(deliverableType.getDataConfig());
 
