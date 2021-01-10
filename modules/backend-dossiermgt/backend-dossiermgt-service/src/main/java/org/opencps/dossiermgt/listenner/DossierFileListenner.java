@@ -614,11 +614,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			String revalidate = formDataContent.getString(DossierFileTerm.REVALIDATE);
 
 			// check exits deliverable
-			Deliverable deliverable = Validator.isNotNull(dDeliverableCode)
-				? DeliverableLocalServiceUtil.getByF_GID_DCODE(
-					model.getGroupId(), dDeliverableCode)
-				: DeliverableLocalServiceUtil.fetchByGID_DID(
-					model.getGroupId(), model.getDossierId());
+			Deliverable deliverable = Validator.isNotNull(model.getDossierId())
+				? DeliverableLocalServiceUtil.fetchByGID_DID(
+					model.getGroupId(), model.getDossierId())
+					:DeliverableLocalServiceUtil.getByF_GID_DCODE(
+					model.getGroupId(), dDeliverableCode);
 
 			if (dossierPart.getDeliverableAction() == 0 &&
 				Validator.isNull(deliverable)) {
@@ -642,7 +642,9 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 							? dossierFileAttach.getFileEntryId() : 0l,
 						dlvType.getFormScriptFileId(),
 						dlvType.getFormReportFileId(),
-						formDataContent.toString(), fileAttachs,
+						formDataContent.toString(),
+						dossierFileAttach != null
+						? String.valueOf(dossierFileAttach.getFileEntryId()) : "0",
 						serviceContext);
 			}
 			else if (Validator.isNotNull(deliverable)) {
@@ -711,7 +713,12 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					deliverable.getFormData(), formDataContent.toString());
 				deliverable.setFormData(formDataContent.toString());
 
-				deliverable.setFileAttachs(fileAttachs);
+				deliverable.setFileAttachs(deliverable !=null ? String.valueOf(deliverable.getFileEntryId()) :
+						String.valueOf(dossierFileAttach.getFileEntryId()));
+				String deliverableState = formDataContent.getString(DeliverableTerm.DELIVERABLE_STATE);
+				if(Validator.isNotNull(deliverableState)){
+					deliverable.setDeliverableState(Integer.valueOf(deliverableState));
+				}
 
 				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 			}
