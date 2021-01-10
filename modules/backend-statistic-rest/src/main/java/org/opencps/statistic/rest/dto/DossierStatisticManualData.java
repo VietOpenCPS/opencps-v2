@@ -64,7 +64,7 @@ public class DossierStatisticManualData {
 	private int onegateReleaseBetimesCount = 0;
 	private int onegateReleaseOntimeCount = 0;
 	private int onegateReleaseOvertimeCount = 0;
-
+	
 	public int getMonth() {
 		return month;
 	}
@@ -519,6 +519,6 @@ public class DossierStatisticManualData {
 
 	public void setOnegateReleaseOvertimeCount(int onegateReleaseOvertimeCount) {
 		this.onegateReleaseOvertimeCount = onegateReleaseOvertimeCount;
-	}
+	}		
 		
 }
