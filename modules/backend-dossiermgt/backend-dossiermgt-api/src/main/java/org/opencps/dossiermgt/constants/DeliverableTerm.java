@@ -61,4 +61,7 @@ public class DeliverableTerm {
 	public static final String ISSUE_DATE_SEARCH = "issueDateSearch";
 	public static final String NGAY_CAP = "ngaycap";
 	public static final String NGAY_CAP_SEARCH = "ngaycapSearch";
+	public static final String NGAY_CAP_CNDKKD="ngaycapgcndkkd";
+	public static final String NGAY_CAP_CNDKKD_SEARCH="ngaycapgcndkkdSearch";
+	public static final String MODERATOR ="moderator";
 }

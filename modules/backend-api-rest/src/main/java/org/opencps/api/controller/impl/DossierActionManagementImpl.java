@@ -517,6 +517,8 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 		}
 		catch (Exception e) {
+			_log.error("Error when get action detail: " + e.getMessage());
+			e.printStackTrace();
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

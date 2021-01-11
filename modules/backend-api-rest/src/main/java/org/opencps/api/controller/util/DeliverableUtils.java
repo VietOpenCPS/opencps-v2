@@ -455,14 +455,14 @@ public class DeliverableUtils {
 			Sheet sheetConfig = workbook.getSheetAt(1);
 			int nOfRows = datatypeSheet.getPhysicalNumberOfRows();
 			int nOfColumns = 1000;
-			_log.info("nOfRows: " + nOfRows);
+			_log.debug("nOfRows: " + nOfRows);
 
 			if (nOfRows > 1 && nOfRows < 10000) {
 
 				JSONObject formDataFormat = JSONFactoryUtil.createJSONObject();
 				for (int i = 0; i < nOfColumns; i++) {
+					_log.debug("nOfRows: " + i);
 					Cell celli = datatypeSheet.getRow(0).getCell(i);
-					_log.debug("Cell" + celli + "CellValue " + celli.getStringCellValue());
 					if (Validator.isNotNull(celli) && Validator.isNotNull(celli.getStringCellValue())) {
 						formDataFormat.put(String.valueOf(i),
 								sheetConfig.getRow(0).getCell(i).getStringCellValue());
@@ -471,8 +471,8 @@ public class DeliverableUtils {
 						break;
 					}
 				}
-				_log.info("====dataForm__" + formDataFormat);
-				_log.info("====nOfColumns===" + nOfColumns);
+				_log.debug("====dataForm__" + formDataFormat);
+				_log.debug("====nOfColumns===" + nOfColumns);
 				for (int i = 1; i < nOfRows; i++) {
 					Row currentRow = datatypeSheet.getRow(i);
 

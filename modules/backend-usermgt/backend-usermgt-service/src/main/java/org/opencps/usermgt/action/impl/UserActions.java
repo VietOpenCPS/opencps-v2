@@ -1329,8 +1329,8 @@ public class UserActions implements UserInterface {
 					result.put(UserTerm.MAPPING_USER_ID, applicant.getMappingUserId());
 					result.put(UserTerm.GOV_AGENCY_CODE, StringPool.BLANK);
 					result.put(UserTerm.GOV_AGENCY_NAME, StringPool.BLANK);
+					result.put(ApplicantTerm.VERIFICATION, applicant.getVerification());
 					result.put(UserTerm.SCREEN_NAME, user.getScreenName());
-
 				}
 
 			}

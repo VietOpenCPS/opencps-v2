@@ -191,6 +191,9 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SyncTracking getByDossierNo(long groupId, String dossierNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SyncTracking> getByGroupId(long groupId, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -209,6 +212,13 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SyncTracking> getByGroupIdAndServiceCodeAndDate(long groupId,
 		String serviceCode, Date fromDate, Date toDate, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SyncTracking getByReferenceUid(long groupId, String referenceUid);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByReferenceUidAndDate(long groupId,
+		String referenceUid, Date fromDate, Date toDate, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
