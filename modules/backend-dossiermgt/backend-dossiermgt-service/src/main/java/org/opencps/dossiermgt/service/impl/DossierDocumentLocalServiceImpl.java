@@ -88,12 +88,12 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		
 		long userId = serviceContext.getUserId();
 
-		// _log.info("****Start add file at:" + new Date());
+		// _log.debug("****Start add file at:" + new Date());
 
 		// validateAddDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo,
 		// dossierPartNo, fileTemplateNo);
 
-		// _log.info("****End validator file at:" + new Date());
+		// _log.debug("****End validator file at:" + new Date());
 
 		// DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId,
 		// dossierTemplateNo, dossierPartNo);
@@ -110,7 +110,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		} catch (Exception e) {
 			throw new SystemException(e);
 		}
-		// _log.info("****End uploadFile file at:" + new Date());
+		// _log.debug("****End uploadFile file at:" + new Date());
 
 		Date now = new Date();
 
@@ -137,7 +137,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		object.setDocumentName(documentName);
 		object.setDocumentCode(documentCode);
 		
-		_log.info("===addDossierDoc(1)==="+fileEntryId);
+		_log.debug("===addDossierDoc(1)==="+fileEntryId);
 		object.setDocumentFileId(fileEntryId);
 		// TODO: docSync
 
@@ -169,7 +169,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		object.setDocumentType(documentType);
 		object.setDocumentName(documentName);
 		object.setDocumentCode(documentCode);
-		_log.info("===addDossierDoc(2)==="+documentFileId);
+		_log.debug("===addDossierDoc(2)==="+documentFileId);
 		object.setDocumentFileId(documentFileId);
 		object.setDocSync(docSync);
 		// TODO: docSync
@@ -199,7 +199,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		object.setDocumentType(documentType);
 		object.setDocumentName(documentName);
 		object.setDocumentCode(documentCode);
-		_log.info("===updateDossierDoc(1)==="+documentFileId);
+		_log.debug("===updateDossierDoc(1)==="+documentFileId);
 		object.setDocumentFileId(documentFileId);
 		object.setDocSync(docSync);
 
@@ -212,12 +212,12 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 			InputStream inputStream, String fileType, ServiceContext serviceContext) {
 		long userId = serviceContext.getUserId();
 
-		// _log.info("****Start add file at:" + new Date());
+		// _log.debug("****Start add file at:" + new Date());
 
 		// validateAddDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo,
 		// dossierPartNo, fileTemplateNo);
 
-		// _log.info("****End validator file at:" + new Date());
+		// _log.debug("****End validator file at:" + new Date());
 
 		// DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId,
 		// dossierTemplateNo, dossierPartNo);
@@ -234,7 +234,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		} catch (Exception e) {
 			throw new SystemException(e);
 		}
-		// _log.info("****End uploadFile file at:" + new Date());
+		// _log.debug("****End uploadFile file at:" + new Date());
 
 		Date now = new Date();
 
@@ -261,7 +261,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		object.setDocumentType(documentType);
 		object.setDocumentName(documentName);
 		object.setDocumentCode(documentCode);
-		_log.info("===addDossierDoc(3)==="+fileEntryId);
+		_log.debug("===addDossierDoc(3)==="+fileEntryId);
 		object.setDocumentFileId(fileEntryId);
 		// TODO: docSync
 
@@ -282,12 +282,12 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 			long fileSize, InputStream inputStream, String fileType, ServiceContext serviceContext) {
 		long userId = serviceContext.getUserId();
 
-		// _log.info("****Start add file at:" + new Date());
+		// _log.debug("****Start add file at:" + new Date());
 
 		// validateAddDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo,
 		// dossierPartNo, fileTemplateNo);
 
-		// _log.info("****End validator file at:" + new Date());
+		// _log.debug("****End validator file at:" + new Date());
 
 		// DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId,
 		// dossierTemplateNo, dossierPartNo);
@@ -304,7 +304,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		} catch (Exception e) {
 			throw new SystemException(e);
 		}
-		// _log.info("****End uploadFile file at:" + new Date());
+		// _log.debug("****End uploadFile file at:" + new Date());
 
 		Date now = new Date();
 
@@ -329,7 +329,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 			object.setDocumentType(documentType);
 			object.setDocumentName(documentName);
 			object.setDocumentCode(documentCode);
-			_log.info("===updateDossierDoc==="+fileEntryId);
+			_log.debug("===updateDossierDoc==="+fileEntryId);
 			object.setDocumentFileId(fileEntryId);
 		}
 
