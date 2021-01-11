@@ -3378,6 +3378,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			dossier.setReferenceUid(MaHoSo);
 			// 5: tu he thong dvcqg
 			dossier.setSystemId(5);
+			dossier.setSubmitDate(new Date());
 
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 
