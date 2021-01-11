@@ -34,9 +34,10 @@ public class UpgradeSchema1_0_2 extends UpgradeProcess {
 		
 		upgrade(new UpgradeMVCCVersion());
 
+		if(!hasColumn(NotificationTemplateTable.TABLE_NAME, "priority")) {
+			alter(NotificationQueueTable.class, new AlterTableAddColumn("priority INTEGER"));
+		}
 		
-		alter(NotificationQueueTable.class, new AlterTableAddColumn("priority INTEGER"));
-		alter(NotificationTemplateTable.class, new AlterTableAddColumn("priority INTEGER"));
 		
 
 	}

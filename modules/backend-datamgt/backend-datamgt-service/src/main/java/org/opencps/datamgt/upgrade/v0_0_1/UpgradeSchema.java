@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeMVCCVersion;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.util.StringUtil;
 
 import org.opencps.datamgt.upgrade.v0_0_1.util.DictItemTable;
 
@@ -33,7 +32,9 @@ public class UpgradeSchema extends UpgradeProcess {
 	protected void doUpgrade() throws Exception {
 		
 		upgrade(new UpgradeMVCCVersion());
-		alter(DictItemTable.class, new AlterTableAddColumn("idLGSP LONG"));
+		if(!hasColumn(DictItemTable.TABLE_NAME, "idLGSP")) {
+			alter(DictItemTable.class, new AlterTableAddColumn("idLGSP LONG"));
+		}
 
 	}
 
