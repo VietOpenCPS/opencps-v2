@@ -613,7 +613,21 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 
 		object.put("PhongBanXuLy", "");// ko bb
-		object.put("NoiDungXuLy", dossierAction != null ? dossierAction.getActionNote() : StringPool.BLANK);
+		String processContent = "";
+		if(Validator.isNotNull(dossierAction)) {
+			String actionName = Validator.isNotNull(dossierAction.getActionName())
+					? dossierAction.getActionName(): StringPool.BLANK;
+			String actionNote = Validator.isNotNull(dossierAction.getActionNote())
+					? dossierAction.getActionNote(): StringPool.BLANK;
+			if(!actionName.isEmpty()) {
+				processContent += actionName;
+				if(!actionNote.isEmpty()) {
+					processContent += "-" + actionNote;
+				}
+			}
+		}
+
+		object.put("NoiDungXuLy", processContent);
 		object.put("TrangThai", getMappingStatus(groupId, dossier));
 		object.put("NgayBatDau", "");// ko bb
 		object.put("NgayKetThucTheoQuyDinh", "");// ko bb
