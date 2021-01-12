@@ -1841,7 +1841,6 @@ public class DossierUtils {
 	public static List<DossierVotingDataModel> mappingForListDossierVoting(List<Document> docs, long groupId) {
 		List<DossierVotingDataModel> ouputs = new ArrayList<DossierVotingDataModel>();
 		List<String> listDossierId = new ArrayList<>();
-		DossierVotingDataModel model = new DossierVotingDataModel();
 		int size = 0;
 		long classPK;
 		String votingCode;
@@ -1849,6 +1848,7 @@ public class DossierUtils {
 		Integer point;
 		long dossierIdFromDossier;
 		int indexVoting = 1;
+		List<Object[]> listVoting = new ArrayList<Object[]>();
 
 		for (Document doc : docs) {
 			if (doc.hasField(Field.ENTRY_CLASS_PK) && Validator.isNotNull(doc.get(Field.ENTRY_CLASS_PK))) {
@@ -1856,62 +1856,85 @@ public class DossierUtils {
 			}
 		}
 
-		if (listDossierId.size() > 0) {
-			List<Object[]> listVoting = DossierLocalServiceUtil.getListVotingByDossier(groupId, listDossierId);
-			if (Validator.isNull(listVoting) || listVoting.size() == 0) {
-				model.setVotingCode1("");
-				model.setVotingCode2("");
-				model.setVotingCode3("");
-				model.setVotingName1("");
-				model.setVotingName2("");
-				model.setVotingName3("");
-				model.setResultVotingCode1(2);
-				model.setResultVotingCode2(2);
-				model.setResultVotingCode3(2);
-			}
-			size = listVoting.size();
+		
 
-			for (Document doc : docs) {
+		for (Document doc : docs) {
+			DossierVotingDataModel model = new DossierVotingDataModel();
+			
+			// set default cac tieu chi danh gia 5, 6, 8, 9
+			model.setVotingCode5(StringPool.BLANK);
+			model.setVotingCode6(StringPool.BLANK);
+			model.setVotingCode8(StringPool.BLANK);
+			model.setVotingCode9(StringPool.BLANK);
+			model.setVotingName5(StringPool.BLANK);
+			model.setVotingName6(StringPool.BLANK);
+			model.setVotingName8(StringPool.BLANK);
+			model.setVotingName9(StringPool.BLANK);
+			model.setResultVotingCode5(1);
+			model.setResultVotingCode6(2);
+			model.setResultVotingCode8(2);
+			model.setResultVotingCode9(2);
 
-				model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
-				model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
-				model.setDossierName(doc.get(DossierTerm.DOSSIER_NAME));
-				model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
-				model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
-				model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
-				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
-				model.setDueDate(doc.get(DossierTerm.DUE_DATE));
-				model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
-				model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
-				model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
-				
-				Date dueDate = Validator.isNull(model.getDueDate()) ? null
-						: DateTimeUtils.convertStringToFullDate(model.getDueDate());
-				Date extendDate = Validator.isNull(model.getExtendDate()) ? null
-						: DateTimeUtils.convertStringToFullDate(model.getExtendDate());
-				Date releaseDate = Validator.isNull(model.getReleaseDate()) ? null
-						: DateTimeUtils.convertStringToFullDate(model.getReleaseDate());
-				Date finishDate = Validator.isNull(model.getFinishDate()) ? null
-						: DateTimeUtils.convertStringToFullDate(model.getFinishDate());
-				int overdue = 1;
-				if (dueDate != null) {
-					// Check extendDate != null and releaseDate < dueDate
-					if (releaseDate != null && releaseDate.before(dueDate) && extendDate != null)
-						overdue = 2;
-					// Or check finishDate < dueDate
-					if (finishDate != null && finishDate.before(dueDate))
-						overdue = 2;
-
-					// Check overTime condition releaseDate > dueDate
-					if (releaseDate != null && releaseDate.after(dueDate))
-						overdue = 0;
+			if (listDossierId.size() > 0) {
+				listVoting = DossierLocalServiceUtil.getListVotingByDossier(groupId, listDossierId);
+				if (Validator.isNull(listVoting) || listVoting.size() == 0) {
+					model.setVotingCode3(StringPool.BLANK);
+					model.setVotingCode4(StringPool.BLANK);
+					model.setVotingCode7(StringPool.BLANK);
+					model.setVotingName3(StringPool.BLANK);
+					model.setVotingName4(StringPool.BLANK);
+					model.setVotingName7(StringPool.BLANK);
+					model.setResultVotingCode3(2);
+					model.setResultVotingCode4(2);
+					model.setResultVotingCode7(2);
+				} else {
+					size = listVoting.size();
 				}
-				model.setVotingCode4("");
-				model.setVotingName4("");
-				model.setResultVotingCode4(overdue);
-				
-				dossierIdFromDossier = model.getDossierId();
+			}
 
+			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
+			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+			model.setDossierName(doc.get(DossierTerm.DOSSIER_NAME));
+			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
+			model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+			model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
+			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+			model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
+			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
+			
+			Date dueDate = Validator.isNull(model.getDueDate()) ? null
+					: DateTimeUtils.convertStringToFullDate(model.getDueDate());
+			Date extendDate = Validator.isNull(model.getExtendDate()) ? null
+					: DateTimeUtils.convertStringToFullDate(model.getExtendDate());
+			Date releaseDate = Validator.isNull(model.getReleaseDate()) ? null
+					: DateTimeUtils.convertStringToFullDate(model.getReleaseDate());
+			Date finishDate = Validator.isNull(model.getFinishDate()) ? null
+					: DateTimeUtils.convertStringToFullDate(model.getFinishDate());
+			int overdue = 1;
+			if (dueDate != null) {
+				// Check extendDate != null and releaseDate < dueDate
+				if (releaseDate != null && releaseDate.before(dueDate) && extendDate != null)
+					overdue = 2;
+				// Or check finishDate < dueDate
+				if (finishDate != null && finishDate.before(dueDate))
+					overdue = 2;
+
+				// Check overTime condition releaseDate > dueDate
+				if (releaseDate != null && releaseDate.after(dueDate))
+					overdue = 0;
+			}
+			model.setVotingCode1(StringPool.BLANK);
+			model.setVotingName1(StringPool.BLANK);
+			model.setResultVotingCode1(overdue);
+			model.setVotingCode2(StringPool.BLANK);
+			model.setVotingName2(StringPool.BLANK);
+			model.setResultVotingCode2(overdue);
+			
+			dossierIdFromDossier = GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
+			
+			if (size > 0) {
 				for (int i = 0; i < size; i++) {
 					// each voting
 					if (Validator.isNull(listVoting.get(i))) {
@@ -1934,26 +1957,27 @@ public class DossierUtils {
 						point = Validator.isNotNull(listVoting.get(i)[4]) ? (Integer) listVoting.get(i)[4] : 0;
 
 						if (indexVoting == 1) {
-							model.setVotingCode1(votingCode);
-							model.setVotingName1(votingName);
-							model.setResultVotingCode1(point);
-						} else if (indexVoting == 2) {
-							model.setVotingCode2(votingCode);
-							model.setVotingName2(votingName);
-							model.setResultVotingCode2(point);
-						} else if (indexVoting == 3) {
 							model.setVotingCode3(votingCode);
 							model.setVotingName3(votingName);
 							model.setResultVotingCode3(point);
+						} else if (indexVoting == 2) {
+							model.setVotingCode4(votingCode);
+							model.setVotingName4(votingName);
+							model.setResultVotingCode4(point);
+						} else if (indexVoting == 3) {
+							model.setVotingCode7(votingCode);
+							model.setVotingName7(votingName);
+							model.setResultVotingCode7(point);
 							break;
 						} 
 						indexVoting++;
 					}
 				}
-				ouputs.add(model);
 			}
+			ouputs.add(model);
 		}
-		return ouputs;
+
+	return ouputs;
 
 	}
 
