@@ -3726,6 +3726,7 @@ public class DossierActionsImpl implements DossierActions {
 				dossierFileId = dossierFile.getDossierFileId();
 				//
 				createFile.put(DossierFileTerm.E_FORM, eForm);
+				createFile.put(DossierPartTerm.EFORM, eForm);
 				createFile.put(DossierFileTerm.DOSSIER_FILE_ID, dossierFileId);
 				createFile.put(DossierFileTerm.FORM_DATA, formData);
 				createFile.put(DossierFileTerm.FORM_SCRIPT, formScript);
