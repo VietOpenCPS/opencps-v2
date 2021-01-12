@@ -16,7 +16,11 @@ package org.opencps.usermgt.service;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import org.opencps.usermgt.model.ApplicantData;
 
 /**
  * Provides a wrapper for {@link ApplicantDataLocalService}.
@@ -434,6 +438,12 @@ public class ApplicantDataLocalServiceWrapper
 		return _applicantDataLocalService.updateApplicantData(context, groupId,
 			fileTemplateNo, fileName, fileEntryId, metadata, status,
 			applicantIdNo, applicantDataType, dossierNo, log);
+	}
+
+	@Override
+	public ApplicantData updateApplicantData(long groupId, long applicantDataId, String fileTemplateNo, String fileNo, String fileName, String applicantIdNo, int status, ServiceContext serviceContext) throws PortalException, SystemException {
+		return _applicantDataLocalService.updateApplicantData(groupId, applicantDataId,fileTemplateNo,
+				fileNo,fileName,applicantIdNo,status,serviceContext);
 	}
 
 	@Override

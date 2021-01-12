@@ -39,7 +39,6 @@ public class EnginePreview implements MessageListener {
             else
             	return false;
         } catch (JSONException ex) {
-        	_log.error(ex);
             try {
                 JSONObject obj = JSONFactoryUtil.createJSONObject(jsonString);
                 if (obj == null) {
@@ -49,7 +48,7 @@ public class EnginePreview implements MessageListener {
                 	return true;
                 }
             } catch (JSONException e) {
-            	_log.error(e);
+            	_log.error(e.getMessage());
                 return false;
             }
         }
@@ -57,7 +56,7 @@ public class EnginePreview implements MessageListener {
 	
 	private void _doPreview(Message message) {
 		_log.info("DoPreview.........");
-	
+
 		
 		String formReport = message.getString(ConfigConstants.JASPER_FORM_REPORT);
 		

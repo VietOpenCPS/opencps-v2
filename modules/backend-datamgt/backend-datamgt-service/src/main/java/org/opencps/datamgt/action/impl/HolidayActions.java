@@ -83,13 +83,13 @@ public class HolidayActions implements HolidayInterface {
 		return holiday;
 	}
 
-	public Holiday create(long userId, long groupId, String holidayDate, String description,
+	public Holiday create(long userId, long groupId, String holidayDate, String description, int holidayType,
 			ServiceContext serviceContext)
 			throws NoSuchUserException, UnauthenticationException, UnauthorizationException {
 		Holiday ett = null;
 
 		ett = HolidayLocalServiceUtil.addHoliday(userId, groupId, new Date(GetterUtil.getLong(holidayDate)),
-				description, serviceContext);
+				description, holidayType, serviceContext);
 
 		return ett;
 	}
