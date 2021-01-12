@@ -853,100 +853,6 @@ public class DossierManagementImpl implements DossierManagement {
 				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			}
 
-			List<DossierDataModel> dossiers = results.getData();
-			List<String> listDossierId = new ArrayList<>();
-			for(DossierDataModel oneDossier : dossiers) {
-				if(Validator.isNotNull(oneDossier.getDossierId())) {
-					listDossierId.add(String.valueOf(oneDossier.getDossierId()));
-				}
-			}
-
-			if(listDossierId.size() > 0) {
-				List<Object[]> listVoting = DossierLocalServiceUtil.getListVotingByDossier(groupId, listDossierId);
-				if(Validator.isNull(listVoting) || listVoting.size() == 0) {
-					return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
-				}
-				int size = listVoting.size();
-				long classPK;
-				String votingCode;
-				Integer votingId;
-				String votingName;
-				Integer point;
-				long dossierIdFromDossier;
-				int indexVoting = 1;
-
-				for(DossierDataModel dossierModel : dossiers) {
-					//each dossier
-					dossierIdFromDossier = dossierModel.getDossierId();
-					indexVoting = 1;
-					for (int i = 0; i < size; i++) {
-						//each voting
-						if(Validator.isNull(listVoting.get(i))) {
-							continue;
-						}
-
-						if(Validator.isNull(listVoting.get(i)[0])) {
-							//No classPK
-							continue;
-						}
-
-						classPK = GetterUtil.getLong(listVoting.get(i)[0]);
-						if(classPK == 0) {
-							//classPK is string or = 0
-							continue;
-						}
-						if(dossierIdFromDossier == classPK) {
-							votingCode = Validator.isNotNull(listVoting.get(i)[1]) ? (String) listVoting.get(i)[1] : "";
-							votingName = Validator.isNotNull(listVoting.get(i)[3]) ? (String) listVoting.get(i)[3] : "";
-							point      = Validator.isNotNull(listVoting.get(i)[4]) ? (Integer) listVoting.get(i)[4] : 0;
-
-							if(indexVoting == 1) {
-								dossierModel.setVotingCode1(votingCode);
-								dossierModel.setVotingName1(votingName);
-								dossierModel.setResultVotingCode1(point);
-							} else if(indexVoting == 2) {
-								dossierModel.setVotingCode2(votingCode);
-								dossierModel.setVotingName2(votingName);
-								dossierModel.setResultVotingCode2(point);
-							} else if(indexVoting == 3) {
-								dossierModel.setVotingCode3(votingCode);
-								dossierModel.setVotingName3(votingName);
-								dossierModel.setResultVotingCode3(point);
-							} else if(indexVoting == 4) {
-								dossierModel.setVotingCode4("");
-								dossierModel.setVotingName4("");
-								
-								Date dueDate = Validator.isNull(dossierModel.getDueDate())
-										? null
-										: DateTimeUtils.convertStringToFullDate(dossierModel.getDueDate());
-								Date extendDate = Validator.isNull(dossierModel.getExtendDate())
-											? null
-											: DateTimeUtils.convertStringToFullDate(dossierModel.getExtendDate());
-								Date releaseDate = Validator.isNull(dossierModel.getReleaseDate())
-											? null
-											: DateTimeUtils.convertStringToFullDate(dossierModel.getReleaseDate());
-								Date finishDate = Validator.isNull(dossierModel.getFinishDate())
-											? null
-											: DateTimeUtils.convertStringToFullDate(dossierModel.getFinishDate());
-								int overdue = 1;
-								if (dueDate != null) {
-									//Check extendDate != null and releaseDate < dueDate
-									if (releaseDate != null && releaseDate.before(dueDate) && extendDate != null) overdue = 2;
-									//Or check finishDate < dueDate
-									if (finishDate != null && finishDate.before(dueDate)) overdue = 2;
-
-									//Check overTime condition releaseDate > dueDate
-									if (releaseDate != null && releaseDate.after(dueDate)) overdue = 0;
-								}
-								dossierModel.setResultVotingCode4(overdue);
-								break;
-							}
-							indexVoting++;
-						}
-					}
-				}
-			}
-
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		}
 		catch (Exception e) {
@@ -9210,6 +9116,68 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 		}catch (Exception e){
 			_log.info(e.getMessage());
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response evaluateDepartment(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DossierSearchModel query) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		DossierActions actions = new DossierActionsImpl();
+		DossierVotingResultsModel results = null;
+		
+		try {
+			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
+			}
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+			Sort[] sorts = null;
+			if (Validator.isNull(query.getSort())) {
+				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
+				sorts = new Sort[]{ SortFactoryUtil.create(dateSort, Sort.LONG_TYPE,
+								GetterUtil.getBoolean(query.getOrder()))
+				};
+			} else {
+				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
+				sorts = new Sort[]{ SortFactoryUtil.create( querySort, Sort.STRING_TYPE,
+								GetterUtil.getBoolean(query.getOrder()))
+				};
+			}
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			String fromReceiveDate =
+					APIDateTimeUtils.convertNormalDateToLuceneDate(
+							query.getFromReceiveDate());
+
+			String toReceiveDate =
+					APIDateTimeUtils.convertNormalDateToLuceneDate(
+							query.getToReceiveDate());
+			
+			params.put(DossierTerm.FROM_RECEIVEDATE, fromReceiveDate);
+			params.put(DossierTerm.TO_RECEIVEDATE, toReceiveDate);
+			
+			results = new DossierVotingResultsModel();
+
+			JSONObject jsonData = actions.getDossiers(
+					user.getUserId(), company.getCompanyId(), groupId, params,
+					sorts, query.getStart(), query.getEnd(), serviceContext);
+
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+
+			results.getData().addAll(
+					DossierUtils.mappingForListDossierVoting((List<Document>) jsonData.get(ConstantUtils.DATA), groupId));
+			
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+
+		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
