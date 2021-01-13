@@ -591,8 +591,17 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			if (Validator.isNull(groupAgencyCode) || groupAgencyCode.contentEquals(TOTAL)) {
 				sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);
 			}
-
-			//LOG.info(sql);
+			
+			LOG.debug("+++groupId:"+groupId);
+			LOG.debug("+++month:"+month);
+			LOG.debug("+++year:"+year);
+			LOG.debug("+++domain:"+domain);
+			LOG.debug("+++govAgency:"+govAgency);
+			LOG.debug("+++system:"+system);
+			LOG.debug("+++groupAgencyCode:"+groupAgencyCode);
+			LOG.debug("+++start:"+start);
+			LOG.debug("+++end:"+end);
+			LOG.debug("=====sql:"+sql);
 			SQLQuery q = session.createSQLQuery(sql);
 
 			q.setCacheable(true);

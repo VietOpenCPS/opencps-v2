@@ -192,7 +192,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			@BeanParam DossierSearchModel query, @Context Request requestCC,
 			@Context HttpServletRequest request) {
 
-		//LOG.info("GET DossierStatisticResponse");
+		_log.debug("===searchDossierStatistic===");
 		//_log.info("START DossierStatisticResponse: "+query.getAgency());
 		CacheControl cc = new CacheControl();
 		cc.setMaxAge(60);
@@ -256,6 +256,8 @@ public class OpencpsStatisticRestApplication extends Application {
 		if (Validator.isNotNull(fromStatisticDate) ||Validator.isNotNull(toStatisticDate)) {
 			calculate = false;
 		}
+		
+		_log.debug("+++calculate:"+calculate);
 
 		if (!calculate) {
 			String status = query.getStatus();
@@ -536,7 +538,7 @@ public class OpencpsStatisticRestApplication extends Application {
 //				_log.info("dossierStatisticRequest: "+dossierStatisticRequest);
 				//
 				DossierStatisticResponse statisticResponse = null;
-//				System.out.println("SEARCH GROUP CODE: " + query.getGroupCode());
+				_log.debug("SEARCH GROUP CODE: " + query.getGroupCode());
 				if (Validator.isNotNull(query.getGroupCode())) {
 					if (Validator.isNull(query.getParentAgency())) {
 						DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
