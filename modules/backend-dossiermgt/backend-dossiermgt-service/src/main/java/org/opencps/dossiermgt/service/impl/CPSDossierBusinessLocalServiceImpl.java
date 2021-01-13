@@ -8952,6 +8952,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		String lockState = input.getLockState();
 		String dossierNo = input.getDossierNo();
 		String dossierCounter = input.getDossierCounter();
+		int systemId = GetterUtil.getInteger(input.getSystemId());
 
 		Dossier oldDossier = null;
 		if (Validator.isNotNull(input.getReferenceUid())) {
@@ -8960,6 +8961,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			oldDossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
 			referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
 		}
+		
+		_log.debug("+++++systemId:"+systemId);
+		_log.debug("+++++oldDossier.getOriginality():"+oldDossier.getOriginality());
 
 		if (oldDossier == null || oldDossier.getOriginality() == 0) {
 			Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
@@ -8987,7 +8991,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(),
 					input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(),
 					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(), input.getVnpostalStatus(), input.getVnpostalProfile(),
-					input.getFromViaPostal(), dossierCounter, serviceContext);
+					input.getFromViaPostal(), dossierCounter,systemId, serviceContext);
 
 			return dossier;
 		}

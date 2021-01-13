@@ -44,8 +44,6 @@ public class OpenIdConnectAutoLogin implements AutoLogin {
 	protected String[] doLogin(
 			HttpServletRequest request, HttpServletResponse response)
 		throws Exception {
-		
-		_log.info("doLogin");
 
 		long companyId = _portal.getCompanyId(request);
 
@@ -111,9 +109,6 @@ public class OpenIdConnectAutoLogin implements AutoLogin {
 	@Override
 	public String[] login(HttpServletRequest request, HttpServletResponse response) throws AutoLoginException {
 		// TODO Auto-generated method stub
-		
-		_log.info("==login===");
-		
 		
 		return null;
 	}

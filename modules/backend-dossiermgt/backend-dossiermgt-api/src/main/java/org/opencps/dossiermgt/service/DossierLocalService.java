@@ -311,10 +311,10 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findByG_GDID(long groupId, String groupDossierId);
 
+	public List<Dossier> findByG_U_DO(long groupId, long userId);
+
 	public List<Dossier> findByG_UID_DS(long groupId, long userId,
 		String dossierStatus);
-
-	public List<Dossier> findByG_U_DO(long groupId, long userId);
 
 	public List<Dossier> findByGID(long groupId, int start, int end);
 
@@ -699,7 +699,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateWardName, double durationCount, int durationUnit,
 		String dossierName, String processNo, String metaData,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		String dossierCounter, ServiceContext context)
+		String dossierCounter, int systemId, ServiceContext context)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
