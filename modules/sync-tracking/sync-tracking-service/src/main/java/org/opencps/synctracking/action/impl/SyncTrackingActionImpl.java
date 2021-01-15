@@ -89,7 +89,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
                 }
 
                 if(Validator.isNotNull(syncTracking)) {
-                    syncTrackingQuery.dossierNo = syncTracking.getDossierNo();
+                    syncTrackingQuery.dossierNo = syncTracking.getReferenceUid();
                 }
                 hasDossierNo = true;
             }
@@ -101,11 +101,11 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             List<SyncTracking> syncTrackingPaginate;
 
             if(hasDossierNo && !hasServiceCode) {
-                syncTrackingList = SyncTrackingLocalServiceUtil.getByGroupIdAndDossierNoAndDate(
+                syncTrackingList = SyncTrackingLocalServiceUtil.getByReferenceUidAndDate(
                         syncTrackingQuery.groupId, syncTrackingQuery.dossierNo, fromDateParsed, toDateParsed,
                         0, MAX_LIMIT
                 );
-                syncTrackingPaginate = SyncTrackingLocalServiceUtil.getByGroupIdAndDossierNoAndDate(
+                syncTrackingPaginate = SyncTrackingLocalServiceUtil.getByReferenceUidAndDate(
                         syncTrackingQuery.groupId, syncTrackingQuery.dossierNo, fromDateParsed, toDateParsed,
                         syncTrackingQuery.start, syncTrackingQuery.end
                 );
