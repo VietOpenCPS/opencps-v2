@@ -1,6 +1,7 @@
 package org.opencps.statistic.rest.engine.service;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -688,7 +689,6 @@ public class StatisticEngineFetch {
 				StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
 				if (Validator.isNotNull(dossierData.getDomainCode()) && !isGetReportServiceCode) {
 					// all site, all domain
-
 					String type1 = "all@all@" + groupId;
 
 					DossierStatisticData dataType1 = new DossierStatisticData();

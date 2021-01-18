@@ -100,6 +100,26 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 throw new Exception("No service config");
             }
 
+            //mapping service config info
+            boolean isAutoNextAction = false;
+            int length = listServiceConfig.length();
+            JSONObject oneServiceConfig;
+
+            for(int i = 0; i< length; i ++) {
+                oneServiceConfig = listServiceConfig.getJSONObject(i);
+                if(oneServiceConfig.getString("procedures_code").equals(serviceCodeCTS)) {
+                    profile.setServiceCode(oneServiceConfig.getString("serviceCode"));
+                    profile.setGovAgencyCode(oneServiceConfig.getString("govAgencyCode"));
+                    profile.setTemplateNo(oneServiceConfig.getString("templateNo"));
+                    if(oneServiceConfig.has("autoNextAction")
+                            && oneServiceConfig.getBoolean("autoNextAction")) {
+                        isAutoNextAction = true;
+                    }
+
+                    break;
+                }
+            }
+
             //get action code
             String status = profile.getStatus();
             JSONArray listActionCode = this.configJson.getJSONArray("actions");
@@ -107,20 +127,30 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             JSONObject oneActionCode;
             String actionCode = "";
             String actionCodeRequestPayment = "";
+            String statusConst = "";
+
             for(int i = 0; i< lengthListActionCode; i ++) {
                 oneActionCode = listActionCode.getJSONObject(i);
-                if(oneActionCode.getString("status").equals(status)) {
+                statusConst   = oneActionCode.getString("status");
+
+                if(statusConst.equals(status)) {
                     actionCode = oneActionCode.getString("actionCode");
-                    break;
-                } else if(oneActionCode.getString("status").equals(REQUEST_PAYMENT_STATUS)) {
+
+                    if(isAutoNextAction && !oneActionCode.getString("actionCodeAuto").isEmpty()) {
+                        actionCode = oneActionCode.getString("actionCodeAuto");
+                    }
+                }
+
+                if(statusConst.equals(REQUEST_PAYMENT_STATUS)) {
                     actionCodeRequestPayment = oneActionCode.getString("actionCode");
-                    break;
                 }
             }
 
             if(actionCode.isEmpty() && actionCodeRequestPayment.isEmpty()) {
                 throw new Exception("No action code mapped with refCode: " + profile.getRef_code() + ", status: " + status);
             }
+
+            _log.info("Doing action: " + actionCode + "...");
 
             if(status.equals(FrequencyOfficeConstants.STATUS_RECEIVE)) {
                 _log.info("TIEPNHAN|Receiving dossier with ref code: " + profile.getRef_code() + "...");
@@ -129,19 +159,6 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 if(Validator.isNotNull(dossier)) {
                     _log.error("TIEPNHAN|Ho so da duoc tiep nhan: " + dossier.getDossierNo());
                     return true;
-                }
-                //mapping service config info
-                int length = listServiceConfig.length();
-                JSONObject oneServiceConfig;
-
-                for(int i = 0; i< length; i ++) {
-                    oneServiceConfig = listServiceConfig.getJSONObject(i);
-                    if(oneServiceConfig.getString("procedures_code").equals(serviceCodeCTS)) {
-                        profile.setServiceCode(oneServiceConfig.getString("serviceCode"));
-                        profile.setGovAgencyCode(oneServiceConfig.getString("govAgencyCode"));
-                        profile.setTemplateNo(oneServiceConfig.getString("templateNo"));
-                        break;
-                    }
                 }
 
                 if(Validator.isNull(profile.getServiceCode())
@@ -159,9 +176,30 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
                 //Save file dinh kem
                 this.addDossierFile(profile, groupId, serviceContext, dossier);
-                if(profile.getFrom_unit_code().equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
-                    //Check list 2 when sync dossier from DVCBO, have to sync to PMNV
-                    this.syncDossierToPMNVManual(token, profile);
+
+                //Khong can gui cho cac don vi khac neu khong biet ho so tu dau (hoac truc tiep tai mot cua)
+                if (profile.getFrom_unit_code().isEmpty()) {
+                    _log.info("TIEPNHAN|Received dossier with ref code: " + profile.getRef_code());
+                    return true;
+                }
+
+                if(isAutoNextAction) {
+                    if(!profile.getFrom_unit_code()
+                            .equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
+                        //Check list 3 when dossier from PMNV and auto processing is enable, sync dossier to DVC
+                        // and sync dossier status to PMNV with profiles_status = 4,
+                        _log.info("Auto send dossier to DVC BO and status to PMNV...");
+                        //Sync dossier to DVC BO
+                        this.syncDossierToDVCBoManual(token, dossier.getDossierId(), false);
+
+                    }
+                    //Sync dossier status to both DVC BO and PMNV
+                    this.sendStatusProfile(token, dossier.getDossierId(), null);
+                } else {
+                    if(profile.getFrom_unit_code().equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
+                        //Check list 2 when dossier from DVCBO, have to sync to PMNV
+                        this.syncDossierToPMNVManual(token, profile);
+                    }
                 }
 
                 _log.info("TIEPNHAN|Received dossier with ref code: " + profile.getRef_code());
@@ -258,6 +296,16 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 //If dossier is from PMNV, when PMNV tra KET QUA, update to MCDT and send dossier KETQUA to DVCBO
                 _log.info("KETQUA|Updating dossier with ref code: " + profile.getRef_code() + "...");
                 this.doActionFrequency(groupId, serviceContext, dossier, profile, actionCode);
+                if(isAutoNextAction && !profile.getFrom_unit_code().isEmpty() && !profile.getFrom_unit_code()
+                        .equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
+                    //If enable auto next action and dossier is not from DVC bo, update dossier to DVC BO with
+                    // api 3.12 and and profiles_status = 10
+                    _log.info("-----Auto next action for ref code " + profile.getRef_code()
+                            + " with action code " + actionCode);
+                    this.syncDossierToDVCBoManual(token, dossier.getDossierId(), true);
+                    _log.info("-----Done auto next action");
+                }
+
                 _log.info("KETQUA|Updated dossier with ref code: " + profile.getRef_code());
                 return true;
             }
@@ -803,7 +851,13 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                     return;
                 }
 
-                this.syncDossierToDVCBoManual(token, dossierId);
+                if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_DENIED)) {
+                    _log.info("Dossier has been reject, not sending to DVC Bo...");
+                    return;
+                }
+
+                this.syncDossierToDVCBoManual(token, dossierId, true);
+
                 return;
             }
 
@@ -866,7 +920,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     }
 
     @Override
-    public void syncDossierToDVCBoManual(String token, long dossierId) throws Exception {
+    public void syncDossierToDVCBoManual(String token, long dossierId, boolean isUpdate) throws Exception {
         try {
             _log.info("Calling 3.12 syncing dossier to DVC Bo after receive from PMNV...");
             Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -890,7 +944,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             profile.setProfiles_status(String.valueOf(statusProfile));
             profile.setTo_unit_code(new String[] {this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE)});
 
-            if(Validator.isNotNull(dossier.getReleaseDate())) {
+            if(isUpdate) {
                 _log.info("Is update");
                 profile.setIs_update("true");
             } else {
@@ -1012,6 +1066,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                         this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
                 };
             } else {
+                //Neu co fromUnitCode thi ho so gui tu dau, se gui trang thai lai don vi do
                 fromUnitCode = metaDataJson.getString("fromUnitCode");
                 body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{fromUnitCode});
                 listToUnitCode = new String[]{
@@ -1024,20 +1079,23 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                     if (!fromUnitCode.isEmpty()
                             && !fromUnitCode.equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
                         //Neu ho so ko nhan tu DVC Bo va ho so dang o trang thai new thi gui cho DVC Bo (Checklist 3, luong 1.7)
-                        this.syncDossierToDVCBoManual(token, dossierId);
+                        this.syncDossierToDVCBoManual(token, dossierId, false);
                     }
                 }
                 else if(statusProfile.equals(FrequencyOfficeConstants.STATUS_LGSP_PROCESSING)) {
                     //Neu trang thai sang dang xu ly, thi gui cho ca hai
-                    _log.info("Sending status to multiple unit");
-                    body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{
-                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
-                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
-                    });
-                    listToUnitCode = new String[]{
-                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
-                            this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
-                    };
+                    _log.info("Updating processing");
+                    if (fromUnitCode.equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
+                        //Neu ho so nhan tu DVC Bo thi gui cho ca hai
+                        body.put(FrequencyOfficeConstants.TO_UNIT_CODE, new String[]{
+                                this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
+                                this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
+                        });
+                        listToUnitCode = new String[]{
+                                this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE),
+                                this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE_CUCTANSO)
+                        };
+                    }
                 }
             } else if(dossier.getOriginality() == FrequencyOfficeConstants.HOSO_TRUC_TIEP) {
                 if(Validator.isNull(isSendMultipleUnit)

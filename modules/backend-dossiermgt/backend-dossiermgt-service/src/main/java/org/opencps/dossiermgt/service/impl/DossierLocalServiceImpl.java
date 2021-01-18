@@ -7621,6 +7621,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.findByG_UID_DS(groupId, userId, dossierStatus);
 	}
 
+	public List<Dossier> findByG_U_DO(long groupId, long userId) {
+		return dossierPersistence.findByG_UID(groupId, userId);
+	}
+
 	public int countByG_UID_DS(long groupId, long userId, String dossierStatus) {
 		return dossierPersistence.countByG_UID_DS(groupId, userId, dossierStatus);
 	}

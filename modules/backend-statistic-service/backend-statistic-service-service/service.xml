@@ -61,6 +61,8 @@
 		<column name="receiveDossierSatCount" type="int" />
 		<column name="releaseDossierSatCount" type="int" />
 		<column name="fromViaPostalCount" type="int" />
+		<column name="processingInAPeriodCount" type="int" />
+		<column name="releaseInAPeriodCount" type="int" />
 		
 		<!-- Order -->
 

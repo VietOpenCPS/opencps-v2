@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -1976,6 +1977,532 @@ public class SyncTrackingPersistenceImpl extends BasePersistenceImpl<SyncTrackin
 	}
 
 	private static final String _FINDER_COLUMN_GROUPID_GROUPID_2 = "syncTracking.groupId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_GID_REFERENCEUID = new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
+			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, SyncTrackingImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_GID_ReferenceUid",
+			new String[] { Long.class.getName(), String.class.getName() },
+			SyncTrackingModelImpl.GROUPID_COLUMN_BITMASK |
+			SyncTrackingModelImpl.REFERENCEUID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_REFERENCEUID = new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
+			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_GID_ReferenceUid",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the sync tracking where groupId = &#63; and referenceUid = &#63; or throws a {@link NoSuchSyncTrackingException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @return the matching sync tracking
+	 * @throws NoSuchSyncTrackingException if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking findByF_GID_ReferenceUid(long groupId,
+		String referenceUid) throws NoSuchSyncTrackingException {
+		SyncTracking syncTracking = fetchByF_GID_ReferenceUid(groupId,
+				referenceUid);
+
+		if (syncTracking == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", referenceUid=");
+			msg.append(referenceUid);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchSyncTrackingException(msg.toString());
+		}
+
+		return syncTracking;
+	}
+
+	/**
+	 * Returns the sync tracking where groupId = &#63; and referenceUid = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking fetchByF_GID_ReferenceUid(long groupId,
+		String referenceUid) {
+		return fetchByF_GID_ReferenceUid(groupId, referenceUid, true);
+	}
+
+	/**
+	 * Returns the sync tracking where groupId = &#63; and referenceUid = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking fetchByF_GID_ReferenceUid(long groupId,
+		String referenceUid, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, referenceUid };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_GID_REFERENCEUID,
+					finderArgs, this);
+		}
+
+		if (result instanceof SyncTracking) {
+			SyncTracking syncTracking = (SyncTracking)result;
+
+			if ((groupId != syncTracking.getGroupId()) ||
+					!Objects.equals(referenceUid, syncTracking.getReferenceUid())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_SYNCTRACKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_REFERENCEUID_GROUPID_2);
+
+			boolean bindReferenceUid = false;
+
+			if (referenceUid == null) {
+				query.append(_FINDER_COLUMN_F_GID_REFERENCEUID_REFERENCEUID_1);
+			}
+			else if (referenceUid.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_REFERENCEUID_REFERENCEUID_3);
+			}
+			else {
+				bindReferenceUid = true;
+
+				query.append(_FINDER_COLUMN_F_GID_REFERENCEUID_REFERENCEUID_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindReferenceUid) {
+					qPos.add(referenceUid);
+				}
+
+				List<SyncTracking> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_REFERENCEUID,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"SyncTrackingPersistenceImpl.fetchByF_GID_ReferenceUid(long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					SyncTracking syncTracking = list.get(0);
+
+					result = syncTracking;
+
+					cacheResult(syncTracking);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_REFERENCEUID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (SyncTracking)result;
+		}
+	}
+
+	/**
+	 * Removes the sync tracking where groupId = &#63; and referenceUid = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @return the sync tracking that was removed
+	 */
+	@Override
+	public SyncTracking removeByF_GID_ReferenceUid(long groupId,
+		String referenceUid) throws NoSuchSyncTrackingException {
+		SyncTracking syncTracking = findByF_GID_ReferenceUid(groupId,
+				referenceUid);
+
+		return remove(syncTracking);
+	}
+
+	/**
+	 * Returns the number of sync trackings where groupId = &#63; and referenceUid = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @return the number of matching sync trackings
+	 */
+	@Override
+	public int countByF_GID_ReferenceUid(long groupId, String referenceUid) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_REFERENCEUID;
+
+		Object[] finderArgs = new Object[] { groupId, referenceUid };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_SYNCTRACKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_REFERENCEUID_GROUPID_2);
+
+			boolean bindReferenceUid = false;
+
+			if (referenceUid == null) {
+				query.append(_FINDER_COLUMN_F_GID_REFERENCEUID_REFERENCEUID_1);
+			}
+			else if (referenceUid.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_REFERENCEUID_REFERENCEUID_3);
+			}
+			else {
+				bindReferenceUid = true;
+
+				query.append(_FINDER_COLUMN_F_GID_REFERENCEUID_REFERENCEUID_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindReferenceUid) {
+					qPos.add(referenceUid);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_REFERENCEUID_GROUPID_2 = "syncTracking.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_REFERENCEUID_REFERENCEUID_1 =
+		"syncTracking.referenceUid IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_REFERENCEUID_REFERENCEUID_2 =
+		"syncTracking.referenceUid = ?";
+	private static final String _FINDER_COLUMN_F_GID_REFERENCEUID_REFERENCEUID_3 =
+		"(syncTracking.referenceUid IS NULL OR syncTracking.referenceUid = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO = new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
+			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, SyncTrackingImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_GID_DossierNo",
+			new String[] { Long.class.getName(), String.class.getName() },
+			SyncTrackingModelImpl.GROUPID_COLUMN_BITMASK |
+			SyncTrackingModelImpl.DOSSIERNO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_DOSSIERNO = new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
+			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_GID_DossierNo",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the sync tracking where groupId = &#63; and dossierNo = &#63; or throws a {@link NoSuchSyncTrackingException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @return the matching sync tracking
+	 * @throws NoSuchSyncTrackingException if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking findByF_GID_DossierNo(long groupId, String dossierNo)
+		throws NoSuchSyncTrackingException {
+		SyncTracking syncTracking = fetchByF_GID_DossierNo(groupId, dossierNo);
+
+		if (syncTracking == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", dossierNo=");
+			msg.append(dossierNo);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchSyncTrackingException(msg.toString());
+		}
+
+		return syncTracking;
+	}
+
+	/**
+	 * Returns the sync tracking where groupId = &#63; and dossierNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking fetchByF_GID_DossierNo(long groupId, String dossierNo) {
+		return fetchByF_GID_DossierNo(groupId, dossierNo, true);
+	}
+
+	/**
+	 * Returns the sync tracking where groupId = &#63; and dossierNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking fetchByF_GID_DossierNo(long groupId, String dossierNo,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, dossierNo };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO,
+					finderArgs, this);
+		}
+
+		if (result instanceof SyncTracking) {
+			SyncTracking syncTracking = (SyncTracking)result;
+
+			if ((groupId != syncTracking.getGroupId()) ||
+					!Objects.equals(dossierNo, syncTracking.getDossierNo())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_SYNCTRACKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_GROUPID_2);
+
+			boolean bindDossierNo = false;
+
+			if (dossierNo == null) {
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_1);
+			}
+			else if (dossierNo.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_3);
+			}
+			else {
+				bindDossierNo = true;
+
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindDossierNo) {
+					qPos.add(dossierNo);
+				}
+
+				List<SyncTracking> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"SyncTrackingPersistenceImpl.fetchByF_GID_DossierNo(long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					SyncTracking syncTracking = list.get(0);
+
+					result = syncTracking;
+
+					cacheResult(syncTracking);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (SyncTracking)result;
+		}
+	}
+
+	/**
+	 * Removes the sync tracking where groupId = &#63; and dossierNo = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @return the sync tracking that was removed
+	 */
+	@Override
+	public SyncTracking removeByF_GID_DossierNo(long groupId, String dossierNo)
+		throws NoSuchSyncTrackingException {
+		SyncTracking syncTracking = findByF_GID_DossierNo(groupId, dossierNo);
+
+		return remove(syncTracking);
+	}
+
+	/**
+	 * Returns the number of sync trackings where groupId = &#63; and dossierNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @return the number of matching sync trackings
+	 */
+	@Override
+	public int countByF_GID_DossierNo(long groupId, String dossierNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_DOSSIERNO;
+
+		Object[] finderArgs = new Object[] { groupId, dossierNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_SYNCTRACKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_GROUPID_2);
+
+			boolean bindDossierNo = false;
+
+			if (dossierNo == null) {
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_1);
+			}
+			else if (dossierNo.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_3);
+			}
+			else {
+				bindDossierNo = true;
+
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindDossierNo) {
+					qPos.add(dossierNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_GROUPID_2 = "syncTracking.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_1 = "syncTracking.dossierNo IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_2 = "syncTracking.dossierNo = ?";
+	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_3 = "(syncTracking.dossierNo IS NULL OR syncTracking.dossierNo = '')";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_PROTOCOL =
 		new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
 			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, SyncTrackingImpl.class,
@@ -5360,6 +5887,748 @@ public class SyncTrackingPersistenceImpl extends BasePersistenceImpl<SyncTrackin
 		"syncTracking.modifiedDate IS NULL";
 	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_CREATED_BETWEEN_MODIFIEDDATE_2 =
 		"syncTracking.modifiedDate <= ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_REFERENCE_UID_CREATED_BETWEEN =
+		new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
+			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, SyncTrackingImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByF_GID_REFERENCE_UID_CREATED_BETWEEN",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Date.class.getName(), Date.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_GID_REFERENCE_UID_CREATED_BETWEEN =
+		new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
+			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"countByF_GID_REFERENCE_UID_CREATED_BETWEEN",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Date.class.getName(), Date.class.getName()
+			});
+
+	/**
+	 * Returns all the sync trackings where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @param createDate the create date
+	 * @param modifiedDate the modified date
+	 * @return the matching sync trackings
+	 */
+	@Override
+	public List<SyncTracking> findByF_GID_REFERENCE_UID_CREATED_BETWEEN(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate) {
+		return findByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId, referenceUid,
+			createDate, modifiedDate, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the sync trackings where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @param createDate the create date
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of sync trackings
+	 * @param end the upper bound of the range of sync trackings (not inclusive)
+	 * @return the range of matching sync trackings
+	 */
+	@Override
+	public List<SyncTracking> findByF_GID_REFERENCE_UID_CREATED_BETWEEN(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		int start, int end) {
+		return findByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId, referenceUid,
+			createDate, modifiedDate, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the sync trackings where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @param createDate the create date
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of sync trackings
+	 * @param end the upper bound of the range of sync trackings (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching sync trackings
+	 */
+	@Override
+	public List<SyncTracking> findByF_GID_REFERENCE_UID_CREATED_BETWEEN(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		int start, int end, OrderByComparator<SyncTracking> orderByComparator) {
+		return findByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId, referenceUid,
+			createDate, modifiedDate, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the sync trackings where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @param createDate the create date
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of sync trackings
+	 * @param end the upper bound of the range of sync trackings (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching sync trackings
+	 */
+	@Override
+	public List<SyncTracking> findByF_GID_REFERENCE_UID_CREATED_BETWEEN(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		int start, int end, OrderByComparator<SyncTracking> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_REFERENCE_UID_CREATED_BETWEEN;
+		finderArgs = new Object[] {
+				groupId, referenceUid, _getTime(createDate),
+				_getTime(modifiedDate),
+				
+				start, end, orderByComparator
+			};
+
+		List<SyncTracking> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<SyncTracking>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (SyncTracking syncTracking : list) {
+					if ((groupId != syncTracking.getGroupId()) ||
+							!Objects.equals(referenceUid,
+								syncTracking.getReferenceUid()) ||
+							(createDate.getTime() > syncTracking.getCreateDate()
+																	.getTime()) ||
+							(modifiedDate.getTime() < syncTracking.getModifiedDate()
+																	  .getTime())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(6 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(6);
+			}
+
+			query.append(_SQL_SELECT_SYNCTRACKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_GROUPID_2);
+
+			boolean bindReferenceUid = false;
+
+			if (referenceUid == null) {
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_REFERENCEUID_1);
+			}
+			else if (referenceUid.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_REFERENCEUID_3);
+			}
+			else {
+				bindReferenceUid = true;
+
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_REFERENCEUID_2);
+			}
+
+			boolean bindCreateDate = false;
+
+			if (createDate == null) {
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_CREATEDATE_1);
+			}
+			else {
+				bindCreateDate = true;
+
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_CREATEDATE_2);
+			}
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_MODIFIEDDATE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(SyncTrackingModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindReferenceUid) {
+					qPos.add(referenceUid);
+				}
+
+				if (bindCreateDate) {
+					qPos.add(new Timestamp(createDate.getTime()));
+				}
+
+				if (bindModifiedDate) {
+					qPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				if (!pagination) {
+					list = (List<SyncTracking>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<SyncTracking>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first sync tracking in the ordered set where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @param createDate the create date
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching sync tracking
+	 * @throws NoSuchSyncTrackingException if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking findByF_GID_REFERENCE_UID_CREATED_BETWEEN_First(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		OrderByComparator<SyncTracking> orderByComparator)
+		throws NoSuchSyncTrackingException {
+		SyncTracking syncTracking = fetchByF_GID_REFERENCE_UID_CREATED_BETWEEN_First(groupId,
+				referenceUid, createDate, modifiedDate, orderByComparator);
+
+		if (syncTracking != null) {
+			return syncTracking;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", referenceUid=");
+		msg.append(referenceUid);
+
+		msg.append(", createDate=");
+		msg.append(createDate);
+
+		msg.append(", modifiedDate=");
+		msg.append(modifiedDate);
+
+		msg.append("}");
+
+		throw new NoSuchSyncTrackingException(msg.toString());
+	}
+
+	/**
+	 * Returns the first sync tracking in the ordered set where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @param createDate the create date
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking fetchByF_GID_REFERENCE_UID_CREATED_BETWEEN_First(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		OrderByComparator<SyncTracking> orderByComparator) {
+		List<SyncTracking> list = findByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId,
+				referenceUid, createDate, modifiedDate, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last sync tracking in the ordered set where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @param createDate the create date
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching sync tracking
+	 * @throws NoSuchSyncTrackingException if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking findByF_GID_REFERENCE_UID_CREATED_BETWEEN_Last(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		OrderByComparator<SyncTracking> orderByComparator)
+		throws NoSuchSyncTrackingException {
+		SyncTracking syncTracking = fetchByF_GID_REFERENCE_UID_CREATED_BETWEEN_Last(groupId,
+				referenceUid, createDate, modifiedDate, orderByComparator);
+
+		if (syncTracking != null) {
+			return syncTracking;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", referenceUid=");
+		msg.append(referenceUid);
+
+		msg.append(", createDate=");
+		msg.append(createDate);
+
+		msg.append(", modifiedDate=");
+		msg.append(modifiedDate);
+
+		msg.append("}");
+
+		throw new NoSuchSyncTrackingException(msg.toString());
+	}
+
+	/**
+	 * Returns the last sync tracking in the ordered set where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @param createDate the create date
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking fetchByF_GID_REFERENCE_UID_CREATED_BETWEEN_Last(
+		long groupId, String referenceUid, Date createDate, Date modifiedDate,
+		OrderByComparator<SyncTracking> orderByComparator) {
+		int count = countByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId,
+				referenceUid, createDate, modifiedDate);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<SyncTracking> list = findByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId,
+				referenceUid, createDate, modifiedDate, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the sync trackings before and after the current sync tracking in the ordered set where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param trackingId the primary key of the current sync tracking
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @param createDate the create date
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next sync tracking
+	 * @throws NoSuchSyncTrackingException if a sync tracking with the primary key could not be found
+	 */
+	@Override
+	public SyncTracking[] findByF_GID_REFERENCE_UID_CREATED_BETWEEN_PrevAndNext(
+		long trackingId, long groupId, String referenceUid, Date createDate,
+		Date modifiedDate, OrderByComparator<SyncTracking> orderByComparator)
+		throws NoSuchSyncTrackingException {
+		SyncTracking syncTracking = findByPrimaryKey(trackingId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SyncTracking[] array = new SyncTrackingImpl[3];
+
+			array[0] = getByF_GID_REFERENCE_UID_CREATED_BETWEEN_PrevAndNext(session,
+					syncTracking, groupId, referenceUid, createDate,
+					modifiedDate, orderByComparator, true);
+
+			array[1] = syncTracking;
+
+			array[2] = getByF_GID_REFERENCE_UID_CREATED_BETWEEN_PrevAndNext(session,
+					syncTracking, groupId, referenceUid, createDate,
+					modifiedDate, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected SyncTracking getByF_GID_REFERENCE_UID_CREATED_BETWEEN_PrevAndNext(
+		Session session, SyncTracking syncTracking, long groupId,
+		String referenceUid, Date createDate, Date modifiedDate,
+		OrderByComparator<SyncTracking> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(7 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(6);
+		}
+
+		query.append(_SQL_SELECT_SYNCTRACKING_WHERE);
+
+		query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_GROUPID_2);
+
+		boolean bindReferenceUid = false;
+
+		if (referenceUid == null) {
+			query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_REFERENCEUID_1);
+		}
+		else if (referenceUid.equals("")) {
+			query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_REFERENCEUID_3);
+		}
+		else {
+			bindReferenceUid = true;
+
+			query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_REFERENCEUID_2);
+		}
+
+		boolean bindCreateDate = false;
+
+		if (createDate == null) {
+			query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_CREATEDATE_1);
+		}
+		else {
+			bindCreateDate = true;
+
+			query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_CREATEDATE_2);
+		}
+
+		boolean bindModifiedDate = false;
+
+		if (modifiedDate == null) {
+			query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_MODIFIEDDATE_1);
+		}
+		else {
+			bindModifiedDate = true;
+
+			query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_MODIFIEDDATE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(SyncTrackingModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (bindReferenceUid) {
+			qPos.add(referenceUid);
+		}
+
+		if (bindCreateDate) {
+			qPos.add(new Timestamp(createDate.getTime()));
+		}
+
+		if (bindModifiedDate) {
+			qPos.add(new Timestamp(modifiedDate.getTime()));
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(syncTracking);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<SyncTracking> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the sync trackings where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @param createDate the create date
+	 * @param modifiedDate the modified date
+	 */
+	@Override
+	public void removeByF_GID_REFERENCE_UID_CREATED_BETWEEN(long groupId,
+		String referenceUid, Date createDate, Date modifiedDate) {
+		for (SyncTracking syncTracking : findByF_GID_REFERENCE_UID_CREATED_BETWEEN(
+				groupId, referenceUid, createDate, modifiedDate,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(syncTracking);
+		}
+	}
+
+	/**
+	 * Returns the number of sync trackings where groupId = &#63; and referenceUid = &#63; and createDate &ge; &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param referenceUid the reference uid
+	 * @param createDate the create date
+	 * @param modifiedDate the modified date
+	 * @return the number of matching sync trackings
+	 */
+	@Override
+	public int countByF_GID_REFERENCE_UID_CREATED_BETWEEN(long groupId,
+		String referenceUid, Date createDate, Date modifiedDate) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_GID_REFERENCE_UID_CREATED_BETWEEN;
+
+		Object[] finderArgs = new Object[] {
+				groupId, referenceUid, _getTime(createDate),
+				_getTime(modifiedDate)
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_SYNCTRACKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_GROUPID_2);
+
+			boolean bindReferenceUid = false;
+
+			if (referenceUid == null) {
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_REFERENCEUID_1);
+			}
+			else if (referenceUid.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_REFERENCEUID_3);
+			}
+			else {
+				bindReferenceUid = true;
+
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_REFERENCEUID_2);
+			}
+
+			boolean bindCreateDate = false;
+
+			if (createDate == null) {
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_CREATEDATE_1);
+			}
+			else {
+				bindCreateDate = true;
+
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_CREATEDATE_2);
+			}
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				query.append(_FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_MODIFIEDDATE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindReferenceUid) {
+					qPos.add(referenceUid);
+				}
+
+				if (bindCreateDate) {
+					qPos.add(new Timestamp(createDate.getTime()));
+				}
+
+				if (bindModifiedDate) {
+					qPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_GROUPID_2 =
+		"syncTracking.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_REFERENCEUID_1 =
+		"syncTracking.referenceUid IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_REFERENCEUID_2 =
+		"syncTracking.referenceUid = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_REFERENCEUID_3 =
+		"(syncTracking.referenceUid IS NULL OR syncTracking.referenceUid = '') AND ";
+	private static final String _FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_CREATEDATE_1 =
+		"syncTracking.createDate IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_CREATEDATE_2 =
+		"syncTracking.createDate >= ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_MODIFIEDDATE_1 =
+		"syncTracking.modifiedDate IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_REFERENCE_UID_CREATED_BETWEEN_MODIFIEDDATE_2 =
+		"syncTracking.modifiedDate <= ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_SERVICECODE_CREATED_BETWEEN =
 		new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
 			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, SyncTrackingImpl.class,
@@ -6974,6 +8243,15 @@ public class SyncTrackingPersistenceImpl extends BasePersistenceImpl<SyncTrackin
 			new Object[] { syncTracking.getUuid(), syncTracking.getGroupId() },
 			syncTracking);
 
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_REFERENCEUID,
+			new Object[] {
+				syncTracking.getGroupId(), syncTracking.getReferenceUid()
+			}, syncTracking);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO,
+			new Object[] { syncTracking.getGroupId(), syncTracking.getDossierNo() },
+			syncTracking);
+
 		syncTracking.resetOriginalValues();
 	}
 
@@ -7054,6 +8332,26 @@ public class SyncTrackingPersistenceImpl extends BasePersistenceImpl<SyncTrackin
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 			syncTrackingModelImpl, false);
+
+		args = new Object[] {
+				syncTrackingModelImpl.getGroupId(),
+				syncTrackingModelImpl.getReferenceUid()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_REFERENCEUID, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_REFERENCEUID, args,
+			syncTrackingModelImpl, false);
+
+		args = new Object[] {
+				syncTrackingModelImpl.getGroupId(),
+				syncTrackingModelImpl.getDossierNo()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_DOSSIERNO, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO, args,
+			syncTrackingModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -7077,6 +8375,52 @@ public class SyncTrackingPersistenceImpl extends BasePersistenceImpl<SyncTrackin
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					syncTrackingModelImpl.getGroupId(),
+					syncTrackingModelImpl.getReferenceUid()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_REFERENCEUID,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_REFERENCEUID,
+				args);
+		}
+
+		if ((syncTrackingModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_GID_REFERENCEUID.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					syncTrackingModelImpl.getOriginalGroupId(),
+					syncTrackingModelImpl.getOriginalReferenceUid()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_REFERENCEUID,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_REFERENCEUID,
+				args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					syncTrackingModelImpl.getGroupId(),
+					syncTrackingModelImpl.getDossierNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DOSSIERNO, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO, args);
+		}
+
+		if ((syncTrackingModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					syncTrackingModelImpl.getOriginalGroupId(),
+					syncTrackingModelImpl.getOriginalDossierNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DOSSIERNO, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO, args);
 		}
 	}
 

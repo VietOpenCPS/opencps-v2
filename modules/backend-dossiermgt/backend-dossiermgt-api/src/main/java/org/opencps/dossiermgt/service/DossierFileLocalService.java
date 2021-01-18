@@ -99,6 +99,13 @@ public interface DossierFileLocalService extends BaseLocalService,
 		String formScript, String formReport, boolean eForm, String formData,
 		ServiceContext serviceContext) throws PortalException, SystemException;
 
+	public DossierFile addDossierFileByFileEntryId(long groupId,
+		long dossierId, String referenceUid, String dossierTemplateNo,
+		String dossierPartNo, String fileTemplateNo, String displayName,
+		String sourceFileName, long fileSize, InputStream inputStream,
+		String fileType, String isSync, long fileEntryId,
+		ServiceContext serviceContext) throws PortalException, SystemException;
+
 	public DossierFile addDossierFileEForm(long groupId, long dossierId,
 		String referenceUid, String dossierTemplateNo, String dossierPartNo,
 		String fileTemplateNo, String displayName, String sourceFileName,
