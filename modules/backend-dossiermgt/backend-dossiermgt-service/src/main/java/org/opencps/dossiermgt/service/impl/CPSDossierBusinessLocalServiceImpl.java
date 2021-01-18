@@ -347,12 +347,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						String[] preConditionArr = StringUtil.split(proAction.getPreCondition());
 						for (String preCondition : preConditionArr) {
 							if (preCondition.contains(DossierTerm.CONTAIN_SERVER_SYNC)) {
-								_log.info("serverSync: " + serverSync);
 								String[] splitServerSync = preCondition.split(StringPool.EQUAL);
 								serverSync = splitServerSync[1];
 							}
 							if (preCondition.contains(DossierTerm.CONTAIN_GOV_SYNC)) {
-								_log.info("GovSync: " + govSync);
 								String[] splitGovAgencySync = preCondition.split(StringPool.EQUAL);
 								govSync = splitGovAgencySync[1];
 							}
@@ -365,12 +363,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					payloadObj.put(DossierTerm.CROSS_DOSSIER, crossDossierObj);
 					Dossier oldHslt = null;
 					if(Validator.isNotNull(serverSync) && Validator.isNotNull(govSync)){
-						_log.info("GovSync: " + govSync + " serverSync: " + serverSync);
+						_log.debug("GovSync: " + govSync + " serverSync: " + serverSync);
 						oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_SN_ODID(groupId,
 								dossier.getApplicantIdNo(), dossier.getServiceCode(), govSync,
 								dossierTemplate.getTemplateNo(), dossier.getDossierId(), serverSync);
 					}else {
-						_log.info("Not Server Sync");
+						_log.debug("Not Server Sync");
 						oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_ODID(groupId,
 								dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode,
 								dossierTemplate.getTemplateNo(), dossier.getDossierId());
@@ -867,7 +865,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								 String payment, Dossier hsltDossier, ServiceContext context) throws PortalException, Exception {
 		ActionConfig mappingConfig = actionConfigLocalService.getByCode(groupId, actionConfig.getMappingAction());
 		if (dossier.getOriginDossierId() != 0) {
-			_log.info("doMappingAction: ---------------");
 			Dossier hslt = dossierLocalService.fetchDossier(dossier.getOriginDossierId());
 			ProcessOption optionHslt = getProcessOption(hslt.getServiceCode(), hslt.getGovAgencyCode(),
 					hslt.getDossierTemplateNo(), groupId);
@@ -892,7 +889,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			doAction(groupId, userId, hslt, optionHslt, actionHslt, actionConfig.getMappingAction(), actionUserHslt,
 					actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
 		} else {
-			_log.info("doMappingAction: ---------------true");
 			if (Validator.isNotNull(hsltDossier)) {
 					ProcessOption optionOrigin = getProcessOption(hsltDossier.getServiceCode(),
 							hsltDossier.getGovAgencyCode(), hsltDossier.getDossierTemplateNo(), groupId);
@@ -4145,7 +4141,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//Check if dossier is done
 		if (DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
 			List<DossierFile> lstFiles = dossierFileLocalService.getAllDossierFile(dossier.getDossierId());
-			_log.info("File: " + lstFiles.size());
 			int countTemplateNo = 0;
 
 			for (DossierFile df : lstFiles) {
