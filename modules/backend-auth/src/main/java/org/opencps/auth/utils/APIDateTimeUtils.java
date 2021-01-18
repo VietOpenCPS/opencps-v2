@@ -23,6 +23,9 @@ public class APIDateTimeUtils {
 	public static final String _NORMAL_PARTTERN = "dd/MM/yyyy HH:mm:ss";
 
 	public static final String _NORMAL_DATE = "dd/MM/yyyy";
+
+	public static final String _MONTH_DAY_YEAR_DATE = "MM/dd/yyyy";
+
 	public static final String _NORMAL_DATE_TIME = "dd/MM/yyyy HH:mm:ss";
 	
 	public static final String _NSW_PATTERN = "yyyy-MM-dd HH:mm:ss";
