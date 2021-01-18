@@ -58,6 +58,7 @@ public class VnPostTerm {
 
 	
 	public static final String LGSP_ACTIVE = "lgsp_active";
+	public static final String LGSP_TYPE = "lgsp_type";
 	public static final String LGSP_USERNAME = "lgsp_username";
 	public static final String LGSP_PASSWORD = "lgsp_password";
 	public static final String LGSP_SERCUREKEY = "lgsp_sercurekey";
