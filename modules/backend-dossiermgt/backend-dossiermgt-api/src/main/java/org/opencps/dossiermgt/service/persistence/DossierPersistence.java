@@ -3650,6 +3650,91 @@ public interface DossierPersistence extends BasePersistence<Dossier> {
 		long originDossierId);
 
 	/**
+	* Returns the dossier where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; and serverNo = &#63; or throws a {@link NoSuchDossierException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param serviceCode the service code
+	* @param govAgencyCode the gov agency code
+	* @param dossierTemplateNo the dossier template no
+	* @param originDossierId the origin dossier ID
+	* @param serverNo the server no
+	* @return the matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByG_AN_SC_GAC_DTNO_SN_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId, String serverNo)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the dossier where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; and serverNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param serviceCode the service code
+	* @param govAgencyCode the gov agency code
+	* @param dossierTemplateNo the dossier template no
+	* @param originDossierId the origin dossier ID
+	* @param serverNo the server no
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_AN_SC_GAC_DTNO_SN_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId, String serverNo);
+
+	/**
+	* Returns the dossier where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; and serverNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param serviceCode the service code
+	* @param govAgencyCode the gov agency code
+	* @param dossierTemplateNo the dossier template no
+	* @param originDossierId the origin dossier ID
+	* @param serverNo the server no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_AN_SC_GAC_DTNO_SN_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId, String serverNo,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the dossier where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; and serverNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param serviceCode the service code
+	* @param govAgencyCode the gov agency code
+	* @param dossierTemplateNo the dossier template no
+	* @param originDossierId the origin dossier ID
+	* @param serverNo the server no
+	* @return the dossier that was removed
+	*/
+	public Dossier removeByG_AN_SC_GAC_DTNO_SN_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId, String serverNo)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the number of dossiers where groupId = &#63; and applicantIdNo = &#63; and serviceCode = &#63; and govAgencyCode = &#63; and dossierTemplateNo = &#63; and originDossierId = &#63; and serverNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param applicantIdNo the applicant ID no
+	* @param serviceCode the service code
+	* @param govAgencyCode the gov agency code
+	* @param dossierTemplateNo the dossier template no
+	* @param originDossierId the origin dossier ID
+	* @param serverNo the server no
+	* @return the number of matching dossiers
+	*/
+	public int countByG_AN_SC_GAC_DTNO_SN_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId, String serverNo);
+
+	/**
 	* Returns all the dossiers where originality = &#63;.
 	*
 	* @param originality the originality
