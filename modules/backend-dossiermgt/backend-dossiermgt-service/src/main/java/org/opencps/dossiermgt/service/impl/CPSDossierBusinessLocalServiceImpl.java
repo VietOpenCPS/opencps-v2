@@ -1421,7 +1421,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if(Validator.isNotNull(sc)) {
 					JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 					bdhnConnect = configObj.getBoolean(ServerConfigTerm.BDHN_CONNECT);
-					senderAddress = configObj.getString(ServerConfigTerm.BDHN_CONNECT);
+					senderAddress = configObj.getString(ServerConfigTerm.SENDER_ADDRESS);
 				}
 				if(bdhnConnect){
 					//VNPOST thông báo đã có kết quả tại một cửa cho Bưu điện HN
