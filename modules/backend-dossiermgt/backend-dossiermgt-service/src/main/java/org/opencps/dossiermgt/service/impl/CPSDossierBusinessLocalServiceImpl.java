@@ -8962,6 +8962,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
 		}
 		
+		_log.debug("+++++dossierNo:"+dossierNo);
 		_log.debug("+++++systemId:"+systemId);
 		_log.debug("+++++oldDossier.getOriginality():"+oldDossier.getOriginality());
 

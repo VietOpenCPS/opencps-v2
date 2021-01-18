@@ -184,18 +184,18 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				LoaiDoiTuong = 2;
 			}
 		}
-//		_log.info("groupId: "+groupId);
-//		_log.info("dossier.getApplicantIdNo(): "+dossier.getApplicantIdNo());
+//		_log.debug("groupId: "+groupId);
+//		_log.debug("dossier.getApplicantIdNo(): "+dossier.getApplicantIdNo());
 		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, dossier.getApplicantIdNo());
 		if (applicant == null || (applicant != null && !"dvcqg".contentEquals(applicant.getMappingClassName()))) {
 			applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, dossier.getDelegateIdNo());
 		}
 		String madoituong = StringPool.BLANK;
-		_log.info("applicant: "+JSONFactoryUtil.looseSerialize(applicant));
+		_log.debug("applicant: "+JSONFactoryUtil.looseSerialize(applicant));
 //		JSONObject jsonApplicant = getSharingData(config, body, accessToken);
 		if (applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
-			_log.info("className: "+applicant.getMappingClassName());
-			_log.info("madoituong: "+applicant.getMappingClassPK());
+			_log.debug("className: "+applicant.getMappingClassName());
+			_log.debug("madoituong: "+applicant.getMappingClassPK());
 			madoituong = applicant.getMappingClassPK();
 		}
 		object.put("LoaiDoiTuong", String.valueOf(LoaiDoiTuong));
@@ -319,7 +319,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			object.put("TaiLieuNop", TaiLieuNop);// ko bb
 
 		}
-		_log.info("object: "+JSONFactoryUtil.looseSerialize(object));
+		_log.debug("object: "+JSONFactoryUtil.looseSerialize(object));
 
 		return object;
 	}
@@ -713,7 +713,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	public JSONObject doSyncServiceAdministration(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		JSONObject qajson = JSONFactoryUtil.createJSONObject();
-		_log.info("-->>>>>>>> doSyncGovernmentAgency: " + serverConfigs + "|" + serverConfigs.size());
+		_log.debug("-->>>>>>>> doSyncGovernmentAgency: " + serverConfigs + "|" + serverConfigs.size());
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			try {
@@ -802,7 +802,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	public JSONObject doSyncServiceDomain(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		JSONObject qajson = JSONFactoryUtil.createJSONObject();
-		_log.info("-->>>>>>>> doSyncServiceDomain: " + serverConfigs + "|" + serverConfigs.size());
+		_log.debug("-->>>>>>>> doSyncServiceDomain: " + serverConfigs + "|" + serverConfigs.size());
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			try {
@@ -811,7 +811,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					data.put("service", "LayDanhMucLinhVuc");
 				}
 				qajson = getSharingDictCollection(serverConfig, data);
-				// _log.info("-->>>>>>>>>>>>>>>>>>>>> " + qajson);
+				// _log.debug("-->>>>>>>>>>>>>>>>>>>>> " + qajson);
 				if (qajson.has("error_code") && qajson.getInt("error_code") == 0 && qajson.has("result")
 						&& qajson.getJSONArray("result").length() > 0) {
 
@@ -856,7 +856,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 										StringPool.BLANK, serviceContext);
 							}
 
-							// _log.info("------>>>>> " + serviceContext.getScopeGroupId() + "|" +
+							// _log.debug("------>>>>> " + serviceContext.getScopeGroupId() + "|" +
 							// malinhvuc);
 
 							item = JSONFactoryUtil.createJSONObject();
@@ -888,7 +888,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					result.put("total", resultData.length());
 					result.put("data", resultData);
 
-					// _log.info("---------------->>>>>>>> result " + result.toString());
+					// _log.debug("---------------->>>>>>>> result " + result.toString());
 				}
 			} catch (Exception e) {
 				_log.error(e);
@@ -903,7 +903,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 
 		JSONArray resultData = JSONFactoryUtil.createJSONArray();
-		_log.info("-->>>>>>>> doSyncSharingQA: " + serverConfigs + "|" + serverConfigs.size());
+		_log.debug("-->>>>>>>> doSyncSharingQA: " + serverConfigs + "|" + serverConfigs.size());
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			try {
 				ServerConfig serverConfig = serverConfigs.get(0);
@@ -1166,7 +1166,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		AccessToken accessToken = AccessTokenLocalServiceUtil.getAccessToken(groupId, className);
 
 		if (accessToken != null) {
-			_log.info("getAccesToken form DB " + accessToken.getToken());
+			_log.debug("getAccesToken form DB " + accessToken.getToken());
 			return accessToken.getToken();
 		}
 
@@ -1299,7 +1299,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private JSONArray getAnswer(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		JSONObject qajson = JSONFactoryUtil.createJSONObject();
-		_log.info("-->>>>>>>> syncAnswer: " + serverConfigs + "|" + serverConfigs.size());
+		_log.debug("-->>>>>>>> syncAnswer: " + serverConfigs + "|" + serverConfigs.size());
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			try {
 				ServerConfig serverConfig = serverConfigs.get(0);
@@ -1533,12 +1533,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		df.setMaximumFractionDigits(2);
 
 		if (_serviceInfoMapChars != null && !_serviceInfoMapChars.isEmpty()) {
-			_log.info("----------------------------->>>>>getServiceInfoSimilarity: get data from store: "
+			_log.debug("----------------------------->>>>>getServiceInfoSimilarity: get data from store: "
 					+ _serviceInfoMapChars.size());
 			for (Map.Entry<String, String> entry : map.entrySet()) {
 				String key = entry.getKey();
 				String name = entry.getValue().replaceAll("[.,\\-_:;\\\"\\']", "").toLowerCase();
-				// _log.info(key + "|" + name);
+				// _log.debug(key + "|" + name);
 				Map<CharSequence, Integer> vectorB = null;
 				if (_serviceInfoMapChars.containsKey(key)) {
 					vectorB = _serviceInfoMapChars.get(key);
@@ -1550,7 +1550,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 
 				Double weightIndex = documentsSimilarity.cosineSimilarity(vectorA, vectorB);
-				// _log.info(weightIndex);
+				// _log.debug(weightIndex);
 				JSONObject item = null;
 				if (_serviceInfoMapItems != null && _serviceInfoMapItems.containsKey(key)) {
 					item = _serviceInfoMapItems.get(key);
@@ -1579,7 +1579,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 			}
 		} else {
-			_log.info("----------------------------->>>>>getServiceInfoSimilarity: get new data");
+			_log.debug("----------------------------->>>>>getServiceInfoSimilarity: get new data");
 
 			for (Map.Entry<String, String> entry : map.entrySet()) {
 				String key = entry.getKey();
@@ -1930,19 +1930,19 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		try {
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-			_log.info("config: "+JSONFactoryUtil.looseSerialize(config));
+			_log.debug("config: "+JSONFactoryUtil.looseSerialize(config));
 
 			String adapter_url = config.getString("adapter_url");
 			String share_endpoint = config.getString("share_endpoint");
 			String madonvi = config.getString("madonvi");
 			String dstcode = config.getString("dstcode");
-			_log.info("adapter_url: "+adapter_url);
-			_log.info("share_endpoint: "+share_endpoint);
-			_log.info("madonvi: "+madonvi);
-			_log.info("dstcode: "+dstcode);
+			_log.debug("adapter_url: "+adapter_url);
+			_log.debug("share_endpoint: "+share_endpoint);
+			_log.debug("madonvi: "+madonvi);
+			_log.debug("dstcode: "+dstcode);
 			String accessToken = getAccessToken(serverConfig.getCompanyId(), serverConfig.getGroupId(), "dvcqg",
 					config);
-			_log.info("accessToken: "+accessToken);
+			_log.debug("accessToken: "+accessToken);
 			if (Validator.isNull(accessToken) || Validator.isNull(data)) {
 				return result;
 			}
@@ -1958,7 +1958,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			}
 
 			String endpoint = adapter_url + share_endpoint;
-			_log.info("endpoint: "+endpoint);
+			_log.debug("endpoint: "+endpoint);
 
 			URL url = new URL(endpoint);
 
@@ -1994,7 +1994,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					sb.append(output);
 				}
 
-				_log.info("sb.toString(): "+sb.toString());
+				_log.debug("sb.toString(): "+sb.toString());
 				// System.out.println("response: " + sb.toString());
 
 				result = JSONFactoryUtil.createJSONObject(sb.toString());
@@ -2028,7 +2028,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	public JSONObject getSharingQA(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		_log.info("-->>>>>>>> getSharingQA: " + serverConfigs + "|" + serverConfigs.size());
+		_log.debug("-->>>>>>>> getSharingQA: " + serverConfigs + "|" + serverConfigs.size());
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			try {
 				ServerConfig serverConfig = serverConfigs.get(0);
@@ -2253,7 +2253,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					body.put("service", "DongBoTrangThaiHoSo");
 					body.put("type", "2");
 					body.put("data", synsObject);
-					_log.info("DongBoTrangThaiHoSoTTKM: " + synsObject.toJSONString());
+					_log.debug("DongBoTrangThaiHoSoTTKM: " + synsObject.toJSONString());
 					result = syncData(serverConfig, body);
 
 				} else {
@@ -2262,8 +2262,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 							request);
 
 					synsObjects.put(synsObject);
-					_log.info("hasSync" + hasSync);
-					_log.info("syncDossierAndDossierStatus synsObjects " + synsObjects.toJSONString());
+					_log.debug("hasSync" + hasSync);
+					_log.debug("syncDossierAndDossierStatus synsObjects " + synsObjects.toJSONString());
 					JSONObject body = JSONFactoryUtil.createJSONObject();
 
 					if (hasSync) {
@@ -2274,7 +2274,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					body.put("data", synsObjects);
 					body.put("service", "DongBoHoSoMC");
 					result = syncData(serverConfig, body);
-					_log.info("syncDossierAndDossierStatus " + result.toJSONString());
+					_log.debug("syncDossierAndDossierStatus " + result.toJSONString());
 					if (result.has("error_code") && GetterUtil.getInteger(result.getString("error_code")) == 0) {
 						body = JSONFactoryUtil.createJSONObject();
 						synsObjects = JSONFactoryUtil.createJSONArray();
@@ -2291,7 +2291,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			//no access token
 			return null;
 		}
-		_log.info("No server config with dossierId: " + dossier.getDossierId());
+		_log.debug("No server config with dossierId: " + dossier.getDossierId());
 		return result;
 	}
 
@@ -2336,7 +2336,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	 * serverConfigs =
 	 * ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION"); JSONObject
 	 * result = JSONFactoryUtil.createJSONObject();
-	 * _log.info("-->>>>>>>> syncServiceInfo: " + serverConfigs + "|" +
+	 * _log.debug("-->>>>>>>> syncServiceInfo: " + serverConfigs + "|" +
 	 * serverConfigs.size()); if (serverConfigs != null && !serverConfigs.isEmpty()
 	 * && Validator.isNotNull(serviceCodes)) { try { ServerConfig serverConfig =
 	 * serverConfigs.get(0); JSONObject config =
@@ -2511,7 +2511,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		JSONArray responseData = JSONFactoryUtil.createJSONArray();
-		// _log.info("-->>>>>>>> syncServiceInfo: " + serverConfigs + "|" +
+		// _log.debug("-->>>>>>>> syncServiceInfo: " + serverConfigs + "|" +
 		// serverConfigs.size());
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			try {
@@ -2962,14 +2962,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	public void syncFAQToDVCQG() {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		// JSONObject result = JSONFactoryUtil.createJSONObject();
-		_log.info("-->>>>>>>> syncFAQToDVCQG: " + serverConfigs + "|" + serverConfigs.size());
+		_log.debug("-->>>>>>>> syncFAQToDVCQG: " + serverConfigs + "|" + serverConfigs.size());
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
 			try {
 				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 				System.out.println(config.getLong("groupId"));
 				List<Question> questions = QuestionLocalServiceUtil.findByG_P_SYNC(config.getLong("groupId"), 1, 0);
-				_log.info("------------->>>>>>>>>>>>>>>>>>>>> questions " + questions.size());
+				_log.debug("------------->>>>>>>>>>>>>>>>>>>>> questions " + questions.size());
 				if (questions != null) {
 					JSONArray data = JSONFactoryUtil.createJSONArray();
 					JSONObject body = JSONFactoryUtil.createJSONObject();
@@ -3056,12 +3056,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 
 		if (serverConfig == null) {
-			_log.info("ttkm result: " + "Not found server config width protocal: DVCQG_INTEGRATION");
+			_log.debug("ttkm result: " + "Not found server config width protocal: DVCQG_INTEGRATION");
 			return createResponseMessage(result, -1, "Not found server config width protocal: DVCQG_INTEGRATION");
 		}
 
 		if (data == null) {
-			_log.info("ttkm result: " + "Data empty");
+			_log.debug("ttkm result: " + "Data empty");
 			return createResponseMessage(result, -1, "Data empty");
 		}
 
@@ -3069,8 +3069,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		if (Validator.isNull(MaSoThue)) {
 			data.remove("TepDonDangKy");
-			_log.info("ttkm data: " + data.toJSONString());
-			_log.info("ttkm result: " + "MaSoThue empty");
+			_log.debug("ttkm data: " + data.toJSONString());
+			_log.debug("ttkm result: " + "MaSoThue empty");
 			return createResponseMessage(result, -1, "MaSoThue empty");
 		}
 
@@ -3089,22 +3089,22 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			JSONArray searchResultObj = searchObj.getJSONArray("result");
 			if (searchResultObj == null || searchResultObj.length() == 0) {
 				data.remove("TepDonDangKy");
-				_log.info("ttkm data: " + data.toJSONString());
-				_log.info("ttkm result: " + "Can't get techId");
+				_log.debug("ttkm data: " + data.toJSONString());
+				_log.debug("ttkm result: " + "Can't get techId");
 				return createResponseMessage(result, -1, "Can't get techId");
 			}
 			techId = searchResultObj.getJSONObject(0).getString("TECHNICALID");
 			if (Validator.isNull(techId)) {
 				data.remove("TepDonDangKy");
-				_log.info("ttkm data: " + data.toJSONString());
-				_log.info("ttkm result: " + "Can't get techId");
+				_log.debug("ttkm data: " + data.toJSONString());
+				_log.debug("ttkm result: " + "Can't get techId");
 				return createResponseMessage(result, -1, "Can't get techId");
 			}
 
 		} else {
 			data.remove("TepDonDangKy");
-			_log.info("ttkm data: " + data.toJSONString());
-			_log.info("ttkm result: " + "Can't get techId");
+			_log.debug("ttkm data: " + data.toJSONString());
+			_log.debug("ttkm result: " + "Can't get techId");
 			return createResponseMessage(result, -1, "Can't get techId");
 		}
 
@@ -3112,8 +3112,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		if (Validator.isNull(MaHoSo)) {
 			data.remove("TepDonDangKy");
-			_log.info("ttkm data: " + data.toJSONString());
-			_log.info("ttkm result: " + "MaHoSo empty");
+			_log.debug("ttkm data: " + data.toJSONString());
+			_log.debug("ttkm result: " + "MaHoSo empty");
 			return createResponseMessage(result, -1, "MaHoSo empty");
 		}
 
@@ -3137,22 +3137,22 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		} catch (Exception e) {
 			data.remove("TepDonDangKy");
-			_log.info("ttkm data: " + data.toJSONString());
-			_log.info("ttkm result: " + "Can't parse server config: " + MaHoSo);
+			_log.debug("ttkm data: " + data.toJSONString());
+			_log.debug("ttkm result: " + "Can't parse server config: " + MaHoSo);
 			_log.error(e);
 
 			return createResponseMessage(result, -1, MaHoSo + "| Can't parse server config");
 		}
 
-		_log.info("GroupId: " + groupId + "|" + serviceContext.getScopeGroupId() + "|" + serviceContext.getCompanyId()
+		_log.debug("GroupId: " + groupId + "|" + serviceContext.getScopeGroupId() + "|" + serviceContext.getCompanyId()
 				+ "|" + serviceContext.getUserId());
 
 		ServiceInfoMapping mapping = ServiceInfoMappingLocalServiceUtil.fetchByGID_SCDVCQG(groupId, MaTTHC);
 
 		if (mapping == null) {
 			data.remove("TepDonDangKy");
-			_log.info("ttkm data: " + data.toJSONString());
-			_log.info("ttkm result: " + "Not found serviceInfo| " + MaHoSo);
+			_log.debug("ttkm data: " + data.toJSONString());
+			_log.debug("ttkm result: " + "Not found serviceInfo| " + MaHoSo);
 			return createResponseMessage(result, -1, MaHoSo + "| Not found serviceInfo mapping with: " + MaTTHC);
 		}
 		// String SoVanBan = data.getString("SoVanBan");
@@ -3199,8 +3199,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						applicant.getApplicantId(), _DEFAULT_CLASS_NAME, techId);
 			} catch (Exception e) {
 				data.remove("TepDonDangKy");
-				_log.info("ttkm data: " + data.toJSONString());
-				_log.info("ttkm result: " + "Can't update applicant mappingClassPK |" + MaHoSo);
+				_log.debug("ttkm data: " + data.toJSONString());
+				_log.debug("ttkm result: " + "Can't update applicant mappingClassPK |" + MaHoSo);
 				_log.error(e);
 				return createResponseMessage(result, -1, MaHoSo + "| Can't update applicant mappingClassPK");
 			}
@@ -3226,8 +3226,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				if (autoEmail) {
 					tmpEmail = techId + "-ttkm@dvcqg.gov.vn";
 				}
-				_log.info("Email: " + Email);
-				_log.info("tmpEmail: " + tmpEmail);
+				_log.debug("Email: " + Email);
+				_log.debug("tmpEmail: " + tmpEmail);
 
 				applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId, 0L, TenThuongNhan,
 						"business", MaSoThue, DateTimeUtils.dateToString(new Date(), DateTimeUtils._TYPEDATE),
@@ -3245,8 +3245,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			} catch (Exception e) {
 				data.remove("TepDonDangKy");
-				_log.info("ttkm data: " + data.toJSONString());
-				_log.info("ttkm result: " + "Can't create applicant|" + MaHoSo);
+				_log.debug("ttkm data: " + data.toJSONString());
+				_log.debug("ttkm result: " + "Can't create applicant|" + MaHoSo);
 				_log.error(e);
 				return createResponseMessage(result, -1, MaHoSo + "| Can't create applicant");
 			}
@@ -3265,8 +3265,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			if (serverConfig == null) {
 				data.remove("TepDonDangKy");
-				_log.info("ttkm data: " + data.toJSONString());
-				_log.info("ttkm result: " + "Not found server config width protocal: DVCQG_TTKM|" + MaHoSo);
+				_log.debug("ttkm data: " + data.toJSONString());
+				_log.debug("ttkm result: " + "Not found server config width protocal: DVCQG_TTKM|" + MaHoSo);
 				return createResponseMessage(result, -1,
 						MaHoSo + "| Not found server config width protocal: DVCQG_TTKM");
 			}
@@ -3284,8 +3284,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			if (actConfig == null) {
 				data.remove("TepDonDangKy");
-				_log.info("ttkm data: " + data.toJSONString());
-				_log.info("ttkm result: " + "Not found ActionConfig|" + MaHoSo);
+				_log.debug("ttkm data: " + data.toJSONString());
+				_log.debug("ttkm result: " + "Not found ActionConfig|" + MaHoSo);
 				return createResponseMessage(result, -1, MaHoSo + "| Not found ActionConfig");
 			}
 
@@ -3335,8 +3335,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				Dossier tmp = DossierLocalServiceUtil.getByRef(groupId, MaHoSo);
 				if (tmp != null) {
 					data.remove("TepDonDangKy");
-					_log.info("ttkm data: " + data.toJSONString());
-					_log.info("ttkm result: " + "duplicate refId|" + MaHoSo);
+					_log.debug("ttkm data: " + data.toJSONString());
+					_log.debug("ttkm result: " + "duplicate refId|" + MaHoSo);
 					return createResponseMessage(result, 1, MaHoSo + "| duplicate refId");
 				}
 			} catch (Exception e) {
@@ -3382,13 +3382,13 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, processAction, actionCode,
 					applicant.getApplicantName(), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 					StringPool.BLANK, actConfig.getSyncType(), serviceContext, errorModel);
-			_log.info("ttkm result: " + "create dossier error|" + MaHoSo);
+			_log.debug("ttkm result: " + "create dossier error|" + MaHoSo);
 			return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
 
 		} catch (Exception e) {
 			data.remove("TepDonDangKy");
-			_log.info("ttkm data: " + data.toJSONString());
-			_log.info("ttkm result: " + "create dossier error|" + MaHoSo);
+			_log.debug("ttkm data: " + data.toJSONString());
+			_log.debug("ttkm result: " + "create dossier error|" + MaHoSo);
 			_log.error(e);
 			return createResponseMessage(result, -1, MaHoSo + "| create dossier error");
 		}
@@ -3421,8 +3421,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String MaSoThue = data.getString("MaSoThue");
 			if (Validator.isNull(MaSoThue)) {
 				data.remove("TepDonDangKy");
-				_log.info("HSKMBS data: " + data.toJSONString());
-				_log.info("HSKMBS result: " + "MaSoThue empty");
+				_log.debug("HSKMBS data: " + data.toJSONString());
+				_log.debug("HSKMBS result: " + "MaSoThue empty");
 				return createResponseMessage(result, -1, "MaSoThue empty");
 			}
 
@@ -3438,27 +3438,27 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			if (searchObj != null && GetterUtil.getInteger(searchObj.getString("error_code")) == 0) {
 				JSONArray searchResultObj = searchObj.getJSONArray("result");
 				if (searchResultObj == null || searchResultObj.length() == 0) {
-					_log.info("HSKMBS data: " + data.toJSONString());
-					_log.info("HSKMBS result: " + "Can't get techId");
+					_log.debug("HSKMBS data: " + data.toJSONString());
+					_log.debug("HSKMBS result: " + "Can't get techId");
 					return createResponseMessage(result, -1, "Can't get techId");
 				}
 				techId = searchResultObj.getJSONObject(0).getString("TECHNICALID");
 				if (Validator.isNull(techId)) {
-					_log.info("HSKMBS data: " + data.toJSONString());
-					_log.info("HSKMBS result: " + "Can't get techId");
+					_log.debug("HSKMBS data: " + data.toJSONString());
+					_log.debug("HSKMBS result: " + "Can't get techId");
 					return createResponseMessage(result, -1, "Can't get techId");
 				}
 			} else {
-				_log.info("HSKMBS data: " + data.toJSONString());
-				_log.info("HSKMBS result: " + "Can't get techId");
+				_log.debug("HSKMBS data: " + data.toJSONString());
+				_log.debug("HSKMBS result: " + "Can't get techId");
 				return createResponseMessage(result, -1, "Can't get techId");
 			}
 
 			String MaHoSo = data.getString("MaHoSoQG");// bb
 			if (Validator.isNull(MaHoSo)) {
 				data.remove("TepDonDangKy");
-				_log.info("HSKMBS data: " + data.toJSONString());
-				_log.info("HSKMBS result: " + "MaHoSo empty");
+				_log.debug("HSKMBS data: " + data.toJSONString());
+				_log.debug("HSKMBS result: " + "MaHoSo empty");
 				return createResponseMessage(result, -1, "MaHoSo empty");
 			}
 
@@ -3482,20 +3482,20 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			} catch (Exception e) {
 				data.remove("TepDonDangKy");
-				_log.info("HSKMBS data: " + data.toJSONString());
-				_log.info("HSKMBS result: " + "Can't parse server config: " + MaHoSo);
+				_log.debug("HSKMBS data: " + data.toJSONString());
+				_log.debug("HSKMBS result: " + "Can't parse server config: " + MaHoSo);
 				_log.error(e);
 
 				return createResponseMessage(result, -1, MaHoSo + "| Can't parse server config");
 			}
 
-			_log.info("GroupId: " + groupId + "|" + serviceContext.getScopeGroupId() + "|" + serviceContext.getCompanyId()
+			_log.debug("GroupId: " + groupId + "|" + serviceContext.getScopeGroupId() + "|" + serviceContext.getCompanyId()
 					+ "|" + serviceContext.getUserId());
 
 			ServiceInfoMapping mapping = ServiceInfoMappingLocalServiceUtil.fetchByGID_SCDVCQG(groupId, MaTTHC);
 			if (mapping == null) {
-				_log.info("HSKMBS data: " + data.toJSONString());
-				_log.info("HSKMBS result: " + "Not found serviceInfo| " + MaHoSo);
+				_log.debug("HSKMBS data: " + data.toJSONString());
+				_log.debug("HSKMBS result: " + "Not found serviceInfo| " + MaHoSo);
 				return createResponseMessage(result, -1, MaHoSo + "| Not found serviceInfo mapping with: " + MaTTHC);
 			}
 
@@ -3517,8 +3517,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			JSONObject thongTinSuaDoi = data.getJSONObject("ThongTinSuaDoi");
 			if(Validator.isNull(thongTinSuaDoi)) {
-				_log.info("HSKMBS data: " + data.toJSONString());
-				_log.info("HSKMBS result: " + "Not found thongTinSuaDoi| " + MaHoSo);
+				_log.debug("HSKMBS data: " + data.toJSONString());
+				_log.debug("HSKMBS result: " + "Not found thongTinSuaDoi| " + MaHoSo);
 				return createResponseMessage(result, -1, MaHoSo + "| Not found thongTinSuaDoi with: " + MaTTHC);
 			}
 			String TenChuongTrinhKhuyenMai = thongTinSuaDoi.getString("TenChuongTrinhKM");
@@ -3533,8 +3533,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId,
 							applicant.getApplicantId(), _DEFAULT_CLASS_NAME, techId);
 				} catch (Exception e) {
-					_log.info("HSKMBS data: " + data.toJSONString());
-					_log.info("HSKMBS result: " + "Can't update applicant mappingClassPK |" + MaHoSo);
+					_log.debug("HSKMBS data: " + data.toJSONString());
+					_log.debug("HSKMBS result: " + "Can't update applicant mappingClassPK |" + MaHoSo);
 					_log.error(e);
 					return createResponseMessage(result, -1, MaHoSo + "| Can't update applicant mappingClassPK");
 				}
@@ -3560,8 +3560,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					if (autoEmail) {
 						tmpEmail = techId + "-ttkm@dvcqg.gov.vn";
 					}
-					_log.info("Email: " + Email);
-					_log.info("tmpEmail: " + tmpEmail);
+					_log.debug("Email: " + Email);
+					_log.debug("tmpEmail: " + tmpEmail);
 
 					applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId, 0L, TenThuongNhan,
 							"business", MaSoThue, DateTimeUtils.dateToString(new Date(), DateTimeUtils._TYPEDATE),
@@ -3578,8 +3578,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					}
 
 				} catch (Exception e) {
-					_log.info("HSKMBS data: " + data.toJSONString());
-					_log.info("HSKMBS result: " + "Can't create applicant|" + MaHoSo);
+					_log.debug("HSKMBS data: " + data.toJSONString());
+					_log.debug("HSKMBS result: " + "Can't create applicant|" + MaHoSo);
 					_log.error(e);
 					return createResponseMessage(result, -1, MaHoSo + "| Can't create applicant");
 				}
@@ -3596,8 +3596,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 
 				if (serverConfig == null || serverConfig.getConfigs() == null) {
-					_log.info("HSKMBS data: " + data.toJSONString());
-					_log.info("HSKMBS result: " + "Not found server config width protocal: DVCQG_TTKM|" + MaHoSo);
+					_log.debug("HSKMBS data: " + data.toJSONString());
+					_log.debug("HSKMBS result: " + "Not found server config width protocal: DVCQG_TTKM|" + MaHoSo);
 					return createResponseMessage(result, -1,
 							MaHoSo + "| Not found server config with protocol: DVCQG_TTKM");
 				}
@@ -3606,8 +3606,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				JSONObject configTTKM = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 				JSONArray listServiceCodeMapping = configTTKM.getJSONArray("configTBKM");
 				if(Validator.isNull(listServiceCodeMapping) || listServiceCodeMapping.length() == 0) {
-					_log.info("HSKMBS data: " + data.toJSONString());
-					_log.info("HSKMBS result: " + "Not found configTBKM width protocal: DVCQG_TTKM|" + MaHoSo);
+					_log.debug("HSKMBS data: " + data.toJSONString());
+					_log.debug("HSKMBS result: " + "Not found configTBKM width protocal: DVCQG_TTKM|" + MaHoSo);
 					return createResponseMessage(result, -1,
 							MaHoSo + "| Not found server config with protocol: DVCQG_TTKM");
 				}
@@ -3630,8 +3630,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 
 				if(serviceCode.isEmpty()) {
-					_log.info("HSKMBS data: " + data.toJSONString());
-					_log.info("HSKMBS result: " + "service code is empty with protocal: DVCQG_TTKM|" + MaHoSo);
+					_log.debug("HSKMBS data: " + data.toJSONString());
+					_log.debug("HSKMBS result: " + "service code is empty with protocal: DVCQG_TTKM|" + MaHoSo);
 					return createResponseMessage(result, -1,
 							MaHoSo + "| Not found service code with protocal: DVCQG_TTKM");
 				}
@@ -3640,8 +3640,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 				if (actConfig == null) {
 					data.remove("TepDonDangKy");
-					_log.info("HSKMBS data: " + data.toJSONString());
-					_log.info("HSKMBS result: " + "Not found ActionConfig|" + MaHoSo);
+					_log.debug("HSKMBS data: " + data.toJSONString());
+					_log.debug("HSKMBS result: " + "Not found ActionConfig|" + MaHoSo);
 					return createResponseMessage(result, -1, MaHoSo + "| Not found ActionConfig");
 				}
 
@@ -3690,8 +3690,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 				Dossier tmpDossier = DossierLocalServiceUtil.getByRef(groupId, MaHoSo);
 				if (Validator.isNotNull(tmpDossier)) {
-					_log.info("HSKMBS data: " + data.toJSONString());
-					_log.info("HSKMBS result: " + "Duplicate refId|" + MaHoSo);
+					_log.debug("HSKMBS data: " + data.toJSONString());
+					_log.debug("HSKMBS result: " + "Duplicate refId|" + MaHoSo);
 					if(isUpdating) {
 						tmpDossier.setServiceCode(serviceCode);
 						tmpDossier.setGovAgencyCode(govAgencyCode);
@@ -3753,12 +3753,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, processAction, actionCode,
 						applicant.getApplicantName(), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 						StringPool.BLANK, actConfig.getSyncType(), serviceContext, errorModel);
-				_log.info("HSKMBS result: " + "create dossier success|" + MaHoSo);
+				_log.debug("HSKMBS result: " + "create dossier success|" + MaHoSo);
 				return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
 
 			} catch (Exception e) {
-				_log.info("HSKMBS data: " + data.toJSONString());
-				_log.info("HSKMBS result: " + "create dossier error|" + MaHoSo);
+				_log.debug("HSKMBS data: " + data.toJSONString());
+				_log.debug("HSKMBS result: " + "create dossier error|" + MaHoSo);
 				_log.error(e);
 				return createResponseMessage(result, -1, MaHoSo + "| create dossier error");
 			}
@@ -3900,7 +3900,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	public void syncSummaryVote() throws Exception{
 		try {
-			_log.info("Start getting summary vote...");
+			_log.debug("Start getting summary vote...");
 			List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(DVCQG_INTEGRATION);
 			if (serverConfigs == null ||serverConfigs.isEmpty()) {
 				throw new Exception("Server config not found");
@@ -3909,7 +3909,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 			JSONObject payload = this.payloadSummaryVote(config);
 			syncData(serverConfig, payload);
-			_log.info("End get summary vote.");
+			_log.debug("End get summary vote.");
 		}catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
@@ -3999,7 +3999,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			JSONObject serviceConfigData = getSharingData(serverConfig, body);
 
-			_log.info("serviceConfigData: " + serviceConfigData.toJSONString());
+			_log.debug("serviceConfigData: " + serviceConfigData.toJSONString());
 
 			if (serviceConfigData == null || serviceConfigData.length() == 0) {
 				return createResponseMessage(result, 404, "error", "can't get data");
@@ -4020,7 +4020,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 				JSONObject serviceInfoDetail = getServiceInfoDVCQGDetail(user, groupId, context, serviceCode);
 
-				_log.info("serviceInfoDetail " + serviceInfoDetail.toJSONString());
+				_log.debug("serviceInfoDetail " + serviceInfoDetail.toJSONString());
 
 				JSONArray paymentFeeInfoObj = JSONFactoryUtil.createJSONArray();
 
