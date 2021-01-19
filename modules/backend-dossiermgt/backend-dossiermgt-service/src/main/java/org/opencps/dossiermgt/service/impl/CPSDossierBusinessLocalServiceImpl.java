@@ -348,11 +348,15 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						for (String preCondition : preConditionArr) {
 							if (preCondition.contains(DossierTerm.CONTAIN_SERVER_SYNC)) {
 								String[] splitServerSync = preCondition.split(StringPool.EQUAL);
-								serverSync = splitServerSync[1];
+								if(splitServerSync.length > 0) {
+									serverSync = splitServerSync[1];
+								}
 							}
 							if (preCondition.contains(DossierTerm.CONTAIN_GOV_SYNC)) {
 								String[] splitGovAgencySync = preCondition.split(StringPool.EQUAL);
-								govSync = splitGovAgencySync[1];
+								if(splitGovAgencySync.length > 0) {
+									govSync = splitGovAgencySync[1];
+								}
 							}
 						}
 					}
