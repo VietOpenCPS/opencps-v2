@@ -177,8 +177,14 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 //Save file dinh kem
                 this.addDossierFile(profile, groupId, serviceContext, dossier);
 
+                //Khong can gui cho cac don vi khac neu khong biet ho so tu dau (hoac truc tiep tai mot cua)
+                if (profile.getFrom_unit_code().isEmpty()) {
+                    _log.info("TIEPNHAN|Received dossier with ref code: " + profile.getRef_code());
+                    return true;
+                }
+
                 if(isAutoNextAction) {
-                    if(!profile.getFrom_unit_code().isEmpty() && !profile.getFrom_unit_code()
+                    if(!profile.getFrom_unit_code()
                             .equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
                         //Check list 3 when dossier from PMNV and auto processing is enable, sync dossier to DVC
                         // and sync dossier status to PMNV with profiles_status = 4,
@@ -186,9 +192,9 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                         //Sync dossier to DVC BO
                         this.syncDossierToDVCBoManual(token, dossier.getDossierId(), false);
 
-                        //Sync dossier status to PMNV
-                        this.sendStatusProfile(token, dossier.getDossierId(), null);
                     }
+                    //Sync dossier status to both DVC BO and PMNV
+                    this.sendStatusProfile(token, dossier.getDossierId(), null);
                 } else {
                     if(profile.getFrom_unit_code().equals(this.configJson.getString(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE))) {
                         //Check list 2 when dossier from DVCBO, have to sync to PMNV

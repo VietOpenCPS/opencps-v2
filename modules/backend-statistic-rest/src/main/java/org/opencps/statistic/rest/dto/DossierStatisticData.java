@@ -345,6 +345,10 @@ public class DossierStatisticData {
 	private int onegateReleaseBetimesCount = 0;
 	private int onegateReleaseOntimeCount = 0;
 	private int onegateReleaseOvertimeCount = 0;
+	
+	// ho so dang xu ly (cua cac ho so tiep nhan trong ky)
+	private int processingInAPeriodCount = 0;
+	private int releaseInAPeriodCount = 0;
 
 	public String getServiceCode() {
 		return serviceCode;
@@ -538,4 +542,20 @@ public class DossierStatisticData {
 		this.onegateReleaseOvertimeCount = onegateReleaseOvertimeCount;
 	}
 
+	public int getProcessingInAPeriodCount() {
+		return processingInAPeriodCount;
+	}
+
+	public void setProcessingInAPeriodCount(int processingInAPeriodCount) {
+		this.processingInAPeriodCount = processingInAPeriodCount;
+	}
+
+	public int getReleaseInAPeriodCount() {
+		return releaseInAPeriodCount;
+	}
+
+	public void setReleaseInAPeriodCount(int releaseInAPeriodCount) {
+		this.releaseInAPeriodCount = releaseInAPeriodCount;
+	}
+	
 }

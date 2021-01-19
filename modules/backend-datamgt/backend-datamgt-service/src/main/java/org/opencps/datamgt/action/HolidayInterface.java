@@ -24,7 +24,7 @@ public interface HolidayInterface {
 	
 	public Holiday read(long userId, long groupId, long companyId, String day, ServiceContext serviceContext);
 	
-	public Holiday create(long userId, long groupId, String holidayDate, String description,
+	public Holiday create(long userId, long groupId, String holidayDate, String description, int holidayType,
 			ServiceContext serviceContext)
 			throws NoSuchUserException, UnauthenticationException, UnauthorizationException;
 	
