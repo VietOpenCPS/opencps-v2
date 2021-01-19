@@ -72,4 +72,5 @@ public class DossierActionTerm {
 	public static final String REJECT_CORRECTING = "reject_correcting";
 	public static final String CORRECTING = "correcting";
 	public static final String LST_USER = "lstUser";
+	public static final String NEXT_ACTION_USER = "nextActionUser";
 }

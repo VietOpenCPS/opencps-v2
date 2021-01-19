@@ -7437,10 +7437,36 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String delegateWardName = StringPool.BLANK;
 			String dossierName = serviceName;
 			DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			Date receiveDate = formatter.parse(input.getCreation_date());
-			Date dueDate     = Validator.isNotNull(input.getAccept_date()) ?
-									formatter.parse(input.getAccept_date()) :
-									null;
+			Date receiveDate;
+			Date dueDate;
+			Date submitDate;
+
+			try {
+				if(Validator.isNotNull(input.getCreation_date()) && !input.getCreation_date().isEmpty()) {
+					submitDate = formatter.parse(input.getCreation_date());
+				} else {
+					submitDate = new Date();
+				}
+
+				if(Validator.isNotNull(input.getAccept_date()) && !input.getAccept_date().isEmpty()) {
+					receiveDate = formatter.parse(input.getAccept_date());
+				} else {
+					receiveDate = submitDate;
+				}
+
+				if(Validator.isNotNull(input.getAppointment_date()) && !input.getAppointment_date().isEmpty()) {
+					dueDate = formatter.parse(input.getAppointment_date());
+				} else {
+					dueDate = null;
+				}
+			} catch (Exception e) {
+				_log.warn("Error when get receiveDate and dueDate with message " + e.getMessage());
+				_log.warn("Still running...");
+				submitDate  = new Date();
+				receiveDate = submitDate;
+				dueDate = null;
+			}
+
 
 			Integer counter = 0;
 			Date appIdDate = null;
@@ -7469,9 +7495,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				metaData = metaDataJson.toString();
 			}
 
-			if (receiveDate != null)
+			if (Validator.isNotNull(receiveDate))
 				dossier.setReceiveDate(receiveDate);
-			if (dueDate != null)
+			if (Validator.isNotNull(submitDate))
+				dossier.setSubmitDate(submitDate);
+			if (Validator.isNotNull(dueDate))
 				dossier.setDueDate(dueDate);
 			if (Validator.isNotNull(metaData))
 				dossier.setMetaData(metaData);

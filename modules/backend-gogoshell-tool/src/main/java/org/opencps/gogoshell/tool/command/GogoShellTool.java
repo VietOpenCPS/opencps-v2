@@ -121,7 +121,13 @@ public class GogoShellTool {
 				long dossierId = Long.valueOf(params[0]);
 				reindex(dossierId);
 				break;
-			
+			case "reindex_range":
+				long startDossierId = Long.valueOf(params[0]);
+				long endDossierId = Long.valueOf(params[1]);
+				for(long i = startDossierId; i <= endDossierId; i++) {
+					reindex(i);
+				}
+				break;
 			default:
 				System.out.println("Thao tác không hỗ trợ!!");
 				break;
