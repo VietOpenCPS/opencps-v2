@@ -239,6 +239,17 @@ public class DossierUtils {
 //						model.setDossierOverdue("Sớm hạn");
 //					} 
 //					if (dueDateTimeStamp != 0 && extendDateTimeStamp != 0 && 3 == valueCompareRelease) {
+					
+					// add by phuchn- sua lai theo yeu cau cua DuanTV khi tinh toan ho so : som han, dung han, tre han
+					// ho so som han: 2 case:
+					// 						case 1 : dueDate != null && releaseDate != null && releaseDate < dueDate 
+					//						case 2 : dueDate != null && finishDate != null && finishDate < dueDate
+					// ho so dung han: 2 case:
+					//						case 1 : releaseDate != null && dueDate != null && releaseDate < dueDate(releaseDate.getTime = dueDate.getTime) 
+					// 						case 2 : releaseDate != null && dueDate == null
+					// ho so tre han: releaseDate != null && dueDate != null && releaseDate > dueDate
+					
+					
 					if (dueDateTimeStamp != 0 && 3 == valueCompareRelease) {
 						DueDateUtils dueDateUtil = new DueDateUtils(now, dueDateCalc, 1, groupId);
 						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
@@ -260,7 +271,7 @@ public class DossierUtils {
 					if (dueDateTimeStamp == 0 || 2 == valueCompareRelease) {
 						model.setDossierOverdue(MessageUtil.getMessage(ConstantUtils.DOSSIER_ONTIME_MESSAGE));
 					}
-					if (dueDateTimeStamp == 0 || 2 == valueCompareFinish) {
+					if (dueDateTimeStamp == 0 || 2 == valueCompareFinish ) {
 						model.setDossierFinishOverdue(MessageUtil.getMessage(ConstantUtils.DOSSIER_ONTIME_MESSAGE));
 					}
 //					if (processOverTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,

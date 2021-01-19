@@ -107,18 +107,29 @@ public class BetimeUtils {
 		c.set(Calendar.HOUR_OF_DAY, timeCompareH);
 		c.set(Calendar.MINUTE, timeCompareM);
 		Date betimeDate = c.getTime();
+		
+		// 
+		String releaseDateTem = DateTimeUtils.convertDateToString(releaseDate, _VN_DATE_TIME_FORMAT);
+		Date releaseDateSpec = APIDateTimeUtils.convertStringToDate(releaseDateTem, APIDateTimeUtils._NORMAL_DATE);
+		String dueDateTem = DateTimeUtils.convertDateToString(dueDate, _VN_DATE_TIME_FORMAT);
+		Date dueDateSpec = APIDateTimeUtils.convertStringToDate(dueDateTem, APIDateTimeUtils._NORMAL_DATE);
+		DateFormat dateFormat =
+				DateFormatFactoryUtil.getSimpleDateFormat(_VN_DATE_TIME_FORMAT);
+		String betimeDateTem = dateFormat.format(betimeDate);
+		Date betimeDateSpec = APIDateTimeUtils.convertStringToDate(betimeDateTem, APIDateTimeUtils._NORMAL_DATE);
+		
 		if(CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
+			if (releaseDateSpec.before(betimeDateSpec)) {
+				return 3;
+			}
+			if (releaseDateSpec.compareTo(betimeDateSpec) >= 0 && releaseDateSpec.compareTo(dueDateSpec) <= 0) {
+				return 2;
+			}
 			
-			String releaseDateTem = DateTimeUtils.convertDateToString(releaseDate, _VN_DATE_TIME_FORMAT);
-			releaseDate = APIDateTimeUtils.convertStringToDate(releaseDateTem, APIDateTimeUtils._NORMAL_DATE);
-			String dueDateTem = DateTimeUtils.convertDateToString(dueDate, _VN_DATE_TIME_FORMAT);
-			dueDate = APIDateTimeUtils.convertStringToDate(dueDateTem, APIDateTimeUtils._NORMAL_DATE);
-			DateFormat dateFormat =
-					DateFormatFactoryUtil.getSimpleDateFormat(_VN_DATE_TIME_FORMAT);
-			String betimeDateTem = dateFormat.format(betimeDate);
-			betimeDate = APIDateTimeUtils.convertStringToDate(betimeDateTem, APIDateTimeUtils._NORMAL_DATE);			
-		}
-		if (releaseDate.before(betimeDate)) {
+			return 1;
+		} 
+		
+		if (releaseDateSpec.before(betimeDateSpec)) {
 			return 3;
 		}
 		if (releaseDate.compareTo(betimeDate) >= 0 && releaseDate.compareTo(dueDate) <= 0) {

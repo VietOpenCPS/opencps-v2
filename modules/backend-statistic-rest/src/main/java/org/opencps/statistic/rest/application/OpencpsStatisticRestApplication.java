@@ -2613,14 +2613,23 @@ public class OpencpsStatisticRestApplication extends Application {
 
 						// hồ sơ có kết quả hoặc từ chối tính hạn xử lý
 						int overdue = 1; // 0: sớm hạn, 1: đúng hạn, 2: quá hạn
-						// Check condition filter betimes
+						Date dueDateSpec = Validator.isNull(dossierData.get(DossierTerm.DUE_DATE))
+								? null : StatisticUtils.convertStringToDate(dossierData.get(DossierTerm.DUE_DATE), DATE_FORMAT);
+						Date releaseDateSpec = Validator.isNull(dossierData.get(DossierTerm.RELEASE_DATE))
+								? null
+								: StatisticUtils.convertStringToDate(dossierData.get(DossierTerm.RELEASE_DATE), DATE_FORMAT);
+						Date finishDateSpec = Validator.isNull(dossierData.get(DossierTerm.FINISH_DATE))
+								? null
+								: StatisticUtils.convertStringToDate(dossierData.get(DossierTerm.FINISH_DATE), DATE_FORMAT);
+						
+						// Check condition filter betimes - default
 						if (dueDate != null) {
-							//Check extendDate != null and releaseDate < dueDate
-							if (releaseDate != null && releaseDate.before(dueDate) && extendDate != null) overdue = 0;
-							//Or check finishDate < dueDate
-							if (finishDate != null && finishDate.before(dueDate)) overdue = 0;
+							//Check releaseDateSpec < dueDateSpec (tính theo ngày)
+							if (releaseDateSpec != null && releaseDateSpec.before(dueDateSpec)) overdue = 0;
+							//Or check finishDate < dueDate (tính theo ngày)
+							if (finishDateSpec != null && finishDateSpec.before(dueDateSpec)) overdue = 0;
 							
-							//Check overTime condition releaseDate > dueDate
+							//Check overTime condition releaseDate > dueDate (tính theo giờ)
 							if (releaseDate != null && releaseDate.after(dueDate)) overdue = 2;
 						}
 
@@ -2692,5 +2701,6 @@ public class OpencpsStatisticRestApplication extends Application {
 	public static final String PROCESSING = "processing";
 	public static final String CANCELLED = "cancelled";
 	public static final String UNRESOLVED = "unresolved";
+	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
 }
