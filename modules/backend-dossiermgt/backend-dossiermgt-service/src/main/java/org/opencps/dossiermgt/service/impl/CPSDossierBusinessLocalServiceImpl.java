@@ -107,11 +107,13 @@ import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDatePhaseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.util.AccentUtils;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.ConfigCounterNumberGenerator;
@@ -127,6 +129,7 @@ import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.VNPostCLSUtils;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
@@ -163,6 +166,7 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.impl.DossierImpl;
 import org.opencps.dossiermgt.model.impl.DossierModelImpl;
 import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
@@ -1504,6 +1508,71 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, newObj.toJSONString(),
 					assignUsers, payment, context);
 		}
+		List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossierId);
+		DossierFileActions actions = new DossierFileActionsImpl();
+		try {
+			if (dossierFiles != null && !dossierFiles.isEmpty()) {
+				for (DossierFile item : dossierFiles) {
+					boolean eForm = false;
+					DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId,
+							item.getDossierTemplateNo(), item.getDossierPartNo());
+					DeliverableType dlt = DeliverableTypeLocalServiceUtil
+							.getByCode(groupId,
+									dossierPart.getDeliverableType());
+
+					eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
+							: false;
+
+					if (eForm && !dossierPart.getESign()) {
+						JSONObject mappingDataObj = JSONFactoryUtil
+								.createJSONObject(dlt.getMappingData());
+						if (mappingDataObj
+								.has(DeliverableTypesTerm.DELIVERABLES_KEY)) {
+							String deliverables = mappingDataObj.getString(
+									DeliverableTypesTerm.DELIVERABLES_KEY);
+							JSONObject formDataObj = JSONFactoryUtil
+									.createJSONObject(item.getFormData());
+
+							if (Validator.isNotNull(deliverables)) {
+								if (formDataObj.has(deliverables)) {
+									JSONArray deliverablesArr = JSONFactoryUtil
+											.createJSONArray(formDataObj
+													.getString(deliverables));
+
+									for (int i = 0; i < deliverablesArr
+											.length(); i++) {
+										JSONObject newFormDataObj = JSONFactoryUtil
+												.createJSONObject();
+										Iterator<?> keys = formDataObj.keys();
+										while (keys.hasNext()) {
+											String key = (String) keys.next();
+											if (!key.equals(deliverables)) {
+												newFormDataObj.put(key,
+														formDataObj.get(key));
+											}
+										}
+										JSONObject deliverableObj = deliverablesArr
+												.getJSONObject(i);
+										keys = deliverableObj.keys();
+										while (keys.hasNext()) {
+											String key = (String) keys.next();
+											newFormDataObj.put(key,
+													deliverableObj.get(key));
+										}
+										createDeliverable(dossierId,dossier, dossierPart, actions, dlt, newFormDataObj, userId,groupId, context);
+
+									}
+								}
+							}
+						}
+					} else {
+						break;
+					}
+				}
+			}
+		}catch (Exception e){
+			e.getMessage();
+		}
 
 		//Update dossier
 		dossierLocalService.updateDossier(dossier);
@@ -1513,6 +1582,60 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//		indexer.reindex(dossier);
 
 		return dossierAction;
+	}
+	//Create deliverables
+	public void createDeliverable(long dossierId, Dossier dossier,  DossierPart dossierPart,
+								  DossierFileActions actions, DeliverableType dlt, JSONObject newFormDataObj,
+								  long userId, long groupId, ServiceContext context) throws PortalException {
+		DossierFile dossierFile = null;
+		String docFileReferenceUid = StringPool.BLANK;
+		try {
+			dossierFile = actions.addDossierFile(
+					groupId, dossierId,
+					StringPool.BLANK,
+					dossier.getDossierTemplateNo(),
+					dossierPart.getPartNo(),
+					dossierPart.getFileTemplateNo(),
+					dossierPart.getPartName(),
+					StringPool.BLANK, 0L, null,
+					StringPool.BLANK,
+					String.valueOf(false),
+					context);
+			_log.info("DossierFile: " + dossierFile.getDossierFileId());
+
+			Deliverable deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
+					groupId, dlt.getTypeCode(), dlt.getTypeName(), dossierFile.getDeliverableCode(),
+					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantIdNo(),
+					dossier.getApplicantName(), "", "", null,
+					null, String.valueOf(1), dossier.getDossierId(), dossierFile.getFileEntryId(),
+					dlt.getFormScriptFileId(), dlt.getFormReportFileId(), "",
+					dossierFile != null
+							? String.valueOf(dossierFile.getFileEntryId()) : "0", context);
+			_log.info("deliverable: " + JSONFactoryUtil.looseSerialize(deliverable));
+
+			dossierFile.setFormScript(dossierPart.getFormScript());
+			dossierFile.setEForm(dossierPart.getEForm());
+			dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+			docFileReferenceUid = dossierFile
+					.getReferenceUid();
+			newFormDataObj.put("LicenceNo",
+					DeliverableNumberGenerator
+							.generateDeliverableNumber(
+									groupId,
+									20099,
+									dlt.getDeliverableTypeId()));
+			DossierFileLocalServiceUtil
+					.updateFormData(groupId,
+							dossierId,
+							docFileReferenceUid,
+							newFormDataObj
+									.toJSONString(),
+							context);
+
+		}catch (Exception e) {
+			e.getMessage();
+		}
 	}
 
 	public void initDossierActionUser(String stepCode, long serviceProcessId, Dossier dossier,
