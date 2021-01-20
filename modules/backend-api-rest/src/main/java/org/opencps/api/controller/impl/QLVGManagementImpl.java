@@ -15,6 +15,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.QLVGManagement;
+import org.opencps.auth.api.BackendAuth;
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.QLVBIntegrationAction;
@@ -45,7 +48,7 @@ public class QLVGManagementImpl implements QLVGManagement {
     private ObjectMapper objectMapper = new ObjectMapper();
     private static final Log _log = LogFactoryUtil.getLog(QLVGManagementImpl.class);
     private static final String API_SYNC_QLVB = "API_SYNC_QLVB";
-    private static final String[] LIST_ACTION_CODE = {"3000"};
+    private static final String[] LIST_ACTION_CODE = {"2100"};
     public static final String MIME_DOC  = "application/msword";
     public static final String MIME_DOCX  = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
     public static final String MIME_CSV  = "text/csv";
@@ -114,6 +117,13 @@ public class QLVGManagementImpl implements QLVGManagement {
         _log.info("Eoffice system calling api FDS...");
         JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
         try {
+            BackendAuth auth = new BackendAuthImpl();
+            if (!auth.isAuth(serviceContext)) {
+                jsonObject.put("message", "Wrong credentials");
+                jsonObject.put("code", "16");
+                return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(jsonObject.toJSONString()).build();
+            }
+
             if(Validator.isNull(id)
                     || Validator.isNull(file)
                     || Validator.isNull(displayName)

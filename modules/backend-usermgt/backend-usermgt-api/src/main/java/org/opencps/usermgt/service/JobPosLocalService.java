@@ -235,6 +235,9 @@ public interface JobPosLocalService extends BaseLocalService,
 	public JobPos getByJobCode(long groupId, String jobCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public JobPos getByJobPosCode(String jobCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 

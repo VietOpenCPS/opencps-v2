@@ -51,4 +51,9 @@ public class DossierFileTerm {
 	public static final String RETURNED = "returned";
 	public static final String SO_CONG_VAN = "SoCongVan";
 	public static final String STATUS_CONG_VAN = "Status";
+	public static final String LIST_GIAY_TO = "list_giay_to";
+	public static final String ANH_CON_DAU = "anh_con_dau";
+	public static final String ANH_CHU_KY = "anh_chu_ky";
+	public static final String IP_LOCAL= "";
+	public static final String IP_PUBLIC = "";
 }

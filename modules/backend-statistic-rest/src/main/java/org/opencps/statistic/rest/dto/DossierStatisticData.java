@@ -313,6 +313,8 @@ public class DossierStatisticData {
 	private String govAgencyName;
 	private String domainCode;
 	private String domainName;
+	private String serviceCode;
+	private String serviceName;
 	private int reporting;
 	private long companyId;
 	private long groupId;
@@ -342,9 +344,28 @@ public class DossierStatisticData {
 	private int onlineReleaseOvertimeCount = 0;
 	private int onegateReleaseBetimesCount = 0;
 	private int onegateReleaseOntimeCount = 0;
-	private int onegateReleaseOvertimeCount = 0;	
-		
+	private int onegateReleaseOvertimeCount = 0;
 	
+	// ho so dang xu ly (cua cac ho so tiep nhan trong ky)
+	private int processingInAPeriodCount = 0;
+	private int releaseInAPeriodCount = 0;
+
+	public String getServiceCode() {
+		return serviceCode;
+	}
+
+	public void setServiceCode(String serviceCode) {
+		this.serviceCode = serviceCode;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
 	public int getFromViaPostalCount() {
 		return fromViaPostalCount;
 	}
@@ -521,4 +542,20 @@ public class DossierStatisticData {
 		this.onegateReleaseOvertimeCount = onegateReleaseOvertimeCount;
 	}
 
+	public int getProcessingInAPeriodCount() {
+		return processingInAPeriodCount;
+	}
+
+	public void setProcessingInAPeriodCount(int processingInAPeriodCount) {
+		this.processingInAPeriodCount = processingInAPeriodCount;
+	}
+
+	public int getReleaseInAPeriodCount() {
+		return releaseInAPeriodCount;
+	}
+
+	public void setReleaseInAPeriodCount(int releaseInAPeriodCount) {
+		this.releaseInAPeriodCount = releaseInAPeriodCount;
+	}
+	
 }

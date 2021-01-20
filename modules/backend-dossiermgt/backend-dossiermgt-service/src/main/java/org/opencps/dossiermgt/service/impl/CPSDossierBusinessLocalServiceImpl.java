@@ -966,7 +966,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		int allowAssignUser = proAction.getAllowAssignUser();
 		//_log.info("allowAssignUser: "+allowAssignUser);
-		JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
+		JSONArray assignedUsersArray;
+		if(proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_ASSIGN_ONLY_CREATED)) {
+			String listSubUserString = "[{\"userId\":"+ userId + ",\"assigned\":"
+					+ DossierActionUserTerm.ASSIGNED_TH + "}]";
+			allowAssignUser = ProcessActionTerm.ASSIGNED_TH;
+			assignedUsersArray = JSONFactoryUtil.createJSONArray(listSubUserString);
+		} else {
+			assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
+		}
+
 		if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
 			if (Validator.isNotNull(assignUsers) && assignedUsersArray.length() > 0) {
 				//				JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
@@ -1004,8 +1013,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String payload, String assignUsers, String payment, int syncType, ServiceContext context)
 			throws PortalException, SystemException, Exception {
 
-		System.out.println("payload Action: "+ payload);
-		_log.info("payload Action: "+ payload);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 		Map<String, Boolean> flagChanged = new HashMap<>();
@@ -1390,7 +1397,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					previousAction, proAction, dossier, actionCode, actionUser, actionNote, payload, assignUsers,
 					paymentFee, serviceProcess, option, flagChanged, dateOption, context);
 
-			_log.info("dossier generate_DossierNo: "+JSONFactoryUtil.looseSerialize(dossier));
+//			_log.info("dossier generate_DossierNo: "+JSONFactoryUtil.looseSerialize(dossier));
 
 			//Xử lý phiếu thanh toán
 			processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
@@ -1414,7 +1421,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if(Validator.isNotNull(sc)) {
 					JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 					bdhnConnect = configObj.getBoolean(ServerConfigTerm.BDHN_CONNECT);
-					senderAddress = configObj.getString(ServerConfigTerm.BDHN_CONNECT);
+					senderAddress = configObj.getString(ServerConfigTerm.SENDER_ADDRESS);
 				}
 				if(bdhnConnect){
 					//VNPOST thông báo đã có kết quả tại một cửa cho Bưu điện HN
@@ -1995,7 +2002,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								JSONObject filesAttach = getFileAttachMailForApplicant(dossier, proAction);
 								payloadObj.put("filesAttach", filesAttach);
 								payloadObj = verifyPayloadMail(payloadObj);
-								_log.info("====================payloadattach2=========" + payloadObj);
+								_log.debug("====================payloadattach2=========" + payloadObj);
 								String fromFullName = user.getFullName();
 								if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
 									fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();
@@ -6103,7 +6110,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 									for (User u : users) {
 										if (mapEmps.containsKey(u.getUserId())) {
 											Employee emp = mapEmps.get(u.getUserId());
-											_log.info("user: "+ u.getEmailAddress() + "|checkGovDossierEmployee: "+ checkGovDossierEmployee(dossier, emp));
+//											_log.info("user: "+ u.getEmailAddress() + "|checkGovDossierEmployee: "+ checkGovDossierEmployee(dossier, emp));
 											if (checkGovDossierEmployee(dossier, emp)) {
 												DossierUserPK duPk = new DossierUserPK();
 												duPk.setDossierId(dossier.getDossierId());
@@ -6173,12 +6180,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		long userId = serviceContext.getUserId();
 		_log.info("userId: "+userId);
 		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-		_log.info("employee: "+JSONFactoryUtil.looseSerialize(employee));
+//		_log.info("employee: "+JSONFactoryUtil.looseSerialize(employee));
 		if (employee != null) {
 			long employeeId = employee.getEmployeeId();
 			if (employeeId > 0) {
 				List<EmployeeJobPos> empJobList = EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
-				_log.info("empJobList: "+JSONFactoryUtil.looseSerialize(empJobList));
+//				_log.info("empJobList: "+JSONFactoryUtil.looseSerialize(empJobList));
 				if (empJobList != null && empJobList.size() > 0) {
 					for (EmployeeJobPos employeeJobPos : empJobList) {
 						_log.info("employeeJobPos: "+JSONFactoryUtil.looseSerialize(employeeJobPos));
@@ -6458,6 +6465,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
+			}
+			if (Validator.isNotNull(input.getDossierNo())) {
+				dossier.setDossierNo(input.getDossierNo());
+			}
+			if (Validator.isNotNull(input.getDueDate())) {
+				dossier.setDueDate(APIDateTimeUtils
+						.convertStringToDate(input.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
+			if (Validator.isNotNull(input.getReceiveDate())) {
+				dossier.setReceiveDate(APIDateTimeUtils
+						.convertStringToDate(input.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 			}
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			return dossierLocalService.updateDossier(dossier);
@@ -6800,6 +6818,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
+			}
+			if (Validator.isNotNull(input.getDossierNo())) {
+				dossier.setDossierNo(input.getDossierNo());
+			}
+			if (Validator.isNotNull(input.getDueDate())) {
+				dossier.setDueDate(APIDateTimeUtils
+						.convertStringToDate(input.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
+			if (Validator.isNotNull(input.getReceiveDate())) {
+				dossier.setReceiveDate(APIDateTimeUtils
+						.convertStringToDate(input.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 			}
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			dossierLocalService.updateDossier(dossier);
@@ -7408,10 +7437,36 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String delegateWardName = StringPool.BLANK;
 			String dossierName = serviceName;
 			DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			Date receiveDate = formatter.parse(input.getCreation_date());
-			Date dueDate     = Validator.isNotNull(input.getAccept_date()) ?
-									formatter.parse(input.getAccept_date()) :
-									null;
+			Date receiveDate;
+			Date dueDate;
+			Date submitDate;
+
+			try {
+				if(Validator.isNotNull(input.getCreation_date()) && !input.getCreation_date().isEmpty()) {
+					submitDate = formatter.parse(input.getCreation_date());
+				} else {
+					submitDate = new Date();
+				}
+
+				if(Validator.isNotNull(input.getAccept_date()) && !input.getAccept_date().isEmpty()) {
+					receiveDate = formatter.parse(input.getAccept_date());
+				} else {
+					receiveDate = submitDate;
+				}
+
+				if(Validator.isNotNull(input.getAppointment_date()) && !input.getAppointment_date().isEmpty()) {
+					dueDate = formatter.parse(input.getAppointment_date());
+				} else {
+					dueDate = null;
+				}
+			} catch (Exception e) {
+				_log.warn("Error when get receiveDate and dueDate with message " + e.getMessage());
+				_log.warn("Still running...");
+				submitDate  = new Date();
+				receiveDate = submitDate;
+				dueDate = null;
+			}
+
 
 			Integer counter = 0;
 			Date appIdDate = null;
@@ -7440,9 +7495,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				metaData = metaDataJson.toString();
 			}
 
-			if (receiveDate != null)
+			if (Validator.isNotNull(receiveDate))
 				dossier.setReceiveDate(receiveDate);
-			if (dueDate != null)
+			if (Validator.isNotNull(submitDate))
+				dossier.setSubmitDate(submitDate);
+			if (Validator.isNotNull(dueDate))
 				dossier.setDueDate(dueDate);
 			if (Validator.isNotNull(metaData))
 				dossier.setMetaData(metaData);

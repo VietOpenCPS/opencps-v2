@@ -41,6 +41,7 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.usermgt.action.ApplicantDataActions;
 import org.opencps.usermgt.action.impl.ApplicantDataActionsImpl;
 import org.opencps.usermgt.constants.ApplicantDataTerm;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.ApplicantData;
 import org.opencps.usermgt.service.ApplicantDataLocalServiceUtil;
 
@@ -52,17 +53,21 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 	public Response addApplicantData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Attachment file, String fileTemplateNo, String fileNo, String fileName,
 			String applicantIdNo, String status) {
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		//Mặc định groupId =0
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long groupId = ApplicantTerm.GROUP_ID_DEFAULT;
 		DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 		ApplicantData applicantData = null;
 		
 		try {
 			int statusInt = Validator.isNotNull(status) ? Integer.parseInt(status) : 0;
-			
-			applicantData = ApplicantDataLocalServiceUtil.createApplicantData(groupId, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
-			ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
+			if(dataHandler.getInputStream() != null) {
+				applicantData = ApplicantDataLocalServiceUtil.createApplicantData(groupId, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
+				ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
 
-			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+			}
+			return null;
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -111,8 +116,8 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 				query.setEnd(QueryUtil.ALL_POS);
 
 			}
-
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			//Mặc định groupId = 0
+			long groupId = ApplicantTerm.GROUP_ID_DEFAULT;
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -155,7 +160,14 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 		
 		try {
 			int statusInt = Validator.isNotNull(status) ? Integer.parseInt(status) : 0;
-			applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
+			if(dataHandler.getInputStream() != null){
+				applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt,
+						dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
+			}else{
+
+				applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, serviceContext);
+			}
+
 			ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();

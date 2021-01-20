@@ -3,6 +3,7 @@ package org.opencps.api.controller.util;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -304,6 +305,9 @@ public class ProcessUpdateDBUtils {
 							
 							FileEntry fileEntryScript = FileUploadUtils.uploadDossierFile(userId, groupId, jsonFile, 
 									UUID.randomUUID() + "_" + jsonFile.getName(), serviceContext);
+							if(Validator.isNotNull(deliType.getGroupId())){
+								groupId = deliType.getGroupId();
+							}
 
 							// Check record exits DB
 							DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
@@ -322,8 +326,14 @@ public class ProcessUpdateDBUtils {
 											String moderator = roleType.getModerator();
 											boolean moderatorBool = Validator.isNotNull(moderator) ? Boolean.valueOf(moderator) : false;
 											if (Validator.isNotNull(roleCode)) {
-												org.opencps.usermgt.model.JobPos jobPos = JobPosLocalServiceUtil
-														.getByJobCode(groupId, roleCode);
+												org.opencps.usermgt.model.JobPos jobPos = null;
+												if(groupId == 0L){
+													jobPos = JobPosLocalServiceUtil
+															.getByJobPosCode(roleCode);
+												}else {
+													 jobPos = JobPosLocalServiceUtil
+															.getByJobCode(groupId, roleCode);
+												}
 												if (jobPos != null) {
 													actions.updateDeliverableTypeRoleDB(userId, groupId,
 															deliverableType.getDeliverableTypeId(),
@@ -821,6 +831,10 @@ public class ProcessUpdateDBUtils {
 				String collectionNameEN = dicts.getCollectionNameEN();
 				String description = dicts.getDescription();
 				Integer status = dicts.getStatus();
+				if(Validator.isNotNull(dicts.getGroupId())){
+					groupId = dicts.getGroupId();
+				}
+				_log.debug("DictCollection: " + groupId);
 				DictcollectionInterface actionCollection = new DictCollectionActions();
 				long dictCollectionId = actionCollection.updateDictCollectionDB(userId, groupId, collectionCode,
 						collectionName, collectionNameEN, description, status);

@@ -24,6 +24,7 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.usermgt.action.FileItemActions;
 import org.opencps.usermgt.action.impl.FileItemActionsImpl;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.FileItem;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -49,8 +50,8 @@ public class FileItemManagementImpl implements FileItemManagement {
 				query.setEnd(QueryUtil.ALL_POS);
 
 			}
-
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+            // lấy danh sách fileItem mặc định là 0
+			long groupId = ApplicantTerm.GROUP_ID_DEFAULT;
 			int status = GetterUtil.getInteger(query.getStatus());
 			
 			List<FileItem> lstFileItems = action.getFileItems(groupId, status);
