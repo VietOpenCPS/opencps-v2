@@ -244,7 +244,6 @@ public class VNPostServerConfigModel {
 		this.lgspVnpostPricehcc = lgspVnpostPricehcc;
 		this.lgspVnpostDocument = lgspVnpostDocument;
 		this.lgspVnpostGetPrice = lgspVnpostGetPrice;
-		this.lgspType = lgspType;
 	}
 	
 

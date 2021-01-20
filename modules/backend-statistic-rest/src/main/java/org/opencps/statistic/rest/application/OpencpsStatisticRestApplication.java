@@ -43,6 +43,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -2674,6 +2675,39 @@ public class OpencpsStatisticRestApplication extends Application {
 		} catch (Exception e) {
 			_log.info(e);
 			jsonResult.put("value", "FAIL");
+			return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(jsonResult.toJSONString()).build();
+		}
+	}
+	
+	@PUT
+	@Path("/calculateStatistic")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response calculateStatistic(@HeaderParam("groupId") long groupId,@FormParam("year") int year) {
+
+		_log.debug("START Calculate Statistic Year");
+		
+		JSONObject jsonResult = JSONFactoryUtil.createJSONObject();
+		JSONArray opencpsStatistics = JSONFactoryUtil.createJSONArray();
+		
+		try {
+			
+			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
+			
+			_log.debug("+++groupId:"+groupId);
+			_log.debug("+++year:"+year);
+			_log.debug("+++time:"+System.currentTimeMillis());
+			
+			if(groupId >0 && year > 2016) {
+				opencpsStatistics = engineUpdateAction.calculateStatistic(groupId, year);
+			}
+			
+			jsonResult.put("total", opencpsStatistics.length());
+			jsonResult.put("value", opencpsStatistics);
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonResult.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			jsonResult.put("value", "ERROR");
 			return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(jsonResult.toJSONString()).build();
 		}
 	}
