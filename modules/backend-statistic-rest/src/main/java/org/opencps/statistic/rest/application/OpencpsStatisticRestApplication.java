@@ -2672,6 +2672,12 @@ public class OpencpsStatisticRestApplication extends Application {
 					}
 				}
 				if (jsonDataList != null && jsonDataList.size() > 0) {
+					for (int j = 0; j<jsonDataList.size(); j++) {
+						if (jsonDataList.get(j).getInt("month") == 0 
+								&& jsonDataList.get(j).getInt("groupId") == 35417) {
+							_log.info("22222222");
+						}
+					}
 					engineUpdateAction.updateStatistic(jsonDataList);
 				}
 			}
