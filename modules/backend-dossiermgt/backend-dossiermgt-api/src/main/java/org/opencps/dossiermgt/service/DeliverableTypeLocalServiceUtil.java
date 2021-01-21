@@ -258,6 +258,11 @@ public class DeliverableTypeLocalServiceUtil {
 		return getService().getDeliverableType(deliverableTypeId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DeliverableType> getDeliverableTypeByGroupId(
+		long[] groupId, int start, int end) {
+		return getService().getDeliverableTypeByGroupId(groupId, start, end);
+	}
+
 	public static org.opencps.dossiermgt.model.DeliverableType getDeliverableTypebyId(
 		long groupId, String deliverableTypeId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -292,11 +297,6 @@ public class DeliverableTypeLocalServiceUtil {
 	public static java.util.List<org.opencps.dossiermgt.model.DeliverableType> getDeliverableTypes(
 		int start, int end) {
 		return getService().getDeliverableTypes(start, end);
-	}
-
-	public static java.util.List<org.opencps.dossiermgt.model.DeliverableType> getDeliverableTypeByGroupId(
-			long [] groupId,int start, int end ) {
-		return getService().getDeliverableTypeByGroupId(groupId, start, end);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.DeliverableType> getDeliverableTypes(

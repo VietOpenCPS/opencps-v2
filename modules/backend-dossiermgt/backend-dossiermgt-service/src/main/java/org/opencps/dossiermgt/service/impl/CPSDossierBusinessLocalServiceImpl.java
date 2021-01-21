@@ -1518,7 +1518,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if(proAction.getESignature()) {
 				if (dossierFiles != null && !dossierFiles.isEmpty()) {
 					for (DossierFile item : dossierFiles) {
-						_log.info("EForm: " + item.getEForm());
 						boolean eForm = false;
 						DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId,
 								item.getDossierTemplateNo(), item.getDossierPartNo());
@@ -1581,11 +1580,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return dossierAction;
 	}
 	//Create deliverables
-	public void createDeliverable(long dossierId, Dossier dossier,  DossierPart dossierPart,
+	private void createDeliverable(long dossierId, Dossier dossier,  DossierPart dossierPart,
 								  DossierFileActions actions, DeliverableType dlt, JSONObject deliverableObj,
 								  long userId, long groupId, ServiceContext context) throws PortalException {
 		DossierFile dossierFile = null;
-
 		try {
 			InputStream is = null;
 			String result = StringPool.BLANK;
@@ -1652,18 +1650,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 			if(Validator.isNotNull(deliverable)){
 				deliverable.setFileAttachs(String.valueOf(deliverable.getFileEntryId()));
+				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 			}
-
-			Message message = new Message();
-			JSONObject msgData = JSONFactoryUtil.createJSONObject();
-			msgData.put(ConstantUtils.CLASS_NAME, Deliverable.class.getName());
-			msgData.put(Field.CLASS_PK, deliverable.getDeliverableId());
-			msgData.put(ConstantUtils.JRXML_TEMPLATE, result);
-			msgData.put( ConstantUtils.FORM_DATA, deliverable.getFormData());
-			msgData.put(Field.USER_ID, userId);
-			message.put(ConstantUtils.MSG_ENG, msgData);
-			MessageBusUtil.sendMessage(
-					ConstantUtils.JASPER_DESTINATION, message);
 
 		}catch (Exception e) {
 			e.getMessage();

@@ -78,11 +78,8 @@ public class Engine implements MessageListener {
 				} catch (JSONException e1) {
 					_log.error(e1);
 				}
-				_log.info("FileCanonicalPath: " + file.getCanonicalPath());
-				_log.info("JsonData: " + JSONFactoryUtil.looseSerialize(jsonData));
-				_log.info("MsgData: " + msgData.getString(ConfigConstants.JASPER_TERM_JRXML_TEMPLATE));
 				String fileExport = JRReportUtil.createReportFile(msgData.getString(ConfigConstants.JASPER_TERM_JRXML_TEMPLATE),
-						jsonData.toJSONString(), null, file.getCanonicalPath());
+						jsonData.toJSONString(), null, file.getName());
 
 				if (Validator.isNotNull(fileExport)) {
 					
