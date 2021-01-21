@@ -104,6 +104,7 @@ import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.JobposInterface;
@@ -860,41 +861,47 @@ public class ProcessUpdateDBUtils {
 		boolean flagService = true;
 		try {
 			if (service != null) {
-				String serviceCode = service.getServiceCode();
-				String serviceName = service.getServiceName();
-				String processText = service.getProcessText();
-				String methodText = service.getMethodText();
-				String dossierText = service.getDossierText();
-				String conditionText = service.getConditionText();
-				String durationText = service.getDurationText();
-				String applicantText = service.getApplicantText();
-				String resultText = service.getResultText();
-				String regularText = service.getRegularText();
-				String feeText = service.getFeeText();
-				String administrationCode = service.getAdministrationCode();
-				String administrationName = service.getAdministrationName();
-				String domainCode = service.getDomainCode();
-				String domainName = service.getDomainName();
-				Integer maxLevel = service.getMaxLevel();
-				boolean public_ = Validator.isNotNull(service.isPublic()) ? service.isPublic() : true;
-				// Update serviceInfo
+				long serviceInfoId = 0;
+				org.opencps.dossiermgt.model.ServiceInfo serviceInfo = null;
 				ServiceInfoActions actionService = new ServiceInfoActionsImpl();
-				long serviceInfoId = actionService.updateServiceInfoDB(userId, groupId, serviceCode, serviceName, processText, methodText,
-						dossierText, conditionText, durationText, applicantText, resultText, regularText, feeText,
-						administrationCode, administrationName, domainCode, domainName, maxLevel, public_);
-				// Update fileName
-				FileTemplates fileTemplate = service.getFileTemplates();
-				if (fileTemplate != null) {
-					flagService = processFileTemplate(userId, groupId, serviceInfoId, fileTemplate, folderParentPath,
-							actionService, serviceContext);
-					if (!flagService) {
-						return flagService;
+				if(Validator.isNotNull(service.getServiceCode()) && Validator.isNotNull(service.getServiceName())) {
+					String serviceCode = service.getServiceCode();
+					String serviceName = service.getServiceName();
+					String processText = service.getProcessText();
+					String methodText = service.getMethodText();
+					String dossierText = service.getDossierText();
+					String conditionText = service.getConditionText();
+					String durationText = service.getDurationText();
+					String applicantText = service.getApplicantText();
+					String resultText = service.getResultText();
+					String regularText = service.getRegularText();
+					String feeText = service.getFeeText();
+					String administrationCode = service.getAdministrationCode();
+					String administrationName = service.getAdministrationName();
+					String domainCode = service.getDomainCode();
+					String domainName = service.getDomainName();
+					Integer maxLevel = service.getMaxLevel();
+					boolean public_ = Validator.isNotNull(service.isPublic()) ? service.isPublic() : true;
+					// Update serviceInfo
+					serviceInfoId = actionService.updateServiceInfoDB(userId, groupId, serviceCode, serviceName, processText, methodText,
+							dossierText, conditionText, durationText, applicantText, resultText, regularText, feeText,
+							administrationCode, administrationName, domainCode, domainName, maxLevel, public_);
+					// Update fileName
+					FileTemplates fileTemplate = service.getFileTemplates();
+					if (fileTemplate != null) {
+						flagService = processFileTemplate(userId, groupId, serviceInfoId, fileTemplate, folderParentPath,
+								actionService, serviceContext);
+						if (!flagService) {
+							return flagService;
+						}
 					}
+				}else{
+					serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId,service.getServiceCode());
 				}
 				// Add serviceConfig
 				Configs configs = service.getConfigs();
-				if (configs != null) {
-					flagService = processServiceConfig(userId, groupId, serviceInfoId, configs, actionService, serviceContext);
+				if (configs != null && serviceInfoId > 0 || Validator.isNotNull(serviceInfo)) {
+					flagService = processServiceConfig(userId, groupId, serviceInfoId > 0 ? serviceInfoId : serviceInfo.getServiceInfoId(), configs, actionService, serviceContext);
 				}
 			}
 		} catch (Exception e) {

@@ -28,6 +28,8 @@ public class ConstantUtils {
 	public static final String SOURCE_SERVICES = "services";
 	public static final String SOURCE_TEMPLATES = "templates";
 	public static final String SOURCE_PROCESSES = "processes";
+	public static final String SOURCE_SERVICE_INFOS = "seriviceinfos";
+	public static final String SOURCE_SERVICE_CONFIGS ="serviceconfigs";
 	public static final String SOURCE_VALIDATE = "services, processes, processes, dicts";
 	//
 	public static final String PREFIX_ACTIONCONFIG = "ACTION_";

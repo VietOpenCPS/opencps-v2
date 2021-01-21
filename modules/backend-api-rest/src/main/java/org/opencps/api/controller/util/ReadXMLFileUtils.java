@@ -291,6 +291,12 @@ public class ReadXMLFileUtils {
 				case ConstantUtils.SOURCE_PROCESSES:
 					strFile = processListFileProcess(fileEntry, groupId, userId, serviceContext);
 					break;
+				case ConstantUtils.SOURCE_SERVICE_INFOS:
+					strFile = processListFileService(fileEntry, folderParentPath, groupId, userId, serviceContext);
+					break;
+				case ConstantUtils.SOURCE_SERVICE_CONFIGS:
+					strFile = processListFileService(fileEntry,folderParentPath,groupId,userId,serviceContext);
+					break;
 				default:
 					break;
 				}
