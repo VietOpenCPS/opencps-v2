@@ -1546,16 +1546,18 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 										for (int i = 0; i < deliverablesArr
 												.length(); i++) {
-											JSONObject deliverableObj = deliverablesArr
+											JSONObject deliverableObj = null;
+											deliverableObj = deliverablesArr
 													.getJSONObject(i);
 											Iterator<?> keys = formDataObj.keys();
 											while (keys.hasNext()) {
 												String key = (String) keys.next();
-												if (!key.equals(deliverables)) {
-													deliverableObj.put(key,
-															formDataObj.get(key));
-												}
+													if (!key.equals(DeliverableTerm.DANH_SACH)) {
+														deliverableObj.put(key,
+																formDataObj.get(key));
+													}
 											}
+											_log.debug("deliverableObj -------: " + JSONFactoryUtil.looseSerialize(deliverableObj));
 											createDeliverable(dossierId, dossier, dossierPart, actions, dlt, deliverableObj, userId, groupId, context);
 
 										}
@@ -1586,7 +1588,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		DossierFile dossierFile = null;
 		try {
 			InputStream is = null;
-			String result = StringPool.BLANK;
 			if (dlt.getFormReportFileId() > 0) {
 				try {
 					DLFileEntry dlFileEntry =
@@ -1595,12 +1596,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 					is = dlFileEntry.getContentStream();
 
-					result = IOUtils.toString(is, StandardCharsets.UTF_8);
-
 				}
 				catch (Exception e) {
 					_log.debug(e);
-					result = StringPool.BLANK;
 				}
 				finally {
 					if (is != null) {
@@ -1626,22 +1624,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					String.valueOf(false),
 					context);
 
-			if(Validator.isNotNull(dossierFile.getFormData())){
-				deliverableObj.put("LicenceNo",
-						DeliverableNumberGenerator
-								.generateDeliverableNumber(
-										groupId,
-										20099,
-										dlt.getDeliverableTypeId()));
-				dossierFile.setFormData(deliverableObj.toString());
-			}
-
 			Deliverable deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
 					groupId, dlt.getTypeCode(), dlt.getTypeName(), dossierFile.getDeliverableCode(),
 					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantIdNo(),
 					dossier.getApplicantName(), "", "", "",
 					null, String.valueOf(1), dossier.getDossierId(), dossierFile.getFileEntryId(),
-					dlt.getFormScriptFileId(), dlt.getFormReportFileId(), dossierFile.getFormData(),
+					dlt.getFormScriptFileId(), dlt.getFormReportFileId(), deliverableObj.toString(),
 					"", context);
 
 			dossierFile.setFormScript(dossierPart.getFormScript());
