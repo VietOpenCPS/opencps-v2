@@ -2399,8 +2399,10 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 			}
 			
+			// Ket qua gom nhung ho so co TTHC muc 3,4
+			JSONArray tempResults = JSONFactoryUtil.createJSONArray();
+			// Ket qua gom nhung ho so co TTHC muc 3,4 + TTHC muc 3,4 chua trong ho so nao cua site
 			JSONArray results = JSONFactoryUtil.createJSONArray();
-			JSONArray newResults = JSONFactoryUtil.createJSONArray();
 			
 				for (String agency : mapResults.keySet()) {
 					for (String serviceCode : mapResults.get(agency).keySet()) {
@@ -2427,13 +2429,18 @@ public class OpencpsStatisticRestApplication extends Application {
 						obj.put("releaseDossierOnegate4Count", data.getReleaseDossierOnegate4Count());
 						obj.put("serviceLevel", Integer.valueOf(dossiers.get(0).get(DossierTerm.SERVICE_LEVEL)));
 							
+						tempResults.put(obj);
 						results.put(obj);
-						newResults.put(obj);
 						}																													
 					}
 				}
 				
-				JSONObject tempJOB = results.getJSONObject(0);
+				_log.debug("tempResults :" + JSONFactoryUtil.looseSerialize(tempResults));
+				_log.debug("results :" + JSONFactoryUtil.looseSerialize(results));
+
+				JSONObject tempJOB = tempResults.getJSONObject(0);
+				_log.debug("tempJOB :" + JSONFactoryUtil.looseSerialize(tempJOB));
+
 				
 				// lay danh sach TTHC muc 3,4 cua site
 				List<ServiceInfo> lServiceInfos = ServiceInfoLocalServiceUtil.findByGroupAndPublic(Long.valueOf(groupId), true);
@@ -2445,6 +2452,8 @@ public class OpencpsStatisticRestApplication extends Application {
 						}
 					}
 				}
+				_log.debug("lServiceInfosLV34 :" + JSONFactoryUtil.looseSerialize(lServiceInfosLV34));
+
 				
 				// lay danh sach TTHC cua cac ho so
 				List<String> lstServiceCodeOfDossier = new ArrayList<String>();
@@ -2453,25 +2462,36 @@ public class OpencpsStatisticRestApplication extends Application {
 						lstServiceCodeOfDossier.add(results.getJSONObject(j).getString("serviceCode"));
 					}
 				}
+				_log.debug("lstServiceCodeOfDossier :" + JSONFactoryUtil.looseSerialize(lstServiceCodeOfDossier));
+
 				
 				// lay danh sach TTHC ko co ho so
 				List<ServiceInfo> lServiceInfosNotDossier = new ArrayList<ServiceInfo>();
 				if (lServiceInfosLV34 != null && lServiceInfosLV34.size() > 0) {
 					for (int k=0; k< lServiceInfosLV34.size(); k++) {
 						String serviceCode = lServiceInfosLV34.get(k).getServiceCode();
-						if (lstServiceCodeOfDossier != null && lstServiceCodeOfDossier.size() > 0
-								&& !lstServiceCodeOfDossier.contains(serviceCode)) {
+						if ( (lstServiceCodeOfDossier != null && lstServiceCodeOfDossier.size() == 0) || 
+								(lstServiceCodeOfDossier != null && lstServiceCodeOfDossier.size() > 0
+									&& !lstServiceCodeOfDossier.contains(serviceCode))) {
 							lServiceInfosNotDossier.add(lServiceInfosLV34.get(k));
 						}
 					}
 				}
+				_log.debug("lServiceInfosNotDossier :" + JSONFactoryUtil.looseSerialize(lServiceInfosNotDossier));
+
 				
 				// insert vao results nhung ban ghi TTHC ko co ho so
 				if (lServiceInfosNotDossier != null && lServiceInfosNotDossier.size() > 0) {
 					for (ServiceInfo serviceInfo : lServiceInfosNotDossier) {
 						JSONObject tempObj = JSONFactoryUtil.createJSONObject();
-						tempObj.put("govAgencyCode", tempJOB.getString("govAgencyCode"));
-						tempObj.put("govAgencyName", tempJOB.getString("govAgencyName"));
+						
+						if (Validator.isNotNull(tempJOB)) {
+							tempObj.put("govAgencyCode", tempJOB.getString("govAgencyCode"));
+							tempObj.put("govAgencyName", tempJOB.getString("govAgencyName"));
+						}else {
+							tempObj.put("govAgencyCode", serviceInfo.getAdministrationCode());
+							tempObj.put("govAgencyName", serviceInfo.getAdministrationName());
+						}
 						tempObj.put("serviceCode", serviceInfo.getServiceCode());
 						tempObj.put("serviceName", serviceInfo.getServiceName());
 						tempObj.put("totalCount", 0);
@@ -2485,12 +2505,15 @@ public class OpencpsStatisticRestApplication extends Application {
 						tempObj.put("releaseDossierOnegate4Count", 0);
 						tempObj.put("serviceLevel", serviceInfo.getMaxLevel());
 						
-						newResults.put(tempObj);
+						_log.debug("results1 :" + JSONFactoryUtil.looseSerialize(results));
+						results.put(tempObj);
+						_log.debug("results2 :" + JSONFactoryUtil.looseSerialize(results));
+
 					}
 				}
 
 				
-			ResponseBuilder builder = Response.ok(newResults.toJSONString());
+			ResponseBuilder builder = Response.ok(results.toJSONString());
 			return builder.build();
 		} catch (PortalException e) {
 			_log.debug(e);
