@@ -2435,12 +2435,9 @@ public class OpencpsStatisticRestApplication extends Application {
 					}
 				}
 				
-				_log.debug("tempResults :" + JSONFactoryUtil.looseSerialize(tempResults));
-				_log.debug("results :" + JSONFactoryUtil.looseSerialize(results));
+				_log.debug("tempResults size :" + tempResults.length());
 
 				JSONObject tempJOB = tempResults.getJSONObject(0);
-				_log.debug("tempJOB :" + JSONFactoryUtil.looseSerialize(tempJOB));
-
 				
 				// lay danh sach TTHC muc 3,4 cua site
 				List<ServiceInfo> lServiceInfos = ServiceInfoLocalServiceUtil.findByGroupAndPublic(Long.valueOf(groupId), true);
@@ -2452,8 +2449,6 @@ public class OpencpsStatisticRestApplication extends Application {
 						}
 					}
 				}
-				_log.debug("lServiceInfosLV34 :" + JSONFactoryUtil.looseSerialize(lServiceInfosLV34));
-
 				
 				// lay danh sach TTHC cua cac ho so
 				List<String> lstServiceCodeOfDossier = new ArrayList<String>();
@@ -2462,23 +2457,21 @@ public class OpencpsStatisticRestApplication extends Application {
 						lstServiceCodeOfDossier.add(results.getJSONObject(j).getString("serviceCode"));
 					}
 				}
-				_log.debug("lstServiceCodeOfDossier :" + JSONFactoryUtil.looseSerialize(lstServiceCodeOfDossier));
-
 				
 				// lay danh sach TTHC ko co ho so
 				List<ServiceInfo> lServiceInfosNotDossier = new ArrayList<ServiceInfo>();
 				if (lServiceInfosLV34 != null && lServiceInfosLV34.size() > 0) {
+					String serviceCode;
 					for (int k=0; k< lServiceInfosLV34.size(); k++) {
-						String serviceCode = lServiceInfosLV34.get(k).getServiceCode();
-						if ( (lstServiceCodeOfDossier != null && lstServiceCodeOfDossier.size() == 0) || 
-								(lstServiceCodeOfDossier != null && lstServiceCodeOfDossier.size() > 0
-									&& !lstServiceCodeOfDossier.contains(serviceCode))) {
+						if (Validator.isNull(lstServiceCodeOfDossier)) {
+							continue;
+						}
+						serviceCode = lServiceInfosLV34.get(k).getServiceCode();
+						if (lstServiceCodeOfDossier.size() == 0 || !lstServiceCodeOfDossier.contains(serviceCode)) {
 							lServiceInfosNotDossier.add(lServiceInfosLV34.get(k));
 						}
 					}
 				}
-				_log.debug("lServiceInfosNotDossier :" + JSONFactoryUtil.looseSerialize(lServiceInfosNotDossier));
-
 				
 				// insert vao results nhung ban ghi TTHC ko co ho so
 				if (lServiceInfosNotDossier != null && lServiceInfosNotDossier.size() > 0) {
@@ -2505,9 +2498,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						tempObj.put("releaseDossierOnegate4Count", 0);
 						tempObj.put("serviceLevel", serviceInfo.getMaxLevel());
 						
-						_log.debug("results1 :" + JSONFactoryUtil.looseSerialize(results));
 						results.put(tempObj);
-						_log.debug("results2 :" + JSONFactoryUtil.looseSerialize(results));
 
 					}
 				}
