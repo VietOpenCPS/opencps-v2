@@ -314,6 +314,8 @@ public interface DossierLocalService extends BaseLocalService,
 	public List<Dossier> findByG_UID_DS(long groupId, long userId,
 		String dossierStatus);
 
+	public List<Dossier> findByG_U_DO(long groupId, long userId);
+
 	public List<Dossier> findByGID(long groupId, int start, int end);
 
 	public List<ServiceInfo> findByGID_PUB_SID(long groupId, boolean public_,

@@ -51,10 +51,10 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 
 	@Override
 	public Response getUserInfo(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
-			Company company, Locale locale, User user, ServiceContext serviceContext, String authToken, String state) {
+			Company company, Locale locale, User user, ServiceContext serviceContext, String authToken, String state, String provider) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
-		JSONObject result = action.getUserInfo(user, groupId, request, serviceContext, authToken, state);
+		JSONObject result = action.getUserInfo(user, groupId, request, serviceContext, authToken, state, new String[] {provider, authToken});
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 	}
@@ -92,13 +92,13 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	@Override
 	public Response getAuthURL(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String state,
-			String redirectURL) {
+			String redirectURL, String provider) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
 
-		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, state, redirectURL);
+		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, state, redirectURL, new String[] {provider});
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(endpoint).build();
 	}
