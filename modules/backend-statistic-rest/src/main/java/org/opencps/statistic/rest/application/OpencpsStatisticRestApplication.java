@@ -155,6 +155,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
+import ch.qos.logback.core.joran.action.NewRuleAction;
 import opencps.statistic.common.webservice.exception.OpencpsServiceException;
 import opencps.statistic.common.webservice.exception.OpencpsServiceExceptionDetails;
 import opencps.statistic.common.webservice.exception.ServiceException;
@@ -2399,6 +2400,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			}
 			
 			JSONArray results = JSONFactoryUtil.createJSONArray();
+			JSONArray newResults = JSONFactoryUtil.createJSONArray();
 			
 				for (String agency : mapResults.keySet()) {
 					for (String serviceCode : mapResults.get(agency).keySet()) {
@@ -2426,10 +2428,69 @@ public class OpencpsStatisticRestApplication extends Application {
 						obj.put("serviceLevel", Integer.valueOf(dossiers.get(0).get(DossierTerm.SERVICE_LEVEL)));
 							
 						results.put(obj);
+						newResults.put(obj);
 						}																													
 					}
-				}				
-			ResponseBuilder builder = Response.ok(results.toJSONString());
+				}
+				
+				JSONObject tempJOB = results.getJSONObject(0);
+				
+				// lay danh sach TTHC muc 3,4 cua site
+				List<ServiceInfo> lServiceInfos = ServiceInfoLocalServiceUtil.findByGroupAndPublic(Long.valueOf(groupId), true);
+				List<ServiceInfo> lServiceInfosLV34 = new ArrayList<ServiceInfo>();
+				if (lServiceInfos != null && lServiceInfos.size() > 0) {
+					for (int i =0; i< lServiceInfos.size(); i++) {
+						if (lServiceInfos.get(i).getMaxLevel() != 2) {
+							lServiceInfosLV34.add(lServiceInfos.get(i));
+						}
+					}
+				}
+				
+				// lay danh sach TTHC cua cac ho so
+				List<String> lstServiceCodeOfDossier = new ArrayList<String>();
+				if (results != null && results.length() > 0) {
+					for (int j=0; j< results.length(); j++) {
+						lstServiceCodeOfDossier.add(results.getJSONObject(j).getString("serviceCode"));
+					}
+				}
+				
+				// lay danh sach TTHC ko co ho so
+				List<ServiceInfo> lServiceInfosNotDossier = new ArrayList<ServiceInfo>();
+				if (lServiceInfosLV34 != null && lServiceInfosLV34.size() > 0) {
+					for (int k=0; k< lServiceInfosLV34.size(); k++) {
+						String serviceCode = lServiceInfosLV34.get(k).getServiceCode();
+						if (lstServiceCodeOfDossier != null && lstServiceCodeOfDossier.size() > 0
+								&& !lstServiceCodeOfDossier.contains(serviceCode)) {
+							lServiceInfosNotDossier.add(lServiceInfosLV34.get(k));
+						}
+					}
+				}
+				
+				// insert vao results nhung ban ghi TTHC ko co ho so
+				if (lServiceInfosNotDossier != null && lServiceInfosNotDossier.size() > 0) {
+					for (ServiceInfo serviceInfo : lServiceInfosNotDossier) {
+						JSONObject tempObj = JSONFactoryUtil.createJSONObject();
+						tempObj.put("govAgencyCode", tempJOB.getString("govAgencyCode"));
+						tempObj.put("govAgencyName", tempJOB.getString("govAgencyName"));
+						tempObj.put("serviceCode", serviceInfo.getServiceCode());
+						tempObj.put("serviceName", serviceInfo.getServiceName());
+						tempObj.put("totalCount", 0);
+						tempObj.put("dossierOnline3Count", 0);
+						tempObj.put("dossierOnline4Count", 0);
+						tempObj.put("dossierOnegate3Count", 0);
+						tempObj.put("dossierOnegate4Count", 0);
+						tempObj.put("releaseDossierOnline3Count", 0);
+						tempObj.put("releaseDossierOnline4Count", 0);
+						tempObj.put("releaseDossierOnegate3Count", 0);
+						tempObj.put("releaseDossierOnegate4Count", 0);
+						tempObj.put("serviceLevel", serviceInfo.getMaxLevel());
+						
+						newResults.put(tempObj);
+					}
+				}
+
+				
+			ResponseBuilder builder = Response.ok(newResults.toJSONString());
 			return builder.build();
 		} catch (PortalException e) {
 			_log.debug(e);
