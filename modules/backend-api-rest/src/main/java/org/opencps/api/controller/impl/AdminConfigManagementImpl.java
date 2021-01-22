@@ -386,7 +386,6 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							messageData.put(STATUS, HttpStatus.OK);
 	
 						} else {
-
 							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
 									JSONObject.class);
 	
