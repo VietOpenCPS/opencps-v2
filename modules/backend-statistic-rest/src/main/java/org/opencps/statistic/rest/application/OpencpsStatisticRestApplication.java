@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.InputStream;
@@ -2403,6 +2404,8 @@ public class OpencpsStatisticRestApplication extends Application {
 			JSONArray tempResults = JSONFactoryUtil.createJSONArray();
 			// Ket qua gom nhung ho so co TTHC muc 3,4 + TTHC muc 3,4 chua trong ho so nao cua site
 			JSONArray results = JSONFactoryUtil.createJSONArray();
+			JSONArray resultsLV3 = JSONFactoryUtil.createJSONArray();
+			JSONArray resultsLV4 = JSONFactoryUtil.createJSONArray();
 			
 				for (String agency : mapResults.keySet()) {
 					for (String serviceCode : mapResults.get(agency).keySet()) {
@@ -2473,6 +2476,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					}
 				}
 				
+				
 				// insert vao results nhung ban ghi TTHC ko co ho so
 				if (lServiceInfosNotDossier != null && lServiceInfosNotDossier.size() > 0) {
 					for (ServiceInfo serviceInfo : lServiceInfosNotDossier) {
@@ -2496,15 +2500,48 @@ public class OpencpsStatisticRestApplication extends Application {
 						tempObj.put("releaseDossierOnline4Count", 0);
 						tempObj.put("releaseDossierOnegate3Count", 0);
 						tempObj.put("releaseDossierOnegate4Count", 0);
-						tempObj.put("serviceLevel", serviceInfo.getMaxLevel());
-						
-						results.put(tempObj);
-
+						tempObj.put("serviceLevel", serviceInfo.getMaxLevel());						
+						results.put(tempObj);						
 					}
 				}
-
+			
+			if (results != null && results.length() > 0) {
+				int svLevel;
+				for (int m = 0; m < results.length(); m++) {
+					JSONObject jObject = results.getJSONObject(m);
+					svLevel = jObject.getInt("serviceLevel");
+					if (svLevel == 3) {
+						resultsLV3.put(jObject);
+					}
+					if (svLevel == 4) {
+						resultsLV4.put(jObject);
+					}
+				}
+			}
+			
+			Object object = new Object();
+			if (Validator.isNotNull(serviceLevel)) {
+				String[] lstServiceLevel = StringUtil.split(serviceLevel);
 				
-			ResponseBuilder builder = Response.ok(results.toJSONString());
+				if (lstServiceLevel != null) {
+					int length = lstServiceLevel.length;
+					switch (length) {
+					case 1:
+						if (Integer.valueOf(lstServiceLevel[0]) == 3) {
+							object = resultsLV3.toJSONString();
+						}
+						if (Integer.valueOf(lstServiceLevel[0]) == 4) {
+							object = resultsLV4.toJSONString();
+						}
+						break;
+					default:
+						object = results.toJSONString();
+						break;
+					}
+				}
+			}
+			
+			ResponseBuilder builder = Response.ok(object);
 			return builder.build();
 		} catch (PortalException e) {
 			_log.debug(e);
