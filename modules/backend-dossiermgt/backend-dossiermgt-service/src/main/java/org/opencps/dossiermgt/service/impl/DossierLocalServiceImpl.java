@@ -6787,6 +6787,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossierTemplateNo, originDossierId);
 	}
 
+	public Dossier getByG_AN_SC_GAC_DTNO_SN_ODID(
+			long groupId, String applicantIdNo, String serviceCode,
+			String govAgencyCode, String dossierTemplateNo, long originDossierId, String serverNo) {
+
+		return dossierPersistence.fetchByG_AN_SC_GAC_DTNO_SN_ODID(
+				groupId, applicantIdNo, serviceCode, govAgencyCode,
+				dossierTemplateNo, originDossierId, serverNo);
+	}
+
 	public Dossier fetchOnePublicService() {
 
 		return dossierPersistence.fetchByO_First(0, null);
