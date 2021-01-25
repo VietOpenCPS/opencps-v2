@@ -1111,6 +1111,7 @@ public class ProcessUpdateDBUtils {
 			// Add list file serviceFileTemplate
 			List<ServiceConfig> configList = configs.getServiceConfig();
 			if (configList == null && configList.size() == 0) {
+				flagService = false;
 				return flagService;
 			}
 				String govAgencyCode;
