@@ -1532,7 +1532,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 					JSONObject mappingDataObj = JSONFactoryUtil
 							.createJSONObject(dlt.getMappingData());
-					if (mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) continue;
+					if (!mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) continue;
 
 					String deliverables = mappingDataObj.getString(
 							DeliverableTypesTerm.DELIVERABLES_KEY);
