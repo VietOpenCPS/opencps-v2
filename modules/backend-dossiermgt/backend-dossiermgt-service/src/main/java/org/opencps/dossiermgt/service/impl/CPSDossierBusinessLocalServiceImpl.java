@@ -17,7 +17,9 @@ package org.opencps.dossiermgt.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import backend.auth.api.exception.BusinessExceptionImpl;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
@@ -82,6 +84,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.adminconfig.model.DynamicReport;
 import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
@@ -107,11 +110,13 @@ import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDatePhaseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.util.AccentUtils;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.ConfigCounterNumberGenerator;
@@ -127,6 +132,7 @@ import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.VNPostCLSUtils;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
@@ -163,6 +169,7 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.impl.DossierImpl;
 import org.opencps.dossiermgt.model.impl.DossierModelImpl;
 import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
@@ -1505,6 +1512,62 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					assignUsers, payment, context);
 		}
 
+		List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossierId);
+		DossierFileActions actions = new DossierFileActionsImpl();
+		try {
+			if(proAction.getESignature() && dossierFiles != null && !dossierFiles.isEmpty()) {
+				for (DossierFile item : dossierFiles) {
+					boolean eForm = false;
+					DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId,
+							item.getDossierTemplateNo(), item.getDossierPartNo());
+					DeliverableType dlt = DeliverableTypeLocalServiceUtil
+							.getByCode(groupId,
+									dossierPart.getDeliverableType());
+
+					eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
+							: false;
+
+					if (!eForm || !dossierPart.getESign() || !item.getEForm()) {
+						continue;
+					}
+					JSONObject mappingDataObj = JSONFactoryUtil
+							.createJSONObject(dlt.getMappingData());
+					if (!mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) continue;
+
+					String deliverables = mappingDataObj.getString(
+							DeliverableTypesTerm.DELIVERABLES_KEY);
+					JSONObject formDataObj = JSONFactoryUtil
+							.createJSONObject(item.getFormData());
+					_log.debug("DeliverableKey: " + deliverables);
+					if (Validator.isNotNull(deliverables) && formDataObj.has(DeliverableTerm.DANH_SACH)) {
+						JSONArray deliverablesArr = JSONFactoryUtil
+								.createJSONArray(formDataObj
+										.getString(DeliverableTerm.DANH_SACH));
+
+						for (int i = 0; i < deliverablesArr
+								.length(); i++) {
+							JSONObject deliverableObj = null;
+							deliverableObj = deliverablesArr
+									.getJSONObject(i);
+							Iterator<?> keys = formDataObj.keys();
+							while (keys.hasNext()) {
+								String key = (String) keys.next();
+								if (!key.equals(DeliverableTerm.DANH_SACH)) {
+									deliverableObj.put(key,
+											formDataObj.get(key));
+								}
+							}
+							_log.debug("deliverableObj -------: " + JSONFactoryUtil.looseSerialize(deliverableObj));
+							createDeliverable(dossierId, dossier, dossierPart, actions, dlt, deliverableObj, userId, groupId, context);
+
+						}
+					}
+				}
+			}
+		}catch (Exception e){
+			e.getMessage();
+		}
+
 		//Update dossier
 		dossierLocalService.updateDossier(dossier);
 
@@ -1513,6 +1576,68 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//		indexer.reindex(dossier);
 
 		return dossierAction;
+	}
+	//Create deliverables
+	private void createDeliverable(long dossierId, Dossier dossier,  DossierPart dossierPart,
+								  DossierFileActions actions, DeliverableType dlt, JSONObject deliverableObj,
+								  long userId, long groupId, ServiceContext context) throws PortalException {
+		DossierFile dossierFile = null;
+		InputStream is = null;
+		try {
+			if (dlt.getFormReportFileId() > 0) {
+				try {
+					DLFileEntry dlFileEntry =
+							DLFileEntryLocalServiceUtil.getFileEntry(
+									dlt.getFormReportFileId());
+
+					is = dlFileEntry.getContentStream();
+
+				}
+				catch (Exception e) {
+					_log.debug(e);
+				}
+			}
+
+			dossierFile = actions.addDossierFileEForm(
+					groupId, dossierId,
+					StringPool.BLANK,
+					dossier.getDossierTemplateNo(),
+					dossierPart.getPartNo(),
+					dossierPart.getFileTemplateNo(),
+					dossierPart.getPartName(),
+					dossierPart.getPartName(), 0L, is,
+					StringPool.BLANK,
+					String.valueOf(false),
+					context);
+
+			Deliverable deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
+					groupId, dlt.getTypeCode(), dlt.getTypeName(), dossierFile.getDeliverableCode(),
+					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantIdNo(),
+					dossier.getApplicantName(), "", "", "",
+					null, String.valueOf(1), dossier.getDossierId(), dossierFile.getFileEntryId(),
+					dlt.getFormScriptFileId(), dlt.getFormReportFileId(), deliverableObj.toString(),
+					"", context);
+
+			dossierFile.setFormScript(dossierPart.getFormScript());
+			dossierFile.setEForm(dossierPart.getEForm());
+			dossierFile.setDeliverableCode(deliverableObj.getString(DeliverableTerm.DELIVERABLE_CODE));
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+			if(Validator.isNotNull(deliverable)){
+				deliverable.setFileAttachs(String.valueOf(deliverable.getFileEntryId()));
+				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+			}
+
+		}catch (Exception e) {
+			e.getMessage();
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
+		}
 	}
 
 	public void initDossierActionUser(String stepCode, long serviceProcessId, Dossier dossier,
