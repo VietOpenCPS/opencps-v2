@@ -1583,8 +1583,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								  DossierFileActions actions, DeliverableType dlt, JSONObject deliverableObj,
 								  long userId, long groupId, ServiceContext context) throws PortalException {
 		DossierFile dossierFile = null;
+		InputStream is = null;
 		try {
-			InputStream is = null;
 			if (dlt.getFormReportFileId() > 0) {
 				try {
 					DLFileEntry dlFileEntry =
@@ -1630,6 +1630,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		}catch (Exception e) {
 			e.getMessage();
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
 		}
 	}
 
