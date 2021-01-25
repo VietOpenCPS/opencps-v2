@@ -99,7 +99,6 @@ public class Engine implements MessageListener {
 			String className = msgData.getString("className");
 			
 			String filePath = msgData.getString("filePath");
-			_log.info("FilePath: " + filePath);
 
 			File file = new File(filePath);
 
