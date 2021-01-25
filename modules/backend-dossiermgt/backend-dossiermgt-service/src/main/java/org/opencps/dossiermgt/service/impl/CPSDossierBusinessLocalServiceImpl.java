@@ -1515,57 +1515,54 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossierId);
 		DossierFileActions actions = new DossierFileActionsImpl();
 		try {
-			if(proAction.getESignature()) {
-				if (dossierFiles != null && !dossierFiles.isEmpty()) {
-					for (DossierFile item : dossierFiles) {
-						boolean eForm = false;
-						DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId,
-								item.getDossierTemplateNo(), item.getDossierPartNo());
-						DeliverableType dlt = DeliverableTypeLocalServiceUtil
-								.getByCode(groupId,
-										dossierPart.getDeliverableType());
+			if(proAction.getESignature() && dossierFiles != null && !dossierFiles.isEmpty()) {
+				for (DossierFile item : dossierFiles) {
+					boolean eForm = false;
+					DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId,
+							item.getDossierTemplateNo(), item.getDossierPartNo());
+					DeliverableType dlt = DeliverableTypeLocalServiceUtil
+							.getByCode(groupId,
+									dossierPart.getDeliverableType());
 
-						eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
-								: false;
+					eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
+							: false;
 
-						if (eForm && dossierPart.getESign() && item.getEForm()) {
-							JSONObject mappingDataObj = JSONFactoryUtil
-									.createJSONObject(dlt.getMappingData());
-							if (mappingDataObj
-									.has(DeliverableTypesTerm.DELIVERABLES_KEY)) {
-								String deliverables = mappingDataObj.getString(
-										DeliverableTypesTerm.DELIVERABLES_KEY);
-								JSONObject formDataObj = JSONFactoryUtil
-										.createJSONObject(item.getFormData());
+					if (!eForm || !dossierPart.getESign() || !item.getEForm()) {
+						continue;
+					}
+						JSONObject mappingDataObj = JSONFactoryUtil
+								.createJSONObject(dlt.getMappingData());
+						if (mappingDataObj
+								.has(DeliverableTypesTerm.DELIVERABLES_KEY)) {
+							String deliverables = mappingDataObj.getString(
+									DeliverableTypesTerm.DELIVERABLES_KEY);
+							JSONObject formDataObj = JSONFactoryUtil
+									.createJSONObject(item.getFormData());
 
-								if (Validator.isNotNull(deliverables)) {
-									if (formDataObj.has(DeliverableTerm.DANH_SACH)) {
-										JSONArray deliverablesArr = JSONFactoryUtil
-												.createJSONArray(formDataObj
-														.getString(DeliverableTerm.DANH_SACH));
+							if (Validator.isNotNull(deliverables) && formDataObj.has(DeliverableTerm.DANH_SACH)) {
+								JSONArray deliverablesArr = JSONFactoryUtil
+										.createJSONArray(formDataObj
+												.getString(DeliverableTerm.DANH_SACH));
 
-										for (int i = 0; i < deliverablesArr
-												.length(); i++) {
-											JSONObject deliverableObj = null;
-											deliverableObj = deliverablesArr
-													.getJSONObject(i);
-											Iterator<?> keys = formDataObj.keys();
-											while (keys.hasNext()) {
-												String key = (String) keys.next();
-													if (!key.equals(DeliverableTerm.DANH_SACH)) {
-														deliverableObj.put(key,
-																formDataObj.get(key));
-													}
-											}
-											_log.debug("deliverableObj -------: " + JSONFactoryUtil.looseSerialize(deliverableObj));
-											createDeliverable(dossierId, dossier, dossierPart, actions, dlt, deliverableObj, userId, groupId, context);
-
+								for (int i = 0; i < deliverablesArr
+										.length(); i++) {
+									JSONObject deliverableObj = null;
+									deliverableObj = deliverablesArr
+											.getJSONObject(i);
+									Iterator<?> keys = formDataObj.keys();
+									while (keys.hasNext()) {
+										String key = (String) keys.next();
+										if (!key.equals(DeliverableTerm.DANH_SACH)) {
+											deliverableObj.put(key,
+													formDataObj.get(key));
 										}
 									}
+									_log.debug("deliverableObj -------: " + JSONFactoryUtil.looseSerialize(deliverableObj));
+									createDeliverable(dossierId, dossier, dossierPart, actions, dlt, deliverableObj, userId, groupId, context);
+
 								}
 							}
 						}
-					}
 				}
 			}
 		}catch (Exception e){
@@ -1599,16 +1596,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 				catch (Exception e) {
 					_log.debug(e);
-				}
-				finally {
-					if (is != null) {
-						try {
-							is.close();
-						}
-						catch (IOException e) {
-							_log.debug(e);
-						}
-					}
 				}
 			}
 

@@ -1110,7 +1110,9 @@ public class ProcessUpdateDBUtils {
 			//Import mới ko xóa dữ liệu cũ.check tồn tại ServiceConfig ==> Update ngược lại thì thêm mới
 			// Add list file serviceFileTemplate
 			List<ServiceConfig> configList = configs.getServiceConfig();
-			if (configList != null && configList.size() > 0) {
+			if (configList == null && configList.size() == 0) {
+				return flagService;
+			}
 				String govAgencyCode;
 				String govAgencyName;
 				String serviceInstruction;
@@ -1158,7 +1160,6 @@ public class ProcessUpdateDBUtils {
 						}
 					}
 				}
-			}
 		} catch (Exception e) {
 			_log.error(e);
 			return false;
