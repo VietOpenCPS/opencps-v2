@@ -1530,39 +1530,38 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					if (!eForm || !dossierPart.getESign() || !item.getEForm()) {
 						continue;
 					}
-						JSONObject mappingDataObj = JSONFactoryUtil
-								.createJSONObject(dlt.getMappingData());
-						if (mappingDataObj
-								.has(DeliverableTypesTerm.DELIVERABLES_KEY)) {
-							String deliverables = mappingDataObj.getString(
-									DeliverableTypesTerm.DELIVERABLES_KEY);
-							JSONObject formDataObj = JSONFactoryUtil
-									.createJSONObject(item.getFormData());
+					JSONObject mappingDataObj = JSONFactoryUtil
+							.createJSONObject(dlt.getMappingData());
+					if (mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) continue;
 
-							if (Validator.isNotNull(deliverables) && formDataObj.has(DeliverableTerm.DANH_SACH)) {
-								JSONArray deliverablesArr = JSONFactoryUtil
-										.createJSONArray(formDataObj
-												.getString(DeliverableTerm.DANH_SACH));
+					String deliverables = mappingDataObj.getString(
+							DeliverableTypesTerm.DELIVERABLES_KEY);
+					JSONObject formDataObj = JSONFactoryUtil
+							.createJSONObject(item.getFormData());
+					_log.debug("DeliverableKey: " + deliverables);
+					if (Validator.isNotNull(deliverables) && formDataObj.has(DeliverableTerm.DANH_SACH)) {
+						JSONArray deliverablesArr = JSONFactoryUtil
+								.createJSONArray(formDataObj
+										.getString(DeliverableTerm.DANH_SACH));
 
-								for (int i = 0; i < deliverablesArr
-										.length(); i++) {
-									JSONObject deliverableObj = null;
-									deliverableObj = deliverablesArr
-											.getJSONObject(i);
-									Iterator<?> keys = formDataObj.keys();
-									while (keys.hasNext()) {
-										String key = (String) keys.next();
-										if (!key.equals(DeliverableTerm.DANH_SACH)) {
-											deliverableObj.put(key,
-													formDataObj.get(key));
-										}
-									}
-									_log.debug("deliverableObj -------: " + JSONFactoryUtil.looseSerialize(deliverableObj));
-									createDeliverable(dossierId, dossier, dossierPart, actions, dlt, deliverableObj, userId, groupId, context);
-
+						for (int i = 0; i < deliverablesArr
+								.length(); i++) {
+							JSONObject deliverableObj = null;
+							deliverableObj = deliverablesArr
+									.getJSONObject(i);
+							Iterator<?> keys = formDataObj.keys();
+							while (keys.hasNext()) {
+								String key = (String) keys.next();
+								if (!key.equals(DeliverableTerm.DANH_SACH)) {
+									deliverableObj.put(key,
+											formDataObj.get(key));
 								}
 							}
+							_log.debug("deliverableObj -------: " + JSONFactoryUtil.looseSerialize(deliverableObj));
+							createDeliverable(dossierId, dossier, dossierPart, actions, dlt, deliverableObj, userId, groupId, context);
+
 						}
+					}
 				}
 			}
 		}catch (Exception e){
