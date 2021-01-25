@@ -801,8 +801,6 @@ public class DossierActionUtils {
 						//
 						long fileEntryId = dossierFile.getFileEntryId();
 						if (fileEntryId > 0) {
-//							FileEntry file =
-//								DLAppServiceUtil.getFileEntry(fileEntryId);
 							DLFileEntry file = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
 							if (file != null) {
 								dActionReturnFile.setFileType(
