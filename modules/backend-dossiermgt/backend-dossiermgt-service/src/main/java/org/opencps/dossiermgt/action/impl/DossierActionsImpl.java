@@ -4288,7 +4288,6 @@ public class DossierActionsImpl implements DossierActions {
 		Dossier dossier = null;
 		try {
 			
-			_log.debug("+++++systemId:"+systemId);
 			//Process
 			dossier = DossierLocalServiceUtil.publishDossier(groupId, dossierId, referenceUid, counter, serviceCode,
 				serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,

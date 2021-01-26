@@ -6170,8 +6170,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			// if (Validator.isNotNull(applicantNote))
 			dossier.setApplicantNote(applicantNote);
-
-			dossier.setVnpostalStatus(vnpostalStatus);
+			if(Validator.isNotNull(vnpostalStatus)) {
+				dossier.setVnpostalStatus(vnpostalStatus);
+			}
 			dossier.setVnpostalProfile(vnpostalProfile);
 			if (Validator.isNotNull(fromViaPostal)) {
 				dossier.setFromViaPostal(fromViaPostal);

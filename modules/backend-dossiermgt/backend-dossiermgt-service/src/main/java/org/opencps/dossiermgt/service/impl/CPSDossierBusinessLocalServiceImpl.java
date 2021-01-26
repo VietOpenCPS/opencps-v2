@@ -8919,17 +8919,27 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return paymentFile;
 	}
 
-	private Dossier getDossier(String id, long groupId) throws PortalException {
+	private Dossier getDossier(String id, long groupId){
 		long dossierId = GetterUtil.getLong(id);
 
 		Dossier dossier = null;
 
-		if (dossierId != 0) {
+		if (dossierId > 0) {
+			
+			try {
 			dossier = dossierLocalService.fetchDossier(dossierId);
+			}catch(Exception e) {
+				_log.error(e);
+			}
 		}
 
 		if (Validator.isNull(dossier)) {
+			
+			try {
 			dossier = dossierLocalService.getByRef(groupId, id);
+			}catch(Exception e) {
+				_log.error(e);
+			}
 		}
 
 		return dossier;
@@ -8947,6 +8957,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if (!auth.isAuth(serviceContext)) {
 			throw new UnauthenticationException();
 		}
+		
+		try {
 
 		String referenceUid = input.getReferenceUid();
 		int counter = 0;
@@ -8998,11 +9010,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			oldDossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
 			referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
 		}
-		
 		_log.debug("+++++dossierNo:"+dossierNo);
 		_log.debug("+++++systemId:"+systemId);
-		_log.debug("+++++oldDossier.getOriginality():"+oldDossier.getOriginality());
-
 		if (oldDossier == null || oldDossier.getOriginality() == 0) {
 			Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
 					govAgencyCode, govAgencyName, applicantName, applicantType, applicantIdNo, applicantIdDate, address,
@@ -9034,6 +9043,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			return dossier;
 		}
 		return oldDossier;
+		
+		}catch(Exception e) {
+			_log.error(e);
+		}
+		
+		return null;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
