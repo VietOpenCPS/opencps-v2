@@ -2672,12 +2672,28 @@ public class OpencpsStatisticRestApplication extends Application {
 					}
 				}
 				if (jsonDataList != null && jsonDataList.size() > 0) {
-					for (int j = 0; j<jsonDataList.size(); j++) {
+					_log.info("JSONDATALIST SIZe : " + jsonDataList.size());
+					List<JSONObject> js2020 = null;
+					List<JSONObject> js2021 = null;
+
+					for (int j = 0; j<jsonDataList.size(); j++) {										
 						if (jsonDataList.get(j).getInt("month") == 0 
-								&& jsonDataList.get(j).getInt("groupId") == 35417) {
-							_log.info("22222222");
+								&& jsonDataList.get(j).getInt("groupId") == 35417 && jsonDataList.get(j).getInt("year") == 2020
+								&& jsonDataList.get(j).getString("govAgencyCode").contentEquals("SCT")) {
+							js2020.add(jsonDataList.get(j));
+						}
+						
+						if (jsonDataList.get(j).getInt("month") == 0 
+								&& jsonDataList.get(j).getInt("groupId") == 35417 && jsonDataList.get(j).getInt("year") == 2021
+								&& jsonDataList.get(j).getString("govAgencyCode").contentEquals("SCT")) {
+							js2021.add(jsonDataList.get(j));
 						}
 					}
+					if ((js2020 != null && js2020.size() > 0) || (js2021 != null && js2021.size() > 0)) {
+						_log.info("JS2020 : " + JSONFactoryUtil.looseSerialize(js2020));
+						_log.info("JS2021 : " + JSONFactoryUtil.looseSerialize(js2021));
+					}
+					
 					engineUpdateAction.updateStatistic(jsonDataList);
 				}
 			}

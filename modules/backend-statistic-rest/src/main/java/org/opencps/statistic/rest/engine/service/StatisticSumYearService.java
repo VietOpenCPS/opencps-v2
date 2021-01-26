@@ -229,7 +229,7 @@ public class StatisticSumYearService {
 //		calcular9.filterSumYear(companyId, groupId, year, false, false, false, lstGroupGovs, lstScs, lstCurrents, domainResponses);
 		//
 		if (lstDossierDataObjs != null && lstDossierDataObjs.size() > 0 && jsonEndPoint != null) {
-
+						
 			JSONArray jsonArr = JSONFactoryUtil.createJSONArray();
 			//
 			for (JSONObject data : lstDossierDataObjs) {
@@ -251,6 +251,20 @@ public class StatisticSumYearService {
 		}
 
 		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
+		for (int j = 0; j<lstDossierDataObjs.size(); j++) {
+			
+			if (lstDossierDataObjs.get(j).getInt("month") == 0 
+					&& lstDossierDataObjs.get(j).getInt("groupId") == 35417 && lstDossierDataObjs.get(j).getInt("year") == 2020
+					&& lstDossierDataObjs.get(j).getString("govAgencyCode").contentEquals("SCT")) {
+				_log.info("111111 :" + JSONFactoryUtil.looseSerialize(lstDossierDataObjs.get(j)));
+			}
+			
+			if (lstDossierDataObjs.get(j).getInt("month") == 0 
+					&& lstDossierDataObjs.get(j).getInt("groupId") == 35417 && lstDossierDataObjs.get(j).getInt("year") == 2021
+					&& lstDossierDataObjs.get(j).getString("govAgencyCode").contentEquals("SCT")) {
+				_log.info("222222 :" + JSONFactoryUtil.looseSerialize(lstDossierDataObjs.get(j)));
+			}
+		}
 		engineUpdateAction.updateStatistic(lstDossierDataObjs);
 	}
 
