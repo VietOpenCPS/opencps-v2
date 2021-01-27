@@ -1536,13 +1536,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 					String deliverables = mappingDataObj.getString(
 							DeliverableTypesTerm.DELIVERABLES_KEY);
+					//Cut lấy value của deliverableKey trong giay phep
+					String newString = deliverables.substring(1);
+					String [] stringSplit =newString.split(StringPool.AT);
+					String variable = stringSplit[0];
+					//Note: key deliverableType được cấu hình trong thành phần tồn tại trong dossierFile sau khi được mapping dữ liệu
 					JSONObject formDataObj = JSONFactoryUtil
 							.createJSONObject(item.getFormData());
-					_log.debug("DeliverableKey: " + deliverables);
-					if (Validator.isNotNull(deliverables) && formDataObj.has(DeliverableTerm.DANH_SACH)) {
+					if (Validator.isNotNull(deliverables) && formDataObj.has(variable)) {
 						JSONArray deliverablesArr = JSONFactoryUtil
 								.createJSONArray(formDataObj
-										.getString(DeliverableTerm.DANH_SACH));
+										.getString(variable));
 
 						for (int i = 0; i < deliverablesArr
 								.length(); i++) {
@@ -1552,7 +1556,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							Iterator<?> keys = formDataObj.keys();
 							while (keys.hasNext()) {
 								String key = (String) keys.next();
-								if (!key.equals(DeliverableTerm.DANH_SACH)) {
+								if (!key.equals(variable)) {
 									deliverableObj.put(key,
 											formDataObj.get(key));
 								}
