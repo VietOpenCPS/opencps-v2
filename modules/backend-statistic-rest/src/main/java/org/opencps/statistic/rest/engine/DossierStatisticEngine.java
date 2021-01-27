@@ -398,9 +398,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						try {
 							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
 								engineUpdateAction, serviceDomainResponse, calculateLastData);
-							if (calculateData != null && jsonEndPoint != null) {
+							if (calculateLastData != null && jsonEndPoint != null) {
 
-								for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateData.entrySet()) {
+								for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateLastData.entrySet()) {
 									if (mapInt.getKey() == lastMonth) {
 										
 										StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
