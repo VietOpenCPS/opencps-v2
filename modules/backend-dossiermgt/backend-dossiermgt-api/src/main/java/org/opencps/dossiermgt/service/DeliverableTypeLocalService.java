@@ -347,4 +347,7 @@ public interface DeliverableTypeLocalService extends BaseLocalService,
 	public DeliverableType updateMappingData(long groupId,
 		long deliverableTypeId, String mappingData,
 		ServiceContext serviceContext) throws PortalException, SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DeliverableType> getDeliverableTypeByGroupId(long[] groupId ,int start, int end);
 }

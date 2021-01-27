@@ -35,6 +35,8 @@ public class HolidayTerm {
 	public static final String HOLIDAY_DATE = "holidayDate";
 
 	public static final String DESCRIPTION = "description";
+	
+	public static final String HOLIDAY_TYPE = "holidayType";
 
 	// sortable
 	public static final String HOLIDAY_ID_SORTABLE = "holidayId_sortable";
@@ -74,6 +76,7 @@ public class HolidayTerm {
 
 	private Date holidayDate;
 	private String description;
+	private int holidayType;
 	
 	public HolidayTerm() {
 
@@ -151,6 +154,14 @@ public class HolidayTerm {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public int getHolidayType() {
+		return holidayType;
+	}
+
+	public void setHolidayType(int holidayType) {
+		this.holidayType = holidayType;
 	}
 
 }

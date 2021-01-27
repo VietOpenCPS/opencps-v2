@@ -17,6 +17,9 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import org.opencps.dossiermgt.model.DeliverableType;
+
+import java.util.List;
 
 /**
  * Provides a wrapper for {@link DeliverableTypeLocalService}.
@@ -465,6 +468,11 @@ public class DeliverableTypeLocalServiceWrapper
 			com.liferay.portal.kernel.exception.SystemException {
 		return _deliverableTypeLocalService.updateMappingData(groupId,
 			deliverableTypeId, mappingData, serviceContext);
+	}
+
+	@Override
+	public List<DeliverableType> getDeliverableTypeByGroupId(long[] groupId, int start, int end) {
+		return _deliverableTypeLocalService.getDeliverableTypeByGroupId(groupId, start, end);
 	}
 
 	@Override
