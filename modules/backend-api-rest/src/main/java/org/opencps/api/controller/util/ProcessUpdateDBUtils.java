@@ -104,6 +104,8 @@ import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.JobposInterface;
@@ -111,6 +113,8 @@ import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
+
+import javax.xml.ws.Service;
 
 public class ProcessUpdateDBUtils {
 
@@ -855,46 +859,57 @@ public class ProcessUpdateDBUtils {
 
 	//LamTV_ Process service to DB
 	public static boolean processUpdateServiceInfo(ServiceInfo service, String folderPath, String folderParentPath,
-			long groupId, long userId, ServiceContext serviceContext) {
+			long groupId, long userId, String keyImport, ServiceContext serviceContext) {
 
 		boolean flagService = true;
 		try {
 			if (service != null) {
-				String serviceCode = service.getServiceCode();
-				String serviceName = service.getServiceName();
-				String processText = service.getProcessText();
-				String methodText = service.getMethodText();
-				String dossierText = service.getDossierText();
-				String conditionText = service.getConditionText();
-				String durationText = service.getDurationText();
-				String applicantText = service.getApplicantText();
-				String resultText = service.getResultText();
-				String regularText = service.getRegularText();
-				String feeText = service.getFeeText();
-				String administrationCode = service.getAdministrationCode();
-				String administrationName = service.getAdministrationName();
-				String domainCode = service.getDomainCode();
-				String domainName = service.getDomainName();
-				Integer maxLevel = service.getMaxLevel();
-				boolean public_ = Validator.isNotNull(service.isPublic()) ? service.isPublic() : true;
-				// Update serviceInfo
+				long serviceInfoId = 0;
+				org.opencps.dossiermgt.model.ServiceInfo serviceInfo = null;
 				ServiceInfoActions actionService = new ServiceInfoActionsImpl();
-				long serviceInfoId = actionService.updateServiceInfoDB(userId, groupId, serviceCode, serviceName, processText, methodText,
-						dossierText, conditionText, durationText, applicantText, resultText, regularText, feeText,
-						administrationCode, administrationName, domainCode, domainName, maxLevel, public_);
-				// Update fileName
-				FileTemplates fileTemplate = service.getFileTemplates();
-				if (fileTemplate != null) {
-					flagService = processFileTemplate(userId, groupId, serviceInfoId, fileTemplate, folderParentPath,
-							actionService, serviceContext);
-					if (!flagService) {
-						return flagService;
+				if (Validator.isNotNull(service.getServiceCode()) && Validator.isNotNull(service.getServiceName())) {
+					String serviceCode = service.getServiceCode();
+					String serviceName = service.getServiceName();
+					String processText = service.getProcessText();
+					String methodText = service.getMethodText();
+					String dossierText = service.getDossierText();
+					String conditionText = service.getConditionText();
+					String durationText = service.getDurationText();
+					String applicantText = service.getApplicantText();
+					String resultText = service.getResultText();
+					String regularText = service.getRegularText();
+					String feeText = service.getFeeText();
+					String administrationCode = service.getAdministrationCode();
+					String administrationName = service.getAdministrationName();
+					String domainCode = service.getDomainCode();
+					String domainName = service.getDomainName();
+					Integer maxLevel = service.getMaxLevel();
+					boolean public_ = Validator.isNotNull(service.isPublic()) ? service.isPublic() : true;
+					// Update serviceInfo
+					serviceInfoId = actionService.updateServiceInfoDB(userId, groupId, serviceCode, serviceName, processText, methodText,
+							dossierText, conditionText, durationText, applicantText, resultText, regularText, feeText,
+							administrationCode, administrationName, domainCode, domainName, maxLevel, public_);
+					// Update fileName
+					FileTemplates fileTemplate = service.getFileTemplates();
+					if (fileTemplate != null) {
+						flagService = processFileTemplate(userId, groupId, serviceInfoId, fileTemplate, folderParentPath,
+								actionService, serviceContext);
+						if (!flagService) {
+							return flagService;
+						}
 					}
+				} else {
+					serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, service.getServiceCode());
 				}
 				// Add serviceConfig
 				Configs configs = service.getConfigs();
-				if (configs != null) {
-					flagService = processServiceConfig(userId, groupId, serviceInfoId, configs, actionService, serviceContext);
+				if (configs != null && serviceInfoId > 0 || Validator.isNotNull(serviceInfo)) {
+					if (Validator.isNotNull(keyImport)) {
+						flagService = processServiceConfigNoDelAll(userId, groupId, serviceInfoId > 0 ? serviceInfoId : serviceInfo.getServiceInfoId(), configs, actionService, keyImport, serviceContext);
+
+					} else {
+						flagService = processServiceConfig(userId, groupId, serviceInfoId > 0 ? serviceInfoId : serviceInfo.getServiceInfoId(), configs, actionService, serviceContext);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -1082,6 +1097,76 @@ public class ProcessUpdateDBUtils {
 		}
 		return true;
 	}
+	//DuongNT_Process output ServiceConfig to DB
+	private static boolean processServiceConfigNoDelAll(long userId, long groupId, long serviceInfoId, Configs configs,
+														ServiceInfoActions actionService, String keyImport, ServiceContext serviceContext) {
+
+		boolean flagService = true;
+		try {
+			// Delete all ServiceFileTemplate with serviceInfoId
+			//Import zip new
+			long serviceConfigId = 0L;
+			//Import cũ xóa toàn bộ dữ liệu ServiceConfig
+			//Import mới ko xóa dữ liệu cũ.check tồn tại ServiceConfig ==> Update ngược lại thì thêm mới
+			// Add list file serviceFileTemplate
+			List<ServiceConfig> configList = configs.getServiceConfig();
+			if (configList == null && configList.size() == 0) {
+				flagService = false;
+				return flagService;
+			}
+				String govAgencyCode;
+				String govAgencyName;
+				String serviceInstruction;
+				Integer serviceLevel = 0;
+				String serviceUrl;
+				boolean forCitizen = false;
+				boolean forBusiness = false;
+				boolean postalService = false;
+				boolean registration = false;
+				for (ServiceConfig config : configList) {
+					org.opencps.dossiermgt.model.ServiceConfig serviceConfigOld = ServiceConfigLocalServiceUtil.fetchByGID_SI_GOV_LEVEL(groupId, serviceInfoId, config.getGovAgencyCode(), config.getServiceLevel());
+
+					govAgencyCode = config.getGovAgencyCode();
+					govAgencyName = config.getGovAgencyName();
+					serviceInstruction = config.getServiceInstruction();
+					serviceLevel = config.getServiceLevel();
+					serviceUrl = config.getServiceUrl();
+					forCitizen = config.isForCitizen();
+					forBusiness = config.isForBusiness();
+					postalService = config.isPostalService();
+					registration = config.isRegistration();
+					//
+					ServiceConfigActions actionConfig = new ServiceConfigActionImpl();
+					org.opencps.dossiermgt.model.ServiceConfig serviceConfigNew = null;
+					if(Validator.isNotNull(serviceConfigOld)){
+						boolean flagConfig = actionService.deleteAllServiceConfig(userId, groupId, serviceInfoId, serviceConfigOld, serviceContext);
+						_log.debug("FlagConfig: " + flagConfig);
+						serviceConfigNew = actionConfig.updateServiceConfig(serviceConfigOld.getServiceConfigId(),userId,groupId,
+								serviceConfigId,govAgencyCode,serviceInstruction, serviceLevel,serviceUrl,forCitizen,
+								forBusiness,postalService,registration,serviceContext);
+
+						serviceConfigId = serviceConfigNew.getServiceConfigId();
+					}else {
+						// Hàm tạo ServiceConfig
+						serviceConfigId = actionConfig.updateServiceConfigDB(userId, groupId, serviceInfoId, govAgencyCode, govAgencyName,
+								serviceInstruction, serviceLevel, serviceUrl, forCitizen, forBusiness, postalService, registration, serviceContext);
+					}
+					// Process ProcessOption
+					if (serviceConfigId > 0) {
+						Processes process = config.getProcesses();
+						if (process != null) {
+							flagService = processProcessOption(userId, groupId, serviceConfigId, process, actionConfig,
+									serviceContext);
+
+						}
+					}
+				}
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+		return flagService;
+	}
 
 	//LamTV_Process output ServiceConfig to DB
 	private static boolean processServiceConfig(long userId, long groupId, long serviceInfoId, Configs configs,
@@ -1090,7 +1175,7 @@ public class ProcessUpdateDBUtils {
 		boolean flagService = true;
 		try {
 			// Delete all ServiceFileTemplate with serviceInfoId
-			boolean flagConfig = actionService.deleteAllServiceConfig(userId, groupId, serviceInfoId, serviceContext);
+			boolean flagConfig = actionService.deleteAllServiceConfig(userId, groupId, serviceInfoId, null, serviceContext);
 			// Add list file serviceFileTemplate
 			List<ServiceConfig> configList = configs.getServiceConfig();
 			if (configList != null && configList.size() > 0 && flagConfig) {
@@ -1115,7 +1200,7 @@ public class ProcessUpdateDBUtils {
 					registration = config.isRegistration();
 					//
 					ServiceConfigActions actionConfig = new ServiceConfigActionImpl();
-					
+
 					long serviceConfigId = actionConfig.updateServiceConfigDB(userId, groupId, serviceInfoId, govAgencyCode, govAgencyName,
 							serviceInstruction, serviceLevel, serviceUrl, forCitizen, forBusiness, postalService, registration, serviceContext);
 					// Process ProcessOption

@@ -431,15 +431,16 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_U_DO(
+		long groupId, long userId) {
+		return _dossierLocalService.findByG_U_DO(groupId, userId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_UID_DS(
 		long groupId, long userId, String dossierStatus) {
 		return _dossierLocalService.findByG_UID_DS(groupId, userId,
 			dossierStatus);
-	}
-
-	@Override
-	public List<Dossier> findByG_U_DO(long groupId, long userId) {
-		return _dossierLocalService.findByG_U_DO(groupId,userId);
 	}
 
 	@Override

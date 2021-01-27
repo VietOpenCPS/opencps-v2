@@ -1037,12 +1037,7 @@ public class DossierActionsImpl implements DossierActions {
 										if (mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) {
 											String deliverables = mappingDataObj
 												.getString(DeliverableTypesTerm.DELIVERABLES_KEY);
-											//											_log.info("--------DELIVERABLES----------" + deliverables);
-											//											_log.info("--------HAS E SIGNATURE----------"
-											//													+ processAction.getESignature());
-											//											_log.info("---------FILE TEMPLATE NO--------" + fileTemplateNo);
 											if (Validator.isNull(deliverables)) {
-												//												_log.info("--------DELIVERABLES IS NULL----------" + deliverables);
 												// Add one deliverable
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 													.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT },
@@ -1144,9 +1139,7 @@ public class DossierActionsImpl implements DossierActions {
 												createFile.put(ConstantUtils.FILE_ENTRY_ID, fileEntryId);
 												createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
 												createFiles.put(createFile);
-												//												_log.info("----DELIVERABLES CREATE FILE JSON-----" + createFile.toString());
 											} else {
-												//												_log.info("--------DELIVERABLES IS NOT NULL----------" + deliverables);
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 													.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT },
 														false, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -1167,6 +1160,7 @@ public class DossierActionsImpl implements DossierActions {
 													createFile.put(DossierPartTerm.FILE_TEMPLATE_NO, fileTemplateNo);
 													createFile.put(DossierFileTerm.COUNTER, 1);
 													createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
+													createFiles.put(createFile);
 												} else {
 													eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
 														: false;
