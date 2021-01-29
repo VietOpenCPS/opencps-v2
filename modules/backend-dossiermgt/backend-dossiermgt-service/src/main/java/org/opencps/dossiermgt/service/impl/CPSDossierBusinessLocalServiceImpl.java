@@ -1561,6 +1561,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 											formDataObj.get(key));
 								}
 							}
+							if(Validator.isNotNull(dossier.getApplicantIdNo())){
+								deliverableObj.put(DossierTerm.APPLICANT_ID_NO,dossier.getApplicantIdNo());
+							}
 							_log.debug("deliverableObj -------: " + JSONFactoryUtil.looseSerialize(deliverableObj));
 							createDeliverable(dossierId, dossier, dossierPart, actions, dlt, deliverableObj, userId, groupId, context);
 
