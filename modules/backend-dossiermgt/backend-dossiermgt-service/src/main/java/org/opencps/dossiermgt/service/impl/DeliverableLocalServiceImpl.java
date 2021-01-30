@@ -834,6 +834,11 @@ public class DeliverableLocalServiceImpl
 			strDeliverableCode, state);
 	}
 
+	@Override
+	public List<Deliverable> findDeliverableByCreateDate(String createDateStart, String createDateEnd, String deliverableType, long deliverableState) {
+		return deliverableFinder.findDeliverableByCreateDate(createDateStart, createDateEnd,deliverableType,deliverableState);
+	}
+
 	// Get info Output DB
 	public List<Deliverable> getDeliverableByModifiedDate(
 		String synsDate, String deliverableType, long deliverableState) {

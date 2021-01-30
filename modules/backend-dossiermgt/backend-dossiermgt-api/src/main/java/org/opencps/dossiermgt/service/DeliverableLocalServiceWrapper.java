@@ -286,6 +286,13 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByCreateDate(
+		String createDateStart, String createDateEnd, String deliverableType, long deliverableState) {
+		return _deliverableLocalService.findDeliverableByCreateDate(createDateStart, createDateEnd,
+			deliverableType, deliverableState);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByState(
 		String strDeliverableCode, int state) {
 		return _deliverableLocalService.findDeliverableByState(strDeliverableCode,

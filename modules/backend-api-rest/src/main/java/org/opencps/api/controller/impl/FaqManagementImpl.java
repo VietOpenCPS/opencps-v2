@@ -123,16 +123,18 @@ public class FaqManagementImpl implements FaqManagement {
 					}
 			} else {
 				ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
-				boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user,
-						serviceContext, jCaptchaResponse);
-				
-				if (!isValid) {
-					ErrorMsgModel error = new ErrorMsgModel();
-					error.setMessage("Captcha incorrect");
-					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Captcha incorrect");
+				if(Validator.isNotNull(jCaptchaResponse)) {
+					boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user,
+							serviceContext, jCaptchaResponse);
 
-					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+					if (!isValid) {
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage("Captcha incorrect");
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription("Captcha incorrect");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+					}
 				}
 			}
 
