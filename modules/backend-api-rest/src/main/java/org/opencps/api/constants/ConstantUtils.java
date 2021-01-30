@@ -16,7 +16,9 @@ public class ConstantUtils {
 	public static final String PNG = "png";
 	public static final String DOT_XLSX = ".xlsx";
 	public static final String DOT_XLS = ".xls";
-	
+	public static final String DOT_DOCX = ".docx";
+	public static final String DOT_DOC = ".doc";
+
 	//Destination import file
 	public static final String DEST_DIRECTORY = "imported";
 	public static final String SOURCE_DICTS = "dicts";

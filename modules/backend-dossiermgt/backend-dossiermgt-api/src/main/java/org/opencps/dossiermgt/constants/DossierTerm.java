@@ -72,6 +72,7 @@ public class DossierTerm {
 	public static final String NOTIFICATION = "notification";
 	public static final String ONLINE = "online";
 	public static final String SERVER_NO = "serverNo";
+	public static final String ACTION_NOTE = "actionNote";
 	public static final String YEAR_DOSSIER = "yearDossier";
 	public static final String MONTH_DOSSIER = "monthDossier";
 	public static final String DAY_DOSSIER = "dayDossier";
