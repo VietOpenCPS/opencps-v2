@@ -156,9 +156,7 @@ public class DeliverableFinderImpl extends DeliverableFinderBaseImpl
 			sql += " AND createDate <=:createDateEnd ";
 		}
 
-//		sql += " 1=1";
-
-		_log.info("SQL: " + sql);
+		_log.debug("SQL: " + sql);
 		try {
 			session = openSession();
 
