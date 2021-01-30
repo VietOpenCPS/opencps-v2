@@ -237,6 +237,9 @@ public interface DeliverableLocalService extends BaseLocalService,
 	public Deliverable fetchDeliverableByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public List<Deliverable> findDeliverableByCreateDate(String createDateStart, String createDateEnd,
+		String deliverableType, long deliverableState);
+
 	public List<Deliverable> findDeliverableByState(String strDeliverableCode,
 		int state);
 

@@ -34,22 +34,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.opencps.api.oai.model.oaipmh.HeaderType;
-import org.opencps.api.oai.model.oaipmh.ListRecordsType;
-import org.opencps.api.oai.model.oaipmh.MetadataType;
-import org.opencps.api.oai.model.oaipmh.OAIPMHerrorType;
-import org.opencps.api.oai.model.oaipmh.OAIPMHerrorcodeType;
-import org.opencps.api.oai.model.oaipmh.OAIPMHtype;
-import org.opencps.api.oai.model.oaipmh.OMDeliverable;
-import org.opencps.api.oai.model.oaipmh.OMDeliverableType;
-import org.opencps.api.oai.model.oaipmh.OMEmployee;
-import org.opencps.api.oai.model.oaipmh.OMRole;
-import org.opencps.api.oai.model.oaipmh.OMRoles;
-import org.opencps.api.oai.model.oaipmh.RecordType;
-import org.opencps.api.oai.model.oaipmh.RequestType;
-import org.opencps.api.oai.model.oaipmh.ResumptionTokenType;
-import org.opencps.api.oai.model.oaipmh.VerbType;
-import org.opencps.api.oai.model.oaipmh.OMApplicant;
+import org.opencps.api.constants.ConstantUtils;
+import org.opencps.api.oai.model.oaipmh.*;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -57,18 +43,20 @@ import org.opencps.dossiermgt.constants.ModelKeysDeliverable;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.kernel.prop.PropValues;
+import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
-import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
-import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import backend.utils.APIDateTimeUtils;
 
@@ -78,6 +66,7 @@ public class OAIMethodUtils {
 
 	public static String OAI = "oai";
 	public static int PAGE_SIZE = 100;
+	public static int PAGE_END = 10000;
 	public static String OPS_USER = "OPS_USER";
 	public static String OPS_ROLE = "OPS_ROLE";
 	public static String OPS_DELI_TYPE = "OPS_DELI_TYPE";
@@ -200,110 +189,153 @@ public class OAIMethodUtils {
 		ListRecordsType results = new ListRecordsType();
 
 		try {
+
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(Field.MODIFIED_DATE, Sort.LONG_TYPE, true) };
+			SearchContext searchContext = new SearchContext();
+			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+			BooleanQuery booleanQuery = null;
+
+			long companyIdValid = GetterUtil.getLong(companyId, 20099);
 			int pageValid = GetterUtil.getInteger(page, 0);
+			searchContext.setCompanyId(companyIdValid);
+			searchContext.addFullQueryEntryClassName(User.class.getName());
+			searchContext.setEntryClassNames(new String[] { User.class.getName() });
+			searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
+			searchContext.setLike(true);
 			int start = pageValid * PAGE_SIZE;
-			int end = start + PAGE_SIZE;
+			int end = PAGE_END;
+			searchContext.setStart(start);
+			searchContext.setEnd(end);
+			searchContext.setAndSearch(true);
+			searchContext.setSorts(sorts);
 
-			List<User>  lstuser = UserLocalServiceUtil.getUsers(start, end);
+			booleanQuery = indexer.getFullQuery(searchContext);
+			booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, User.class.getName());
+			if (Validator.isNotNull(from) && Validator.isNotNull(until)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
+						APIDateTimeUtils.timeZone2Lucene(from), APIDateTimeUtils.timeZone2Lucene(until), true, true);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else if (Validator.isNotNull(from)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
+						APIDateTimeUtils.timeZone2Lucene(from), null, true, false);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else if (Validator.isNotNull(until)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
+						null, APIDateTimeUtils.timeZone2Lucene(until), false, true);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
 
+			Hits hits = IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+			long completeListSize = IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+			List<Document> listDocument = hits.toList();
+
+			if (listDocument.size() == PAGE_SIZE && completeListSize > end) {
+
+				ResumptionTokenType rusumptionToken = new ResumptionTokenType();
+				rusumptionToken.setValue(String.valueOf(pageValid + 1));
+				rusumptionToken.setCompleteListSize(new BigInteger(String.valueOf(completeListSize)));
+				results.setResumptionToken(rusumptionToken);
+			}
 			OMEmployee oMEmployee = null;
 			OMRoles oMRoles = null;
 			OMRole oMRole = null;
 			OMApplicant omApplicant = null;
 
-			// Sửa theo y/c ThànhNV ==> Lấy tất cả user liferay
-			if(Validator.isNotNull(lstuser)){
-				for(User users : lstuser) {
-					Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(users.getUserId());
-					oMRoles = new OMRoles();
-					RecordType recordType = new RecordType();
-					MetadataType metadataType = new MetadataType();
-					HeaderType headerType = new HeaderType();
-					if (Validator.isNotNull(employee)) {
-						oMEmployee = new OMEmployee();
 
-						Long empId = employee.getEmployeeId();
+			for (Document document : listDocument) {
 
-						oMEmployee.setGroupId(employee.getGroupId());
-						oMEmployee.setFullName(employee.getFullName());
-						oMEmployee.setTelNo(employee.getTelNo());
-						oMEmployee.setEmail(employee.getEmail());
-						oMEmployee.setWorkingStatus(String.valueOf(employee.getWorkingStatus()));
+				HeaderType headerType = new HeaderType();
+				MetadataType metadataType = new MetadataType();
+				RecordType recordType = new RecordType();
+				Long userId = Long.valueOf(document.get(EmployeeTerm.USER_ID));
 
-						long mappingUserId = Validator.isNotNull(employee.getMappingUserId()) ? employee.getMappingUserId() : 0L;
-						User user = UserLocalServiceUtil.fetchUser(mappingUserId);
-
-						if (Validator.isNotNull(user)) {
-							oMEmployee.setScreenName(user.getScreenName());
-						}
-
-						List<EmployeeJobPos> empJobPosList = EmployeeJobPosLocalServiceUtil
-								.findByF_EmployeeId(empId);
-
-						for (EmployeeJobPos empJobPos : empJobPosList) {
-
-							JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(empJobPos.getJobPostId());
-							oMRole = new OMRole();
-							if(Validator.isNotNull(jobPos)) {
-								oMRole.setGroupId(jobPos.getGroupId() != 0 ? jobPos.getGroupId() : 0L);
-								oMRole.setRoleId(jobPos.getJobPosId());
-								oMRole.setRoleCode(jobPos.getJobPosCode());
-								oMRole.setRoleTitle(jobPos.getTitle());
-
-								oMRoles.getRole().add(oMRole);
-							}
-						}
-						oMEmployee.setRoles(oMRoles);
-
-						headerType.setIdentifier(identifierBuider(OPS_USER, employee.getEmployeeNo()));
-						headerType.setDatestamp(Validator.isNotNull(employee.getModifiedDate())
-								? APIDateTimeUtils._dateToString(employee.getModifiedDate(),
-								APIDateTimeUtils.ISO8601)
-								: StringPool.BLANK);
-
-						metadataType.setUser(oMEmployee);
-						recordType.setHeader(headerType);
-						recordType.setMetadata(metadataType);
-						results.getRecord().add(recordType);
-
-					}else{
-						Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(users.getUserId());
-						if(Validator.isNull(applicant)){
-							continue;
-						}
-						omApplicant = new OMApplicant();
-						String modifiedDate = Validator.isNotNull(applicant.getModifiedDate()) ? APIDateTimeUtils
-								._dateToString(applicant.getModifiedDate(), APIDateTimeUtils._TIMESTAMP)
-								: StringPool.BLANK;
-						omApplicant.setGroupId(applicant.getGroupId());
-						omApplicant.setEmail(applicant.getContactEmail());
-						omApplicant.setFullName(applicant.getUserName());
-						omApplicant.setTelNo(applicant.getContactTelNo());
-						omApplicant.setWorkingStatus(1L);
-
-						User user = UserLocalServiceUtil.fetchUser(applicant.getMappingUserId());
-
-						if (Validator.isNotNull(user)) {
-							omApplicant.setScreenName(user.getScreenName());
-						}
-
-						oMRole = new OMRole();
-						oMRole.setGroupId(applicant.getGroupId());
-						oMRole.setRoleCode(APPLICANT);
-						oMRole.setRoleTitle(CONG_DAN);
-						oMRoles.getRole().add(oMRole);
-						omApplicant.setRoles(oMRoles);
+				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 
 
-						headerType.setIdentifier(
-								identifierBuider(OPS_USER, String.valueOf(applicant.getApplicantId())));
-						headerType.setDatestamp(modifiedDate);
-						metadataType.setUserApp(omApplicant);
-						recordType.setHeader(headerType);
-						recordType.setMetadata(metadataType);
+				if (Validator.isNotNull(employee)) {
 
-						results.getRecord().add(recordType);
+					oMEmployee = new OMEmployee();
+					Long empId = employee.getEmployeeId();
+
+					oMEmployee.setGroupId(employee.getGroupId());
+					oMEmployee.setFullName(employee.getFullName());
+					oMEmployee.setTelNo(employee.getTelNo());
+					oMEmployee.setEmail(employee.getEmail());
+					oMEmployee.setWorkingStatus(String.valueOf(employee.getWorkingStatus()));
+
+					long mappingUserId = Validator.isNotNull(employee.getMappingUserId()) ? employee.getMappingUserId() : 0L;
+					User user = UserLocalServiceUtil.fetchUser(mappingUserId);
+
+					if (Validator.isNotNull(user)) {
+						oMEmployee.setScreenName(user.getScreenName());
 					}
+
+					List<EmployeeJobPos> empJobPosList = EmployeeJobPosLocalServiceUtil
+							.findByF_EmployeeId(empId);
+					oMRoles = new OMRoles();
+					for (EmployeeJobPos empJobPos : empJobPosList) {
+
+						JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(empJobPos.getJobPostId());
+						oMRole = new OMRole();
+						if(Validator.isNotNull(jobPos)) {
+							oMRole.setGroupId(jobPos.getGroupId() != 0 ? jobPos.getGroupId() : 0L);
+							oMRole.setRoleId(jobPos.getJobPosId());
+							oMRole.setRoleCode(jobPos.getJobPosCode());
+							oMRole.setRoleTitle(jobPos.getTitle());
+
+							oMRoles.getRole().add(oMRole);
+						}
+					}
+					oMEmployee.setRoles(oMRoles);
+
+					headerType.setIdentifier(identifierBuider(OPS_USER, employee.getEmployeeNo()));
+					headerType.setDatestamp(Validator.isNotNull(employee.getModifiedDate())
+							? APIDateTimeUtils._dateToString(employee.getModifiedDate(),
+							APIDateTimeUtils.ISO8601)
+							: StringPool.BLANK);
+
+					metadataType.setUser(oMEmployee);
+					recordType.setHeader(headerType);
+					recordType.setMetadata(metadataType);
+					results.getRecord().add(recordType);
+				}else{
+					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+					if(Validator.isNull(applicant)){
+						continue;
+					}
+					omApplicant = new OMApplicant();
+					String modifiedDate = Validator.isNotNull(applicant.getModifiedDate()) ? APIDateTimeUtils
+							._dateToString(applicant.getModifiedDate(), APIDateTimeUtils._TIMESTAMP)
+							: StringPool.BLANK;
+					omApplicant.setGroupId(applicant.getGroupId());
+					omApplicant.setEmail(applicant.getContactEmail());
+					omApplicant.setFullName(applicant.getApplicantName());
+					omApplicant.setTelNo(applicant.getContactTelNo());
+					omApplicant.setWorkingStatus(1L);
+
+					User user = UserLocalServiceUtil.fetchUser(applicant.getMappingUserId());
+
+					if (Validator.isNotNull(user)) {
+						omApplicant.setScreenName(user.getScreenName());
+					}
+
+					oMRole = new OMRole();
+					oMRoles = new OMRoles();
+					oMRole.setGroupId(applicant.getGroupId());
+					oMRole.setRoleCode(APPLICANT);
+					oMRole.setRoleTitle(CONG_DAN);
+					oMRoles.getRole().add(oMRole);
+					omApplicant.setRoles(oMRoles);
+
+
+					headerType.setIdentifier(
+							identifierBuider(OPS_USER, String.valueOf(applicant.getApplicantId())));
+					headerType.setDatestamp(modifiedDate);
+					metadataType.setUserApp(omApplicant);
+					recordType.setHeader(headerType);
+					recordType.setMetadata(metadataType);
+
+					results.getRecord().add(recordType);
 				}
 			}
 		} catch (Exception e) {
@@ -408,104 +440,56 @@ public class OAIMethodUtils {
 			String deliverableType) {
 
 		ListRecordsType results = new ListRecordsType();
+		long deliverableStateL = 1L;
 
 		try {
+			List<Deliverable> deliverables = DeliverableLocalServiceUtil.findDeliverableByCreateDate(from, until, deliverableType, deliverableStateL);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(Field.MODIFIED_DATE, Sort.LONG_TYPE, true) };
-			SearchContext searchContext = new SearchContext();
-			Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
-			BooleanQuery booleanQuery = null;
-
-			long companyIdValid = GetterUtil.getLong(companyId, 20099);
-			int pageValid = GetterUtil.getInteger(page, 0);
-			searchContext.setCompanyId(companyIdValid);
-			searchContext.addFullQueryEntryClassName(Deliverable.class.getName());
-			searchContext.setEntryClassNames(new String[] { Deliverable.class.getName() });
-			searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
-			searchContext.setLike(true);
-			int start = pageValid * PAGE_SIZE;
-			int end = start + PAGE_SIZE;
-			searchContext.setStart(start);
-			searchContext.setEnd(end);
-			searchContext.setAndSearch(true);
-			searchContext.setSorts(sorts);
-
-			booleanQuery = indexer.getFullQuery(searchContext);
-			booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Deliverable.class.getName());
-			if (Validator.isNotNull(from) && Validator.isNotNull(until)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
-						APIDateTimeUtils.timeZone2Lucene(from), APIDateTimeUtils.timeZone2Lucene(until), true, true);
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			} else if (Validator.isNotNull(from)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
-						APIDateTimeUtils.timeZone2Lucene(from), null, true, false);
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			} else if (Validator.isNotNull(until)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
-						null, APIDateTimeUtils.timeZone2Lucene(until), false, true);
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			}
-			if (Validator.isNotNull(deliverableType)) {
-				MultiMatchQuery query = new MultiMatchQuery(deliverableType);
-				query.addFields(DeliverableTerm.DELIVERABLE_TYPE);
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-
-			Hits hits = IndexSearcherHelperUtil.search(searchContext, booleanQuery);
-			List<Document> listDocument = hits.toList();
-			long completeListSize = IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
-
-			_log.debug("listDocument.size=" + listDocument.size());
-			if (listDocument.size() == PAGE_SIZE && completeListSize > end) {
-
-				ResumptionTokenType rusumptionToken = new ResumptionTokenType();
-				rusumptionToken.setValue(String.valueOf(pageValid + 1));
-				rusumptionToken.setCompleteListSize(new BigInteger(String.valueOf(completeListSize)));
-				results.setResumptionToken(rusumptionToken);
-			}
+			_log.info("ListDeliverable: " + deliverables.size());
+			if (!deliverables.isEmpty() && deliverables.size() > 0) {
 			OMDeliverable oMDeliverable = null;
 
-			for (Document document : listDocument) {
+			for (Deliverable deliverable : deliverables) {
 
-				String deliverableId = document.get(DeliverableTerm.DELIVERABLE_ID);
-				String groupId = document.get(Field.GROUP_ID);
+				Long deliverableId = deliverable.getDeliverableId();
+				Long groupId = deliverable.getGroupId();
 
 				oMDeliverable = new OMDeliverable();
-				oMDeliverable.setGroupId(Long.parseLong(groupId));
-				oMDeliverable.setDeliverableId(Long.parseLong(deliverableId));
-				oMDeliverable.setModifiedDate(String.valueOf(document.getDate(Field.MODIFIED_DATE).getTime()));
-				oMDeliverable.setDeliverableCode(document.get(DeliverableTerm.DELIVERABLE_CODE));
-				oMDeliverable.setDeliverableName(document.get(DeliverableTerm.DELIVERABLE_NAME));
-				oMDeliverable.setDeliverableType(document.get(DeliverableTerm.DELIVERABLE_TYPE));
-				oMDeliverable.setGovAgencyCode(document.get(DeliverableTerm.GOV_AGENCY_CODE));
-				oMDeliverable.setGovAgencyName(document.get(DeliverableTerm.GOV_AGENCY_NAME));
-				oMDeliverable.setApplicantIdNo(document.get(DeliverableTerm.APPLICANT_ID_NO));
-				oMDeliverable.setApplicantName(document.get(DeliverableTerm.APPLICANT_NAME));
-				oMDeliverable.setSubject(document.get(DeliverableTerm.SUBJECT));
-				oMDeliverable.setFormData(document.get(DeliverableTerm.FORM_DATA));
-				oMDeliverable.setFormScript(document.get(DeliverableTerm.FORM_SCRIPT));
-				oMDeliverable.setFormReport(document.get(DeliverableTerm.FORM_REPORT));
-				oMDeliverable.setIssueDate(document.get(DeliverableTerm.ISSUE_DATE));
-				long expire = GetterUtil.getLong(document.get(DeliverableTerm.EXPIRE_DATE));
+				oMDeliverable.setGroupId(groupId);
+				oMDeliverable.setDeliverableId(deliverableId);
+				oMDeliverable.setModifiedDate(String.valueOf(deliverable.getModifiedDate()));
+				oMDeliverable.setDeliverableCode(deliverable.getDeliverableCode());
+				oMDeliverable.setDeliverableName(deliverable.getDeliverableName());
+				oMDeliverable.setDeliverableType(deliverable.getDeliverableType());
+				oMDeliverable.setGovAgencyCode(deliverable.getGovAgencyCode());
+				oMDeliverable.setGovAgencyName(deliverable.getGovAgencyName());
+				oMDeliverable.setApplicantIdNo(deliverable.getApplicantIdNo());
+				oMDeliverable.setApplicantName(deliverable.getApplicantName());
+				oMDeliverable.setSubject(deliverable.getSubject());
+				oMDeliverable.setFormData(deliverable.getFormData());
+				oMDeliverable.setFormScript(deliverable.getFormScript());
+				oMDeliverable.setFormReport(deliverable.getFormReport());
+				oMDeliverable.setIssueDate(String.valueOf(deliverable.getIssueDate()));
+				long expire = GetterUtil.getLong(deliverable.getExpireDate());
 				oMDeliverable.setExpireDate(String.valueOf(expire));
-				oMDeliverable.setRevalidate(document.get(DeliverableTerm.REVALIDATE));
-				int deliverableState = GetterUtil.getInteger(document.get(DeliverableTerm.DELIVERABLE_STATE));
+				oMDeliverable.setRevalidate(String.valueOf(deliverable.getRevalidate()));
+				int deliverableState = GetterUtil.getInteger(deliverable.getDeliverableState());
 				if (deliverableState == 1 && expire > 0 && new Date().getTime() > deliverableState) {
 
 					deliverableState = 2;
 				}
 				oMDeliverable.setDeliverableState(String.valueOf(deliverableState));
-				long dossierId = GetterUtil.getLong(document.get(DossierTerm.DOSSIER_ID));
+				long dossierId = GetterUtil.getLong(deliverable.getDossierId());
 				oMDeliverable.setDossierId(dossierId);
 				oMDeliverable.setDomain(PropValues.PORTAL_DOMAIN);
 
 				long fileEntryId = 0;
-				if (Validator.isNotNull(document.get(DeliverableTerm.FILE_ATTACHS))) {
-					String fileEntrys = document.get(DeliverableTerm.FILE_ATTACHS);
+				if (Validator.isNotNull(deliverable.getFileAttachs())) {
+					String fileEntrys = deliverable.getFileAttachs();
 					String[] files = fileEntrys.split(StringPool.COMMA);
 					fileEntryId = GetterUtil.getLong(files[files.length - 1]);
 				} else {
-					fileEntryId = GetterUtil.getLong(document.get(ModelKeysDeliverable.FILEENTRYID));
+					fileEntryId = GetterUtil.getLong(deliverable.getFileEntryId());
 				}
 				if (Validator.isNotNull(fileEntryId)) {
 					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
@@ -526,10 +510,10 @@ public class OAIMethodUtils {
 				}
 
 				HeaderType headerType = new HeaderType();
-				headerType.setIdentifier(identifierBuider(OPS_DELI, document.get(DeliverableTerm.DELIVERABLE_ID)));
-				headerType.setDatestamp(Validator.isNotNull(document.getDate(Field.MODIFIED_DATE))
-						? APIDateTimeUtils._dateToString(document.getDate(Field.MODIFIED_DATE),
-								APIDateTimeUtils.ISO8601)
+				headerType.setIdentifier(identifierBuider(OPS_DELI, String.valueOf(deliverable.getDeliverableId())));
+				headerType.setDatestamp(Validator.isNotNull(deliverable.getModifiedDate())
+						? APIDateTimeUtils._dateToString(deliverable.getModifiedDate(),
+						APIDateTimeUtils.ISO8601)
 						: StringPool.BLANK);
 
 				MetadataType metadataType = new MetadataType();
@@ -541,6 +525,7 @@ public class OAIMethodUtils {
 
 				results.getRecord().add(recordType);
 			}
+		}
 		} catch (Exception e) {
 			_log.error(e);
 		}

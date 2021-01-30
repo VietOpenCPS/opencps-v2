@@ -17,6 +17,8 @@ import org.opencps.dossiermgt.service.persistence.DeliverableFinder;
 
 import aQute.bnd.annotation.ProviderType;
 
+import javax.xml.validation.Validator;
+
 @ProviderType
 public class DeliverableFinderImpl extends DeliverableFinderBaseImpl
 		 implements DeliverableFinder {
@@ -135,4 +137,61 @@ public class DeliverableFinderImpl extends DeliverableFinderBaseImpl
 
 		    return dossierFile;
 		}
+	@Override
+	public List<Deliverable> findDeliverableByCreateDate(String createDateStart,String createDateEnd, String deliverableType, long deliverableState) {
+		Session session = null;
+		List<Deliverable> deliverableList = null;
+		String sql = "SELECT * FROM opencps_deliverable d " +
+				" WHERE 1=1 " +
+				" AND deliverableState  =:deliverableState" ;
+		if(deliverableType !=null && !deliverableType.isEmpty()){
+			sql += " AND deliverableType  =:deliverableType ";
+		}
+
+		if(createDateStart !=null && !createDateStart.isEmpty()){
+			sql += " AND createDate >=:createDateStart ";
+		}
+
+		if(createDateEnd !=null && !createDateEnd.isEmpty()){
+			sql += " AND createDate <=:createDateEnd ";
+		}
+
+//		sql += " 1=1";
+
+		_log.info("SQL: " + sql);
+		try {
+			session = openSession();
+
+			SQLQuery q = session.createSQLQuery(sql);
+			q.setCacheable(false);
+			if(deliverableType !=null && !deliverableType.isEmpty()) {
+				q.setString("deliverableType", deliverableType);
+			}
+
+			q.setLong("deliverableState", deliverableState);
+
+			if(createDateStart !=null && !createDateStart.isEmpty()) {
+				q.setString("createDateStart", createDateStart);
+			}
+
+			if(createDateEnd !=null && !createDateEnd.isEmpty()) {
+				q.setString("createDateEnd", createDateEnd);
+			}
+			q.addEntity("opencps_deliverable", DeliverableImpl.class);
+
+			deliverableList = q.list();
+		} catch (Exception e) {
+			try {
+				throw new SystemException(e);
+			} catch (SystemException se) {
+				_log.error(se);
+			}
+		} finally {
+			closeSession(session);
+		}
+
+		return deliverableList;
+
+
+	}
 }
