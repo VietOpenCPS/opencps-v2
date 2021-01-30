@@ -44,5 +44,11 @@ public interface QLVGManagement {
     @Path("/{dossierId}/qlvbcts")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response testQlvbCTS(@PathParam("dossierId") long dossierId);
+    public Response testReceiveDossierCTS(@PathParam("dossierId") long dossierId);
+
+    @POST
+    @Path("/{dossierId}/qlvbcts")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response testSendDossierCTS(@PathParam("dossierId") long dossierId);
 }

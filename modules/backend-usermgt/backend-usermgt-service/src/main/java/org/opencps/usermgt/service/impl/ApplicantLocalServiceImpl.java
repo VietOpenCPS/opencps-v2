@@ -1807,6 +1807,18 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		return applicant;
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant verifyApplicantWithValue(long applicantId, int verification) throws PortalException {
+
+		Applicant applicant = applicantLocalService.fetchApplicant(applicantId);
+
+		applicant.setVerification(verification);
+
+		applicantPersistence.update(applicant);
+
+		return applicant;
+	}
+
 	public Applicant fetchByF_GID_CTEM(long groupId, String email) {
 		return applicantPersistence.fetchByF_GID_CTEM(groupId, email);
 	}
