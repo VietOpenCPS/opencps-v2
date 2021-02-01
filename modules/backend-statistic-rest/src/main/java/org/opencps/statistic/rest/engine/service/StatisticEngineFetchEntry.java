@@ -1,5 +1,7 @@
 package org.opencps.statistic.rest.engine.service;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -208,8 +210,26 @@ public class StatisticEngineFetchEntry {
 						}
 					} else {
 						statisticData.setOntimeCount(statisticData.getOntimeCount() + 1);
-					}					
+					}	
 				}
+			}
+			// tong so ho so dang xu ly, hoan thanh doi voi cac ho so tiep nhan trong ky
+			if (receviedDate != null && receviedDate.after(fromStatisticDate)
+					&& receviedDate.before(toStatisticDate)) {
+				// tong so ho so dang xu ly
+				if (releaseDate == null || releaseDate.after(toStatisticDate)) {
+					if (!DossierStatusTerm.WAITING.equals(dossierData.getDossierStatus()) && 
+							!DossierStatusTerm.RECEIVING.equals(dossierData.getDossierStatus())) {
+						// set ho so dang xu ly
+						statisticData.setProcessingInAPeriodCount(statisticData.getProcessingInAPeriodCount() + 1);
+					}
+				} // tong so ho so hoan thanh
+				else {
+					if (!DossierStatusTerm.CANCELLED.equals(dossierData.getDossierStatus())) {
+						// set ho so hoan thanh
+						statisticData.setReleaseInAPeriodCount(statisticData.getReleaseInAPeriodCount() + 1);
+					}
+				}	
 			}
 		}
 	}
@@ -474,6 +494,24 @@ public class StatisticEngineFetchEntry {
 						}
 					}
 				}
+			}
+			// tong so ho so dang xu ly, hoan thanh doi voi cac ho so tiep nhan trong ky
+			if (receviedDate != null && receviedDate.after(fromStatisticDate)
+					&& receviedDate.before(toStatisticDate)) {
+				// tong so ho so dang xu ly
+				if (releaseDate == null || releaseDate.after(toStatisticDate)) {
+					if (!DossierStatusTerm.WAITING.equals(dossierData.getDossierStatus()) && 
+							!DossierStatusTerm.RECEIVING.equals(dossierData.getDossierStatus())) {
+						// set ho so dang xu ly
+						statisticData.setProcessingInAPeriodCount(statisticData.getProcessingInAPeriodCount() + 1);
+					}
+				} // tong so ho so hoan thanh
+				else {
+					if (!DossierStatusTerm.CANCELLED.equals(dossierData.getDossierStatus())) {
+						// set ho so hoan thanh
+						statisticData.setReleaseInAPeriodCount(statisticData.getReleaseInAPeriodCount() + 1);
+					}
+				}	
 			}
 		}
 	}

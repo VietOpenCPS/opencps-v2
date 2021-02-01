@@ -12,5 +12,10 @@ public class QLVBConstants {
     public static final String CONFIG_X_AUTHENTICATION_TOKEN = "xToken";
     public static final String CONFIG_USER_ID = "userId";
     public static final String CONFIG_DOSSIER_PART_NO = "dossierPartNo";
-
+    public static final String CONFIG_SERVER_EOFFICE = "serverEOffice";
+    public static final String CONFIG_CONSUMER_KEY = "consumerKey";
+    public static final String CONFIG_CONSUMER_SECRET = "consumerSecret";
+    public static final String CONFIG_SYSTEM_ID_RECEIVE_DOC = "systemIdReceiveDoc";
+    public static final String CONFIG_SECRET_KEY_RECEIVE_DOC = "secretKeyReceiveDoc";
+    public static final String CONFIG_ACTION_CODE = "actionCode";
 }

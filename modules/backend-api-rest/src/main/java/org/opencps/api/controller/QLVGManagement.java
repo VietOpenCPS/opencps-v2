@@ -39,4 +39,16 @@ public interface QLVGManagement {
                                   @Multipart("displayName") String displayName,
                                   @Multipart("fileType") String fileType,
                                   @Multipart("actionCode") String actionCode);
+
+    @GET
+    @Path("/{dossierId}/qlvbcts")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response testReceiveDossierCTS(@PathParam("dossierId") long dossierId);
+
+    @POST
+    @Path("/{dossierId}/qlvbcts")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response testSendDossierCTS(@PathParam("dossierId") long dossierId);
 }
