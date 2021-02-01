@@ -3002,7 +3002,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel,createDateStart,createDateEnd);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
-
 		return IndexSearcherHelperUtil.search(searchContext, booleanInput);
 	}
 

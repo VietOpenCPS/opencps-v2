@@ -118,25 +118,23 @@ public class BetimeUtils {
 		String betimeDateTem = dateFormat.format(betimeDate);
 		Date betimeDateSpec = APIDateTimeUtils.convertStringToDate(betimeDateTem, APIDateTimeUtils._NORMAL_DATE);
 		
+		int overdue = 1; // 3: sớm hạn, 2: đúng hạn, 1: quá hạn
 		if(CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
 			if (releaseDateSpec.before(betimeDateSpec)) {
-				return 3;
+				overdue = 3;
 			}
 			if (releaseDateSpec.compareTo(betimeDateSpec) >= 0 && releaseDateSpec.compareTo(dueDateSpec) <= 0) {
-				return 2;
+				overdue = 2;
 			}
-			
-			return 1;
+		} else {			
+			if (releaseDateSpec.before(betimeDateSpec)) {
+				overdue = 3;
+			}
+			if (releaseDateSpec.compareTo(dueDateSpec) == 0 && releaseDate.compareTo(dueDate) <= 0) {
+				overdue = 2;
+			}
 		} 
-		
-		if (releaseDateSpec.before(betimeDateSpec)) {
-			return 3;
-		}
-		if (releaseDate.compareTo(betimeDate) >= 0 && releaseDate.compareTo(dueDate) <= 0) {
-			return 2;
-		}
-		
-		return 1;
+		return overdue;
 	}
 	
 	static Log _log = LogFactoryUtil.getLog(BetimeUtils.class);

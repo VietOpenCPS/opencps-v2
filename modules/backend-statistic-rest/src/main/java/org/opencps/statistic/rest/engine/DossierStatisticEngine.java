@@ -234,7 +234,6 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				int monthCurrent = LocalDate.now().getMonthValue();
 //				int monthCurrent = 4;
 				_log.info("jsonEndPoint: "+jsonEndPoint);
-				_log.info("monthCurrent: "+monthCurrent);
 				int yearCurrent = LocalDate.now().getYear();
 				Map<Integer, Boolean> mapFlagCurrent = new HashMap<>();
 				for (int month = 1; month <= monthCurrent; month ++) {
@@ -486,9 +485,6 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				lstSortCurrents.addAll(lstCurrents);
 				Collections.sort(lstSortCurrents, compareByYearMonth);
 				//Current year
-				if (site.getGroupId() == 35417) {
-					_log.info("lstCurrents :" + JSONFactoryUtil.looseSerialize(lstSortCurrents));
-				}
 				statisticSumYearService.batchCaculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstScs, lstSortCurrents, jsonEndPoint);
 //				_log.info("CALCULATE AFTER SUM CURRENT YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 				// Last year
@@ -496,9 +492,6 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				ArrayList<OpencpsDossierStatistic> lstSortLasts = new ArrayList<OpencpsDossierStatistic>();
 				lstSortLasts.addAll(lstLasts);
 				Collections.sort(lstSortLasts, compareByYearMonth);
-				if (site.getGroupId() == 35417) {
-					_log.info("lstLasts :" + JSONFactoryUtil.looseSerialize(lstSortLasts));
-				}
 				statisticSumYearService.batchCaculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstScs, lstSortLasts, jsonEndPoint);
 
 //				_log.info("CALCULATE AFTER SUM LAST YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");

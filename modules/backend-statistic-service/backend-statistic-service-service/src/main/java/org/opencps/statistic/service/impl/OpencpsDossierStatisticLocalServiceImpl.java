@@ -1105,23 +1105,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 	
 	public void updateBatchStatistic(List<JSONObject> dossierDataObjs) throws PortalException, SystemException {
 		long startTime = System.currentTimeMillis();
-		for (JSONObject dossierObj : dossierDataObjs) {			
-			
-			if(dossierObj.getInt("month") == 0 
-					&& dossierObj.getLong("groupId") == 35417 
-					&& dossierObj.getInt("year") == 2021
-					&& dossierObj.getString("govAgencyCode").contentEquals("SCT")) {
-				_log.info("444444 :" + JSONFactoryUtil.looseSerialize(dossierObj));
-			}
-			
-			
-			if(dossierObj.getInt("month") == 0 
-					&& dossierObj.getLong("groupId") == 35417 
-					&& dossierObj.getInt("year") == 2020
-					&& dossierObj.getString("govAgencyCode").contentEquals("SCT")) {
-				_log.info("666666 :" + JSONFactoryUtil.looseSerialize(dossierObj));
-			}
-			
+		for (JSONObject dossierObj : dossierDataObjs) {
 			int pausingCount = 0;
 			long companyId = dossierObj.has("companyId") ? dossierObj.getLong("companyId") : 0l;
 			long groupId = dossierObj.has("groupId") ? dossierObj.getLong("groupId") : 0l;
@@ -1287,21 +1271,11 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			}
 
 			dossierStatistic.setOntimePercentage(ontimePercent);
-			if(dossierStatistic.getMonth() == 0 && dossierStatistic.getYear() == 2021 
-					&& dossierStatistic.getGroupId() == 35417 && dossierStatistic.getGovAgencyCode().contentEquals("SCT")) {
-				_log.info("111111 :" + JSONFactoryUtil.looseSerialize(dossierStatistic));
-			}
-			
-			if(dossierStatistic.getMonth() == 0 && dossierStatistic.getYear() == 2020 
-					&& dossierStatistic.getGroupId() == 35417 && dossierStatistic.getGovAgencyCode().contentEquals("SCT")) {
-				_log.info("222222 :" + JSONFactoryUtil.looseSerialize(dossierStatistic));
-			}
-			
 			dossierStatistic = opencpsDossierStatisticPersistence.update(dossierStatistic);
 			
 		}
 		long endTime = System.currentTimeMillis();
-		_log.debug("UPDATE BATCH DOSSIER STATISTIC: " + (endTime - startTime) / 1000.0);		
+		_log.debug("UPDATE BATCH DOSSIER STATISTIC: " + (endTime - startTime) / 1000.0);			
 	}
 	
 	public List<OpencpsDossierStatistic> findByG_NM_Y(long groupId, int notMonth, int year) {
