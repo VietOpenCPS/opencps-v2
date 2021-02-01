@@ -271,7 +271,7 @@ public class DossierUtils {
 					if (dueDateTimeStamp == 0 || 2 == valueCompareRelease) {
 						model.setDossierOverdue(MessageUtil.getMessage(ConstantUtils.DOSSIER_ONTIME_MESSAGE));
 					}
-					if (dueDateTimeStamp == 0 || 2 == valueCompareFinish ) {
+					if (dueDateTimeStamp == 0 || 2 == valueCompareFinish) {
 						model.setDossierFinishOverdue(MessageUtil.getMessage(ConstantUtils.DOSSIER_ONTIME_MESSAGE));
 					}
 //					if (processOverTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
