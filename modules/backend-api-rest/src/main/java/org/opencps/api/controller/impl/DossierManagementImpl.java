@@ -1324,12 +1324,22 @@ public class DossierManagementImpl implements DossierManagement {
 				};
 			}
 			else {
-				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
-				sorts = new Sort[] {
-					SortFactoryUtil.create(
-						querySort, Sort.STRING_TYPE,
-						GetterUtil.getBoolean(query.getOrder()))
-				};
+				String sortValue = query.getSort();
+				if(sortValue.equals(DossierTerm.CREATE_DATE) || sortValue.equals(DossierTerm.MODIFIED_DATE)){
+					String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), query.getSort());
+					sorts = new Sort[] {
+							SortFactoryUtil.create(
+									dateSort, Sort.LONG_TYPE,
+									GetterUtil.getBoolean(query.getOrder()))
+					};
+				}else {
+					String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
+					sorts = new Sort[]{
+							SortFactoryUtil.create(
+									querySort, Sort.STRING_TYPE,
+									GetterUtil.getBoolean(query.getOrder()))
+					};
+				}
 			}
 
 			if (Validator.isNotNull(top)) {

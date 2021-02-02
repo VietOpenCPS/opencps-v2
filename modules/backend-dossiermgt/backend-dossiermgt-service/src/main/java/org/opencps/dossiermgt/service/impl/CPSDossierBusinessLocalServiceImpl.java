@@ -1590,6 +1590,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								  long userId, long groupId, ServiceContext context) throws PortalException {
 		DossierFile dossierFile = null;
 		InputStream is = null;
+		String deliverableCode = StringPool.BLANK;
 		try {
 			if (dlt.getFormReportFileId() > 0) {
 				try {
@@ -1616,9 +1617,15 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					StringPool.BLANK,
 					String.valueOf(false),
 					context);
+			if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+				deliverableCode =
+						DeliverableNumberGenerator.generateDeliverableNumber(
+								groupId, context.getCompanyId(),
+								dlt.getDeliverableTypeId());
+			}
 
 			Deliverable deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
-					groupId, dlt.getTypeCode(), dlt.getTypeName(), dossierFile.getDeliverableCode(),
+					groupId, dlt.getTypeCode(), dlt.getTypeName(), Validator.isNotNull(dossierFile.getDeliverableCode()) ? dossierFile.getDeliverableCode() : deliverableCode,
 					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantIdNo(),
 					dossier.getApplicantName(), "", "", "",
 					null, String.valueOf(1), dossier.getDossierId(), dossierFile.getFileEntryId(),
