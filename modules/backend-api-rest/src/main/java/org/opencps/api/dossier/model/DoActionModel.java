@@ -8,6 +8,7 @@
 
 package org.opencps.api.dossier.model;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -50,7 +51,8 @@ import javax.xml.bind.annotation.XmlType;
     "payment",
     "createDossiers",
     "dossierIds",
-    "receiveDate"
+    "receiveDate",
+    "checkRequried"
 })
 @XmlRootElement(name = "DoActionModel")
 public class DoActionModel {
@@ -74,6 +76,16 @@ public class DoActionModel {
     protected String dossierIds;
     @FormParam(value = "receiveDate")
     protected Long receiveDate;
+    @FormParam(value = "checkRequried")
+    protected String checkRequried;
+
+    public String getCheckRequried() {
+        return checkRequried;
+    }
+
+    public void setCheckRequried(String checkRequried) {
+        this.checkRequried = checkRequried;
+    }
 
     public Long getReceiveDate() {
         return receiveDate;

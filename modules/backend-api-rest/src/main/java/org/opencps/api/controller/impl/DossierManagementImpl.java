@@ -1948,14 +1948,19 @@ public class DossierManagementImpl implements DossierManagement {
 				actionUser = user.getFullName();
 			}
 		}
+		boolean checkRequried = true;
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
+			if(Validator.isNotNull(input.getCheckRequried())){
+				_log.info("Boolean: "  + input.getCheckRequried());
+				checkRequried = Boolean.valueOf(input.getCheckRequried());
+			}
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
-
+			//A Duẩn: truyền checkRequried = true thì cho doAction
+		if(checkRequried){
 			if (dossier != null) {
 				_log.info("Doing action for dossierId: " + dossier.getDossierId());
 				if(Validator.isNotNull(input) && Validator.isNotNull(input.getActionCode())) {
@@ -2327,14 +2332,15 @@ public class DossierManagementImpl implements DossierManagement {
 						if (Validator.isNull(applicant)) {
 							new ApplicantActionsImpl().register(serviceContext, groupId,
 									delegateName, applicantIdType, delegateIdNo, applicantIdDate,
-									delegateEmail, delegateAddress, delegateCityCode, StringPool.BLANK, delegateDistrictCode, 
+									delegateEmail, delegateAddress, delegateCityCode, StringPool.BLANK, delegateDistrictCode,
 									StringPool.BLANK, delegateWardCode, StringPool.BLANK, StringPool.BLANK, delegateTelNo,
 									StringPool.BLANK, password);
 						}
 					}
 				}
-				
+
 			}
+		}
 
 			// DossierAction dossierAction = actions.doAction(groupId, dossier,
 			// option, proAction,
