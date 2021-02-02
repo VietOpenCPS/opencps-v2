@@ -1,6 +1,8 @@
 package org.opencps.synctracking.action.impl;
 
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.synctracking.action.IntegrationOutsideApi;
@@ -24,6 +26,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
     private static final Integer MAX_LIMIT = 1000;
     private TransformAction transformAction;
     private IntegrationOutsideApi integrationOutsideApi;
+    private Log _log = LogFactoryUtil.getLog(SyncTrackingActionImpl.class);
 
     public SyncTrackingActionImpl(TransformAction transformAction, IntegrationOutsideApi integrationOutsideApi) {
         this.transformAction = transformAction;
@@ -76,6 +79,18 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             boolean hasServiceCode = false;
 
             if(Validator.isNotNull(syncTrackingQuery.dossierNo) && !syncTrackingQuery.dossierNo.isEmpty()) {
+                SyncTracking syncTracking;
+                syncTracking = SyncTrackingLocalServiceUtil.getByDossierNo(syncTrackingQuery.groupId,
+                        syncTrackingQuery.dossierNo);
+
+                if(Validator.isNull(syncTracking)) {
+                    syncTracking = SyncTrackingLocalServiceUtil.getByReferenceUid(syncTrackingQuery.groupId,
+                            syncTrackingQuery.dossierNo);
+                }
+
+                if(Validator.isNotNull(syncTracking)) {
+                    syncTrackingQuery.dossierNo = syncTracking.getReferenceUid();
+                }
                 hasDossierNo = true;
             }
 
@@ -86,11 +101,11 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             List<SyncTracking> syncTrackingPaginate;
 
             if(hasDossierNo && !hasServiceCode) {
-                syncTrackingList = SyncTrackingLocalServiceUtil.getByGroupIdAndDossierNoAndDate(
+                syncTrackingList = SyncTrackingLocalServiceUtil.getByReferenceUidAndDate(
                         syncTrackingQuery.groupId, syncTrackingQuery.dossierNo, fromDateParsed, toDateParsed,
                         0, MAX_LIMIT
                 );
-                syncTrackingPaginate = SyncTrackingLocalServiceUtil.getByGroupIdAndDossierNoAndDate(
+                syncTrackingPaginate = SyncTrackingLocalServiceUtil.getByReferenceUidAndDate(
                         syncTrackingQuery.groupId, syncTrackingQuery.dossierNo, fromDateParsed, toDateParsed,
                         syncTrackingQuery.start, syncTrackingQuery.end
                 );

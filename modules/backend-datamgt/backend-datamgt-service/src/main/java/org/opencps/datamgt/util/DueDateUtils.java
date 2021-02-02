@@ -9,6 +9,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -58,6 +60,8 @@ public class DueDateUtils {
 
 	private List<WorkTime> workTimes;
 	private List<Holiday> holidays;
+	// list ngay lam bu
+	private List<Holiday> compensationDates;
 
 	// ngay lam viec tiep theo
 	private Date nextWorkDay;
@@ -108,7 +112,9 @@ public class DueDateUtils {
 
 				// 1st set workTimes & set holidays
 				this._setWorkTimes();
-				this._setHolidays(startDate);
+				this._setHolidays(startDate,0);
+				// set ngay lam bu
+				this._setCompensationDates(startDate, 1);
 
 				// set start date
 				this.setStartDate(startDate);
@@ -144,7 +150,9 @@ public class DueDateUtils {
 				}
 				// 1st set workTimes & set holidays
 				this._setWorkTimes();
-				this._setHolidays(startDate);
+				this._setHolidays(startDate,0);
+				// set ngay lam bu
+				this._setCompensationDates(startDate, 1);
 
 				// set start date
 				this.setStartDate(startDate);
@@ -379,9 +387,9 @@ public class DueDateUtils {
 			this._setNextWorkDay();
 
 		}
-		else if (this.durationUnit == 1 &&
+		else if ( (this.isHolidayType1 && countNextDay < 360) || (this.durationUnit == 1 &&
 			this.countNextWorkDayTime < this.durationCount &&
-			countNextDay < 360) {
+			countNextDay < 360)) {
 
 			// tinh thoi gian tra theo gio
 			int durationHours = SupportUtils.subTime(
@@ -581,6 +589,7 @@ public class DueDateUtils {
 		// call HolidayLocalServiceUtil.fetchByF_holidayDate(groupId, startDate)
 		String truncDateStr = SupportUtils._dateToString(date, DATE_FORMAT);
 		Holiday holiday = null;
+		Holiday compensationDate = null;
 		for (Holiday h : this.holidays) {
 
 			if (SupportUtils._dateToString(
@@ -589,11 +598,21 @@ public class DueDateUtils {
 				break;
 			}
 		}
+		
+		// check truncDateStr (chinh la this.startDate) co thuoc list ngay lam bu ko
+		for (Holiday h : this.compensationDates) {
+			if(SupportUtils._dateToString(h.getHolidayDate(),  DATE_FORMAT).contentEquals(truncDateStr)) {
+				compensationDate = h;
+				break;
+			}
+		}
 
 		if (holiday != null) {
 
 			this.isHolidayType0 = holiday.getHolidayType() == 0;
-			this.isHolidayType1 = holiday.getHolidayType() == 1;
+			//this.isHolidayType1 = holiday.getHolidayType() == 1;
+		}else if(compensationDate != null) {
+			this.isHolidayType1 = compensationDate.getHolidayType() == 1;
 		}
 		else {
 
@@ -616,7 +635,8 @@ public class DueDateUtils {
 		}
 
 		// set ngay tiep nhan
-		if (!this.isHolidayType0 && Validator.isNull(this.ngayTiepNhan)) {
+		if ( (!this.isHolidayType0 && Validator.isNull(this.ngayTiepNhan)) ||
+			 ( this.isHolidayType1 && Validator.isNull(this.ngayTiepNhan)) ) {
 
 			if (DEFAULT_START_AM_STR.equals(this.startDateTimeStr)) {
 
@@ -635,7 +655,7 @@ public class DueDateUtils {
 				"ngay tiep nhan ho so=====" + SupportUtils._dateToString(
 					this.ngayTiepNhan, DATE_SPACE_TIME_FORMAT));
 		}
-
+		
 		if (Validator.isNull(this.toDate)) {
 
 			_calDueDate(date, truncDateStr);
@@ -652,11 +672,17 @@ public class DueDateUtils {
 		_log.debug("==================workTimes=========" + this.workTimes);
 	}
 
-	private void _setHolidays(Date startDate) {
+	private void _setHolidays(Date startDate, int holidayType) {
 
 		this.holidays =
-			HolidayLocalServiceUtil.getHolidayGtThan(this.groupId, startDate);
+			HolidayLocalServiceUtil.getHolidayGtThanByGroupIdAndType(this.groupId, holidayType, startDate);
 		_log.debug("==================holidays=========" + this.holidays);
+	}
+	
+	private void _setCompensationDates(Date startDate, int holidayType) {
+		this.compensationDates = 
+			HolidayLocalServiceUtil.getHolidayGtThanByGroupIdAndType(this.groupId, holidayType, startDate);
+		_log.debug("==================compensation date=========" + this.compensationDates);
 	}
 
 	private void _setHourTimeWorking(Date date) {
@@ -664,16 +690,24 @@ public class DueDateUtils {
 		Calendar calStartDate = Calendar.getInstance();
 		calStartDate.setTime(date);
 		int dayOfStartDate = calStartDate.get(Calendar.DAY_OF_WEEK);
+		Holiday compensationDate = null;
+		// kt startDate co la ngay lam bu hay ko
+		for (Holiday h : this.compensationDates) {
+			if(SupportUtils._dateToString(h.getHolidayDate(),  DATE_FORMAT)
+					.contains(SupportUtils._dateToString(calStartDate.getTime(), DATE_FORMAT))) {
+				compensationDate = h;
+				break;
+			}
+		}
+		// if startDate la ngay lam bu --> set so gio lam viec cua ngay lam bu
+		// bang thoi gian lam viec ngay thu 2
 
-		// Step 1 Check is holiday
-		// holiday hoursWorking is MONDAY
-		// TODO: check holiday
-		if (this.isHolidayType1) {
+		if (compensationDate != null && this.isHolidayType0 == false) {
 
 			// ngay lam bu
 			this._setHourTimeWorkingByDay(Calendar.MONDAY);
 		}
-		else {
+		else if (compensationDate == null && this.isHolidayType0 == false) {
 
 			// ngay binh thuong
 			this._setHourTimeWorkingByDay(dayOfStartDate);

@@ -294,6 +294,11 @@ public class DeliverableTypeLocalServiceUtil {
 		return getService().getDeliverableTypes(start, end);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DeliverableType> getDeliverableTypeByGroupId(
+			long [] groupId,int start, int end ) {
+		return getService().getDeliverableTypeByGroupId(groupId, start, end);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DeliverableType> getDeliverableTypes(
 		long groupId, int start, int end) {
 		return getService().getDeliverableTypes(groupId, start, end);

@@ -15,6 +15,7 @@
 package org.opencps.synctracking.service.impl;
 
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.synctracking.exception.NoSuchSyncTrackingException;
 import org.opencps.synctracking.model.SyncTracking;
 import org.opencps.synctracking.model.SyncTrackingQuery;
 import org.opencps.synctracking.service.base.SyncTrackingLocalServiceBaseImpl;
@@ -70,6 +71,28 @@ public class SyncTrackingLocalServiceImpl
 				dossierNo, fromDate, toDate, start, end);
 	}
 
+	public List<SyncTracking> getByReferenceUidAndDate(long groupId, String referenceUid, Date fromDate, Date toDate
+			, int start, int end ) {
+		return syncTrackingPersistence.findByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId, referenceUid,
+				fromDate, toDate, start, end);
+	}
+
+	public SyncTracking getByDossierNo(long groupId, String dossierNo) {
+		try {
+			return syncTrackingPersistence.findByF_GID_DossierNo(groupId, dossierNo);
+		} catch (NoSuchSyncTrackingException e) {
+			return null;
+		}
+	}
+
+	public SyncTracking getByReferenceUid(long groupId, String referenceUid) {
+		try {
+			return syncTrackingPersistence.findByF_GID_ReferenceUid(groupId, referenceUid);
+		} catch (NoSuchSyncTrackingException e) {
+			return null;
+		}
+	}
+
 	public SyncTracking createSyncTrackingManual(SyncTrackingQuery syncTrackingQuery) {
 		long syncTrackingId = counterLocalService.increment(SyncTracking.class.getName());
 		Date now = new Date();
@@ -80,6 +103,10 @@ public class SyncTrackingLocalServiceImpl
 		syncTracking.setGroupId(syncTrackingQuery.groupId);
 		if(Validator.isNotNull(syncTrackingQuery.dossierNo)) {
 			syncTracking.setDossierNo(syncTrackingQuery.dossierNo);
+		}
+
+		if(Validator.isNotNull(syncTrackingQuery.referenceUid)) {
+			syncTracking.setReferenceUid(syncTrackingQuery.referenceUid);
 		}
 
 		if(Validator.isNotNull(syncTrackingQuery.serviceCode)) {

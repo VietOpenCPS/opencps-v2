@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.InputStream;
@@ -158,6 +159,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
+import ch.qos.logback.core.joran.action.NewRuleAction;
 import opencps.statistic.common.webservice.exception.OpencpsServiceException;
 import opencps.statistic.common.webservice.exception.OpencpsServiceExceptionDetails;
 import opencps.statistic.common.webservice.exception.ServiceException;
@@ -259,7 +261,8 @@ public class OpencpsStatisticRestApplication extends Application {
 		// su dung cho bao cao thong ke theo quy
 		Date fromQuarterDate = null;
 		Date toQuarterDate = null;
-		if (Validator.isNotNull(quarter) && Validator.isNotNull(year)) {
+		if (Validator.isNull(fromStatisticDate) && Validator.isNull(toStatisticDate)
+				&& Validator.isNotNull(quarter) && Validator.isNotNull(year)) {
 			switch (quarter) {
 			case 1:
 				
@@ -268,9 +271,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				
 				fromStatisticDate = StatisticUtils.convertDateToString(fromQuarterDate, StatisticUtils.DATE_FORMAT);
 				toStatisticDate = StatisticUtils.convertDateToString(toQuarterDate, StatisticUtils.DATE_FORMAT);
-				
-				_log.info("fromStatisticDate1 " + fromStatisticDate);
-				_log.info("toStatisticDate1 " + toStatisticDate);
+
 				break;
 			case 2:
 				
@@ -279,9 +280,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				
 				fromStatisticDate = StatisticUtils.convertDateToString(fromQuarterDate, StatisticUtils.DATE_FORMAT);
 				toStatisticDate = StatisticUtils.convertDateToString(toQuarterDate, StatisticUtils.DATE_FORMAT);
-				
-				_log.info("fromStatisticDate2 " + fromStatisticDate);
-				_log.info("toStatisticDate2 " + toStatisticDate);
+
 				break;
 			case 3:
 				
@@ -290,9 +289,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				
 				fromStatisticDate = StatisticUtils.convertDateToString(fromQuarterDate, StatisticUtils.DATE_FORMAT);
 				toStatisticDate = StatisticUtils.convertDateToString(toQuarterDate, StatisticUtils.DATE_FORMAT);
-				
-				_log.info("fromStatisticDate3 " + fromStatisticDate);
-				_log.info("toStatisticDate3 " + toStatisticDate);
+
 				break;
 			case 4:
 				
@@ -301,9 +298,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				
 				fromStatisticDate = StatisticUtils.convertDateToString(fromQuarterDate, StatisticUtils.DATE_FORMAT);
 				toStatisticDate = StatisticUtils.convertDateToString(toQuarterDate, StatisticUtils.DATE_FORMAT);
-				
-				_log.info("fromStatisticDate4 " + fromStatisticDate);
-				_log.info("toStatisticDate4 " + toStatisticDate);
+
 				break;
 			default:
 				break;
@@ -2457,7 +2452,12 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 			}
 			
+			// Ket qua gom nhung ho so co TTHC muc 3,4
+			JSONArray tempResults = JSONFactoryUtil.createJSONArray();
+			// Ket qua gom nhung ho so co TTHC muc 3,4 + TTHC muc 3,4 chua trong ho so nao cua site
 			JSONArray results = JSONFactoryUtil.createJSONArray();
+			JSONArray resultsLV3 = JSONFactoryUtil.createJSONArray();
+			JSONArray resultsLV4 = JSONFactoryUtil.createJSONArray();
 			
 				for (String agency : mapResults.keySet()) {
 					for (String serviceCode : mapResults.get(agency).keySet()) {
@@ -2484,11 +2484,116 @@ public class OpencpsStatisticRestApplication extends Application {
 						obj.put("releaseDossierOnegate4Count", data.getReleaseDossierOnegate4Count());
 						obj.put("serviceLevel", Integer.valueOf(dossiers.get(0).get(DossierTerm.SERVICE_LEVEL)));
 							
+						tempResults.put(obj);
 						results.put(obj);
 						}																													
 					}
-				}				
-			ResponseBuilder builder = Response.ok(results.toJSONString());
+				}
+				
+				_log.debug("tempResults size :" + tempResults.length());
+
+				JSONObject tempJOB = tempResults.getJSONObject(0);
+				
+				// lay danh sach TTHC muc 3,4 cua site
+				List<ServiceInfo> lServiceInfos = ServiceInfoLocalServiceUtil.findByGroupAndPublic(Long.valueOf(groupId), true);
+				List<ServiceInfo> lServiceInfosLV34 = new ArrayList<ServiceInfo>();
+				if (lServiceInfos != null && lServiceInfos.size() > 0) {
+					for (int i =0; i< lServiceInfos.size(); i++) {
+						if (lServiceInfos.get(i).getMaxLevel() != 2) {
+							lServiceInfosLV34.add(lServiceInfos.get(i));
+						}
+					}
+				}
+				
+				// lay danh sach TTHC cua cac ho so
+				List<String> lstServiceCodeOfDossier = new ArrayList<String>();
+				if (results != null && results.length() > 0) {
+					for (int j=0; j< results.length(); j++) {
+						lstServiceCodeOfDossier.add(results.getJSONObject(j).getString("serviceCode"));
+					}
+				}
+				
+				// lay danh sach TTHC ko co ho so
+				List<ServiceInfo> lServiceInfosNotDossier = new ArrayList<ServiceInfo>();
+				if (lServiceInfosLV34 != null && lServiceInfosLV34.size() > 0) {
+					String serviceCode;
+					for (int k=0; k< lServiceInfosLV34.size(); k++) {
+						if (Validator.isNull(lstServiceCodeOfDossier)) {
+							continue;
+						}
+						serviceCode = lServiceInfosLV34.get(k).getServiceCode();
+						if (lstServiceCodeOfDossier.size() == 0 || !lstServiceCodeOfDossier.contains(serviceCode)) {
+							lServiceInfosNotDossier.add(lServiceInfosLV34.get(k));
+						}
+					}
+				}
+				
+				
+				// insert vao results nhung ban ghi TTHC ko co ho so
+				if (lServiceInfosNotDossier != null && lServiceInfosNotDossier.size() > 0) {
+					for (ServiceInfo serviceInfo : lServiceInfosNotDossier) {
+						JSONObject tempObj = JSONFactoryUtil.createJSONObject();
+						
+						if (Validator.isNotNull(tempJOB)) {
+							tempObj.put("govAgencyCode", tempJOB.getString("govAgencyCode"));
+							tempObj.put("govAgencyName", tempJOB.getString("govAgencyName"));
+						}else {
+							tempObj.put("govAgencyCode", serviceInfo.getAdministrationCode());
+							tempObj.put("govAgencyName", serviceInfo.getAdministrationName());
+						}
+						tempObj.put("serviceCode", serviceInfo.getServiceCode());
+						tempObj.put("serviceName", serviceInfo.getServiceName());
+						tempObj.put("totalCount", 0);
+						tempObj.put("dossierOnline3Count", 0);
+						tempObj.put("dossierOnline4Count", 0);
+						tempObj.put("dossierOnegate3Count", 0);
+						tempObj.put("dossierOnegate4Count", 0);
+						tempObj.put("releaseDossierOnline3Count", 0);
+						tempObj.put("releaseDossierOnline4Count", 0);
+						tempObj.put("releaseDossierOnegate3Count", 0);
+						tempObj.put("releaseDossierOnegate4Count", 0);
+						tempObj.put("serviceLevel", serviceInfo.getMaxLevel());						
+						results.put(tempObj);						
+					}
+				}
+			
+			if (results != null && results.length() > 0) {
+				int svLevel;
+				for (int m = 0; m < results.length(); m++) {
+					JSONObject jObject = results.getJSONObject(m);
+					svLevel = jObject.getInt("serviceLevel");
+					if (svLevel == 3) {
+						resultsLV3.put(jObject);
+					}
+					if (svLevel == 4) {
+						resultsLV4.put(jObject);
+					}
+				}
+			}
+			
+			Object object = new Object();
+			if (Validator.isNotNull(serviceLevel)) {
+				String[] lstServiceLevel = StringUtil.split(serviceLevel);
+				
+				if (lstServiceLevel != null) {
+					int length = lstServiceLevel.length;
+					switch (length) {
+					case 1:
+						if (Integer.valueOf(lstServiceLevel[0]) == 3) {
+							object = resultsLV3.toJSONString();
+						}
+						if (Integer.valueOf(lstServiceLevel[0]) == 4) {
+							object = resultsLV4.toJSONString();
+						}
+						break;
+					default:
+						object = results.toJSONString();
+						break;
+					}
+				}
+			}
+			
+			ResponseBuilder builder = Response.ok(object);
 			return builder.build();
 		} catch (PortalException e) {
 			_log.debug(e);

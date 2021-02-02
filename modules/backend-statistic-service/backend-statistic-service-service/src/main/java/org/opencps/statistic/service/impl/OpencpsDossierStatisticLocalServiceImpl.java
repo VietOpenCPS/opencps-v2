@@ -1153,6 +1153,8 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			int receiveDossierSatCount = dossierObj.has("receiveDossierSatCount") ? dossierObj.getInt("receiveDossierSatCount") : 0;
 			int releaseDossierSatCount = dossierObj.has("releaseDossierSatCount") ? dossierObj.getInt("releaseDossierSatCount") : 0;
 			int fromViaPostalCount = dossierObj.has("fromViaPostalCount") ? dossierObj.getInt("fromViaPostalCount") : 0;
+			int processingInAPeriodCount = dossierObj.has("processingInAPeriodCount") ? dossierObj.getInt("processingInAPeriodCount") : 0;
+			int releaseInAPeriodCount = dossierObj.has("releaseInAPeriodCount") ? dossierObj.getInt("releaseInAPeriodCount") : 0;
 			//Check record exit
 			OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsitSystem(groupId,
 					month, year, govAgencyCode, domainCode, system, groupGovAgencyCode);
@@ -1209,7 +1211,8 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
 				dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);		
 				dossierStatistic.setGroupAgencyCode(groupGovAgencyCode);
-				
+				dossierStatistic.setProcessingInAPeriodCount(processingInAPeriodCount);
+				dossierStatistic.setReleaseInAPeriodCount(releaseInAPeriodCount);
 //				lstStatistics.add(dossierStatistic);
 			} else {
 				if (dossierStatistic.getReporting() == 0) {
@@ -1257,6 +1260,8 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 					dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
 					dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);		
 					dossierStatistic.setGroupAgencyCode(groupGovAgencyCode);
+					dossierStatistic.setProcessingInAPeriodCount(processingInAPeriodCount);
+					dossierStatistic.setReleaseInAPeriodCount(releaseInAPeriodCount);
 				}
 			}
 

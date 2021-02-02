@@ -630,6 +630,12 @@ public class DossierMgtUtils {
 			case DossierTerm.ONLINE_FALSE:
 					result = result && checkDossierOnegate(dossier);
 					break;
+			case DossierTerm.FROMPOSTAL_TRUE:
+				result = result && checkUsedVNPostCollection(dossier);
+				break;
+			case DossierTerm.FROMPOSTAL_FALSE:
+				result = result && checkUnUsedVNPostCollection(dossier);
+				break;
 				default:
 					break;
 			}
@@ -1153,6 +1159,20 @@ public class DossierMgtUtils {
 		}
 		
 		return false;
+	}
+	
+	private static boolean checkUsedVNPostCollection(Dossier dossier) {
+		if (dossier.getVnpostalStatus() > 0) 
+			return true;
+		else
+			return false;
+	}
+	
+	private static boolean checkUnUsedVNPostCollection(Dossier dossier) {
+		if (dossier.getVnpostalStatus() > 0) 
+			return false;
+		else
+			return true;
 	}
 
 	//Calculator startDate and endDate

@@ -16,7 +16,9 @@ public class ConstantUtils {
 	public static final String PNG = "png";
 	public static final String DOT_XLSX = ".xlsx";
 	public static final String DOT_XLS = ".xls";
-	
+	public static final String DOT_DOCX = ".docx";
+	public static final String DOT_DOC = ".doc";
+
 	//Destination import file
 	public static final String DEST_DIRECTORY = "imported";
 	public static final String SOURCE_DICTS = "dicts";
@@ -297,6 +299,7 @@ public class ConstantUtils {
 	public static final String DOSSIERDOCUMENT_MESSAGE_DOSSIERWASNOTONPROCESS = "dossierdocument.message.dossierwasnotonprocess";
 	public static final String DOSSIERDOCUMENT_MESSAGE_CANNOTGETDOSSIERWITHID = "dossierdocument.message.cannotgetdossierwithid";
 	public static final String DOSSIERDOCUMENT_PROCESSSEQUENCEARR_KEY = "processSequenceArr";
+	public static final String DOSSIERDOCUMENT_PROCESSSEQUENCEARRDONE_KEY = "processSequenceArrDone";
 	
 	public static final String DOSSIERFILE_MESSAGE_FILEFORMATERROR = "dossierfile.message.fileformaterror";
 	public static final String DOSSIERFILE_MESSAGE_FOLDERISNOTSTRUCTURE = "dossierfile.message.folderisnotstructure";
