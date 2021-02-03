@@ -1,8 +1,10 @@
 package org.opencps.statistic.rest.engine.service;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -20,6 +22,8 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 public class StatisticEngineFetch {
 
 	private final static Log _log = LogFactoryUtil.getLog(StatisticEngineFetch.class);
+	private static final Boolean CALCULATE_DOSSIER_STATISTIC_SERVICECODE_ENABLE = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.serviceCode.enable"))
+			? Boolean.valueOf(PropsUtil.get("opencps.statistic.dossier.serviceCode.enable")) : false;
 
 	public void fecthStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
 			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, int reporting) {
@@ -684,7 +688,7 @@ public class StatisticEngineFetch {
 									  int reporting, boolean isGetReportServiceCode) {
 		try {
 			_log.info("isGetReportServiceCode: " +  isGetReportServiceCode);
-			for (GetDossierData dossierData : lsDossierData) {
+			for (GetDossierData dossierData : lsDossierData) {							
 				StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
 				if (Validator.isNotNull(dossierData.getDomainCode()) && !isGetReportServiceCode) {
 					// all site, all domain
@@ -771,6 +775,7 @@ public class StatisticEngineFetch {
 
 					statisticData.put(type4, dataType4);
 				} else if(Validator.isNotNull(dossierData.getServiceCode()) && isGetReportServiceCode) {
+					_log.info("_________Phuchn1111_________");
 					// all site, all service
 					String type1 = "all@all@" + groupId;
 
