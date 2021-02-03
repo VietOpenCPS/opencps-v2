@@ -31,14 +31,13 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
             ? Boolean.valueOf(PropsUtil.get("org.opencps.frequency.enable")) : false;
     @Override
     protected void doReceive(Message message) throws Exception {
-        _log.info("-----Start job crawl dossier frequency---");
-
         if (!isRunning && ENABLE_JOB) {
             isRunning = true;
         }
         else {
             return;
         }
+        _log.info("-----Start job crawl dossier frequency---");
 
         try {
             _log.info("Crawl dossier frequency at : " + APIDateTimeUtils.convertDateToString(new Date()));

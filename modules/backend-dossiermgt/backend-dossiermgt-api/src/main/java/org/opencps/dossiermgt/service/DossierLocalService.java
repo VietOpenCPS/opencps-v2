@@ -314,6 +314,8 @@ public interface DossierLocalService extends BaseLocalService,
 	public List<Dossier> findByG_UID_DS(long groupId, long userId,
 		String dossierStatus);
 
+	public List<Dossier> findByG_U_DO(long groupId, long userId);
+
 	public List<Dossier> findByGID(long groupId, int start, int end);
 
 	public List<ServiceInfo> findByGID_PUB_SID(long groupId, boolean public_,
@@ -352,6 +354,11 @@ public interface DossierLocalService extends BaseLocalService,
 	public Dossier getByG_AN_SC_GAC_DTNO_ODID(long groupId,
 		String applicantIdNo, String serviceCode, String govAgencyCode,
 		String dossierTemplateNo, long originDossierId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Dossier getByG_AN_SC_GAC_DTNO_SN_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId, String serverNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Dossier> getByGID_GC_SC_DTN_DS_APP_ORI(long groupId,

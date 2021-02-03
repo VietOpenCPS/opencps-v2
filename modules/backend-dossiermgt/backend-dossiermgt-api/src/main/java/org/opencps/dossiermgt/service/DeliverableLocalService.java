@@ -218,10 +218,10 @@ public interface DeliverableLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Deliverable fetchByGID_DID(long groupId, long dossierId);
+	public Deliverable fetchByGID_AID(long groupId, String applicantIdNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Deliverable fetchByGID_AID(long groupId, String applicantIdNo);
+	public Deliverable fetchByGID_DID(long groupId, long dossierId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Deliverable fetchDeliverable(long deliverableId);

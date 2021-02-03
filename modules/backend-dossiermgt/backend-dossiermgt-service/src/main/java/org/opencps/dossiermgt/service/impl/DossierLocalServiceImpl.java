@@ -3236,7 +3236,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					DossierTerm.CURRENT_ACTION_USER,
 					DossierTerm.ORIGIN_DOSSIER_NO_SEARCH,
 					ServiceInfoTerm.SERVICE_CODE_SEARCH,
-					DossierTerm.DELEGATE_NAME_SEARCH, DossierTerm.DOSSIER_COUNTER_SEARCH
+					DossierTerm.DELEGATE_NAME_SEARCH, DossierTerm.DOSSIER_COUNTER_SEARCH,
+					DossierTerm.ACTION_NOTE
 			};
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
@@ -6775,6 +6776,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossierTemplateNo, originDossierId);
 	}
 
+	public Dossier getByG_AN_SC_GAC_DTNO_SN_ODID(
+			long groupId, String applicantIdNo, String serviceCode,
+			String govAgencyCode, String dossierTemplateNo, long originDossierId, String serverNo) {
+
+		return dossierPersistence.fetchByG_AN_SC_GAC_DTNO_SN_ODID(
+				groupId, applicantIdNo, serviceCode, govAgencyCode,
+				dossierTemplateNo, originDossierId, serverNo);
+	}
+
 	public Dossier fetchOnePublicService() {
 
 		return dossierPersistence.fetchByO_First(0, null);
@@ -7619,6 +7629,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	public List<Dossier> findByG_UID_DS(long groupId, long userId, String dossierStatus) {
 		return dossierPersistence.findByG_UID_DS(groupId, userId, dossierStatus);
+	}
+
+	public List<Dossier> findByG_U_DO(long groupId, long userId) {
+		return dossierPersistence.findByG_UID(groupId, userId);
 	}
 
 	public int countByG_UID_DS(long groupId, long userId, String dossierStatus) {

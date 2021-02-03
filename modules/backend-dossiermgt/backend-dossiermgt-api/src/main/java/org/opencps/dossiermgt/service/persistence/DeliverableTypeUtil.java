@@ -875,6 +875,246 @@ public class DeliverableTypeUtil {
 	}
 
 	/**
+	* Returns all the deliverable types where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the matching deliverable types
+	*/
+	public static List<DeliverableType> findByD_OR_D(long groupId) {
+		return getPersistence().findByD_OR_D(groupId);
+	}
+
+	/**
+	* Returns a range of all the deliverable types where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of deliverable types
+	* @param end the upper bound of the range of deliverable types (not inclusive)
+	* @return the range of matching deliverable types
+	*/
+	public static List<DeliverableType> findByD_OR_D(long groupId, int start,
+		int end) {
+		return getPersistence().findByD_OR_D(groupId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the deliverable types where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of deliverable types
+	* @param end the upper bound of the range of deliverable types (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching deliverable types
+	*/
+	public static List<DeliverableType> findByD_OR_D(long groupId, int start,
+		int end, OrderByComparator<DeliverableType> orderByComparator) {
+		return getPersistence()
+				   .findByD_OR_D(groupId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the deliverable types where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of deliverable types
+	* @param end the upper bound of the range of deliverable types (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching deliverable types
+	*/
+	public static List<DeliverableType> findByD_OR_D(long groupId, int start,
+		int end, OrderByComparator<DeliverableType> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByD_OR_D(groupId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first deliverable type in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching deliverable type
+	* @throws NoSuchDeliverableTypeException if a matching deliverable type could not be found
+	*/
+	public static DeliverableType findByD_OR_D_First(long groupId,
+		OrderByComparator<DeliverableType> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDeliverableTypeException {
+		return getPersistence().findByD_OR_D_First(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the first deliverable type in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching deliverable type, or <code>null</code> if a matching deliverable type could not be found
+	*/
+	public static DeliverableType fetchByD_OR_D_First(long groupId,
+		OrderByComparator<DeliverableType> orderByComparator) {
+		return getPersistence().fetchByD_OR_D_First(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the last deliverable type in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching deliverable type
+	* @throws NoSuchDeliverableTypeException if a matching deliverable type could not be found
+	*/
+	public static DeliverableType findByD_OR_D_Last(long groupId,
+		OrderByComparator<DeliverableType> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDeliverableTypeException {
+		return getPersistence().findByD_OR_D_Last(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the last deliverable type in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching deliverable type, or <code>null</code> if a matching deliverable type could not be found
+	*/
+	public static DeliverableType fetchByD_OR_D_Last(long groupId,
+		OrderByComparator<DeliverableType> orderByComparator) {
+		return getPersistence().fetchByD_OR_D_Last(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the deliverable types before and after the current deliverable type in the ordered set where groupId = &#63;.
+	*
+	* @param deliverableTypeId the primary key of the current deliverable type
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next deliverable type
+	* @throws NoSuchDeliverableTypeException if a deliverable type with the primary key could not be found
+	*/
+	public static DeliverableType[] findByD_OR_D_PrevAndNext(
+		long deliverableTypeId, long groupId,
+		OrderByComparator<DeliverableType> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDeliverableTypeException {
+		return getPersistence()
+				   .findByD_OR_D_PrevAndNext(deliverableTypeId, groupId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns all the deliverable types where groupId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupIds the group IDs
+	* @return the matching deliverable types
+	*/
+	public static List<DeliverableType> findByD_OR_D(long[] groupIds) {
+		return getPersistence().findByD_OR_D(groupIds);
+	}
+
+	/**
+	* Returns a range of all the deliverable types where groupId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupIds the group IDs
+	* @param start the lower bound of the range of deliverable types
+	* @param end the upper bound of the range of deliverable types (not inclusive)
+	* @return the range of matching deliverable types
+	*/
+	public static List<DeliverableType> findByD_OR_D(long[] groupIds,
+		int start, int end) {
+		return getPersistence().findByD_OR_D(groupIds, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the deliverable types where groupId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupIds the group IDs
+	* @param start the lower bound of the range of deliverable types
+	* @param end the upper bound of the range of deliverable types (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching deliverable types
+	*/
+	public static List<DeliverableType> findByD_OR_D(long[] groupIds,
+		int start, int end, OrderByComparator<DeliverableType> orderByComparator) {
+		return getPersistence()
+				   .findByD_OR_D(groupIds, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the deliverable types where groupId = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of deliverable types
+	* @param end the upper bound of the range of deliverable types (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching deliverable types
+	*/
+	public static List<DeliverableType> findByD_OR_D(long[] groupIds,
+		int start, int end,
+		OrderByComparator<DeliverableType> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByD_OR_D(groupIds, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes all the deliverable types where groupId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	*/
+	public static void removeByD_OR_D(long groupId) {
+		getPersistence().removeByD_OR_D(groupId);
+	}
+
+	/**
+	* Returns the number of deliverable types where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the number of matching deliverable types
+	*/
+	public static int countByD_OR_D(long groupId) {
+		return getPersistence().countByD_OR_D(groupId);
+	}
+
+	/**
+	* Returns the number of deliverable types where groupId = any &#63;.
+	*
+	* @param groupIds the group IDs
+	* @return the number of matching deliverable types
+	*/
+	public static int countByD_OR_D(long[] groupIds) {
+		return getPersistence().countByD_OR_D(groupIds);
+	}
+
+	/**
 	* Caches the deliverable type in the entity cache if it is enabled.
 	*
 	* @param deliverableType the deliverable type

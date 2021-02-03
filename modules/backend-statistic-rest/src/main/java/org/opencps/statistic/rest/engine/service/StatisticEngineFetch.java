@@ -692,7 +692,6 @@ public class StatisticEngineFetch {
 				StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
 				if (Validator.isNotNull(dossierData.getDomainCode()) && !isGetReportServiceCode) {
 					// all site, all domain
-
 					String type1 = "all@all@" + groupId;
 
 					DossierStatisticData dataType1 = new DossierStatisticData();

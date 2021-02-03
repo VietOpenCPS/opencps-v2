@@ -89,6 +89,7 @@ public String getSimpleCaptcha(HttpServletRequest request, HttpHeaders header, C
 			User user, ServiceContext serviceContext, String value);
 
 	public Applicant verifyApplicant(long applicantId) throws PortalException;
+	public Applicant verifyApplicantWithValue(long applicantId, int verification) throws PortalException;
 	public JSONObject updateAccountEmail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String oldEmail, String newEmail);
 
