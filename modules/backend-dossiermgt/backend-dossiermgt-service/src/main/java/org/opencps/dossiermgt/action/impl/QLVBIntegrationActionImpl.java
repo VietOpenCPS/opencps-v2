@@ -202,6 +202,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
             }
 
             String urlSendDoc = this.configJson.getString(QLVBConstants.CONFIG_URL)
+                    + ":" + this.configJson.getString(QLVBConstants.CONFIG_PORT)
                     + this.configJson.getString(QLVBConstants.CONFIG_SEND_VB);
 
             List<FileVBModel> listDoc = this.getListVB(dossierId);
@@ -232,6 +233,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
             String basicAuthBase64 = Base64.getEncoder().encodeToString(basicAuthBeforeHash.getBytes());
 
             String urlGetToken = this.configJson.getString(QLVBConstants.CONFIG_URL)
+                    + ":" + this.configJson.getString(QLVBConstants.CONFIG_PORT)
                     + this.configJson.getString(QLVBConstants.CONFIG_GET_TOKEN);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
