@@ -106,17 +106,23 @@ public class StatisticUtils {
 	
 	public static String convertDateToString(Date date, String pattern) {
 
-		DateFormat dateFormat =
-			DateFormatFactoryUtil.getSimpleDateFormat(pattern);
-		if (date == null || Validator.isNull(pattern)) {
-			return StringPool.BLANK;
+		try {
+			DateFormat dateFormat =
+					DateFormatFactoryUtil.getSimpleDateFormat(pattern);
+				if (date == null || Validator.isNull(pattern)) {
+					return StringPool.BLANK;
+				}
+				dateFormat.setTimeZone(TimeZoneUtil.getDefault());
+
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(date);
+
+				return dateFormat.format(calendar.getTime());
+		} catch (Exception e) {
+			_log.error(e);
 		}
-		dateFormat.setTimeZone(TimeZoneUtil.getDefault());
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-
-		return dateFormat.format(calendar.getTime());
+		return null;
+		
 	}
 
 }
