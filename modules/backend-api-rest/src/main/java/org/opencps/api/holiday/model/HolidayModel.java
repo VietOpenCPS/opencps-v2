@@ -37,13 +37,16 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "holidayDate",
-    "description"
+    "description",
+    "holidayType"
+
 })
 @XmlRootElement(name = "HolidayModel")
 public class HolidayModel {
 
     protected String holidayDate;
     protected String description;
+    protected int holidayType;
 
     /**
      * Gets the value of the holidayDate property.
@@ -92,5 +95,13 @@ public class HolidayModel {
     public void setDescription(String value) {
         this.description = value;
     }
+    
+    public int getHolidayType() {
+		return holidayType;
+	}
+
+	public void setHolidayType(int holidayType) {
+		this.holidayType = holidayType;
+	}
 
 }

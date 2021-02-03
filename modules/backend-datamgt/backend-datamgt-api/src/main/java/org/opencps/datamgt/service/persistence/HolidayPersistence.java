@@ -833,6 +833,167 @@ public interface HolidayPersistence extends BasePersistence<Holiday> {
 	public int countByF_NEWER_THAN(long groupId, Date holidayDate);
 
 	/**
+	* Returns all the holidaies where groupId = &#63; and holidayType = &#63; and holidayDate &ge; &#63;.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param holidayDate the holiday date
+	* @return the matching holidaies
+	*/
+	public java.util.List<Holiday> findByF_GID_TYPE_NEWER_THAN(long groupId,
+		int holidayType, Date holidayDate);
+
+	/**
+	* Returns a range of all the holidaies where groupId = &#63; and holidayType = &#63; and holidayDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link HolidayModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param holidayDate the holiday date
+	* @param start the lower bound of the range of holidaies
+	* @param end the upper bound of the range of holidaies (not inclusive)
+	* @return the range of matching holidaies
+	*/
+	public java.util.List<Holiday> findByF_GID_TYPE_NEWER_THAN(long groupId,
+		int holidayType, Date holidayDate, int start, int end);
+
+	/**
+	* Returns an ordered range of all the holidaies where groupId = &#63; and holidayType = &#63; and holidayDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link HolidayModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param holidayDate the holiday date
+	* @param start the lower bound of the range of holidaies
+	* @param end the upper bound of the range of holidaies (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching holidaies
+	*/
+	public java.util.List<Holiday> findByF_GID_TYPE_NEWER_THAN(long groupId,
+		int holidayType, Date holidayDate, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Holiday> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the holidaies where groupId = &#63; and holidayType = &#63; and holidayDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link HolidayModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param holidayDate the holiday date
+	* @param start the lower bound of the range of holidaies
+	* @param end the upper bound of the range of holidaies (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching holidaies
+	*/
+	public java.util.List<Holiday> findByF_GID_TYPE_NEWER_THAN(long groupId,
+		int holidayType, Date holidayDate, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Holiday> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first holiday in the ordered set where groupId = &#63; and holidayType = &#63; and holidayDate &ge; &#63;.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param holidayDate the holiday date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching holiday
+	* @throws NoSuchHolidayException if a matching holiday could not be found
+	*/
+	public Holiday findByF_GID_TYPE_NEWER_THAN_First(long groupId,
+		int holidayType, Date holidayDate,
+		com.liferay.portal.kernel.util.OrderByComparator<Holiday> orderByComparator)
+		throws NoSuchHolidayException;
+
+	/**
+	* Returns the first holiday in the ordered set where groupId = &#63; and holidayType = &#63; and holidayDate &ge; &#63;.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param holidayDate the holiday date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching holiday, or <code>null</code> if a matching holiday could not be found
+	*/
+	public Holiday fetchByF_GID_TYPE_NEWER_THAN_First(long groupId,
+		int holidayType, Date holidayDate,
+		com.liferay.portal.kernel.util.OrderByComparator<Holiday> orderByComparator);
+
+	/**
+	* Returns the last holiday in the ordered set where groupId = &#63; and holidayType = &#63; and holidayDate &ge; &#63;.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param holidayDate the holiday date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching holiday
+	* @throws NoSuchHolidayException if a matching holiday could not be found
+	*/
+	public Holiday findByF_GID_TYPE_NEWER_THAN_Last(long groupId,
+		int holidayType, Date holidayDate,
+		com.liferay.portal.kernel.util.OrderByComparator<Holiday> orderByComparator)
+		throws NoSuchHolidayException;
+
+	/**
+	* Returns the last holiday in the ordered set where groupId = &#63; and holidayType = &#63; and holidayDate &ge; &#63;.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param holidayDate the holiday date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching holiday, or <code>null</code> if a matching holiday could not be found
+	*/
+	public Holiday fetchByF_GID_TYPE_NEWER_THAN_Last(long groupId,
+		int holidayType, Date holidayDate,
+		com.liferay.portal.kernel.util.OrderByComparator<Holiday> orderByComparator);
+
+	/**
+	* Returns the holidaies before and after the current holiday in the ordered set where groupId = &#63; and holidayType = &#63; and holidayDate &ge; &#63;.
+	*
+	* @param holidayId the primary key of the current holiday
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param holidayDate the holiday date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next holiday
+	* @throws NoSuchHolidayException if a holiday with the primary key could not be found
+	*/
+	public Holiday[] findByF_GID_TYPE_NEWER_THAN_PrevAndNext(long holidayId,
+		long groupId, int holidayType, Date holidayDate,
+		com.liferay.portal.kernel.util.OrderByComparator<Holiday> orderByComparator)
+		throws NoSuchHolidayException;
+
+	/**
+	* Removes all the holidaies where groupId = &#63; and holidayType = &#63; and holidayDate &ge; &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param holidayDate the holiday date
+	*/
+	public void removeByF_GID_TYPE_NEWER_THAN(long groupId, int holidayType,
+		Date holidayDate);
+
+	/**
+	* Returns the number of holidaies where groupId = &#63; and holidayType = &#63; and holidayDate &ge; &#63;.
+	*
+	* @param groupId the group ID
+	* @param holidayType the holiday type
+	* @param holidayDate the holiday date
+	* @return the number of matching holidaies
+	*/
+	public int countByF_GID_TYPE_NEWER_THAN(long groupId, int holidayType,
+		Date holidayDate);
+
+	/**
 	* Caches the holiday in the entity cache if it is enabled.
 	*
 	* @param holiday the holiday

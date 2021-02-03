@@ -623,6 +623,14 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.Applicant verifyApplicantWithValue(
+		long applicantId, int verification)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _applicantLocalService.verifyApplicantWithValue(applicantId,
+			verification);
+	}
+
+	@Override
 	public ApplicantLocalService getWrappedService() {
 		return _applicantLocalService;
 	}

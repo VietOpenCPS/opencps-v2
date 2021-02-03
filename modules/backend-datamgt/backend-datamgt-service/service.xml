@@ -319,6 +319,12 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="holidayDate" comparator="&gt;="></finder-column>
 		</finder>
+		
+		<finder return-type="Collection" name="F_GID_TYPE_NEWER_THAN">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="holidayType" />
+			<finder-column name="holidayDate" comparator="&gt;="></finder-column>
+		</finder>
 
 	</entity>
 			

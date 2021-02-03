@@ -65,7 +65,7 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(103);
+		StringBundler sb = new StringBundler(107);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -169,6 +169,10 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		sb.append(releaseDossierSatCount);
 		sb.append(", fromViaPostalCount=");
 		sb.append(fromViaPostalCount);
+		sb.append(", processingInAPeriodCount=");
+		sb.append(processingInAPeriodCount);
+		sb.append(", releaseInAPeriodCount=");
+		sb.append(releaseInAPeriodCount);
 		sb.append("}");
 
 		return sb.toString();
@@ -292,6 +296,8 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		opencpsDossierStatisticImpl.setReceiveDossierSatCount(receiveDossierSatCount);
 		opencpsDossierStatisticImpl.setReleaseDossierSatCount(releaseDossierSatCount);
 		opencpsDossierStatisticImpl.setFromViaPostalCount(fromViaPostalCount);
+		opencpsDossierStatisticImpl.setProcessingInAPeriodCount(processingInAPeriodCount);
+		opencpsDossierStatisticImpl.setReleaseInAPeriodCount(releaseInAPeriodCount);
 
 		opencpsDossierStatisticImpl.resetOriginalValues();
 
@@ -392,6 +398,10 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		releaseDossierSatCount = objectInput.readInt();
 
 		fromViaPostalCount = objectInput.readInt();
+
+		processingInAPeriodCount = objectInput.readInt();
+
+		releaseInAPeriodCount = objectInput.readInt();
 	}
 
 	@Override
@@ -537,6 +547,10 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		objectOutput.writeInt(releaseDossierSatCount);
 
 		objectOutput.writeInt(fromViaPostalCount);
+
+		objectOutput.writeInt(processingInAPeriodCount);
+
+		objectOutput.writeInt(releaseInAPeriodCount);
 	}
 
 	public String uuid;
@@ -590,4 +604,6 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 	public int receiveDossierSatCount;
 	public int releaseDossierSatCount;
 	public int fromViaPostalCount;
+	public int processingInAPeriodCount;
+	public int releaseInAPeriodCount;
 }

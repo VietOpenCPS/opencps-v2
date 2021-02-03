@@ -741,6 +741,15 @@
 			<finder-column name="dossierTemplateNo" />
 			<finder-column name="originDossierId"/>
 		</finder>
+		<finder return-type="Dossier" name="G_AN_SC_GAC_DTNO_SN_ODID">
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo" />
+			<finder-column name="serviceCode" />
+			<finder-column name="govAgencyCode" />
+			<finder-column name="dossierTemplateNo" />
+			<finder-column name="originDossierId"/>
+			<finder-column name="serverNo"/>
+		</finder>
 		
 		<finder return-type="Collection" name="O">
 			<finder-column name="originality" />
@@ -2167,6 +2176,9 @@
 		</finder>
 		<finder return-type="Collection" name="C">
 			<finder-column name="companyId" />
+		</finder>
+		<finder return-type="Collection" name="D_OR_D">
+			<finder-column name="groupId" comparator="=" arrayable-operator="OR"/>
 		</finder>
 	</entity>
 
