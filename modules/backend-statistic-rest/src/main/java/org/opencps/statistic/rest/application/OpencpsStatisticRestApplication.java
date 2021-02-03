@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -56,6 +57,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -76,6 +78,7 @@ import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
@@ -204,6 +207,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		int end = query.getEnd();
 		int month = query.getMonth();
 		int year = query.getYear();
+		int quarter = query.getQuarter();
 		String govAgencyCode = query.getAgency();
 		boolean isGetReportServiceCode = false;
 
@@ -253,6 +257,53 @@ public class OpencpsStatisticRestApplication extends Application {
 		}else if (scopeUser != null) {
 			govAgencyCode = scopeUser;
 		}
+		
+		// su dung cho bao cao thong ke theo quy
+		Date fromQuarterDate = null;
+		Date toQuarterDate = null;
+		if (Validator.isNull(fromStatisticDate) && Validator.isNull(toStatisticDate)
+				&& Validator.isNotNull(quarter) && Validator.isNotNull(year)) {
+			switch (quarter) {
+			case 1:
+				
+				fromQuarterDate = StatisticUtils.getFirstDay(1, year);
+				toQuarterDate = StatisticUtils.getLastDay(3, year);
+				
+				fromStatisticDate = StatisticUtils.convertDateToString(fromQuarterDate, StatisticUtils.DATE_FORMAT);
+				toStatisticDate = StatisticUtils.convertDateToString(toQuarterDate, StatisticUtils.DATE_FORMAT);
+
+				break;
+			case 2:
+				
+				fromQuarterDate = StatisticUtils.getFirstDay(4, year);
+				toQuarterDate = StatisticUtils.getLastDay(6, year);
+				
+				fromStatisticDate = StatisticUtils.convertDateToString(fromQuarterDate, StatisticUtils.DATE_FORMAT);
+				toStatisticDate = StatisticUtils.convertDateToString(toQuarterDate, StatisticUtils.DATE_FORMAT);
+
+				break;
+			case 3:
+				
+				fromQuarterDate = StatisticUtils.getFirstDay(7, year);
+				toQuarterDate = StatisticUtils.getLastDay(9, year);
+				
+				fromStatisticDate = StatisticUtils.convertDateToString(fromQuarterDate, StatisticUtils.DATE_FORMAT);
+				toStatisticDate = StatisticUtils.convertDateToString(toQuarterDate, StatisticUtils.DATE_FORMAT);
+
+				break;
+			case 4:
+				
+				fromQuarterDate = StatisticUtils.getFirstDay(10, year);
+				toQuarterDate = StatisticUtils.getLastDay(12, year);
+				
+				fromStatisticDate = StatisticUtils.convertDateToString(fromQuarterDate, StatisticUtils.DATE_FORMAT);
+				toStatisticDate = StatisticUtils.convertDateToString(toQuarterDate, StatisticUtils.DATE_FORMAT);
+
+				break;
+			default:
+				break;
+			}
+		}
 
 		boolean calculate = true;
 		if (Validator.isNotNull(fromStatisticDate) ||Validator.isNotNull(toStatisticDate)) {
@@ -280,6 +331,7 @@ public class OpencpsStatisticRestApplication extends Application {
 //					monthStatistic = Integer.valueOf((splitD[1].length() == 1) ? "0" + splitD[1] : splitD[1]);
 //				}
 //			}
+			
 			Date fromCalDate = null;
 			Date toCalDate = null;
 			if (Validator.isNotNull(fromStatisticDate)) {
