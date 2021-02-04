@@ -949,7 +949,7 @@ public class DossierManagementImpl implements DossierManagement {
 			boolean isCitizen = dossierPermission.isCitizen(user.getUserId());
 			dossierPermission.hasGetDossiers(
 				groupId, user.getUserId(), query.getSecetKey());
-
+			_log.info("Start---: " + query.getStart() + " End--- : " + query.getEnd());
 			if (query.getEnd() == 0) {
 				query.setStart(-1);
 				query.setEnd(-1);
@@ -1324,12 +1324,22 @@ public class DossierManagementImpl implements DossierManagement {
 				};
 			}
 			else {
-				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
-				sorts = new Sort[] {
-					SortFactoryUtil.create(
-						querySort, Sort.STRING_TYPE,
-						GetterUtil.getBoolean(query.getOrder()))
-				};
+				String sortValue = query.getSort();
+				if(sortValue.equals(DossierTerm.CREATE_DATE) || sortValue.equals(DossierTerm.MODIFIED_DATE)){
+					String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), query.getSort());
+					sorts = new Sort[] {
+							SortFactoryUtil.create(
+									dateSort, Sort.LONG_TYPE,
+									GetterUtil.getBoolean(query.getOrder()))
+					};
+				}else {
+					String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
+					sorts = new Sort[]{
+							SortFactoryUtil.create(
+									querySort, Sort.STRING_TYPE,
+									GetterUtil.getBoolean(query.getOrder()))
+					};
+				}
 			}
 
 			if (Validator.isNotNull(top)) {
@@ -1379,7 +1389,7 @@ public class DossierManagementImpl implements DossierManagement {
 					break;
 				}
 			}
-
+			_log.info("Start: " + query.getStart() + " End : " + query.getEnd());
 			JSONObject jsonData = actions.getDossierProcessList(
 				user.getUserId(), company.getCompanyId(), groupId, params,
 				sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -1938,14 +1948,19 @@ public class DossierManagementImpl implements DossierManagement {
 				actionUser = user.getFullName();
 			}
 		}
+		boolean checkRequried = true;
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
+			if(Validator.isNotNull(input.getCheckRequried())){
+				_log.info("Boolean: "  + input.getCheckRequried());
+				checkRequried = Boolean.valueOf(input.getCheckRequried());
+			}
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
-
+			//A Duẩn: truyền checkRequried = true thì cho doAction
+		if(checkRequried){
 			if (dossier != null) {
 				_log.info("Doing action for dossierId: " + dossier.getDossierId());
 				if(Validator.isNotNull(input) && Validator.isNotNull(input.getActionCode())) {
@@ -2317,14 +2332,15 @@ public class DossierManagementImpl implements DossierManagement {
 						if (Validator.isNull(applicant)) {
 							new ApplicantActionsImpl().register(serviceContext, groupId,
 									delegateName, applicantIdType, delegateIdNo, applicantIdDate,
-									delegateEmail, delegateAddress, delegateCityCode, StringPool.BLANK, delegateDistrictCode, 
+									delegateEmail, delegateAddress, delegateCityCode, StringPool.BLANK, delegateDistrictCode,
 									StringPool.BLANK, delegateWardCode, StringPool.BLANK, StringPool.BLANK, delegateTelNo,
 									StringPool.BLANK, password);
 						}
 					}
 				}
-				
+
 			}
+		}
 
 			// DossierAction dossierAction = actions.doAction(groupId, dossier,
 			// option, proAction,
@@ -9060,11 +9076,16 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean overdue = false;
 			for (Role r : userRoles) {
-				r.setName(ConstantUtils.ROLE_OVERDUE);
-				if (r.getName().startsWith(ConstantUtils.ROLE_OVERDUE)) {
-					_log.info("Role TRUE");
+				if(r.getName().startsWith(ConstantUtils.GLOBAL_EDIT_OVERDUE)) {
 					overdue = true;
 					break;
+				}else {
+					r.setName(ConstantUtils.ROLE_OVERDUE);
+					if (r.getName().startsWith(ConstantUtils.ROLE_OVERDUE)) {
+						_log.info("Role TRUE");
+						overdue = true;
+						break;
+					}
 				}
 			}
 
