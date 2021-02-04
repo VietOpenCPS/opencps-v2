@@ -24,7 +24,7 @@ public interface QLVGManagement {
     @Path("/{dossierId}/sendDocuments")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response sendProfile(@PathParam("dossierId") long dossierId);
+    public Response sendProfile(@PathParam("dossierId") long dossierId, @Context User user);
 
     @PUT
     @Path("")
