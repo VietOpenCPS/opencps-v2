@@ -949,7 +949,7 @@ public class DossierManagementImpl implements DossierManagement {
 			boolean isCitizen = dossierPermission.isCitizen(user.getUserId());
 			dossierPermission.hasGetDossiers(
 				groupId, user.getUserId(), query.getSecetKey());
-
+			_log.info("Start---: " + query.getStart() + " End--- : " + query.getEnd());
 			if (query.getEnd() == 0) {
 				query.setStart(-1);
 				query.setEnd(-1);
@@ -1389,7 +1389,7 @@ public class DossierManagementImpl implements DossierManagement {
 					break;
 				}
 			}
-
+			_log.info("Start: " + query.getStart() + " End : " + query.getEnd());
 			JSONObject jsonData = actions.getDossierProcessList(
 				user.getUserId(), company.getCompanyId(), groupId, params,
 				sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -9076,11 +9076,16 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean overdue = false;
 			for (Role r : userRoles) {
-				r.setName(ConstantUtils.ROLE_OVERDUE);
-				if (r.getName().startsWith(ConstantUtils.ROLE_OVERDUE)) {
-					_log.info("Role TRUE");
+				if(r.getName().startsWith(ConstantUtils.GLOBAL_EDIT_OVERDUE)) {
 					overdue = true;
 					break;
+				}else {
+					r.setName(ConstantUtils.ROLE_OVERDUE);
+					if (r.getName().startsWith(ConstantUtils.ROLE_OVERDUE)) {
+						_log.info("Role TRUE");
+						overdue = true;
+						break;
+					}
 				}
 			}
 
