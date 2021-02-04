@@ -19,4 +19,5 @@ public class QLVBConstants {
     public static final String CONFIG_SECRET_KEY_RECEIVE_DOC = "secretKeyReceiveDoc";
     public static final String CONFIG_ACTION_CODE = "actionCode";
     public static final String CONFIG_PORT = "port";
+    public static final String CONFIG_IS_PROD = "isProd";
 }

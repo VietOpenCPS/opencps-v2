@@ -54,7 +54,7 @@ public class QLVGManagementImpl implements QLVGManagement {
     }
 
     @Override
-    public Response sendProfile(long dossierId) {
+    public Response sendProfile(long dossierId, User user) {
         try {
             if(Validator.isNull(this.listConfig) || this.listConfig.isEmpty()
                     || Validator.isNull(this.listConfig.get(0))) {
@@ -79,8 +79,18 @@ public class QLVGManagementImpl implements QLVGManagement {
 
             QLVBIntegrationAction qlvbAction = new QLVBIntegrationActionImpl(serverConfig);
             String token;
+
+            String userId = configJson.getString(QLVBConstants.CONFIG_USER_ID);
+            if(configJson.has(QLVBConstants.CONFIG_IS_PROD)
+                    && configJson.getBoolean(QLVBConstants.CONFIG_IS_PROD)
+                    && Validator.isNotNull(user)) {
+                userId = Validator.isNotNull(user.getEmailAddress())
+                        ? user.getEmailAddress()
+                        : configJson.getString(QLVBConstants.CONFIG_USER_ID);
+            }
+
             if(eOfficeServer.equals(SERVER_EOFFICE_HAUGIANG)) {
-                token = qlvbAction.getTokenHG();
+                token = qlvbAction.getTokenHG(userId);
                 qlvbAction.sendVBHG(token, dossierId);
             } else if(eOfficeServer.equals(SERVER_EOFFICE_TTTT)) {
                 token = qlvbAction.getTokenTTTT();
@@ -131,11 +141,11 @@ public class QLVGManagementImpl implements QLVGManagement {
                 return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(jsonObject.toJSONString()).build();
             }
 
-            if(!actionCode.equals(LIST_ACTION_CODE[0])) {
-                jsonObject.put("message", "Action code is invalid");
-                jsonObject.put("code", "01");
-                return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(jsonObject.toJSONString()).build();
-            }
+//            if(!actionCode.equals(LIST_ACTION_CODE[0])) {
+//                jsonObject.put("message", "Action code is invalid");
+//                jsonObject.put("code", "01");
+//                return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(jsonObject.toJSONString()).build();
+//            }
 
             double fileSize = (double)file.length() / (1024*1024);
             if(fileSize > MAX_FILE_SIZE) {
@@ -155,12 +165,12 @@ public class QLVGManagementImpl implements QLVGManagement {
             }
 
             ServerConfig serverConfig = listConfig.get(0);
-            long groupId = serverConfig.getGroupId();
             JSONObject configJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-            Dossier dossier = this.getDossierById(groupId, id);
+            Dossier dossier = this.getDossierByDossierNo(id);
             if(Validator.isNull(dossier)) {
-                throw new Exception("No dossier was found with groupId: " +  groupId + " and id: " + id);
+                throw new Exception("No dossier was found with id: " + id);
             }
+            long groupId = dossier.getGroupId();
 
             //Import file
             InputStream inputStream = DossierFileUtils.fileToInputStream(file);
@@ -268,6 +278,14 @@ public class QLVGManagementImpl implements QLVGManagement {
 
             return DossierLocalServiceUtil.getDossier(dossierId);
         }catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    private Dossier getDossierByDossierNo(String id) throws Exception {
+        try {
+            return DossierLocalServiceUtil.fetchByDO_NO(id);
+        } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }

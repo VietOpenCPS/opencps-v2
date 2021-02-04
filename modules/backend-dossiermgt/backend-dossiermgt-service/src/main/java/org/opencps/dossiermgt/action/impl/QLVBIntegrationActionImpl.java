@@ -84,11 +84,11 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
     }
 
     @Override
-    public String getTokenHG() throws Exception {
+    public String getTokenHG(String userId) throws Exception {
         try {
             String urlGetToken = this.configJson.getString(QLVBConstants.CONFIG_URL)
                     + this.configJson.getString(QLVBConstants.CONFIG_GET_TOKEN)
-                    + this.configJson.getString(QLVBConstants.CONFIG_USER_ID);
+                    + userId;
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
