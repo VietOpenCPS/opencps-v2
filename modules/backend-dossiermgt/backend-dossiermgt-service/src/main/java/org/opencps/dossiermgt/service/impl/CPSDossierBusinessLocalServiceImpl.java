@@ -1565,6 +1565,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								if (Validator.isNotNull(dossier.getApplicantIdNo())) {
 									deliverableObj.put(DossierTerm.APPLICANT_ID_NO, dossier.getApplicantIdNo());
 								}
+								if(Validator.isNotNull(dossier.getDossierNo())){
+									deliverableObj.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+								}
 								_log.debug("deliverableObj -------: " + JSONFactoryUtil.looseSerialize(deliverableObj));
 								createDeliverable(dossierId, dossier, dossierPart, actions, dlt, deliverableObj, userId, groupId, context);
 
@@ -1572,8 +1575,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						}
 					}else {
 						Deliverable deliverable = DeliverableLocalServiceUtil.fetchByGID_DID(groupId, dossierId);
+						JSONObject deliverablObj =  JSONFactoryUtil.createJSONObject(deliverable.getFormData());
+						if(Validator.isNotNull(dossier.getDossierNo())){
+							deliverablObj.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+						}
 						if (Validator.isNotNull(deliverable)) {
-							updateDeliverable(deliverable, userId, groupId, dossierPart, dlt, context);
+							updateDeliverable(deliverable, userId, groupId, dossierPart, dlt, deliverablObj, context);
 						}
 					}
 				}
@@ -1592,7 +1599,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return dossierAction;
 	}
 	//Update deliverables
-	private void updateDeliverable(Deliverable deliverable, long userId, long groupId, DossierPart dossierPart, DeliverableType dlt ,ServiceContext context){
+	private void updateDeliverable(Deliverable deliverable, long userId, long groupId, DossierPart dossierPart, DeliverableType dlt , JSONObject deliverablObj, ServiceContext context){
 
 		if(Validator.isNotNull(deliverable) && deliverable.getDeliverableState() == 0){
 			_log.info("Update Deliverable");
@@ -1615,6 +1622,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							}
 					}
 					deliverable.setDeliverableState(1);
+					deliverable.setFormData(deliverablObj.toString());
 					DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 				}
 				catch (Exception e) {
