@@ -9076,16 +9076,11 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean overdue = false;
 			for (Role r : userRoles) {
-				if(r.getName().startsWith(ConstantUtils.GLOBAL_EDIT_OVERDUE)) {
+				r.setName(ConstantUtils.ROLE_OVERDUE);
+				if (r.getName().startsWith(ConstantUtils.ROLE_OVERDUE)) {
+					_log.info("Role TRUE");
 					overdue = true;
 					break;
-				}else {
-					r.setName(ConstantUtils.ROLE_OVERDUE);
-					if (r.getName().startsWith(ConstantUtils.ROLE_OVERDUE)) {
-						_log.info("Role TRUE");
-						overdue = true;
-						break;
-					}
 				}
 			}
 
