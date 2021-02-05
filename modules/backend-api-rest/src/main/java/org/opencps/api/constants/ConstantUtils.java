@@ -30,6 +30,8 @@ public class ConstantUtils {
 	public static final String SOURCE_SERVICES = "services";
 	public static final String SOURCE_TEMPLATES = "templates";
 	public static final String SOURCE_PROCESSES = "processes";
+	public static final String SOURCE_SERVICE_INFOS = "seriviceinfos";
+	public static final String SOURCE_SERVICE_CONFIGS ="serviceconfigs";
 	public static final String SOURCE_VALIDATE = "services, processes, processes, dicts";
 	//
 	public static final String PREFIX_ACTIONCONFIG = "ACTION_";
@@ -460,4 +462,5 @@ public class ConstantUtils {
 	public static final String CTN = "CTN";
 	public static final String DOSSIER_STATUS = "DOSSIER_STATUS";
 	public static final String ROLE_OVERDUE = "RoleOverdue";
+	public static final String GLOBAL_EDIT_OVERDUE = "GLOBAL_EDIT_OVERDUE";
 }

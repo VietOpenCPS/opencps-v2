@@ -1275,7 +1275,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			
 		}
 		long endTime = System.currentTimeMillis();
-		_log.debug("UPDATE BATCH DOSSIER STATISTIC: " + (endTime - startTime) / 1000.0);		
+		_log.debug("UPDATE BATCH DOSSIER STATISTIC: " + (endTime - startTime) / 1000.0);			
 	}
 	
 	public List<OpencpsDossierStatistic> findByG_NM_Y(long groupId, int notMonth, int year) {

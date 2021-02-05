@@ -410,14 +410,14 @@ public class DossierLocalServiceUtil {
 		return getService().findByG_GDID(groupId, groupDossierId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_U_DO(
+		long groupId, long userId) {
+		return getService().findByG_U_DO(groupId, userId);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_UID_DS(
 		long groupId, long userId, String dossierStatus) {
 		return getService().findByG_UID_DS(groupId, userId, dossierStatus);
-	}
-
-	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_U_DO(
-			long groupId, long userId) {
-		return getService().findByG_U_DO(groupId, userId);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByGID(
