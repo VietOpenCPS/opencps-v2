@@ -42,6 +42,7 @@ public class StatisticEngineFetchEntry {
 		statisticData.setYear(dateStatistic.get(Calendar.YEAR));
 		statisticData.setGroupId(dossierData.getGroupId());
 		statisticData.setReporting(reporting);
+		
 		Date dueDate = Validator.isNull(dossierData.getDueDate())
 					? null
 					: StatisticUtils.convertStringToDate(dossierData.getDueDate());
