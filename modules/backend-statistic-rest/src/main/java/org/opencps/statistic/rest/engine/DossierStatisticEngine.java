@@ -234,7 +234,6 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				int monthCurrent = LocalDate.now().getMonthValue();
 //				int monthCurrent = 4;
 				_log.info("jsonEndPoint: "+jsonEndPoint);
-				_log.info("monthCurrent: "+monthCurrent);
 				int yearCurrent = LocalDate.now().getYear();
 				Map<Integer, Boolean> mapFlagCurrent = new HashMap<>();
 				for (int month = 1; month <= monthCurrent; month ++) {
@@ -281,7 +280,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 										if (mapInt.getKey() == month) {
 											StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 											JSONArray jsonArr = statisticEngineUpdate.convertMapDataList(mapInt.getValue());
-											//
+											// 
 											String sbUpdate = DossierStatisticUtils.invokeUpdateStatistic(jsonEndPoint,
 													JSONFactoryUtil.looseSerialize(jsonArr));
 											if (Validator.isNotNull(sbUpdate)) {
@@ -398,9 +397,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						try {
 							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
 								engineUpdateAction, serviceDomainResponse, calculateLastData);
-							if (calculateData != null && jsonEndPoint != null) {
+							if (calculateLastData != null && jsonEndPoint != null) {
 
-								for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateData.entrySet()) {
+								for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateLastData.entrySet()) {
 									if (mapInt.getKey() == lastMonth) {
 										
 										StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
@@ -516,7 +515,6 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			Map<Integer, Map<String, DossierStatisticData>> calculateData)
 			throws Exception {
 //		engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-		
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
 		payload.setCalculate(true);

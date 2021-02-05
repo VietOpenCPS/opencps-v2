@@ -1938,7 +1938,7 @@ public class StatisticSumYearCalcular {
 
 								// LOG.info("***DATA****" + source.size());
 								DossierStatisticData latestMonthStatisticData = source.get(0);
-								_log.info("latestMonthStatisticData: "+ latestMonthStatisticData.toString());
+								_log.info("latestMonthStatisticData: "+ latestMonthStatisticData);
 
 								try {
 									lstDatas.add(getDetailData(companyId, groupId, 0, 0, null, null, null, null, strSystem, null, source,
