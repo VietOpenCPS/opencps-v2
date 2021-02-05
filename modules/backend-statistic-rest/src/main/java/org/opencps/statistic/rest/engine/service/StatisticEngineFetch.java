@@ -22,8 +22,6 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 public class StatisticEngineFetch {
 
 	private final static Log _log = LogFactoryUtil.getLog(StatisticEngineFetch.class);
-	private static final Boolean CALCULATE_DOSSIER_STATISTIC_SERVICECODE_ENABLE = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.serviceCode.enable"))
-			? Boolean.valueOf(PropsUtil.get("opencps.statistic.dossier.serviceCode.enable")) : false;
 
 	public void fecthStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
 			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, int reporting) {
@@ -774,7 +772,6 @@ public class StatisticEngineFetch {
 
 					statisticData.put(type4, dataType4);
 				} else if(Validator.isNotNull(dossierData.getServiceCode()) && isGetReportServiceCode) {
-					_log.info("_________Phuchn1111_________");
 					// all site, all service
 					String type1 = "all@all@" + groupId;
 
@@ -814,7 +811,7 @@ public class StatisticEngineFetch {
 					statisticData.put(type2, dataType2);
 					// each site all service
 
-					String type3 = dossierData.getServiceCode() + "@all@" + groupId;
+					String type3 = dossierData.getGovAgencyCode() + "@all@" + groupId;
 					//System.out.println("type3: "+type3);
 
 					DossierStatisticData dataType3 = new DossierStatisticData();
