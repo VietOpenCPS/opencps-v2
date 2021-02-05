@@ -85,6 +85,8 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		soapModel.setReceiveDossierSatCount(model.getReceiveDossierSatCount());
 		soapModel.setReleaseDossierSatCount(model.getReleaseDossierSatCount());
 		soapModel.setFromViaPostalCount(model.getFromViaPostalCount());
+		soapModel.setProcessingInAPeriodCount(model.getProcessingInAPeriodCount());
+		soapModel.setReleaseInAPeriodCount(model.getReleaseInAPeriodCount());
 
 		return soapModel;
 	}
@@ -548,6 +550,22 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		_fromViaPostalCount = fromViaPostalCount;
 	}
 
+	public int getProcessingInAPeriodCount() {
+		return _processingInAPeriodCount;
+	}
+
+	public void setProcessingInAPeriodCount(int processingInAPeriodCount) {
+		_processingInAPeriodCount = processingInAPeriodCount;
+	}
+
+	public int getReleaseInAPeriodCount() {
+		return _releaseInAPeriodCount;
+	}
+
+	public void setReleaseInAPeriodCount(int releaseInAPeriodCount) {
+		_releaseInAPeriodCount = releaseInAPeriodCount;
+	}
+
 	private String _uuid;
 	private long _dossierStatisticId;
 	private long _companyId;
@@ -599,4 +617,6 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 	private int _receiveDossierSatCount;
 	private int _releaseDossierSatCount;
 	private int _fromViaPostalCount;
+	private int _processingInAPeriodCount;
+	private int _releaseInAPeriodCount;
 }

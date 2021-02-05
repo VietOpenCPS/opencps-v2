@@ -337,17 +337,13 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
                     syncTrackingInfo.bodyResponse = Validator.isNotNull(response.getBody())
                            ? response.getBody() : "-";
 
-                    try {
-                        JSONObject detailDossier = JSONFactoryUtil.createJSONObject(response.getBody());
-                        if(detailDossier.has("profileOutmodel")
-                                && detailDossier.getJSONObject("profileOutmodel") != null) {
-                            JSONObject profileOutModel = detailDossier.getJSONObject("profileOutmodel");
-                            syncTrackingInfo.serviceCode  = profileOutModel.getString("procedures_code");
-                            syncTrackingInfo.referenceUid = profileOutModel.getString("ref_code");
-                            syncTrackingInfo.dossierNo    = profileOutModel.getString("source_id");
-                        }
-                    } catch (Exception e) {
-                        _log.warn("Error when save ref_code and procedures_code but still running...");
+                    JSONObject detailDossier = JSONFactoryUtil.createJSONObject(response.getBody());
+                    if(detailDossier.has("profileOutmodel")
+                            && detailDossier.getJSONObject("profileOutmodel") != null) {
+                        JSONObject profileOutModel = detailDossier.getJSONObject("profileOutmodel");
+                        syncTrackingInfo.serviceCode  = profileOutModel.getString("procedures_code");
+                        syncTrackingInfo.referenceUid = profileOutModel.getString("ref_code");
+                        syncTrackingInfo.dossierNo = profileOutModel.getString("ref_code");
                     }
 
                     if(statusCode == 200) {
