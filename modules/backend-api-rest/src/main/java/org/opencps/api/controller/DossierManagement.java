@@ -1802,4 +1802,24 @@ public interface DossierManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@BeanParam DoActionModel input);
+
+	@POST
+	@Path("/createDeliverable/formData")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@ApiOperation(value = "Update Dossier", response = DoActionModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a ProcessAction has been Processed", response = DossierResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response createDeliverableByDossierId(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = " Input formData", required = true) @FormParam("formdata") String formdata,
+//			@ApiParam(value = " Input tempalteNo", required = false) @FormParam("templateNo") String templateNo,
+			@ApiParam(value = " Input typeCode", required = true) @FormParam("typeCode") String typeCode,
+			@BeanParam DossierInputModel input);
 }

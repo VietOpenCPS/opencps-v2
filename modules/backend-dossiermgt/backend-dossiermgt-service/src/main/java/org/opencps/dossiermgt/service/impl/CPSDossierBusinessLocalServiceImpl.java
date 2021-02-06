@@ -1638,6 +1638,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		DossierFile dossierFile = null;
 		InputStream is = null;
 		String deliverableCode = StringPool.BLANK;
+		long fileEntryId = 0;
 		try {
 			if (dlt.getFormReportFileId() > 0) {
 				try {
@@ -1647,6 +1648,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 					is = dlFileEntry.getContentStream();
 
+					FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+							userId, groupId, dlFileEntry.getContentStream(), dossierPart.getPartName(), StringPool.BLANK,
+							0L, context);
+
+					if (fileEntry != null) {
+						fileEntryId = fileEntry.getFileEntryId();
+					}
 				}
 				catch (Exception e) {
 					_log.debug(e);
@@ -1675,7 +1683,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					groupId, dlt.getTypeCode(), dlt.getTypeName(), Validator.isNotNull(dossierFile.getDeliverableCode()) ? dossierFile.getDeliverableCode() : deliverableCode,
 					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantIdNo(),
 					dossier.getApplicantName(), "", "", "",
-					null, String.valueOf(1), dossier.getDossierId(), dossierFile.getFileEntryId(),
+					null, String.valueOf(1), dossier.getDossierId(),Validator.isNotNull(dossierFile.getFileEntryId()) ? dossierFile.getFileEntryId() : fileEntryId,
 					dlt.getFormScriptFileId(), dlt.getFormReportFileId(), deliverableObj.toString(),
 					"", context);
 
