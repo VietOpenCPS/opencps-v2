@@ -1500,6 +1500,35 @@ public class DossierUtils {
 		return model;
 	}
 
+	public static DossierActionDetailModel mappingLstDossierAction(DossierAction dAction, long dossierDocumentId, Map<String, String> lstMap ) {
+		DossierActionDetailModel model = new DossierActionDetailModel();
+		String dossierIds = StringPool.BLANK;
+		if(Validator.isNotNull(lstMap)) {
+			for (Map.Entry<String, String> entry : lstMap.entrySet()) {
+				if(Validator.isNull(dossierIds)){
+					dossierIds += entry.getValue();
+				}else if(Validator.isNotNull(dossierIds)){
+					dossierIds += "," + entry.getValue();
+				}
+			}
+			if(Validator.isNotNull(dossierIds)){
+				model.setDossierIds(dossierIds);
+			}
+		}
+			model.setDossierActionId(dAction.getDossierActionId());
+			model.setDossierId(dAction.getDossierId());
+			model.setDossierDocumentId(dossierDocumentId);
+			model.setFromStepCode(dAction.getFromStepCode());
+			model.setNextActionId(dAction.getNextActionId());
+			model.setGroupId(dAction.getGroupId());
+			model.setPreviousActionId(dAction.getPreviousActionId());
+			model.setSequenceNo(dAction.getSequenceNo());
+			model.setServiceProcessId(dAction.getServiceProcessId());
+			model.setRollbackable(dAction.getRollbackable());
+
+		return model;
+	}
+
 	public static JSONObject mappingDossierJSON(DossierAction dAction, long dossierDocumentId,JSONObject elmData) {
 		elmData.put(DossierActionTerm.DOSSIERACTION_ID, dAction.getDossierActionId());
 		elmData.put(DossierActionTerm.DOSSIER_ID,dAction.getDossierId());
