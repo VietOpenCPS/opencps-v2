@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.dossier.model.*;
+import org.opencps.api.dossierfile.model.DossierFileCopyInputModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
@@ -1817,9 +1818,24 @@ public interface DossierManagement {
 	public Response createDeliverableByDossierId(
 			@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext,
-			@ApiParam(value = " Input formData", required = true) @FormParam("formdata") String formdata,
-//			@ApiParam(value = " Input tempalteNo", required = false) @FormParam("templateNo") String templateNo,
-			@ApiParam(value = " Input typeCode", required = true) @FormParam("typeCode") String typeCode,
-			@BeanParam DossierInputModel input);
+			@Context ServiceContext serviceContext, @BeanParam DossierInputModel input);
+
+	@POST
+	@Path("/{ids}/files/{actionCode}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Do Action", response = String.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the DossierFileModel was updated", response = DoActionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response doActionDossierIds(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("ids") String ids,
+			@ApiParam(value = "actionCode", required = true) @PathParam("actionCode") String actionCode,
+			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
+			@BeanParam DossierFileModel input);
 }

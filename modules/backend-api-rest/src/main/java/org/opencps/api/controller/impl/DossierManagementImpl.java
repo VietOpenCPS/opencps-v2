@@ -82,6 +82,7 @@ import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.dossier.model.*;
 import org.opencps.api.dossieraction.model.DossierActionNextActionModel;
+import org.opencps.api.dossierfile.model.DossierFileCopyInputModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.api.dossiermark.model.DossierMarkModel;
@@ -8975,8 +8976,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response createDeliverableByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
-												 Locale locale, User user, ServiceContext serviceContext, String formdata,
-												 String typeCode, DossierInputModel input) {
+												 Locale locale, User user, ServiceContext serviceContext, DossierInputModel input) {
 		try {
 			boolean eForm = false;
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(input.getDossierId());
@@ -8998,16 +8998,16 @@ public class DossierManagementImpl implements DossierManagement {
 							.createJSONObject(dlt.getMappingData());
 					if (!mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) continue;
 
-					mapDeliverable(mappingDataObj, formdata, dossier, dossierPart, dlt, groupId, userId, result, serviceContext);
+					mapDeliverable(mappingDataObj, input.getFormdata(), dossier, dossierPart, dlt, groupId, userId, result, serviceContext);
 					DossierDetailModel resultDetail =
 							DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 					return Response.status(HttpStatus.SC_OK).entity(resultDetail).build();
 				}
 			} else if (Validator.isNull(dossier)) {
-				DeliverableType dlt = DeliverableTypeLocalServiceUtil.getByCode(groupId, typeCode);
+				DeliverableType dlt = DeliverableTypeLocalServiceUtil.getByCode(groupId, input.getTypeCode());
 				JSONObject mappingDataObj = JSONFactoryUtil
 						.createJSONObject(dlt.getMappingData());
-				mapDeliverable(mappingDataObj, formdata, dossier, null, dlt, groupId, userId, result, serviceContext);
+				mapDeliverable(mappingDataObj, input.getFormdata(), dossier, null, dlt, groupId, userId, result, serviceContext);
 
 				return Response.status(HttpStatus.SC_OK).build();
 			}
@@ -9145,5 +9145,109 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public Response doActionDossierIds(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+									   User user, ServiceContext serviceContext, String ids, String actionCode,
+									   Attachment file, DossierFileModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long userId = user.getUserId();
+
+		BackendAuth auth = new BackendAuthImpl();
+		DossierActions actions = new DossierActionsImpl();
+		DossierAction dossierResult = null;
+		ErrorMsgModel errorModel = new ErrorMsgModel();
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			String actionUser = StringPool.BLANK;
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(
+					groupId, user.getUserId());
+			if (employee != null) {
+				actionUser = employee.getFullName();
+			}else {
+				if (Validator.isNull(actionUser)) {
+					actionUser = user.getFullName();
+				}
+			}
+			Map<String, String> lstMap = new HashMap<>();
+			if(Validator.isNotNull(ids)) {
+				String idArr[] = ids.split(StringPool.COMMA);
+				for (String dossierId : idArr) {
+					Dossier dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(dossierId));
+					if (Validator.isNotNull(dossier) && Validator.isNotNull(actionCode) && file !=null) {
+						ActionConfig actConfig =
+								ActionConfigLocalServiceUtil.getByCode(
+										groupId, actionCode);
+						_log.info("Action config: " + actConfig);
+						String serviceCode = dossier.getServiceCode();
+						String govAgencyCode = dossier.getGovAgencyCode();
+						String dossierTempNo = dossier.getDossierTemplateNo();
+						boolean insideProcess = actConfig.getInsideProcess();
+						if (actConfig != null && insideProcess) {
+							ProcessOption option = DossierUtils.getProcessOption(
+									serviceCode, govAgencyCode, dossierTempNo, groupId);
+							long serviceProcessId =
+									option.getServiceProcessId();
+							ProcessAction proAction =
+									DossierUtils.getProcessAction(
+											user,
+											groupId, dossier, actionCode,
+											serviceProcessId);
+							if (proAction != null) {
+								dossierResult = actions.doAction(
+										groupId, userId, dossier, option, null,
+										actionCode, actionUser, "",
+										"", "",
+										"", actConfig.getSyncType(),
+										serviceContext, errorModel);
+								lstMap.put(DossierTerm.DOSSIER_ID, dossierId);
+							}
+						}
+						DossierFile dossierFile =
+								CPSDossierBusinessLocalServiceUtil.addDossierFileByDossierId(
+										groupId, company, user, serviceContext, file, dossierId,
+										input.getReferenceUid(), input.getDossierTemplateNo(), input.getDossierPartNo(),
+										input.getFileTemplateNo(), input.getDisplayName(), input.getFileType(),
+										String.valueOf(input.isSync()), input.getFormData(),
+										String.valueOf(input.isRemoved()), String.valueOf(input.isEForm()),
+										new Date().getTime());
+					}
+				}
+
+				if (dossierResult != null) {
+					long dossierActionId = dossierResult.getDossierActionId();
+					DossierDocument doc =
+							DossierDocumentLocalServiceUtil.getByActiocId(
+									groupId, dossierActionId);
+					long dossierDocumentId = 0;
+					if (doc != null) {
+						dossierDocumentId = doc.getDossierDocumentId();
+					}
+					DossierActionDetailModel dAction =
+							DossierUtils.mappingLstDossierAction(
+									dossierResult, dossierDocumentId, lstMap);
+					System.out.println(dAction);
+					return Response.status(HttpURLConnection.HTTP_OK).entity(dAction).build();
+				}
+				else {
+					System.out.println("Wronggggg");
+					JSONObject errorJson = JSONFactoryUtil.createJSONObject();
+					errorJson.put(ConstantUtils.API_DOSSIER_JSON_ERROR_KEY, MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_CANNOT_DO_ACTION));
+					return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(
+							errorJson.toJSONString()).build();
+				}
+			}
+			_log.debug("Lỗi wronggggg");
+			return Response.status(HttpURLConnection.HTTP_BAD_METHOD).build();
+		}catch (Exception e){
+			_log.debug("ERROrrr: " + e.getMessage());
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 }
