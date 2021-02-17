@@ -9148,105 +9148,101 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	@Override
-	public Response doActionDossierIds(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-									   User user, ServiceContext serviceContext, String ids, String actionCode,
-									   Attachment file, DossierFileModel input) {
+	public Response addDossierFile(HttpServletRequest request, HttpHeaders header, Company company,
+								   Locale locale, User user, ServiceContext serviceContext, Attachment file,
+								   String partNo, String dossierIds) {
+		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		long userId = user.getUserId();
-
-		BackendAuth auth = new BackendAuthImpl();
-		DossierActions actions = new DossierActionsImpl();
-		DossierAction dossierResult = null;
-		ErrorMsgModel errorModel = new ErrorMsgModel();
-		try {
-
+		try{
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			List<DossierFileModel> lstResult = new ArrayList<>();
+			Dossier dossier = null;
+			if(Validator.isNotNull(dossierIds)) {
+				String arrayDossierId[] = dossierIds.split(StringPool.COMMA);
 
-			String actionUser = StringPool.BLANK;
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(
-					groupId, user.getUserId());
-			if (employee != null) {
-				actionUser = employee.getFullName();
-			}else {
-				if (Validator.isNull(actionUser)) {
-					actionUser = user.getFullName();
-				}
-			}
-			Map<String, String> lstMap = new HashMap<>();
-			if(Validator.isNotNull(ids)) {
-				String idArr[] = ids.split(StringPool.COMMA);
-				for (String dossierId : idArr) {
-					Dossier dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(dossierId));
-					if (Validator.isNotNull(dossier) && Validator.isNotNull(actionCode) && file !=null) {
-						ActionConfig actConfig =
-								ActionConfigLocalServiceUtil.getByCode(
-										groupId, actionCode);
-						_log.info("Action config: " + actConfig);
-						String serviceCode = dossier.getServiceCode();
-						String govAgencyCode = dossier.getGovAgencyCode();
-						String dossierTempNo = dossier.getDossierTemplateNo();
-						boolean insideProcess = actConfig.getInsideProcess();
-						if (actConfig != null && insideProcess) {
-							ProcessOption option = DossierUtils.getProcessOption(
-									serviceCode, govAgencyCode, dossierTempNo, groupId);
-							long serviceProcessId =
-									option.getServiceProcessId();
-							ProcessAction proAction =
-									DossierUtils.getProcessAction(
-											user,
-											groupId, dossier, actionCode,
-											serviceProcessId);
-							if (proAction != null) {
-								dossierResult = actions.doAction(
-										groupId, userId, dossier, option, null,
-										actionCode, actionUser, "",
-										"", "",
-										"", actConfig.getSyncType(),
-										serviceContext, errorModel);
-								lstMap.put(DossierTerm.DOSSIER_ID, dossierId);
+				for (String id : arrayDossierId){
+					if(!"0".equals(id)) {
+						dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(id));
+						if (Validator.isNull(dossier)) {
+							dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+						}
+					}else{
+						dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+					}
+					String referenceUid = UUID.randomUUID().toString();
+					DossierFile dossierFile = null;
+					DossierFileActions action = new DossierFileActionsImpl();
+					DossierPart dossierPart =
+							DossierPartLocalServiceUtil.fetchByTemplatePartNo(
+									groupId, dossier.getDossierTemplateNo(), partNo);
+					_log.info("__file:" + file);
+					DataHandler dataHandler =
+							(file != null) ? file.getDataHandler() : null;
+					if (dataHandler != null && dataHandler.getInputStream() != null) {
+						_log.info("__Start add file at:" + new Date());
+
+						dossierFile =
+								DossierFileLocalServiceUtil.getByGID_DID_PART_EFORM(
+										groupId, dossier.getDossierId(), partNo, true, false);
+						if (dossierFile == null) {
+							dossierFile = action.addDossierFileEForm(
+									groupId, dossier.getDossierId(), referenceUid,
+									dossier.getDossierTemplateNo(), partNo,
+									dossierPart.getFileTemplateNo(),
+									dossierPart.getPartName(), dataHandler.getName(), 0,
+									dataHandler.getInputStream(), StringPool.BLANK, DossierFileTerm.IS_SYNC_TRUE,
+									serviceContext);
+						} else {
+							try {
+								FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+										user.getUserId(), groupId,
+										dataHandler.getInputStream(),
+										dossierPart.getPartName(), StringPool.BLANK, 0,
+										serviceContext);
+
+								if (fileEntry != null) {
+									dossierFile.setFileEntryId(
+											fileEntry.getFileEntryId());
+								}
+							} catch (Exception e) {
+								_log.debug(e);
 							}
 						}
-						DossierFile dossierFile =
-								CPSDossierBusinessLocalServiceUtil.addDossierFileByDossierId(
-										groupId, company, user, serviceContext, file, dossierId,
-										input.getReferenceUid(), input.getDossierTemplateNo(), input.getDossierPartNo(),
-										input.getFileTemplateNo(), input.getDisplayName(), input.getFileType(),
-										String.valueOf(input.isSync()), input.getFormData(),
-										String.valueOf(input.isRemoved()), String.valueOf(input.isEForm()),
-										new Date().getTime());
-					}
-				}
 
-				if (dossierResult != null) {
-					long dossierActionId = dossierResult.getDossierActionId();
-					DossierDocument doc =
-							DossierDocumentLocalServiceUtil.getByActiocId(
-									groupId, dossierActionId);
-					long dossierDocumentId = 0;
-					if (doc != null) {
-						dossierDocumentId = doc.getDossierDocumentId();
+						_log.info("__End add file at:" + new Date());
 					}
-					DossierActionDetailModel dAction =
-							DossierUtils.mappingLstDossierAction(
-									dossierResult, dossierDocumentId, lstMap);
-					System.out.println(dAction);
-					return Response.status(HttpURLConnection.HTTP_OK).entity(dAction).build();
-				}
-				else {
-					System.out.println("Wronggggg");
-					JSONObject errorJson = JSONFactoryUtil.createJSONObject();
-					errorJson.put(ConstantUtils.API_DOSSIER_JSON_ERROR_KEY, MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_CANNOT_DO_ACTION));
-					return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(
-							errorJson.toJSONString()).build();
+					else {
+						dossierFile =
+								DossierFileLocalServiceUtil.getByGID_DID_PART_EFORM(
+										groupId, dossier.getDossierId(), partNo, true, false);
+						if (dossierFile == null) {
+							_log.info("dossierFile NULL");
+							dossierFile = action.addDossierFileEForm(
+									groupId, dossier.getDossierId(), referenceUid,
+									dossier.getDossierTemplateNo(), partNo,
+									dossierPart.getFileTemplateNo(),
+									dossierPart.getPartName(), dossierPart.getPartName(), 0,
+									null, StringPool.BLANK, DossierFileTerm.IS_SYNC_TRUE, serviceContext);
+						}
+					}
+					_log.info("__End update dossier file at:" + new Date());
+
+					DossierFileModel result =
+							DossierFileUtils.mappingToDossierFileModel(dossierFile);
+					if(Validator.isNotNull(result)){
+						lstResult.add(result);
+					}
+					_log.info("Log dossierFile : " + JSONFactoryUtil.looseSerialize(dossierFile));
+
+					_log.info("__End bind to dossierFile" + new Date());
 				}
 			}
-			_log.debug("Lỗi wronggggg");
-			return Response.status(HttpURLConnection.HTTP_BAD_METHOD).build();
-		}catch (Exception e){
-			_log.debug("ERROrrr: " + e.getMessage());
+			return Response.status(HttpURLConnection.HTTP_OK).entity(lstResult).build();
+		}catch (Exception e) {
+			_log.debug(e.getMessage());
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
