@@ -923,9 +923,6 @@ public class EmployeeActions implements EmployeeInterface {
 		
 		Employee employee = EmployeeLocalServiceUtil.getEmployeeByEmpNo(groupId, employeeNo);
 		boolean isNew = false;
-		
-		_log.info("++employee:"+employee);
-		_log.info("++jobTitle:"+jobTitle);
 
 		//Update or create Employee
 		if (employee == null) {
@@ -936,8 +933,6 @@ public class EmployeeActions implements EmployeeInterface {
 						birthDay, telNo, null, email, GetterUtil.get(workingStatus, 0),
 						0l, title, scope, jobTitle, false, null, null, serviceContext);
 				isNew = true;
-				
-				_log.info("++employee(1):"+employee);
 			}catch(Exception e) {
 				_log.error(e);
 			}
@@ -979,16 +974,14 @@ public class EmployeeActions implements EmployeeInterface {
 				employee.getMappingUserId(), employee.getTitle(), employee.getScope(),
 				employee.getRecruitDate(), employee.getLeaveDate(), serviceContext);
 			//Add jobTitle in user
-			
-			_log.info("++employee(2:"+employee);
+
 		}
 		//_log.info("Employee Create: "+employee);
 
 		//Check exits account and create new account
 		if (isNew) {
 			employee = createNewEmployeeAccount_QA(userId, groupId, employee, StringPool.BLANK, email, jobTitle, serviceContext);
-			
-			_log.info("++employee(3):"+employee);
+
 		} else if (employee != null && Validator.isNotNull(jobTitle)) {
 			UserLocalServiceUtil.updateJobTitle(employee.getMappingUserId(), jobTitle);
 		}
@@ -1033,19 +1026,14 @@ public class EmployeeActions implements EmployeeInterface {
 			String email, String jobTitle, ServiceContext serviceContext) throws PortalException {
 
 		try {
-			
-			_log.info("++screenName:"+screenName);
-			_log.info("++email:"+email);
+
 			if (Validator.isNull(screenName)) {
 				screenName = email.substring(0, email.indexOf(StringPool.AT));
 			}
-			
-			_log.info("++screenName(1):"+screenName);
-			//_log.info("companyId: " + serviceContext.getCompanyId());
+
 			long companyId = serviceContext.getCompanyId();
 			User user = UserLocalServiceUtil.fetchUserByEmailAddress(companyId, email);
-			
-			_log.info("===user(1):"+user);
+
 			if (user != null) {
 				employee.setMappingUserId(user.getUserId());
 
@@ -1095,8 +1083,7 @@ public class EmployeeActions implements EmployeeInterface {
 						screenName.toLowerCase(), email, 0, StringPool.BLANK, serviceContext.getLocale(), fml[0],
 						fml[1], fml[2], 0, 0, true, Calendar.JANUARY, 1, 1979, jobTitle, groupIds,
 						organizationIds, resultRoles, userGroupIds, false, serviceContext);
-				
-				_log.info("===newUser(1):"+newUser);
+
 				if (newUser != null) {
 					newUser.setPasswordReset(false);
 					UserLocalServiceUtil.updateUser(newUser);

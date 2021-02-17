@@ -220,7 +220,7 @@ public class KeyCloakUtil {
 			
 		int limit = keycloakConfig.has("limit") ? keycloakConfig.get("limit").getAsInt() : 10;
 		
-		_log.info("*start---skip:"+skip);
+		_log.debug("*start---skip:"+skip);
 		
 		JsonObject employeeList = getEmployeeListKeycloack(skip);
 		
