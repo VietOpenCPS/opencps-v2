@@ -698,7 +698,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		long mappingId = applicant.getMappingUserId();
 
-		userPersistence.remove(mappingId);
+		try {
+			userPersistence.remove(mappingId);
+		} catch (Exception e) {
+			_log.warn("User mapping not exists with mappingUserId: " + mappingId);
+		}
 
 		applicantPersistence.remove(applicant);
 
@@ -1801,6 +1805,18 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Applicant applicant = applicantLocalService.fetchApplicant(applicantId);
 
 		applicant.setVerification(ApplicantTerm.UNLOCKED);
+
+		applicantPersistence.update(applicant);
+
+		return applicant;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant verifyApplicantWithValue(long applicantId, int verification) throws PortalException {
+
+		Applicant applicant = applicantLocalService.fetchApplicant(applicantId);
+
+		applicant.setVerification(verification);
 
 		applicantPersistence.update(applicant);
 

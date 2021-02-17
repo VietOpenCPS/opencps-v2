@@ -89,7 +89,7 @@ public interface HolidayLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Holiday addHoliday(long userId, long groupId, Date holidayDate,
-		String description, ServiceContext serviceContext)
+		String description, int holidayType, ServiceContext serviceContext)
 		throws UnauthenticationException, UnauthorizationException,
 			NoSuchUserException;
 
@@ -309,6 +309,10 @@ public interface HolidayLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Holiday> getHolidayGtThan(long groupId, Date holidayDate);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Holiday> getHolidayGtThanByGroupIdAndType(long groupId,
+		int holidayType, Date holidayDate);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();

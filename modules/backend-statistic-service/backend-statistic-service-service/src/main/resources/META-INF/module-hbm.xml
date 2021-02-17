@@ -60,6 +60,8 @@
 		<property name="receiveDossierSatCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="releaseDossierSatCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="fromViaPostalCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="processingInAPeriodCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="releaseInAPeriodCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.statistic.model.impl.OpencpsDossierStatisticManualImpl" table="opencps_statistic_manual">
 		<id name="dossierStatisticId" type="long">

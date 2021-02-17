@@ -72,6 +72,8 @@ public class DossierTerm {
 	public static final String NOTIFICATION = "notification";
 	public static final String ONLINE = "online";
 	public static final String SERVER_NO = "serverNo";
+	public static final String ACTION_NOTE = "actionNote";
+	public static final String COMMENT = "comment";
 	public static final String YEAR_DOSSIER = "yearDossier";
 	public static final String MONTH_DOSSIER = "monthDossier";
 	public static final String DAY_DOSSIER = "dayDossier";
@@ -348,12 +350,16 @@ public class DossierTerm {
 	public static final String CONTAIN_WAITING_OVERDUE_LESS = "waiting_overdue<=";
 	public static final String CONTAIN_DURATION_COUNT_GREATER_THAN = "durationCount>";
 	public static final String CONTAIN_MULTIPLE_CHECK = "multipleCheck=";
+	public static final String CONTAIN_SERVER_SYNC ="serversync=";
+	public static final String CONTAIN_GOV_SYNC ="govsync=";
 	public static final String DUE_DATE_NOTIFY = "dueDateNotify";
 	public static final String DUE_DATE_NOTIFY_TYPE = "type";
 	public static final String DUE_DATE_NOTIFY_VALUE = "value";
 	public static final String DUE_DATE_NOTIFY_TYPE_DAY = "day";
 	public static final String DUE_DATE_NOTIFY_TYPE_PERCENT = "%";
 	public static final String DUE_DATE_NOTIFY_TYPE_HOUR = "hour";
+	public static final String FROMPOSTAL_TRUE = "fromPostal=true";
+	public static final String FROMPOSTAL_FALSE = "fromPostal=false";
 	
 	public static final int DURATION_UNIT_DAY = 0;
 	public static final int DURATION_UNIT_HOUR = 1;

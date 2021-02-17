@@ -65,6 +65,8 @@
 		<field name="receiveDossierSatCount" type="int" />
 		<field name="releaseDossierSatCount" type="int" />
 		<field name="fromViaPostalCount" type="int" />
+		<field name="processingInAPeriodCount" type="int" />
+		<field name="releaseInAPeriodCount" type="int" />
 	</model>
 	<model name="org.opencps.statistic.model.OpencpsDossierStatisticManual">
 		<field name="uuid" type="String" />

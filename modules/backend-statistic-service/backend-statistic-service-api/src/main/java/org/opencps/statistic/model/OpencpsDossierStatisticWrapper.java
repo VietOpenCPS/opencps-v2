@@ -112,6 +112,8 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		attributes.put("receiveDossierSatCount", getReceiveDossierSatCount());
 		attributes.put("releaseDossierSatCount", getReleaseDossierSatCount());
 		attributes.put("fromViaPostalCount", getFromViaPostalCount());
+		attributes.put("processingInAPeriodCount", getProcessingInAPeriodCount());
+		attributes.put("releaseInAPeriodCount", getReleaseInAPeriodCount());
 
 		return attributes;
 	}
@@ -428,6 +430,20 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 
 		if (fromViaPostalCount != null) {
 			setFromViaPostalCount(fromViaPostalCount);
+		}
+
+		Integer processingInAPeriodCount = (Integer)attributes.get(
+				"processingInAPeriodCount");
+
+		if (processingInAPeriodCount != null) {
+			setProcessingInAPeriodCount(processingInAPeriodCount);
+		}
+
+		Integer releaseInAPeriodCount = (Integer)attributes.get(
+				"releaseInAPeriodCount");
+
+		if (releaseInAPeriodCount != null) {
+			setReleaseInAPeriodCount(releaseInAPeriodCount);
 		}
 	}
 
@@ -792,6 +808,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Returns the processing in a period count of this opencps dossier statistic.
+	*
+	* @return the processing in a period count of this opencps dossier statistic
+	*/
+	@Override
+	public int getProcessingInAPeriodCount() {
+		return _opencpsDossierStatistic.getProcessingInAPeriodCount();
+	}
+
+	/**
 	* Returns the received count of this opencps dossier statistic.
 	*
 	* @return the received count of this opencps dossier statistic
@@ -829,6 +855,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public int getReleaseDossierSatCount() {
 		return _opencpsDossierStatistic.getReleaseDossierSatCount();
+	}
+
+	/**
+	* Returns the release in a period count of this opencps dossier statistic.
+	*
+	* @return the release in a period count of this opencps dossier statistic
+	*/
+	@Override
+	public int getReleaseInAPeriodCount() {
+		return _opencpsDossierStatistic.getReleaseInAPeriodCount();
 	}
 
 	/**
@@ -1378,6 +1414,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Sets the processing in a period count of this opencps dossier statistic.
+	*
+	* @param processingInAPeriodCount the processing in a period count of this opencps dossier statistic
+	*/
+	@Override
+	public void setProcessingInAPeriodCount(int processingInAPeriodCount) {
+		_opencpsDossierStatistic.setProcessingInAPeriodCount(processingInAPeriodCount);
+	}
+
+	/**
 	* Sets the received count of this opencps dossier statistic.
 	*
 	* @param receivedCount the received count of this opencps dossier statistic
@@ -1415,6 +1461,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public void setReleaseDossierSatCount(int releaseDossierSatCount) {
 		_opencpsDossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);
+	}
+
+	/**
+	* Sets the release in a period count of this opencps dossier statistic.
+	*
+	* @param releaseInAPeriodCount the release in a period count of this opencps dossier statistic
+	*/
+	@Override
+	public void setReleaseInAPeriodCount(int releaseInAPeriodCount) {
+		_opencpsDossierStatistic.setReleaseInAPeriodCount(releaseInAPeriodCount);
 	}
 
 	/**

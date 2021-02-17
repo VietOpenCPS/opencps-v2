@@ -1688,6 +1688,32 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	}
 
 	@Override
+	public Response updateVerifyApplicant(HttpServletRequest request, HttpHeaders header, Company company,
+										  Locale locale, User user, ServiceContext serviceContext, long id
+			, int verifyType) {
+		ApplicantActions actions = new ApplicantActionsImpl();
+		BackendAuth auth = new BackendAuthImpl();
+		ApplicantModel results = new ApplicantModel();
+
+		Applicant applicant = null;
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			applicant = actions.verifyApplicantWithValue(id, verifyType);
+
+			results = ApplicantUtils.mappingToApplicantModel(applicant);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
 	public Response getSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Integer width, Integer height) {
 		try {

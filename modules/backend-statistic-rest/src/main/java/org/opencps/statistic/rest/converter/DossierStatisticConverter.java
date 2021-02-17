@@ -75,6 +75,8 @@ public class DossierStatisticConverter {
 					dossierStatisticData.setOutsideCount(dossierStatistic.getOutsideCount());
 					dossierStatisticData.setFromViaPostalCount(dossierStatistic.getFromViaPostalCount());
 					dossierStatisticData.setSystem(dossierStatistic.getSystem());
+					dossierStatisticData.setProcessingInAPeriodCount(dossierStatistic.getProcessingInAPeriodCount());
+					dossierStatisticData.setReleaseInAPeriodCount(dossierStatistic.getReleaseInAPeriodCount());
 					
 					dossierStatisticDatas.add(dossierStatisticData);
 				}

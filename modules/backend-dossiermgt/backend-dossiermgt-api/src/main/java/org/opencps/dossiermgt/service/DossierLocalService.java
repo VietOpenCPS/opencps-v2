@@ -356,6 +356,11 @@ public interface DossierLocalService extends BaseLocalService,
 		String dossierTemplateNo, long originDossierId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Dossier getByG_AN_SC_GAC_DTNO_SN_ODID(long groupId,
+		String applicantIdNo, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo, long originDossierId, String serverNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Dossier> getByGID_GC_SC_DTN_DS_APP_ORI(long groupId,
 		String govAgencyCode, String serviceCode, String dossierTemplateNo,
 		String[] statusArr, String applicantIdType, int originality);
