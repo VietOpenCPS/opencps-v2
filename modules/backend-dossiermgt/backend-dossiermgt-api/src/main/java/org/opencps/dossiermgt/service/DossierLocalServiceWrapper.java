@@ -530,11 +530,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 
 	@Override
 	public org.opencps.dossiermgt.model.Dossier getByG_AN_SC_GAC_DTNO_SN_ODID(
-			long groupId, String applicantIdNo, String serviceCode,
-			String govAgencyCode, String dossierTemplateNo, long originDossierId, String serverNo) {
+		long groupId, String applicantIdNo, String serviceCode,
+		String govAgencyCode, String dossierTemplateNo, long originDossierId,
+		String serverNo) {
 		return _dossierLocalService.getByG_AN_SC_GAC_DTNO_SN_ODID(groupId,
-				applicantIdNo, serviceCode, govAgencyCode, dossierTemplateNo,
-				originDossierId, serverNo);
+			applicantIdNo, serviceCode, govAgencyCode, dossierTemplateNo,
+			originDossierId, serverNo);
 	}
 
 	@Override
@@ -1028,6 +1029,11 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			sampleCount, dossierName, briefNote, delegateType, documentNo,
 			documentDate, systemId, vnpostalStatus, vnpostalProfile,
 			fromViaPostal, metaData, dueDate, durationCount, serviceContext);
+	}
+
+	@Override
+	public Boolean isDuplicateDossierNo(long groupId, String dossierNo) {
+		return _dossierLocalService.isDuplicateDossierNo(groupId, dossierNo);
 	}
 
 	@Override

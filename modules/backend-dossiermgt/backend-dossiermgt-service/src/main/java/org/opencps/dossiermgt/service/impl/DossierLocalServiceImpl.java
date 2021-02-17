@@ -6414,6 +6414,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			return null;
 		}
 	}
+	public Boolean isDuplicateDossierNo(long groupId, String dossierNo) {
+
+		try {
+			Dossier dossier = dossierPersistence.findByG_DN(groupId, dossierNo);
+
+			return true;
+		} catch (NoSuchDossierException e) {
+
+			return false;
+		}
+	}
 
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)

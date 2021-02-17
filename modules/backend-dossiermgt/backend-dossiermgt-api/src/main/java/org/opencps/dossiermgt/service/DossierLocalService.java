@@ -662,6 +662,9 @@ public interface DossierLocalService extends BaseLocalService,
 		String vnpostalProfile, Integer fromViaPostal, String metaData,
 		Date dueDate, int durationCount, ServiceContext serviceContext);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Boolean isDuplicateDossierNo(long groupId, String dossierNo);
+
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier postDossier(long groupId, long dossierId,
 		String referenceUid, int counter, String serviceCode,
