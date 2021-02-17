@@ -1,57 +1,30 @@
 package org.opencps.statistic.rest.engine;
 
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
-import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
-import com.liferay.portal.kernel.scheduler.SchedulerEntryImpl;
-import com.liferay.portal.kernel.scheduler.SchedulerException;
-import com.liferay.portal.kernel.scheduler.StorageType;
-import com.liferay.portal.kernel.scheduler.StorageTypeAware;
-import com.liferay.portal.kernel.scheduler.TimeUnit;
-import com.liferay.portal.kernel.scheduler.Trigger;
-import com.liferay.portal.kernel.scheduler.TriggerFactory;
-import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.scheduler.*;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
+import org.opencps.statistic.rest.util.DossierStatisticUtils;
+import org.osgi.service.component.annotations.*;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
-import org.opencps.statistic.model.OpencpsDossierStatistic;
-import org.opencps.statistic.rest.dto.DossierStatisticData;
-import org.opencps.statistic.rest.dto.DossierStatisticKey;
-import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
-import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
-import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.DossierStatisticUtils;
-import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
+@Component(immediate = true,
+		property = { "cron.expression=0 30 23 1/1 * ? *" },
+		service = DossierSyncStatisticOnceADayScheduler.class)
+public class DossierSyncStatisticOnceADayScheduler extends BaseMessageListener {
+	protected Log _log = LogFactoryUtil.getLog(DossierSyncStatisticOnceADayScheduler.class);
 
-@Component(immediate = true, service = DossierSyncStatisticScheduler.class)
-public class DossierSyncStatisticScheduler extends BaseMessageListener {
-	protected Log _log = LogFactoryUtil.getLog(DossierSyncStatisticScheduler.class);
-
-	private volatile boolean isRunningStatisticSync = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.enable"))
-			? Boolean.valueOf(PropsUtil.get("org.opencps.statistic.enable")) : true;
-	// Time engine dossier
-	private static int TIME_STATISTIC_CALCULATOR = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.calculator"))
-			? Integer.valueOf(PropsUtil.get("org.opencps.statistic.calculator")) : 30;
+	private volatile boolean isRunningStatisticSync = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.once.a.day.enable"))
+			? Boolean.valueOf(PropsUtil.get("org.opencps.statistic.once.a.day.enable")) : true;
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
@@ -92,14 +65,16 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) throws SchedulerException {
+
+		String cronExpression = GetterUtil.getString(properties.get("cron.expression"), _DEFAULT_CRON_EXPRESSION);
+
+		// create a new trigger definition for the job.
 		String listenerClass = getClass().getName();
 		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null,
-				TIME_STATISTIC_CALCULATOR, TimeUnit.MINUTE);
+				cronExpression);
 
 		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
-
-//		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
 		if (_initialized) {
 			deactivate();
@@ -167,6 +142,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		_schedulerEngineHelper = schedulerEngineHelper;
 	}
 
+	private static final String _DEFAULT_CRON_EXPRESSION = "0 30 23 1/1 * ? *";
 	private SchedulerEngineHelper _schedulerEngineHelper;
 	private TriggerFactory _triggerFactory;
 	private volatile boolean _initialized;

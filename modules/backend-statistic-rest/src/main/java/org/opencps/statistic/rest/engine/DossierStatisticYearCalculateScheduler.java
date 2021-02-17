@@ -32,7 +32,9 @@ import org.osgi.service.component.annotations.*;
 
 import java.util.*;
 
-@Component(immediate = true, property = { "cron.expression=0 0 1 1 1/1 ? *" }, service = DossierStatisticYearCalculateScheduler.class)
+@Component(immediate = true,
+		property = { "cron.expression=0 0 1 1 1/1 ? *" },
+		service = DossierStatisticYearCalculateScheduler.class)
 public class DossierStatisticYearCalculateScheduler extends BaseMessageListener {
 
 	protected Log _log = LogFactoryUtil.getLog(DossierStatisticYearCalculateScheduler.class);
@@ -46,10 +48,9 @@ public class DossierStatisticYearCalculateScheduler extends BaseMessageListener 
 		if(IS_ENABLED){
 
 			List<Group> groups = GroupLocalServiceUtil.getGroups(PortalUtil.getDefaultCompanyId(),0,true);
-			/* 0 0 1 1 1/1 ? * */
 
 			long groupId = 0;
-			long year = 0;
+			int year = 0;
 			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
 
 			Calendar now = Calendar.getInstance();
@@ -94,7 +95,6 @@ public class DossierStatisticYearCalculateScheduler extends BaseMessageListener 
 
 		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
-
 
 		if (_initialized) {
 			deactivate();
@@ -162,7 +162,7 @@ public class DossierStatisticYearCalculateScheduler extends BaseMessageListener 
 		_schedulerEngineHelper = schedulerEngineHelper;
 	}
 
-	private static final String _DEFAULT_CRON_EXPRESSION = "0 0 0 * * ?";
+	private static final String _DEFAULT_CRON_EXPRESSION = "0 0 1 1 1/1 ? *";
 	private SchedulerEngineHelper _schedulerEngineHelper;
 	private TriggerFactory _triggerFactory;
 	private volatile boolean _initialized;
