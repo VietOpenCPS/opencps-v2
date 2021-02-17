@@ -2,7 +2,10 @@ package org.opencps.api.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.google.gson.JsonObject;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -109,13 +112,7 @@ import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.*;
 
 import org.opencps.dossiermgt.action.impl.*;
-import org.opencps.dossiermgt.action.util.AutoFillFormData;
-import org.opencps.dossiermgt.action.util.DossierActionUtils;
-import org.opencps.dossiermgt.action.util.DossierMgtUtils;
-import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
-import org.opencps.dossiermgt.action.util.NotarizationCounterNumberGenerator;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.action.util.*;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
