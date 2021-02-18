@@ -39,13 +39,13 @@ public class DossierStatisticYearCalculateScheduler extends BaseMessageListener 
 
 	protected Log _log = LogFactoryUtil.getLog(DossierStatisticYearCalculateScheduler.class);
 
-	private static boolean IS_ENABLED =  Validator.isNotNull(PropsUtil.get("org.opencps.statistic.year.calculator.enabled")) ?
+	private boolean DOSSIER_STATISTIC_YEAR_CALCULATE_ENABLE =  Validator.isNotNull(PropsUtil.get("org.opencps.statistic.year.calculator.enabled")) ?
 			Boolean.valueOf(PropsUtil.get("org.opencps.statistic.year.calculator.enabled")) :false;
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
 
-		if(IS_ENABLED){
+		if(DOSSIER_STATISTIC_YEAR_CALCULATE_ENABLE){
 
 			List<Group> groups = GroupLocalServiceUtil.getGroups(PortalUtil.getDefaultCompanyId(),0,true);
 
@@ -86,22 +86,28 @@ public class DossierStatisticYearCalculateScheduler extends BaseMessageListener 
 	@Modified
 	protected void activate(Map<String, Object> properties) throws SchedulerException {
 
-		String cronExpression = GetterUtil.getString(properties.get("cron.expression"), _DEFAULT_CRON_EXPRESSION);
+		String cronExpression = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.year.calculator.cron.expression"))
+				? String.valueOf(PropsUtil.get("org.opencps.statistic.year.calculator.cron.expression")) : _DEFAULT_CRON_EXPRESSION;
 
-		// create a new trigger definition for the job.
-		String listenerClass = getClass().getName();
-		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null,
-				cronExpression);
-
-		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
+		_log.info("--cronExpression:"+cronExpression);
 
 		if (_initialized) {
 			deactivate();
 		}
 
-		_schedulerEngineHelper.register(this, _schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
-		_initialized = true;
+		if(Validator.isNotNull(cronExpression) && DOSSIER_STATISTIC_YEAR_CALCULATE_ENABLE) {
+			String listenerClass = getClass().getName();
+
+			Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null,
+					cronExpression);
+
+			_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
+			_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
+
+
+			_schedulerEngineHelper.register(this, _schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
+			_initialized = true;
+		}
 	}
 
 	@Deactivate
@@ -162,7 +168,7 @@ public class DossierStatisticYearCalculateScheduler extends BaseMessageListener 
 		_schedulerEngineHelper = schedulerEngineHelper;
 	}
 
-	private static final String _DEFAULT_CRON_EXPRESSION = "0 0 1 1 1/1 ? *";
+	private final String _DEFAULT_CRON_EXPRESSION = "0 0 1 1 1/1 ? *";
 	private SchedulerEngineHelper _schedulerEngineHelper;
 	private TriggerFactory _triggerFactory;
 	private volatile boolean _initialized;
