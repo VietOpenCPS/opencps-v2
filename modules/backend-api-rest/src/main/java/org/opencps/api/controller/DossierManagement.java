@@ -1840,23 +1840,21 @@ public interface DossierManagement {
 			@Context ServiceContext serviceContext, @BeanParam DossierInputModel input);
 
 	@POST
+	@Path("/files/{partNo}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Path("/eforms/{partNo}")
-	@Produces({
-			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-	})
-	@ApiOperation(value = "Add dossier file )", response = DossierFileModel.class)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Do Action", response = String.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the DossierFileModel was updated", response = DossierFileResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the DossierFileModel was updated", response = DoActionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
 	})
-	public Response addDossierFile(
+	public Response doActionDossierIds(
 			@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext,
-			@ApiParam(value = "Attachment files", required = false) @Multipart("file") Attachment file,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "id of dossier", required = true) @Multipart("dossierIds") String dossierIds,
+					@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
 			@ApiParam(value = "partno of dossier part", required = true) @PathParam("partNo") String partNo,
-			@ApiParam(value = "Metadata of DossierFile") @Multipart("dossierIds") @Nullable String dossierIds);
+			@BeanParam DossierFileModel input);
 }
