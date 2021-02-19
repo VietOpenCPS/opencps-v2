@@ -215,13 +215,16 @@ public class KeyCloakUtil {
 	public  void syncEmployeeUser(int skip) throws InterruptedException {
 		
 		JsonObject keycloakConfig = getKeyCloakConfig();
+		
+		if(!keycloakConfig.isJsonNull() && !keycloakConfig.isJsonObject()) {
+			
 		int limit = keycloakConfig.has("limit") ? keycloakConfig.get("limit").getAsInt() : 10;
 		
 		_log.debug("*start---skip:"+skip);
 		
 		JsonObject employeeList = getEmployeeListKeycloack(skip);
 		
-		JsonArray jsonArray = employeeList.getAsJsonObject("data").getAsJsonObject("userMany").getAsJsonObject("hits").getAsJsonArray("hits");
+		JsonArray jsonArray = employeeList.has("data") ? employeeList.getAsJsonObject("data").getAsJsonObject("userMany").getAsJsonObject("hits").getAsJsonArray("hits") : null;
 		
 		
 		int count = jsonArray.size();
@@ -293,6 +296,8 @@ public class KeyCloakUtil {
 			skip = skip + limit;
 			
 			syncEmployeeUser(skip);
+		}
+		
 		}
 	}
 	

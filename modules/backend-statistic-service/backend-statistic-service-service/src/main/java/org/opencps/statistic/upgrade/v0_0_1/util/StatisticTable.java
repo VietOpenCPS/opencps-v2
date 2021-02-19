@@ -26,7 +26,6 @@ import java.util.Map;
 public class StatisticTable {
 
 	public static final String TABLE_NAME = "opencps_statistic";
-
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "uuid_", Types.VARCHAR },
 			{ "dossierStatisticId", Types.BIGINT },
@@ -63,7 +62,7 @@ public class StatisticTable {
 			{ "govAgencyName", Types.VARCHAR },
 			{ "domainCode", Types.VARCHAR },
 			{ "domainName", Types.VARCHAR },
-			{ "reporting", Types.BOOLEAN },
+			{ "reporting", Types.INTEGER },
 			{ "overtimeInside", Types.INTEGER },
 			{ "overtimeOutside", Types.INTEGER },
 			{ "interoperatingCount", Types.INTEGER },
@@ -78,7 +77,9 @@ public class StatisticTable {
 			{ "dossierOnline4Count", Types.INTEGER },
 			{ "receiveDossierSatCount", Types.INTEGER },
 			{ "releaseDossierSatCount", Types.INTEGER },
-			{ "fromViaPostalCount", Types.INTEGER }
+			{ "fromViaPostalCount", Types.INTEGER },
+			{ "processingInAPeriodCount", Types.INTEGER },
+			{ "releaseInAPeriodCount", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -118,7 +119,7 @@ public class StatisticTable {
 		TABLE_COLUMNS_MAP.put("govAgencyName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("domainCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("domainName", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("reporting", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("reporting", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("overtimeInside", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("overtimeOutside", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("interoperatingCount", Types.INTEGER);
@@ -134,10 +135,11 @@ public class StatisticTable {
 		TABLE_COLUMNS_MAP.put("receiveDossierSatCount", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("releaseDossierSatCount", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("fromViaPostalCount", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("processingInAPeriodCount", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("releaseInAPeriodCount", Types.INTEGER);
 	}
 
-	
-	public static final String TABLE_SQL_CREATE = "create table opencps_statistic (uuid_ VARCHAR(75) null,dossierStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,totalCount INTEGER,deniedCount INTEGER,cancelledCount INTEGER,processCount INTEGER,remainingCount INTEGER,receivedCount INTEGER,onlineCount INTEGER,onegateCount INTEGER,releaseCount INTEGER,betimesCount INTEGER,ontimeCount INTEGER,overtimeCount INTEGER,doneCount INTEGER,releasingCount INTEGER,unresolvedCount INTEGER,processingCount INTEGER,undueCount INTEGER,overdueCount INTEGER,pausingCount INTEGER,ontimePercentage INTEGER,govAgencyCode VARCHAR(255) null,groupAgencyCode TEXT null,govAgencyName TEXT null,domainCode VARCHAR(255) null,domainName TEXT null,reporting BOOLEAN,overtimeInside INTEGER,overtimeOutside INTEGER,interoperatingCount INTEGER,waitingCount INTEGER,outsideCount INTEGER,insideCount INTEGER,system VARCHAR(75) null,viaPostalCount INTEGER,notViaPostalCount INTEGER,saturdayCount INTEGER,dossierOnline3Count INTEGER,dossierOnline4Count INTEGER,receiveDossierSatCount INTEGER,releaseDossierSatCount INTEGER,fromViaPostalCount INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_statistic (uuid_ VARCHAR(75) null,dossierStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,totalCount INTEGER,deniedCount INTEGER,cancelledCount INTEGER,processCount INTEGER,remainingCount INTEGER,receivedCount INTEGER,onlineCount INTEGER,onegateCount INTEGER,releaseCount INTEGER,betimesCount INTEGER,ontimeCount INTEGER,overtimeCount INTEGER,doneCount INTEGER,releasingCount INTEGER,unresolvedCount INTEGER,processingCount INTEGER,undueCount INTEGER,overdueCount INTEGER,pausingCount INTEGER,ontimePercentage INTEGER,govAgencyCode VARCHAR(255) null,groupAgencyCode TEXT null,govAgencyName TEXT null,domainCode VARCHAR(255) null,domainName TEXT null,reporting INTEGER,overtimeInside INTEGER,overtimeOutside INTEGER,interoperatingCount INTEGER,waitingCount INTEGER,outsideCount INTEGER,insideCount INTEGER,system VARCHAR(75) null,viaPostalCount INTEGER,notViaPostalCount INTEGER,saturdayCount INTEGER,dossierOnline3Count INTEGER,dossierOnline4Count INTEGER,receiveDossierSatCount INTEGER,releaseDossierSatCount INTEGER,fromViaPostalCount INTEGER,processingInAPeriodCount INTEGER,releaseInAPeriodCount INTEGER)";
 
 	
 	public static final String[] TABLE_SQL_ADD_INDEXES = {
@@ -148,8 +150,13 @@ public class StatisticTable {
 			"create index IX_CF87F234 on opencps_statistic (groupId, month, year, reporting)",
 			"create index IX_EF7CF302 on opencps_statistic (groupId, userId, year)",
 			"create index IX_80F6A7A7 on opencps_statistic (uuid_, companyId)",
-			"create unique index IX_8F82EBE9 on opencps_statistic (uuid_, groupId)"
+			"create unique index IX_8F82EBE9 on opencps_statistic (uuid_, groupId)",
+			"create index IX_45A15230 on opencps_statistic (groupId, govAgencyCode, month, year, system, domainCode)",
+			"create index IX_68F959EF on opencps_statistic (groupId, month, year, domainCode)",
+			"create index IX_89A15952 on opencps_statistic (groupId, month, year, system, domainCode)"
 		};
+	
+	
 
 	
 

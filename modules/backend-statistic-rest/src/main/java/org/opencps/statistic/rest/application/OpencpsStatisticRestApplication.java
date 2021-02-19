@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.InputStream;
@@ -43,6 +44,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -155,6 +157,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
+import ch.qos.logback.core.joran.action.NewRuleAction;
 import opencps.statistic.common.webservice.exception.OpencpsServiceException;
 import opencps.statistic.common.webservice.exception.OpencpsServiceExceptionDetails;
 import opencps.statistic.common.webservice.exception.ServiceException;
@@ -192,7 +195,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			@BeanParam DossierSearchModel query, @Context Request requestCC,
 			@Context HttpServletRequest request) {
 
-		//LOG.info("GET DossierStatisticResponse");
+		_log.debug("===searchDossierStatistic===");
 		//_log.info("START DossierStatisticResponse: "+query.getAgency());
 		CacheControl cc = new CacheControl();
 		cc.setMaxAge(60);
@@ -256,6 +259,8 @@ public class OpencpsStatisticRestApplication extends Application {
 		if (Validator.isNotNull(fromStatisticDate) ||Validator.isNotNull(toStatisticDate)) {
 			calculate = false;
 		}
+		
+		_log.debug("+++calculate:"+calculate);
 
 		if (!calculate) {
 			String status = query.getStatus();
@@ -536,7 +541,7 @@ public class OpencpsStatisticRestApplication extends Application {
 //				_log.info("dossierStatisticRequest: "+dossierStatisticRequest);
 				//
 				DossierStatisticResponse statisticResponse = null;
-//				System.out.println("SEARCH GROUP CODE: " + query.getGroupCode());
+				_log.debug("SEARCH GROUP CODE: " + query.getGroupCode());
 				if (Validator.isNotNull(query.getGroupCode())) {
 					if (Validator.isNull(query.getParentAgency())) {
 						DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
@@ -2398,7 +2403,12 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 			}
 			
+			// Ket qua gom nhung ho so co TTHC muc 3,4
+			JSONArray tempResults = JSONFactoryUtil.createJSONArray();
+			// Ket qua gom nhung ho so co TTHC muc 3,4 + TTHC muc 3,4 chua trong ho so nao cua site
 			JSONArray results = JSONFactoryUtil.createJSONArray();
+			JSONArray resultsLV3 = JSONFactoryUtil.createJSONArray();
+			JSONArray resultsLV4 = JSONFactoryUtil.createJSONArray();
 			
 				for (String agency : mapResults.keySet()) {
 					for (String serviceCode : mapResults.get(agency).keySet()) {
@@ -2425,11 +2435,116 @@ public class OpencpsStatisticRestApplication extends Application {
 						obj.put("releaseDossierOnegate4Count", data.getReleaseDossierOnegate4Count());
 						obj.put("serviceLevel", Integer.valueOf(dossiers.get(0).get(DossierTerm.SERVICE_LEVEL)));
 							
+						tempResults.put(obj);
 						results.put(obj);
 						}																													
 					}
-				}				
-			ResponseBuilder builder = Response.ok(results.toJSONString());
+				}
+				
+				_log.debug("tempResults size :" + tempResults.length());
+
+				JSONObject tempJOB = tempResults.getJSONObject(0);
+				
+				// lay danh sach TTHC muc 3,4 cua site
+				List<ServiceInfo> lServiceInfos = ServiceInfoLocalServiceUtil.findByGroupAndPublic(Long.valueOf(groupId), true);
+				List<ServiceInfo> lServiceInfosLV34 = new ArrayList<ServiceInfo>();
+				if (lServiceInfos != null && lServiceInfos.size() > 0) {
+					for (int i =0; i< lServiceInfos.size(); i++) {
+						if (lServiceInfos.get(i).getMaxLevel() != 2) {
+							lServiceInfosLV34.add(lServiceInfos.get(i));
+						}
+					}
+				}
+				
+				// lay danh sach TTHC cua cac ho so
+				List<String> lstServiceCodeOfDossier = new ArrayList<String>();
+				if (results != null && results.length() > 0) {
+					for (int j=0; j< results.length(); j++) {
+						lstServiceCodeOfDossier.add(results.getJSONObject(j).getString("serviceCode"));
+					}
+				}
+				
+				// lay danh sach TTHC ko co ho so
+				List<ServiceInfo> lServiceInfosNotDossier = new ArrayList<ServiceInfo>();
+				if (lServiceInfosLV34 != null && lServiceInfosLV34.size() > 0) {
+					String serviceCode;
+					for (int k=0; k< lServiceInfosLV34.size(); k++) {
+						if (Validator.isNull(lstServiceCodeOfDossier)) {
+							continue;
+						}
+						serviceCode = lServiceInfosLV34.get(k).getServiceCode();
+						if (lstServiceCodeOfDossier.size() == 0 || !lstServiceCodeOfDossier.contains(serviceCode)) {
+							lServiceInfosNotDossier.add(lServiceInfosLV34.get(k));
+						}
+					}
+				}
+				
+				
+				// insert vao results nhung ban ghi TTHC ko co ho so
+				if (lServiceInfosNotDossier != null && lServiceInfosNotDossier.size() > 0) {
+					for (ServiceInfo serviceInfo : lServiceInfosNotDossier) {
+						JSONObject tempObj = JSONFactoryUtil.createJSONObject();
+						
+						if (Validator.isNotNull(tempJOB)) {
+							tempObj.put("govAgencyCode", tempJOB.getString("govAgencyCode"));
+							tempObj.put("govAgencyName", tempJOB.getString("govAgencyName"));
+						}else {
+							tempObj.put("govAgencyCode", serviceInfo.getAdministrationCode());
+							tempObj.put("govAgencyName", serviceInfo.getAdministrationName());
+						}
+						tempObj.put("serviceCode", serviceInfo.getServiceCode());
+						tempObj.put("serviceName", serviceInfo.getServiceName());
+						tempObj.put("totalCount", 0);
+						tempObj.put("dossierOnline3Count", 0);
+						tempObj.put("dossierOnline4Count", 0);
+						tempObj.put("dossierOnegate3Count", 0);
+						tempObj.put("dossierOnegate4Count", 0);
+						tempObj.put("releaseDossierOnline3Count", 0);
+						tempObj.put("releaseDossierOnline4Count", 0);
+						tempObj.put("releaseDossierOnegate3Count", 0);
+						tempObj.put("releaseDossierOnegate4Count", 0);
+						tempObj.put("serviceLevel", serviceInfo.getMaxLevel());						
+						results.put(tempObj);						
+					}
+				}
+			
+			if (results != null && results.length() > 0) {
+				int svLevel;
+				for (int m = 0; m < results.length(); m++) {
+					JSONObject jObject = results.getJSONObject(m);
+					svLevel = jObject.getInt("serviceLevel");
+					if (svLevel == 3) {
+						resultsLV3.put(jObject);
+					}
+					if (svLevel == 4) {
+						resultsLV4.put(jObject);
+					}
+				}
+			}
+			
+			Object object = new Object();
+			if (Validator.isNotNull(serviceLevel)) {
+				String[] lstServiceLevel = StringUtil.split(serviceLevel);
+				
+				if (lstServiceLevel != null) {
+					int length = lstServiceLevel.length;
+					switch (length) {
+					case 1:
+						if (Integer.valueOf(lstServiceLevel[0]) == 3) {
+							object = resultsLV3.toJSONString();
+						}
+						if (Integer.valueOf(lstServiceLevel[0]) == 4) {
+							object = resultsLV4.toJSONString();
+						}
+						break;
+					default:
+						object = results.toJSONString();
+						break;
+					}
+				}
+			}
+			
+			ResponseBuilder builder = Response.ok(object);
 			return builder.build();
 		} catch (PortalException e) {
 			_log.debug(e);
@@ -2672,6 +2787,39 @@ public class OpencpsStatisticRestApplication extends Application {
 		} catch (Exception e) {
 			_log.info(e);
 			jsonResult.put("value", "FAIL");
+			return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(jsonResult.toJSONString()).build();
+		}
+	}
+	
+	@PUT
+	@Path("/calculateStatistic")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response calculateStatistic(@HeaderParam("groupId") long groupId,@FormParam("year") int year) {
+
+		_log.debug("START Calculate Statistic Year");
+		
+		JSONObject jsonResult = JSONFactoryUtil.createJSONObject();
+		JSONArray opencpsStatistics = JSONFactoryUtil.createJSONArray();
+		
+		try {
+			
+			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
+			
+			_log.debug("+++groupId:"+groupId);
+			_log.debug("+++year:"+year);
+			_log.debug("+++time:"+System.currentTimeMillis());
+			
+			if(groupId >0 && year > 2016) {
+				opencpsStatistics = engineUpdateAction.calculateStatistic(groupId, year);
+			}
+			
+			jsonResult.put("total", opencpsStatistics.length());
+			jsonResult.put("value", opencpsStatistics);
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonResult.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			jsonResult.put("value", "ERROR");
 			return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(jsonResult.toJSONString()).build();
 		}
 	}

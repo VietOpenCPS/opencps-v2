@@ -17,9 +17,6 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
-import org.opencps.dossiermgt.model.Dossier;
-
-import java.util.List;
 
 /**
  * Provides a wrapper for {@link DossierLocalService}.
@@ -431,15 +428,16 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_U_DO(
+		long groupId, long userId) {
+		return _dossierLocalService.findByG_U_DO(groupId, userId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_UID_DS(
 		long groupId, long userId, String dossierStatus) {
 		return _dossierLocalService.findByG_UID_DS(groupId, userId,
 			dossierStatus);
-	}
-
-	@Override
-	public List<Dossier> findByG_U_DO(long groupId, long userId) {
-		return _dossierLocalService.findByG_U_DO(groupId,userId);
 	}
 
 	@Override
@@ -528,6 +526,16 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		return _dossierLocalService.getByG_AN_SC_GAC_DTNO_ODID(groupId,
 			applicantIdNo, serviceCode, govAgencyCode, dossierTemplateNo,
 			originDossierId);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Dossier getByG_AN_SC_GAC_DTNO_SN_ODID(
+		long groupId, String applicantIdNo, String serviceCode,
+		String govAgencyCode, String dossierTemplateNo, long originDossierId,
+		String serverNo) {
+		return _dossierLocalService.getByG_AN_SC_GAC_DTNO_SN_ODID(groupId,
+			applicantIdNo, serviceCode, govAgencyCode, dossierTemplateNo,
+			originDossierId, serverNo);
 	}
 
 	@Override
@@ -1024,6 +1032,11 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public Boolean isDuplicateDossierNo(long groupId, String dossierNo) {
+		return _dossierLocalService.isDuplicateDossierNo(groupId, dossierNo);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier postDossier(long groupId,
 		long dossierId, String referenceUid, int counter, String serviceCode,
 		String serviceName, String govAgencyCode, String govAgencyName,
@@ -1080,7 +1093,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String delegateWardName, double durationCount, int durationUnit,
 		String dossierName, String processNo, String metaData,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		String dossierCounter,
+		String dossierCounter, int systemId,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _dossierLocalService.publishDossier(groupId, dossierId,
@@ -1101,7 +1114,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateDistrictCode, delegateDistrictName, delegateWardCode,
 			delegateWardName, durationCount, durationUnit, dossierName,
 			processNo, metaData, vnpostalStatus, vnpostalProfile,
-			fromViaPostal, dossierCounter, context);
+			fromViaPostal, dossierCounter, systemId, context);
 	}
 
 	@Override

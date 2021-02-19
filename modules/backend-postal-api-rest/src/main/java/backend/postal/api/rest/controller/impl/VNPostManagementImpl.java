@@ -53,6 +53,7 @@ import vn.mitc.ngsp.sdk.models.MToken;
 public class VNPostManagementImpl implements VNPostManagement {
 
 	private Log _log = LogFactoryUtil.getLog(VNPostManagementImpl.class);
+	private final String BGTVT = "BGTVT";
 
 	public VNPostServerConfigModel fromJSONObject(JSONObject configObj) {
 		// _log.debug("configObj =============== " +
@@ -66,16 +67,20 @@ public class VNPostManagementImpl implements VNPostManagement {
 					configObj.getString(VnPostTerm.SERVER_APIGETTOKEN),
 					configObj.getString(VnPostTerm.SERVER_APICANCELORDER),
 					configObj.getString(VnPostTerm.SERVER_CUSTOMERKEY),
-					configObj.getString(VnPostTerm.SERVER_SECRETKEY), configObj.getBoolean(VnPostTerm.SERVER_ACTIVE),
+					configObj.getString(VnPostTerm.SERVER_SECRETKEY), 
+					configObj.getBoolean(VnPostTerm.SERVER_ACTIVE),
 					configObj.getString(VnPostTerm.SERVER_CUSTOMERCODE),
 					configObj.getInt(VnPostTerm.SERVER_SENDERPROVINCE),
 					configObj.getInt(VnPostTerm.SERVER_SENDERDISTRICT),
 					configObj.getString(VnPostTerm.SERVER_SENDERADDRESS),
 					configObj.getString(VnPostTerm.SERVER_SENDEREMAIL),
-					configObj.getString(VnPostTerm.SERVER_SENDERTEL), configObj.getString(VnPostTerm.SERVER_SENDERNAME),
-					configObj.getBoolean(VnPostTerm.LGSP_ACTIVE), configObj.getString(VnPostTerm.LGSP_USERNAME),
-					configObj.getString(VnPostTerm.LGSP_PASSWORD), configObj.getString(VnPostTerm.LGSP_SERCUREKEY),
-					configObj.getString(VnPostTerm.LGSP_CUSTOMERCODE), configObj.getString(VnPostTerm.LGSP_TOKENURL),
+					configObj.getString(VnPostTerm.SERVER_SENDERTEL), 
+					configObj.getString(VnPostTerm.SERVER_SENDERNAME),
+					configObj.getString(VnPostTerm.LGSP_USERNAME),
+					configObj.getString(VnPostTerm.LGSP_PASSWORD), 
+					configObj.getString(VnPostTerm.LGSP_SERCUREKEY),
+					configObj.getString(VnPostTerm.LGSP_CUSTOMERCODE), 
+					configObj.getString(VnPostTerm.LGSP_TOKENURL),
 					configObj.getString(VnPostTerm.LGSP_VNPOSTURL),
 					configObj.getString(VnPostTerm.LGSP_VNPOST_ORDERPOST),
 					configObj.getString(VnPostTerm.LGSP_VNPOST_ORDERCANCEL),
@@ -95,7 +100,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 						&& !configObj.getString(VnPostTerm.SERVER_LGSP_TYPE).isEmpty()) {
 					vnPostConfig.setLgspType(configObj.getString(VnPostTerm.SERVER_LGSP_TYPE));
 				} else {
-					vnPostConfig.setLgspType("");
+					vnPostConfig.setLgspType(BGTVT);
 				}
 				// key token dong thap
 				vnPostConfig.setKeyToken(configObj.getString(VnPostTerm.SERVER_KEY_TOKEN_LGSP));
@@ -156,24 +161,28 @@ public class VNPostManagementImpl implements VNPostManagement {
 
 				_log.debug("THONG TIN VNPOST: " + config);
 
-				boolean isLGSPActive = config.isLgspActive();
+				boolean isLGSPActive = config.isLGSP();
 
 				if (isLGSPActive) {
-
+					
 					JSONObject result = JSONFactoryUtil.createJSONObject();
-					String access_token = getToken(config.getLgspTokenUrl(), config.getLgspConsumerKey(),
-							config.getLgspSercureKey());
+					if(config.getLgspType().equalsIgnoreCase(BGTVT)) {
 
-					JSONObject datas = createMOrderDatas(config, input, senderName);
-
-					_log.debug("++datas:" + datas);
-
-					StringBuilder serviceURL = new StringBuilder();
-					serviceURL.append(config.getLgspVnpostUrl()).append(StringPool.QUESTION).append("service")
-							.append(StringPool.EQUAL).append(config.getLgspVnpostOrderPost());
-
-					result = getVNPOSTPrice(serviceURL.toString(), access_token, datas);
-
+						String access_token = getToken(config.getLgspTokenUrl(), config.getLgspConsumerKey(),
+								config.getLgspSercureKey());
+	
+						JSONObject datas = createMOrderDatas(config, input, senderName);
+	
+						_log.debug("++datas:" + datas);
+	
+						StringBuilder serviceURL = new StringBuilder();
+						serviceURL.append(config.getLgspVnpostUrl()).append(StringPool.QUESTION).append("service")
+								.append(StringPool.EQUAL).append(config.getLgspVnpostOrderPost());
+	
+						result = getVNPOSTPrice(serviceURL.toString(), access_token, datas);
+	
+					}
+					
 					return Response.status(200).entity(result).build();
 
 				} else {
@@ -277,25 +286,28 @@ public class VNPostManagementImpl implements VNPostManagement {
 
 				_log.debug("THONG TIN VNPOST: " + config);
 
-				boolean isLGSPActive = config.isLgspActive();
+				boolean isLGSPActive = config.isLGSP();
 
 				if (isLGSPActive) {
-
+					
 					JSONObject result = JSONFactoryUtil.createJSONObject();
-					String access_token = getToken(config.getLgspTokenUrl(), config.getLgspConsumerKey(),
-							config.getLgspSercureKey());
+					if(config.getLgspType().equalsIgnoreCase(BGTVT)) {
+						String access_token = getToken(config.getLgspTokenUrl(), config.getLgspConsumerKey(),
+								config.getLgspSercureKey());
+	
+						JSONObject datas = createMOrderDatasCollect(config, input, receiverName, receiverAddress,
+								receiverTel, receiverProvince, receiverDistrict, receiverEmail);
+	
+						_log.debug("++datas:" + datas);
+	
+						StringBuilder serviceURL = new StringBuilder();
+						serviceURL.append(config.getLgspVnpostUrl()).append(StringPool.QUESTION).append("service")
+								.append(StringPool.EQUAL).append(config.getLgspVnpostOrderPost());
+	
+						result = getVNPOSTPrice(serviceURL.toString(), access_token, datas);
 
-					JSONObject datas = createMOrderDatasCollect(config, input, receiverName, receiverAddress,
-							receiverTel, receiverProvince, receiverDistrict, receiverEmail);
-
-					_log.debug("++datas:" + datas);
-
-					StringBuilder serviceURL = new StringBuilder();
-					serviceURL.append(config.getLgspVnpostUrl()).append(StringPool.QUESTION).append("service")
-							.append(StringPool.EQUAL).append(config.getLgspVnpostOrderPost());
-
-					result = getVNPOSTPrice(serviceURL.toString(), access_token, datas);
-
+					}
+					
 					return Response.status(200).entity(result).build();
 
 				} else {
@@ -332,26 +344,30 @@ public class VNPostManagementImpl implements VNPostManagement {
 			JSONObject obj = JSONFactoryUtil.createJSONObject();
 			MStatus status = null;
 
-			boolean isLGSPActive = config.isLgspActive();
+			boolean isLGSPActive = config.isLGSP();
 
 			if (isLGSPActive) {
+				
+				if(config.getLgspType().equalsIgnoreCase(BGTVT)) {
 
-				JSONObject result = JSONFactoryUtil.createJSONObject();
-				String access_token = getToken(config.getLgspTokenUrl(), config.getLgspConsumerKey(),
-						config.getLgspSercureKey());
-
-				StringBuilder serviceURL = new StringBuilder();
-				serviceURL.append(config.getLgspVnpostUrl()).append(StringPool.QUESTION).append("service")
-						.append(StringPool.EQUAL).append(config.getLgspVnpostOrderTracking())
-						.append(StringPool.QUESTION);
-				serviceURL.append("pagesize").append(StringPool.EQUAL).append(pagesize);
-				serviceURL.append(StringPool.AMPERSAND).append("pagesize").append(StringPool.EQUAL).append(pagesize);
-
-				result = getVNPOSTPrice(serviceURL.toString(), access_token, null, HttpMethods.GET);
-
-				Gson gsonDatas = new Gson();
-
-				status = gsonDatas.fromJson(result.toString(), MStatus.class);
+					JSONObject result = JSONFactoryUtil.createJSONObject();
+					String access_token = getToken(config.getLgspTokenUrl(), config.getLgspConsumerKey(),
+							config.getLgspSercureKey());
+	
+					StringBuilder serviceURL = new StringBuilder();
+					serviceURL.append(config.getLgspVnpostUrl()).append(StringPool.QUESTION).append("service")
+							.append(StringPool.EQUAL).append(config.getLgspVnpostOrderTracking())
+							.append(StringPool.QUESTION);
+					serviceURL.append("pagesize").append(StringPool.EQUAL).append(pagesize);
+					serviceURL.append(StringPool.AMPERSAND).append("pagesize").append(StringPool.EQUAL).append(pagesize);
+	
+					result = getVNPOSTPrice(serviceURL.toString(), access_token, null, HttpMethods.GET);
+	
+					Gson gsonDatas = new Gson();
+	
+					status = gsonDatas.fromJson(result.toString(), MStatus.class);
+				
+				}
 
 			} else {
 
@@ -445,29 +461,33 @@ public class VNPostManagementImpl implements VNPostManagement {
 			try {
 
 				MResult mResult = null;
-				boolean isLGSPActive = config.isLgspActive();
+				boolean isLGSPActive = config.isLGSP();
 
 				if (isLGSPActive) {
+					
+					if(config.getLgspType().equalsIgnoreCase(BGTVT)) {
 
-					JSONObject result = JSONFactoryUtil.createJSONObject();
-					String access_token = getToken(config.getLgspTokenUrl(), config.getLgspConsumerKey(),
-							config.getLgspSercureKey());
-
-					StringBuilder serviceURL = new StringBuilder();
-					serviceURL.append(config.getLgspVnpostUrl()).append(StringPool.QUESTION).append("service")
-							.append(StringPool.EQUAL).append(config.getLgspVnpostOrderTracking())
-							.append(StringPool.QUESTION);
-					serviceURL.append("CustomerCode").append(StringPool.EQUAL).append(input.getCustomerCode());
-					serviceURL.append(StringPool.AMPERSAND).append("OrderNUmber").append(StringPool.EQUAL)
-							.append(input.getOrderNumber());
-
-					result = getVNPOSTPrice(serviceURL.toString(), access_token, null, HttpMethods.GET);
-
-					Gson gsonDatas = new Gson();
-
-					mResult = gsonDatas.fromJson(result.toString(), MResult.class);
-
-					_log.info("+++++result:" + result);
+						JSONObject result = JSONFactoryUtil.createJSONObject();
+						String access_token = getToken(config.getLgspTokenUrl(), config.getLgspConsumerKey(),
+								config.getLgspSercureKey());
+	
+						StringBuilder serviceURL = new StringBuilder();
+						serviceURL.append(config.getLgspVnpostUrl()).append(StringPool.QUESTION).append("service")
+								.append(StringPool.EQUAL).append(config.getLgspVnpostOrderTracking())
+								.append(StringPool.QUESTION);
+						serviceURL.append("CustomerCode").append(StringPool.EQUAL).append(input.getCustomerCode());
+						serviceURL.append(StringPool.AMPERSAND).append("OrderNUmber").append(StringPool.EQUAL)
+								.append(input.getOrderNumber());
+	
+						result = getVNPOSTPrice(serviceURL.toString(), access_token, null, HttpMethods.GET);
+	
+						Gson gsonDatas = new Gson();
+	
+						mResult = gsonDatas.fromJson(result.toString(), MResult.class);
+	
+						_log.debug("+++++result:" + result);
+					
+					}
 
 				} else {
 
@@ -481,7 +501,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 
 				}
 
-				_log.info("+++++mResult:" + JSONFactoryUtil.looseSerialize(mResult));
+				_log.debug("+++++mResult:" + JSONFactoryUtil.looseSerialize(mResult));
 
 				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(mResult)).build();
 			} catch (Exception e) {
@@ -534,6 +554,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 			return token;
 		} catch (Exception e) {
 			_log.error(e.getMessage());
+			_log.error(e);
 			return null;
 		}
 	}
@@ -650,21 +671,27 @@ public class VNPostManagementImpl implements VNPostManagement {
 
 				_log.debug("++datas:" + datas);
 
-				boolean isLGSPActive = config.isLgspActive();
+				boolean isLGSPActive = config.isLGSP();
+				
+				_log.debug("+++isLGSPActive:"+isLGSPActive);
 
-				if (isLGSPActive) {
-
-					String access_token = getToken(config.getLgspTokenUrl(), config.getLgspConsumerKey(),
-							config.getLgspSercureKey());
-
-					StringBuilder serviceURL = new StringBuilder();
-					serviceURL.append(config.getLgspVnpostUrl()).append(StringPool.QUESTION).append("service")
-							.append(StringPool.EQUAL).append(config.getLgspVnpostGetPrice());
-
-					result = getVNPOSTPrice(serviceURL.toString(), access_token, datas);
+				if (isLGSPActive ) {
+					
+					if(config.getLgspType().equalsIgnoreCase(BGTVT)) {
+						
+						String access_token = getToken(config.getLgspTokenUrl(), config.getLgspConsumerKey(),
+								config.getLgspSercureKey());
+	
+						StringBuilder serviceURL = new StringBuilder();
+						serviceURL.append(config.getLgspVnpostUrl()).append(StringPool.QUESTION).append("service")
+								.append(StringPool.EQUAL).append(config.getLgspVnpostGetPrice());
+	
+						result = getVNPOSTPrice(serviceURL.toString(), access_token, datas);
+					
+					}
 
 				}
-
+				
 				if (Validator.isNotNull(result)) {
 					return Response.status(200).entity(result.getJSONObject("content").getString("price")).build();
 				} else {

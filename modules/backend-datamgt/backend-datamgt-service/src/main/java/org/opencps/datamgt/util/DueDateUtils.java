@@ -151,6 +151,8 @@ public class DueDateUtils {
 				// 1st set workTimes & set holidays
 				this._setWorkTimes();
 				this._setHolidays(startDate,0);
+				// set ngay lam bu
+				this._setCompensationDates(startDate, 1);
 
 				// set start date
 				this.setStartDate(startDate);

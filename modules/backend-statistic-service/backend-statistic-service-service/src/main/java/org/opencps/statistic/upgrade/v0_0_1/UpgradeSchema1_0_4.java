@@ -18,25 +18,41 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeMVCCVersion;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.upgrade.UpgradeProcess.AlterTableAddColumn;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import org.opencps.statistic.upgrade.v0_0_1.util.StatisticTable;
 
 /**
  * @author nhanhoang
  */
-public class UpgradeSchema1_0_3 extends UpgradeProcess {
-	private Log _log = LogFactoryUtil.getLog(UpgradeSchema1_0_3.class.getName());
+public class UpgradeSchema1_0_4 extends UpgradeProcess {
 	
+	private Log _log = LogFactoryUtil.getLog(UpgradeSchema1_0_4.class.getName());
 	
 	@Override
 	protected void doUpgrade() throws Exception {
 		
 		upgrade(new UpgradeMVCCVersion());
 		
-		if(!hasColumn(StatisticTable.TABLE_NAME, "reporting")) {
-			alter(StatisticTable.class, new AlterColumnType("reporting","INTEGER"));
+		if(!hasColumn(StatisticTable.TABLE_NAME, "processingInAPeriodCount")) {
+			alter(StatisticTable.class,new AlterTableAddColumn("processingInAPeriodCount INTEGER"));
+			
 		}
+
+		if(!hasColumn(StatisticTable.TABLE_NAME, "releaseInAPeriodCount")) {
+			alter(StatisticTable.class,new AlterTableAddColumn("releaseInAPeriodCount INTEGER"));
+			
+		}
+		
+		
+		
+		runSQL("create index IX_45A15230 on opencps_statistic (groupId, govAgencyCode, month, year, system, domainCode)");
+		runSQL("create index IX_68F959EF on opencps_statistic (groupId, month, year, domainCode)");
+		runSQL("create index IX_89A15952 on opencps_statistic (groupId, month, year, system, domainCode)");
+
+		
+		
+		
 	}
 
 }

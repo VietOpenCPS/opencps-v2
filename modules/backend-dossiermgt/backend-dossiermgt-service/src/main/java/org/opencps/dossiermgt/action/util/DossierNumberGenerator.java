@@ -406,7 +406,16 @@ public class DossierNumberGenerator {
 
 			dossierNumber = seriNumberPattern;
 		}
-		return dossierNumber;
+
+		boolean isDuplicateDossierNo = DossierLocalServiceUtil.isDuplicateDossierNo(groupId,dossierNumber);
+
+		if(isDuplicateDossierNo){
+			return generateDossierNumber(groupId,  companyId,  dossierId,  processOtionId,
+					seriNumberPattern,  params,  searchContext);
+		}else {
+
+			return dossierNumber;
+		}
 	}
 
 	private static final String CODE = "{code}";
@@ -596,7 +605,7 @@ public class DossierNumberGenerator {
 
 		long _counterNumber = 0;
 		Counter counter = null;
-		_log.info("pattern" + pattern);
+		_log.debug("pattern" + pattern);
 		Counter counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
 		if (Validator.isNotNull(counterDetail)) {
 			// create counter config
@@ -612,7 +621,7 @@ public class DossierNumberGenerator {
 			} while (counter == null);
 
 		} else {
-			_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+			_log.debug("COUTER_CURR_CONFIG_IS_NOT_NULL");
 			counterDetail = CounterLocalServiceUtil.createCounter(pattern);
 			// increment CurrentCounter
 			_counterNumber = counterDetail.getCurrentId() + 1;

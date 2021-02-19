@@ -5929,7 +5929,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String delegateWardName, double durationCount, int durationUnit,
 			String dossierName, String processNo, String metaData,
 			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-			String dossierCounter, ServiceContext context)
+			String dossierCounter,int systemId, ServiceContext context)
 			throws PortalException {
 
 		long userId = context.getUserId();
@@ -6037,6 +6037,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setDossierName(dossierName);
 			dossier.setProcessNo(processNo);
 			dossier.setMetaData(metaData);
+			dossier.setSystemId(systemId);
 			
 			if(Validator.isNotNull(vnpostalStatus)) {
 				dossier.setVnpostalStatus(vnpostalStatus);
@@ -6169,12 +6170,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			// if (Validator.isNotNull(applicantNote))
 			dossier.setApplicantNote(applicantNote);
-
-			dossier.setVnpostalStatus(vnpostalStatus);
+			if(Validator.isNotNull(vnpostalStatus)) {
+				dossier.setVnpostalStatus(vnpostalStatus);
+			}
 			dossier.setVnpostalProfile(vnpostalProfile);
 			if (Validator.isNotNull(fromViaPostal)) {
 				dossier.setFromViaPostal(fromViaPostal);
 			}
+			dossier.setSystemId(systemId);
 
 			dossier = dossierPersistence.update(dossier);
 
@@ -6409,6 +6412,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			return dossierPersistence.findByG_DN(groupId, dossierNo);
 		} catch (NoSuchDossierException e) {
 			return null;
+		}
+	}
+	public Boolean isDuplicateDossierNo(long groupId, String dossierNo) {
+
+		try {
+			Dossier dossier = dossierPersistence.findByG_DN(groupId, dossierNo);
+
+			return true;
+		} catch (NoSuchDossierException e) {
+
+			return false;
 		}
 	}
 
@@ -6783,6 +6797,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.fetchByG_AN_SC_GAC_DTNO_ODID(
 				groupId, applicantIdNo, serviceCode, govAgencyCode,
 				dossierTemplateNo, originDossierId);
+	}
+
+	public Dossier getByG_AN_SC_GAC_DTNO_SN_ODID(
+			long groupId, String applicantIdNo, String serviceCode,
+			String govAgencyCode, String dossierTemplateNo, long originDossierId, String serverNo) {
+
+		return dossierPersistence.fetchByG_AN_SC_GAC_DTNO_SN_ODID(
+				groupId, applicantIdNo, serviceCode, govAgencyCode,
+				dossierTemplateNo, originDossierId, serverNo);
 	}
 
 	public Dossier fetchOnePublicService() {

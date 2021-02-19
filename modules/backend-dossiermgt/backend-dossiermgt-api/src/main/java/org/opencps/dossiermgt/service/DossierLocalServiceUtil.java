@@ -410,14 +410,14 @@ public class DossierLocalServiceUtil {
 		return getService().findByG_GDID(groupId, groupDossierId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_U_DO(
+		long groupId, long userId) {
+		return getService().findByG_U_DO(groupId, userId);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_UID_DS(
 		long groupId, long userId, String dossierStatus) {
 		return getService().findByG_UID_DS(groupId, userId, dossierStatus);
-	}
-
-	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_U_DO(
-			long groupId, long userId) {
-		return getService().findByG_U_DO(groupId, userId);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByGID(
@@ -491,6 +491,16 @@ public class DossierLocalServiceUtil {
 		return getService()
 				   .getByG_AN_SC_GAC_DTNO_ODID(groupId, applicantIdNo,
 			serviceCode, govAgencyCode, dossierTemplateNo, originDossierId);
+	}
+
+	public static org.opencps.dossiermgt.model.Dossier getByG_AN_SC_GAC_DTNO_SN_ODID(
+		long groupId, String applicantIdNo, String serviceCode,
+		String govAgencyCode, String dossierTemplateNo, long originDossierId,
+		String serverNo) {
+		return getService()
+				   .getByG_AN_SC_GAC_DTNO_SN_ODID(groupId, applicantIdNo,
+			serviceCode, govAgencyCode, dossierTemplateNo, originDossierId,
+			serverNo);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> getByGID_GC_SC_DTN_DS_APP_ORI(
@@ -965,6 +975,10 @@ public class DossierLocalServiceUtil {
 			durationCount, serviceContext);
 	}
 
+	public static Boolean isDuplicateDossierNo(long groupId, String dossierNo) {
+		return getService().isDuplicateDossierNo(groupId, dossierNo);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier postDossier(
 		long groupId, long dossierId, String referenceUid, int counter,
 		String serviceCode, String serviceName, String govAgencyCode,
@@ -1021,7 +1035,7 @@ public class DossierLocalServiceUtil {
 		String delegateWardName, double durationCount, int durationUnit,
 		String dossierName, String processNo, String metaData,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		String dossierCounter,
+		String dossierCounter, int systemId,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -1043,7 +1057,7 @@ public class DossierLocalServiceUtil {
 			delegateDistrictCode, delegateDistrictName, delegateWardCode,
 			delegateWardName, durationCount, durationUnit, dossierName,
 			processNo, metaData, vnpostalStatus, vnpostalProfile,
-			fromViaPostal, dossierCounter, context);
+			fromViaPostal, dossierCounter, systemId, context);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier publishImportDossier(

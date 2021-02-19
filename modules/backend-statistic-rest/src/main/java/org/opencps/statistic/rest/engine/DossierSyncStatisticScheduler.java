@@ -45,17 +45,17 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = DossierSyncStatisticScheduler.class)
 public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	protected Log _log = LogFactoryUtil.getLog(DossierSyncStatisticScheduler.class);
-	
+
 	public static final int GROUP_TYPE_SITE = 1;
 	private volatile boolean isRunningStatisticSync = false;
-	// Time engine dossier
-	private static int TIME_STATISTIC_CALCULATOR = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.calculator"))
-			? Integer.valueOf(PropsUtil.get("org.opencps.statistic.calculator")) : 30;
+
+	private  final Boolean CALCULATE_DOSSIER_STATISTIC_ENABLE = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.sync.enable"))
+			? Boolean.valueOf(PropsUtil.get("org.opencps.statistic.sync.enable")) : false;
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		System.out.println("START STATISTIC DOSSIER STATISTIC: " + isRunningStatisticSync);
-		if (!isRunningStatisticSync) {
+		_log.debug("START STATISTIC DOSSIER STATISTIC: " + isRunningStatisticSync);
+		if (!isRunningStatisticSync && CALCULATE_DOSSIER_STATISTIC_ENABLE) {
 			isRunningStatisticSync = true;
 		}
 		else {
@@ -64,9 +64,9 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		long startTime = System.currentTimeMillis();
 		Date nowLog = new Date();
 		try {
-			System.out.println("START TRACE LOG CALCULATOR TIME: " + nowLog);
-			System.out.println("START CALCULATOR TIME: " + (System.currentTimeMillis() - startTime) + " ms");
-			
+			_log.debug("START TRACE LOG CALCULATOR TIME: " + nowLog);
+			_log.debug("START CALCULATOR TIME: " + (System.currentTimeMillis() - startTime) + " ms");
+
 			List<ServerConfig> configList = ServerConfigLocalServiceUtil.getByServerAndProtocol("SERVER_STATISTIC_DVC", DossierStatisticConstants.STATISTIC_PROTOCOL);
 			ServerConfig config = null;
 			if (configList != null && configList.size() > 0) {
@@ -75,7 +75,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 					return;
 				}
 			} else {
-				System.out.println("RETURN CALCULATOR END: " + (System.currentTimeMillis() - startTime) + " ms");
+				_log.debug("RETURN CALCULATOR END: " + (System.currentTimeMillis() - startTime) + " ms");
 				return ;
 			}
 
@@ -177,7 +177,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			List<JSONObject> lstDossierDataObjs = statisticEngineUpdate.convertStatisticDataList(mapStatistic);
 //			//
 			engineUpdateAction.updateStatistic(lstDossierDataObjs);
-			
+
 			// Update reporting from 1 to 2
 //			List<OpencpsDossierStatistic> opencpsStatisticList = OpencpsDossierStatisticLocalServiceUtil.getListByReporting(1);
 //			if (opencpsStatisticList != null && opencpsStatisticList.size() > 0) {
@@ -190,15 +190,15 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		catch (Exception e) {
 			_log.error(e);
 		}
-		System.out.println("END TRACE LOG CALCULATOR TIME: " + nowLog);
-		System.out.println("CALCULATOR END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
+		_log.debug("END TRACE LOG CALCULATOR TIME: " + nowLog);
+		_log.debug("CALCULATOR END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 
 		isRunningStatisticSync = false;
 	}
 
 	private DossierStatisticData processCalStatistic(long groupId, int month, int year, String govAgencyCode, String domainCode,
-			String groupGovAgencyCode, String system, int reporting,
-			List<OpencpsDossierStatistic> dossierStatisticList) {
+													 String groupGovAgencyCode, String system, int reporting,
+													 List<OpencpsDossierStatistic> dossierStatisticList) {
 		DossierStatisticData dossierStatistic = null;
 		int totalCount = 0;
 		int deniedCount = 0;
@@ -239,7 +239,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			dossierStatistic = new DossierStatisticData();
 			for (OpencpsDossierStatistic opencpsDossierStatistic : dossierStatisticList) {
 				//
-				companyId = opencpsDossierStatistic.getCompanyId() > 0 ? opencpsDossierStatistic.getCompanyId() : 0; 
+				companyId = opencpsDossierStatistic.getCompanyId() > 0 ? opencpsDossierStatistic.getCompanyId() : 0;
 				//
 				totalCount += opencpsDossierStatistic.getTotalCount();
 				deniedCount += opencpsDossierStatistic.getDeniedCount();
@@ -333,28 +333,38 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	/**
 	 * activate: Called whenever the properties for the component change (ala Config
 	 * Admin) or OSGi is activating the component.
-	 * 
+	 *
 	 * @param properties The properties map from Config Admin.
 	 * @throws SchedulerException in case of error.
 	 */
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) throws SchedulerException {
-		String listenerClass = getClass().getName();
-		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null,
-				TIME_STATISTIC_CALCULATOR, TimeUnit.MINUTE);
 
-		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
 
-//		  _schedulerEntryImpl.setTrigger(jobTrigger);
+		String cronExpression = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.sync.cron.expression"))
+				? String.valueOf(PropsUtil.get("org.opencps.statistic.sync.cron.expression")) : _DEFAULT_CRON_EXPRESSION;
+
+		_log.info("--cronExpression:"+cronExpression);
 
 		if (_initialized) {
 			deactivate();
 		}
 
-		_schedulerEngineHelper.register(this, _schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
-		_initialized = true;
+		if(Validator.isNotNull(cronExpression) && CALCULATE_DOSSIER_STATISTIC_ENABLE) {
+			String listenerClass = getClass().getName();
+
+			Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null,
+					cronExpression);
+
+			_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
+			_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
+
+
+			_schedulerEngineHelper.register(this, _schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
+			_initialized = true;
+		}
+
 	}
 
 	@Deactivate
@@ -376,7 +386,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	/**
 	 * getStorageType: Utility method to get the storage type from the scheduler entry wrapper.
 	 * @return StorageType The storage type to use.
-	*/
+	 */
 	protected StorageType getStorageType() {
 		if (_schedulerEntryImpl instanceof StorageTypeAware) {
 			return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
@@ -387,18 +397,18 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 
 	/**
 	 * setModuleServiceLifecycle: So this requires some explanation...
-	 * 
+	 *
 	 * OSGi will start a component once all of it's dependencies are satisfied.
 	 * However, there are times where you want to hold off until the portal is
 	 * completely ready to go.
-	 * 
+	 *
 	 * This reference declaration is waiting for the ModuleServiceLifecycle's
 	 * PORTAL_INITIALIZED component which will not be available until, surprise
 	 * surprise, the portal has finished initializing.
-	 * 
+	 *
 	 * With this reference, this component activation waits until portal
 	 * initialization has completed.
-	 * 
+	 *
 	 * @param moduleServiceLifecycle
 	 */
 	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED, unbind = "-")
@@ -415,6 +425,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		_schedulerEngineHelper = schedulerEngineHelper;
 	}
 
+	private final String _DEFAULT_CRON_EXPRESSION = "0 1 1 1/1 * ? *";
 	private SchedulerEngineHelper _schedulerEngineHelper;
 	private TriggerFactory _triggerFactory;
 	private volatile boolean _initialized;

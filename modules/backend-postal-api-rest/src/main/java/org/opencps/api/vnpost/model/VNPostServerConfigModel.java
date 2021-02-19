@@ -41,7 +41,6 @@ public class VNPostServerConfigModel {
 
 	private String keyToken;
 	
-	private boolean lgspActive;
 	private String lgspUsername;
 	private String lgspPassword;
 	private String lgspSercureKey;
@@ -57,16 +56,8 @@ public class VNPostServerConfigModel {
 	private String lgspVnpostPricehcc;
 	private String lgspVnpostDocument;
 	private String lgspVnpostGetPrice;
-	
+	private String lgspType;
 
-
-	public boolean isLgspActive() {
-		return lgspActive;
-	}
-
-	public void setLgspActive(boolean lgspActive) {
-		this.lgspActive = lgspActive;
-	}
 
 	public String getLgspUsername() {
 		return lgspUsername;
@@ -188,8 +179,6 @@ public class VNPostServerConfigModel {
 		this.lgspVnpostGetPrice = lgspVnpostGetPrice;
 	}
 
-	private String lgspType;
-
 	public String getLgspType() {
 		return lgspType;
 	}
@@ -221,7 +210,7 @@ public class VNPostServerConfigModel {
 	public VNPostServerConfigModel(String apiPostOrder, String apiGetOrderTracking, String apiGetToken,
 								   String apiCancelOrder, String customerKey, String secretKey, boolean active, String customerCode,
 								   Integer senderProvince, Integer senderDistrict, String senderAddress, String senderEmail, String senderTel, String senderName,
-								   boolean lgspActive,String lgspUsername,String lgspPassword,String lgspSercureKey,String lgspCustomerCode,String lgspTokenUrl,String lgspVnpostUrl,
+								   String lgspUsername,String lgspPassword,String lgspSercureKey,String lgspCustomerCode,String lgspTokenUrl,String lgspVnpostUrl,
 								   String lgspVnpostOrderPost,String lgspVnpostOrderCancel,String lgspVnpostOrderTracking,String lgspVnpostGetPostagevas,String lgspVnpostGetInfomationPost,
 								   String lgspVnpostPricehcc,String lgspVnpostDocument,String lgspVnpostGetPrice,String lgspConsumerKey) {
 		super();
@@ -240,7 +229,6 @@ public class VNPostServerConfigModel {
 		this.senderTel = senderTel;
 		this.senderName = senderName;
 		
-		this.lgspActive = lgspActive;
 		this.lgspUsername = lgspUsername;
 		this.lgspPassword = lgspPassword;
 		this.lgspSercureKey = lgspSercureKey;
