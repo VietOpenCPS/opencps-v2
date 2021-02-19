@@ -4507,6 +4507,324 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 	private static final String _FINDER_COLUMN_GID_LEVEL_GROUPID_2 = "serviceConfig.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_GID_LEVEL_SERVICELEVEL_2 = "serviceConfig.serviceLevel = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL = new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceConfigModelImpl.FINDER_CACHE_ENABLED,
+			ServiceConfigImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByGID_SI_GOV_LEVEL",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), Integer.class.getName()
+			},
+			ServiceConfigModelImpl.GROUPID_COLUMN_BITMASK |
+			ServiceConfigModelImpl.SERVICEINFOID_COLUMN_BITMASK |
+			ServiceConfigModelImpl.GOVAGENCYCODE_COLUMN_BITMASK |
+			ServiceConfigModelImpl.SERVICELEVEL_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL = new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByGID_SI_GOV_LEVEL",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), Integer.class.getName()
+			});
+
+	/**
+	 * Returns the service config where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63; or throws a {@link NoSuchServiceConfigException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceLevel the service level
+	 * @return the matching service config
+	 * @throws NoSuchServiceConfigException if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig findByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfoId, String govAgencyCode, int serviceLevel)
+		throws NoSuchServiceConfigException {
+		ServiceConfig serviceConfig = fetchByGID_SI_GOV_LEVEL(groupId,
+				serviceInfoId, govAgencyCode, serviceLevel);
+
+		if (serviceConfig == null) {
+			StringBundler msg = new StringBundler(10);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", serviceInfoId=");
+			msg.append(serviceInfoId);
+
+			msg.append(", govAgencyCode=");
+			msg.append(govAgencyCode);
+
+			msg.append(", serviceLevel=");
+			msg.append(serviceLevel);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchServiceConfigException(msg.toString());
+		}
+
+		return serviceConfig;
+	}
+
+	/**
+	 * Returns the service config where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceLevel the service level
+	 * @return the matching service config, or <code>null</code> if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig fetchByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfoId, String govAgencyCode, int serviceLevel) {
+		return fetchByGID_SI_GOV_LEVEL(groupId, serviceInfoId, govAgencyCode,
+			serviceLevel, true);
+	}
+
+	/**
+	 * Returns the service config where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceLevel the service level
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching service config, or <code>null</code> if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig fetchByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfoId, String govAgencyCode, int serviceLevel,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] {
+				groupId, serviceInfoId, govAgencyCode, serviceLevel
+			};
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL,
+					finderArgs, this);
+		}
+
+		if (result instanceof ServiceConfig) {
+			ServiceConfig serviceConfig = (ServiceConfig)result;
+
+			if ((groupId != serviceConfig.getGroupId()) ||
+					(serviceInfoId != serviceConfig.getServiceInfoId()) ||
+					!Objects.equals(govAgencyCode,
+						serviceConfig.getGovAgencyCode()) ||
+					(serviceLevel != serviceConfig.getServiceLevel())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(6);
+
+			query.append(_SQL_SELECT_SERVICECONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_SERVICEINFOID_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_2);
+			}
+
+			query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_SERVICELEVEL_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceInfoId);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				qPos.add(serviceLevel);
+
+				List<ServiceConfig> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"ServiceConfigPersistenceImpl.fetchByGID_SI_GOV_LEVEL(long, long, String, int, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					ServiceConfig serviceConfig = list.get(0);
+
+					result = serviceConfig;
+
+					cacheResult(serviceConfig);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (ServiceConfig)result;
+		}
+	}
+
+	/**
+	 * Removes the service config where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceLevel the service level
+	 * @return the service config that was removed
+	 */
+	@Override
+	public ServiceConfig removeByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfoId, String govAgencyCode, int serviceLevel)
+		throws NoSuchServiceConfigException {
+		ServiceConfig serviceConfig = findByGID_SI_GOV_LEVEL(groupId,
+				serviceInfoId, govAgencyCode, serviceLevel);
+
+		return remove(serviceConfig);
+	}
+
+	/**
+	 * Returns the number of service configs where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceLevel the service level
+	 * @return the number of matching service configs
+	 */
+	@Override
+	public int countByGID_SI_GOV_LEVEL(long groupId, long serviceInfoId,
+		String govAgencyCode, int serviceLevel) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL;
+
+		Object[] finderArgs = new Object[] {
+				groupId, serviceInfoId, govAgencyCode, serviceLevel
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_SERVICECONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_SERVICEINFOID_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_2);
+			}
+
+			query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_SERVICELEVEL_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceInfoId);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				qPos.add(serviceLevel);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_GROUPID_2 = "serviceConfig.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_SERVICEINFOID_2 = "serviceConfig.serviceInfoId = ? AND ";
+	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_1 = "serviceConfig.govAgencyCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_2 = "serviceConfig.govAgencyCode = ? AND ";
+	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_3 = "(serviceConfig.govAgencyCode IS NULL OR serviceConfig.govAgencyCode = '') AND ";
+	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_SERVICELEVEL_2 = "serviceConfig.serviceLevel = ?";
 
 	public ServiceConfigPersistenceImpl() {
 		setModelClass(ServiceConfig.class);
@@ -4549,6 +4867,13 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			new Object[] {
 				serviceConfig.getGroupId(), serviceConfig.getServiceInfoId(),
 				serviceConfig.getGovAgencyCode()
+			}, serviceConfig);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL,
+			new Object[] {
+				serviceConfig.getGroupId(), serviceConfig.getServiceInfoId(),
+				serviceConfig.getGovAgencyCode(),
+				serviceConfig.getServiceLevel()
 			}, serviceConfig);
 
 		serviceConfig.resetOriginalValues();
@@ -4642,6 +4967,18 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_SI_GAC, args,
 			serviceConfigModelImpl, false);
+
+		args = new Object[] {
+				serviceConfigModelImpl.getGroupId(),
+				serviceConfigModelImpl.getServiceInfoId(),
+				serviceConfigModelImpl.getGovAgencyCode(),
+				serviceConfigModelImpl.getServiceLevel()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL, args,
+			serviceConfigModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -4688,6 +5025,31 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_SI_GAC, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_SI_GAC, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					serviceConfigModelImpl.getGroupId(),
+					serviceConfigModelImpl.getServiceInfoId(),
+					serviceConfigModelImpl.getGovAgencyCode(),
+					serviceConfigModelImpl.getServiceLevel()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL, args);
+		}
+
+		if ((serviceConfigModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					serviceConfigModelImpl.getOriginalGroupId(),
+					serviceConfigModelImpl.getOriginalServiceInfoId(),
+					serviceConfigModelImpl.getOriginalGovAgencyCode(),
+					serviceConfigModelImpl.getOriginalServiceLevel()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL, args);
 		}
 	}
 

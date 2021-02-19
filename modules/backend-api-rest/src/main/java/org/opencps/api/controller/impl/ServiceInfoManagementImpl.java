@@ -1030,8 +1030,12 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				}
 
 				//Update service file template
-				serviceFileTemplate.setFormScriptFileId(formScriptId);
-				serviceFileTemplate.setFormReportFileId(formReportId);
+				if(Validator.isNotNull(formScriptId)) {
+					serviceFileTemplate.setFormScriptFileId(formScriptId);
+				}
+				if(Validator.isNotNull(formReportId)) {
+					serviceFileTemplate.setFormReportFileId(formReportId);
+				}
 				if (Validator.isNotNull(templateName))
 					serviceFileTemplate.setTemplateName(templateName);
 

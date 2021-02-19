@@ -1175,8 +1175,6 @@ public class DossierActionsImpl implements DossierActions {
 													createFile.put(DossierPartTerm.FILE_TEMPLATE_NO, fileTemplateNo);
 													createFile.put(DossierFileTerm.COUNTER, 1);
 													createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
-													
-													
 													createFiles.put(createFile);
 												} else {
 													eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true

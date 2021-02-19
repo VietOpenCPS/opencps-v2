@@ -3002,7 +3002,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel,createDateStart,createDateEnd);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
-
+		
 		return IndexSearcherHelperUtil.search(searchContext, booleanInput);
 	}
 
@@ -3236,7 +3236,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					DossierTerm.CURRENT_ACTION_USER,
 					DossierTerm.ORIGIN_DOSSIER_NO_SEARCH,
 					ServiceInfoTerm.SERVICE_CODE_SEARCH,
-					DossierTerm.DELEGATE_NAME_SEARCH, DossierTerm.DOSSIER_COUNTER_SEARCH
+					DossierTerm.DELEGATE_NAME_SEARCH, DossierTerm.DOSSIER_COUNTER_SEARCH,
+					DossierTerm.ACTION_NOTE, DossierTerm.COMMENT
 			};
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
@@ -4915,12 +4916,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					new MultiMatchQuery(String.valueOf(0));
 			queryDueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
 			subQueryOne.add(queryDueDate, BooleanClauseOccur.MUST_NOT);
+			
+			// fix theo y/c DuanTV: som han (betime) -> không filter theo extendDate
 			/** Check condition extendDate != null and releaseDate < dueDate **/
 			// Check extendDate != null
-			MultiMatchQuery queryExtend =
+			/*MultiMatchQuery queryExtend =
 					new MultiMatchQuery(String.valueOf(0));
 			queryExtend.addField(DossierTerm.EXTEND_DATE_TIMESTAMP);
-			subQueryTwo.add(queryExtend, BooleanClauseOccur.MUST_NOT);
+			subQueryTwo.add(queryExtend, BooleanClauseOccur.MUST_NOT);*/
+			
 			// Check releaseDate < dueDate
 			// TermRangeQueryImpl termRangeRelease = new
 			// TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
@@ -5012,16 +5016,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			queryDueDateEmpty.addField(DossierTerm.DUE_DATE_TIMESTAMP);
 			subQueryTwo.add(queryDueDateEmpty, BooleanClauseOccur.MUST);
 
+			// fix theo y/c BA Duan: đúng hạn (ontime) -> không filter theo extendDate
 			/**
 			 * Check condition (extendDate == null and releaseDate < dueDate &&
 			 * (finishDate==null||finishDate>=dueDate))- START
 			 **/
 			/** Check condition extendDate == null and releaseDate < dueDate **/
 			// Check extendDate == null
-			MultiMatchQuery queryExtend =
+			/*MultiMatchQuery queryExtend =
 					new MultiMatchQuery(String.valueOf(0));
 			queryExtend.addField(DossierTerm.EXTEND_DATE_TIMESTAMP);
-			subQueryThree.add(queryExtend, BooleanClauseOccur.MUST);
+			subQueryThree.add(queryExtend, BooleanClauseOccur.MUST);*/
+			
 			// Check dueDate != null
 			MultiMatchQuery queryDueDate =
 					new MultiMatchQuery(String.valueOf(0));

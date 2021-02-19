@@ -897,6 +897,12 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	}
 
 	@Override
+	public Applicant verifyApplicantWithValue(long applicantId, int verification) throws PortalException {
+		Applicant applicant = ApplicantLocalServiceUtil.verifyApplicantWithValue(applicantId, verification);
+		return applicant;
+	}
+
+	@Override
 	public JSONObject updateAccountEmail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String oldEmail, String newEmail) {
 
