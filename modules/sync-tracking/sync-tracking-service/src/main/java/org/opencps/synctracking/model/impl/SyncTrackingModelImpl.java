@@ -137,8 +137,9 @@ public class SyncTrackingModelImpl extends BaseModelImpl<SyncTracking>
 	public static final long GROUPID_COLUMN_BITMASK = 8L;
 	public static final long MODIFIEDDATE_COLUMN_BITMASK = 16L;
 	public static final long PROTOCOL_COLUMN_BITMASK = 32L;
-	public static final long SERVICECODE_COLUMN_BITMASK = 64L;
-	public static final long UUID_COLUMN_BITMASK = 128L;
+	public static final long REFERENCEUID_COLUMN_BITMASK = 64L;
+	public static final long SERVICECODE_COLUMN_BITMASK = 128L;
+	public static final long UUID_COLUMN_BITMASK = 256L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.synctracking.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.synctracking.model.SyncTracking"));
 
@@ -530,7 +531,17 @@ public class SyncTrackingModelImpl extends BaseModelImpl<SyncTracking>
 
 	@Override
 	public void setReferenceUid(String referenceUid) {
+		_columnBitmask |= REFERENCEUID_COLUMN_BITMASK;
+
+		if (_originalReferenceUid == null) {
+			_originalReferenceUid = _referenceUid;
+		}
+
 		_referenceUid = referenceUid;
+	}
+
+	public String getOriginalReferenceUid() {
+		return GetterUtil.getString(_originalReferenceUid);
 	}
 
 	@Override
@@ -834,6 +845,8 @@ public class SyncTrackingModelImpl extends BaseModelImpl<SyncTracking>
 		syncTrackingModelImpl._setModifiedDate = false;
 
 		syncTrackingModelImpl._originalDossierNo = syncTrackingModelImpl._dossierNo;
+
+		syncTrackingModelImpl._originalReferenceUid = syncTrackingModelImpl._referenceUid;
 
 		syncTrackingModelImpl._originalProtocol = syncTrackingModelImpl._protocol;
 
@@ -1147,6 +1160,7 @@ public class SyncTrackingModelImpl extends BaseModelImpl<SyncTracking>
 	private String _dossierNo;
 	private String _originalDossierNo;
 	private String _referenceUid;
+	private String _originalReferenceUid;
 	private String _serverNo;
 	private String _protocol;
 	private String _originalProtocol;

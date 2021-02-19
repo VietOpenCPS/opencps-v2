@@ -92,7 +92,7 @@ public class FileUploadUtils {
 		
 		return cloneFile(userId, groupId, fileEntryId, FOLDER_NAME_DOSSIER_FILE, serviceContext);
 	}
-	
+
 	public static FileEntry cloneFile(long userId, long groupId, long fileEntryId, 
 			String destination, ServiceContext serviceContext) 
 		throws Exception {
@@ -161,8 +161,7 @@ public class FileUploadUtils {
 				//fileSize = bytes.length;
 			}
 			
-			//String title = getFileName(sourceFileName);
-			String title = sourceFileName;
+			String title = getFileName(sourceFileName);
 
 			serviceContext.setAddGroupPermissions(true);
 			serviceContext.setAddGuestPermissions(true);
@@ -185,12 +184,11 @@ public class FileUploadUtils {
 
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 			PermissionThreadLocal.setPermissionChecker(checker);
-			
 			if(fileEntryId > 0) {
 				fileEntry = DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, sourceFileName, 
 						fileType, title, title, title, true, inputStream, fileSize, serviceContext);
 			} else {
-				fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), sourceFileName,
+				fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), title,
 					fileType, title, title,
 					StringPool.BLANK, inputStream, fileSize, serviceContext);
 			}
@@ -275,7 +273,7 @@ public class FileUploadUtils {
 	private static String getFileName(String sourceFileName) {
 		String ext = FileUtil.getExtension(sourceFileName);
 		
-		return Validator.isNotNull(ext) ? (System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
+		return Validator.isNotNull(ext) ? (sourceFileName + StringPool.UNDERLINE + System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
 	}
 
 	// Upload Payment File

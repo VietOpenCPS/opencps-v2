@@ -18,20 +18,12 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.LinkedHashMap;
-import java.util.Iterator;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -80,6 +72,7 @@ import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import org.opencps.kernel.util.FileUploadUtil;
 import service.ImportFile;
 import service.dependencies.ImportFileImpl;
 
@@ -201,6 +194,27 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 			dossierFile.setSignInfo(body);
+			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+		} catch (Exception e) {
+			_log.error(e.getMessage());
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response updateSignCheck(long fileId, int signCheck) {
+		try {
+			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFile(fileId);
+			if(Validator.isNull(dossierFile)) {
+				throw new Exception("No dossier file was found with id: " + fileId);
+			}
+			if(Validator.isNull(signCheck) || signCheck == 0) {
+				throw new Exception("No signCheck was found with id: " + fileId);
+			}
+
+			dossierFile.setSignCheck(signCheck);
 			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
@@ -1520,33 +1534,35 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext,
 			long id, String dossierTemplateNo, String dossierPartNo, String uri,
-			String displayName, String fileType) {
+			String displayName, String fileType, long fileEntryId) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
+
 			DossierFileActions action = new DossierFileActionsImpl();
+			DossierFileModel result = new DossierFileModel();
+			if (Validator.isNotNull(fileEntryId)) {
+				FileEntry fileEntryOld = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+				String fileTemplateNo = dossierTemplateNo + dossierPartNo;
+				DossierFile dossierFile =
+						action.addDossierFileByFileEntryId(
+								groupId, id, UUID.randomUUID().toString(),
+								dossierTemplateNo, dossierPartNo, fileTemplateNo,
+								displayName, displayName, fileEntryOld.getSize(), fileEntryOld.getContentStream(), StringPool.BLANK, String.valueOf(false),
+								fileEntryOld.getFileEntryId(), serviceContext);
+				_log.debug("__End add file at:" + new Date());
+				dossierFile.setRemoved(false);
+				_log.debug("__Start update dossier file at:" + new Date());
+				dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
-			InputStream inputStream =
-					ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(uri);
-			String fileTemplateNo = dossierTemplateNo + dossierPartNo;
-			String sourceFileName = displayName + StringPool.PERIOD + fileType;
-			DossierFile dossierFile = action.addDossierFile(
-				groupId, id, UUID.randomUUID().toString(),
-				dossierTemplateNo, dossierPartNo, fileTemplateNo,
-				displayName, sourceFileName, 0l, inputStream, StringPool.BLANK, String.valueOf(false),
-				serviceContext);
-			 _log.debug("__End add file at:" + new Date());
-			dossierFile.setRemoved(false);
-			 _log.debug("__Start update dossier file at:" + new Date());
-			 dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
-			DossierFileModel result =
-					DossierFileUtils.mappingToDossierFileModel(dossierFile);
-
+				result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
 				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+			}
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+		 return Response.status(HttpURLConnection.HTTP_FORBIDDEN).build();
 	}
 
 	@Override

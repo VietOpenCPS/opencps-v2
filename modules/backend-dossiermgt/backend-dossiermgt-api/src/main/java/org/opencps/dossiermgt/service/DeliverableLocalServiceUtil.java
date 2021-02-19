@@ -250,9 +250,19 @@ public class DeliverableLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.dossiermgt.model.Deliverable fetchByGID_AID(
+		long groupId, String applicantIdNo) {
+		return getService().fetchByGID_AID(groupId, applicantIdNo);
+	}
+
 	public static org.opencps.dossiermgt.model.Deliverable fetchByGID_DID(
 		long groupId, long dossierId) {
 		return getService().fetchByGID_DID(groupId, dossierId);
+	}
+
+	public static org.opencps.dossiermgt.model.Deliverable getByF_GID_DI_STATE(
+			long groupId, long dossierId, int deliverableState) {
+		return getService().getByF_GID_DI_STATE(groupId, dossierId, deliverableState);
 	}
 
 	public static org.opencps.dossiermgt.model.Deliverable fetchDeliverable(
@@ -270,6 +280,14 @@ public class DeliverableLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.Deliverable fetchDeliverableByUuidAndGroupId(
 		String uuid, long groupId) {
 		return getService().fetchDeliverableByUuidAndGroupId(uuid, groupId);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByCreateDate(
+		String createDateStart, String createDateEnd, String deliverableType,
+		long deliverableState) {
+		return getService()
+				   .findDeliverableByCreateDate(createDateStart, createDateEnd,
+			deliverableType, deliverableState);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByState(

@@ -142,6 +142,8 @@ public class DossierStatisticUtils {
 		int receiveDossierSatCount = 0;
 		int releaseDossierSatCount = 0;
 		long companyId = 0;
+		int processingInAPeriodCount = 0;
+		int releaseInAPeriodCount = 0;
 		if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
 			dossierStatistic = new DossierStatisticData();
 			for (DossierStatisticData statistic : dossierStatisticList) {
@@ -179,6 +181,8 @@ public class DossierStatisticUtils {
 				dossierOnline4Count += statistic.getDossierOnline4Count();
 				receiveDossierSatCount += statistic.getReceiveDossierSatCount();
 				releaseDossierSatCount += statistic.getReleaseDossierSatCount();
+				processingInAPeriodCount += statistic.getProcessingInAPeriodCount();
+				releaseInAPeriodCount += statistic.getReleaseInAPeriodCount();
 			}
 			//
 			if (releaseCount > 0) {
@@ -228,6 +232,8 @@ public class DossierStatisticUtils {
 			dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
 			dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);
 			dossierStatistic.setGroupAgencyCode(StringPool.BLANK);
+			dossierStatistic.setProcessingInAPeriodCount(processingInAPeriodCount);
+			dossierStatistic.setReleaseInAPeriodCount(releaseInAPeriodCount);
 		}
 		//
 		return dossierStatistic;

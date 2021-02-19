@@ -482,7 +482,6 @@ public class DossierActionsImpl implements DossierActions {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
 						.getByDossierAndUser(dossierActionId, userId);
 					_log.debug("User id: " + userId);
-					_log.debug("Dossier action user :" + JSONFactoryUtil.looseSerialize(dActionUser));
 					// GS.AnhTT_Process
 					int enable = 2;
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
@@ -491,6 +490,7 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}
 					if (dActionUser != null) {
+						_log.debug("Dossier action user :" + JSONFactoryUtil.looseSerialize(dActionUser));
 						_log.debug("Dossier action user :" + dActionUser.getAssigned() + ", " + dossierAction.getPending());
 						int assign = dActionUser.getAssigned();
 						if (assign == 1 && !pending)
@@ -541,7 +541,7 @@ public class DossierActionsImpl implements DossierActions {
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
 							//							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
-							boolean checkEnable = false;
+//							boolean checkEnable = false;
 //							if (!isAdministratorData) {
 //								checkEnable = processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user);
 //								if (checkEnable) {
@@ -561,25 +561,20 @@ public class DossierActionsImpl implements DossierActions {
 //							}
 							if (!isAdministratorData) {
 								//Special check không check dossierActionUser đối với action đặc biệt
+								data.put(ProcessActionTerm.ENABLE, 0);
 								if (AUTO_EVENT_SPECIAL.equals(autoEvent)) {
 									_log.debug("autoEvent : " + autoEvent);
-									checkEnable =processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user);
-									_log.debug("CheckEnable: " + checkEnable);
-									if(checkEnable){
+									if( processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)){
 										data.put(ProcessActionTerm.ENABLE, 1);
 									}
 								} else {
 									if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user)) {
 										data.put(ProcessActionTerm.ENABLE, enable);
-									} else {
-										data.put(ProcessActionTerm.ENABLE, 0);
 									}
 								}
 							} else {
 								data.put(ProcessActionTerm.ENABLE, enable);
 							}
-							if(AUTO_EVENT_SPECIAL.equals(autoEvent)){
-								if(checkEnable){
 									data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
 									data.put(ProcessActionTerm.ACTION_CODE, actionCode);
 									data.put(ProcessActionTerm.ACTION_NAME, actionName);
@@ -588,17 +583,6 @@ public class DossierActionsImpl implements DossierActions {
 									data.put(ProcessActionTerm.AUTO_EVENT, autoEvent);
 									data.put(ProcessActionTerm.PRE_CONDITION, preCondition);
 									data.put(ProcessActionTerm.ALLOW_ASSIGN_USER, processAction.getAllowAssignUser());
-								}
-							}else {
-								data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
-								data.put(ProcessActionTerm.ACTION_CODE, actionCode);
-								data.put(ProcessActionTerm.ACTION_NAME, actionName);
-								data.put(ProcessActionTerm.PRESTEP_CODE, preStepCode);
-								data.put(ProcessActionTerm.POSTSTEP_CODE, postStepCode);
-								data.put(ProcessActionTerm.AUTO_EVENT, autoEvent);
-								data.put(ProcessActionTerm.PRE_CONDITION, preCondition);
-								data.put(ProcessActionTerm.ALLOW_ASSIGN_USER, processAction.getAllowAssignUser());
-							}
 							if(Validator.isNotNull(data) && data.length() > 0) {
 								results.put(data);
 							}
@@ -1053,12 +1037,7 @@ public class DossierActionsImpl implements DossierActions {
 										if (mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) {
 											String deliverables = mappingDataObj
 												.getString(DeliverableTypesTerm.DELIVERABLES_KEY);
-											//											_log.info("--------DELIVERABLES----------" + deliverables);
-											//											_log.info("--------HAS E SIGNATURE----------"
-											//													+ processAction.getESignature());
-											//											_log.info("---------FILE TEMPLATE NO--------" + fileTemplateNo);
 											if (Validator.isNull(deliverables)) {
-												//												_log.info("--------DELIVERABLES IS NULL----------" + deliverables);
 												// Add one deliverable
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 													.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT },
@@ -1160,9 +1139,7 @@ public class DossierActionsImpl implements DossierActions {
 												createFile.put(ConstantUtils.FILE_ENTRY_ID, fileEntryId);
 												createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
 												createFiles.put(createFile);
-												//												_log.info("----DELIVERABLES CREATE FILE JSON-----" + createFile.toString());
 											} else {
-												//												_log.info("--------DELIVERABLES IS NOT NULL----------" + deliverables);
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 													.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT },
 														false, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -1183,6 +1160,7 @@ public class DossierActionsImpl implements DossierActions {
 													createFile.put(DossierPartTerm.FILE_TEMPLATE_NO, fileTemplateNo);
 													createFile.put(DossierFileTerm.COUNTER, 1);
 													createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
+													createFiles.put(createFile);
 												} else {
 													eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
 														: false;

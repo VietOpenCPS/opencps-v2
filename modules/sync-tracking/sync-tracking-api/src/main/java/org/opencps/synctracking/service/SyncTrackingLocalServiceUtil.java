@@ -202,6 +202,11 @@ public class SyncTrackingLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static org.opencps.synctracking.model.SyncTracking getByDossierNo(
+		long groupId, String dossierNo) {
+		return getService().getByDossierNo(groupId, dossierNo);
+	}
+
 	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupId(
 		long groupId, int start, int end) {
 		return getService().getByGroupId(groupId, start, end);
@@ -236,6 +241,19 @@ public class SyncTrackingLocalServiceUtil {
 		return getService()
 				   .getByGroupIdAndServiceCodeAndDate(groupId, serviceCode,
 			fromDate, toDate, start, end);
+	}
+
+	public static org.opencps.synctracking.model.SyncTracking getByReferenceUid(
+		long groupId, String referenceUid) {
+		return getService().getByReferenceUid(groupId, referenceUid);
+	}
+
+	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByReferenceUidAndDate(
+		long groupId, String referenceUid, java.util.Date fromDate,
+		java.util.Date toDate, int start, int end) {
+		return getService()
+				   .getByReferenceUidAndDate(groupId, referenceUid, fromDate,
+			toDate, start, end);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(

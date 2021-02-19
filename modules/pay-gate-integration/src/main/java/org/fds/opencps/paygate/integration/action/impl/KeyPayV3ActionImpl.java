@@ -180,7 +180,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			JSONArray dskhoannop = JSONFactoryUtil.createJSONArray();
 			JSONObject dskhoannop_obj = JSONFactoryUtil.createJSONObject();
 
-			dskhoannop_obj.put(KeyPayV3Term.NOIDUNG, paymentFile.getPaymentNote());
+			dskhoannop_obj.put(KeyPayV3Term.NOIDUNG, Validator.isNotNull(paymentFile.getPaymentNote()) ? paymentFile.getPaymentNote() : KeyPayV3Term.THUPHI + dossier.getDossierNo());
 			dskhoannop_obj.put(KeyPayV3Term.SOTIEN, String.valueOf(paymentFile.getPaymentAmount()));
 			dskhoannop.put(dskhoannop_obj);
 
