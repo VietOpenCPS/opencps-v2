@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 		"toSubmitDate", "online", "domain", "domainName", "applicantName", "applicantIdNo", "serviceName",
 		"fromReleaseDate", "toReleaseDate", "originality", "fromFinishDate", "toFinishDate", "fromReceiveNotDoneDate",
 		"toReceiveNotDoneDate", "fromStatisticDate", "toStatisticDate", "origin", "originDossierId", "time",
-		"groupAgencyCode", "reporting", "reCalculate", "system", "groupCode", "parentAgency", "serviceLevel"})
+		"groupAgencyCode", "reporting", "reCalculate", "system", "groupCode", "parentAgency", "serviceLevel", "quarter"})
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
 
@@ -127,6 +127,8 @@ public class DossierSearchModel {
 	protected String serviceLevel;
 	@QueryParam(value = "isReportServiceCode")
 	protected String isReportServiceCode;
+	@QueryParam(value = "quarter")
+	protected int quarter;
 
 	public String getIsReportServiceCode() {
 		return isReportServiceCode;
@@ -417,6 +419,14 @@ public class DossierSearchModel {
 	}
 	public void setServiceLevel(String serviceLevel) {
 		this.serviceLevel = serviceLevel;
+	}
+
+	public int getQuarter() {
+		return quarter;
+	}
+
+	public void setQuarter(int quarter) {
+		this.quarter = quarter;
 	}
 
 }

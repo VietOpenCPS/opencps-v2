@@ -420,6 +420,14 @@
 			<finder-column name="serviceLevel" />
 		</finder>
 
+		<finder return-type="ServiceConfig" name="GID_SI_GOV_LEVEL">
+			<finder-column name="groupId" />
+			<finder-column name="serviceInfoId" />
+			<finder-column name="govAgencyCode" />
+			<finder-column name="serviceLevel" />
+		</finder>
+
+
 	</entity>
 
 	<entity name="ProcessOption" table="opencps_processoption"
