@@ -1421,7 +1421,6 @@ public class DeliverableLocalServiceImpl
 		object.setFormReport(objectData.getString(DeliverableTerm.FORM_REPORT));
 		// new field to save QD
 		if (objectData.getLong(DeliverableTerm.FILE_ENTRY_ID) > 0) {
-			object.setFileAttachs(objectData.getString(DeliverableTerm.FILE_ENTRY_ID));
 			object.setFileEntryId(objectData.getLong(DeliverableTerm.FILE_ENTRY_ID));
 		}
 		object.setDeliverableState(Integer.valueOf(objectData.getInt(DeliverableTerm.DELIVERABLE_STATE, 1)));
