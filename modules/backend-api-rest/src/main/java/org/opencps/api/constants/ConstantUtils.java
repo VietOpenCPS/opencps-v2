@@ -16,7 +16,9 @@ public class ConstantUtils {
 	public static final String PNG = "png";
 	public static final String DOT_XLSX = ".xlsx";
 	public static final String DOT_XLS = ".xls";
-	
+	public static final String DOT_DOCX = ".docx";
+	public static final String DOT_DOC = ".doc";
+
 	//Destination import file
 	public static final String DEST_DIRECTORY = "imported";
 	public static final String SOURCE_DICTS = "dicts";
@@ -460,4 +462,5 @@ public class ConstantUtils {
 	public static final String CTN = "CTN";
 	public static final String DOSSIER_STATUS = "DOSSIER_STATUS";
 	public static final String ROLE_OVERDUE = "RoleOverdue";
+	public static final String GLOBAL_EDIT_OVERDUE = "GLOBAL_EDIT_OVERDUE";
 }

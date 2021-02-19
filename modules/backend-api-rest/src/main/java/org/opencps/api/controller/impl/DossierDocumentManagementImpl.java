@@ -533,6 +533,54 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		return jsonSequenceArr;
 	}
 
+	private static JSONArray getProcessSequencesDoneJSON(String[] sequenceArr, List<ProcessSequence> sequenceList, DossierAction dAction, Dossier dosssier) {
+		try {
+			JSONArray jsonSequenceArrDone = JSONFactoryUtil.createJSONArray();
+			List<DossierAction> lstDoAction = new ArrayList<>();
+
+			lstDoAction = DossierActionLocalServiceUtil.getDossierActionById(dosssier.getDossierId());
+			if (lstDoAction != null && lstDoAction.size() > 0) {
+				for (DossierAction dossierAction : lstDoAction) {
+					if (sequenceArr != null && sequenceArr.length > 0) {
+						for (int i = 0; i < sequenceArr.length - 1; i++) {
+							String sequenceNo = sequenceArr[i];
+							if (dossierAction.getSequenceNo().equals(sequenceNo)) {
+								JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
+								for (ProcessSequence proSeq : sequenceList) {
+									if (sequenceNo.equals(proSeq.getSequenceNo())) {
+										sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NO, proSeq.getSequenceNo());
+										sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NAME, proSeq.getSequenceName());
+										sequenceObj.put(ProcessSequenceTerm.SEQUENCE_ROLE, proSeq.getSequenceRole());
+										sequenceObj.put(ProcessSequenceTerm.DURATION_COUNT, proSeq.getDurationCount());
+										sequenceObj.put(ProcessSequenceTerm.CREATE_DATE, proSeq.getCreateDate());
+									}
+								}
+								String nextSequenceNo = sequenceArr[i + 1];
+								for (ProcessSequence proSeq : sequenceList) {
+									if (nextSequenceNo.equals(proSeq.getSequenceNo())) {
+										sequenceObj.put(ProcessSequenceTerm.NEXT_SEQUENCE_NO, proSeq.getSequenceNo());
+										sequenceObj.put(ProcessSequenceTerm.NEXT_SEQUENCE_NAME, proSeq.getSequenceName());
+										sequenceObj.put(DossierTerm.NEXT_SEQUENCE_ROLE, proSeq.getSequenceRole());
+										sequenceObj.put(ProcessSequenceTerm.NEXT_CREATE_DATE, proSeq.getCreateDate());
+									}
+								}
+								sequenceObj.put(DossierActionTerm.ACTION_NAME, dossierAction.getActionName());
+								sequenceObj.put(DossierActionTerm.ACTION_USER, dossierAction.getActionUser());
+								sequenceObj.put(DossierActionTerm.NEXT_ACTION_ID, dossierAction.getNextActionId());
+
+								jsonSequenceArrDone.put(sequenceObj);
+							}
+						}
+					}
+				}
+			}
+			return jsonSequenceArrDone;
+		}catch (Exception e) {
+			e.getMessage();
+			return null;
+		}
+	}
+
 	private static JSONArray getProcessSequenceArrDoneJSON(String[] sequenceArr, List<ProcessSequence> sequenceList, List<DossierAction> dossierActionList) {
 
 		JSONArray jsonSequenceArr = JSONFactoryUtil.createJSONArray();

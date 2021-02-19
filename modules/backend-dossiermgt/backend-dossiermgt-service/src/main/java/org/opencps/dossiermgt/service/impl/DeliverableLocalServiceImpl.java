@@ -1547,6 +1547,11 @@ public class DeliverableLocalServiceImpl
 			groupId, deliverableCode);
 	}
 
+	@Override
+	public Deliverable getByF_GID_DI_STATE(long groupId, long dossierId, int deliverableState) {
+		return deliverablePersistence.fetchByF_GID_DI_STATE(groupId, dossierId, deliverableState);
+	}
+
 	protected String getDictItemName(
 		long groupId, String collectionCode, String itemCode) {
 

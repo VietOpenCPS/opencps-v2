@@ -1804,6 +1804,25 @@ public interface DossierManagement {
 			@Context ServiceContext serviceContext,
 			@BeanParam DoActionModel input);
 
+	@GET
+	@Path("/voting")
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Bao cao danh gia giai quyet TTHC theo ho so cua don vi", response = DossierVotingResultsModel.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of Dossiers", response = DossierVotingResultsModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+
+	public Response evaluateDepartment(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@BeanParam DossierSearchModel query);
+
 	@POST
 	@Path("/createDeliverable/formData")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,MediaType.APPLICATION_FORM_URLENCODED})
@@ -1821,7 +1840,7 @@ public interface DossierManagement {
 			@Context ServiceContext serviceContext, @BeanParam DossierInputModel input);
 
 	@POST
-	@Path("/{ids}/files/{actionCode}")
+	@Path("/files/{partNo}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Do Action", response = String.class)
@@ -1834,8 +1853,8 @@ public interface DossierManagement {
 	public Response doActionDossierIds(
 			@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@ApiParam(value = "id of dossier", required = true) @PathParam("ids") String ids,
-			@ApiParam(value = "actionCode", required = true) @PathParam("actionCode") String actionCode,
-			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
+			@ApiParam(value = "id of dossier", required = true) @Multipart("dossierIds") String dossierIds,
+					@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
+			@ApiParam(value = "partno of dossier part", required = true) @PathParam("partNo") String partNo,
 			@BeanParam DossierFileModel input);
 }

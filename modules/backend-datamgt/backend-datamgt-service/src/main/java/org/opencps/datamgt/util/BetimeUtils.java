@@ -107,25 +107,34 @@ public class BetimeUtils {
 		c.set(Calendar.HOUR_OF_DAY, timeCompareH);
 		c.set(Calendar.MINUTE, timeCompareM);
 		Date betimeDate = c.getTime();
-		if(CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
-			
-			String releaseDateTem = DateTimeUtils.convertDateToString(releaseDate, _VN_DATE_TIME_FORMAT);
-			releaseDate = APIDateTimeUtils.convertStringToDate(releaseDateTem, APIDateTimeUtils._NORMAL_DATE);
-			String dueDateTem = DateTimeUtils.convertDateToString(dueDate, _VN_DATE_TIME_FORMAT);
-			dueDate = APIDateTimeUtils.convertStringToDate(dueDateTem, APIDateTimeUtils._NORMAL_DATE);
-			DateFormat dateFormat =
-					DateFormatFactoryUtil.getSimpleDateFormat(_VN_DATE_TIME_FORMAT);
-			String betimeDateTem = dateFormat.format(betimeDate);
-			betimeDate = APIDateTimeUtils.convertStringToDate(betimeDateTem, APIDateTimeUtils._NORMAL_DATE);			
-		}
-		if (releaseDate.before(betimeDate)) {
-			return 3;
-		}
-		if (releaseDate.compareTo(betimeDate) >= 0 && releaseDate.compareTo(dueDate) <= 0) {
-			return 2;
-		}
 		
-		return 1;
+		// 
+		String releaseDateTem = DateTimeUtils.convertDateToString(releaseDate, _VN_DATE_TIME_FORMAT);
+		Date releaseDateSpec = APIDateTimeUtils.convertStringToDate(releaseDateTem, APIDateTimeUtils._NORMAL_DATE);
+		String dueDateTem = DateTimeUtils.convertDateToString(dueDate, _VN_DATE_TIME_FORMAT);
+		Date dueDateSpec = APIDateTimeUtils.convertStringToDate(dueDateTem, APIDateTimeUtils._NORMAL_DATE);
+		DateFormat dateFormat =
+				DateFormatFactoryUtil.getSimpleDateFormat(_VN_DATE_TIME_FORMAT);
+		String betimeDateTem = dateFormat.format(betimeDate);
+		Date betimeDateSpec = APIDateTimeUtils.convertStringToDate(betimeDateTem, APIDateTimeUtils._NORMAL_DATE);
+		
+		int overdue = 1; // 3: sớm hạn, 2: đúng hạn, 1: quá hạn
+		if(CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
+			if (releaseDateSpec.before(betimeDateSpec)) {
+				overdue = 3;
+			}
+			if (releaseDateSpec.compareTo(betimeDateSpec) >= 0 && releaseDateSpec.compareTo(dueDateSpec) <= 0) {
+				overdue = 2;
+			}
+		} else {			
+			if (releaseDateSpec.before(betimeDateSpec)) {
+				overdue = 3;
+			}
+			if (releaseDateSpec.compareTo(dueDateSpec) == 0 && releaseDate.compareTo(dueDate) <= 0) {
+				overdue = 2;
+			}
+		} 
+		return overdue;
 	}
 	
 	static Log _log = LogFactoryUtil.getLog(BetimeUtils.class);
