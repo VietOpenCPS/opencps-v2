@@ -39,7 +39,9 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xwpf.usermodel.*;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.constants.StatisticManagementConstants;
 import org.opencps.api.constants.SystemManagementConstants;
@@ -80,10 +82,13 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 
 public class StatisticManagementImpl implements StatisticManagement {
 
 	private static final Log _log = LogFactoryUtil.getLog(StatisticManagementImpl.class);
+	private static final String REPORT_EXCEL = "excel";
+	private static final String REPORT_DOC_X = "docx";
 
 	@Override
 	public Response getDossierTodo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -671,11 +676,13 @@ public class StatisticManagementImpl implements StatisticManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		HSSFWorkbook workbook = null;
+		XWPFDocument document = null;
+
 		try {
 
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
 			
 			JSONObject docDefinition = JSONFactoryUtil.createJSONObject(data);
 			JSONArray contentArr = docDefinition.getJSONArray(StatisticManagementConstants.CONTENT);
@@ -683,9 +690,21 @@ public class StatisticManagementImpl implements StatisticManagement {
 			int headerRows = 0;
 			workbook = new HSSFWorkbook();
 			HSSFSheet mainSheet = workbook.createSheet(StatisticManagementConstants.REPORT);
+			mainSheet.setDefaultColumnWidth(20);
+			//Trick:  To set the width as 8 we need to pass the parameter as 8 * 256
+			mainSheet.setColumnWidth(0, 8 * 256);
+
 			int maxCol = 0;
-	
+			boolean isGetDocx = false;
+			if(docDefinition.has("reportType") && docDefinition.getString("reportType").equals(REPORT_DOC_X)) {
+				isGetDocx = true;
+				document = this.createDoc(contentArr);
+			}
+
 			for (int i = 0; i < contentArr.length(); i++) {
+				if (isGetDocx) {
+					continue;
+				}
 				if (contentArr.getJSONObject(i).has(StatisticManagementConstants.TABLE)) {
 					bodyArr = contentArr.getJSONObject(i).getJSONObject(StatisticManagementConstants.TABLE).getJSONArray(StatisticManagementConstants.BODY);
 					headerRows = contentArr.getJSONObject(i).getJSONObject(StatisticManagementConstants.TABLE).getInt(StatisticManagementConstants.HEADER_ROWS);
@@ -699,9 +718,14 @@ public class StatisticManagementImpl implements StatisticManagement {
 					}		
 				}
 			}
-			
+
+
+
 			int startRow = 0;
 			for (int i = 0; i < contentArr.length(); i++) {
+				if (isGetDocx) {
+					continue;
+				}
 				if (contentArr.getJSONObject(i).has(StatisticManagementConstants.TABLE)) {
 					//int startBorderRow = startRow;
 					bodyArr = contentArr.getJSONObject(i).getJSONObject(StatisticManagementConstants.TABLE).getJSONArray(StatisticManagementConstants.BODY);
@@ -779,6 +803,8 @@ public class StatisticManagementImpl implements StatisticManagement {
 								row.createCell(startCol).setCellValue(columnObj != null ? columnObj.getString(StatisticManagementConstants.TEXT) : StringPool.BLANK);						
 								CellStyle cellStyle = row.getCell(startCol).getCellStyle();
 								cellStyle.setWrapText(true);
+								cellStyle.setAlignment(HorizontalAlignment.LEFT);
+								cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 								if (columnObj.has(StatisticManagementConstants.ALIGNMENT)) {
 									String alignment = columnObj.getString(StatisticManagementConstants.ALIGNMENT);
 									if (StatisticManagementConstants.ALIGNMENT_LEFT.equals(alignment)) {
@@ -879,21 +905,34 @@ public class StatisticManagementImpl implements StatisticManagement {
 					startRow++;
 				}
 			}
-			
-						
+
 			File exportDir = new File(StatisticManagementConstants.FOLDER_EXPORTED);
 			if (!exportDir.exists()) {
 				exportDir.mkdirs();
 			}
-			File xlsFile = new File(exportDir.getAbsolutePath() + StringPool.SLASH + (new Date()).getTime() + ConstantUtils.DOT_XLS);
-			String fileName = (new Date()).getTime() + ConstantUtils.DOT_XLS;
-			
+			String fileName;
+
+			if(isGetDocx) {
+				fileName = (new Date()).getTime() + ConstantUtils.DOT_DOCX;
+			} else {
+				fileName = (new Date()).getTime() + ConstantUtils.DOT_XLS;
+			}
+
+			File xlsFile = new File(exportDir.getAbsolutePath() + StringPool.SLASH + fileName);
+
 			try { 
 				FileOutputStream out = new FileOutputStream(xlsFile);
-				workbook.write(out); 
+				if(isGetDocx) {
+					if(Validator.isNotNull(document)) {
+						document.write(out);
+						document.close();
+					}
+				} else {
+					workbook.write(out);
+					workbook.close();
+				}
 				out.close();
-				workbook.close();
-			} 
+			}
 			catch (Exception e) { 
 				_log.debug(e);
 			}
@@ -916,9 +955,163 @@ public class StatisticManagementImpl implements StatisticManagement {
 					_log.debug(e);
 				}
 			}
-		}
 
+			if (document != null) {
+				try {
+					document.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
+		}
 	}
+
+	private XWPFDocument createDoc(JSONArray contentArr) {
+		try {
+			XWPFDocument document = new XWPFDocument();
+			for (int i = 0; i < contentArr.length(); i++) {
+				if (contentArr.getJSONObject(i).has(StatisticManagementConstants.TABLE)) {
+					JSONArray records = contentArr.getJSONObject(i).getJSONObject(StatisticManagementConstants.TABLE)
+							.getJSONArray(StatisticManagementConstants.BODY);
+					XWPFTable table = document.createTable();
+					table.setWidth("100%");
+					JSONArray columns;
+
+					for(int indexRecord = 0; indexRecord < records.length(); indexRecord++) {
+						//creating row
+						XWPFTableRow row;
+						if(indexRecord == 0) {
+							row = table.getRow(0);
+						}
+						else {
+							row = table.createRow();
+						}
+						columns = records.getJSONArray(indexRecord);
+
+						for(int indexColumn = 0; indexColumn< columns.length(); indexColumn++) {
+							XWPFRun run;
+							XWPFTableCell cell;
+							if (indexRecord == 0 && indexColumn != 0) {
+								cell = row.addNewTableCell();
+							} else {
+								cell = row.getCell(indexColumn);
+							}
+
+							run = cell.getParagraphs().get(0).createRun();
+							String valueString  = "";
+							try {
+
+								valueString = String.valueOf(columns.getJSONObject(indexColumn)
+										.get(StatisticManagementConstants.TEXT));
+								if(valueString.equals("null")) {
+									valueString = "";
+								}
+							}catch (Exception e) {
+								valueString = "";
+							}
+
+							run.setText(valueString);
+							setAlignHorizontalColumn(cell, STJc.CENTER);
+						}
+					}
+					XWPFParagraph spaceParagraph = document.createParagraph();
+					XWPFRun runSpaceParagraph = spaceParagraph.createRun();
+					runSpaceParagraph.addBreak();
+				} else if (contentArr.getJSONObject(i).has(StatisticManagementConstants.TEXT)) {
+					JSONArray listText = contentArr.getJSONObject(i).getJSONArray(StatisticManagementConstants.TEXT);
+					String value = "";
+
+					XWPFParagraph paraReportTitle = document.createParagraph();
+					XWPFRun runReportTitle = paraReportTitle.createRun();
+
+					for(int textIndex = 0; textIndex < listText.length(); textIndex++) {
+						value = listText.getJSONObject(textIndex).getString(StatisticManagementConstants.TEXT);
+						runReportTitle.setText(value);
+						runReportTitle.addBreak();
+					}
+					paraReportTitle.setAlignment(ParagraphAlignment.CENTER);
+
+				} else if (contentArr.getJSONObject(i).has(StatisticManagementConstants.COLUMNS)) {
+					JSONArray columnArr = contentArr.getJSONObject(i).getJSONArray(StatisticManagementConstants.COLUMNS);
+
+					//create table
+					XWPFTable table = document.createTable();
+					table.setWidth("100%");
+					XWPFTableRow header = table.getRow(0);
+
+					XWPFTableCell cell0 = header.getCell(0);
+					XWPFTableCell cell1 = header.addNewTableCell();
+					XWPFTableCell cell2 = header.addNewTableCell();
+
+					cell0.setWidth(String.valueOf(14 * 256));
+					cell2.setWidth(String.valueOf(15 * 256));
+
+					List<XWPFTableCell> listCell = new ArrayList<>();
+					listCell.add(cell0);
+					listCell.add(cell1);
+					listCell.add(cell2);
+					JSONArray listText;
+					String textFooter = "";
+
+					for (int indexArrColumn = 0; indexArrColumn < columnArr.length(); indexArrColumn++) {
+						try {
+							listText = columnArr.getJSONObject(indexArrColumn).getJSONArray(StatisticManagementConstants.TEXT);
+						} catch (Exception e) {
+							listText = null;
+						}
+
+						if (listText == null) {
+							if(columnArr.getJSONObject(indexArrColumn).has(StatisticManagementConstants.TEXT) &&
+									!columnArr.getJSONObject(indexArrColumn).getString(StatisticManagementConstants.TEXT).isEmpty()) {
+								if(indexArrColumn == 1) {
+									textFooter = columnArr.getJSONObject(indexArrColumn).getString(StatisticManagementConstants.TEXT);
+									indexArrColumn = 2;
+								}
+							}
+
+							if(textFooter.isEmpty()) {
+								continue;
+							}
+						}
+						XWPFRun run = listCell.get(indexArrColumn).getParagraphs().get(0).createRun();
+						if(!textFooter.isEmpty()) {
+							run.setText(textFooter);
+							continue;
+						}
+
+						for (int indexArrText = 0; indexArrText < listText.length(); indexArrText++) {
+							run.setText(listText.getJSONObject(indexArrText).getString(StatisticManagementConstants.TEXT));
+							run.addBreak();
+						}
+					}
+
+					table.getCTTbl().getTblPr().unsetTblBorders();
+					setAlignHorizontalColumn(cell0, STJc.CENTER);
+					setAlignHorizontalColumn(cell1, STJc.CENTER);
+					setAlignHorizontalColumn(cell2, STJc.CENTER);
+				}
+			}
+			return document;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private void setAlignHorizontalColumn(XWPFTableCell cell, STJc.Enum type) {
+		CTTc cttc = cell.getCTTc();
+		CTP ctp = cttc.getPList().get(0);
+		CTPPr ctppr = ctp.getPPr();
+		if (ctppr == null) {
+			ctppr = ctp.addNewPPr();
+		}
+		CTJc ctjc = ctppr.getJc();
+		if (ctjc == null) {
+			ctjc = ctppr.addNewJc();
+		}
+		ctjc.setVal(type);
+	}
+
 
 	@Override
 	public Response getDossierPerson(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,

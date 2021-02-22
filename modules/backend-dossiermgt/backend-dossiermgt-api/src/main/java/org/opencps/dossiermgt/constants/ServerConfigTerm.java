@@ -14,4 +14,6 @@ public class ServerConfigTerm {
 	public static final String NHAN_THONG_BAO_KET_QUA ="NHAN_THONG_BAO_KET_QUA";
 	public static final String VNPOST_CLS = "VNPOST_CLS";
 	public static final String BDHN_CONNECT = "BDHN_CONNECT";
+	public static final String SENDER_ADDRESS = "senderAddress";
+	public static final String COUNTER_VERIFY_CREATEDOSSIER = "COUNTER_VERIFY_CREATEDOSSIER";
 }

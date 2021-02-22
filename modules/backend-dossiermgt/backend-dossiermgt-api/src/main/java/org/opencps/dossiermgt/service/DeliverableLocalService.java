@@ -218,6 +218,9 @@ public interface DeliverableLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Deliverable fetchByGID_AID(long groupId, String applicantIdNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Deliverable fetchByGID_DID(long groupId, long dossierId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -234,6 +237,10 @@ public interface DeliverableLocalService extends BaseLocalService,
 	public Deliverable fetchDeliverableByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public List<Deliverable> findDeliverableByCreateDate(
+		String createDateStart, String createDateEnd, String deliverableType,
+		long deliverableState);
+
 	public List<Deliverable> findDeliverableByState(String strDeliverableCode,
 		int state);
 
@@ -248,6 +255,9 @@ public interface DeliverableLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Deliverable getByF_GID_DCODE(long groupId, String deliverableCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Deliverable getByF_GID_DI_STATE(long groupId, long dossierId, int deliverableState);
 
 	/**
 	* Returns the deliverable with the primary key.
@@ -392,7 +402,8 @@ public interface DeliverableLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Hits searchLucene(String keywords, String groupId, String type,
 		Map<String, String> mapFilter, Sort[] sorts, int start, int end,
-		SearchContext searchContext, long userId) throws ParseException, SearchException;
+		SearchContext searchContext, long userId)
+		throws ParseException, SearchException;
 
 	public void setOccurs(List<BooleanClauseOccur> occurs);
 

@@ -2,3 +2,8 @@ Bundle-Name: opencps-filter
 Bundle-SymbolicName: org.opencps.servlet.filter
 Bundle-Version: 1.0.0
 -sources: true
+
+Export-Package: \
+org.apache.avalon.framework.logger,\
+org.apache.log,\
+org.opensaml

@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.dossierfile.model.DossierFileCopyInputModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
@@ -66,6 +67,18 @@ public interface DossierFileManagement {
 		@Context ServiceContext serviceContext,
 		@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 		@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
+
+	@POST
+	@Path("/{fileId}/tracePdf")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response tracePdf(@PathParam("fileId") long fileId, String body);
+
+	@POST
+	@Path("/{fileId}/signCheck/{signCheck}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateSignCheck(@PathParam("fileId") long fileId,  @PathParam("signCheck") int signCheck);
 
 	@POST
 	@Path("/{id}/files")
@@ -677,5 +690,46 @@ public interface DossierFileManagement {
 		@ApiParam(value = "dossier PartNo", required = true) @FormParam("dossierPartNo") String dossierPartNo,
 		@ApiParam(value = "url get file by applicant Data Id", required = true) @FormParam("uri") String uri,
 		@ApiParam(value = "display name dossier file", required = true) @FormParam("displayName") String displayName,
-		@ApiParam(value = "file type dossier file", required = true) @FormParam("fileType") String fileType);
+		@ApiParam(value = "file type dossier file", required = true) @FormParam("fileType") String fileType,
+	    @ApiParam(value = "file entry id dossier file", required = true) @FormParam("fileEntryId") long fileEntryId);
+
+	@GET
+	@Path("/{id}/downloadAllFile")
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "downloadAllFileByDossierId")
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "downloadAllFileByDossierId"),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+
+	public Response downloadAllFileByDossierId(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id);
+
+	@PUT
+	@Path("/files/updateFormData")
+	@Consumes({
+			MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "update DossierFile")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response updateDossierFileFormDataByDossierId(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@BeanParam DossierSearchModel query);
 }

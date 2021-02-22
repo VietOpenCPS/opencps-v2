@@ -901,5 +901,5 @@ public class SignatureManagementImpl implements SignatureManagement{
 			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
 		}
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
-	}
+	}	
 }

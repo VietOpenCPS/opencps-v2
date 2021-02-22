@@ -126,7 +126,8 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 	public static final long COMPANYID_COLUMN_BITMASK = 4L;
 	public static final long GROUPID_COLUMN_BITMASK = 8L;
 	public static final long UUID_COLUMN_BITMASK = 16L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 32L;
+	public static final long VOTINGCODE_COLUMN_BITMASK = 32L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.feedback.service.util.ServiceProps.get(
 				"lock.expiration.time.backend.feedback.model.Voting"));
 
@@ -550,7 +551,17 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 
 	@Override
 	public void setVotingCode(String votingCode) {
+		_columnBitmask |= VOTINGCODE_COLUMN_BITMASK;
+
+		if (_originalVotingCode == null) {
+			_originalVotingCode = _votingCode;
+		}
+
 		_votingCode = votingCode;
+	}
+
+	public String getOriginalVotingCode() {
+		return GetterUtil.getString(_originalVotingCode);
 	}
 
 	@Override
@@ -680,6 +691,8 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 		votingModelImpl._originalClassName = votingModelImpl._className;
 
 		votingModelImpl._originalClassPK = votingModelImpl._classPK;
+
+		votingModelImpl._originalVotingCode = votingModelImpl._votingCode;
 
 		votingModelImpl._columnBitmask = 0;
 	}
@@ -923,6 +936,7 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 	private String _templateNo;
 	private boolean _commentable;
 	private String _votingCode;
+	private String _originalVotingCode;
 	private long _columnBitmask;
 	private Voting _escapedModel;
 }

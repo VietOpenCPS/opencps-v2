@@ -420,6 +420,14 @@
 			<finder-column name="serviceLevel" />
 		</finder>
 
+		<finder return-type="ServiceConfig" name="GID_SI_GOV_LEVEL">
+			<finder-column name="groupId" />
+			<finder-column name="serviceInfoId" />
+			<finder-column name="govAgencyCode" />
+			<finder-column name="serviceLevel" />
+		</finder>
+
+
 	</entity>
 
 	<entity name="ProcessOption" table="opencps_processoption"
@@ -741,6 +749,15 @@
 			<finder-column name="dossierTemplateNo" />
 			<finder-column name="originDossierId"/>
 		</finder>
+		<finder return-type="Dossier" name="G_AN_SC_GAC_DTNO_SN_ODID">
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo" />
+			<finder-column name="serviceCode" />
+			<finder-column name="govAgencyCode" />
+			<finder-column name="dossierTemplateNo" />
+			<finder-column name="originDossierId"/>
+			<finder-column name="serverNo"/>
+		</finder>
 		
 		<finder return-type="Collection" name="O">
 			<finder-column name="originality" />
@@ -1001,6 +1018,11 @@
 		<finder return-type="Collection" name="DID_GROUP">
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />
+		</finder>
+		<finder return-type="Collection" name="G_DID_FILE">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" comparator="=" arrayable-operator="OR"/>
+			<finder-column name="dossierPartNo" />
 		</finder>
 	</entity>
 
@@ -2163,6 +2185,9 @@
 		<finder return-type="Collection" name="C">
 			<finder-column name="companyId" />
 		</finder>
+		<finder return-type="Collection" name="D_OR_D">
+			<finder-column name="groupId" comparator="=" arrayable-operator="OR"/>
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="Deliverable" remote-service="false" 
@@ -2229,6 +2254,15 @@
 		<finder return-type="Deliverable" name="F_GID_DID">
 			<finder-column name="groupId"/>
 			<finder-column name="dossierId"/>
+		</finder>
+		<finder return-type="Deliverable" name="F_GID_AID">
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo"/>
+		</finder>
+		<finder return-type="Deliverable" name="F_GID_DI_STATE">
+			<finder-column name="groupId"/>
+			<finder-column name="dossierId"/>
+			<finder-column name="deliverableState"/>
 		</finder>
 <!-- 		<order> -->
 <!-- 			<order-column name="modifiedDate" order-by="asc" /> -->

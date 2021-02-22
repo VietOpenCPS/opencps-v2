@@ -96,6 +96,8 @@ public interface VotingResultLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.DELETE)
 	public VotingResult adminProcessDelete(Long id);
 
+	public int countByF_votingId(long votingId);
+
 	public int countByF_votingId_selected(long votingId, String selected);
 
 	public int countByF_votingId_selected_filter_date(long votingId,
@@ -323,6 +325,8 @@ public interface VotingResultLocalService extends BaseLocalService,
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params,
 		Sort[] sorts, int start, int end, SearchContext searchContext)
 		throws ParseException, SearchException;
+
+	public void removeByF_votingId_selected(long votingId, String selected);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public VotingResult updateVoteResult(long userId, long votingResultId,

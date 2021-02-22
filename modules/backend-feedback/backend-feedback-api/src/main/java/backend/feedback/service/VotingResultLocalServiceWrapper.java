@@ -67,6 +67,11 @@ public class VotingResultLocalServiceWrapper implements VotingResultLocalService
 	}
 
 	@Override
+	public int countByF_votingId(long votingId) {
+		return _votingResultLocalService.countByF_votingId(votingId);
+	}
+
+	@Override
 	public int countByF_votingId_selected(long votingId, String selected) {
 		return _votingResultLocalService.countByF_votingId_selected(votingId,
 			selected);
@@ -396,6 +401,11 @@ public class VotingResultLocalServiceWrapper implements VotingResultLocalService
 			com.liferay.portal.kernel.search.SearchException {
 		return _votingResultLocalService.luceneSearchEngine(params, sorts,
 			start, end, searchContext);
+	}
+
+	@Override
+	public void removeByF_votingId_selected(long votingId, String selected) {
+		_votingResultLocalService.removeByF_votingId_selected(votingId, selected);
 	}
 
 	@Override

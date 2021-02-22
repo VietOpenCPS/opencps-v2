@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.synctracking.model.SyncTracking">
+		<field name="uuid" type="String" />
+		<field name="trackingId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dossierNo" type="String" />
+		<field name="referenceUid" type="String" />
+		<field name="serverNo" type="String" />
+		<field name="protocol" type="String" />
+		<field name="stateSync" type="int" />
+		<field name="serviceCode" type="String" />
+		<field name="api" type="String" />
+		<field name="fromUnit" type="String" />
+		<field name="toUnit" type="String" />
+		<field name="bodyRequest" type="String" />
+		<field name="response" type="String" />
+		<field name="metaData" type="String" />
+	</model>
+</model-hints>

@@ -67,6 +67,17 @@ public class DossierFileActionsImpl implements DossierFileActions {
 	}
 
 	@Override
+	public DossierFile addDossierFileByFileEntryId(long groupId, long dossierId, String referenceUid, String dossierTemplateNo,
+												   String dossierPartNo, String fileTemplateNo, String displayName, String sourceFileName,
+												   long fileSize, InputStream inputStream, String fileType, String isSync, long fileEntryId,
+												   ServiceContext serviceContext) throws SystemException, PortalException {
+		return DossierFileLocalServiceUtil.addDossierFileByFileEntryId(
+				groupId, dossierId, referenceUid, dossierTemplateNo, dossierPartNo,
+				fileTemplateNo, displayName, sourceFileName, fileSize, inputStream,
+				fileType, isSync,fileEntryId, serviceContext);
+	}
+
+	@Override
 	public DossierFile cloneDossierFile(
 		long groupId, long dossierId, long dossierFileId,
 		String dossierTemplateNo, String dossierPartNo,

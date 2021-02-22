@@ -17,6 +17,7 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import org.opencps.dossiermgt.model.Deliverable;
 
 /**
  * Provides a wrapper for {@link DeliverableLocalService}.
@@ -112,7 +113,8 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	@Override
 	public long countLucene(String keywords, String groupId, String type,
 		java.util.Map<String, String> mapFilter,
-		com.liferay.portal.kernel.search.SearchContext searchContext, long userId)
+		com.liferay.portal.kernel.search.SearchContext searchContext,
+		long userId)
 		throws com.liferay.portal.kernel.search.ParseException,
 			com.liferay.portal.kernel.search.SearchException {
 		return _deliverableLocalService.countLucene(keywords, groupId, type,
@@ -253,6 +255,12 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Deliverable fetchByGID_AID(
+		long groupId, String applicantIdNo) {
+		return _deliverableLocalService.fetchByGID_AID(groupId, applicantIdNo);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Deliverable fetchByGID_DID(
 		long groupId, long dossierId) {
 		return _deliverableLocalService.fetchByGID_DID(groupId, dossierId);
@@ -276,6 +284,14 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 		String uuid, long groupId) {
 		return _deliverableLocalService.fetchDeliverableByUuidAndGroupId(uuid,
 			groupId);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByCreateDate(
+		String createDateStart, String createDateEnd, String deliverableType,
+		long deliverableState) {
+		return _deliverableLocalService.findDeliverableByCreateDate(createDateStart,
+			createDateEnd, deliverableType, deliverableState);
 	}
 
 	@Override
@@ -307,6 +323,11 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 		long groupId, String deliverableCode) {
 		return _deliverableLocalService.getByF_GID_DCODE(groupId,
 			deliverableCode);
+	}
+
+	@Override
+	public Deliverable getByF_GID_DI_STATE(long groupId, long dossierId, int deliverableState) {
+		return _deliverableLocalService.getByF_GID_DI_STATE(groupId, dossierId, deliverableState);
 	}
 
 	/**
@@ -521,11 +542,12 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	public com.liferay.portal.kernel.search.Hits searchLucene(String keywords,
 		String groupId, String type, java.util.Map<String, String> mapFilter,
 		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
-		com.liferay.portal.kernel.search.SearchContext searchContext, long userId)
+		com.liferay.portal.kernel.search.SearchContext searchContext,
+		long userId)
 		throws com.liferay.portal.kernel.search.ParseException,
 			com.liferay.portal.kernel.search.SearchException {
 		return _deliverableLocalService.searchLucene(keywords, groupId, type,
-			mapFilter, sorts, start, end, searchContext,userId);
+			mapFilter, sorts, start, end, searchContext, userId);
 	}
 
 	@Override

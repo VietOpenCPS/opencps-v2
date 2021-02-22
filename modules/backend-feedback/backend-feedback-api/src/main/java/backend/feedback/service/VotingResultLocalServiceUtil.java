@@ -73,6 +73,10 @@ public class VotingResultLocalServiceUtil {
 		return getService().adminProcessDelete(id);
 	}
 
+	public static int countByF_votingId(long votingId) {
+		return getService().countByF_votingId(votingId);
+	}
+
 	public static int countByF_votingId_selected(long votingId, String selected) {
 		return getService().countByF_votingId_selected(votingId, selected);
 	}
@@ -368,6 +372,11 @@ public class VotingResultLocalServiceUtil {
 			com.liferay.portal.kernel.search.SearchException {
 		return getService()
 				   .luceneSearchEngine(params, sorts, start, end, searchContext);
+	}
+
+	public static void removeByF_votingId_selected(long votingId,
+		String selected) {
+		getService().removeByF_votingId_selected(votingId, selected);
 	}
 
 	public static backend.feedback.model.VotingResult updateVoteResult(

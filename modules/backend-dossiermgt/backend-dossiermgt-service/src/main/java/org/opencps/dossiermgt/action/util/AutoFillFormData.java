@@ -22,15 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
+import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.dossiermgt.service.comparator.DossierActionComparator;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.action.ApplicantActions;
@@ -85,6 +80,8 @@ public class AutoFillFormData {
 			String _sampleCount = StringPool.BLANK;
 			String _documentDate = StringPool.BLANK;
 			String _documentNo = StringPool.BLANK;
+			String _govAgencyCode = StringPool.BLANK;
+			String _deliverableCode = StringPool.BLANK;
 
 			SimpleDateFormat sfd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE_TIME);
 
@@ -94,6 +91,7 @@ public class AutoFillFormData {
 				_receiveDate = Validator.isNotNull(dossier.getReceiveDate()) ? dossier.getReceiveDate().toGMTString()
 						: StringPool.BLANK;
 				_dossierNo = dossier.getDossierNo();
+				_govAgencyCode = dossier.getGovAgencyCode();
 
 				// get data applicant or employee
 				ApplicantActions applicantActions = new ApplicantActionsImpl();
@@ -161,6 +159,10 @@ public class AutoFillFormData {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
 							serviceContext.getUserId());
 
+					Deliverable deliverable = DeliverableLocalServiceUtil.getByF_GID_DI_STATE(dossier.getGroupId(), dossier.getDossierId(), DeliverableTerm.DELIVERABLE_STATE_VALID_INT);
+					if(Validator.isNotNull(deliverable)){
+						_deliverableCode = deliverable.getDeliverableCode();
+					}
 					// _log.info("GET EMPLOYEE ID ____" +
 					// serviceContext.getUserId());
 
@@ -238,6 +240,8 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _receiveDate);
 					} else if ((StringPool.UNDERLINE + DossierTerm.DOSSIER_NO).equals(value)) {
 						jsonMap.put(entry.getKey(), _dossierNo);
+					} else if ((StringPool.UNDERLINE + DossierTerm.GOV_AGENCY_CODE).equals(value)) {
+						jsonMap.put(entry.getKey(), _govAgencyCode);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_EMPLOYEE_NO).equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_employeeNo);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_FULL_NAME).equals(value)) {
@@ -266,6 +270,8 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _documentDate);
 					}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_NO).equals(value)){
 						jsonMap.put(entry.getKey(), _documentNo);
+					}else if((StringPool.UNDERLINE + DossierTerm.DELIVERABLE_CODE).equals(value)){
+						jsonMap.put(entry.getKey(), _deliverableCode);
 					}
 //					if(value.contains(StringPool.UNDERLINE + DossierTerm.META_DATA)){
 					if (value.startsWith(StringPool.UNDERLINE) && value.contains(DossierTerm.META_DATA)){
@@ -325,6 +331,8 @@ public class AutoFillFormData {
 							resultBinding += StringPool.COMMA_AND_SPACE + _receiveDate;
 						} else if ((StringPool.UNDERLINE + DossierTerm.DOSSIER_NO).equals(value)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _dossierNo;
+						}else if ((StringPool.UNDERLINE + DossierTerm.GOV_AGENCY_CODE).equals(value)) {
+								resultBinding += StringPool.COMMA_AND_SPACE + _govAgencyCode;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_EMPLOYEE_NO).equals(value)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _employee_employeeNo;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_FULL_NAME).equals(value)) {
@@ -353,6 +361,8 @@ public class AutoFillFormData {
 							jsonMap.put(entry.getKey(), _documentDate);
 						}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_NO).equals(value)){
 							jsonMap.put(entry.getKey(), _documentNo);
+						}else if((StringPool.UNDERLINE + DossierTerm.DELIVERABLE_CODE).equals(value)){
+							jsonMap.put(entry.getKey(), _deliverableCode);
 						}
 					}
 
@@ -541,6 +551,7 @@ public class AutoFillFormData {
 			String _representative = StringPool.BLANK;
 			String _govAgencyName = StringPool.BLANK;
 			String _serviceName = StringPool.BLANK;
+			String _deliverableCode = StringPool.BLANK;
 
 			SimpleDateFormat sfd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE_TIME);
 
@@ -617,6 +628,10 @@ public class AutoFillFormData {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
 							serviceContext.getUserId());
 
+					Deliverable deliverable = DeliverableLocalServiceUtil.getByF_GID_DI_STATE(dossier.getGroupId(), dossier.getDossierId(), DeliverableTerm.DELIVERABLE_STATE_VALID_INT);
+					if(Validator.isNotNull(deliverable)){
+						_deliverableCode = deliverable.getDeliverableCode();
+					}
 					// _log.info("GET EMPLOYEE ID ____" +
 					// serviceContext.getUserId());
 
@@ -703,6 +718,8 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _govAgencyName);
 					} else if ((StringPool.UNDERLINE + DossierTerm.SERVICE_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _serviceName);
+					}else if((StringPool.UNDERLINE + DossierTerm.DELIVERABLE_CODE).equals(value)){
+						jsonMap.put(entry.getKey(), _deliverableCode);
 					}
 
 				} else if (value.startsWith(StringPool.UNDERLINE) && value.contains(StringPool.COLON)) {
@@ -759,6 +776,8 @@ public class AutoFillFormData {
 							jsonMap.put(entry.getKey(), _govAgencyName);
 						} else if ((StringPool.UNDERLINE + DossierTerm.SERVICE_NAME).equals(value)) {
 							jsonMap.put(entry.getKey(), _serviceName);
+						}else if((StringPool.UNDERLINE + DossierTerm.DELIVERABLE_CODE).equals(value)){
+							jsonMap.put(entry.getKey(), _deliverableCode);
 						}
 					}
 

@@ -95,6 +95,22 @@ public class DossierFileLocalServiceWrapper implements DossierFileLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierFile addDossierFileByFileEntryId(
+		long groupId, long dossierId, String referenceUid,
+		String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
+		String displayName, String sourceFileName, long fileSize,
+		java.io.InputStream inputStream, String fileType, String isSync,
+		long fileEntryId,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _dossierFileLocalService.addDossierFileByFileEntryId(groupId,
+			dossierId, referenceUid, dossierTemplateNo, dossierPartNo,
+			fileTemplateNo, displayName, sourceFileName, fileSize, inputStream,
+			fileType, isSync, fileEntryId, serviceContext);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierFile addDossierFileEForm(
 		long groupId, long dossierId, String referenceUid,
 		String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
@@ -424,6 +440,13 @@ public class DossierFileLocalServiceWrapper implements DossierFileLocalService,
 	public org.opencps.dossiermgt.model.DossierFile getByFileTemplateNo(
 		long id, String fileTemplateNo) {
 		return _dossierFileLocalService.getByFileTemplateNo(id, fileTemplateNo);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierFile> getByG_DID_FILE(
+		long groupId, long[] dossierIds, String dossierPartNo) {
+		return _dossierFileLocalService.getByG_DID_FILE(groupId, dossierIds,
+			dossierPartNo);
 	}
 
 	@Override
