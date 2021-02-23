@@ -494,11 +494,13 @@ public class DossierLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier getByG_AN_SC_GAC_DTNO_SN_ODID(
-			long groupId, String applicantIdNo, String serviceCode,
-			String govAgencyCode, String dossierTemplateNo, long originDossierId, String serverNo) {
+		long groupId, String applicantIdNo, String serviceCode,
+		String govAgencyCode, String dossierTemplateNo, long originDossierId,
+		String serverNo) {
 		return getService()
-				.getByG_AN_SC_GAC_DTNO_SN_ODID(groupId, applicantIdNo,
-						serviceCode, govAgencyCode, dossierTemplateNo, originDossierId, serverNo);
+				   .getByG_AN_SC_GAC_DTNO_SN_ODID(groupId, applicantIdNo,
+			serviceCode, govAgencyCode, dossierTemplateNo, originDossierId,
+			serverNo);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> getByGID_GC_SC_DTN_DS_APP_ORI(

@@ -112,6 +112,7 @@ import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
+import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
@@ -1560,7 +1561,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					DeliverableType dlt = DeliverableTypeLocalServiceUtil
 							.getByCode(groupId,
 									dossierPart.getDeliverableType());
-
 					eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
 							: false;
 
@@ -1570,37 +1570,54 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					JSONObject mappingDataObj = JSONFactoryUtil
 							.createJSONObject(dlt.getMappingData());
 					if (!mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) continue;
-
 					String deliverables = mappingDataObj.getString(
 							DeliverableTypesTerm.DELIVERABLES_KEY);
+
 					//Cut lấy value của deliverableKey trong giay phep
-					String newString = deliverables.substring(1);
-					String [] stringSplit =newString.split(StringPool.AT);
-					String variable = stringSplit[0];
-					//Note: key deliverableType được cấu hình trong thành phần tồn tại trong dossierFile sau khi được mapping dữ liệu
-					JSONObject formDataObj = JSONFactoryUtil
-							.createJSONObject(item.getFormData());
-					if (Validator.isNotNull(deliverables) && formDataObj.has(variable)) {
-						JSONArray deliverablesArr = JSONFactoryUtil
-								.createJSONArray(formDataObj
-										.getString(variable));
+					if(Validator.isNotNull(deliverables)) {
+						String newString = deliverables.substring(1);
+						String[] stringSplit = newString.split(StringPool.AT);
+						String variable = stringSplit[0];
+						//Note: key deliverableType được cấu hình trong thành phần tồn tại trong dossierFile sau khi được mapping dữ liệu
+						JSONObject formDataObj = JSONFactoryUtil
+								.createJSONObject(item.getFormData());
+						if (formDataObj.has(variable)) {
+							JSONArray deliverablesArr = JSONFactoryUtil
+									.createJSONArray(formDataObj
+											.getString(variable));
 
-						for (int i = 0; i < deliverablesArr
-								.length(); i++) {
-							JSONObject deliverableObj = null;
-							deliverableObj = deliverablesArr
-									.getJSONObject(i);
-							Iterator<?> keys = formDataObj.keys();
-							while (keys.hasNext()) {
-								String key = (String) keys.next();
-								if (!key.equals(variable)) {
-									deliverableObj.put(key,
-											formDataObj.get(key));
+							for (int i = 0; i < deliverablesArr
+									.length(); i++) {
+								JSONObject deliverableObj = null;
+								deliverableObj = deliverablesArr
+										.getJSONObject(i);
+								Iterator<?> keys = formDataObj.keys();
+								while (keys.hasNext()) {
+									String key = (String) keys.next();
+									if (!key.equals(variable)) {
+										deliverableObj.put(key,
+												formDataObj.get(key));
+									}
 								}
-							}
-							_log.debug("deliverableObj -------: " + JSONFactoryUtil.looseSerialize(deliverableObj));
-							createDeliverable(dossierId, dossier, dossierPart, actions, dlt, deliverableObj, userId, groupId, context);
+								if (Validator.isNotNull(dossier.getApplicantIdNo())) {
+									deliverableObj.put(DossierTerm.APPLICANT_ID_NO, dossier.getApplicantIdNo());
+								}
+								if(Validator.isNotNull(dossier.getDossierNo())){
+									deliverableObj.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+								}
+								_log.debug("deliverableObj -------: " + JSONFactoryUtil.looseSerialize(deliverableObj));
+								createDeliverable(dossierId, dossier, dossierPart, actions, dlt, deliverableObj, userId, groupId, context);
 
+							}
+						}
+					}else {
+						Deliverable deliverable = DeliverableLocalServiceUtil.fetchByGID_DID(groupId, dossierId);
+						JSONObject deliverablObj =  JSONFactoryUtil.createJSONObject(deliverable.getFormData());
+						if(Validator.isNotNull(dossier.getDossierNo())){
+							deliverablObj.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+						}
+						if (Validator.isNotNull(deliverable)) {
+							updateDeliverable(deliverable, userId, groupId, dossierPart, dlt, deliverablObj, context);
 						}
 					}
 				}
@@ -1618,12 +1635,47 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		return dossierAction;
 	}
+	//Update deliverables
+	private void updateDeliverable(Deliverable deliverable, long userId, long groupId, DossierPart dossierPart, DeliverableType dlt , JSONObject deliverablObj, ServiceContext context){
+
+		if(Validator.isNotNull(deliverable) && deliverable.getDeliverableState() == 0){
+			_log.info("Update Deliverable");
+			if (dlt.getFormReportFileId() > 0) {
+				try {
+					DLFileEntry dlFileEntry =
+							DLFileEntryLocalServiceUtil.getFileEntry(
+									dlt.getFormReportFileId());
+					long fileEntryId = 0L;
+					if (dlFileEntry.getContentStream() != null) {
+							FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+									userId, groupId, dlFileEntry.getContentStream(), dossierPart.getPartName(), StringPool.BLANK,
+									0L, context);
+
+							if (fileEntry != null) {
+								fileEntryId = fileEntry.getFileEntryId();
+								_log.info("FileEntry : " + fileEntryId);
+								deliverable.setFileEntryId(fileEntryId);
+								deliverable.setFileAttachs(String.valueOf(fileEntryId));
+							}
+					}
+					deliverable.setDeliverableState(1);
+					deliverable.setFormData(deliverablObj.toString());
+					DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+				}
+				catch (Exception e) {
+					_log.debug(e);
+				}
+			}
+		}
+	}
 	//Create deliverables
 	private void createDeliverable(long dossierId, Dossier dossier,  DossierPart dossierPart,
 								  DossierFileActions actions, DeliverableType dlt, JSONObject deliverableObj,
 								  long userId, long groupId, ServiceContext context) throws PortalException {
 		DossierFile dossierFile = null;
 		InputStream is = null;
+		String deliverableCode = StringPool.BLANK;
+		long fileEntryId = 0;
 		try {
 			if (dlt.getFormReportFileId() > 0) {
 				try {
@@ -1633,6 +1685,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 					is = dlFileEntry.getContentStream();
 
+					FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+							userId, groupId, dlFileEntry.getContentStream(), dossierPart.getPartName(), StringPool.BLANK,
+							0L, context);
+
+					if (fileEntry != null) {
+						fileEntryId = fileEntry.getFileEntryId();
+					}
 				}
 				catch (Exception e) {
 					_log.debug(e);
@@ -1650,21 +1709,31 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					StringPool.BLANK,
 					String.valueOf(false),
 					context);
+			dossierFile = actions.updateDossierFileFormData(
+					groupId, dossier.getDossierId(), dossierFile.getReferenceUid(),
+					Validator.isNotNull(deliverableObj.toString()) ? deliverableObj.toString() : dossierFile.getFormData(), context);
+
+			if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+				deliverableCode =
+						DeliverableNumberGenerator.generateDeliverableNumber(
+								groupId, context.getCompanyId(),
+								dlt.getDeliverableTypeId());
+			}
 
 			Deliverable deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
-					groupId, dlt.getTypeCode(), dlt.getTypeName(), dossierFile.getDeliverableCode(),
+					groupId, dlt.getTypeCode(), dlt.getTypeName(), Validator.isNotNull(dossierFile.getDeliverableCode()) ? dossierFile.getDeliverableCode() : deliverableCode,
 					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantIdNo(),
 					dossier.getApplicantName(), "", "", "",
 					null, String.valueOf(1), dossier.getDossierId(), dossierFile.getFileEntryId(),
 					dlt.getFormScriptFileId(), dlt.getFormReportFileId(), deliverableObj.toString(),
-					"", context);
+					String.valueOf(dossierFile.getFileEntryId()), context);
 
-			dossierFile.setFormScript(dossierPart.getFormScript());
-			dossierFile.setEForm(dossierPart.getEForm());
-			dossierFile.setDeliverableCode(deliverableObj.getString(DeliverableTerm.DELIVERABLE_CODE));
-			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+			_log.debug("Deliverable: " + deliverable.getFileEntryId());
 			if(Validator.isNotNull(deliverable)){
-				deliverable.setFileAttachs(String.valueOf(deliverable.getFileEntryId()));
+				if(deliverable.getFileEntryId() < 1 ){
+					deliverable.setFileEntryId(fileEntryId);
+				}
+				deliverable.setFileAttachs(String.valueOf(fileEntryId));
 				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 			}
 
