@@ -17,9 +17,6 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
-import org.opencps.dossiermgt.model.DeliverableType;
-
-import java.util.List;
 
 /**
  * Provides a wrapper for {@link DeliverableTypeLocalService}.

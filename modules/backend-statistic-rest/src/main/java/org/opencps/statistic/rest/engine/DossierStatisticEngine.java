@@ -615,6 +615,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				GetDossierData model = new GetDossierData();
 				model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
 				model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+				model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
 				model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
 				model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
 				if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {

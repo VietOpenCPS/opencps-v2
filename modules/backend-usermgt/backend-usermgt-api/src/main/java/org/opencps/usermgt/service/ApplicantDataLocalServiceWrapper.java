@@ -16,11 +16,7 @@ package org.opencps.usermgt.service;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
-import org.opencps.usermgt.model.ApplicantData;
 
 /**
  * Provides a wrapper for {@link ApplicantDataLocalService}.
@@ -405,6 +401,18 @@ public class ApplicantDataLocalServiceWrapper
 	public org.opencps.usermgt.model.ApplicantData updateApplicantData(
 		long groupId, long applicantDataId, String fileTemplateNo,
 		String fileNo, String fileName, String applicantIdNo, int status,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _applicantDataLocalService.updateApplicantData(groupId,
+			applicantDataId, fileTemplateNo, fileNo, fileName, applicantIdNo,
+			status, serviceContext);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.ApplicantData updateApplicantData(
+		long groupId, long applicantDataId, String fileTemplateNo,
+		String fileNo, String fileName, String applicantIdNo, int status,
 		String sourceFileName, java.io.InputStream inputStream,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -438,12 +446,6 @@ public class ApplicantDataLocalServiceWrapper
 		return _applicantDataLocalService.updateApplicantData(context, groupId,
 			fileTemplateNo, fileName, fileEntryId, metadata, status,
 			applicantIdNo, applicantDataType, dossierNo, log);
-	}
-
-	@Override
-	public ApplicantData updateApplicantData(long groupId, long applicantDataId, String fileTemplateNo, String fileNo, String fileName, String applicantIdNo, int status, ServiceContext serviceContext) throws PortalException, SystemException {
-		return _applicantDataLocalService.updateApplicantData(groupId, applicantDataId,fileTemplateNo,
-				fileNo,fileName,applicantIdNo,status,serviceContext);
 	}
 
 	@Override
