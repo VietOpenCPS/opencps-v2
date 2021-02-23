@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.liferay.portal.kernel.util.Validator;
 import org.fds.opencps.paygate.integration.action.KeyPayV3Action;
 import org.fds.opencps.paygate.integration.action.PayGateIntegrationAction;
 import org.fds.opencps.paygate.integration.action.impl.KeyPayV3ActionImpl;
@@ -418,15 +419,18 @@ public class PayGateIntegrationApplication extends Application {
 		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
 
 		File file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
+		if(Validator.isNotNull(file)) {
+			ResponseBuilder responseBuilder = Response.ok((Object) file);
+			String attachmentFilename = file.getName();
 
-		ResponseBuilder responseBuilder = Response.ok((Object) file);
-		String attachmentFilename = file.getName();
-		
-		responseBuilder.header(
-				HttpHeaders.CONTENT_DISPOSITION, attachmentFilename);
-		responseBuilder.header(HttpHeaders.CONTENT_TYPE, "image/png");
+			responseBuilder.header(
+					HttpHeaders.CONTENT_DISPOSITION, attachmentFilename);
+			responseBuilder.header(HttpHeaders.CONTENT_TYPE, "image/png");
 
-		return responseBuilder.build();
+			return responseBuilder.build();
+		}else{
+			return Response.status(200).build();
+		}
 	}
 
 	/** 

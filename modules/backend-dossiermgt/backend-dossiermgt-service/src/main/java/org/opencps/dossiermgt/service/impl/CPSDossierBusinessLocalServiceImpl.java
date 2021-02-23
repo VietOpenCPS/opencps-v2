@@ -620,9 +620,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					} else {
 						formDataObj.put(Field.USER_NAME, user.getFullName());
 					}
+					_log.info("Context : " + context.getPortalURL());
 
 					Message message = new Message();
-					// _log.info("Document script: " + dt.getDocumentScript());
+					 _log.info("Document script: " + formDataObj.toJSONString());
 					JSONObject msgData = JSONFactoryUtil.createJSONObject();
 					msgData.put(ConstantUtils.CLASS_NAME, DossierDocument.class.getName());
 					msgData.put(Field.CLASS_PK, dossierDocument.getDossierDocumentId());

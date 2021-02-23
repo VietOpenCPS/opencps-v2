@@ -214,26 +214,27 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			_log.info("keypay endpoint " + endpoint);
 
 			_log.info("keypay data " + data);
-
-			JSONObject response = KeyPayV3Utils.postAPI(endpoint, data);
-			_log.info("response " + response.getString(KeyPayV3Term.ERROR));
-			_log.info("response " + JSONFactoryUtil.looseSerialize(response));
-			JSONObject dataJson = response.getJSONObject(KeyPayV3Term.DATA);
-			String qrcode_pay = dataJson.getString(KeyPayV3Term.QRCODE_PAY);
-			_log.info("QRCODE_PAY :" + qrcode_pay);
-			if (response.has(KeyPayV3Term.ERROR)
-					&& KeyPayV3Term.ERROR_0.equals(response.getString(KeyPayV3Term.ERROR))) {
-				JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
-				schema.put(KeyPayV3Term.TRANSACTION_ID, transactionId);
-				schema.put(KeyPayV3Term.QRCODE_PAY, qrcode_pay);
-				schema.put(KeyPayV3Term.TRANS_AMOUNT, trans_amount);
-				schema.put(KeyPayV3Term.ADDITION_FEE, addition_fee);
-				epaymentProfile.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
-				PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-						epaymentProfile.toJSONString(), serviceContext);
+			// Payment Amount không thực hiện keyPay
+			if(paymentFile.getPaymentAmount() > 0) {
+				JSONObject response = KeyPayV3Utils.postAPI(endpoint, data);
+				_log.info("response " + response.getString(KeyPayV3Term.ERROR));
+				_log.info("response " + JSONFactoryUtil.looseSerialize(response));
+				JSONObject dataJson = response.getJSONObject(KeyPayV3Term.DATA);
+				String qrcode_pay = dataJson.getString(KeyPayV3Term.QRCODE_PAY);
+				_log.info("QRCODE_PAY :" + qrcode_pay);
+				if (response.has(KeyPayV3Term.ERROR)
+						&& KeyPayV3Term.ERROR_0.equals(response.getString(KeyPayV3Term.ERROR))) {
+					JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+					schema.put(KeyPayV3Term.TRANSACTION_ID, transactionId);
+					schema.put(KeyPayV3Term.QRCODE_PAY, qrcode_pay);
+					schema.put(KeyPayV3Term.TRANS_AMOUNT, trans_amount);
+					schema.put(KeyPayV3Term.ADDITION_FEE, addition_fee);
+					epaymentProfile.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
+					PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfile.toJSONString(), serviceContext);
+				}
+				result = response.toString();
 			}
-			result = response.toString();
-
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -267,6 +268,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 
 				ImageIO.write(image, "png", outputfile);
 			}
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
