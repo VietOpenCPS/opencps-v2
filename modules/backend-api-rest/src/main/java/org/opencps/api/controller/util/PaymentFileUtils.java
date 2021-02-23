@@ -241,6 +241,10 @@ public class PaymentFileUtils {
 				paymentProfileJson.remove("PAYGOV_CONFIG");
 				paymentProfileJson.put("isPaygov", true);
 			}
+			
+			if (paymentProfileJson.has("KEYPAY_LATE_CONFIG")) {
+				paymentProfileJson.remove("KEYPAY_LATE_CONFIG");
+			}
 			return paymentProfileJson.toString();
 		} catch (Exception e) {
 			return paymentProfile;

@@ -1,0 +1,3 @@
+1. Cấu hình Rest extender:
+	- Thêm Authentication Verifier Properties: auth.verifier.JWTAuthHeaderAuthVerifier.urls.includes=*
+	- Thêm cấu hình trong server config: ServerNo = JWT_SECRET_KEY, protocol = JWT_AUTH, config = secretkey

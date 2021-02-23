@@ -183,7 +183,6 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext) : actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
 						groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			//_log.info("jsonData.hit: "+jsonData.get(ConstantUtils.DATA));
 			List<Document> lstDocs = new ArrayList<Document>();
 			if (Validator.isNotNull(query.getAgency())) {
 				int total = 0;

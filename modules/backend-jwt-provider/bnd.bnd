@@ -1,0 +1,11 @@
+Bundle-Name: backend-jwt-provider
+Bundle-SymbolicName: org.opencps.jwt.provider
+Bundle-Version: 1.0.0
+Export-Package: \
+	com.auth0.jwt.*,\
+	io.jsonwebtoken.*,\
+	android.util,\
+	org.bouncycastle.jce_,\
+	org.bouncycastle.jce.*,\
+	org.bouncycastle.*,\
+	org.xmlpull.v1,\
