@@ -214,6 +214,24 @@
 			<finder-column name="groupAgencyCode"/>
 			<finder-column name="system"/>
 		</finder>
+        <finder name="G_M_Y_GOV_DOM_GRO_NOT_SYS" return-type="Collection">
+        	<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="groupAgencyCode"/>
+			<finder-column name="system" comparator="!="/>
+        </finder>
+        <finder name="G_M_Y_GOV_DOM_GRO_SYS" return-type="Collection">
+        	<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="groupAgencyCode"/>
+			<finder-column name="system"/>
+        </finder>
 	</entity>
 
 	<entity local-service="true" name="OpencpsVotingStatistic"

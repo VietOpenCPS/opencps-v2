@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +69,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			_log.debug("START CALCULATOR TIME: " + (System.currentTimeMillis() - startTime) + " ms");
 
 			List<ServerConfig> configList = ServerConfigLocalServiceUtil.getByServerAndProtocol("SERVER_STATISTIC_DVC", DossierStatisticConstants.STATISTIC_PROTOCOL);
+			
 			ServerConfig config = null;
 			if (configList != null && configList.size() > 0) {
 				config = configList.get(0);
@@ -80,6 +82,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			}
 
 			JSONObject scObject = JSONFactoryUtil.createJSONObject(config.getConfigs());
+			
 			long groupId = 0;
 			if (scObject != null) {
 				if (scObject.has(Field.GROUP_ID)) {
@@ -90,6 +93,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 
 			int[] reportArr = {0, 1};
 			List<OpencpsDossierStatistic> statisticList = OpencpsDossierStatisticLocalServiceUtil.findByREPO_ARR(reportArr);
+			
 			Map<String, DossierStatisticKey> mapKey = null;
 			DossierStatisticKey statisticKey = null;
 			if (statisticList != null && statisticList.size() > 0) {
@@ -148,7 +152,6 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 						}
 						statisticKey.setMonth(opencpsDossierStatistic.getMonth());
 						statisticKey.setYear(opencpsDossierStatistic.getYear());
-						//
 						mapKey.put(sb.toString(), statisticKey);
 					}
 				}
@@ -156,17 +159,42 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 
 			Map<String, DossierStatisticData> mapStatistic = new HashMap<>();
 			for (Map.Entry<String, DossierStatisticKey> entry : mapKey.entrySet()) {
+			
 				DossierStatisticKey objectKey = entry.getValue();
+				//lay d/s statistic dong bo tu mcdt(NOT_G) de tong hop lai
 				List<OpencpsDossierStatistic> dossierStatisticList = OpencpsDossierStatisticLocalServiceUtil
 						.getByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, objectKey.getMonth(), objectKey.getYear(),
 								objectKey.getGovAgencyCode(), objectKey.getDomainCode(), objectKey.getGroupAgencyCode(),
 								objectKey.getSystem());
+			
 				//_log.info("mapKey.getKey: "+entry.getKey());
 				//int size = dossierStatisticList != null ? dossierStatisticList.size() : -1;
 				//_log.info("mapKey_dossierStatisticList: "+ size);
 				//
+				
+				//hot fix by TrungNT
+				// hs tu nsw do truc tiep vao DVC(ko dong bo tu mcdt sang), vi the khi tinh lai ban ghi co system = null phai cong them hs cua nsw vao(hs cua NSW co system=1)
+				
+				List<OpencpsDossierStatistic> temps = new ArrayList<OpencpsDossierStatistic>();
+				
+				if(dossierStatisticList != null) {
+					temps.addAll(dossierStatisticList);
+				}
+				
+				if(Validator.isNull(objectKey.getSystem())) {
+					
+					List<OpencpsDossierStatistic> dossierStatisticListTmp = OpencpsDossierStatisticLocalServiceUtil
+							.getByG_M_Y_GOV_DOM_GRO_SYS(groupId, objectKey.getMonth(), objectKey.getYear(),
+									objectKey.getGovAgencyCode(), objectKey.getDomainCode(), objectKey.getGroupAgencyCode(),
+									String.valueOf(1));
+					
+					if(dossierStatisticListTmp != null && !dossierStatisticListTmp.isEmpty()) {
+						temps.addAll(dossierStatisticListTmp);
+					}
+				}
+				
 				DossierStatisticData dossierStatistic = processCalStatistic(groupId, objectKey.getMonth(), objectKey.getYear(), objectKey.getGovAgencyCode(), objectKey.getDomainCode(), objectKey.getGroupAgencyCode(),
-						objectKey.getSystem(), objectKey.getReporting(), dossierStatisticList);
+						objectKey.getSystem(), objectKey.getReporting(), temps);
 				//
 				if (dossierStatistic != null) {
 					mapStatistic.put(entry.getKey(), dossierStatistic);
@@ -425,6 +453,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		_schedulerEngineHelper = schedulerEngineHelper;
 	}
 
+	//private final String _DEFAULT_CRON_EXPRESSION = "0 0/3 * 1/1 * ? *";
 	private final String _DEFAULT_CRON_EXPRESSION = "0 1 1 1/1 * ? *";
 	private SchedulerEngineHelper _schedulerEngineHelper;
 	private TriggerFactory _triggerFactory;
