@@ -40,19 +40,34 @@ public class JwtTokenProviderUtil {
 	public static JSONObject getBody(String token) {
 
 		String[] arrays = StringUtil.split(token, StringPool.PERIOD);
-
 		if (arrays != null && arrays.length > 1) {
 			String base64EncodedBody = arrays[1];
-			String body = new String(Base64.getDecoder().decode(base64EncodedBody.getBytes()));
 
 			try {
+				String body = new String(Base64.getDecoder().decode(base64EncodedBody.getBytes()));
 				JSONObject bodyObj = JSONFactoryUtil.createJSONObject(body);
 				return bodyObj;
-			} catch (JSONException e) {
-				_log.error(e);
+			} catch (Exception e) {
+				if (e instanceof IllegalArgumentException) {
+					_log.info("Illegal base64 character 5f");
+					try {
+						String body = new String(Base64.getUrlDecoder().decode(base64EncodedBody.getBytes()));
+						JSONObject bodyObj = JSONFactoryUtil.createJSONObject(body);
+						return bodyObj;
+					} catch (Exception e1) {
+						if (e1 instanceof IllegalArgumentException) {
+							_log.info("Illegal base64 character 2f");
+						} else {
+							_log.error(e1);
+						}
+					}
+				} else {
+					_log.error(e);
+				}
 			}
 		}
 
 		return null;
 	}
+
 }
