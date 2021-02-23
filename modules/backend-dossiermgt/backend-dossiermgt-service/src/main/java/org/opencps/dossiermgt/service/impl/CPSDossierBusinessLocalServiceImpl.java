@@ -237,14 +237,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(proAction.getCreateDossiers())) {
 				_log.info("proAction.getCreateDossiers(): "+proAction.getCreateDossiers());
 				if (proAction.getCreateDossiers().contains(StringPool.POUND)) {
-					String[] splitCDs = createDossiers.split(StringPool.POUND);
+					String[] splitCDs = proAction.getCreateDossiers().split(StringPool.POUND);
 					if (splitCDs.length == 2) {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers")) + StringPool.POUND + splitCDs[1];
 					} else {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
 					}
 				} else if (proAction.getCreateDossiers().contains(StringPool.AT)) {
-					String[] splitCDs = createDossiers.split(StringPool.AT);
+					String[] splitCDs = proAction.getCreateDossiers().split(StringPool.AT);
 					if (splitCDs.length != 2) {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
 					} else {
