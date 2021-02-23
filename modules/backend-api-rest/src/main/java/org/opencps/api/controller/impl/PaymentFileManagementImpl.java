@@ -1367,6 +1367,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		long dossierId = GetterUtil.getLong(id);
 
+		_log.info("===downloadInvoiceFileDVCQG===");
+
 		// TODO get Dossier by referenceUid if dossierId = 0
 		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
 

@@ -225,7 +225,9 @@ public class PayGateTerm {
 
 	public enum ListPaygovUnit {
 		DONGTHAP("PAYGOV-DONGTHAP"),
-		HAUGIANG("PAYGOV-HAUGIANG");
+		HAUGIANG("PAYGOV-HAUGIANG"),
+		BGTVT("PAYGOV-BGTVT");
+
 
 		private final String value;
 

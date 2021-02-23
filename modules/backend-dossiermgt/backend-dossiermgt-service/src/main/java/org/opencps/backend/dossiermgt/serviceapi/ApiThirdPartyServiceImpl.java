@@ -38,7 +38,8 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
 
     private enum ListPaygovUnitLocal {
         DONGTHAP("PAYGOV-DONGTHAP"),
-        HAUGIANG("PAYGOV-HAUGIANG");
+        HAUGIANG("PAYGOV-HAUGIANG"),
+        BGTVT("PAYGOV-BGTVT");
 
         private final String value;
 
@@ -73,10 +74,9 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
                         && jsonToken.has("expiryDate")) {
                     return jsonToken.getString("token");
                 }
-            } else if (paygovConfig.getString("partnerCode").equals(ListPaygovUnitLocal.HAUGIANG.getValue())) {
-                return paygovConfig.getString("token");
-            } else {
+            }  else {
                 //other unit
+                return paygovConfig.getString("token");
             }
 
             throw new Exception("Token is empty with paygov config: " + paygovConfig);
@@ -93,9 +93,8 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "Bearer " + token);
-            if(paygovConfig.getString("partnerCode").equals(ListPaygovUnitLocal.HAUGIANG.getValue())) {
-                headers.add("lgspaccesstoken", paygovConfig.getString("lgspAccessToken"));
-            }
+            headers.add("lgspaccesstoken", paygovConfig.getString("lgspAccessToken"));
+
 
             headers.setContentType(MediaType.APPLICATION_JSON);
             JSONObject response = this.callApi(url, headers, body);
@@ -200,12 +199,13 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
             ResponseEntity<String> response = restTemplate.postForEntity( url, entity , String.class);
             _log.info("Response api: " + response);
+            _log.info("Response api: " + response.getBody());
 
             JSONObject jsonObject = JSONFactoryUtil.createJSONObject(response.getBody());
-            System.out.println("Response api: " + jsonObject);
+            _log.info("Response api: " + jsonObject);
             return jsonObject;
         } catch (Exception e) {
-            _log.error(e.getMessage());
+            _log.error(e);
             return null;
         }
     }

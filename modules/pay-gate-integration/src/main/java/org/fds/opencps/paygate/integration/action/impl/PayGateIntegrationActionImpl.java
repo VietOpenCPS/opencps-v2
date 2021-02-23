@@ -1792,11 +1792,11 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			body.put("requestCode", requestCode);
 			body.put("ipAddress", ipAddress);
 
-			if(paygovConfig.getString("partnerCode").equals(PayGateTerm.ListPaygovUnit.HAUGIANG.getValue())) {
+
 				body.put("checksum", PayGateTerm.genChecksum(paygovConfig, orderId, amount, requestCode));
 				body.put("accessKey", paygovConfig.getString("accessKey"));
 				body.put("serviceCode", paygovConfig.getString("serviceCode"));
-			}
+
 
 			String token = apiService.getTokenLGSP(paygovConfig);
 
