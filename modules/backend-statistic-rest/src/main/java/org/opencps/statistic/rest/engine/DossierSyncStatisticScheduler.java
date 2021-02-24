@@ -55,7 +55,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		_log.debug("START STATISTIC DOSSIER STATISTIC: " + isRunningStatisticSync);
+		_log.info("START STATISTIC DOSSIER STATISTIC: " + isRunningStatisticSync);
 		if (!isRunningStatisticSync && CALCULATE_DOSSIER_STATISTIC_ENABLE) {
 			isRunningStatisticSync = true;
 		}
@@ -65,8 +65,8 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		long startTime = System.currentTimeMillis();
 		Date nowLog = new Date();
 		try {
-			_log.debug("START TRACE LOG CALCULATOR TIME: " + nowLog);
-			_log.debug("START CALCULATOR TIME: " + (System.currentTimeMillis() - startTime) + " ms");
+			_log.info("START TRACE LOG CALCULATOR TIME: " + nowLog);
+			_log.info("START CALCULATOR TIME: " + (System.currentTimeMillis() - startTime) + " ms");
 
 			List<ServerConfig> configList = ServerConfigLocalServiceUtil.getByServerAndProtocol("SERVER_STATISTIC_DVC", DossierStatisticConstants.STATISTIC_PROTOCOL);
 			
@@ -77,7 +77,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 					return;
 				}
 			} else {
-				_log.debug("RETURN CALCULATOR END: " + (System.currentTimeMillis() - startTime) + " ms");
+				_log.info("RETURN CALCULATOR END: " + (System.currentTimeMillis() - startTime) + " ms");
 				return ;
 			}
 
@@ -188,6 +188,8 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 									objectKey.getGovAgencyCode(), objectKey.getDomainCode(), objectKey.getGroupAgencyCode(),
 									String.valueOf(1));
 					
+					_log.info("DossierSyncStatisticScheduler key " + entry.getKey() + "|" + dossierStatisticListTmp != null ? dossierStatisticListTmp.size() : "dossierStatisticListTmp null");
+					
 					if(dossierStatisticListTmp != null && !dossierStatisticListTmp.isEmpty()) {
 						temps.addAll(dossierStatisticListTmp);
 					}
@@ -218,8 +220,8 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		catch (Exception e) {
 			_log.error(e);
 		}
-		_log.debug("END TRACE LOG CALCULATOR TIME: " + nowLog);
-		_log.debug("CALCULATOR END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
+		_log.info("END TRACE LOG CALCULATOR TIME: " + nowLog);
+		_log.info("CALCULATOR END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 
 		isRunningStatisticSync = false;
 	}
