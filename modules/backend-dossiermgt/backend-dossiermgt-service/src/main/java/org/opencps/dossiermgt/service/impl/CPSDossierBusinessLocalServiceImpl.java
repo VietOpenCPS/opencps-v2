@@ -581,12 +581,39 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 		}
 	}
-
+	private static final int MAX_TRY_COUNT = 10;
+	private static final String QRCODE_PAY = "qrcode_pay";
 	private boolean createDossierDocumentPostAction(long groupId, long userId, Dossier dossier,
 			DossierAction dossierAction, JSONObject payloadObject, Employee employee, User user,
 			String documentTypeList, ServiceContext context)
 			throws com.liferay.portal.kernel.search.ParseException, JSONException, SearchException {
 		//Check if generate dossier document
+		int tryCount = 0;
+
+		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
+		JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+				.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+		String imageStr = data.getString(QRCODE_PAY);
+		_log.info("Vaooooooo 111111");
+		while (imageStr == null) {
+			_log.info("Lan :" + tryCount);
+			try {
+				Thread.sleep(3000);
+				paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
+				data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+						.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+				imageStr = data.getString(QRCODE_PAY);
+				if(Validator.isNotNull(imageStr)){
+					System.out.println("OKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
+				}
+				tryCount++;
+				if(Validator.isNotNull(imageStr)) break;
+				if (tryCount == MAX_TRY_COUNT ) break;
+			}
+			catch (InterruptedException e) {
+				break;
+			}
+		}
 		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
 			// Generate document
 			String[] documentTypes = documentTypeList.split(StringPool.COMMA);
@@ -620,8 +647,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					} else {
 						formDataObj.put(Field.USER_NAME, user.getFullName());
 					}
-					_log.info("Context : " + context.getPortalURL());
-
 					Message message = new Message();
 					 _log.info("Document script: " + formDataObj.toJSONString());
 					JSONObject msgData = JSONFactoryUtil.createJSONObject();

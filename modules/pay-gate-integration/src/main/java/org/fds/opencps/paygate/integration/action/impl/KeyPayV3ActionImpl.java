@@ -180,7 +180,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			JSONArray dskhoannop = JSONFactoryUtil.createJSONArray();
 			JSONObject dskhoannop_obj = JSONFactoryUtil.createJSONObject();
 
-			dskhoannop_obj.put(KeyPayV3Term.NOIDUNG, paymentFile.getPaymentNote());
+			dskhoannop_obj.put(KeyPayV3Term.NOIDUNG, Validator.isNotNull(paymentFile.getPaymentNote()) ? paymentFile.getPaymentNote() : dossier.getDossierNo());
 			dskhoannop_obj.put(KeyPayV3Term.SOTIEN, String.valueOf(paymentFile.getPaymentAmount()));
 			dskhoannop.put(dskhoannop_obj);
 
@@ -220,10 +220,10 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 				_log.info("response " + response.getString(KeyPayV3Term.ERROR));
 				_log.info("response " + JSONFactoryUtil.looseSerialize(response));
 				JSONObject dataJson = response.getJSONObject(KeyPayV3Term.DATA);
-				String qrcode_pay = dataJson.getString(KeyPayV3Term.QRCODE_PAY);
-				_log.info("QRCODE_PAY :" + qrcode_pay);
 				if (response.has(KeyPayV3Term.ERROR)
 						&& KeyPayV3Term.ERROR_0.equals(response.getString(KeyPayV3Term.ERROR))) {
+					String qrcode_pay = dataJson.getString(KeyPayV3Term.QRCODE_PAY);
+					_log.debug("QRCODE_PAY :" + qrcode_pay);
 					JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 					schema.put(KeyPayV3Term.TRANSACTION_ID, transactionId);
 					schema.put(KeyPayV3Term.QRCODE_PAY, qrcode_pay);
@@ -242,7 +242,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 		return result;
 	}
 
-	
+
 	public File getQrCode(User user, long dossierId, ServiceContext serviceContext, HttpServletRequest request, HttpServletResponse response) {
 		
 		File outputfile = null;
@@ -268,7 +268,6 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 
 				ImageIO.write(image, "png", outputfile);
 			}
-
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
