@@ -56,7 +56,9 @@ import javax.xml.bind.annotation.XmlType;
     "typeCode",
     "deliverableAction",
     "fileMark",
-    "eForm"
+    "eForm",
+    "deliverableTypeName",
+    "deliverableType"
 })
 public class DossierTemplatePartDataModel {
 
@@ -73,6 +75,25 @@ public class DossierTemplatePartDataModel {
     protected Integer deliverableAction;
     protected Integer fileMark;
     protected String eForm;
+    protected String deliverableTypeName;
+    protected String deliverableType;
+
+    public String getDeliverableTypeName() {
+        return deliverableTypeName;
+    }
+
+    public void setDeliverableTypeName(String deliverableTypeName) {
+        this.deliverableTypeName = deliverableTypeName;
+    }
+
+
+    public String getDeliverableType() {
+        return deliverableType;
+    }
+
+    public void setDeliverableType(String deliverableType) {
+        this.deliverableType = deliverableType;
+    }
 
     /**
      * Gets the value of the partNo property.

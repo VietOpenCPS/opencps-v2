@@ -10,11 +10,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.search.*;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -44,6 +40,7 @@ import org.opencps.api.controller.OneGateController;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.OneGateUtils;
 import org.opencps.api.controller.util.ServiceConfigUtils;
+import org.opencps.api.controller.util.ServiceInfoUtils;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierOnegateInputModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
@@ -52,11 +49,14 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.ServiceProcessActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
+import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTemplateTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
@@ -115,7 +115,35 @@ public class OneGateControllerImpl implements OneGateController {
 
 			Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
 			List<ServiceInfo> lstServiceInfos = null;
-			if (Validator.isNotNull(public_) && !Boolean.parseBoolean(public_)) {
+			ServiceInfoActions actions = new ServiceInfoActionsImpl();
+			//Search lucene
+			SearchContext searchContext = new SearchContext();
+			searchContext.setCompanyId(serviceContext.getCompanyId());
+			if(Validator.isNotNull(query.getKeyword()) || Validator.isNotNull(query.getLevel())) {
+				//Search theo tên thủ tục sử dụng cho Phòng II
+				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+				params.put(Field.GROUP_ID, String.valueOf(groupId));
+				String keywordSearch = query.getKeyword();
+				String keySearch = StringPool.BLANK;
+				if (Validator.isNotNull(keywordSearch)) {
+					keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
+				}
+				params.put(Field.KEYWORD_SEARCH, keySearch);
+
+				String stringSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), ServiceInfoTerm.SERVICE_CODE_SEARCH);
+				Sort[] sorts = new Sort[] { SortFactoryUtil.create(stringSort, Sort.STRING_TYPE,
+						GetterUtil.getBoolean(query.getOrder())) };
+				params.put(ServiceInfoTerm.PUBLIC_, true);
+				params.put(ServiceInfoTerm.MAX_LEVEL, query.getLevel());
+
+				Hits hits =  ServiceInfoLocalServiceUtil.searchLucene(params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+						searchContext);
+
+				if (hits != null) {
+					lstServiceInfos = ServiceInfoUtils.mappingToServiceInfoResultModels(hits.toList(), groupId);
+				}
+			}
+			else if (Validator.isNotNull(public_) && !Boolean.parseBoolean(public_)) {
 				lstServiceInfos = ServiceInfoLocalServiceUtil.findByGroupAndPublic(groupId,
 						Boolean.parseBoolean(public_));
 			} else {
@@ -164,10 +192,6 @@ public class OneGateControllerImpl implements OneGateController {
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(querySort, Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
 
-			
-			//Search lucene
-			SearchContext searchContext = new SearchContext();
-			searchContext.setCompanyId(serviceContext.getCompanyId());
 
 			Hits hits = ProcessOptionLocalServiceUtil.searchLucene(params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					searchContext);
@@ -199,6 +223,7 @@ public class OneGateControllerImpl implements OneGateController {
 										serviceInfo.getServiceCode());
 								elmData.put(ServiceInfoTerm.SERVICE_CODE, serviceInfo.getServiceCode());
 								elmData.put(ServiceInfoTerm.SERVICE_NAME, serviceInfo.getServiceName());
+								elmData.put(ServiceInfoTerm.MAX_LEVEL, serviceInfo.getMaxLevel());
 								elmData.put(ServiceInfoTerm.SERVICE_CODE_DVCQG,
 										serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG()
 												: StringPool.BLANK);

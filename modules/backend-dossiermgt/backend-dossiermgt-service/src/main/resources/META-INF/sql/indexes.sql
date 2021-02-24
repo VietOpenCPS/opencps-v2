@@ -26,7 +26,7 @@ create index IX_8D12CC2D on opencps_deliverable (deliverableState, govAgencyCode
 create index IX_B5D727C6 on opencps_deliverable (groupId, applicantIdNo[$COLUMN_LENGTH:128$]);
 create index IX_6113CEF4 on opencps_deliverable (groupId, deliverableCode[$COLUMN_LENGTH:128$]);
 create index IX_CBA1DBE2 on opencps_deliverable (groupId, deliverableId);
-create index IX_E86EDBAE on opencps_deliverable (groupId, dossierId);
+create index IX_277A1074 on opencps_deliverable (groupId, dossierId, deliverableState);
 create index IX_59547196 on opencps_deliverable (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_7586598 on opencps_deliverable (uuid_[$COLUMN_LENGTH:75$], groupId);
 

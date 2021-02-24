@@ -2259,6 +2259,11 @@
 			<finder-column name="groupId"/>
 			<finder-column name="applicantIdNo"/>
 		</finder>
+		<finder return-type="Deliverable" name="F_GID_DI_STATE">
+			<finder-column name="groupId"/>
+			<finder-column name="dossierId"/>
+			<finder-column name="deliverableState"/>
+		</finder>
 <!-- 		<order> -->
 <!-- 			<order-column name="modifiedDate" order-by="asc" /> -->
 <!-- 			<order-column name="issueDate" order-by="asc" /> -->
