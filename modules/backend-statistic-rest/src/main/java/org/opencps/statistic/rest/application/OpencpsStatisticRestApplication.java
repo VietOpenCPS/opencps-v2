@@ -2461,31 +2461,76 @@ public class OpencpsStatisticRestApplication extends Application {
 			
 				for (String agency : mapResults.keySet()) {
 					for (String serviceCode : mapResults.get(agency).keySet()) {
-						JSONObject obj = JSONFactoryUtil.createJSONObject();											
-						RealtimeData data = new RealtimeData();
-						data.setServiceCode(serviceCode);
-						data.setServiceName(services.get(serviceCode));
+						JSONObject objLv3 = JSONFactoryUtil.createJSONObject();	
+						JSONObject objLv4 = JSONFactoryUtil.createJSONObject();
+						
 						
 						List<Document> dossiers = mapResults.get(agency).get(serviceCode);
 						if (dossiers != null && fromDate != null && toDate != null) {
-						updateDossierStatisticData(data, dossiers, fromDate, toDate);
-						obj.put("govAgencyCode", agency);
-						obj.put("govAgencyName", govs.get(agency));
-						obj.put("serviceCode", serviceCode);
-						obj.put("serviceName", services.get(serviceCode));
-						obj.put("totalCount", data.getTotalCount());
-						obj.put("dossierOnline3Count", data.getDossierOnline3Count());
-						obj.put("dossierOnline4Count", data.getDossierOnline4Count());
-						obj.put("dossierOnegate3Count", data.getDossierOnegate3Count());
-						obj.put("dossierOnegate4Count", data.getDossierOnegate4Count());
-						obj.put("releaseDossierOnline3Count", data.getReleaseDossierOnline3Count());
-						obj.put("releaseDossierOnline4Count", data.getReleaseDossierOnline4Count());
-						obj.put("releaseDossierOnegate3Count", data.getReleaseDossierOnegate3Count());
-						obj.put("releaseDossierOnegate4Count", data.getReleaseDossierOnegate4Count());
-						obj.put("serviceLevel", Integer.valueOf(dossiers.get(0).get(DossierTerm.SERVICE_LEVEL)));
+						// xu ly case mot thu tuc co nhieu hon mot muc do trong ES
+						List<Document> dossiersLV3 = new ArrayList<Document>();
+						List<Document> dossiersLV4 = new ArrayList<Document>();
+						for (Document doc : dossiers) {
+							int svLevel = GetterUtil.getInteger(doc.get(DossierTerm.SERVICE_LEVEL));
+							if (svLevel == 3) {
+								dossiersLV3.add(doc);
+							}else {
+								dossiersLV4.add(doc);
+							}
+						}
+						if (dossiersLV3 != null && dossiersLV3.size() > 0) {
+							RealtimeData data = new RealtimeData();
+							data.setServiceCode(serviceCode);
+							data.setServiceName(services.get(serviceCode));
 							
-						tempResults.put(obj);
-						results.put(obj);
+							updateDossierStatisticData(data, dossiersLV3, fromDate, toDate);
+							objLv3.put("govAgencyCode", agency);
+							objLv3.put("govAgencyName", govs.get(agency));
+							objLv3.put("serviceCode", serviceCode);
+							objLv3.put("serviceName", services.get(serviceCode));
+							objLv3.put("totalCount", data.getTotalCount());
+							objLv3.put("dossierOnline3Count", data.getDossierOnline3Count());
+							objLv3.put("dossierOnline4Count", data.getDossierOnline4Count());
+							objLv3.put("dossierOnegate3Count", data.getDossierOnegate3Count());
+							objLv3.put("dossierOnegate4Count", data.getDossierOnegate4Count());
+							objLv3.put("releaseDossierOnline3Count", data.getReleaseDossierOnline3Count());
+							objLv3.put("releaseDossierOnline4Count", data.getReleaseDossierOnline4Count());
+							objLv3.put("releaseDossierOnegate3Count", data.getReleaseDossierOnegate3Count());
+							objLv3.put("releaseDossierOnegate4Count", data.getReleaseDossierOnegate4Count());
+							objLv3.put("serviceLevel", 3);
+						}
+						
+						if (dossiersLV4 != null && dossiersLV4.size() > 0) {
+							RealtimeData data = new RealtimeData();
+							data.setServiceCode(serviceCode);
+							data.setServiceName(services.get(serviceCode));
+							
+							updateDossierStatisticData(data, dossiersLV4, fromDate, toDate);
+							objLv4.put("govAgencyCode", agency);
+							objLv4.put("govAgencyName", govs.get(agency));
+							objLv4.put("serviceCode", serviceCode);
+							objLv4.put("serviceName", services.get(serviceCode));
+							objLv4.put("totalCount", data.getTotalCount());
+							objLv4.put("dossierOnline3Count", data.getDossierOnline3Count());
+							objLv4.put("dossierOnline4Count", data.getDossierOnline4Count());
+							objLv4.put("dossierOnegate3Count", data.getDossierOnegate3Count());
+							objLv4.put("dossierOnegate4Count", data.getDossierOnegate4Count());
+							objLv4.put("releaseDossierOnline3Count", data.getReleaseDossierOnline3Count());
+							objLv4.put("releaseDossierOnline4Count", data.getReleaseDossierOnline4Count());
+							objLv4.put("releaseDossierOnegate3Count", data.getReleaseDossierOnegate3Count());
+							objLv4.put("releaseDossierOnegate4Count", data.getReleaseDossierOnegate4Count());
+							objLv4.put("serviceLevel", 4);
+						}
+						
+							if (objLv3 != null) {
+								tempResults.put(objLv3);
+								results.put(objLv3);
+							}
+							if (objLv4 != null) {
+								tempResults.put(objLv4);							
+								results.put(objLv4);
+							}
+		
 						}																													
 					}
 				}
