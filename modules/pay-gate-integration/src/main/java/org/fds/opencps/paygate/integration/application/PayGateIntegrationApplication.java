@@ -407,7 +407,7 @@ public class PayGateIntegrationApplication extends Application {
 
 		return Response.status(200).entity(result).build();
 	}
-	private static final int MAX_TRY_COUNT = 10;
+//	private static final int MAX_TRY_COUNT = 10;
 	@GET
 	@Path("/keypayv3/qrcode")
 	// @Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
@@ -420,23 +420,23 @@ public class PayGateIntegrationApplication extends Application {
 
 		File file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
 //		if(Validator.isNotNull(file)) {
-		int tryCount = 0;
-		while (file == null) {
-			System.out.println(tryCount);
-			try {
-				Thread.sleep(2000);
-				file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
-				if(file !=null){
-					System.out.println("OKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-				}
-				tryCount++;
-				if (tryCount == MAX_TRY_COUNT ) break;
-			}
-			catch (InterruptedException e) {
-				break;
-			}
-		}
-//		if(file !=null){
+//		int tryCount = 0;
+//		while (file == null) {
+//			System.out.println(tryCount);
+//			try {
+//				Thread.sleep(2000);
+//				file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
+//				if(file !=null){
+//					System.out.println("OKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
+//				}
+//				tryCount++;
+//				if (tryCount == MAX_TRY_COUNT ) break;
+//			}
+//			catch (InterruptedException e) {
+//				break;
+//			}
+//		}
+		if(file !=null){
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 			String attachmentFilename = file.getName();
@@ -446,7 +446,10 @@ public class PayGateIntegrationApplication extends Application {
 			responseBuilder.header(HttpHeaders.CONTENT_TYPE, "image/png");
 
 			return responseBuilder.build();
-//		}
+		}else{
+			return Response.status(
+					HttpURLConnection.HTTP_NO_CONTENT).build();
+		}
 
 	}
 

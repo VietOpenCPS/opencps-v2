@@ -648,7 +648,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						formDataObj.put(Field.USER_NAME, user.getFullName());
 					}
 					Message message = new Message();
-					 _log.info("Document script: " + formDataObj.toJSONString());
+//					 _log.info("Document script: " + formDataObj.toJSONString());
 					JSONObject msgData = JSONFactoryUtil.createJSONObject();
 					msgData.put(ConstantUtils.CLASS_NAME, DossierDocument.class.getName());
 					msgData.put(Field.CLASS_PK, dossierDocument.getDossierDocumentId());
@@ -10218,21 +10218,27 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private JSONObject verifyPayloadMail (JSONObject payload) {
-		Iterator payloadKeys = payload.keys();
-		String tmp_key;
-		JSONObject result = payload;
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		try {
-			while (payloadKeys.hasNext()) {
-				tmp_key = (String) payloadKeys.next();
-				if (tmp_key.toLowerCase().indexOf("date") >= 0 && payload.getLong(tmp_key) > 0) {
-					result.put(tmp_key + "Str", sdf.format(new Date(payload.getLong(tmp_key))));
+		JSONObject resultMail =  JSONFactoryUtil.createJSONObject();
+		if(Validator.isNotNull(payload)) {
+			Iterator payloadKeys = payload.keys();
+			String tmp_key;
+			JSONObject result = payload;
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			try {
+				while (payloadKeys.hasNext()) {
+					tmp_key = (String) payloadKeys.next();
+					if(Validator.isNotNull(tmp_key)) {
+						if (tmp_key.toLowerCase().indexOf("date") >= 0 && payload.getLong(tmp_key) > 0) {
+							result.put(tmp_key + "Str", sdf.format(new Date(payload.getLong(tmp_key))));
+						}
+					}
 				}
+			} catch (Exception e) {
+				_log.debug(e);
 			}
-		} catch (Exception e) {
-			_log.debug(e);
+			return result;
 		}
-		return result;
+		return resultMail;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);

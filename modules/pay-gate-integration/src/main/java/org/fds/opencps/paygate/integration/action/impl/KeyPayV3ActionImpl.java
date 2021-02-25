@@ -12,6 +12,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.awt.image.BufferedImage;
@@ -24,10 +27,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MediaType;
 
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.fds.opencps.paygate.integration.action.KeyPayV3Action;
 import org.fds.opencps.paygate.integration.util.KeyPayV3Term;
@@ -218,7 +219,6 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			if(paymentFile.getPaymentAmount() > 0) {
 				JSONObject response = KeyPayV3Utils.postAPI(endpoint, data);
 				_log.info("response " + response.getString(KeyPayV3Term.ERROR));
-				_log.info("response " + JSONFactoryUtil.looseSerialize(response));
 				JSONObject dataJson = response.getJSONObject(KeyPayV3Term.DATA);
 				if (response.has(KeyPayV3Term.ERROR)
 						&& KeyPayV3Term.ERROR_0.equals(response.getString(KeyPayV3Term.ERROR))) {
@@ -230,8 +230,24 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 					schema.put(KeyPayV3Term.TRANS_AMOUNT, trans_amount);
 					schema.put(KeyPayV3Term.ADDITION_FEE, addition_fee);
 					epaymentProfile.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
-					PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+					Indexer<PaymentFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
+					paymentFile.setEpaymentProfile(epaymentProfile.toJSONString());
+					User userAction = UserLocalServiceUtil.getUser( paymentFile.getUserId());
+					Date now = new Date();
+					paymentFile.setModifiedDate(now);
+					paymentFile.setUserId(userAction.getUserId());
+					paymentFile.setUserName(userAction.getFullName());
+					paymentFile = PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 							epaymentProfile.toJSONString(), serviceContext);
+					try {
+						indexer.reindex(paymentFile);
+					} catch (SearchException e) {
+						_log.error(e);
+					}
+					PaymentFile paymentFile1 = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
+					JSONObject paymentFileDetail = JSONFactoryUtil.createJSONObject(paymentFile1.getEpaymentProfile())
+							.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+					_log.info("JSON paymentFileDetail: " + paymentFileDetail );
 				}
 				result = response.toString();
 			}
@@ -242,7 +258,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 		return result;
 	}
 
-
+	private static final int MAX_TRY_COUNT = 10;
 	public File getQrCode(User user, long dossierId, ServiceContext serviceContext, HttpServletRequest request, HttpServletResponse response) {
 		
 		File outputfile = null;
@@ -251,9 +267,32 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
 			JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 					.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+			_log.info("JSON DATA: " + data );
 			String imageStr = data.getString(KeyPayV3Term.QRCODE_PAY);
-			// String imageStr = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKoAAACqAQMAAAAHuE bBAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAA DN0lEQVRIieWWMWokOxCGSyhQYqTUgUBX6Mk0yegqBl9gGqePbg2bmpkLGPYqcm JlewaBgkm72UQLoutVM8a84HlAna6CDj4aofqr6q8C+DuOw1LNWRVMoxf0VYh3cAcW xuUgoCp/AF4liHa8Q4uJ/XLIEd8DaDnGTZge6AqYqcfA83kjzm+SFYEThWyS3ILXKJ8G wvAy0wPTf4L/H0zC5rf+l73ql/M+6nz50rsB0+FJsmjgHziANv4rnQ3YFZtT/x6v+Pu0QM3T LZxWHLVmiygwnlkxlXnRjhkWnthcEF9BBEzD0bbjDoSpclcSKG8dZJzEHaxCyT/PEh757 0kEjr4v7VhaQD+oAvpBMkx8nmM7dtHBSJIKxMsHQKL42vFBBHimvGJG7xD5ArYdd7 YYP0iq7BcsgieQoh3vYkiaBbiaV7UAtetNqm+wpJSYSUWjKZCY9NCHdtwJkYyXDuqD3 COm47gBHxzmCp1L6NnidAX6oxl3AuhCKUoa5wD0xy07bVhaNNnvQsEfy76g7r1txywG PU6E+XRkMdfjAHcwlVPliwoG65Hq2+CM7VhFCmd8J4c6qo9V48FtwRb90RVBhmcFklF jO94h3d3PwdD02YfK/WA34IjpeQ7CIC6WHojTBtxB4G/jBFes6k/gmp3iHbxDJEAGZepAt sX9rTTbsIpkUJPDK17O+2JAsg3YxaKfL4tA/krprhrGDXgtlJ9n8k5QE9hc2c3w2vDBWcoI w/VuUTKeTqUdKwwJaHiJTGVfDJ9us/gb3AHC6F0QSc00a2D4bO4mLG2gZWFXqEfoPd QvEtpxJ0olMW3CCzlENUuP7ZiFYN56LI/6Qf0pOuPZtuN1EfnhybE0J7dPAMMGDCLS6 kWC6Qe2WAR2CXcweSzwy+Su2dON2Uw3TdqwCkJr0uSaX1XEWscTtmOwjpYmavF19 xFIhhc3YIBMRh3FbfdZfasdk7A0u1S5aio5zPz8pXcDps1UP69jFF5OSDb8efc3mLZe80bTn jaOtb7x0+2bcX2ir1knDl3bz2UTTk9jWOup/3ApjacNmKJELzsA4xUVW6WKa8ckLHpqlU cautZlGC+lHf8N5181EFE1IoKbqgAAAABJRU5ErkJggg==";
+			_log.info("imageStr: " + imageStr);
+
+			int tryCount = 0;
+			while (Validator.isNotNull(imageStr)) {
+				try {
+					_log.info("VAOOOOO 88888888888888");
+					Thread.sleep(3000);
+					 paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
+					 data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+							.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+					_log.info("Data Payment TRY: " + data);
+					tryCount++;
+					if (tryCount == MAX_TRY_COUNT ) break;
+				}
+				catch (InterruptedException e) {
+					break;
+				}
+			}
+			if(Validator.isNull(imageStr)){
+				imageStr = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKoAAACqAQMAAAAHuE bBAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAA DN0lEQVRIieWWMWokOxCGSyhQYqTUgUBX6Mk0yegqBl9gGqePbg2bmpkLGPYqcm JlewaBgkm72UQLoutVM8a84HlAna6CDj4aofqr6q8C+DuOw1LNWRVMoxf0VYh3cAcW xuUgoCp/AF4liHa8Q4uJ/XLIEd8DaDnGTZge6AqYqcfA83kjzm+SFYEThWyS3ILXKJ8G wvAy0wPTf4L/H0zC5rf+l73ql/M+6nz50rsB0+FJsmjgHziANv4rnQ3YFZtT/x6v+Pu0QM3T LZxWHLVmiygwnlkxlXnRjhkWnthcEF9BBEzD0bbjDoSpclcSKG8dZJzEHaxCyT/PEh757 0kEjr4v7VhaQD+oAvpBMkx8nmM7dtHBSJIKxMsHQKL42vFBBHimvGJG7xD5ArYdd7 YYP0iq7BcsgieQoh3vYkiaBbiaV7UAtetNqm+wpJSYSUWjKZCY9NCHdtwJkYyXDuqD3 COm47gBHxzmCp1L6NnidAX6oxl3AuhCKUoa5wD0xy07bVhaNNnvQsEfy76g7r1txywG PU6E+XRkMdfjAHcwlVPliwoG65Hq2+CM7VhFCmd8J4c6qo9V48FtwRb90RVBhmcFklF jO94h3d3PwdD02YfK/WA34IjpeQ7CIC6WHojTBtxB4G/jBFes6k/gmp3iHbxDJEAGZepAt sX9rTTbsIpkUJPDK17O+2JAsg3YxaKfL4tA/krprhrGDXgtlJ9n8k5QE9hc2c3w2vDBWcoI w/VuUTKeTqUdKwwJaHiJTGVfDJ9us/gb3AHC6F0QSc00a2D4bO4mLG2gZWFXqEfoPd QvEtpxJ0olMW3CCzlENUuP7ZiFYN56LI/6Qf0pOuPZtuN1EfnhybE0J7dPAMMGDCLS6 kWC6Qe2WAR2CXcweSzwy+Su2dON2Uw3TdqwCkJr0uSaX1XEWscTtmOwjpYmavF19 xFIhhc3YIBMRh3FbfdZfasdk7A0u1S5aio5zPz8pXcDps1UP69jFF5OSDb8efc3mLZe80bTn jaOtb7x0+2bcX2ir1knDl3bz2UTTk9jWOup/3ApjacNmKJELzsA4xUVW6WKa8ckLHpqlU cautZlGC+lHf8N5181EFE1IoKbqgAAAABJRU5ErkJggg==";
+			}
+
 			if(Validator.isNotNull(imageStr)) {
+				_log.info("VAOOOOO KOOOO");
 				String imageDataBytes = imageStr.split(",")[1];
 
 				byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(imageDataBytes);
