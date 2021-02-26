@@ -244,10 +244,10 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 					} catch (SearchException e) {
 						_log.error(e);
 					}
-					PaymentFile paymentFile1 = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
-					JSONObject paymentFileDetail = JSONFactoryUtil.createJSONObject(paymentFile1.getEpaymentProfile())
-							.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-					_log.info("JSON paymentFileDetail: " + paymentFileDetail );
+//					PaymentFile paymentFile1 = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
+//					JSONObject paymentFileDetail = JSONFactoryUtil.createJSONObject(paymentFile1.getEpaymentProfile())
+//							.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+//					_log.info("JSON paymentFileDetail: " + paymentFileDetail );
 				}
 				result = response.toString();
 			}
@@ -258,41 +258,17 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 		return result;
 	}
 
-	private static final int MAX_TRY_COUNT = 10;
 	public File getQrCode(User user, long dossierId, ServiceContext serviceContext, HttpServletRequest request, HttpServletResponse response) {
 		
 		File outputfile = null;
 		try {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.findPaymentFileByDossierId(dossier.getGroupId(), dossierId);
 			JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 					.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-			_log.info("JSON DATA: " + data );
 			String imageStr = data.getString(KeyPayV3Term.QRCODE_PAY);
-			_log.info("imageStr: " + imageStr);
-
-			int tryCount = 0;
-			while (Validator.isNotNull(imageStr)) {
-				try {
-					_log.info("VAOOOOO 88888888888888");
-					Thread.sleep(3000);
-					 paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
-					 data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
-							.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-					_log.info("Data Payment TRY: " + data);
-					tryCount++;
-					if (tryCount == MAX_TRY_COUNT ) break;
-				}
-				catch (InterruptedException e) {
-					break;
-				}
-			}
-			if(Validator.isNull(imageStr)){
-				imageStr = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKoAAACqAQMAAAAHuE bBAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAA DN0lEQVRIieWWMWokOxCGSyhQYqTUgUBX6Mk0yegqBl9gGqePbg2bmpkLGPYqcm JlewaBgkm72UQLoutVM8a84HlAna6CDj4aofqr6q8C+DuOw1LNWRVMoxf0VYh3cAcW xuUgoCp/AF4liHa8Q4uJ/XLIEd8DaDnGTZge6AqYqcfA83kjzm+SFYEThWyS3ILXKJ8G wvAy0wPTf4L/H0zC5rf+l73ql/M+6nz50rsB0+FJsmjgHziANv4rnQ3YFZtT/x6v+Pu0QM3T LZxWHLVmiygwnlkxlXnRjhkWnthcEF9BBEzD0bbjDoSpclcSKG8dZJzEHaxCyT/PEh757 0kEjr4v7VhaQD+oAvpBMkx8nmM7dtHBSJIKxMsHQKL42vFBBHimvGJG7xD5ArYdd7 YYP0iq7BcsgieQoh3vYkiaBbiaV7UAtetNqm+wpJSYSUWjKZCY9NCHdtwJkYyXDuqD3 COm47gBHxzmCp1L6NnidAX6oxl3AuhCKUoa5wD0xy07bVhaNNnvQsEfy76g7r1txywG PU6E+XRkMdfjAHcwlVPliwoG65Hq2+CM7VhFCmd8J4c6qo9V48FtwRb90RVBhmcFklF jO94h3d3PwdD02YfK/WA34IjpeQ7CIC6WHojTBtxB4G/jBFes6k/gmp3iHbxDJEAGZepAt sX9rTTbsIpkUJPDK17O+2JAsg3YxaKfL4tA/krprhrGDXgtlJ9n8k5QE9hc2c3w2vDBWcoI w/VuUTKeTqUdKwwJaHiJTGVfDJ9us/gb3AHC6F0QSc00a2D4bO4mLG2gZWFXqEfoPd QvEtpxJ0olMW3CCzlENUuP7ZiFYN56LI/6Qf0pOuPZtuN1EfnhybE0J7dPAMMGDCLS6 kWC6Qe2WAR2CXcweSzwy+Su2dON2Uw3TdqwCkJr0uSaX1XEWscTtmOwjpYmavF19 xFIhhc3YIBMRh3FbfdZfasdk7A0u1S5aio5zPz8pXcDps1UP69jFF5OSDb8efc3mLZe80bTn jaOtb7x0+2bcX2ir1knDl3bz2UTTk9jWOup/3ApjacNmKJELzsA4xUVW6WKa8ckLHpqlU cautZlGC+lHf8N5181EFE1IoKbqgAAAABJRU5ErkJggg==";
-			}
 
 			if(Validator.isNotNull(imageStr)) {
-				_log.info("VAOOOOO KOOOO");
 				String imageDataBytes = imageStr.split(",")[1];
 
 				byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(imageDataBytes);

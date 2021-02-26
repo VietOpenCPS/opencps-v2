@@ -37,6 +37,11 @@ import org.fds.opencps.paygate.integration.action.PayGateIntegrationAction;
 import org.fds.opencps.paygate.integration.action.impl.KeyPayV3ActionImpl;
 import org.fds.opencps.paygate.integration.action.impl.PayGateIntegrationActionImpl;
 import org.fds.opencps.paygate.integration.util.PayGateTerm;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
@@ -407,35 +412,42 @@ public class PayGateIntegrationApplication extends Application {
 
 		return Response.status(200).entity(result).build();
 	}
-//	private static final int MAX_TRY_COUNT = 10;
+	private static final int MAX_TRY_COUNT = 10;
 	@GET
 	@Path("/keypayv3/qrcode")
 	// @Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_OCTET_STREAM })
+	@Consumes({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
 	public Response getQR(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @QueryParam("dossierId") long dossierId) throws PortalException {
 
 		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
-
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
+		JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+				.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+		System.out.println("JSON Payment: " + data );
 		File file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
-//		if(Validator.isNotNull(file)) {
-//		int tryCount = 0;
-//		while (file == null) {
-//			System.out.println(tryCount);
-//			try {
-//				Thread.sleep(2000);
-//				file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
-//				if(file !=null){
-//					System.out.println("OKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-//				}
-//				tryCount++;
-//				if (tryCount == MAX_TRY_COUNT ) break;
-//			}
-//			catch (InterruptedException e) {
-//				break;
-//			}
-//		}
+		int tryCount = 0;
+		while (file == null) {
+			try {
+				System.out.println("VAOOOOO 88888888888888");
+				Thread.sleep(3000);
+				file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
+				tryCount++;
+				if (tryCount == MAX_TRY_COUNT ) break;
+				if (file != null ) break;
+			}
+			catch (InterruptedException e) {
+				break;
+			}
+		}
+
 		if(file !=null){
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
