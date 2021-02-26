@@ -45,6 +45,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 	private static final String CONDITION_YEAR_REPLACE = "(opencps_statistic.year != 0) AND";
 	private static final String CONDITION_SYSTEM = "(opencps_statistic.system = ?) AND";
 	private static final String CONDITION_SYSTEM_REPLACE = "(opencps_statistic.system IS NULL) AND";
+	//private static final String CONDITION_SYSTEM_REPLACE = "(opencps_statistic.system IN (0,1,2,3,4,5)) AND";
 	
 	public static final int ALL_MONTH = -1;
 	

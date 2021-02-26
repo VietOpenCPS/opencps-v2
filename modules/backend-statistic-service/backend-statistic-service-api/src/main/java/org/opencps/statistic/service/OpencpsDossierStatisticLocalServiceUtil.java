@@ -458,6 +458,22 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getByG_M_Y_GOV_DOM_GRO_NOT_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system) {
+		return getService()
+				   .getByG_M_Y_GOV_DOM_GRO_NOT_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system);
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getByG_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system) {
+		return getService()
+				   .getByG_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getByG_Y_GO_DO_GR_SY(
 		long groupId, int year, String[] groupAgencyArr, String domainCode,
 		String groupAgency, String system) {
