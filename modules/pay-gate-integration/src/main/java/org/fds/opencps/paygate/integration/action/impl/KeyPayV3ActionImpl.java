@@ -244,10 +244,6 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 					} catch (SearchException e) {
 						_log.error(e);
 					}
-//					PaymentFile paymentFile1 = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
-//					JSONObject paymentFileDetail = JSONFactoryUtil.createJSONObject(paymentFile1.getEpaymentProfile())
-//							.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-//					_log.info("JSON paymentFileDetail: " + paymentFileDetail );
 				}
 				result = response.toString();
 			}

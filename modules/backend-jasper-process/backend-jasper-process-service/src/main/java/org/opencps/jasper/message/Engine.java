@@ -45,7 +45,6 @@ public class Engine implements MessageListener {
 			long classPK = msgData.getLong(ConfigConstants.JASPER_TERM_CLASS_PK);
 
 			String className = msgData.getString(ConfigConstants.JASPER_TERM_CLASS_NAME);
-			_log.info("Class Name: " + className);
 
 			if (ConfigProps.get(ConfigConstants.ENGINE_CLASSNAME_DOSSIERFILE).equals(className)) {
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject();
@@ -129,7 +128,6 @@ public class Engine implements MessageListener {
 					_log.error(e1);
 				}
 
-				_log.info( " fileName: " + file.getName() );
 				String fileExport = JRReportUtil.createReportFile(msgData.getString(ConfigConstants.JASPER_TERM_JRXML_TEMPLATE),
 						jsonData.toJSONString(), null, file.getCanonicalPath());
 

@@ -431,12 +431,10 @@ public class PayGateIntegrationApplication extends Application {
 		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
 		JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 				.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-		System.out.println("JSON Payment: " + data );
 		File file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
 		int tryCount = 0;
 		while (file == null) {
 			try {
-				System.out.println("VAOOOOO 88888888888888");
 				Thread.sleep(3000);
 				file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
 				tryCount++;

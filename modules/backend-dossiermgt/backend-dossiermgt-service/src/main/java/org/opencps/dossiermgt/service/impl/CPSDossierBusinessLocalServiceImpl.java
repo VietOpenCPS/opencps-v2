@@ -588,32 +588,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String documentTypeList, ServiceContext context)
 			throws com.liferay.portal.kernel.search.ParseException, JSONException, SearchException {
 		//Check if generate dossier document
-		int tryCount = 0;
-
-		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
-		JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
-				.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-		String imageStr = data.getString(QRCODE_PAY);
-		_log.info("Vaooooooo 111111");
-		while (imageStr == null) {
-			_log.info("Lan :" + tryCount);
-			try {
-				Thread.sleep(3000);
-				paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
-				data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
-						.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-				imageStr = data.getString(QRCODE_PAY);
-				if(Validator.isNotNull(imageStr)){
-					System.out.println("OKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-				}
-				tryCount++;
-				if(Validator.isNotNull(imageStr)) break;
-				if (tryCount == MAX_TRY_COUNT ) break;
-			}
-			catch (InterruptedException e) {
-				break;
-			}
-		}
 		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
 			// Generate document
 			String[] documentTypes = documentTypeList.split(StringPool.COMMA);
