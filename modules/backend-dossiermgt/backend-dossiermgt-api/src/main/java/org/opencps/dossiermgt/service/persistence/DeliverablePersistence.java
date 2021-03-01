@@ -884,6 +884,63 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	public int countByF_GID_AID(long groupId, String applicantIdNo);
 
 	/**
+	* Returns the deliverable where groupId = &#63; and dossierId = &#63; and deliverableState = &#63; or throws a {@link NoSuchDeliverableException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param deliverableState the deliverable state
+	* @return the matching deliverable
+	* @throws NoSuchDeliverableException if a matching deliverable could not be found
+	*/
+	public Deliverable findByF_GID_DI_STATE(long groupId, long dossierId,
+		int deliverableState) throws NoSuchDeliverableException;
+
+	/**
+	* Returns the deliverable where groupId = &#63; and dossierId = &#63; and deliverableState = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param deliverableState the deliverable state
+	* @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
+	*/
+	public Deliverable fetchByF_GID_DI_STATE(long groupId, long dossierId,
+		int deliverableState);
+
+	/**
+	* Returns the deliverable where groupId = &#63; and dossierId = &#63; and deliverableState = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param deliverableState the deliverable state
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
+	*/
+	public Deliverable fetchByF_GID_DI_STATE(long groupId, long dossierId,
+		int deliverableState, boolean retrieveFromCache);
+
+	/**
+	* Removes the deliverable where groupId = &#63; and dossierId = &#63; and deliverableState = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param deliverableState the deliverable state
+	* @return the deliverable that was removed
+	*/
+	public Deliverable removeByF_GID_DI_STATE(long groupId, long dossierId,
+		int deliverableState) throws NoSuchDeliverableException;
+
+	/**
+	* Returns the number of deliverables where groupId = &#63; and dossierId = &#63; and deliverableState = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param deliverableState the deliverable state
+	* @return the number of matching deliverables
+	*/
+	public int countByF_GID_DI_STATE(long groupId, long dossierId,
+		int deliverableState);
+
+	/**
 	* Caches the deliverable in the entity cache if it is enabled.
 	*
 	* @param deliverable the deliverable

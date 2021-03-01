@@ -4,6 +4,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -685,7 +686,7 @@ public class StatisticEngineFetch {
 									  int reporting, boolean isGetReportServiceCode) {
 		try {
 			_log.info("isGetReportServiceCode: " +  isGetReportServiceCode);
-			for (GetDossierData dossierData : lsDossierData) {
+			for (GetDossierData dossierData : lsDossierData) {							
 				StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
 				if (Validator.isNotNull(dossierData.getDomainCode()) && !isGetReportServiceCode) {
 					// all site, all domain
@@ -810,7 +811,7 @@ public class StatisticEngineFetch {
 					statisticData.put(type2, dataType2);
 					// each site all service
 
-					String type3 = dossierData.getServiceCode() + "@all@" + groupId;
+					String type3 = dossierData.getGovAgencyCode() + "@all@" + groupId;
 					//System.out.println("type3: "+type3);
 
 					DossierStatisticData dataType3 = new DossierStatisticData();

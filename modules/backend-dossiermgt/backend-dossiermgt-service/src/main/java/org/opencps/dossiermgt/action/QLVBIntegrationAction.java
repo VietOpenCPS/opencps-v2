@@ -5,7 +5,7 @@ import org.opencps.dossiermgt.model.Dossier;
 
 public interface QLVBIntegrationAction {
     //QLVB Hau Giang
-    public String getTokenHG() throws Exception;
+    public String getTokenHG(String userId) throws Exception;
     public boolean sendVBHG(String token, long dossierId) throws Exception;
 
     //QLVB TTTT
