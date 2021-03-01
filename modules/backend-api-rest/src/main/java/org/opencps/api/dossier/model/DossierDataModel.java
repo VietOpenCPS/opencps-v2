@@ -232,7 +232,10 @@ import javax.xml.bind.annotation.XmlType;
 	"resultVotingCode3",
 	"feeAmount",
 	"serviceAmount",
-	"totalAmount"
+	"totalAmount",
+	"votingCode4",
+	"votingName4",
+	"resultVotingCode4"
 })
 public class DossierDataModel {
 
@@ -371,6 +374,9 @@ public class DossierDataModel {
 	protected Long feeAmount;
 	protected Long serviceAmount;
 	protected Long totalAmount;
+	protected String votingCode4;
+	protected String votingName4;
+	protected Integer resultVotingCode4;
 
 	public String getVotingCode1() {
 		return votingCode1;
@@ -2459,6 +2465,30 @@ public class DossierDataModel {
 
 	public void setTotalAmount(Long totalAmount) {
 		this.totalAmount = totalAmount;
-	}		
+	}
 
+	public String getVotingCode4() {
+		return votingCode4;
+	}
+
+	public void setVotingCode4(String votingCode4) {
+		this.votingCode4 = votingCode4;
+	}
+
+	public String getVotingName4() {
+		return votingName4;
+	}
+
+	public void setVotingName4(String votingName4) {
+		this.votingName4 = votingName4;
+	}
+
+	public Integer getResultVotingCode4() {
+		return resultVotingCode4;
+	}
+
+	public void setResultVotingCode4(Integer resultVotingCode4) {
+		this.resultVotingCode4 = resultVotingCode4;
+	}		
+	
 }

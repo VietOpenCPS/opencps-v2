@@ -1,47 +1,33 @@
 package org.opencps.api.controller.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.QLVGManagement;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.QLVBIntegrationAction;
 import org.opencps.dossiermgt.action.impl.QLVBIntegrationActionImpl;
 import org.opencps.dossiermgt.action.util.DossierFileUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
-import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.constants.QLVBConstants;
-import org.opencps.dossiermgt.input.model.FrequencyDoAction;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.ProcessAction;
-import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
-import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.*;
 
 public class QLVGManagementImpl implements QLVGManagement {
@@ -68,7 +54,7 @@ public class QLVGManagementImpl implements QLVGManagement {
     }
 
     @Override
-    public Response sendProfile(long dossierId) {
+    public Response sendProfile(long dossierId, User user) {
         try {
             if(Validator.isNull(this.listConfig) || this.listConfig.isEmpty()
                     || Validator.isNull(this.listConfig.get(0))) {
@@ -93,8 +79,18 @@ public class QLVGManagementImpl implements QLVGManagement {
 
             QLVBIntegrationAction qlvbAction = new QLVBIntegrationActionImpl(serverConfig);
             String token;
+
+            String userId = configJson.getString(QLVBConstants.CONFIG_USER_ID);
+            if(configJson.has(QLVBConstants.CONFIG_IS_PROD)
+                    && configJson.getBoolean(QLVBConstants.CONFIG_IS_PROD)
+                    && Validator.isNotNull(user)) {
+                userId = Validator.isNotNull(user.getEmailAddress())
+                        ? user.getEmailAddress()
+                        : configJson.getString(QLVBConstants.CONFIG_USER_ID);
+            }
+
             if(eOfficeServer.equals(SERVER_EOFFICE_HAUGIANG)) {
-                token = qlvbAction.getTokenHG();
+                token = qlvbAction.getTokenHG(userId);
                 qlvbAction.sendVBHG(token, dossierId);
             } else if(eOfficeServer.equals(SERVER_EOFFICE_TTTT)) {
                 token = qlvbAction.getTokenTTTT();
@@ -145,11 +141,11 @@ public class QLVGManagementImpl implements QLVGManagement {
                 return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(jsonObject.toJSONString()).build();
             }
 
-            if(!actionCode.equals(LIST_ACTION_CODE[0])) {
-                jsonObject.put("message", "Action code is invalid");
-                jsonObject.put("code", "01");
-                return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(jsonObject.toJSONString()).build();
-            }
+//            if(!actionCode.equals(LIST_ACTION_CODE[0])) {
+//                jsonObject.put("message", "Action code is invalid");
+//                jsonObject.put("code", "01");
+//                return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(jsonObject.toJSONString()).build();
+//            }
 
             double fileSize = (double)file.length() / (1024*1024);
             if(fileSize > MAX_FILE_SIZE) {
@@ -169,12 +165,12 @@ public class QLVGManagementImpl implements QLVGManagement {
             }
 
             ServerConfig serverConfig = listConfig.get(0);
-            long groupId = serverConfig.getGroupId();
             JSONObject configJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-            Dossier dossier = this.getDossierById(groupId, id);
+            Dossier dossier = this.getDossierByDossierNo(id);
             if(Validator.isNull(dossier)) {
-                throw new Exception("No dossier was found with groupId: " +  groupId + " and id: " + id);
+                throw new Exception("No dossier was found with id: " + id);
             }
+            long groupId = dossier.getGroupId();
 
             //Import file
             InputStream inputStream = DossierFileUtils.fileToInputStream(file);
@@ -282,6 +278,14 @@ public class QLVGManagementImpl implements QLVGManagement {
 
             return DossierLocalServiceUtil.getDossier(dossierId);
         }catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    private Dossier getDossierByDossierNo(String id) throws Exception {
+        try {
+            return DossierLocalServiceUtil.fetchByDO_NO(id);
+        } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }

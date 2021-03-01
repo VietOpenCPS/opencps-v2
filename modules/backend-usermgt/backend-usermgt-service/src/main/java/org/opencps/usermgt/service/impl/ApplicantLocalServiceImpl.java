@@ -698,7 +698,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		long mappingId = applicant.getMappingUserId();
 
-		userPersistence.remove(mappingId);
+		try {
+			userPersistence.remove(mappingId);
+		} catch (Exception e) {
+			_log.warn("User mapping not exists with mappingUserId: " + mappingId);
+		}
 
 		applicantPersistence.remove(applicant);
 

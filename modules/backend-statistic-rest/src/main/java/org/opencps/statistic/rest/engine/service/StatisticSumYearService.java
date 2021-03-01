@@ -229,7 +229,7 @@ public class StatisticSumYearService {
 //		calcular9.filterSumYear(companyId, groupId, year, false, false, false, lstGroupGovs, lstScs, lstCurrents, domainResponses);
 		//
 		if (lstDossierDataObjs != null && lstDossierDataObjs.size() > 0 && jsonEndPoint != null) {
-
+						
 			JSONArray jsonArr = JSONFactoryUtil.createJSONArray();
 			//
 			for (JSONObject data : lstDossierDataObjs) {

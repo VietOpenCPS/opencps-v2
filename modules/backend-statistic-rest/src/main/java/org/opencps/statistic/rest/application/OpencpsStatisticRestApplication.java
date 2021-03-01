@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -56,6 +57,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -76,6 +78,7 @@ import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
@@ -204,6 +207,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		int end = query.getEnd();
 		int month = query.getMonth();
 		int year = query.getYear();
+		int quarter = query.getQuarter();
 		String govAgencyCode = query.getAgency();
 		boolean isGetReportServiceCode = false;
 
@@ -253,6 +257,53 @@ public class OpencpsStatisticRestApplication extends Application {
 		}else if (scopeUser != null) {
 			govAgencyCode = scopeUser;
 		}
+		
+		// su dung cho bao cao thong ke theo quy
+		Date fromQuarterDate = null;
+		Date toQuarterDate = null;
+		if (Validator.isNull(fromStatisticDate) && Validator.isNull(toStatisticDate)
+				&& Validator.isNotNull(quarter) && Validator.isNotNull(year)) {
+			switch (quarter) {
+			case 1:
+				
+				fromQuarterDate = StatisticUtils.getFirstDay(1, year);
+				toQuarterDate = StatisticUtils.getLastDay(3, year);
+				
+				fromStatisticDate = StatisticUtils.convertDateToString(fromQuarterDate, StatisticUtils.DATE_FORMAT);
+				toStatisticDate = StatisticUtils.convertDateToString(toQuarterDate, StatisticUtils.DATE_FORMAT);
+
+				break;
+			case 2:
+				
+				fromQuarterDate = StatisticUtils.getFirstDay(4, year);
+				toQuarterDate = StatisticUtils.getLastDay(6, year);
+				
+				fromStatisticDate = StatisticUtils.convertDateToString(fromQuarterDate, StatisticUtils.DATE_FORMAT);
+				toStatisticDate = StatisticUtils.convertDateToString(toQuarterDate, StatisticUtils.DATE_FORMAT);
+
+				break;
+			case 3:
+				
+				fromQuarterDate = StatisticUtils.getFirstDay(7, year);
+				toQuarterDate = StatisticUtils.getLastDay(9, year);
+				
+				fromStatisticDate = StatisticUtils.convertDateToString(fromQuarterDate, StatisticUtils.DATE_FORMAT);
+				toStatisticDate = StatisticUtils.convertDateToString(toQuarterDate, StatisticUtils.DATE_FORMAT);
+
+				break;
+			case 4:
+				
+				fromQuarterDate = StatisticUtils.getFirstDay(10, year);
+				toQuarterDate = StatisticUtils.getLastDay(12, year);
+				
+				fromStatisticDate = StatisticUtils.convertDateToString(fromQuarterDate, StatisticUtils.DATE_FORMAT);
+				toStatisticDate = StatisticUtils.convertDateToString(toQuarterDate, StatisticUtils.DATE_FORMAT);
+
+				break;
+			default:
+				break;
+			}
+		}
 
 		boolean calculate = true;
 		if (Validator.isNotNull(fromStatisticDate) ||Validator.isNotNull(toStatisticDate)) {
@@ -280,6 +331,7 @@ public class OpencpsStatisticRestApplication extends Application {
 //					monthStatistic = Integer.valueOf((splitD[1].length() == 1) ? "0" + splitD[1] : splitD[1]);
 //				}
 //			}
+			
 			Date fromCalDate = null;
 			Date toCalDate = null;
 			if (Validator.isNotNull(fromStatisticDate)) {
@@ -2409,31 +2461,76 @@ public class OpencpsStatisticRestApplication extends Application {
 			
 				for (String agency : mapResults.keySet()) {
 					for (String serviceCode : mapResults.get(agency).keySet()) {
-						JSONObject obj = JSONFactoryUtil.createJSONObject();											
-						RealtimeData data = new RealtimeData();
-						data.setServiceCode(serviceCode);
-						data.setServiceName(services.get(serviceCode));
+						JSONObject objLv3 = JSONFactoryUtil.createJSONObject();	
+						JSONObject objLv4 = JSONFactoryUtil.createJSONObject();
+						
 						
 						List<Document> dossiers = mapResults.get(agency).get(serviceCode);
 						if (dossiers != null && fromDate != null && toDate != null) {
-						updateDossierStatisticData(data, dossiers, fromDate, toDate);
-						obj.put("govAgencyCode", agency);
-						obj.put("govAgencyName", govs.get(agency));
-						obj.put("serviceCode", serviceCode);
-						obj.put("serviceName", services.get(serviceCode));
-						obj.put("totalCount", data.getTotalCount());
-						obj.put("dossierOnline3Count", data.getDossierOnline3Count());
-						obj.put("dossierOnline4Count", data.getDossierOnline4Count());
-						obj.put("dossierOnegate3Count", data.getDossierOnegate3Count());
-						obj.put("dossierOnegate4Count", data.getDossierOnegate4Count());
-						obj.put("releaseDossierOnline3Count", data.getReleaseDossierOnline3Count());
-						obj.put("releaseDossierOnline4Count", data.getReleaseDossierOnline4Count());
-						obj.put("releaseDossierOnegate3Count", data.getReleaseDossierOnegate3Count());
-						obj.put("releaseDossierOnegate4Count", data.getReleaseDossierOnegate4Count());
-						obj.put("serviceLevel", Integer.valueOf(dossiers.get(0).get(DossierTerm.SERVICE_LEVEL)));
+						// xu ly case mot thu tuc co nhieu hon mot muc do trong ES
+						List<Document> dossiersLV3 = new ArrayList<Document>();
+						List<Document> dossiersLV4 = new ArrayList<Document>();
+						for (Document doc : dossiers) {
+							int svLevel = GetterUtil.getInteger(doc.get(DossierTerm.SERVICE_LEVEL));
+							if (svLevel == 3) {
+								dossiersLV3.add(doc);
+							}else {
+								dossiersLV4.add(doc);
+							}
+						}
+						if (dossiersLV3 != null && dossiersLV3.size() > 0) {
+							RealtimeData data = new RealtimeData();
+							data.setServiceCode(serviceCode);
+							data.setServiceName(services.get(serviceCode));
 							
-						tempResults.put(obj);
-						results.put(obj);
+							updateDossierStatisticData(data, dossiersLV3, fromDate, toDate);
+							objLv3.put("govAgencyCode", agency);
+							objLv3.put("govAgencyName", govs.get(agency));
+							objLv3.put("serviceCode", serviceCode);
+							objLv3.put("serviceName", services.get(serviceCode));
+							objLv3.put("totalCount", data.getTotalCount());
+							objLv3.put("dossierOnline3Count", data.getDossierOnline3Count());
+							objLv3.put("dossierOnline4Count", data.getDossierOnline4Count());
+							objLv3.put("dossierOnegate3Count", data.getDossierOnegate3Count());
+							objLv3.put("dossierOnegate4Count", data.getDossierOnegate4Count());
+							objLv3.put("releaseDossierOnline3Count", data.getReleaseDossierOnline3Count());
+							objLv3.put("releaseDossierOnline4Count", data.getReleaseDossierOnline4Count());
+							objLv3.put("releaseDossierOnegate3Count", data.getReleaseDossierOnegate3Count());
+							objLv3.put("releaseDossierOnegate4Count", data.getReleaseDossierOnegate4Count());
+							objLv3.put("serviceLevel", 3);
+						}
+						
+						if (dossiersLV4 != null && dossiersLV4.size() > 0) {
+							RealtimeData data = new RealtimeData();
+							data.setServiceCode(serviceCode);
+							data.setServiceName(services.get(serviceCode));
+							
+							updateDossierStatisticData(data, dossiersLV4, fromDate, toDate);
+							objLv4.put("govAgencyCode", agency);
+							objLv4.put("govAgencyName", govs.get(agency));
+							objLv4.put("serviceCode", serviceCode);
+							objLv4.put("serviceName", services.get(serviceCode));
+							objLv4.put("totalCount", data.getTotalCount());
+							objLv4.put("dossierOnline3Count", data.getDossierOnline3Count());
+							objLv4.put("dossierOnline4Count", data.getDossierOnline4Count());
+							objLv4.put("dossierOnegate3Count", data.getDossierOnegate3Count());
+							objLv4.put("dossierOnegate4Count", data.getDossierOnegate4Count());
+							objLv4.put("releaseDossierOnline3Count", data.getReleaseDossierOnline3Count());
+							objLv4.put("releaseDossierOnline4Count", data.getReleaseDossierOnline4Count());
+							objLv4.put("releaseDossierOnegate3Count", data.getReleaseDossierOnegate3Count());
+							objLv4.put("releaseDossierOnegate4Count", data.getReleaseDossierOnegate4Count());
+							objLv4.put("serviceLevel", 4);
+						}
+						
+							if (objLv3 != null) {
+								tempResults.put(objLv3);
+								results.put(objLv3);
+							}
+							if (objLv4 != null) {
+								tempResults.put(objLv4);							
+								results.put(objLv4);
+							}
+		
 						}																													
 					}
 				}
@@ -2725,14 +2822,23 @@ public class OpencpsStatisticRestApplication extends Application {
 
 						// hồ sơ có kết quả hoặc từ chối tính hạn xử lý
 						int overdue = 1; // 0: sớm hạn, 1: đúng hạn, 2: quá hạn
-						// Check condition filter betimes
+						Date dueDateSpec = Validator.isNull(dossierData.get(DossierTerm.DUE_DATE))
+								? null : StatisticUtils.convertStringToDate(dossierData.get(DossierTerm.DUE_DATE), DATE_FORMAT);
+						Date releaseDateSpec = Validator.isNull(dossierData.get(DossierTerm.RELEASE_DATE))
+								? null
+								: StatisticUtils.convertStringToDate(dossierData.get(DossierTerm.RELEASE_DATE), DATE_FORMAT);
+						Date finishDateSpec = Validator.isNull(dossierData.get(DossierTerm.FINISH_DATE))
+								? null
+								: StatisticUtils.convertStringToDate(dossierData.get(DossierTerm.FINISH_DATE), DATE_FORMAT);
+						
+						// Check condition filter betimes - default
 						if (dueDate != null) {
-							//Check extendDate != null and releaseDate < dueDate
-							if (releaseDate != null && releaseDate.before(dueDate) && extendDate != null) overdue = 0;
-							//Or check finishDate < dueDate
-							if (finishDate != null && finishDate.before(dueDate)) overdue = 0;
+							//Check releaseDateSpec < dueDateSpec (tính theo ngày)
+							if (releaseDateSpec != null && releaseDateSpec.before(dueDateSpec)) overdue = 0;
+							//Or check finishDate < dueDate (tính theo ngày)
+							if (finishDateSpec != null && finishDateSpec.before(dueDateSpec)) overdue = 0;
 							
-							//Check overTime condition releaseDate > dueDate
+							//Check overTime condition releaseDate > dueDate (tính theo giờ)
 							if (releaseDate != null && releaseDate.after(dueDate)) overdue = 2;
 						}
 
@@ -2774,7 +2880,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						jsonDataList.add(jsonArr.getJSONObject(i));
 					}
 				}
-				if (jsonDataList != null && jsonDataList.size() > 0) {
+				if (jsonDataList != null && jsonDataList.size() > 0) {					
 					engineUpdateAction.updateStatistic(jsonDataList);
 				}
 			}
@@ -2804,5 +2910,6 @@ public class OpencpsStatisticRestApplication extends Application {
 	public static final String PROCESSING = "processing";
 	public static final String CANCELLED = "cancelled";
 	public static final String UNRESOLVED = "unresolved";
+	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
 }

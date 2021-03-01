@@ -33,4 +33,7 @@ Export-Package: \
 	org.opencps.backend.dossiermgt.serviceapi,\
 	org.opencps.backend.dossiermgt.logistic,\
 	org.opencps.dossiermgt.rest.model,\
-	org.apache.commons.text.*
+	org.apache.commons.text.*,\
+    org.opencps.bundlemgt,\
+	org.opencps.bundlemgt.classloader,\
+	org.opencps.bundlemgt.classloader.util,\
