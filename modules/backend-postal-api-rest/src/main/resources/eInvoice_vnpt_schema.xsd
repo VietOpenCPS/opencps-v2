@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"  
+		    targetNamespace="http://www.example.org/eInvoice_vnpt_schema" 
+			xmlns:tns="http://www.example.org/eInvoice_vnpt_schema" 
+			elementFormDefault="qualified">
+		
+	  <xsd:element name="UpdateCusRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="xmlCusData" type="xsd:string" minOccurs="0" />
+				<xsd:element name="username" type="xsd:string" minOccurs="0" />
+				<xsd:element name="pass" type="xsd:string" minOccurs="0" />
+				<xsd:element name="convert" type="xsd:int" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="UpdateCusResponse">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="updateCusResult" type="xsd:int" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
