@@ -1713,7 +1713,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				deliverableCode =
 						DeliverableNumberGenerator.generateDeliverableNumber(
 								groupId, context.getCompanyId(),
-								dlt.getDeliverableTypeId());
+								dlt.getDeliverableTypeId(), dossierId);
 			}
 
 			Deliverable deliverable = DeliverableLocalServiceUtil.addDeliverableSign(

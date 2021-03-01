@@ -3,6 +3,8 @@ package org.opencps.dossiermgt.action.util;
 import com.liferay.counter.kernel.model.Counter;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.ParseException;
@@ -17,8 +19,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.opencps.datamgt.utils.DateTimeUtils;
+import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 public class DeliverableNumberGenerator {
 	private static final String CONSTANT_ICREMENT = "opencps.deliverable#";
@@ -39,15 +44,45 @@ public class DeliverableNumberGenerator {
 	private static final String DOT = "\\.";
 	private static final String OK = "OK";
 	
-	public static String generateDeliverableNumber(long groupId, long companyId, long deliverableTypeId)
+	public static String generateDeliverableNumber(long groupId, long companyId, long deliverableTypeId, long dossierId)
 			throws ParseException {
 		DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchDeliverableType(deliverableTypeId);
+		String govAgencyCode = StringPool.BLANK;
+		if(Validator.isNotNull(dossierId)){
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			govAgencyCode = dossier.getGovAgencyCode();
+		}
 		String seriNumberPattern = null;		
 		
 		String deliverableNumber = StringPool.BLANK;
-
+		String code = StringPool.BLANK;
 		if (deliverableType != null) {
-			seriNumberPattern = deliverableType.getCodePattern();
+			try {
+				if(Validator.isNotNull(govAgencyCode)){
+					_log.info("Vao 11111111: " + deliverableType.getDeliverableTypeId());
+					JSONObject mappingPattern = JSONFactoryUtil.createJSONObject(deliverableType.getCodePattern());
+					_log.info("Vao 222222222222 : " + JSONFactoryUtil.looseSerialize(deliverableType.getCodePattern()));
+					if (mappingPattern
+							.has(govAgencyCode)) {
+						_log.info("Vao 333333 : " + JSONFactoryUtil.looseSerialize(mappingPattern));
+						JSONObject patternGov = mappingPattern.getJSONObject(
+								govAgencyCode);
+						_log.info("Vao 4444444 : " + JSONFactoryUtil.looseSerialize(patternGov));
+						code = patternGov.getString(
+								DeliverableTypesTerm.CODEPATTERN);
+						_log.info("Vao 55555555 : " + code);
+						seriNumberPattern = code;
+
+					}else{
+						_log.info("ERRRRRRRRR");
+						seriNumberPattern = deliverableType.getCodePattern();
+					}
+				}
+			}catch (Exception e) {
+				seriNumberPattern = deliverableType.getCodePattern();
+				e.getMessage();
+			}
+
 			String codePattern = CODE_PATTERN;
 			String dayPattern = DAY_PATTERN;
 			String monthPattern = MONTH_PATTERN;
@@ -73,6 +108,8 @@ public class DeliverableNumberGenerator {
 					String tmp = m.group(1);
 
 					if (r.toString().equals(codePattern)) {
+						_log.info("CODEPattern : " + codePattern);
+
 						String number = countByInit(pattern, deliverableType.getCounter());
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
@@ -81,7 +118,6 @@ public class DeliverableNumberGenerator {
 						}
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
 					} else if (r.toString().equals(datetimePattern)) {
-//						System.out.println(tmp);
 
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), "OK");
 
@@ -98,7 +134,6 @@ public class DeliverableNumberGenerator {
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), day);
 
 					} else if (r.toString().equals(monthPattern)) {
-
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
 
 						if (month.length() < tmp.length()) {
@@ -110,7 +145,6 @@ public class DeliverableNumberGenerator {
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), month);
 
 					} else if (r.toString().equals(yearPattern)) {
-
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
 
 						if (year.length() < tmp.length()) {
@@ -289,6 +323,7 @@ public class DeliverableNumberGenerator {
 			String certConfigId = PRE_FIX_CERT + pattern + StringPool.AT + curYear;
 			
 			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigId);
+			_log.info("counterConfig: " + JSONFactoryUtil.looseSerialize(counterConfig));
 
 			if (Validator.isNotNull(counterConfig)) {
 				counterConfig.setCurrentId(counterConfig.getCurrentId() + 1);

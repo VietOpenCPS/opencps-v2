@@ -9297,7 +9297,7 @@ public class DossierManagementImpl implements DossierManagement {
 			deliverableCode =
 					DeliverableNumberGenerator.generateDeliverableNumber(
 							groupId, context.getCompanyId(),
-							dlt.getDeliverableTypeId());
+							dlt.getDeliverableTypeId(), dossier.getDossierId());
 
 
 			DeliverableLocalServiceUtil.addDeliverableSign(
