@@ -122,7 +122,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 						apiUrl = serverUrl + url;
 					}
 			        if (ConstantUtils.METHOD_GET.equals(method)) {
-						urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());			        	
+			        		urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
 			        }
 			        else {
 			        	urlVal = new URL(apiUrl);

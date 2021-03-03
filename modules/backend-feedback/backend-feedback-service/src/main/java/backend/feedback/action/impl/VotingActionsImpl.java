@@ -52,7 +52,7 @@ public class VotingActionsImpl implements VotingActions {
 			boolean isGetFromDB = true;
 
 			if (!"0".equals(classPK)) {
-
+								
 				long count = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
 				long countTemplate = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, "0");
 				System.out.println("============Count Cur=========" + count);
@@ -215,7 +215,8 @@ public class VotingActionsImpl implements VotingActions {
 	public void deleteVoting(long votingId, ServiceContext serviceContext)
 			throws NotFoundException, NoSuchVotingException {
 
-		VotingLocalServiceUtil.deleteVote(votingId, serviceContext);
+		//VotingLocalServiceUtil.deleteVote(votingId, serviceContext);
+		VotingLocalServiceUtil.deleteVoteConfig(votingId, serviceContext);
 	}
 
 	@Override
@@ -300,7 +301,10 @@ public class VotingActionsImpl implements VotingActions {
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 				// TODO check customer
 				if (employee != null) {
-					votingResult =
+					votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
+							voting.getVotingId(), employee.getFullName(), employee.getEmail(), comment, selected,
+							serviceContext);
+					/*votingResult =
 						VotingResultLocalServiceUtil.fetchByF_votingId_userId(
 							userId, voting.getVotingId());
 					if (Validator.isNotNull(votingResult)) {
@@ -313,11 +317,14 @@ public class VotingActionsImpl implements VotingActions {
 								voting.getVotingId(), employee.getFullName(), employee.getEmail(), comment, selected,
 								serviceContext);
 
-					}
+					}*/
 				} else {
 					Applicant applicant = ApplicantLocalServiceUtil.fetchByEmail(email);
 					if (applicant != null) {
-						votingResult = VotingResultLocalServiceUtil.fetchByF_votingId_userId(userId,
+						votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId,
+								voting.getVotingId(), applicant.getApplicantName(), applicant.getContactEmail(), comment,
+								selected, serviceContext);
+						/*votingResult = VotingResultLocalServiceUtil.fetchByF_votingId_userId(userId,
 								voting.getVotingId());
 						if (Validator.isNotNull(votingResult)) {
 							votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId,
@@ -328,7 +335,7 @@ public class VotingActionsImpl implements VotingActions {
 									voting.getVotingId(), applicant.getApplicantName(), applicant.getContactEmail(), comment,
 									selected, serviceContext);
 
-						}
+						}*/
 					}
 				}
 			}

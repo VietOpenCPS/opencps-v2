@@ -508,8 +508,7 @@ public class StatisticEngineFetchEntry {
 		statisticData.setMonth(dateStatistic.get(Calendar.MONTH) + 1);
 		statisticData.setYear(dateStatistic.get(Calendar.YEAR));
 		statisticData.setGroupId(personData.getGroupId());
-		// Get info date check statistic
-		statisticData.setTotalVoted(statisticData.getTotalVoted() + 1);
+		// Get info date check statistic		
 		//System.out.println("votingData.getSelected()"+ votingData.getSelected());
 		//System.out.println("votingData.getGroupId()"+ votingData.getGroupId());
 
@@ -520,6 +519,12 @@ public class StatisticEngineFetchEntry {
 		} else if (personData.getSelected() == 3){
 			statisticData.setBadCount(statisticData.getBadCount() + 1);
 		}
+		
+		statisticData.setTotalVoted(statisticData.getTotalVoted() + 1);
+	}
+	
+	public void calculateTotalVote() {
+		
 	}
 }
 

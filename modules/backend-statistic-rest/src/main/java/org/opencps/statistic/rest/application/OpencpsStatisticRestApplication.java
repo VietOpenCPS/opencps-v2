@@ -958,27 +958,30 @@ public class OpencpsStatisticRestApplication extends Application {
 
 					personResponse = StatisticDataUtil.getLocalPersonResponse(payload);
 				}
-				
+
 				if (personResponse != null && fromCalDate != null && toCalDate != null) {
 					List<GetPersonData> personDataList = personResponse.getData();
 					List<PersonStatisticData> statisticDataList = new ArrayList<>();
 					if (personDataList != null && personDataList.size() > 0) {
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
 						Map<String, PersonStatisticData> statisticData = engineFetch
-								.getStatisticPersonData(groupId, personDataList, fromCalDate, toCalDate);
+								.getStatisticPersonDataForVotingCode(groupId, personDataList, fromCalDate, toCalDate);
 						//
 						statisticData.forEach((k, v) -> 
 						statisticDataList.add(v));
 					}
 					//
 					PersonResponse statisticResponse = new PersonResponse();
-					List<PersonStatisticData> statisticDataDistinct = statisticDataList.stream()
+					/*List<PersonStatisticData> statisticDataDistinct = statisticDataList.stream()
 							.filter( distinctByKey(p -> p.getEmployeeId()) )
 							.sorted(Comparator.comparing(p -> p.getEmployeeId()))
 							.collect(Collectors.toList());
 					statisticResponse.setTotal(statisticDataDistinct.size());
-					//statisticResponse.setDossierStatisticData(statisticDataList);
-					statisticResponse.setData(statisticDataDistinct);
+					statisticResponse.setData(statisticDataDistinct);*/
+					StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+					List<PersonStatisticData> data = engineFetch.getStatisticPersonData(statisticDataList);
+					statisticResponse.setTotal(data.size());
+					statisticResponse.setData(data);
 					if (statisticResponse != null) {
 						statisticResponse.setAgency(govAgencyCode);
 					}

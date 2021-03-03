@@ -504,4 +504,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 		return object;
 	}
 
+	public int countByF_votingId(long votingId) {
+		return votingResultPersistence.countByF_votingId(votingId);
+	}
 }

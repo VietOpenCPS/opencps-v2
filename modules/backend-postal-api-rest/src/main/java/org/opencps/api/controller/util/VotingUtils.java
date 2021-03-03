@@ -292,7 +292,7 @@ public class VotingUtils {
 
 				i++;
 
-				totalCounter = totalCounter + votingCount;
+				totalCounter = totalCounter + votingCount; 
 
 				answers.add(String.valueOf(votingCount));
 
@@ -580,6 +580,24 @@ public class VotingUtils {
 		}
 
 		return results;
+	}
+	
+	public static Long getVotingCount(List<Document> votingList) {
+		Long result = 0L;
+		int count;
+		int countTem = 0;
+		int countVotingId = 0;
+		if (votingList == null) return result;
+		for (Document doc : votingList) {
+			Long votingId = Long.valueOf(doc.get(VotingTerm.VOTING_ID));
+			countVotingId ++;
+			count = VotingResultLocalServiceUtil.countByF_votingId(votingId);
+			countTem = countTem + count;
+		}
+		if (countVotingId > 0) {
+			result = Long.valueOf(countTem/countVotingId);
+		}
+		return result;
 	}
 
 }
