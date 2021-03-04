@@ -48,7 +48,7 @@ public class DeliverableNumberGenerator {
 			throws ParseException {
 		DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchDeliverableType(deliverableTypeId);
 		String govAgencyCode = StringPool.BLANK;
-		if(Validator.isNotNull(dossierId)){
+		if(Validator.isNotNull(dossierId) && dossierId > 0){
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			govAgencyCode = dossier.getGovAgencyCode();
 		}
