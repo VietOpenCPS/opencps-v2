@@ -5806,6 +5806,9 @@ public class DossierManagementImpl implements DossierManagement {
 				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
+				}else if(r.getName().startsWith(ConstantUtils.GLOBAL_EDIT_OVERDUE)) {
+					isAdmin = true;
+					break;
 				}
 			}
 
@@ -9058,11 +9061,16 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean overdue = false;
 			for (Role r : userRoles) {
-				r.setName(ConstantUtils.ROLE_OVERDUE);
-				if (r.getName().startsWith(ConstantUtils.ROLE_OVERDUE)) {
-					_log.info("Role TRUE");
+				if(r.getName().startsWith(ConstantUtils.GLOBAL_EDIT_OVERDUE)) {
 					overdue = true;
 					break;
+				}else {
+					r.setName(ConstantUtils.ROLE_OVERDUE);
+					if (r.getName().startsWith(ConstantUtils.ROLE_OVERDUE)) {
+						_log.info("Role TRUE");
+						overdue = true;
+						break;
+					}
 				}
 			}
 
