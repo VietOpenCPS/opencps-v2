@@ -215,7 +215,8 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			_log.info("keypay endpoint " + endpoint);
 
 			_log.info("keypay data " + data);
-			// Payment Amount không thực hiện keyPay
+			// Không có Payment Amount không thực hiện keyPay
+			JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 			if(paymentFile.getPaymentAmount() > 0) {
 				JSONObject response = KeyPayV3Utils.postAPI(endpoint, data);
 				_log.info("response " + response.getString(KeyPayV3Term.ERROR));
@@ -224,29 +225,18 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 						&& KeyPayV3Term.ERROR_0.equals(response.getString(KeyPayV3Term.ERROR))) {
 					String qrcode_pay = dataJson.getString(KeyPayV3Term.QRCODE_PAY);
 					_log.debug("QRCODE_PAY :" + qrcode_pay);
-					JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 					schema.put(KeyPayV3Term.TRANSACTION_ID, transactionId);
 					schema.put(KeyPayV3Term.QRCODE_PAY, qrcode_pay);
 					schema.put(KeyPayV3Term.TRANS_AMOUNT, trans_amount);
 					schema.put(KeyPayV3Term.ADDITION_FEE, addition_fee);
 					epaymentProfile.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
-					Indexer<PaymentFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
-					paymentFile.setEpaymentProfile(epaymentProfile.toJSONString());
-					User userAction = UserLocalServiceUtil.getUser( paymentFile.getUserId());
-					Date now = new Date();
-					paymentFile.setModifiedDate(now);
-					paymentFile.setUserId(userAction.getUserId());
-					paymentFile.setUserName(userAction.getFullName());
-					paymentFile = PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfile.toJSONString(), serviceContext);
-					try {
-						indexer.reindex(paymentFile);
-					} catch (SearchException e) {
-						_log.error(e);
-					}
+
 				}
 				result = response.toString();
 			}
+			schema.put(KeyPayV3Term.KEY_PAY_SUCCESS, "Success");
+			PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+					epaymentProfile.toJSONString(), serviceContext);
 		} catch (Exception e) {
 			_log.error(e);
 		}

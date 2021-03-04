@@ -36,6 +36,7 @@ import org.fds.opencps.paygate.integration.action.KeyPayV3Action;
 import org.fds.opencps.paygate.integration.action.PayGateIntegrationAction;
 import org.fds.opencps.paygate.integration.action.impl.KeyPayV3ActionImpl;
 import org.fds.opencps.paygate.integration.action.impl.PayGateIntegrationActionImpl;
+import org.fds.opencps.paygate.integration.util.KeyPayV3Term;
 import org.fds.opencps.paygate.integration.util.PayGateTerm;
 import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -428,14 +429,20 @@ public class PayGateIntegrationApplication extends Application {
 
 		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
-		JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
-				.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+
 		File file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
 		int tryCount = 0;
 		while (file == null) {
 			try {
 				Thread.sleep(3000);
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.findPaymentFileByDossierId(dossier.getGroupId(), dossierId);
+				JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+						.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+				String checkKey = data.getString(KeyPayV3Term.KEY_PAY_SUCCESS);
+				String qrCode = data.getString(KeyPayV3Term.QRCODE_PAY);
+				if(Validator.isNotNull(checkKey) && Validator.isNull(qrCode)){
+					break;
+				}
 				file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
 				tryCount++;
 				if (tryCount == MAX_TRY_COUNT ) break;
