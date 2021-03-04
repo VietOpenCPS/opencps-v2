@@ -245,14 +245,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(proAction.getCreateDossiers())) {
 				_log.info("proAction.getCreateDossiers(): "+proAction.getCreateDossiers());
 				if (proAction.getCreateDossiers().contains(StringPool.POUND)) {
-					String[] splitCDs = createDossiers.split(StringPool.POUND);
+					String[] splitCDs = proAction.getCreateDossiers().split(StringPool.POUND);
 					if (splitCDs.length == 2) {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers")) + StringPool.POUND + splitCDs[1];
 					} else {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
 					}
 				} else if (proAction.getCreateDossiers().contains(StringPool.AT)) {
-					String[] splitCDs = createDossiers.split(StringPool.AT);
+					String[] splitCDs = proAction.getCreateDossiers().split(StringPool.AT);
 					if (splitCDs.length != 2) {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
 					} else {
@@ -1709,6 +1709,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					StringPool.BLANK,
 					String.valueOf(false),
 					context);
+			dossierFile = actions.updateDossierFileFormData(
+					groupId, dossier.getDossierId(), dossierFile.getReferenceUid(),
+					Validator.isNotNull(deliverableObj.toString()) ? deliverableObj.toString() : dossierFile.getFormData(), context);
+
 			if (Validator.isNotNull(dossierPart.getDeliverableType())) {
 				deliverableCode =
 						DeliverableNumberGenerator.generateDeliverableNumber(
@@ -1720,16 +1724,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					groupId, dlt.getTypeCode(), dlt.getTypeName(), Validator.isNotNull(dossierFile.getDeliverableCode()) ? dossierFile.getDeliverableCode() : deliverableCode,
 					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantIdNo(),
 					dossier.getApplicantName(), "", "", "",
-					null, String.valueOf(1), dossier.getDossierId(),Validator.isNotNull(dossierFile.getFileEntryId()) ? dossierFile.getFileEntryId() : fileEntryId,
+					null, String.valueOf(1), dossier.getDossierId(), dossierFile.getFileEntryId(),
 					dlt.getFormScriptFileId(), dlt.getFormReportFileId(), deliverableObj.toString(),
-					"", context);
+					String.valueOf(dossierFile.getFileEntryId()), context);
 
-			dossierFile.setFormScript(dossierPart.getFormScript());
-			dossierFile.setEForm(dossierPart.getEForm());
-			dossierFile.setDeliverableCode(deliverableObj.getString(DeliverableTerm.DELIVERABLE_CODE));
-			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+			_log.debug("Deliverable: " + deliverable.getFileEntryId());
 			if(Validator.isNotNull(deliverable)){
-				deliverable.setFileAttachs(String.valueOf(deliverable.getFileEntryId()));
+				if(deliverable.getFileEntryId() < 1 ){
+					deliverable.setFileEntryId(fileEntryId);
+				}
+				deliverable.setFileAttachs(String.valueOf(fileEntryId));
 				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 			}
 
