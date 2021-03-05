@@ -430,7 +430,7 @@ public class PayGateIntegrationApplication extends Application {
 		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
-		File file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
+		File file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response,"");
 		int tryCount = 0;
 		while (file == null) {
 			try {
@@ -440,10 +440,17 @@ public class PayGateIntegrationApplication extends Application {
 						.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
 				String checkKey = data.getString(KeyPayV3Term.KEY_PAY_SUCCESS);
 				String qrCode = data.getString(KeyPayV3Term.QRCODE_PAY);
+				String imageStr = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wCEAAgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNEBCAgICAkICQoKCQ0ODA4NExEQEBETHBQWFBYUHCsbHxsbHxsrJi4lIyUuJkQ1Ly81RE5CPkJOX1VVX3dxd5yc0f/CABEIABQAFAMBIgACEQEDEQH/xAAVAAEBAAAAAAAAAAAAAAAAAAAAB//aAAgBAQAAAAC/gH//xAAUAQEAAAAAAAAAAAAAAAAAAAAA/9oACAECEAAAAA//xAAUAQEAAAAAAAAAAAAAAAAAAAAA/9oACAEDEAAAAA//xAAUEAEAAAAAAAAAAAAAAAAAAAAw/9oACAEBAAE/AB//xAAUEQEAAAAAAAAAAAAAAAAAAAAg/9oACAECAQE/AB//xAAUEQEAAAAAAAAAAAAAAAAAAAAg/9oACAEDAQE/AB//2Q==";
 				if(Validator.isNotNull(checkKey) && Validator.isNull(qrCode)){
-					break;
+					try {
+						file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response, imageStr);
+						break;
+					}catch (Exception e){
+						e.getMessage();
+					}
+
 				}
-				file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
+				file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response,"");
 				tryCount++;
 				if (tryCount == MAX_TRY_COUNT ) break;
 				if (file != null ) break;

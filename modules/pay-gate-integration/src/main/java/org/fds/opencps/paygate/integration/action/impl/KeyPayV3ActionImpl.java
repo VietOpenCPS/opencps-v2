@@ -244,7 +244,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 		return result;
 	}
 
-	public File getQrCode(User user, long dossierId, ServiceContext serviceContext, HttpServletRequest request, HttpServletResponse response) {
+	public File getQrCode(User user, long dossierId, ServiceContext serviceContext, HttpServletRequest request, HttpServletResponse response, String imaStr) {
 		
 		File outputfile = null;
 		try {
@@ -253,7 +253,9 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 					.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
 			String imageStr = data.getString(KeyPayV3Term.QRCODE_PAY);
-
+			if(Validator.isNotNull(imaStr)){
+				imageStr = imaStr;
+			}
 			if(Validator.isNotNull(imageStr)) {
 				String imageDataBytes = imageStr.split(",")[1];
 
