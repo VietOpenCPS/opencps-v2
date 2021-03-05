@@ -180,6 +180,43 @@ public class EFormManagementImpl implements EFormManagement{
 	}
 
 	@Override
+	public Response addEFromOfFileTemplateAuth(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, EFormInputModel input) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long userId = serviceContext.getUserId();
+
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
+
+			EFormActions actions = new EFormActionsImpl();
+
+			String eFormNo = Validator.isNotNull(input.geteFormNo()) ? input.geteFormNo() : StringPool.BLANK;
+			Long serviceInfoId = input.getServiceInfoId() != null ? input.getServiceInfoId() : 0;
+			String fileTemplateNo = Validator.isNotNull(input.getFileTemplateNo()) ? input.getFileTemplateNo()
+					: StringPool.BLANK;
+			String eFormName = Validator.isNotNull(input.geteFormName()) ? input.geteFormName() : StringPool.BLANK;
+			Long formScriptFileId = input.getFormScriptFileId() != null ? input.getFormScriptFileId() : 0;
+			Long formReportFileId = input.getFormReportFileId() != null ? input.getFormReportFileId(): 0;
+			String eFormData = Validator.isNotNull(input.geteFormData()) ? input.geteFormData() : StringPool.BLANK;
+			String email = Validator.isNotNull(input.getEmail()) ? input.getEmail() : StringPool.BLANK;
+			String secret = Validator.isNotNull(input.getSecret()) ? input.getSecret() : StringPool.BLANK;
+
+			EForm eFormInfo = actions.updateEForm(userId, groupId, 0, eFormNo, serviceInfoId, fileTemplateNo, eFormName,
+					formScriptFileId, formReportFileId, eFormData, email, secret, serviceContext);
+
+
+			EFormDataModel result = EFormUtils.mappingForGetDetail(eFormInfo);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+		} catch (Exception e) {
+
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
 	public Response getEFromBySecret(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String eFormNo, String secret) {
 
