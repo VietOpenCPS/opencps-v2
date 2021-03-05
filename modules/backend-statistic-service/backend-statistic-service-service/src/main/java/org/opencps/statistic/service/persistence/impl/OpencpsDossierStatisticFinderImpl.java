@@ -230,8 +230,11 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 				sql = StringUtil.replace(sql, CONDITION_DOMAIN, CONDITION_DOMAIN_REPLACE);
 			}
 			
-			if (govAgency.contains("total")){
+			/*if (govAgency.contains("total")){
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
+			}*/
+			if (govAgency.contains("total")){
+				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,StringPool.BLANK);
 			}
 			
 			sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);

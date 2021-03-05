@@ -1012,7 +1012,7 @@ public class RestfulController {
 						Deliverable openCPSDeliverable = DeliverableLocalServiceUtil
 								.fetchDeliverable(Long.valueOf(pk));
 
-						openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
+//						openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
 						openCPSDeliverable.setFileAttachs(String.valueOf(fileAttach.getFileEntryId()));
 						String formData = openCPSDeliverable.getFormData();
 						if (Validator.isNotNull(formData)) {
