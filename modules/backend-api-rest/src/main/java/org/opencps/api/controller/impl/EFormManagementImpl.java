@@ -186,9 +186,9 @@ public class EFormManagementImpl implements EFormManagement{
 
 		BackendAuth auth = new BackendAuthImpl();
 		try {
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException();
-//			}
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
 
 			EFormActions actions = new EFormActionsImpl();
 
