@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "UpdateCusResponse")
 public class UpdateCusResponse {
 
-    @XmlElement(name = "UpdateCusResult")
+    @XmlElement(name = "UpdateCusResult", namespace = "http://tempuri.org/")
     protected int updateCusResult;
 
     /**

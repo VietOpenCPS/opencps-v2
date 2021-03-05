@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name= "Customers")
 @XmlAccessorType (XmlAccessType.FIELD)
-public class CustomerInputModel {
+public class ListCustomerModel {
 
 	@XmlElement(name= "Customer")
 	protected List<CustomerModel> listCustomerModels;

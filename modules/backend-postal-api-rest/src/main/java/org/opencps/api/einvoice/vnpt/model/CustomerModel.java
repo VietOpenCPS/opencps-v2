@@ -8,115 +8,116 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name="", propOrder = {"Name", "Code", "TaxCode", "Address", "BankAccountName", 
-		"BankName", "BankNumber", "Email", "Fax", "Phone", "ContectPerson", "RepresentPerson",
+		"BankName", "BankNumber", "Email", "Fax", "Phone", "ContactPerson", "RepresentPerson",
 		"CusType"})
 
 @XmlRootElement(name = "Customer")
 public class CustomerModel {
 
 	@FormParam(value = "Name")
-	protected String name;
+	protected String Name;
 	@FormParam(value = "Code")
-	protected String code;
+	protected String Code;
 	@FormParam(value = "TaxCode")
-	protected String taxCode;
+	protected String TaxCode;
 	@FormParam(value = "Address")
-	protected String address;
+	protected String Address;
 	@FormParam(value = "BankAccountName")
-	protected String bankAccountName;
+	protected String BankAccountName;
 	@FormParam(value = "BankName")
-	protected String bankName;
+	protected String BankName;
 	@FormParam(value = "BankNumber")
-	protected String bankNumber;
+	protected String BankNumber;
 	@FormParam(value = "Email")
-	protected String email;
+	protected String Email;
 	@FormParam(value = "Fax")
-	protected String fax;
+	protected String Fax;
 	@FormParam(value = "Phone")
-	protected String phone;
-	@FormParam(value = "ContectPerson")
-	protected String contectPerson;
+	protected String Phone;
+	@FormParam(value = "ContactPerson")
+	protected String ContactPerson;
 	@FormParam(value = "RepresentPerson")
-	protected String representPerson;
+	protected String RepresentPerson;
 	@FormParam(value = "CusType")
-	protected int cusType;
+	protected int CusType;
 	public String getName() {
-		return name;
+		return Name;
 	}
 	public void setName(String name) {
-		this.name = name;
+		Name = name;
 	}
 	public String getCode() {
-		return code;
+		return Code;
 	}
 	public void setCode(String code) {
-		this.code = code;
+		Code = code;
 	}
 	public String getTaxCode() {
-		return taxCode;
+		return TaxCode;
 	}
 	public void setTaxCode(String taxCode) {
-		this.taxCode = taxCode;
+		TaxCode = taxCode;
 	}
 	public String getAddress() {
-		return address;
+		return Address;
 	}
 	public void setAddress(String address) {
-		this.address = address;
+		Address = address;
 	}
 	public String getBankAccountName() {
-		return bankAccountName;
+		return BankAccountName;
 	}
 	public void setBankAccountName(String bankAccountName) {
-		this.bankAccountName = bankAccountName;
+		BankAccountName = bankAccountName;
 	}
 	public String getBankName() {
-		return bankName;
+		return BankName;
 	}
 	public void setBankName(String bankName) {
-		this.bankName = bankName;
+		BankName = bankName;
 	}
 	public String getBankNumber() {
-		return bankNumber;
+		return BankNumber;
 	}
 	public void setBankNumber(String bankNumber) {
-		this.bankNumber = bankNumber;
+		BankNumber = bankNumber;
 	}
 	public String getEmail() {
-		return email;
+		return Email;
 	}
 	public void setEmail(String email) {
-		this.email = email;
+		Email = email;
 	}
 	public String getFax() {
-		return fax;
+		return Fax;
 	}
 	public void setFax(String fax) {
-		this.fax = fax;
+		Fax = fax;
 	}
 	public String getPhone() {
-		return phone;
+		return Phone;
 	}
 	public void setPhone(String phone) {
-		this.phone = phone;
+		Phone = phone;
 	}
-	public String getContectPerson() {
-		return contectPerson;
+	public String getContactPerson() {
+		return ContactPerson;
 	}
-	public void setContectPerson(String contectPerson) {
-		this.contectPerson = contectPerson;
+	public void setContactPerson(String contactPerson) {
+		ContactPerson = contactPerson;
 	}
 	public String getRepresentPerson() {
-		return representPerson;
+		return RepresentPerson;
 	}
 	public void setRepresentPerson(String representPerson) {
-		this.representPerson = representPerson;
+		RepresentPerson = representPerson;
 	}
 	public int getCusType() {
-		return cusType;
+		return CusType;
 	}
 	public void setCusType(int cusType) {
-		this.cusType = cusType;
+		CusType = cusType;
 	}
+	
 	
 }
