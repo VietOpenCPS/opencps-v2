@@ -5438,6 +5438,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 //			POSVCBUtils.saleRequestDataPOSVCB();
 		}
+		if(DossierActionTerm.ACTION_SPECIAL_CHECK_PAYMENT.equals(actionCode)){
+			// Check giao dịch đã được thanh toán chưa
+//			String result = POSVCBUtils.checkResultPOSVCB();
+		}
+		if(DossierActionTerm.ACTION_SPECIAL_CANCEL_PAYMENT.equals(actionCode)){
+
+		}
 
 		return dossierAction;
 	}
