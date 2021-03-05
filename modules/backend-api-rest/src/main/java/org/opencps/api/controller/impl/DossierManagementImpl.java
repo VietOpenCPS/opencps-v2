@@ -2340,7 +2340,7 @@ public class DossierManagementImpl implements DossierManagement {
 			// return
 			// Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerializeDeep(dossierAction)).build();
 			if (dossierResult != null) {
-				System.out.println("TRUEEEEEEEEEEEEEEEEEEEEEEEEE");
+				_log.debug("TRUEEEEEEEEEEEEEEEEEEEEEEEEE");
 				long dossierActionId = dossierResult.getDossierActionId();
 				DossierDocument doc =
 					DossierDocumentLocalServiceUtil.getByActiocId(
@@ -2354,25 +2354,25 @@ public class DossierManagementImpl implements DossierManagement {
 					DossierUtils.mappingDossierAction(
 						dossierResult, dossierDocumentId);
 				//add post action
-				System.out.println("Adding post action");
-				System.out.println(input);
+				_log.debug("Adding post action");
+				_log.debug(input);
 				_log.info(input);
-				System.out.println("Adding post action 11");
-				System.out.println(dossierResult);
-				System.out.println("Adding post action 222");
+				_log.debug("Adding post action 11");
+				_log.debug(dossierResult);
+				_log.debug("Adding post action 222");
 
-				System.out.println("Adding post action 3333");
+				_log.debug("Adding post action 3333");
 				if(Validator.isNotNull(processActionCurrent)){
 				String postAction = processActionCurrent.getPostAction();
-				System.out.println("Adding post action 5555");
-				System.out.println("Post action: " + postAction);
-				System.out.println("processActionCurrent: " + processActionCurrent.getProcessActionId());
+				_log.debug("Adding post action 5555");
+				_log.debug("Post action: " + postAction);
+				_log.debug("processActionCurrent: " + processActionCurrent.getProcessActionId());
 				if (Validator.isNotNull(postAction) && !postAction.isEmpty()) {
-					System.out.println("Adding post action 6666");
+					_log.debug("Adding post action 6666");
 					String result = processPostAction(postAction, groupId, dossier);
-					System.out.println("Result: " + result);
+					_log.debug("Result: " + result);
 				}
-				System.out.println("Done add post action");
+				_log.debug("Done add post action");
 				}
 
 				// String strDossierResult =
@@ -2387,7 +2387,7 @@ public class DossierManagementImpl implements DossierManagement {
 				return Response.status(HttpURLConnection.HTTP_OK).entity(dAction).build();
 			}
 			else {
-				System.out.println("Wronggggg");
+				_log.debug("Wronggggg");
 				JSONObject errorJson = JSONFactoryUtil.createJSONObject();
 				errorJson.put(ConstantUtils.API_DOSSIER_JSON_ERROR_KEY, MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_CANNOT_DO_ACTION));
 				return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(
@@ -2447,7 +2447,7 @@ public class DossierManagementImpl implements DossierManagement {
 							String method = StringPool.BLANK;
 							if (configObj != null && configObj.has(KeyPayTerm.METHOD)) {
 								method = configObj.getString(KeyPayTerm.METHOD);
-								System.out.println("method: " + method);
+								_log.debug("method: " + method);
 							}
 							//params
 							JSONObject jsonParams = null;
@@ -2567,7 +2567,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			return "";
 		} catch (Exception e) {
-			System.out.println("Error when process post action: " + e.getMessage());
+			_log.debug("Error when process post action: " + e.getMessage());
 			return "";
 		}
 	}
@@ -7503,7 +7503,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		try {
 
-			System.out.println(
+			_log.debug(
 				"================POST===========================");
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 
@@ -7719,7 +7719,7 @@ public class DossierManagementImpl implements DossierManagement {
 				rs = stmt.executeQuery(sqlQuery);
 	
 				while (rs.next()) {
-//					System.out.println(
+//					_log.debug(
 //						rs.getString(1) + "  " + rs.getString(2) + "  " +
 //							rs.getString(3) + "   " + rs.getString("dossierNo"));
 					result++;
@@ -7826,7 +7826,7 @@ public class DossierManagementImpl implements DossierManagement {
 					try (ResultSet rs = stmt.executeQuery(
 						sqlQuery)) {
 						while (rs.next()) {
-//							System.out.println(
+//							_log.debug(
 //								rs.getString(1) + "  " + rs.getString(2) + "  " +
 //									rs.getString(3) + "   " + rs.getString("fileUrl"));
 							result++;
@@ -7856,7 +7856,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 		catch (Exception ex) {
 			_log.debug(ex);
-//			System.out.println(ex);
+//			_log.debug(ex);
 		}
 		finally {
 //			try {
@@ -9372,7 +9372,7 @@ public class DossierManagementImpl implements DossierManagement {
 					return Response.status(HttpURLConnection.HTTP_OK).build();
 				}
 			}
-			System.out.println("Wronggggg");
+			_log.debug("Wronggggg");
 			return Response.status(HttpURLConnection.HTTP_BAD_METHOD).build();
 		}catch (Exception e){
 			_log.debug("ERROrrr: " + e.getMessage());

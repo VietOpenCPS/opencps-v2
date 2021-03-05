@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
 import org.opencps.dossiermgt.input.model.SyncTrackingInfo;
@@ -20,6 +21,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.DataOutputStream;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.io.BufferedReader;
@@ -39,7 +41,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     private enum ListPaygovUnitLocal {
         DONGTHAP("PAYGOV-DONGTHAP"),
         HAUGIANG("PAYGOV-HAUGIANG"),
-        BGTVT("PAYGOV-BGTVT");
+        BGTVT("PAYGOV-BOGTVT");
 
         private final String value;
 
@@ -85,8 +87,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
         }
     }
 
-    @Override
-    public String getUrlRedirectToPaygov(String token, Map<String, Object> body, JSONObject paygovConfig) throws Exception {
+    public String getUrlRedirectToPaygovBackup(String token, Map<String, Object> body, JSONObject paygovConfig) throws Exception {
         try{
             _log.info("Body get url redirect paygov: " + body);
             String url = paygovConfig.getString("urlPaygate");
@@ -94,7 +95,6 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "Bearer " + token);
             headers.add("lgspaccesstoken", paygovConfig.getString("lgspAccessToken"));
-
 
             headers.setContentType(MediaType.APPLICATION_JSON);
             JSONObject response = this.callApi(url, headers, body);
@@ -119,6 +119,98 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
+    }
+
+    @Override
+    public String getUrlRedirectToPaygov(String token, Map<String, Object> body, JSONObject paygovConfig) throws Exception {
+
+        HttpURLConnection conn = null;
+        JSONObject response = JSONFactoryUtil.createJSONObject();
+        String urlRedirect = StringPool.BLANK;
+        try {
+            _log.debug("token: " + token);
+            String endpoint = paygovConfig.getString("urlPaygate");
+
+
+            JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+
+            for (Map.Entry<String, Object> entry : body.entrySet()) {
+                _log.debug("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+
+                if(Validator.isNumber(String.valueOf(entry.getValue()))){
+                    jsonBody.put(entry.getKey(), GetterUtil.getLong(entry.getValue()));
+                }else{
+                    jsonBody.put(entry.getKey(), GetterUtil.getString(entry.getValue()));
+                }
+
+            }
+            _log.debug("++++jsonBody:" + jsonBody);
+
+            URL url = new URL(endpoint);
+
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+            conn.setRequestProperty("Accept", "*/*");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Charset", "utf-8");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setRequestProperty("lgspaccesstoken", paygovConfig.getString("lgspAccessToken"));
+            conn.setInstanceFollowRedirects(true);
+            HttpURLConnection.setFollowRedirects(true);
+            conn.setReadTimeout(60 * 1000);
+
+            byte[] postData = jsonBody.toJSONString().getBytes("UTF-8");
+
+            int postDataLength = postData.length;
+            conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+            try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+                wr.write(postData);
+            }
+
+            conn.connect();
+
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((conn.getInputStream())))) {
+
+                String output = StringPool.BLANK;
+
+                StringBuilder sb = new StringBuilder();
+
+                while ((output = bufferedReader.readLine()) != null) {
+                    sb.append(output);
+                }
+
+                _log.debug("response: " + sb.toString());
+
+                response = JSONFactoryUtil.createJSONObject(sb.toString());
+
+            }
+
+            if (Validator.isNull(response)) {
+                throw new Exception(response.toString());
+            }
+
+            if (Validator.isNull(response.getJSONObject("data"))) {
+                throw new Exception(response.toString());
+            }
+
+            if (Validator.isNull(response.getJSONObject("data").getString("url"))) {
+                throw new Exception(response.toString());
+            }
+
+            urlRedirect = response.getJSONObject("data").getString("url");
+            if (urlRedirect.isEmpty()) {
+                throw new Exception("Url from paygov is empty");
+            }
+
+        } catch ( Exception e) {
+
+            _log.error(e);
+            throw new Exception(e.getMessage());
+        }
+        return urlRedirect;
     }
 
     @Override
@@ -198,6 +290,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             headers.set("Accept", "*");
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
             ResponseEntity<String> response = restTemplate.postForEntity( url, entity , String.class);
+
             _log.info("Response api: " + response);
             _log.info("Response api: " + response.getBody());
 
@@ -248,6 +341,82 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             _log.error(e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public JSONObject callAPIPaygovPrintInvoice( Map<String, Object> body, JSONObject paygovConfig) throws Exception {
+
+        HttpURLConnection conn = null;
+        JSONObject response = JSONFactoryUtil.createJSONObject();
+
+        try {
+
+            JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+
+            for (Map.Entry<String, Object> entry : body.entrySet()) {
+                _log.info("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+
+                if(Validator.isNumber(String.valueOf(entry.getValue()))){
+                    jsonBody.put(entry.getKey(), GetterUtil.getLong(entry.getValue()));
+                }else{
+                    jsonBody.put(entry.getKey(), GetterUtil.getString(entry.getValue()));
+                }
+
+            }
+            _log.info("++++jsonBody:" + jsonBody);
+
+            URL url = new URL(paygovConfig.getString("urlBienLai"));
+
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+            conn.setRequestProperty("Accept", "*/*");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Charset", "utf-8");
+            conn.setRequestProperty("Authorization", "Bearer " + paygovConfig.getString("token"));
+            conn.setRequestProperty("lgspaccesstoken", paygovConfig.getString("lgspAccessToken"));
+            conn.setInstanceFollowRedirects(true);
+            HttpURLConnection.setFollowRedirects(true);
+            conn.setReadTimeout(60 * 1000);
+
+            byte[] postData = jsonBody.toJSONString().getBytes("UTF-8");
+
+            int postDataLength = postData.length;
+            conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+            try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+                wr.write(postData);
+            }
+
+            conn.connect();
+
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((conn.getInputStream())))) {
+
+                String output = StringPool.BLANK;
+
+                StringBuilder sb = new StringBuilder();
+
+                while ((output = bufferedReader.readLine()) != null) {
+                    sb.append(output);
+                }
+
+                _log.info("response: " + sb.toString());
+
+                response = JSONFactoryUtil.createJSONObject(sb.toString());
+
+            }
+
+            if (Validator.isNull(response.getString("transactionReceipt"))) {
+                throw new Exception(response.toString());
+            }
+
+        } catch ( Exception e) {
+
+            _log.error(e);
+            throw new Exception(e.getMessage());
+        }
+        return response;
     }
 
     @Override
