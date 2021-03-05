@@ -407,8 +407,12 @@ public class DossierNumberGenerator {
 			dossierNumber = seriNumberPattern;
 		}
 
+		_log.debug("++++dossierNumber:"+dossierNumber);
 		boolean isDuplicateDossierNo = DossierLocalServiceUtil.isDuplicateDossierNo(groupId,dossierNumber);
 
+		if(Validator.isNull(dossierNumber)){
+			return dossierNumber;
+		}
 		if(isDuplicateDossierNo){
 			return generateDossierNumber(groupId,  companyId,  dossierId,  processOtionId,
 					seriNumberPattern,  params,  searchContext);

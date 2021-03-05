@@ -6,5 +6,8 @@
     </category>
     <category name="org.opencps.event.message">
         <priority value="INFO" />
-    </category>    
+    </category>
+    <category name="org.opencps.dossiermgt.action.util.DossierNumberGenerator">
+        <priority value="ALL" />
+    </category>
 </log4j:configuration>
