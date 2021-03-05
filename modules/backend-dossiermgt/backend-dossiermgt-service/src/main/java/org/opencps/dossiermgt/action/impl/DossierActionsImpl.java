@@ -360,16 +360,28 @@ public class DossierActionsImpl implements DossierActions {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		Hits hits = null;
+		int countTotal = 0;
 
 		try {
 
-			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
-
-			result.put(ConstantUtils.DATA, hits.toList());
-
 			long total = DossierLocalServiceUtil.countLucene(params, searchContext);
-
-			result.put(ConstantUtils.TOTAL, total);
+			//binhth tính ra được tổng số count truyền lên page 1, 2, 3
+//			_log.info("Total : " + total);
+			if (start > 0 && end > 0) {
+				countTotal = end - start;
+			}
+			//Nếu countTotal < total search bình thường
+			if (countTotal < total) {
+				hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
+				result.put(ConstantUtils.DATA, hits.toList());
+				result.put(ConstantUtils.TOTAL, total);
+			}else if(start > total){
+				// Nếu start > total truyền sai ( mục đích test) ko có case này
+				result.put(ConstantUtils.TOTAL, 0L);
+			}else{
+				// Nếu countTotal < total search được thì trả về 0
+				result.put(ConstantUtils.TOTAL, 0L);
+			}
 
 			return result;
 
