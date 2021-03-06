@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service;
 
 import aQute.bnd.annotation.ProviderType;
 
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -295,6 +296,10 @@ public class PaymentFileLocalServiceUtil {
 
 	public static String findSumPaymentAmountDay(long groupId, String date) {
 		return getService().findSumPaymentAmountDay(groupId, date);
+	}
+
+	public static PaymentFile findPaymentFileByDossierId(long groupId, long dossierId) {
+		return getService().findPaymentFileByDossierId(groupId, dossierId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
