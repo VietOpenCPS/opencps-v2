@@ -1,46 +1,26 @@
 package org.opencps.dossiermgt.scheduler;
 
-import backend.auth.api.exception.ErrorMsgModel;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.scheduler.*;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.FrequencyIntegrationAction;
-import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.FrequencyIntegrationActionImpl;
-import org.opencps.dossiermgt.action.util.DossierMgtUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
-import org.opencps.dossiermgt.constants.ProcessActionTerm;
-import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.input.model.ProfileInModel;
 import org.opencps.dossiermgt.input.model.ProfileReceiver;
-import org.opencps.dossiermgt.model.*;
-import org.opencps.dossiermgt.service.*;
-import org.opencps.kernel.context.MBServiceContextFactoryUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.*;
 
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,14 +31,13 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
             ? Boolean.valueOf(PropsUtil.get("org.opencps.frequency.enable")) : false;
     @Override
     protected void doReceive(Message message) throws Exception {
-        _log.info("-----Start job crawl dossier frequency---");
-
         if (!isRunning && ENABLE_JOB) {
             isRunning = true;
         }
         else {
             return;
         }
+        _log.info("-----Start job crawl dossier frequency---");
 
         try {
             _log.info("Crawl dossier frequency at : " + APIDateTimeUtils.convertDateToString(new Date()));
@@ -81,17 +60,22 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
 
             for(ProfileReceiver oneDossier : listDossiers) {
                 _log.info("Handling profile: " + oneDossier.getProfileId());
-                ProfileInModel profile = integrationAction.getDetailDossier(token, oneDossier.getProfileId());
-                if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
-                    result = integrationAction.crawlDossierLGSP(profile, token);
+                try {
+                    ProfileInModel profile = integrationAction.getDetailDossier(token, oneDossier);
+                    if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
+                        result = integrationAction.crawlDossierLGSP(profile, token);
 
-                    if(result) {
-                        integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
-                    } else {
-                        integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
+                        if(result) {
+                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
+                        } else {
+                            _log.error("Crawl profile id: " + oneDossier.getProfileId() + " error");
+                        }
                     }
+                    _log.info("Done crawl one profile id: " + oneDossier.getProfileId());
+                } catch (Exception e) {
+                    _log.warn("Error when crawl profile id: " + oneDossier.getProfileId());
+                    _log.warn("Still running...");
                 }
-                _log.info("Done crawl one profile id: " + oneDossier.getProfileId());
             }
 
             _log.info("End crawl dossier frequency!!!");
@@ -106,7 +90,7 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
     @Modified
     protected void activate(Map<String,Object> properties) throws SchedulerException {
         String listenerClass = getClass().getName();
-        Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 2, TimeUnit.MINUTE);
+        Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 30, TimeUnit.SECOND);
 
         _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
         _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);

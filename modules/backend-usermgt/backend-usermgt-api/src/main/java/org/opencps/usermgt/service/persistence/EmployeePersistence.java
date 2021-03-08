@@ -871,6 +871,56 @@ public interface EmployeePersistence extends BasePersistence<Employee> {
 	public int countByF_GID_EMPNO(long groupId, String employeeNo);
 
 	/**
+	* Returns the employee where workingStatus = &#63; and employeeNo = &#63; or throws a {@link NoSuchEmployeeException} if it could not be found.
+	*
+	* @param workingStatus the working status
+	* @param employeeNo the employee no
+	* @return the matching employee
+	* @throws NoSuchEmployeeException if a matching employee could not be found
+	*/
+	public Employee findByF_WS_EMPNO(int workingStatus, String employeeNo)
+		throws NoSuchEmployeeException;
+
+	/**
+	* Returns the employee where workingStatus = &#63; and employeeNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param workingStatus the working status
+	* @param employeeNo the employee no
+	* @return the matching employee, or <code>null</code> if a matching employee could not be found
+	*/
+	public Employee fetchByF_WS_EMPNO(int workingStatus, String employeeNo);
+
+	/**
+	* Returns the employee where workingStatus = &#63; and employeeNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param workingStatus the working status
+	* @param employeeNo the employee no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching employee, or <code>null</code> if a matching employee could not be found
+	*/
+	public Employee fetchByF_WS_EMPNO(int workingStatus, String employeeNo,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the employee where workingStatus = &#63; and employeeNo = &#63; from the database.
+	*
+	* @param workingStatus the working status
+	* @param employeeNo the employee no
+	* @return the employee that was removed
+	*/
+	public Employee removeByF_WS_EMPNO(int workingStatus, String employeeNo)
+		throws NoSuchEmployeeException;
+
+	/**
+	* Returns the number of employees where workingStatus = &#63; and employeeNo = &#63;.
+	*
+	* @param workingStatus the working status
+	* @param employeeNo the employee no
+	* @return the number of matching employees
+	*/
+	public int countByF_WS_EMPNO(int workingStatus, String employeeNo);
+
+	/**
 	* Returns all the employees where groupId = &#63; and email = &#63;.
 	*
 	* @param groupId the group ID

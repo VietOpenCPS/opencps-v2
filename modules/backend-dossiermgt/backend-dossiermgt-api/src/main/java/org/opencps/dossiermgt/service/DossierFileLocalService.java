@@ -99,6 +99,13 @@ public interface DossierFileLocalService extends BaseLocalService,
 		String formScript, String formReport, boolean eForm, String formData,
 		ServiceContext serviceContext) throws PortalException, SystemException;
 
+	public DossierFile addDossierFileByFileEntryId(long groupId,
+		long dossierId, String referenceUid, String dossierTemplateNo,
+		String dossierPartNo, String fileTemplateNo, String displayName,
+		String sourceFileName, long fileSize, InputStream inputStream,
+		String fileType, String isSync, long fileEntryId,
+		ServiceContext serviceContext) throws PortalException, SystemException;
+
 	public DossierFile addDossierFileEForm(long groupId, long dossierId,
 		String referenceUid, String dossierTemplateNo, String dossierPartNo,
 		String fileTemplateNo, String displayName, String sourceFileName,
@@ -301,6 +308,10 @@ public interface DossierFileLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierFile getByFileTemplateNo(long id, String fileTemplateNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierFile> getByG_DID_FILE(long groupId, long[] dossierIds,
+		String dossierPartNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierFile> getByG_DID_FTN_R(long groupId, long[] dossierIds,

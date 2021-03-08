@@ -102,6 +102,22 @@ public class DossierFileLocalServiceUtil {
 			formScript, formReport, eForm, formData, serviceContext);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierFile addDossierFileByFileEntryId(
+		long groupId, long dossierId, String referenceUid,
+		String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
+		String displayName, String sourceFileName, long fileSize,
+		java.io.InputStream inputStream, String fileType, String isSync,
+		long fileEntryId,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .addDossierFileByFileEntryId(groupId, dossierId,
+			referenceUid, dossierTemplateNo, dossierPartNo, fileTemplateNo,
+			displayName, sourceFileName, fileSize, inputStream, fileType,
+			isSync, fileEntryId, serviceContext);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierFile addDossierFileEForm(
 		long groupId, long dossierId, String referenceUid,
 		String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
@@ -401,6 +417,11 @@ public class DossierFileLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.DossierFile getByFileTemplateNo(
 		long id, String fileTemplateNo) {
 		return getService().getByFileTemplateNo(id, fileTemplateNo);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.DossierFile> getByG_DID_FILE(
+		long groupId, long[] dossierIds, String dossierPartNo) {
+		return getService().getByG_DID_FILE(groupId, dossierIds, dossierPartNo);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.DossierFile> getByG_DID_FTN_R(

@@ -319,6 +319,11 @@ public interface ApplicantDataLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData updateApplicantData(ApplicantData applicantData);
 
+	public ApplicantData updateApplicantData(long groupId,
+		long applicantDataId, String fileTemplateNo, String fileNo,
+		String fileName, String applicantIdNo, int status,
+		ServiceContext serviceContext) throws PortalException, SystemException;
+
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData updateApplicantData(long groupId,
 		long applicantDataId, String fileTemplateNo, String fileNo,

@@ -96,7 +96,6 @@ public class StatisticSumYearService {
 			throws PortalException, UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		
 		//int year = LocalDate.now().getYear();
-		
 		StatisticSumYearCalcular calcular1 = new StatisticSumYearCalcular();
 		StatisticSumYearCalcular calcular2 = new StatisticSumYearCalcular();
 		StatisticSumYearCalcular calcular3 = new StatisticSumYearCalcular();
@@ -180,7 +179,6 @@ public class StatisticSumYearService {
 	public void batchCaculateSumYear(long companyId, long groupId, int year, List<ServerConfig> lstScs,
 			List<OpencpsDossierStatistic> lstCurrents, JSONObject jsonEndPoint)
 			throws PortalException, UpstreamServiceTimedOutException, UpstreamServiceFailedException {
-		
 		//int year = LocalDate.now().getYear();
 		List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
 		
@@ -231,7 +229,7 @@ public class StatisticSumYearService {
 //		calcular9.filterSumYear(companyId, groupId, year, false, false, false, lstGroupGovs, lstScs, lstCurrents, domainResponses);
 		//
 		if (lstDossierDataObjs != null && lstDossierDataObjs.size() > 0 && jsonEndPoint != null) {
-
+						
 			JSONArray jsonArr = JSONFactoryUtil.createJSONArray();
 			//
 			for (JSONObject data : lstDossierDataObjs) {

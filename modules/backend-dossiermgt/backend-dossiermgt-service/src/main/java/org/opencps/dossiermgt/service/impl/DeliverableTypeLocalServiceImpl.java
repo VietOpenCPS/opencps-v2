@@ -208,6 +208,11 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 		return deliverableTypePersistence.update(deliverableType);
 	}
 
+	@Override
+	public List<DeliverableType> getDeliverableTypeByGroupId(long[] groupId, int start, int end) {
+		return deliverableTypePersistence.findByD_OR_D(groupId, start, end);
+	}
+
 	public DeliverableType getDeliverableTypebyId(long groupId, String deliverableTypeId) throws PortalException {
 		// TODO remove DeliverableType
 
@@ -368,6 +373,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 		object.setDocSync(objectData.getInt(DeliverableTypesTerm.DOC_SYNC));
 		object.setGovAgencies(objectData.getString(DeliverableTypesTerm.GOV_AGENCIES));
 		object.setTableConfig(objectData.getString(DeliverableTypesTerm.TABLE_CONFIG));
+		object.setDataConfig(objectData.getString(DeliverableTypesTerm.DATA_CONFIG));
 
 		deliverableTypePersistence.update(object);
 

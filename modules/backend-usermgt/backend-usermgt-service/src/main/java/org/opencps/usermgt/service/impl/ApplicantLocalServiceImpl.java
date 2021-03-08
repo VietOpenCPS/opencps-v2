@@ -564,14 +564,15 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			throw new NoApplicantNameException("NoApplicantNameException");
 		}
 
-		if (Validator.isNull(applicantIdType))
+		if (Validator.isNull(applicantIdType)) {
 			throw new NoApplicantIdTypeException("NoApplicantIdTypeException");
-
-		if (Validator.isNull(applicantIdNo))
+		}
+		if (Validator.isNull(applicantIdNo)) {
 			throw new NoApplicantIdNoException("NoApplicantIdNoException");
-
-		if (Validator.isNull(applicantIdDate))
+		}
+		if (Validator.isNull(applicantIdDate)) {
 			throw new NoApplicantIdDateException("NoApplicantIdDateException");
+		}
 	}
 
 	// private void validateDuplicate(long companyId, String contactTelNo,
@@ -697,7 +698,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		long mappingId = applicant.getMappingUserId();
 
-		userPersistence.remove(mappingId);
+		try {
+			userPersistence.remove(mappingId);
+		} catch (Exception e) {
+			_log.warn("User mapping not exists with mappingUserId: " + mappingId);
+		}
 
 		applicantPersistence.remove(applicant);
 
@@ -1800,6 +1805,18 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Applicant applicant = applicantLocalService.fetchApplicant(applicantId);
 
 		applicant.setVerification(ApplicantTerm.UNLOCKED);
+
+		applicantPersistence.update(applicant);
+
+		return applicant;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant verifyApplicantWithValue(long applicantId, int verification) throws PortalException {
+
+		Applicant applicant = applicantLocalService.fetchApplicant(applicantId);
+
+		applicant.setVerification(verification);
 
 		applicantPersistence.update(applicant);
 

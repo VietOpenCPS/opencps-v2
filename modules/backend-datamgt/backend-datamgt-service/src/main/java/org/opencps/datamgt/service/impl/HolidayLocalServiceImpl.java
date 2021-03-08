@@ -86,7 +86,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public Holiday addHoliday(long userId, long groupId, Date holidayDate, String description,
+	public Holiday addHoliday(long userId, long groupId, Date holidayDate, String description, int holidayType,
 			ServiceContext serviceContext)
 			throws UnauthenticationException, UnauthorizationException, NoSuchUserException {
 		// authen
@@ -126,6 +126,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 		holiday.setHolidayDate(holidayDate);
 		holiday.setDescription(description);
+		holiday.setHolidayType(holidayType);
 
 		holiday.setExpandoBridgeAttributes(serviceContext);
 		return holidayPersistence.update(holiday);
@@ -366,6 +367,10 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 	public List<Holiday> getHolidayGtThan(long groupId, Date holidayDate) {
 		return holidayPersistence.findByF_NEWER_THAN(groupId, holidayDate);
 	}
+	
+	public List<Holiday> getHolidayGtThanByGroupIdAndType(long groupId, int holidayType, Date holidayDate) {
+		return holidayPersistence.findByF_GID_TYPE_NEWER_THAN(groupId, holidayType, holidayDate);
+	}
 
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
@@ -409,6 +414,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 		object.setHolidayDate(new Date(objectData.getLong(HolidayTerm.HOLIDAY_DATE)));
 		object.setDescription(objectData.getString(HolidayTerm.DESCRIPTION));
+		object.setHolidayType(objectData.getInt(HolidayTerm.HOLIDAY_TYPE));
 
 		holidayPersistence.update(object);
 

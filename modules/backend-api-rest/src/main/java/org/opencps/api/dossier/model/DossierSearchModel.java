@@ -130,7 +130,10 @@ import javax.xml.bind.annotation.XmlType;
     "delegate",
     "vnpostalStatus",
     "fromViaPostal",
-	"isGetVotingData"
+	"isGetVotingData",
+	"createDateStart",
+	"createDateEnd",
+	"level"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -307,6 +310,36 @@ public class DossierSearchModel {
 	@DefaultValue("false")
 	@QueryParam(value = "notAgencysScope")
 	protected boolean notAgencysScope;
+	@QueryParam(value = "createDateStart")
+	protected String createDateStart;
+	@QueryParam(value = "createDateEnd")
+	protected String createDateEnd;
+	@QueryParam(value = "level")
+	protected String level;
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
+	public String getCreateDateStart() {
+		return createDateStart;
+	}
+
+	public void setCreateDateStart(String createDateStart) {
+		this.createDateStart = createDateStart;
+	}
+
+	public String getCreateDateEnd() {
+		return createDateEnd;
+	}
+
+	public void setCreateDateEnd(String createDateEnd) {
+		this.createDateEnd = createDateEnd;
+	}
 
 	public String getIsGetVotingData() {
 		return isGetVotingData;

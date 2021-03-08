@@ -120,8 +120,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addTextSortable(DeliverableTerm.FORM_SCRIPT, object.getFormScript());
 		document.addTextSortable(DeliverableTerm.FORM_REPORT, object.getFormReport());
 //		document.addNumberSortable(DeliverableTerm.DELIVERABLE_STATE, object.getDeliverableState());
-		document.addNumberSortable(DeliverableTerm.DELIVERABLE_STATE + StringPool.UNDERLINE + ConstantUtils.DATA, object.getDeliverableState());
-		// add form data detail
+		document.addTextSortable(DeliverableTerm.DELIVERABLE_STATE + StringPool.UNDERLINE + ConstantUtils.DATA, String.valueOf(object.getDeliverableState()));		// add form data detail
 		String formData = object.getFormData();
 		if (Validator.isNotNull(formData)) {
 			List<Object[]> keyValues = new ArrayList<Object[]>();
@@ -181,6 +180,9 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					}
 					if (key.equals(DeliverableTerm.NGAY_CAP)) {
 						document.addTextSortable(DeliverableTerm.NGAY_CAP_SEARCH , SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
+					}
+					if (key.equals(DeliverableTerm.NGAY_CAP_CNDKKD)) {
+						document.addTextSortable(DeliverableTerm.NGAY_CAP_CNDKKD_SEARCH , SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
 					}
 				}
 				if (indexKey.indexOf("_id") != 0) {
@@ -351,7 +353,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					keyValues.add(keyValue);
 					parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
 				} catch (JSONException e) {
-					_log.error(e);
+					_log.info(e);
 					// string
 					Object[] keyValue = new Object[2];
 					keyValue[0] = keyJson + StringPool.AT + key;

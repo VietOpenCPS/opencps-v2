@@ -233,6 +233,8 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		int receiveDossierSatCount = 0;
 		int releaseDossierSatCount = 0;
 		long companyId = 0;
+		int processingInAPeriodCount = 0;
+		int releaseInAPeriodCount = 0;
 		if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
 			dossierStatistic = new DossierStatisticData();
 			for (OpencpsDossierStatistic opencpsDossierStatistic : dossierStatisticList) {
@@ -270,6 +272,8 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 				dossierOnline4Count += opencpsDossierStatistic.getDossierOnline4Count();
 				receiveDossierSatCount += opencpsDossierStatistic.getReceiveDossierSatCount();
 				releaseDossierSatCount += opencpsDossierStatistic.getReleaseDossierSatCount();
+				processingInAPeriodCount += opencpsDossierStatistic.getProcessingInAPeriodCount();
+				releaseInAPeriodCount += opencpsDossierStatistic.getReleaseInAPeriodCount();
 			}
 			//
 			if (releaseCount > 0) {
@@ -319,6 +323,8 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
 			dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);
 			dossierStatistic.setGroupAgencyCode(groupGovAgencyCode);
+			dossierStatistic.setProcessingInAPeriodCount(processingInAPeriodCount);
+			dossierStatistic.setReleaseInAPeriodCount(releaseInAPeriodCount);
 		}
 		//
 		return dossierStatistic;

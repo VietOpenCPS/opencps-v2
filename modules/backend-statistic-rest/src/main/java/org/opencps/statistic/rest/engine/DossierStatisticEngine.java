@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -107,6 +108,13 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	//Time engine dossier
 	private static int TIME_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.time"))
 				? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.time")) :45;
+	//Start time config
+	private static int HOUR_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.hour"))
+			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.hour")) :-1;
+	private static int MINUTE_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.minute"))
+			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.minute")) :-1;
+	private static int SECOND_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.second"))
+			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.second")) :-1;
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
@@ -272,7 +280,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 										if (mapInt.getKey() == month) {
 											StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 											JSONArray jsonArr = statisticEngineUpdate.convertMapDataList(mapInt.getValue());
-											//
+											// 
 											String sbUpdate = DossierStatisticUtils.invokeUpdateStatistic(jsonEndPoint,
 													JSONFactoryUtil.looseSerialize(jsonArr));
 											if (Validator.isNotNull(sbUpdate)) {
@@ -389,8 +397,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						try {
 							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
 								engineUpdateAction, serviceDomainResponse, calculateLastData);
-							if (calculateData != null && jsonEndPoint != null) {
-								for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateData.entrySet()) {
+							if (calculateLastData != null && jsonEndPoint != null) {
+
+								for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateLastData.entrySet()) {
 									if (mapInt.getKey() == lastMonth) {
 										
 										StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
@@ -506,7 +515,6 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			Map<Integer, Map<String, DossierStatisticData>> calculateData)
 			throws Exception {
 //		engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-		
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
 		payload.setCalculate(true);
@@ -607,6 +615,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				GetDossierData model = new GetDossierData();
 				model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
 				model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+				model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
 				model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
 				model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
 				if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
@@ -678,7 +687,20 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	@Modified
 	protected void activate(Map<String, Object> properties) throws SchedulerException {
 		String listenerClass = getClass().getName();
-		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null,
+		// Create startDate
+		Calendar cal = Calendar.getInstance();
+		LocalDate now = LocalDate.now();
+		int year =  now.getYear();
+		int month = now.getMonthValue();
+		int day = now.getDayOfMonth();
+		if (HOUR_STATISTIC != -1 && MINUTE_STATISTIC != -1 && SECOND_STATISTIC != -1) {
+			cal.set(year, month-1, day, HOUR_STATISTIC, MINUTE_STATISTIC, SECOND_STATISTIC);
+		}else {
+			cal.set(year, month-1, day);
+		}		
+		Date startDate = cal.getTime();
+		
+		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, startDate, null,
 				TIME_STATISTIC, TimeUnit.MINUTE);
 
 		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);

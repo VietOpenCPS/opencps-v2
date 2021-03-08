@@ -275,6 +275,13 @@ public class DeliverableTypeLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DeliverableType> getDeliverableTypeByGroupId(
+		long[] groupId, int start, int end) {
+		return _deliverableTypeLocalService.getDeliverableTypeByGroupId(groupId,
+			start, end);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DeliverableType getDeliverableTypebyId(
 		long groupId, String deliverableTypeId)
 		throws com.liferay.portal.kernel.exception.PortalException {

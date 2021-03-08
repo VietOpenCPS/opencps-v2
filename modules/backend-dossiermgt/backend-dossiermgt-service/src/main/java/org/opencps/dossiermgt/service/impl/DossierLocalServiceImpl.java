@@ -2953,6 +2953,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String matokhai = GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI));
 		String serviceLevel = params.get(DossierTerm.SERVICE_LEVEL) != null
 				? GetterUtil.getString(params.get(DossierTerm.SERVICE_LEVEL)) : null;
+		String createDateStart =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
+		String createDateEnd =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2995,10 +2999,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
-				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel);
+				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel,createDateStart,createDateEnd);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
-
+		
 		return IndexSearcherHelperUtil.search(searchContext, booleanInput);
 	}
 
@@ -3010,6 +3014,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String secetKey = GetterUtil.getString(params.get("secetKey"));
+
 		String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
 		String subStatus =
 				GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
@@ -3017,24 +3022,21 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String service = GetterUtil.getString(params.get(DossierTerm.SERVICE));
 		String template =
 				GetterUtil.getString(params.get(DossierTerm.TEMPLATE));
-		String state = GetterUtil.getString(params.get(DossierTerm.STATE));
 		String step = GetterUtil.getString(params.get(DossierTerm.STEP));
+		String state = GetterUtil.getString(params.get(DossierTerm.STATE));
+		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
 		String dossierNo =
 				GetterUtil.getString(params.get(DossierTerm.DOSSIER_NO));
 		// Get by certificate number
 		String certificateNo = (String) params.get(DossierTerm.DOSSIER_ID_CTN);
-		String online = GetterUtil.getString(params.get(DossierTerm.ONLINE));
-		String follow = GetterUtil.getString(params.get(DossierTerm.FOLLOW));
 		String top = GetterUtil.getString(params.get(DossierTerm.TOP));
 		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
 		String submitting =
 				GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
-		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
-
 		int year = GetterUtil.getInteger(params.get(DossierTerm.YEAR));
 		int month = GetterUtil.getInteger(params.get(DossierTerm.MONTH));
 		int day = GetterUtil.getInteger(params.get(DossierTerm.DAY));
-
+		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
 		String strDossierActionId =
 				GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID));
 		String fromReceiveDate =
@@ -3055,6 +3057,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Long statusReg = GetterUtil.getLong(params.get(DossierTerm.STATUS_REG));
 		Long notStatusReg =
 				GetterUtil.getLong(params.get(DossierTerm.NOT_STATUS_REG));
+		String online = GetterUtil.getString(params.get(DossierTerm.ONLINE));
 		String originality =
 				GetterUtil.getString(params.get(DossierTerm.ORIGINALLITY));
 		String assigned =
@@ -3093,11 +3096,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				params.get(DossierTerm.TO_RECEIVE_NOTDONE_DATE));
 		String paymentStatus =
 				GetterUtil.getString(params.get(PaymentFileTerm.PAYMENT_STATUS));
-		//
-		String fromStatisticDate =
-				GetterUtil.getString(params.get(DossierTerm.FROM_STATISTIC_DATE));
-		String toStatisticDate =
-				GetterUtil.getString(params.get(DossierTerm.TO_STATISTIC_DATE));
 		String origin = GetterUtil.getString(params.get(DossierTerm.ORIGIN));
 
 		String fromDueDate =
@@ -3110,11 +3108,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer backlog =
 				GetterUtil.getInteger(params.get(DossierTerm.BACKLOG));
 
+		String fromStatisticDate =
+				GetterUtil.getString(params.get(DossierTerm.FROM_STATISTIC_DATE));
+		String toStatisticDate =
+				GetterUtil.getString(params.get(DossierTerm.TO_STATISTIC_DATE));
 		Integer originDossierId =
-				(params.get(DossierTerm.ORIGIN_DOSSIER_ID) != null
+				(params.get(DossierTerm.ORIGIN_DOSSIER_ID) != null)
 						? GetterUtil.getInteger(
 						params.get(DossierTerm.ORIGIN_DOSSIER_ID))
-						: null);
+						: null;
 		String time = GetterUtil.getString(params.get(DossierTerm.TIME));
 		String register =
 				GetterUtil.getString(params.get(DossierTerm.REGISTER));
@@ -3141,30 +3143,25 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				? GetterUtil.getString(params.get(DossierTerm.VIA_POSTAL)) : null;
 		String dossierCounterSearch = GetterUtil.getString(params.get(DossierTerm.DOSSIER_COUNTER_SEARCH));
 		String delegate = GetterUtil.getString(params.get(DossierTerm.DELEGATE));
-
 		String vnpostalStatus = params.get(DossierTerm.VNPOSTAL_STATUS) != null
-				? GetterUtil.getString(params.get(DossierTerm.VNPOSTAL_STATUS))
-				: null;
-
+				? GetterUtil.getString(params.get(DossierTerm.VNPOSTAL_STATUS)) : null;
 		Integer fromViaPostal = params.get(DossierTerm.FROM_VIA_POSTAL) != null
-				? GetterUtil.getInteger(params.get(DossierTerm.FROM_VIA_POSTAL))
-				: null;
+				? GetterUtil.getInteger(params.get(DossierTerm.FROM_VIA_POSTAL)) : null;
 
-		String donvigui = params.get(DossierTerm.DON_VI_GUI) != null
-				? GetterUtil.getString(params.get(DossierTerm.DON_VI_GUI))
-				: null;
-		String donvinhan = params.get(DossierTerm.DON_VI_NHAN) != null
-				? GetterUtil.getString(params.get(DossierTerm.DON_VI_NHAN))
-				: null;
+		String donvigui = params.get(DossierTerm.DON_VI_GUI) !=null
+				? GetterUtil.getString(params.get(DossierTerm.DON_VI_GUI)) : null;
+
+		String donvinhan = params.get(DossierTerm.DON_VI_NHAN) !=null
+				? GetterUtil.getString(params.get(DossierTerm.DON_VI_NHAN)) : null;
 		String groupDossierIdHs =
-				GetterUtil.getString(params.get(DossierTerm.GROUP_DOSSIER_ID_HS)) != null
-						? GetterUtil.getString(params.get(DossierTerm.GROUP_DOSSIER_ID_HS))
-						: null;
-		String matokhai =  params.get(DossierTerm.MA_TO_KHAI) != null
-				? GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI))
-				: null;
+				GetterUtil.getString(params.get(DossierTerm.GROUP_DOSSIER_ID_HS));
+		String matokhai = GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI));
 		String serviceLevel = params.get(DossierTerm.SERVICE_LEVEL) != null
 				? GetterUtil.getString(params.get(DossierTerm.SERVICE_LEVEL)) : null;
+		String createDateStart =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
+		String createDateEnd =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -3204,7 +3201,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
-				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel);
+				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel,createDateStart,createDateEnd);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3228,7 +3225,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					DossierTerm.CURRENT_ACTION_USER,
 					DossierTerm.ORIGIN_DOSSIER_NO_SEARCH,
 					ServiceInfoTerm.SERVICE_CODE_SEARCH,
-					DossierTerm.DELEGATE_NAME_SEARCH, DossierTerm.DOSSIER_COUNTER_SEARCH
+					DossierTerm.DELEGATE_NAME_SEARCH, DossierTerm.DOSSIER_COUNTER_SEARCH,
+					DossierTerm.ACTION_NOTE, DossierTerm.COMMENT
 			};
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
@@ -3334,9 +3332,35 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String documentNo, String documentDate, String strSystemId,
 			String viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
 			String delegate, String vnpostalStatus, Integer fromViaPostal,
-			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai, String serviceLevel)
+			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai, String serviceLevel,
+			String createDateStart, String createDateEnd)
 			throws ParseException {
 
+		String createDateStartFilter =
+				createDateStart + ConstantsTerm.HOUR_START;
+		String createDateEndFilter = createDateEnd + ConstantsTerm.HOUR_END;
+		if (Validator.isNotNull(createDateStart)) {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						createDateEndFilter, true, true);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						null, true, false);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+		else {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, null, createDateEndFilter,
+						false, true);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
 		//Dossier Counter
 		if (Validator.isNotNull(dossierCounterSearch)) {
 			MultiMatchQuery query =
@@ -3555,11 +3579,21 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(service)) {
-			MultiMatchQuery query = new MultiMatchQuery(service);
-
-			query.addFields(ServiceInfoTerm.SERVICE_CODE_SEARCH);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			String[] lstServiceCode = StringUtil.split(service);
+			if(lstServiceCode != null && lstServiceCode.length >0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for(int i = 0; i< lstServiceCode.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstServiceCode[i]);
+					query.addField(ServiceInfoTerm.SERVICE_CODE_SEARCH);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(service);
+				query.addFields(ServiceInfoTerm.SERVICE_CODE_SEARCH);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (DossierTerm.STATISTIC.equals(top.toLowerCase())) {
@@ -4871,12 +4905,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					new MultiMatchQuery(String.valueOf(0));
 			queryDueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
 			subQueryOne.add(queryDueDate, BooleanClauseOccur.MUST_NOT);
+			
+			// fix theo y/c DuanTV: som han (betime) -> không filter theo extendDate
 			/** Check condition extendDate != null and releaseDate < dueDate **/
 			// Check extendDate != null
-			MultiMatchQuery queryExtend =
+			/*MultiMatchQuery queryExtend =
 					new MultiMatchQuery(String.valueOf(0));
 			queryExtend.addField(DossierTerm.EXTEND_DATE_TIMESTAMP);
-			subQueryTwo.add(queryExtend, BooleanClauseOccur.MUST_NOT);
+			subQueryTwo.add(queryExtend, BooleanClauseOccur.MUST_NOT);*/
+			
 			// Check releaseDate < dueDate
 			// TermRangeQueryImpl termRangeRelease = new
 			// TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
@@ -4968,16 +5005,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			queryDueDateEmpty.addField(DossierTerm.DUE_DATE_TIMESTAMP);
 			subQueryTwo.add(queryDueDateEmpty, BooleanClauseOccur.MUST);
 
+			// fix theo y/c BA Duan: đúng hạn (ontime) -> không filter theo extendDate
 			/**
 			 * Check condition (extendDate == null and releaseDate < dueDate &&
 			 * (finishDate==null||finishDate>=dueDate))- START
 			 **/
 			/** Check condition extendDate == null and releaseDate < dueDate **/
 			// Check extendDate == null
-			MultiMatchQuery queryExtend =
+			/*MultiMatchQuery queryExtend =
 					new MultiMatchQuery(String.valueOf(0));
 			queryExtend.addField(DossierTerm.EXTEND_DATE_TIMESTAMP);
-			subQueryThree.add(queryExtend, BooleanClauseOccur.MUST);
+			subQueryThree.add(queryExtend, BooleanClauseOccur.MUST);*/
+			
 			// Check dueDate != null
 			MultiMatchQuery queryDueDate =
 					new MultiMatchQuery(String.valueOf(0));
@@ -6731,6 +6770,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossierTemplateNo, originDossierId);
 	}
 
+	public Dossier getByG_AN_SC_GAC_DTNO_SN_ODID(
+			long groupId, String applicantIdNo, String serviceCode,
+			String govAgencyCode, String dossierTemplateNo, long originDossierId, String serverNo) {
+
+		return dossierPersistence.fetchByG_AN_SC_GAC_DTNO_SN_ODID(
+				groupId, applicantIdNo, serviceCode, govAgencyCode,
+				dossierTemplateNo, originDossierId, serverNo);
+	}
+
 	public Dossier fetchOnePublicService() {
 
 		return dossierPersistence.fetchByO_First(0, null);
@@ -7577,6 +7625,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.findByG_UID_DS(groupId, userId, dossierStatus);
 	}
 
+	public List<Dossier> findByG_U_DO(long groupId, long userId) {
+		return dossierPersistence.findByG_UID(groupId, userId);
+	}
+
 	public int countByG_UID_DS(long groupId, long userId, String dossierStatus) {
 		return dossierPersistence.countByG_UID_DS(groupId, userId, dossierStatus);
 	}
@@ -7787,10 +7839,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 	
 	public List<Dossier> fetchByORIGIN_NO(String originDossierNo) {
-		return dossierPersistence.findByORIGIN_NO(originDossierNo);
+		return dossierPersistence.findByORIGIN_NO(originDossierNo, 0, 10);
 	}
 	
 	public List<Dossier> fetchByNEW_DO_NO(String dossierNo) {
-		return dossierPersistence.findByNEW_DO_NO(dossierNo);
+		return dossierPersistence.findByNEW_DO_NO(dossierNo, 0, 10);
 	}
 }

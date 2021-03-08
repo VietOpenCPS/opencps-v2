@@ -165,6 +165,12 @@
 			<finder-column name="groupId" />
 			<finder-column name="employeeNo" />
 		</finder>
+
+		<finder return-type="Employee" name="F_WS_EMPNO">
+			<finder-column name="workingStatus" />
+			<finder-column name="employeeNo" />
+		</finder>
+
 		<finder return-type="Collection" name="F_email">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="email"></finder-column>
@@ -230,6 +236,9 @@
 		</finder>
 		<finder return-type="JobPos" name="F_CODE">
 			<finder-column name="groupId" />
+			<finder-column name="jobPosCode" />
+		</finder>
+		<finder return-type="JobPos" name="F_JOB_POS_CODE">
 			<finder-column name="jobPosCode" />
 		</finder>
 		<finder return-type="Collection" name="F_mappingRoleIds">

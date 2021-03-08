@@ -11,8 +11,10 @@ import org.opencps.api.dossiertemplate.model.DossierTemplatePartDataModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTemplateTerm;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
 import com.liferay.portal.kernel.log.Log;
@@ -100,6 +102,13 @@ public class DossierTemplateUtils {
 //				}
 
 				elm.setHasForm(Boolean.toString(dp.isEForm()));
+				if(Validator.isNotNull(dp.getDeliverableType())){
+					DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(dp.getGroupId(), dp.getDeliverableType());
+					if(Validator.isNotNull(deliverableType)){
+						elm.setDeliverableType(deliverableType.getTypeCode());
+						elm.setDeliverableTypeName(deliverableType.getTypeName());
+					}
+				}
 
 				inputs.add(elm);
 			}

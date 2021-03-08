@@ -307,6 +307,14 @@ public class EmployeeLocalServiceWrapper implements EmployeeLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.Employee findByWorkingStatusAndEmployeeNo(
+		int workingStatus, String employeeNo)
+		throws org.opencps.usermgt.exception.NoSuchEmployeeException {
+		return _employeeLocalService.findByWorkingStatusAndEmployeeNo(workingStatus,
+			employeeNo);
+	}
+
+	@Override
 	public java.util.List<org.opencps.usermgt.model.Employee> findByWorkstatus(
 		long mappingUserId, int workingStatus) {
 		return _employeeLocalService.findByWorkstatus(mappingUserId,

@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,10 +24,15 @@ import javax.ws.rs.core.Response;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DVCQGSSOManagement;
 import org.opencps.api.controller.util.MessageUtil;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.SSOIntegration;
+import org.opencps.dossiermgt.action.impl.SSOIntegrationImpl;
 import org.opencps.usermgt.action.impl.DVCQGSSOActionImpl;
 
 public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	private static final Log _log = LogFactoryUtil.getLog(DVCQGSSOManagementImpl.class);
+	private static final String MIC_SSO_KEY_CONFIG = "MIC-OPENID";
 
 	@Override
 	public Response checkAuth(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
@@ -45,10 +51,10 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 
 	@Override
 	public Response getUserInfo(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
-			Company company, Locale locale, User user, ServiceContext serviceContext, String authToken, String state) {
+			Company company, Locale locale, User user, ServiceContext serviceContext, String authToken, String state, String provider) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
-		JSONObject result = action.getUserInfo(user, groupId, request, serviceContext, authToken, state);
+		JSONObject result = action.getUserInfo(user, groupId, request, serviceContext, authToken, state, new String[] {provider, authToken});
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 	}
@@ -86,15 +92,47 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	@Override
 	public Response getAuthURL(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String state,
-			String redirectURL) {
+			String redirectURL, String provider) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
 
-		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, state, redirectURL);
+		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, state, redirectURL, new String[] {provider});
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(endpoint).build();
+	}
+
+	@Override
+	public Response getAuthURLMic(HttpHeaders header, String state, String redirectURL) {
+		try {
+			List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(MIC_SSO_KEY_CONFIG, MIC_SSO_KEY_CONFIG);
+			ServerConfig serverConfig = listConfig.get(0);
+			SSOIntegration ssoIntegration = new SSOIntegrationImpl(serverConfig);
+			String urlSSO = ssoIntegration.getUrlSSo(state, redirectURL);
+			return Response.status(HttpURLConnection.HTTP_OK).entity(urlSSO).build();
+		} catch (Exception e) {
+			_log.error("Error when url sso MIC: " + e.getMessage());
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity("").build();
+		}
+	}
+
+	@Override
+	public Response doAuthMic(HttpServletRequest request, String authorizationCode) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(MIC_SSO_KEY_CONFIG, MIC_SSO_KEY_CONFIG);
+			ServerConfig serverConfig = listConfig.get(0);
+			SSOIntegration ssoIntegration = new SSOIntegrationImpl(serverConfig);
+			result = ssoIntegration.doAuthMic(request, authorizationCode);
+			_log.info("Result authenticate to MIC server: " + result.toString());
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error("Exception when do authenticate through Mic sso: " + e.getMessage());
+			result.put("statusCode", 3);
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result.toJSONString()).build();
+		}
 	}
 
 	@Override
