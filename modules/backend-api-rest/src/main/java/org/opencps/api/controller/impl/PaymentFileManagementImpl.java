@@ -1370,7 +1370,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		long dossierId = GetterUtil.getLong(id);
 
-		_log.info("===downloadInvoiceFileDVCQG===");
+		_log.debug("===downloadInvoiceFileDVCQG===");
 
 		// TODO get Dossier by referenceUid if dossierId = 0
 		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
@@ -1384,8 +1384,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFileActions action = new PaymentFileActionsImpl();
 			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
 
-			_log.info(paymentFile.getPaymentMethod() +"===========dossierId, referenceUid=======" + dossierId + referenceUid);
-			_log.info("===========paymentFile=======" + paymentFile);
 			if (paymentFile != null && paymentFile.getInvoiceFileEntryId() > 0) {
 
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
@@ -1482,16 +1480,13 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 					//create paids
 					String paids = "[\"" + confirmPayload.getString("transactionCode") + "\"]";
-					_log.info("++++paids:"+paids);
 					String base64Paids = Base64.getEncoder().encodeToString(paids.getBytes());
 
 					//create other info
 					JSONObject otherInfo = JSONFactoryUtil.createJSONObject();
-//					otherInfo.put("type", paygovConfig.getString("typeBill"));
-//					otherInfo.put("subType", "THUPHI");
+
 					otherInfo.put("beneficiaryUnitCode", paygovConfig.getString("beneficiaryUnitCode"));
 					otherInfo.put("beneficiaryUnitName", paygovConfig.getString("beneficiaryUnitName"));
-					_log.info("++++otherInfo:"+otherInfo);
 
 					String base64OtherInfo = Base64.getEncoder().encodeToString(otherInfo.toString().getBytes());
 					String decisionDate = APIDateTimeUtils.convertDateToString(new Date(), "dd-MM-yyyy");
@@ -1499,7 +1494,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 							+ payerAddress + payerDistrict + payerProvince + docCode + procedureName + base64Paids
 							+ base64OtherInfo + decisionDate;
 
-					_log.info("Checksum: " + secretKey + " | " + partnerCode + " | " + accessKey
+					_log.debug("Checksum: " + secretKey + " | " + partnerCode + " | " + accessKey
 							+ " | " + payerId + " | " + payerName
 							+ " | " + payerAddress + " | " + payerDistrict + " | " +payerProvince + " | " +docCode
 							+ " | " + procedureName + " | " + base64Paids
@@ -1524,8 +1519,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					body.put("otherInfo", base64OtherInfo);
 					body.put("checksum", shs256CheckSum);
 
-
-					_log.info("Body get bien lai: " + body);
 					//JSONObject response = serviceApi.callApiAndTrackingWithMapBody(paygovConfig.getString("urlBienLai"),
 					//		null, headers, body);
 
@@ -1534,7 +1527,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 							&& response.has("transactionReceipt")
 							&& !response.getString("transactionReceipt").isEmpty()) {
 						String urlBienLaiPaygov = response.getString("transactionReceipt");
-						_log.info("Url bien lai paygov: " + urlBienLaiPaygov);
+						_log.debug("Url bien lai paygov: " + urlBienLaiPaygov);
 						InputStream file = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(urlBienLaiPaygov);
 						return Response.ok(file).header(
 								"Content-Disposition", "attachment; filename=\""
@@ -1547,6 +1540,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 
 		} catch (Exception e) {
+			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

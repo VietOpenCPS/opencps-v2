@@ -354,16 +354,11 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
 
             for (Map.Entry<String, Object> entry : body.entrySet()) {
-                _log.info("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-
-                if(Validator.isNumber(String.valueOf(entry.getValue()))){
-                    jsonBody.put(entry.getKey(), GetterUtil.getLong(entry.getValue()));
-                }else{
-                    jsonBody.put(entry.getKey(), GetterUtil.getString(entry.getValue()));
-                }
+                _log.debug("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+                jsonBody.put(entry.getKey(), GetterUtil.getString(entry.getValue()));
 
             }
-            _log.info("++++jsonBody:" + jsonBody);
+            _log.debug("++++jsonBody:" + jsonBody);
 
             URL url = new URL(paygovConfig.getString("urlBienLai"));
 
@@ -401,7 +396,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
                     sb.append(output);
                 }
 
-                _log.info("response: " + sb.toString());
+                _log.debug("response: " + sb.toString());
 
                 response = JSONFactoryUtil.createJSONObject(sb.toString());
 
