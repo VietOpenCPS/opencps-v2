@@ -136,12 +136,16 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
 
             for (Map.Entry<String, Object> entry : body.entrySet()) {
                 _log.debug("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-
+                /*
                 if(Validator.isNumber(String.valueOf(entry.getValue()))){
                     jsonBody.put(entry.getKey(), GetterUtil.getLong(entry.getValue()));
                 }else{
                     jsonBody.put(entry.getKey(), GetterUtil.getString(entry.getValue()));
                 }
+                */
+
+
+                jsonBody.put(entry.getKey(), GetterUtil.getString(entry.getValue()));
 
             }
             _log.debug("++++jsonBody:" + jsonBody);

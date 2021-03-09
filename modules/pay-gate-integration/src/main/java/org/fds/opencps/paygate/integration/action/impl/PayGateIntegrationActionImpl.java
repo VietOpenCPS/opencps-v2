@@ -1706,7 +1706,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	@Override
 	public JSONObject ppConfirmTransactionPaygov(User user, ServiceContext serviceContext, String body) {
 		try {
-			_log.info("=======ppConfirmTransactionPaygov========" + body);
+			_log.debug("=======ppConfirmTransactionPaygov========" + body);
 			JSONObject data = JSONFactoryUtil.createJSONObject(body);
 			final String PAY_SUCCESS = "00";
 
@@ -1787,7 +1787,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			body.put("partnerCode", paygovConfig.getString("partnerCode"));
 			body.put("returnUrl", paygovConfig.getString("urlDomain"));
 			body.put("orderId", orderId);
-			body.put("amount", amount);
+			body.put("amount",  String.valueOf(amount));
 			body.put("orderInfo", StringUtils.stripAccents(dossier.getDossierName()));
 			body.put("requestCode", requestCode);
 			body.put("ipAddress", ipAddress);

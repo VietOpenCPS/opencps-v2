@@ -1046,8 +1046,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	public Response updateByPaymentFileId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
 
-		_log.info("====updateByPaymentFileId====");
-		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -1098,7 +1096,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				paymentFile.setPaymentNote(input.getPaymentNote());
 			}
 
-			_log.info("====paymentFile===="+paymentFile);
 			//Update Invoice File EntryId
 			//PaymentFileActions action = new PaymentFileActionsImpl();
 			//PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);
@@ -1437,7 +1434,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 							"Content-Disposition", "attachment; filename=\"" + new Date().getTime() + ".pdf" + "\"").build();
 			} else if (Validator.isNotNull(paymentFile)
 					&& PaymentFileTerm.PAYMENT_METHOD_PAYGOV.equals(paymentFile.getPaymentMethod())) {
-				_log.info("Getting url bien lai paygov...");
+				_log.debug("Getting url bien lai paygov...");
 				if(Validator.isNull(paymentFile.getConfirmPayload())
 						|| paymentFile.getConfirmPayload().isEmpty()) {
 					throw new Exception("No confirm payload was found with payment file: " + paymentFile.getPaymentFileId());
