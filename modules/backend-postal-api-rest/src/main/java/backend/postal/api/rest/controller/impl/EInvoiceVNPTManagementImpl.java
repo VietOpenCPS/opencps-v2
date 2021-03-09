@@ -217,6 +217,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 					result = callSoapApi("POST", EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_SOAP_ENDPOINT, 
 							properties, soapRequest, EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_SOAP_ACTION);
 
+					_log.info("ImportAndPublishInvResponse : " + result.toString());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -349,6 +350,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 				result = callSoapApi("POST", EInvoiceVNPTTerm.UPDATE_CUS_SOAP_ENDPOINT,
 						properties, soapRequest, EInvoiceVNPTTerm.UPDATE_CUS_SOAP_ACTION);
 
+				_log.info("UpdateCusResponse : " + result.toString());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -536,7 +538,8 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 		            
 					result = callSoapApi("POST", EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ENDPOINT, 
 							properties, soapRequest, EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION);
-
+					
+					_log.info("DownloadInvPDFFkeyNoPayResponse : " + result.toString());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

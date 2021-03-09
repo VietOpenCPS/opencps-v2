@@ -356,6 +356,7 @@ public class DossierTerm {
 	public static final String DUE_DATE_NOTIFY_TYPE_HOUR = "hour";
 	public static final String FROMPOSTAL_TRUE = "fromPostal=true";
 	public static final String FROMPOSTAL_FALSE = "fromPostal=false";
+	public static final String SENDINVOICE_VNPT = "sendInvoidVNPT=1";
 	
 	public static final int DURATION_UNIT_DAY = 0;
 	public static final int DURATION_UNIT_HOUR = 1;

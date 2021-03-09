@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -23,9 +24,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.http.HttpStatus;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.util.DueDateUtils;
@@ -49,6 +53,8 @@ import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
+import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -779,6 +785,9 @@ public class DossierMgtUtils {
 					result = result && checkMultipleCheck(splitMultipleCheck[1], dossier.getMultipleCheck());
 				}
 			}
+			if (preCondition.contains(DossierTerm.SENDINVOICE_VNPT)) {
+				result = result && checkSendInvoiceVNPT(dossier);
+			}
 		}
 
 		return result;
@@ -1173,6 +1182,33 @@ public class DossierMgtUtils {
 			return false;
 		else
 			return true;
+	}
+	
+	private static boolean checkSendInvoiceVNPT(Dossier dossier) {
+		boolean result = false;
+		PaymentFileActions actions = new PaymentFileActionsImpl();
+		PaymentFile paymentFile = actions.getPaymentFiles(dossier.getGroupId(), dossier.getDossierId());
+		if (paymentFile != null) {
+			
+			InvokeREST rest = new InvokeREST();
+			
+			ServiceContext context = new ServiceContext();
+			context.setUserId(dossier.getUserId());
+			String endPoint = "postal/ImportAndPublishInv";
+			
+			HashMap<String, String> properties = new HashMap<String, String>();
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("dossierId", dossier.getDossierId());
+			
+			JSONObject restCreateInvoiceObj = rest.callPostAPI(dossier.getGroupId(), HttpMethods.POST, ConstantUtils.CONTENT_TYPE_JSON, 
+					RESTFulConfiguration.SERVER_PATH_BASE, endPoint, RESTFulConfiguration.SERVER_USER, 
+					RESTFulConfiguration.SERVER_PASS, properties, params, context);
+			_log.info("Hóa đơn điện tử VNPT : " + restCreateInvoiceObj.toJSONString());
+			if(restCreateInvoiceObj.getInt("Status") == HttpStatus.SC_OK) {
+				result = true;
+			}			
+		}
+		return result;
 	}
 
 	//Calculator startDate and endDate
