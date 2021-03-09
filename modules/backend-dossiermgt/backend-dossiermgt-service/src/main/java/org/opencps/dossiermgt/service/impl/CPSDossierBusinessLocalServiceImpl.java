@@ -581,7 +581,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 		}
 	}
-
+	private static final int MAX_TRY_COUNT = 10;
+	private static final String QRCODE_PAY = "qrcode_pay";
 	private boolean createDossierDocumentPostAction(long groupId, long userId, Dossier dossier,
 			DossierAction dossierAction, JSONObject payloadObject, Employee employee, User user,
 			String documentTypeList, ServiceContext context)
@@ -620,9 +621,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					} else {
 						formDataObj.put(Field.USER_NAME, user.getFullName());
 					}
-
 					Message message = new Message();
-					// _log.info("Document script: " + dt.getDocumentScript());
+//					 _log.info("Document script: " + formDataObj.toJSONString());
 					JSONObject msgData = JSONFactoryUtil.createJSONObject();
 					msgData.put(ConstantUtils.CLASS_NAME, DossierDocument.class.getName());
 					msgData.put(Field.CLASS_PK, dossierDocument.getDossierDocumentId());
@@ -1720,7 +1720,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				deliverableCode =
 						DeliverableNumberGenerator.generateDeliverableNumber(
 								groupId, context.getCompanyId(),
-								dlt.getDeliverableTypeId());
+								dlt.getDeliverableTypeId(), dossierId);
 			}
 
 			Deliverable deliverable = DeliverableLocalServiceUtil.addDeliverableSign(

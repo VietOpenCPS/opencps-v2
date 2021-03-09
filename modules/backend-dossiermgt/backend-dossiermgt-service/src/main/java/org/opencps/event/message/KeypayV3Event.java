@@ -32,7 +32,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
  *
  */
 public class KeypayV3Event implements MessageListener {
-	public static final Integer TIME_SLEEP = 2000;
+	public static final Integer TIME_SLEEP = 3000;
 	@Override
 	public void receive(Message message) throws MessageListenerException {
 		try {
