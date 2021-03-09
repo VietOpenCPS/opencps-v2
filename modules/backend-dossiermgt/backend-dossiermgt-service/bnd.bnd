@@ -3,6 +3,17 @@ Bundle-SymbolicName: org.opencps.backend.dossiermgt.service
 Bundle-Version: 1.0.0
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
+-includeresource: \
+    @JAVA_SDK_VXP-2.0.4.jar;lib:=true,\
+    @httpcore-4.4.10-local.jar;lib:=true,\
+    @httpclient-4.5.6-local.jar;lib:=true,\
+    @httpmime-4.5.6-local.jar;lib:=true,\
+    @guava-14.0-rc1-local.jar;lib:=true,\
+    @status-transformer-3.0.0-local.jar;lib:=true,\
+    @base-102-transformer-3.0.0-local.jar;lib:=true,\
+    @jdom2-2.0.6-local.jar;lib:=true,\
+
+Import-Package: *;resolution:=optional
 Bundle-Activator: org.opencps.dossiermgt.activator.DossierActionsActivator
 Export-Package: org.opencps.dossiermgt.action
 
@@ -22,4 +33,7 @@ Export-Package: \
 	org.opencps.backend.dossiermgt.serviceapi,\
 	org.opencps.backend.dossiermgt.logistic,\
 	org.opencps.dossiermgt.rest.model,\
-	org.apache.commons.text.*
+	org.apache.commons.text.*,\
+    org.opencps.bundlemgt,\
+	org.opencps.bundlemgt.classloader,\
+	org.opencps.bundlemgt.classloader.util,\

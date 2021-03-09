@@ -208,6 +208,11 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 		return deliverableTypePersistence.update(deliverableType);
 	}
 
+	@Override
+	public List<DeliverableType> getDeliverableTypeByGroupId(long[] groupId, int start, int end) {
+		return deliverableTypePersistence.findByD_OR_D(groupId, start, end);
+	}
+
 	public DeliverableType getDeliverableTypebyId(long groupId, String deliverableTypeId) throws PortalException {
 		// TODO remove DeliverableType
 

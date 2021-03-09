@@ -1,6 +1,7 @@
 package org.opencps.api.controller.util;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -30,6 +31,7 @@ import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.impl.ServiceInfoImpl;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 
@@ -125,6 +127,44 @@ public class ServiceInfoUtils {
 			_log.error(e);
 		}
 		
+
+		return data;
+	}
+
+	public static List<ServiceInfo> mappingToServiceInfoResultModels(List<Document> documents, long groupId) {
+		List<ServiceInfo> data = new ArrayList<ServiceInfo>();
+
+		try {
+			for (Document doc : documents) {
+				ServiceInfo model = new ServiceInfoImpl();
+
+				model.setServiceName(doc.get(ServiceInfoTerm.SERVICE_NAME));
+				model.setServiceInfoId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
+//				model.setCreateDate(doc.get(Field.CREATE_DATE));
+//				model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
+				model.setServiceCode(doc.get(ServiceInfoTerm.SERVICE_CODE));
+				model.setServiceName(doc.get(ServiceInfoTerm.SERVICE_NAME));
+				model.setProcessText(doc.get(ServiceInfoTerm.PROCESS_TEXT));
+				model.setMethodText(doc.get(ServiceInfoTerm.METHOD_TEXT));
+				model.setDossierText(doc.get(ServiceInfoTerm.DOSSIER_EXT));
+				model.setConditionText(doc.get(ServiceInfoTerm.CONDITION_TEXT));
+				model.setDurationText(doc.get(ServiceInfoTerm.DURATION_TEXT));
+				model.setApplicantText(doc.get(ServiceInfoTerm.APPLICANT_TEXT));
+				model.setResultText(doc.get(ServiceInfoTerm.RESULT_TEXT));
+				model.setRegularText(doc.get(ServiceInfoTerm.REGULAR_TEXT));
+				model.setFeeText(doc.get(ServiceInfoTerm.FEE_TEXT));
+				model.setAdministrationCode(doc.get(ServiceInfoTerm.ADMINISTRATION_CODE));
+				model.setAdministrationName(doc.get(ServiceInfoTerm.ADMINISTRATION_NAME));
+				model.setDomainCode(doc.get(ServiceInfoTerm.DOMAIN_CODE));
+				model.setDomainName(doc.get(ServiceInfoTerm.DOMAIN_NAME));
+				model.setMaxLevel(GetterUtil.getInteger(doc.get(ServiceInfoTerm.MAX_LEVEL)));
+
+				data.add(model);
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
 
 		return data;
 	}

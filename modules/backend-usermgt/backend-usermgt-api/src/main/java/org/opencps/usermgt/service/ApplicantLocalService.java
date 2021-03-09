@@ -460,4 +460,8 @@ public interface ApplicantLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public Applicant verifyApplicant(long applicantId)
 		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant verifyApplicantWithValue(long applicantId, int verification)
+		throws PortalException;
 }

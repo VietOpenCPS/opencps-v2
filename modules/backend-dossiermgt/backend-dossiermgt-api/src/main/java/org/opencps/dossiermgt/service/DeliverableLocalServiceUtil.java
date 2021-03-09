@@ -249,8 +249,9 @@ public class DeliverableLocalServiceUtil {
 		com.liferay.portal.kernel.dao.orm.Projection projection) {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
+
 	public static org.opencps.dossiermgt.model.Deliverable fetchByGID_AID(
-			long groupId, String applicantIdNo) {
+		long groupId, String applicantIdNo) {
 		return getService().fetchByGID_AID(groupId, applicantIdNo);
 	}
 
@@ -276,6 +277,14 @@ public class DeliverableLocalServiceUtil {
 		return getService().fetchDeliverableByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByCreateDate(
+		String createDateStart, String createDateEnd, String deliverableType,
+		long deliverableState) {
+		return getService()
+				   .findDeliverableByCreateDate(createDateStart, createDateEnd,
+			deliverableType, deliverableState);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByState(
 		String strDeliverableCode, int state) {
 		return getService().findDeliverableByState(strDeliverableCode, state);
@@ -298,6 +307,12 @@ public class DeliverableLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.Deliverable getByF_GID_DCODE(
 		long groupId, String deliverableCode) {
 		return getService().getByF_GID_DCODE(groupId, deliverableCode);
+	}
+
+	public static org.opencps.dossiermgt.model.Deliverable getByF_GID_DI_STATE(
+		long groupId, long dossierId, int deliverableState) {
+		return getService()
+				   .getByF_GID_DI_STATE(groupId, dossierId, deliverableState);
 	}
 
 	/**

@@ -1,5 +1,7 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -27,6 +29,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.bundlemgt.classloader.util.ClassLoaderFactoryUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -38,27 +41,9 @@ import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.*;
-import org.opencps.dossiermgt.model.ActionConfig;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierActionUser;
-import org.opencps.dossiermgt.model.DossierRequestUD;
-import org.opencps.dossiermgt.model.DossierUser;
-import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
-import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
@@ -723,6 +708,59 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			}
 
 			document.addTextSortable(DossierTerm.ACTION_USERIDS, StringUtil.merge(actionUserIds, StringPool.SPACE));
+
+			//Indexing actionNote in dossierSync
+			List<String> actionNotes = new ArrayList<>();
+			try {
+				List<DossierSync> dossierSyncs = DossierSyncLocalServiceUtil.findByG_DID
+						(object.getGroupId(), object.getDossierId());
+
+				for(DossierSync dossierSync: dossierSyncs) {
+					if(Validator.isNull(dossierSync.getActionNote())) {
+						continue;
+					}
+					actionNotes.add(dossierSync.getActionNote());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			document.addTextSortable(DossierTerm.ACTION_NOTE, StringUtil.merge(actionNotes, StringPool.SPACE));
+
+			//Indexing comment
+			List<String> listContent = new ArrayList<>();
+
+			try {
+				String KEY_CONTENT = "content";
+				Object objComment = ClassLoaderFactoryUtil.getListComments(object.getGroupId(),
+						"org.opencps.dossiermgt.model.Dossier", String.valueOf(object.getDossierId()));
+				if(Validator.isNull(objComment)) {
+					throw new Exception("No comment was found when indexing");
+				}
+				ObjectMapper objectMapper = new ObjectMapper();
+				objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+				List<Object> comments = (List<Object>) objComment;
+
+				for(Object comment : comments) {
+					if(Validator.isNull(comment)) {
+						continue;
+					}
+					Map<String, String> mapComment = objectMapper.convertValue(comment, Map.class);
+					if(Validator.isNull(mapComment)) {
+						continue;
+					}
+					if(mapComment.containsKey(KEY_CONTENT) && Validator.isNotNull(mapComment.get(KEY_CONTENT))) {
+						listContent.add(mapComment.get(KEY_CONTENT));
+					}
+				}
+
+			} catch (Exception e) {
+				_log.warn("Error when indexing: " + e.getMessage());
+				_log.warn("Still running...");
+			}
+
+			document.addTextSortable(DossierTerm.COMMENT, StringUtil.merge(listContent, StringPool.SPACE));
+
 
 			// binhth index dossierId CTN
 //			MessageDigest md5 = null;

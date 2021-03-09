@@ -353,7 +353,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					keyValues.add(keyValue);
 					parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
 				} catch (JSONException e) {
-					_log.error(e);
+					_log.info(e);
 					// string
 					Object[] keyValue = new Object[2];
 					keyValue[0] = keyJson + StringPool.AT + key;

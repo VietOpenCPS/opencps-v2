@@ -237,12 +237,17 @@ public class DossierFileLocalServiceImpl
 			DeliverableType deliverableType =
 				DeliverableTypeLocalServiceUtil.getByCode(
 					groupId, dossierPart.getDeliverableType());
+			if(Validator.isNull(deliverableType)){
+				deliverableType =
+						DeliverableTypeLocalServiceUtil.getByCode(
+								0L, dossierPart.getDeliverableType());
+			}
 
 			if (Validator.isNotNull(deliverableType)) {
 				deliverableCode =
 					DeliverableNumberGenerator.generateDeliverableNumber(
 						groupId, serviceContext.getCompanyId(),
-						deliverableType.getDeliverableTypeId());
+						deliverableType.getDeliverableTypeId(), dossierId);
 				object.setDeliverableCode(deliverableCode);
 			}
 		}
@@ -373,7 +378,7 @@ public class DossierFileLocalServiceImpl
 					deliverableCode =
 							DeliverableNumberGenerator.generateDeliverableNumber(
 									groupId, serviceContext.getCompanyId(),
-									deliverableType.getDeliverableTypeId());
+									deliverableType.getDeliverableTypeId(), dossierId);
 					object.setDeliverableCode(deliverableCode);
 				}
 			}
@@ -515,12 +520,17 @@ public class DossierFileLocalServiceImpl
 			DeliverableType deliverableType =
 				DeliverableTypeLocalServiceUtil.getByCode(
 					groupId, dossierPart.getDeliverableType());
+			if(Validator.isNull(deliverableType)){
+				deliverableType =
+						DeliverableTypeLocalServiceUtil.getByCode(
+								0L, dossierPart.getDeliverableType());
+			}
 
 			if (Validator.isNotNull(deliverableType)) {
 				deliverableCode =
 					DeliverableNumberGenerator.generateDeliverableNumber(
 						groupId, serviceContext.getCompanyId(),
-						deliverableType.getDeliverableTypeId());
+						deliverableType.getDeliverableTypeId(), dossierId);
 				object.setDeliverableCode(deliverableCode);
 			}
 		}
@@ -666,7 +676,7 @@ public class DossierFileLocalServiceImpl
 			deliverableCode =
 				DeliverableNumberGenerator.generateDeliverableNumber(
 					groupId, serviceContext.getCompanyId(),
-					deliverableType.getDeliverableTypeId());
+					deliverableType.getDeliverableTypeId(), dossierId);
 			object.setDeliverableCode(deliverableCode);
 		}
 

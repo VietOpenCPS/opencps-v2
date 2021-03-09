@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.LinkedHashMap;
 
 import org.opencps.dossiermgt.model.EForm;
+import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 
@@ -71,7 +72,7 @@ public interface ServiceInfoActions {
 
 	public boolean deleteAllFileTemplate(long userId, long groupId, long serviceInfoId, ServiceContext serviceContext);
 
-	public boolean deleteAllServiceConfig(long userId, long groupId, long serviceInfoId, ServiceContext serviceContext);
+	public boolean deleteAllServiceConfig(long userId, long groupId, long serviceInfoId, ServiceConfig serviceConfigOld, ServiceContext serviceContext);
 
 	public JSONObject getStatisticByDomainFilterAdministration(long groupId, Sort[] sorts, ServiceContext context,
 			String administration) throws ParseException, SearchException;
