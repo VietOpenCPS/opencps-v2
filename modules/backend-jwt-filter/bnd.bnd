@@ -1,0 +1,6 @@
+Bundle-Name: backend-jwt-filter
+Bundle-SymbolicName: org.opencps.jwt.filter
+Bundle-Version: 1.0.0
+Export-Package: \
+	org.opencps.jwt.provider.factory.*,\
+	org.opencps.jwt.provider.*,\
