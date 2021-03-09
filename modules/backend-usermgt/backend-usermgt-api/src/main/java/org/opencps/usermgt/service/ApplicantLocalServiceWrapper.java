@@ -54,6 +54,15 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 	}
 
 	@Override
+	public com.liferay.portal.kernel.model.User addUser(String fullName,
+		String screenName, String email, String password,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _applicantLocalService.addUser(fullName, screenName, email,
+			password, serviceContext);
+	}
+
+	@Override
 	public org.opencps.usermgt.model.Applicant adminProcessData(
 		com.liferay.portal.kernel.json.JSONObject objectData)
 		throws org.opencps.usermgt.exception.DuplicateContactEmailException,

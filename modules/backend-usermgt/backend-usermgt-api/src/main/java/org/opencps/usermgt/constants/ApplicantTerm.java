@@ -79,4 +79,5 @@ public class ApplicantTerm {
 	public static final String URL_SYNC = "url";
 	public static final String PASSWORD = "password";
 	public static final long GROUP_ID_DEFAULT = 0L;
+	public static final String APPLICANT = "APPLICANT";
 }
