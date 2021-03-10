@@ -597,7 +597,7 @@ public class DossierMgtUtils {
 		for (String preCondition : preConditions) {
 			
 			preCondition = preCondition.trim();
-			
+			_log.info("preCondition : " + preCondition);
 			switch (preCondition) {
 			case DossierTerm.PAY_OK:
 					result = result && checkPayOk(dossier);
@@ -1185,6 +1185,7 @@ public class DossierMgtUtils {
 	}
 	
 	private static boolean checkSendInvoiceVNPT(Dossier dossier) {
+		_log.info("TESTTTTTTTTTTTTT");
 		boolean result = false;
 		PaymentFileActions actions = new PaymentFileActionsImpl();
 		PaymentFile paymentFile = actions.getPaymentFiles(dossier.getGroupId(), dossier.getDossierId());
