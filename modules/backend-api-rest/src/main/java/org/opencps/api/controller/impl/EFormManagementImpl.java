@@ -54,7 +54,7 @@ import org.opencps.dossiermgt.action.EFormActions;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.impl.EFormActionsImpl;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.EFormTerm;
+import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.EForm;
 import org.opencps.dossiermgt.service.EFormLocalServiceUtil;
 
@@ -189,13 +189,35 @@ public class EFormManagementImpl implements EFormManagement{
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
+			List<ServerConfig>  lstserverConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(ServerConfigTerm.SERVER_NO_MOFA2, ServerConfigTerm.SYNC_MOFA2);
+			_log.info("ServerConfig :" + JSONFactoryUtil.looseSerialize(lstserverConfig.get(0)));
+			ServerConfig serverConfig = lstserverConfig.get(0);
+			JSONObject configJSON = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 			EFormActions actions = new EFormActionsImpl();
-
+			long serviceInfoId = 0L;
+			String fileTemplateNo = StringPool.BLANK;
+			long serviceId =0L;
+			String tempNo = StringPool.BLANK;
+			try{
+				if(Validator.isNotNull(configJSON)){
+					serviceId = Long.valueOf(configJSON.getString(ServiceInfoTerm.SERVICE_INFO_ID));
+					tempNo = configJSON.getString(DossierPartTerm.FILE_TEMPLATE_NO);
+					groupId = Long.valueOf(configJSON.getString(DossierTerm.GROUP_ID));
+					_log.info("serviceId :" + serviceId);
+					_log.info("tempNo :" + tempNo);
+				}
+				if(serviceId > 0L && Validator.isNotNull(tempNo)) {
+					serviceInfoId =  serviceId;
+					fileTemplateNo = tempNo;
+				}else{
+					serviceInfoId = Validator.isNotNull(input.getServiceInfoId()) ? input.getServiceInfoId() : 0;
+					fileTemplateNo = Validator.isNotNull(input.getFileTemplateNo()) ? input.getFileTemplateNo()
+							: StringPool.BLANK;
+				}
+			}catch (Exception e){
+				e.getMessage();
+			}
 			String eFormNo = Validator.isNotNull(input.geteFormNo()) ? input.geteFormNo() : StringPool.BLANK;
-			Long serviceInfoId = input.getServiceInfoId() != null ? input.getServiceInfoId() : 0;
-			String fileTemplateNo = Validator.isNotNull(input.getFileTemplateNo()) ? input.getFileTemplateNo()
-					: StringPool.BLANK;
 			String eFormName = Validator.isNotNull(input.geteFormName()) ? input.geteFormName() : StringPool.BLANK;
 			Long formScriptFileId = input.getFormScriptFileId() != null ? input.getFormScriptFileId() : 0;
 			Long formReportFileId = input.getFormReportFileId() != null ? input.getFormReportFileId(): 0;
