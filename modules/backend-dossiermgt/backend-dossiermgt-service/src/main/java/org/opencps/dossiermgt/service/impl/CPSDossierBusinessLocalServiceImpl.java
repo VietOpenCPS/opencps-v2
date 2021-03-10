@@ -118,7 +118,23 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
-import org.opencps.dossiermgt.action.util.*;
+import org.opencps.dossiermgt.action.util.AccentUtils;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.ConfigCounterNumberGenerator;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
+import org.opencps.dossiermgt.action.util.DossierActionUtils;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
+import org.opencps.dossiermgt.action.util.KeyPay;
+import org.opencps.dossiermgt.action.util.NotificationUtil;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.action.util.VNPostCLSUtils;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
+import org.opencps.dossiermgt.action.util.POSVCBUtils;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
@@ -5658,7 +5674,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.info(" --- Call API Sale RequestData POSVCB --- ");
 			String result = POSVCBUtils.saleRequestDataPOSVCB(groupId, dossier.getGovAgencyCode(),"",
 					paymentFile.getPaymentAmount(),SyncServerTerm.CURRENCY_CODE,"",paymentFile.getPaymentNote(),
-					dossier.getDossierCounter(), dossier.getDossierNo() );
+					dossier.getDossierCounter(), dossier.getDossierNo(), dossier.getDossierId(),paymentFile, context);
 			if (paymentFile != null) {
 				paymentFile.setPaymentStatus(3);
 				paymentFile.setApproveDatetime(new Date());
@@ -5677,9 +5693,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 //			POSVCBUtils.saleRequestDataPOSVCB();
 		}
 		if(DossierActionTerm.ACTION_SPECIAL_CHECK_PAYMENT.equals(actionCode)){
-//			String result = POSVCBUtils.checkResultPOSVCB
 			// Check giao dịch đã được thanh toán chưa
-//			String result = POSVCBUtils.checkResultPOSVCB();
+			String key = StringPool.BLANK;
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
+			JSONObject paymentObject = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+			key = payloadObject.getString(SyncServerTerm.KEY_SALE);
+			String result = POSVCBUtils.checkResultPOSVCB(groupId, dossier.getGovAgencyCode(), key);
 		}
 		if(DossierActionTerm.ACTION_SPECIAL_CANCEL_PAYMENT.equals(actionCode)){
 

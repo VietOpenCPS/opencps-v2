@@ -1,20 +1,19 @@
 package org.opencps.dossiermgt.action.util;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSON;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.model.PaymentConfig;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
-import org.opencps.usermgt.model.Question;
-import org.opencps.usermgt.service.QuestionLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -43,9 +42,9 @@ public class POSVCBUtils {
                 JSONObject configObj = defaultJSON;
 
                 serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
-                merchantOutletId = configObj.getString(SyncServerTerm.MERCHANT_OUTLET_ID);
-                merchantId = configObj.getString(SyncServerTerm.MERCHANT_ID);
-                clientId = configObj.getString(SyncServerTerm.CLIENT_ID);
+                merchantOutletId = configObj.getString(SyncServerTerm.MERCHANT_OUTLET_ID_CONFIG);
+                merchantId = configObj.getString(SyncServerTerm.MERCHANT_ID_CONFIG);
+                clientId = configObj.getString(SyncServerTerm.CLIENT_ID_CONFIG);
 
                 URL urlSale = new URL(serverUrl);
                 JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
@@ -56,28 +55,28 @@ public class POSVCBUtils {
                 jsonBody.put("CLIENT_ID", clientId);
 
                 String data = jsonBody.toString();
-
-                byte[] keyData = configObj.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
-
+                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
+                _log.info("KeyData : " + thirdPartyKey);
+                byte[] keyData = SyncServerTerm.THIRD_PARTY_KEY.getBytes();
+                _log.info("keyData: " + keyData);
                 JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
 
                 jsonBodyEncrypt.put("KEY", configObj.getString(SyncServerTerm.THIRD_PARTY_ID));
                 jsonBodyEncrypt.put("VALUE", encrypt3DES1(keyData, data));
                 String body = "=" + jsonBodyEncrypt.toString();
-
-                _log.debug("POST DATA: " + body);
-
+                _log.info("Body: " + body);
                 java.net.HttpURLConnection conSale = (java.net.HttpURLConnection) urlSale.openConnection();
 
                 conSale.setRequestMethod(HttpMethod.POST);
                 conSale.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-                conSale.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+                conSale.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+
                 conSale.setRequestProperty("Content-Length", StringPool.BLANK + Integer.toString(body.getBytes().length));
                 conSale.setUseCaches(false);
                 conSale.setDoInput(true);
                 conSale.setDoOutput(true);
-                _log.debug("POST DATA: " + body);
                 OutputStream osLogin = conSale.getOutputStream();
+
                 osLogin.write(body.getBytes());
                 osLogin.close();
 
@@ -86,30 +85,38 @@ public class POSVCBUtils {
                 while ((cp = brf.read()) != -1) {
                     sb.append((char) cp);
                 }
-                String decrypt = decrypt3DES1(keyData, sb.toString());
-                String encrypt =  encrypt3DES1(keyData, decrypt);
-                JSONObject response = JSONFactoryUtil.createJSONObject(encrypt);
-                int total = response.getInt("TOTAL");
-                _log.info("Total: " + total );
-                if (total > 0) {
-                    JSONArray reponseArr = response.getJSONArray(SyncServerTerm.CONN);
-                    JSONObject reponseJSON = reponseArr.getJSONObject(0);
-                    if(Validator.isNotNull(reponseJSON)){
-                        _log.debug("Máy Online : " + total);
-                        return reponseJSON;
-                    }else{
-                        _log.debug("Không tìm được máy Online");
-                        return null;
-                    }
+                try {
+
+                    String decrypt = decrypt3DES1(keyData, sb.toString());
+                    System.out.println("3333333333333333: " + decrypt);
+//                    JSONObject response = JSONFactoryUtil.createJSONObject(decrypt);
+//                    _log.info("44444444: " + response.toString());
+//                    int total = response.getInt("TOTAL");
+//
+//                    _log.info("Total: " + total);
+//                    if (total > 0) {
+//                        JSONArray reponseArr = response.getJSONArray(SyncServerTerm.CONN);
+//                        JSONObject reponseJSON = reponseArr.getJSONObject(0);
+//                        if (Validator.isNotNull(reponseJSON)) {
+//                            _log.debug("Máy Online : " + total);
+//                            return reponseJSON;
+//                        } else {
+//                            _log.debug("Không tìm được máy Online");
+//                            return null;
+//                        }
+//                    }
+                }catch (Exception e){
+                   _log.info("Exception");
+                    e.getMessage();
+                    return null;
                 }
-                return null;
             }
         }catch (Exception e){
             e.getMessage();
         }
         return null;
     }
-    public static JSONObject getPaymentFile(long groupId, String govAgencyCode){
+    public static JSONObject getPaymentConfig(long groupId, String govAgencyCode){
         try {
             PaymentConfig payConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, govAgencyCode);
             if (payConfig != null && Validator.isNotNull(payConfig.getEpaymentConfig())) {
@@ -136,17 +143,18 @@ public class POSVCBUtils {
         return null;
     }
 
-    public static String saleRequestDataPOSVCB( long groupId, String govAgencyCode, String refId,
-                                      long amount, String currencyCode, String staffId,
-                                     String addPrint, String addData, String orderId) {
+    public static String saleRequestDataPOSVCB(long groupId, String govAgencyCode, String refId,
+                                               long amount, String currencyCode, String staffId,
+                                               String addPrint, String addData, String orderId, long dossierId,
+                                               PaymentFile paymentFile, ServiceContext context) {
 
         try {
-            JSONObject defaultJSON = getPaymentFile(groupId, govAgencyCode);
+            JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode);
             JSONObject reponseJSON = getRequestConnectionPOSVCB(groupId, defaultJSON);
 
             StringBuilder sb = new StringBuilder();
-            _log.debug("SERVER PROXY: " + defaultJSON.toString());
-            if (Validator.isNotNull(defaultJSON)) {
+            if (Validator.isNotNull(defaultJSON) && Validator.isNotNull(reponseJSON)) {
+                _log.debug("SERVER PROXY: " + reponseJSON.toString());
                 String serverUrl = StringPool.BLANK;
                 String serialNumber = StringPool.BLANK;
                 String terminalId = StringPool.BLANK;
@@ -197,7 +205,7 @@ public class POSVCBUtils {
 
                     conSale.setRequestMethod(HttpMethod.POST);
                     conSale.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-                    conSale.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+                    conSale.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
                     conSale.setRequestProperty("Content-Length", StringPool.BLANK + Integer.toString(body.getBytes().length));
                     conSale.setUseCaches(false);
                     conSale.setDoInput(true);
@@ -212,7 +220,13 @@ public class POSVCBUtils {
                     while ((cp = brf.read()) != -1) {
                         sb.append((char) cp);
                     }
-                    return decrypt3DES1(keyData, sb.toString());
+                    String decrypt3D =  decrypt3DES1(keyData, sb.toString());
+                    String encrypt3D = encrypt3DES1(keyData, decrypt3D);
+                    JSONObject resultJSON = JSONFactoryUtil.createJSONObject(encrypt3D);
+                    String key = resultJSON.getString("KEY");
+                    if(Validator.isNotNull(key)){
+                        updatePaymentFile(paymentFile, key, dossierId, context);
+                    }
                 } else {
                     return "Không có máy POS Online";
                 }
@@ -222,7 +236,20 @@ public class POSVCBUtils {
             _log.debug(e);
             return null;
         }
+    }
 
+    public static void updatePaymentFile (PaymentFile paymentFile, String keySale, long dossierId, ServiceContext context){
+        try {
+            if(Validator.isNotNull(keySale)) {
+                _log.info("KEY POS: " + keySale);
+                JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+                epaymentProfile.put(SyncServerTerm.KEY_SALE, keySale);
+                PaymentFileLocalServiceUtil.updateEProfile(dossierId, paymentFile.getReferenceUid(),
+                        epaymentProfile.toJSONString(), context);
+            }
+        }catch (Exception e){
+            e.getMessage();
+        }
     }
 
     public static String voidPOSVCB( Long groupId, String govAgencyCode, String refId, String amount, String currencyCode, String staffId,
@@ -230,7 +257,7 @@ public class POSVCBUtils {
                                      String addPrint, String addData, String orderId) {
 
         try {
-            JSONObject defaultJSON = getPaymentFile(groupId, govAgencyCode);
+            JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode);
             JSONObject reponseJSON = getRequestConnectionPOSVCB(groupId, defaultJSON);
             StringBuilder sb = new StringBuilder();
             _log.debug("SERVER PROXY: " + defaultJSON.toString());
@@ -289,7 +316,7 @@ public class POSVCBUtils {
 
                     conVoid.setRequestMethod(HttpMethod.POST);
                     conVoid.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-                    conVoid.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+                    conVoid.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
                     conVoid.setRequestProperty("Content-Length", StringPool.BLANK + Integer.toString(body.getBytes().length));
                     conVoid.setUseCaches(false);
                     conVoid.setDoInput(true);
@@ -366,7 +393,7 @@ public class POSVCBUtils {
 
                 conSettlement.setRequestMethod(HttpMethod.POST);
                 conSettlement.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-                conSettlement.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+                conSettlement.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
                 conSettlement.setRequestProperty("Content-Length",StringPool.BLANK + Integer.toString(body.getBytes().length));
                 conSettlement.setUseCaches(false);
                 conSettlement.setDoInput(true);
@@ -391,16 +418,16 @@ public class POSVCBUtils {
 
     }
 
-    private static String checkResultPOSVCB(Long groupId, String govAgencyCode, String key){
+    public static String checkResultPOSVCB(long groupId, String govAgencyCode, String key){
 
         try {
-//            String serverCodeFind = Validator.isNotNull(serverCode) ? serverCode : "POS_VCB";
-            JSONObject defaultJSON = getPaymentFile(groupId, govAgencyCode);
+            String result = StringPool.BLANK;
+            JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode);
 
-//            ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverCodeFind);
+
             StringBuilder sb = new StringBuilder();
             _log.debug("SERVER PROXY: " + defaultJSON.toString());
-            if (Validator.isNotNull(defaultJSON)) {
+            if (Validator.isNotNull(defaultJSON) && Validator.isNotNull(key)) {
                 String serverUrl = StringPool.BLANK;
 
                 JSONObject configObj = defaultJSON;
@@ -420,7 +447,7 @@ public class POSVCBUtils {
 
                 conSettlement.setRequestMethod(HttpMethod.POST);
                 conSettlement.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-                conSettlement.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+                conSettlement.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
                 conSettlement.setRequestProperty("Content-Length",StringPool.BLANK + Integer.toString(body.getBytes().length));
                 conSettlement.setUseCaches(false);
                 conSettlement.setDoInput(true);
@@ -435,9 +462,17 @@ public class POSVCBUtils {
                 while ((cp = brf.read()) != -1) {
                     sb.append((char) cp);
                 }
-                return decrypt3DES1(keyData,sb.toString());
+                String decrypt3D = decrypt3DES1(keyData,sb.toString());
+                String encrypt3D = encrypt3DES1(keyData, decrypt3D);
+                JSONObject resultJSON = JSONFactoryUtil.createJSONObject(encrypt3D);
+                String reponseCode = resultJSON.getString("RESPONSE_CODE");
+                if(Validator.isNotNull(resultJSON) ){
+                   result = resultJSON.toString();
+                }
+            }else{
+                return "Chưa có key giao dịch thanh toán";
             }
-            return null;
+            return result;
         }catch (Exception e){
             _log.debug(e);
             return null;
@@ -445,7 +480,7 @@ public class POSVCBUtils {
     }
 
 
-    private static Log _log = LogFactoryUtil.getLog(DossierActionUtils.class.getName());
+    private static Log _log = LogFactoryUtil.getLog(POSVCBUtils.class.getName());
 
     private static String encrypt3DES1(byte[] keyData, String data) throws Exception {
         if (data == null || data.trim().equals(""))
@@ -464,21 +499,31 @@ public class POSVCBUtils {
         return cipher_msg;
     }
 
-    private static String decrypt3DES1 ( byte [] keyData , String data ) throws Exception {
-        if ( data == null || data . trim (). equals (""))
-            return "";
-        data = data . toUpperCase ();
-        SecretKey key = new SecretKeySpec ( keyData , "DESede");
-        Cipher cipher = Cipher . getInstance ("DESede/CBC/PKCS5Padding ");
-        IvParameterSpec ivSpec = new IvParameterSpec ( new byte [8]) ;
-        cipher . init ( Cipher . DECRYPT_MODE , key , ivSpec );
-        String _data = new String ( DatatypeConverter . parseHexBinary (
-                data ), "UTF8");
-        byte [] raw =  Base64.getDecoder().decode(_data);
-        byte [] stringBytes = cipher . doFinal ( raw );
-        String plain_msg = new String ( stringBytes , "UTF8");
-        // Return plain_msg
-        return plain_msg ;
+    public static String decrypt3DES1(byte[] keyData, String data) throws Exception {
+        try {
+
+
+            if (data == null || data.trim().equals(""))
+                return "";
+            data = data.toUpperCase();
+            _log.info("DATA: " + data);
+            SecretKey key = new SecretKeySpec(keyData, "DESede");
+            Cipher cipher = Cipher.getInstance("DESede/CBC/PKCS5Padding");
+            IvParameterSpec ivSpec = new IvParameterSpec(new byte[8]);
+            _log.info("1111111111111111111");
+            cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
+            String _data = new String(DatatypeConverter.parseHexBinary(data), "UTF8");
+            byte[] raw = Base64.getDecoder().decode(_data);
+            byte[] stringBytes = cipher.doFinal(raw);
+            _log.info("2222222222222222");
+            String plain_msg = new String(stringBytes, "UTF8");
+            // Return plain_msg
+            _log.info("plain_msg: " + plain_msg);
+            return plain_msg;
+        }catch (Exception e) {
+            e.getMessage();
+        }
+        return "";
     }
 
 }
