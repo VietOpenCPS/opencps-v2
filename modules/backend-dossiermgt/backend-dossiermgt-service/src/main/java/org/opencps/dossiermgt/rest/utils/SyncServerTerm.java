@@ -14,13 +14,14 @@ public class SyncServerTerm {
 	
 	public static final String WRITE_LOG = "writeLog";
 
-	public static final String APP = "payment_std";
+	public static final String APP = "PAYMENT_STD";
 	public static final String MERCHANT_OUTLET_ID = "MERCHANT_OUTLET_ID";
 	public static final String MERCHANT_ID = "MERCHANT_ID";
 	public static final String CLIENT_ID = "CLIENT_ID";
 	public static final String EVENT_VOID = "VOID";
 	public static final String EVENT_SETTLEMENT = "SETTLE";
 	public static final String EVENT_SALE = "SALE";
+	public static final String CHECK_RESULT = "CHECK_RESULT";
 	public static final String CONN = "CONN";
 	public static final String SERIAL_NUMBER = "SERIAL";
 	public static final String REF_ID = "REF_ID";

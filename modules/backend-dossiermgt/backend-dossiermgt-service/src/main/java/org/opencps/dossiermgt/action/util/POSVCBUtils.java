@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.action.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -32,7 +33,7 @@ public class POSVCBUtils {
     public static JSONObject getRequestConnectionPOSVCB(long groupId,JSONObject defaultJSON ){
         try {
             StringBuilder sb = new StringBuilder();
-            _log.debug("SERVER PROXY: " + defaultJSON.toString());
+//            _log.debug("SERVER PROXY: " + defaultJSON.toString());
             if (Validator.isNotNull(defaultJSON)) {
                 String serverUrl = StringPool.BLANK;
                 String merchantOutletId = StringPool.BLANK;
@@ -56,15 +57,13 @@ public class POSVCBUtils {
 
                 String data = jsonBody.toString();
                 String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
-                _log.info("KeyData : " + thirdPartyKey);
-                byte[] keyData = SyncServerTerm.THIRD_PARTY_KEY.getBytes();
-                _log.info("keyData: " + keyData);
+                byte[] keyData = thirdPartyKey.getBytes();
+                System.out.println("keyData: " + keyData);
                 JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
 
                 jsonBodyEncrypt.put("KEY", configObj.getString(SyncServerTerm.THIRD_PARTY_ID));
                 jsonBodyEncrypt.put("VALUE", encrypt3DES1(keyData, data));
                 String body = "=" + jsonBodyEncrypt.toString();
-                _log.info("Body: " + body);
                 java.net.HttpURLConnection conSale = (java.net.HttpURLConnection) urlSale.openConnection();
 
                 conSale.setRequestMethod(HttpMethod.POST);
@@ -86,25 +85,23 @@ public class POSVCBUtils {
                     sb.append((char) cp);
                 }
                 try {
-
-                    String decrypt = decrypt3DES1(keyData, sb.toString());
-                    System.out.println("3333333333333333: " + decrypt);
-//                    JSONObject response = JSONFactoryUtil.createJSONObject(decrypt);
-//                    _log.info("44444444: " + response.toString());
-//                    int total = response.getInt("TOTAL");
-//
-//                    _log.info("Total: " + total);
-//                    if (total > 0) {
-//                        JSONArray reponseArr = response.getJSONArray(SyncServerTerm.CONN);
-//                        JSONObject reponseJSON = reponseArr.getJSONObject(0);
-//                        if (Validator.isNotNull(reponseJSON)) {
-//                            _log.debug("Máy Online : " + total);
-//                            return reponseJSON;
-//                        } else {
-//                            _log.debug("Không tìm được máy Online");
-//                            return null;
-//                        }
-//                    }
+                    String dataSub = sb.toString().replaceAll("\"","");
+                    _log.info("DataSub: " + dataSub);
+                    String decrypt = decrypt3DES1(keyData, dataSub);
+                    JSONObject response = JSONFactoryUtil.createJSONObject(decrypt);
+                    int total = response.getInt("TOTAL");
+                    _log.info("Total: " + total);
+                    if (total > 0) {
+                        JSONArray reponseArr = response.getJSONArray(SyncServerTerm.CONN);
+                        JSONObject reponseJSON = reponseArr.getJSONObject(0);
+                        if (Validator.isNotNull(reponseJSON)) {
+                            _log.debug("Máy Online : " + total);
+                            return reponseJSON;
+                        } else {
+                            _log.debug("Không tìm được máy Online");
+                            return null;
+                        }
+                    }
                 }catch (Exception e){
                    _log.info("Exception");
                     e.getMessage();
@@ -143,10 +140,9 @@ public class POSVCBUtils {
         return null;
     }
 
-    public static String saleRequestDataPOSVCB(long groupId, String govAgencyCode, String refId,
+    public static String saleRequestDataPOSVCB(long groupId, String govAgencyCode,
                                                long amount, String currencyCode, String staffId,
-                                               String addPrint, String addData, String orderId, long dossierId,
-                                               PaymentFile paymentFile, ServiceContext context) {
+                                               String addPrint, String addData, String orderId) {
 
         try {
             JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode);
@@ -157,104 +153,85 @@ public class POSVCBUtils {
                 _log.debug("SERVER PROXY: " + reponseJSON.toString());
                 String serverUrl = StringPool.BLANK;
                 String serialNumber = StringPool.BLANK;
-                String terminalId = StringPool.BLANK;
+                String refId = StringPool.BLANK;
                 String merchantOutletId = StringPool.BLANK;
                 String merchantId = StringPool.BLANK;
                 String clientId = StringPool.BLANK;
 
-                if (Validator.isNotNull(reponseJSON)) {
-                    serialNumber = reponseJSON.getString(SyncServerTerm.SERIAL_NUMBER);
-                    terminalId = reponseJSON.getString(SyncServerTerm.REF_ID);
-                    merchantOutletId = reponseJSON.getString(SyncServerTerm.MERCHANT_OUTLET_ID);
-                    merchantId = reponseJSON.getString(SyncServerTerm.MERCHANT_ID);
-                    clientId = reponseJSON.getString(SyncServerTerm.CLIENT_ID);
+                serialNumber = reponseJSON.getString(SyncServerTerm.SERIAL_NUMBER);
+                refId = reponseJSON.getString(SyncServerTerm.REF_ID);
+                merchantOutletId = reponseJSON.getString(SyncServerTerm.MERCHANT_OUTLET_ID);
+                merchantId = reponseJSON.getString(SyncServerTerm.MERCHANT_ID);
+                clientId = reponseJSON.getString(SyncServerTerm.CLIENT_ID);
 
-                    serverUrl = defaultJSON.getString(SyncServerTerm.SERVER_URL);
+                serverUrl = defaultJSON.getString(SyncServerTerm.SERVER_URL);
 
-                    URL urlSale = new URL(serverUrl);
-                    JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+                URL urlSale = new URL(serverUrl);
+                JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
 
-                    jsonBody.put("EVENT", SyncServerTerm.EVENT_SALE);
-                    jsonBody.put("REF_ID", refId);
-                    jsonBody.put("SERIAL_NUMBER", serialNumber);
-                    jsonBody.put("TERMINAL_ID", terminalId);
-                    jsonBody.put("AMOUNT", amount);
-                    jsonBody.put("CURRENCY_CODE", currencyCode);
-                    jsonBody.put("STAFF_ID", staffId);
-                    jsonBody.put("ADD_PRINT", addPrint);
-                    jsonBody.put("ADD_DATA", addData);
-                    jsonBody.put("ORDER_ID", orderId);
-                    jsonBody.put("APP", SyncServerTerm.APP);
-                    jsonBody.put("MERCHANT_OUTLET_ID", merchantOutletId);
-                    jsonBody.put("MERCHANT_ID", merchantId);
-                    jsonBody.put("CLIENT_ID", clientId);
+                jsonBody.put("EVENT", SyncServerTerm.EVENT_SALE);
+                jsonBody.put("REF_ID", refId);
+                jsonBody.put("SERIAL_NUMBER", serialNumber);
+                jsonBody.put("TERMINAL_ID", refId);
+                String paymentAmount = paresAmount(amount);
+                jsonBody.put("AMOUNT", paymentAmount);
+                jsonBody.put("CURRENCY_CODE", currencyCode);
+                jsonBody.put("STAFF_ID", staffId);
+                jsonBody.put("ADD_PRINT", addPrint);
+                jsonBody.put("ADD_DATA", addData);
+                jsonBody.put("ORDER_ID", orderId);
+                jsonBody.put("APP", SyncServerTerm.APP);
+                jsonBody.put("MERCHANT_OUTLET_ID", merchantOutletId);
+                jsonBody.put("MERCHANT_ID", merchantId);
+                jsonBody.put("CLIENT_ID", clientId);
 
-                    String data = jsonBody.toString();
+                String data = jsonBody.toString();
+                System.out.println("Data: " + data);
+                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
+                byte[] keyData = thirdPartyKey.getBytes();
+                System.out.println("keyData: " + keyData);
 
-                    byte[] keyData = defaultJSON.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
+                JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
 
-                    JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
+                jsonBodyEncrypt.put("KEY", defaultJSON.getString(SyncServerTerm.THIRD_PARTY_ID));
+                jsonBodyEncrypt.put("VALUE", encrypt3DES1(keyData, data));
+                String body = "=" + jsonBodyEncrypt.toString();
 
-                    jsonBodyEncrypt.put("KEY", defaultJSON.getString(SyncServerTerm.THIRD_PARTY_ID));
-                    jsonBodyEncrypt.put("VALUE", encrypt3DES1(keyData, data));
-                    String body = "=" + jsonBodyEncrypt.toString();
+                _log.debug("POST DATA: " + body);
 
-                    _log.debug("POST DATA: " + body);
+                java.net.HttpURLConnection conSale = (java.net.HttpURLConnection) urlSale.openConnection();
 
-                    java.net.HttpURLConnection conSale = (java.net.HttpURLConnection) urlSale.openConnection();
+                conSale.setRequestMethod(HttpMethod.POST);
+                conSale.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+                conSale.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+                conSale.setRequestProperty("Content-Length", StringPool.BLANK + Integer.toString(body.getBytes().length));
+                conSale.setUseCaches(false);
+                conSale.setDoInput(true);
+                conSale.setDoOutput(true);
+                OutputStream osLogin = conSale.getOutputStream();
+                osLogin.write(body.getBytes());
+                osLogin.close();
 
-                    conSale.setRequestMethod(HttpMethod.POST);
-                    conSale.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-                    conSale.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-                    conSale.setRequestProperty("Content-Length", StringPool.BLANK + Integer.toString(body.getBytes().length));
-                    conSale.setUseCaches(false);
-                    conSale.setDoInput(true);
-                    conSale.setDoOutput(true);
-                    _log.debug("POST DATA: " + body);
-                    OutputStream osLogin = conSale.getOutputStream();
-                    osLogin.write(body.getBytes());
-                    osLogin.close();
-
-                    BufferedReader brf = new BufferedReader(new InputStreamReader(conSale.getInputStream()));
-                    int cp;
-                    while ((cp = brf.read()) != -1) {
-                        sb.append((char) cp);
-                    }
-                    String decrypt3D =  decrypt3DES1(keyData, sb.toString());
-                    String encrypt3D = encrypt3DES1(keyData, decrypt3D);
-                    JSONObject resultJSON = JSONFactoryUtil.createJSONObject(encrypt3D);
-                    String key = resultJSON.getString("KEY");
-                    if(Validator.isNotNull(key)){
-                        updatePaymentFile(paymentFile, key, dossierId, context);
-                    }
-                } else {
-                    return "Không có máy POS Online";
+                BufferedReader brf = new BufferedReader(new InputStreamReader(conSale.getInputStream()));
+                int cp;
+                while ((cp = brf.read()) != -1) {
+                    sb.append((char) cp);
                 }
+                String dataSub = sb.toString().replaceAll("\"", "");
+                String decrypt3D = decrypt3DES1(keyData, dataSub);
+
+                return decrypt3D;
+            } else {
+                return "Không có máy POS Online";
             }
-            return null;
         } catch (Exception e) {
             _log.debug(e);
             return null;
         }
     }
 
-    public static void updatePaymentFile (PaymentFile paymentFile, String keySale, long dossierId, ServiceContext context){
-        try {
-            if(Validator.isNotNull(keySale)) {
-                _log.info("KEY POS: " + keySale);
-                JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
-                epaymentProfile.put(SyncServerTerm.KEY_SALE, keySale);
-                PaymentFileLocalServiceUtil.updateEProfile(dossierId, paymentFile.getReferenceUid(),
-                        epaymentProfile.toJSONString(), context);
-            }
-        }catch (Exception e){
-            e.getMessage();
-        }
-    }
-
-    public static String voidPOSVCB( Long groupId, String govAgencyCode, String refId, String amount, String currencyCode, String staffId,
-                                     String invoice, String amountConfirm,
-                                     String addPrint, String addData, String orderId) {
+    public static String voidPOSVCB( long groupId, String govAgencyCode,  long amount, String currencyCode, String staffId,
+                                     String invoice, String addPrint, String addData, String orderId) {
 
         try {
             JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode);
@@ -264,7 +241,7 @@ public class POSVCBUtils {
             if (Validator.isNotNull(defaultJSON)) {
                 String serverUrl = StringPool.BLANK;
                 String serialNumber = StringPool.BLANK;
-                String terminalId = StringPool.BLANK;
+                String refId = StringPool.BLANK;
                 String merchantOutletId = StringPool.BLANK;
                 String merchantId = StringPool.BLANK;
                 String clientId = StringPool.BLANK;
@@ -272,7 +249,7 @@ public class POSVCBUtils {
                 JSONObject configObj = defaultJSON;
                 if (Validator.isNotNull(reponseJSON)) {
                     serialNumber = reponseJSON.getString(SyncServerTerm.SERIAL_NUMBER);
-                    terminalId = reponseJSON.getString(SyncServerTerm.REF_ID);
+                    refId = reponseJSON.getString(SyncServerTerm.REF_ID);
                     merchantOutletId = reponseJSON.getString(SyncServerTerm.MERCHANT_OUTLET_ID);
                     merchantId = reponseJSON.getString(SyncServerTerm.MERCHANT_ID);
                     clientId = reponseJSON.getString(SyncServerTerm.CLIENT_ID);
@@ -285,13 +262,14 @@ public class POSVCBUtils {
                     jsonBody.put("EVENT", SyncServerTerm.EVENT_VOID);
                     jsonBody.put("REF_ID", refId);
                     jsonBody.put("SERIAL_NUMBER", serialNumber);
-                    jsonBody.put("TERMINAL_ID", terminalId);
-                    jsonBody.put("AMOUNT", amount);
+                    jsonBody.put("TERMINAL_ID", refId);
+                    String paymentAmount = paresAmount(amount);
+                    jsonBody.put("AMOUNT", paymentAmount);
                     jsonBody.put("CURRENCY_CODE", currencyCode);
                     jsonBody.put("STAFF_ID", staffId);
                     jsonBody.put("ADD_PRINT", addPrint);
                     jsonBody.put("INVOICE", invoice);
-                    jsonBody.put("AMOUNT_CONFIRM", Validator.isNotNull(amountConfirm) ? amountConfirm : "Y");
+                    jsonBody.put("AMOUNT_CONFIRM", "Y");
                     jsonBody.put("ADD_DATA", addData);
                     jsonBody.put("ORDER_ID", orderId);
                     jsonBody.put("APP", SyncServerTerm.APP);
@@ -301,7 +279,9 @@ public class POSVCBUtils {
 
                     String data = jsonBody.toString();
 
-                    byte[] keyData = configObj.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
+                    String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
+                    byte[] keyData = thirdPartyKey.getBytes();
+//                    byte[] keyData = configObj.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
 
                     JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
 
@@ -331,7 +311,9 @@ public class POSVCBUtils {
                     while ((cp = brf.read()) != -1) {
                         sb.append((char) cp);
                     }
-                    return decrypt3DES1(keyData, sb.toString());
+//                    String dataSub = sb.toString().replaceAll("\"", "");
+//                    String decrypt3D = decrypt3DES1(keyData, dataSub);
+                    return decrypt3DES1(keyData, sb.toString().replaceAll("\"", ""));
                 }
             }
             return null;
@@ -378,7 +360,10 @@ public class POSVCBUtils {
 
                 String data = jsonBody.toString();
 
-                byte[] keyData = configObj.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
+//                byte[] keyData = configObj.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
+
+                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
+                byte[] keyData = thirdPartyKey.getBytes();
 
                 JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
 
@@ -419,11 +404,9 @@ public class POSVCBUtils {
     }
 
     public static String checkResultPOSVCB(long groupId, String govAgencyCode, String key){
-
         try {
             String result = StringPool.BLANK;
             JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode);
-
 
             StringBuilder sb = new StringBuilder();
             _log.debug("SERVER PROXY: " + defaultJSON.toString());
@@ -433,16 +416,21 @@ public class POSVCBUtils {
                 JSONObject configObj = defaultJSON;
                 serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
                 URL urlSettlement = new URL(serverUrl);
+                JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
 
-                byte[] keyData = configObj.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
+                jsonBody.put("EVENT",SyncServerTerm.CHECK_RESULT);
+                jsonBody.put("KEY",key);
+                String data = jsonBody.toString();
+//                byte[] keyData = configObj.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
+                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
+                byte[] keyData = thirdPartyKey.getBytes();
 
                 JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
-
-                jsonBodyEncrypt.put("KEY", "CHECK_RESULT");
-                jsonBodyEncrypt.put("VALUE",encrypt3DES1(keyData,key));
+                jsonBodyEncrypt.put("KEY", configObj.getString(SyncServerTerm.THIRD_PARTY_ID));
+                jsonBodyEncrypt.put("VALUE",encrypt3DES1(keyData,data));
 
                 String body = "="+ jsonBodyEncrypt.toString();
-
+                _log.debug("POST DATA: " + body);
                 java.net.HttpURLConnection conSettlement = (java.net.HttpURLConnection) urlSettlement.openConnection();
 
                 conSettlement.setRequestMethod(HttpMethod.POST);
@@ -452,7 +440,7 @@ public class POSVCBUtils {
                 conSettlement.setUseCaches(false);
                 conSettlement.setDoInput(true);
                 conSettlement.setDoOutput(true);
-                _log.debug("POST DATA: " + body);
+
                 OutputStream osLogin = conSettlement.getOutputStream();
                 osLogin.write(body.getBytes());
                 osLogin.close();
@@ -462,13 +450,10 @@ public class POSVCBUtils {
                 while ((cp = brf.read()) != -1) {
                     sb.append((char) cp);
                 }
-                String decrypt3D = decrypt3DES1(keyData,sb.toString());
-                String encrypt3D = encrypt3DES1(keyData, decrypt3D);
-                JSONObject resultJSON = JSONFactoryUtil.createJSONObject(encrypt3D);
-                String reponseCode = resultJSON.getString("RESPONSE_CODE");
-                if(Validator.isNotNull(resultJSON) ){
-                   result = resultJSON.toString();
-                }
+                _log.info("Data: " + sb.toString());
+                String dataSub = sb.toString().replaceAll("\"", "");
+
+                result = decrypt3DES1(keyData,dataSub);
             }else{
                 return "Chưa có key giao dịch thanh toán";
             }
@@ -501,29 +486,38 @@ public class POSVCBUtils {
 
     public static String decrypt3DES1(byte[] keyData, String data) throws Exception {
         try {
-
-
             if (data == null || data.trim().equals(""))
                 return "";
             data = data.toUpperCase();
-            _log.info("DATA: " + data);
             SecretKey key = new SecretKeySpec(keyData, "DESede");
             Cipher cipher = Cipher.getInstance("DESede/CBC/PKCS5Padding");
             IvParameterSpec ivSpec = new IvParameterSpec(new byte[8]);
-            _log.info("1111111111111111111");
             cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
             String _data = new String(DatatypeConverter.parseHexBinary(data), "UTF8");
             byte[] raw = Base64.getDecoder().decode(_data);
             byte[] stringBytes = cipher.doFinal(raw);
-            _log.info("2222222222222222");
             String plain_msg = new String(stringBytes, "UTF8");
-            // Return plain_msg
             _log.info("plain_msg: " + plain_msg);
             return plain_msg;
         }catch (Exception e) {
-            e.getMessage();
+            e.printStackTrace();
         }
         return "";
+    }
+    public static String paresAmount(long amount){
+        String paymentAmount = String.valueOf(amount);
+        if (paymentAmount.length() == 4L) {
+            paymentAmount = "000000" + paymentAmount + "00";
+        } else if (paymentAmount.length() == 5) {
+            paymentAmount = "00000" + paymentAmount + "00";
+        } else if (paymentAmount.length() == 6) {
+            paymentAmount = "0000" + paymentAmount + "00";
+        } else if (paymentAmount.length() == 7) {
+            paymentAmount = "000" + paymentAmount + "00";
+        } else if (paymentAmount.length() == 8) {
+            paymentAmount = "00" + paymentAmount + "00";
+        }
+        return  paymentAmount;
     }
 
 }

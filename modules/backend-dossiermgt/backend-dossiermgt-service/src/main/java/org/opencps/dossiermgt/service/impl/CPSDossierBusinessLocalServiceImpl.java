@@ -5672,36 +5672,82 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			// Gửi giao dịch thanh toán lên máy POS
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
 			_log.info(" --- Call API Sale RequestData POSVCB --- ");
-			String result = POSVCBUtils.saleRequestDataPOSVCB(groupId, dossier.getGovAgencyCode(),"",
-					paymentFile.getPaymentAmount(),SyncServerTerm.CURRENCY_CODE,"",paymentFile.getPaymentNote(),
-					dossier.getDossierCounter(), dossier.getDossierNo(), dossier.getDossierId(),paymentFile, context);
-			if (paymentFile != null) {
-				paymentFile.setPaymentStatus(3);
-				paymentFile.setApproveDatetime(new Date());
+			try {
+				String result = POSVCBUtils.saleRequestDataPOSVCB(groupId, dossier.getGovAgencyCode(),
+						paymentFile.getPaymentAmount(), SyncServerTerm.CURRENCY_CODE, "",  paymentFile.getPaymentNote(),
+						dossier.getDossierCounter(),dossier.getDossierNo());
+				JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+				if(Validator.isNotNull(result)) {
+					JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
+					String key = resultJSON.getString("KEY");
+					if (Validator.isNotNull(key)) {
+						_log.info("KEY POS: " + key);
+						epaymentProfile.put(SyncServerTerm.KEY_SALE, key);
+					}
+				}
+				if (paymentFile != null) {
+					paymentFile.setPaymentStatus(3);
+					paymentFile.setApproveDatetime(new Date());
+					paymentFile.setEpaymentProfile(epaymentProfile.toString());
+				}
+				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+				_log.info(" --- Result VCB ---  : "  + result);
+			}catch (Exception e){
+				e.getMessage();
 			}
-			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
-			_log.info(" --- Result VCB ---  : "  + result);
 		}
-		if(DossierActionTerm.ACTION_SPECIAL_CONFIRM_PAYMENT.equals(actionCode)){
+		if(DossierActionTerm.ACTION_SPECIAL_CONFIRM_PAYMENT.equals(actionCode)) {
 			// Cán bộ xác nhận thanh toán cập nhật lại trạng thái
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
-			if (paymentFile != null) {
-				paymentFile.setPaymentStatus(5);
-				paymentFile.setApproveDatetime(new Date());
-			}
-			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
-//			POSVCBUtils.saleRequestDataPOSVCB();
-		}
-		if(DossierActionTerm.ACTION_SPECIAL_CHECK_PAYMENT.equals(actionCode)){
 			// Check giao dịch đã được thanh toán chưa
 			String key = StringPool.BLANK;
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
 			JSONObject paymentObject = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
-			key = payloadObject.getString(SyncServerTerm.KEY_SALE);
+			key = paymentObject.getString(SyncServerTerm.KEY_SALE);
+			_log.info("Call API Xác Nhận Thanh toán");
 			String result = POSVCBUtils.checkResultPOSVCB(groupId, dossier.getGovAgencyCode(), key);
+			_log.info("Result thanh toán :" + result);
+			if (Validator.isNotNull(result)) {
+				JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
+				String responseCode = resultJSON.getString("RESPONSE_CODE");
+				if (paymentFile != null && responseCode.equals("00")) {
+					paymentFile.setPaymentStatus(5);
+					paymentFile.setApproveDatetime(new Date());
+					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+					_log.info("Hồ sơ thanh toán thành công");
+				}else if (responseCode.equals("7000")){
+					_log.info("Hồ sơ chưa được thanh toán trên máy POS");
+				}else{
+					_log.info("Hồ sơ chưa gửi thanh toán lên máy POS");
+				}
+			}
 		}
 		if(DossierActionTerm.ACTION_SPECIAL_CANCEL_PAYMENT.equals(actionCode)){
-
+			// Hủy giao dịch thanh toán lên máy POS
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
+			_log.info(" --- Call API Void RequestData POSVCB --- ");
+			try {
+				String result = POSVCBUtils.voidPOSVCB(groupId, dossier.getGovAgencyCode(),
+						paymentFile.getPaymentAmount(), SyncServerTerm.CURRENCY_CODE, "", "", paymentFile.getPaymentNote(),
+						dossier.getDossierCounter(), dossier.getDossierNo());
+//				JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+//				if(Validator.isNotNull(result)) {
+//					JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
+//					String key = resultJSON.getString("KEY");
+//					if (Validator.isNotNull(key)) {
+//						_log.info("KEY POS: " + key);
+//						epaymentProfile.put(SyncServerTerm.KEY_SALE, key);
+//					}
+//				}
+//				if (paymentFile != null) {
+//					paymentFile.setPaymentStatus(3);
+//					paymentFile.setApproveDatetime(new Date());
+//					paymentFile.setEpaymentProfile(epaymentProfile.toString());
+//				}
+//				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+//				_log.info(" --- Result VCB ---  : "  + result);
+			}catch (Exception e){
+				e.getMessage();
+			}
 		}
 
 		return dossierAction;
