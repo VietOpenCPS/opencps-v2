@@ -745,6 +745,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				payloadObject.put(DossierTerm.CONSTANT_DOSSIER_FILES, dossierFilesArr);
 
+				_log.debug("###proAction:"+JSONFactoryUtil.looseSerialize(proAction));
+
 				if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
 					List<DossierFile> lsDossierFile = lstFiles;
 					dossierFilesArr = JSONFactoryUtil.createJSONArray();
@@ -1059,6 +1061,15 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			ProcessOption option, ProcessAction proAction, String actionCode, String actionUser, String actionNote,
 			String payload, String assignUsers, String payment, int syncType, ServiceContext context)
 			throws PortalException, SystemException, Exception {
+
+		_log.debug("====doActionInsideProcess===dossierId:"+dossier.getDossierNo());
+		_log.debug("+++proAction+++:"+JSONFactoryUtil.looseSerialize(proAction));
+		_log.debug(" ");
+		_log.debug("+++actionConfig+++:"+JSONFactoryUtil.looseSerialize(actionConfig));
+		_log.debug(" ");
+		_log.debug("+++payload+++:"+payload);
+		_log.debug(" ");
+		_log.debug("+++assignUsers+++:"+assignUsers);
 
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
@@ -5321,8 +5332,15 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 	private ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
 										   long groupId) throws PortalException {
+		_log.debug("====getProcessOption====");
+		_log.debug("++++groupId:"+groupId);
+		_log.debug("++++serviceInfoCode:"+serviceInfoCode);
+		_log.debug("++++govAgencyCode:"+govAgencyCode);
+		_log.debug("++++dossierTemplateNo:"+dossierTemplateNo);
 
 		ServiceConfig config = serviceConfigLocalService.getBySICodeAndGAC(groupId, serviceInfoCode, govAgencyCode);
+
+		_log.debug("++++config:"+config);
 
 		return processOptionLocalService.getByDTPLNoAndServiceCF(groupId, dossierTemplateNo,
 				config.getServiceConfigId());
@@ -6405,6 +6423,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Exception.class })
 	public Dossier addDossier(long groupId, Company company, User user, ServiceContext serviceContext,
 							  DossierInputModel input) throws UnauthenticationException, PortalException, Exception {
+
+		_log.debug("=====addDossier=====");
+		_log.debug("=====input====="+JSONFactoryUtil.looseSerialize(input));
 
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();

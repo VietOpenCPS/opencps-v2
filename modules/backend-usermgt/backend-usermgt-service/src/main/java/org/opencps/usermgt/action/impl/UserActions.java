@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.*;
 import com.liferay.portal.kernel.util.*;
 import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
@@ -75,6 +74,7 @@ import backend.auth.api.exception.UnauthenticationException;
 import backend.auth.api.exception.UnauthorizationException;
 import backend.auth.api.keys.Constants;
 import backend.utils.FileUploadUtils;
+
 
 public class UserActions implements UserInterface {
 
@@ -1424,9 +1424,12 @@ public class UserActions implements UserInterface {
 				exitedUser = UserLocalServiceUtil.getUserByEmailAddress(serviceContext.getCompanyId(), email);
 			}
 
+			/*
 			if(Validator.isNotNull(exitedUser)){
 				updateUser(exitedUser,password,serviceContext);
 			}
+			*/
+
 
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
@@ -1476,10 +1479,13 @@ public class UserActions implements UserInterface {
 				StringPool.BLANK, serviceContext.getLocale(), firstName, fml[1], lastName, 0, 0,
 				true, Calendar.JANUARY, 1,
 				1979, StringPool.BLANK, groupIds, null, null, null,
-				false, serviceContext);
+				true, serviceContext);
 
 		UserLocalServiceUtil.authenticateForBasic(serviceContext.getCompanyId(), CompanyConstants.AUTH_TYPE_EA,
 				user.getEmailAddress(), password);
+		serviceContext.setAttribute("sendEmail",true);
+
+		UserLocalServiceUtil.completeUserRegistration(user,serviceContext);
 
 		updateUser(user,password,serviceContext);
 
@@ -1500,6 +1506,8 @@ public class UserActions implements UserInterface {
 
 		UserLocalServiceUtil.authenticateForBasic(serviceContext.getCompanyId(), CompanyConstants.AUTH_TYPE_EA,
 				user.getEmailAddress(), password);
+
+		UserLocalServiceUtil.updateUser(user);
 
 		return user;
 
@@ -1533,5 +1541,4 @@ public class UserActions implements UserInterface {
 
 		return fml;
 	}
-
 }
