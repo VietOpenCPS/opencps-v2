@@ -1147,13 +1147,7 @@ public class UserManagementImpl implements UserManagement {
 
 		try {
 			_log.debug("====register===="+JSONFactoryUtil.looseSerialize(input));
-			_log.debug("====isAuth===="+auth.isAuth(serviceContext));
-			_log.debug("====isSignedIn===="+serviceContext.isSignedIn());
-			_log.debug("====serviceContext.getUserId():"+serviceContext.getUserId());
 
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
 
 			String fullName = HtmlUtil.escape(input.getFullName());
 			String screenName = HtmlUtil.escape(input.getScreenName());
