@@ -5726,25 +5726,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
 			_log.info(" --- Call API Void RequestData POSVCB --- ");
 			try {
-				String result = POSVCBUtils.voidPOSVCB(groupId, dossier.getGovAgencyCode(),
-						paymentFile.getPaymentAmount(), SyncServerTerm.CURRENCY_CODE, "", "", paymentFile.getPaymentNote(),
-						dossier.getDossierCounter(), dossier.getDossierNo());
-//				JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
-//				if(Validator.isNotNull(result)) {
-//					JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
-//					String key = resultJSON.getString("KEY");
-//					if (Validator.isNotNull(key)) {
-//						_log.info("KEY POS: " + key);
-//						epaymentProfile.put(SyncServerTerm.KEY_SALE, key);
-//					}
-//				}
-//				if (paymentFile != null) {
-//					paymentFile.setPaymentStatus(3);
-//					paymentFile.setApproveDatetime(new Date());
-//					paymentFile.setEpaymentProfile(epaymentProfile.toString());
-//				}
-//				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
-//				_log.info(" --- Result VCB ---  : "  + result);
+
+				// Check giao dịch đã được thanh toán chưa
+				String key = StringPool.BLANK;
+				JSONObject paymentObject = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+				key = paymentObject.getString(SyncServerTerm.KEY_SALE);
+				_log.info("Call API Hủy Thanh toán");
+				String result = POSVCBUtils.checkResultPOSVCB(groupId, dossier.getGovAgencyCode(), key);
+				if("00".equals(result)) {
+					String resultVoid = POSVCBUtils.voidPOSVCB(groupId, dossier.getGovAgencyCode(),
+							 SyncServerTerm.CURRENCY_CODE, "",  dossier.getDossierNo(), result);
+				}
 			}catch (Exception e){
 				e.getMessage();
 			}

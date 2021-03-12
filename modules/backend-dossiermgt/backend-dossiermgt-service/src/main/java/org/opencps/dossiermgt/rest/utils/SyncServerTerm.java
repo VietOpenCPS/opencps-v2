@@ -18,6 +18,10 @@ public class SyncServerTerm {
 	public static final String MERCHANT_OUTLET_ID = "MERCHANT_OUTLET_ID";
 	public static final String MERCHANT_ID = "MERCHANT_ID";
 	public static final String CLIENT_ID = "CLIENT_ID";
+	public static final String INVOICE = "INVOICE";
+	public static final String ADD_PRINT = "ADD_PRINT";
+	public static final String ADD_DATA = "ADD_DATA";
+	public static final String AMOUNT = "AMOUNT";
 	public static final String EVENT_VOID = "VOID";
 	public static final String EVENT_SETTLEMENT = "SETTLE";
 	public static final String EVENT_SALE = "SALE";
