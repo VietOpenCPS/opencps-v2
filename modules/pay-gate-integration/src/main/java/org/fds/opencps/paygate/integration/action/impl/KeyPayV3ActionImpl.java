@@ -467,6 +467,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			conn.setDoOutput(true);
 
 			conn.setRequestProperty(ConstantUtils.VALUE_ACCEPT, accept);
+			conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, accept);
 
 			if (Validator.isNotNull(username) && Validator.isNotNull(password)) {
 				String authString = username + StringPool.COLON + password;
