@@ -1047,6 +1047,10 @@ public class DossierActionsImpl implements DossierActions {
 								} else {
 									DeliverableType deliverableTypeObject = DeliverableTypeLocalServiceUtil
 										.getByCode(groupId, strDeliverableType);
+									if(Validator.isNull(deliverableTypeObject)){
+										deliverableTypeObject = DeliverableTypeLocalServiceUtil
+												.getByCode(0L, strDeliverableType);
+									}
 									//									_log.info("Deliverable type: " + deliverableTypeObject);
 									if (deliverableTypeObject != null) {
 										String mappingData = deliverableTypeObject.getMappingData();
@@ -1313,7 +1317,7 @@ public class DossierActionsImpl implements DossierActions {
 																						.generateDeliverableNumber(
 																							groupId,
 																							companyId,
-																							dlt.getDeliverableTypeId()));
+																							dlt.getDeliverableTypeId(), dossierId));
 
 																				DossierFileLocalServiceUtil
 																					.updateFormData(groupId,

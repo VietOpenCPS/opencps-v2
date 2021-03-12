@@ -342,7 +342,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			String deliverableNumber = StringPool.BLANK;
 			if (deliverableType != null) {
-				deliverableNumber = DeliverableNumberGenerator.generateDeliverableNumber(groupId, deliverableType.getCompanyId(), deliverableType.getDeliverableTypeId());				
+				deliverableNumber = DeliverableNumberGenerator.generateDeliverableNumber(groupId, deliverableType.getCompanyId(), deliverableType.getDeliverableTypeId(),0L);
 			}
 			
 			JSONObject result = JSONFactoryUtil.createJSONObject();

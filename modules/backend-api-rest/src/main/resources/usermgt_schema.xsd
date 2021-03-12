@@ -120,4 +120,22 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
+	<xsd:complexType name="UserInputModel">
+		<xsd:sequence>
+			<xsd:element name="fullName" type="xsd:string" />
+			<xsd:element name="screenName" type="xsd:string" />
+			<xsd:element name="email" type="xsd:string" />
+			<xsd:element name="password" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="UserResultModel">
+		<xsd:sequence>
+			<xsd:element name="fullName" type="xsd:string" />
+			<xsd:element name="screenName" type="xsd:string" />
+			<xsd:element name="email" type="xsd:string" />
+			<xsd:element name="password" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+
 </xsd:schema>
