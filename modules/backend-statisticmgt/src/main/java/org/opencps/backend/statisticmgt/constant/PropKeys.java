@@ -42,4 +42,6 @@ public class PropKeys {
 	public static final String STATISTIC_DOSSIER_TAKEBACK_TOTAL_COUNT = "statistic.dossier.takeback.total_count";
 
 	public static final String STATISTIC_DOSSIER_PEDING_TOTAL_COUNT = "statistic.dossier.peding.total_count";
+	
+	public static final String STATISTIC_DOSSIER_RECEIVING_OFFLINE_LIST_DOSSIER = "statistic.dossier.receiving_offline.list_dossier";
 }

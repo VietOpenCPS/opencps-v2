@@ -45,7 +45,7 @@ public class ActionUtil {
 	}
 
 	public static JSONObject getCountDossier(long groupId, long fromDate, long toDate, String originalities,
-			String domainCode, String dossierStatus, int type) {
+			String domainCode, String dossierStatus, int type, Integer day) {
 
 		String sqlTemplate = QueryType.getSQLQueryTemplate(type);
 
@@ -121,7 +121,7 @@ public class ActionUtil {
 			} else if (type == 15) {
 				return factory.getDossierCount15(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
-						ParamUtil.getArrayParams(dossierStatus), sqlTemplate);
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, day);
 			} else if (type == 16) {
 				return factory.getDossierCount16(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
@@ -150,6 +150,39 @@ public class ActionUtil {
 					new String[] { e.getMessage() });
 		}
 
+	}
+	
+	public static JSONObject getListDossier (long groupId, long fromDate, long toDate, String originalities,
+			String domainCode, String dossierStatus, int type, Integer day, Integer start, Integer end) {
+		String sqlTemplate = QueryType.getSQLQueryTemplate(type);
+
+		QueryProcessFactoryImpl factory = new QueryProcessFactoryImpl();
+
+		String strFromDate = DatetimeUtil.convertTimestampToStringDatetime(fromDate, DatetimeUtil._YYYY_MM_DD);
+
+		String strToDate = DatetimeUtil.convertTimestampToStringDatetime(toDate, DatetimeUtil._YYYY_MM_DD);
+		try {
+			if (Validator.isNull(sqlTemplate)) {
+				_log.info("Can't get sqltemplate width type = " + type);
+				return createResponseSchema(groupId, strFromDate, strToDate, ParamUtil.getArrayParams(originalities, 0),
+						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(dossierStatus), type);
+			}
+
+			if (type == 20) {
+				return factory.getDossierList1(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			}  else {
+				return createResponseSchema(groupId, strFromDate, strToDate, ParamUtil.getArrayParams(originalities, 0),
+						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(dossierStatus), type);
+			}
+		} catch (Exception e) {
+			_log.error(e);
+
+			return createResponseSchema(groupId, strFromDate, strToDate, ParamUtil.getArrayParams(originalities, 0),
+					ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(dossierStatus), type,
+					new String[] { e.getMessage() });
+		}
 	}
 
 }

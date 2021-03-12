@@ -58,8 +58,10 @@ public class QueryUtil {
 
 		STATISTIC_DOSSIER_TAKEBACK_TOTAL_COUNT(18),
 
-		STATISTIC_DOSSIER_PEDING_TOTAL_COUNT(19);
+		STATISTIC_DOSSIER_PEDING_TOTAL_COUNT(19),
 
+		STATISTIC_DOSSIER_RECEIVING_OFFLINE_LIST_DOSSIER(20);
+		
 		private QueryType(int type) {
 			this.type = type;
 
@@ -126,7 +128,9 @@ public class QueryUtil {
 			case 19:
 				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PEDING_TOTAL_COUNT);
 				break;
-
+			case 20:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_OFFLINE_LIST_DOSSIER);
+				break;
 			default:
 				this.sqlTemplate = StringPool.BLANK;
 				break;
@@ -169,7 +173,7 @@ public class QueryUtil {
 			_log.warn(sqle.getMessage(), sqle);
 		}
 
-		ConnectionUtil.closeConnection();
+//		ConnectionUtil.closeConnection();
 
 		return count;
 	}
@@ -190,9 +194,9 @@ public class QueryUtil {
 
 					for (Map.Entry<String, Class<?>> entry : columns.entrySet()) {
 						String key = entry.getKey();
-						Class<?> dataType = entry.getClass();
+						Class<?> dataType = entry.getValue();
 						String dataTypeName = dataType.getName();
-
+						
 						if (dataTypeName.equals(String.class.getName())) {
 							dataRow.put(key, rs.getString(key));
 						} else if (dataTypeName.equals(Long.class.getName())) {
@@ -220,13 +224,13 @@ public class QueryUtil {
 						} else if (dataTypeName.equals(boolean.class.getName())) {
 							dataRow.put(key, rs.getBoolean(key));
 						} else if (dataTypeName.equals(Date.class.getName())) {
-							dataRow.put(key, DatetimeUtil.convertDateToTimestamp(rs.getDate(key)));
+							_log.info("rs.getDate(key): " + rs.getDate(key));
+							System.out.println("rs.getDate(key): " + rs.getDate(key));
+							dataRow.put(key, DatetimeUtil.convertDatetoDateString(rs.getDate(key)));
 						} else {
 							dataRow.put(key, rs.getString(key));
 						}
-
 					}
-
 					data.put(dataRow);
 				}
 			} catch (SQLException sqle) {
@@ -236,7 +240,7 @@ public class QueryUtil {
 			_log.warn(sqle.getMessage(), sqle);
 		}
 
-		ConnectionUtil.closeConnection();
+//		ConnectionUtil.closeConnection();
 
 		return data;
 	}

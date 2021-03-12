@@ -59,16 +59,39 @@ public class StatisticApplication extends Application {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response countDossier(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("fromDate") long fromDate,
+			@Context ServiceContext serviceContext, 
+			@QueryParam("fromDate") long fromDate,
 			@QueryParam("toDate") long toDate, @QueryParam("originalities") String originalities,
 			@QueryParam("domainCode") String domainCode, @QueryParam("dossierStatus") String dossierStatus,
-			@QueryParam("type") int type) {
+			@QueryParam("type") int type, 
+			@QueryParam("day") Integer day) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		JSONObject result = ActionUtil.getCountDossier(groupId, fromDate, toDate, originalities, domainCode, 
+				dossierStatus, type, day);
+	
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
+	}
+	
+	@POST
+	@Path("/dossier/list")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response listDossier(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, 
+			@QueryParam("fromDate") long fromDate,
+			@QueryParam("toDate") long toDate, @QueryParam("originalities") String originalities,
+			@QueryParam("domainCode") String domainCode, @QueryParam("dossierStatus") String dossierStatus,
+			@QueryParam("type") int type, 
+			@QueryParam("day") Integer day,
+			@QueryParam("start") Integer start,
+			@QueryParam("end") Integer end) {
 
-		JSONObject result = ActionUtil.getCountDossier(groupId, fromDate, toDate, originalities, domainCode,
-				dossierStatus, type);
-		
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		JSONObject result = ActionUtil.getListDossier(groupId, fromDate, toDate, originalities, domainCode, 
+				dossierStatus, type, day, start, end);
+	
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 	}
 }
