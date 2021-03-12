@@ -5736,6 +5736,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if("00".equals(result)) {
 					String resultVoid = POSVCBUtils.voidPOSVCB(groupId, dossier.getGovAgencyCode(),
 							 SyncServerTerm.CURRENCY_CODE, "",  dossier.getDossierNo(), result);
+					_log.info(" --- Result VCB ---  : "  + resultVoid);
 				}
 			}catch (Exception e){
 				e.getMessage();

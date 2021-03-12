@@ -238,8 +238,8 @@ public class POSVCBUtils {
             JSONObject reponseJSON = getRequestConnectionPOSVCB(groupId, defaultJSON);
             JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
             StringBuilder sb = new StringBuilder();
-            _log.debug("SERVER PROXY: " + defaultJSON.toString());
-            if (Validator.isNotNull(defaultJSON)) {
+            if (Validator.isNotNull(defaultJSON) && Validator.isNotNull(reponseJSON) && Validator.isNotNull(resultJSON.getString(SyncServerTerm.INVOICE))) {
+                _log.info("Vaooooooo 111111111");
                 String serverUrl = StringPool.BLANK;
                 String serialNumber = StringPool.BLANK;
                 String refId = StringPool.BLANK;
@@ -251,76 +251,76 @@ public class POSVCBUtils {
                 String addData = StringPool.BLANK;
                 String amount = StringPool.BLANK;
 
-                if (Validator.isNotNull(reponseJSON) && Validator.isNotNull(result)) {
-                    serialNumber = resultJSON.getString(SyncServerTerm.SERIAL_NUMBER);
-                    refId = resultJSON.getString(SyncServerTerm.REF_ID);
-                    merchantOutletId = reponseJSON.getString(SyncServerTerm.MERCHANT_OUTLET_ID);
-                    merchantId = reponseJSON.getString(SyncServerTerm.MERCHANT_ID);
-                    clientId = reponseJSON.getString(SyncServerTerm.CLIENT_ID);
-                    invoice = resultJSON.getString(SyncServerTerm.INVOICE);
-                    addPrint = resultJSON.getString(SyncServerTerm.ADD_PRINT);
-                    addData = resultJSON.getString(SyncServerTerm.ADD_DATA);
-                    amount = resultJSON.getString(SyncServerTerm.AMOUNT);
+                serialNumber = resultJSON.getString(SyncServerTerm.SERIAL_NUMBER);
+                refId = resultJSON.getString(SyncServerTerm.REF_ID);
+                merchantOutletId = reponseJSON.getString(SyncServerTerm.MERCHANT_OUTLET_ID);
+                merchantId = reponseJSON.getString(SyncServerTerm.MERCHANT_ID);
+                clientId = reponseJSON.getString(SyncServerTerm.CLIENT_ID);
+                invoice = resultJSON.getString(SyncServerTerm.INVOICE);
+                addPrint = resultJSON.getString(SyncServerTerm.ADD_PRINT);
+                addData = resultJSON.getString(SyncServerTerm.ADD_DATA);
+                amount = resultJSON.getString(SyncServerTerm.AMOUNT);
 
-                    serverUrl = defaultJSON.getString(SyncServerTerm.SERVER_URL);
-                    URL urlVoid = new URL(serverUrl);
+                serverUrl = defaultJSON.getString(SyncServerTerm.SERVER_URL);
+                URL urlVoid = new URL(serverUrl);
 
-                    JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+                JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
 
-                    jsonBody.put("EVENT", SyncServerTerm.EVENT_VOID);
-                    jsonBody.put("REF_ID", refId);
-                    jsonBody.put("SERIAL_NUMBER", serialNumber);
-                    jsonBody.put("TERMINAL_ID", refId);
-                    jsonBody.put("AMOUNT", amount);
-                    jsonBody.put("CURRENCY_CODE", currencyCode);
-                    jsonBody.put("STAFF_ID", staffId);
-                    jsonBody.put("ADD_PRINT", addPrint);
-                    jsonBody.put("INVOICE", invoice);
-                    jsonBody.put("AMOUNT_CONFIRM", "Y");
-                    jsonBody.put("ADD_DATA", addData);
-                    jsonBody.put("ORDER_ID", orderId);
-                    jsonBody.put("APP", SyncServerTerm.APP);
-                    jsonBody.put("MERCHANT_OUTLET_ID", merchantOutletId);
-                    jsonBody.put("MERCHANT_ID", merchantId);
-                    jsonBody.put("CLIENT_ID", clientId);
+                jsonBody.put("EVENT", SyncServerTerm.EVENT_VOID);
+                jsonBody.put("REF_ID", refId);
+                jsonBody.put("SERIAL_NUMBER", serialNumber);
+                jsonBody.put("TERMINAL_ID", refId);
+                jsonBody.put("AMOUNT", amount);
+                jsonBody.put("CURRENCY_CODE", currencyCode);
+                jsonBody.put("STAFF_ID", staffId);
+                jsonBody.put("ADD_PRINT", addPrint);
+                jsonBody.put("INVOICE", invoice);
+                jsonBody.put("AMOUNT_CONFIRM", "Y");
+                jsonBody.put("ADD_DATA", addData);
+                jsonBody.put("ORDER_ID", orderId);
+                jsonBody.put("APP", SyncServerTerm.APP);
+                jsonBody.put("MERCHANT_OUTLET_ID", merchantOutletId);
+                jsonBody.put("MERCHANT_ID", merchantId);
+                jsonBody.put("CLIENT_ID", clientId);
 
-                    String data = jsonBody.toString();
+                String data = jsonBody.toString();
 
-                    String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
-                    byte[] keyData = thirdPartyKey.getBytes();
+                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
+                byte[] keyData = thirdPartyKey.getBytes();
 
-                    JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
+                JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
 
-                    jsonBodyEncrypt.put("KEY", defaultJSON.getString(SyncServerTerm.THIRD_PARTY_ID));
-                    jsonBodyEncrypt.put("VALUE", encrypt3DES1(keyData, data));
+                jsonBodyEncrypt.put("KEY", defaultJSON.getString(SyncServerTerm.THIRD_PARTY_ID));
+                jsonBodyEncrypt.put("VALUE", encrypt3DES1(keyData, data));
+                _log.info("Vaooooooo 22222222");
+                String body = "=" + jsonBodyEncrypt.toString();
 
-                    String body = "=" + jsonBodyEncrypt.toString();
+                _log.debug("POST DATA: " + body);
 
-                    _log.debug("POST DATA: " + body);
+                java.net.HttpURLConnection conVoid = (java.net.HttpURLConnection) urlVoid.openConnection();
 
-                    java.net.HttpURLConnection conVoid = (java.net.HttpURLConnection) urlVoid.openConnection();
+                conVoid.setRequestMethod(HttpMethod.POST);
+                conVoid.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+                conVoid.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+                conVoid.setRequestProperty("Content-Length", StringPool.BLANK + Integer.toString(body.getBytes().length));
+                conVoid.setUseCaches(false);
+                conVoid.setDoInput(true);
+                conVoid.setDoOutput(true);
+                _log.debug("POST DATA: " + body);
+                OutputStream osLogin = conVoid.getOutputStream();
+                osLogin.write(body.getBytes());
+                osLogin.close();
 
-                    conVoid.setRequestMethod(HttpMethod.POST);
-                    conVoid.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-                    conVoid.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-                    conVoid.setRequestProperty("Content-Length", StringPool.BLANK + Integer.toString(body.getBytes().length));
-                    conVoid.setUseCaches(false);
-                    conVoid.setDoInput(true);
-                    conVoid.setDoOutput(true);
-                    _log.debug("POST DATA: " + body);
-                    OutputStream osLogin = conVoid.getOutputStream();
-                    osLogin.write(body.getBytes());
-                    osLogin.close();
-
-                    BufferedReader brf = new BufferedReader(new InputStreamReader(conVoid.getInputStream()));
-                    int cp;
-                    while ((cp = brf.read()) != -1) {
-                        sb.append((char) cp);
-                    }
+                BufferedReader brf = new BufferedReader(new InputStreamReader(conVoid.getInputStream()));
+                int cp;
+                while ((cp = brf.read()) != -1) {
+                    sb.append((char) cp);
+                }
+                _log.info("Vaooooooo 33333: " + sb.toString());
 //                    String dataSub = sb.toString().replaceAll("\"", "");
 //                    String decrypt3D = decrypt3DES1(keyData, dataSub);
-                    return decrypt3DES1(keyData, sb.toString().replaceAll("\"", ""));
-                }
+                return decrypt3DES1(keyData, sb.toString().replaceAll("\"", ""));
+
             }
             return null;
         } catch (Exception e) {
