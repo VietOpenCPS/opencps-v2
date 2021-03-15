@@ -77,5 +77,5 @@ public class PropKeys {
 
 	public static final String STATISTIC_DOSSIER_PEDING_TOTAL_LIST = "statistic.dossier.peding.total_list";
 
-
+	public static final String STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT = "statistic.dossier.dashbroad.total_count";
 }

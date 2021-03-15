@@ -45,5 +45,5 @@ public interface QueryProcessFactory {
 	public JSONObject getDossierList15(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
 	public JSONObject getDossierList16(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
 	public JSONObject getDossierList17(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
-	
+	public JSONObject getDossierList18(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
 }

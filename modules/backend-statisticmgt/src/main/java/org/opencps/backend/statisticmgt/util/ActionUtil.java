@@ -235,6 +235,10 @@ public class ActionUtil {
 				return factory.getDossierList17(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 37) {
+				return factory.getDossierList18(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
 			} else {
 				return createResponseSchema(groupId, strFromDate, strToDate, ParamUtil.getArrayParams(originalities, 0),
 						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(dossierStatus), type);

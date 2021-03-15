@@ -92,9 +92,9 @@ public class QueryUtil {
 		
 		STATISTIC_DOSSIER_TAKEBACK_TOTAL_LIST(35),
 		
-		STATISTIC_DOSSIER_PEDING_TOTAL_LIST(36);
+		STATISTIC_DOSSIER_PEDING_TOTAL_LIST(36),
 		
-		
+		STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT(37);
 		
 		private QueryType(int type) {
 			this.type = type;
@@ -212,6 +212,9 @@ public class QueryUtil {
 				break;
 			case 36:
 				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PEDING_TOTAL_LIST);
+				break;
+			case 37:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT);
 				break;
 			default:
 				this.sqlTemplate = StringPool.BLANK;

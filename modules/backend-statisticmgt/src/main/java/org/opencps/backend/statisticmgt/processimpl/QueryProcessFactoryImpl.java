@@ -98,6 +98,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		return result;
 	}
 
+	/*
+	 * @see statistic.dossier.receiving_offline.domain_count
+	 */
 	@Override
 	public JSONObject getDossierCount2(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -168,6 +171,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		return result;
 	}
 
+	/*
+	 * @see statistic.dossier.receiving_online.total_count
+	 */
 	@Override
 	public JSONObject getDossierCount3(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -230,6 +236,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		return result;
 	}
 
+	/*
+	 * @see statistic.dossier.receiving_online.domain_count
+	 */
 	@Override
 	public JSONObject getDossierCount4(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -299,7 +308,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.released.total_count
+	 */
 	@Override
 	public JSONObject getDossierCount5(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -361,7 +372,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.released.betimes_count
+	 */
 	@Override
 	public JSONObject getDossierCount6(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -423,7 +436,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.released.ontime_count
+	 */
 	@Override
 	public JSONObject getDossierCount7(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -485,7 +500,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.released.overtime_count
+	 */
 	@Override
 	public JSONObject getDossierCount8(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -547,7 +564,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.done.total_count
+	 */
 	@Override
 	public JSONObject getDossierCount9(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -609,7 +628,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.done.betimes_count
+	 */
 	@Override
 	public JSONObject getDossierCount10(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -671,7 +692,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.done.ontime_count
+	 */
 	@Override
 	public JSONObject getDossierCount11(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -734,7 +757,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.done.overtime_count
+	 */
 	@Override
 	public JSONObject getDossierCount12(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -796,7 +821,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.processing.total_count
+	 */
 	@Override
 	public JSONObject getDossierCount13(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -845,7 +872,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.processing.ontime_count
+	 */
 	@Override
 	public JSONObject getDossierCount14(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -894,7 +923,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.processing.nearexpired_count
+	 */
 	@Override
 	public JSONObject getDossierCount15(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer day) throws SQLException {
@@ -948,7 +979,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.processing.overtime_count
+	 */
 	@Override
 	public JSONObject getDossierCount16(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -997,7 +1030,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.reject.total_count
+	 */
 	@Override
 	public JSONObject getDossierCount17(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -1058,7 +1093,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.takeback.total_count
+	 */
 	@Override
 	public JSONObject getDossierCount18(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -1119,7 +1156,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.peding.total_count
+	 */
 	@Override
 	public JSONObject getDossierCount19(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException {
@@ -1168,7 +1207,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.receiving_offline.list_dossier
+	 */
 	@Override
 	public JSONObject getDossierList1(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -1245,7 +1286,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.receiving_online.list_dossier
+	 */
 	@Override
 	public JSONObject getDossierList2(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -1322,7 +1365,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.released.total_list
+	 */
 	@Override
 	public JSONObject getDossierList3(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -1400,7 +1445,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.released.betimes_list
+	 */
 	@Override
 	public JSONObject getDossierList4(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -1478,7 +1525,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.released.ontime_list
+	 */
 	@Override
 	public JSONObject getDossierList5(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -1557,7 +1606,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.released.overtime_list
+	 */
 	@Override
 	public JSONObject getDossierList6(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -1635,7 +1686,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.done.total_list
+	 */
 	@Override
 	public JSONObject getDossierList7(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -1713,7 +1766,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.done.betimes_list
+	 */
 	@Override
 	public JSONObject getDossierList8(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -1791,7 +1846,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.done.ontime_list
+	 */
 	@Override
 	public JSONObject getDossierList9(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -1869,7 +1926,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.done.overtime_list
+	 */
 	@Override
 	public JSONObject getDossierList10(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -1947,6 +2006,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
+	/*
+	 * @see statistic.dossier.processing.total_list
+	 */
 	@Override
 	public JSONObject getDossierList11(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -2016,7 +2078,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 	
 	
-
+	/*
+	 * @see statistic.dossier.processing.ontime_list
+	 */
 	@Override
 	public JSONObject getDossierList12(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -2082,7 +2146,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.processing.nearexpired_list
+	 */
 	@Override
 	public JSONObject getDossierList13(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end, Integer day)
@@ -2154,7 +2220,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.processing.overtime_list
+	 */
 	@Override
 	public JSONObject getDossierList14(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -2221,7 +2289,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.reject.total_list
+	 */
 	@Override
 	public JSONObject getDossierList15(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -2301,7 +2371,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	
-
+	/*
+	 * @see statistic.dossier.takeback.total_list
+	 */
 	@Override
 	public JSONObject getDossierList16(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -2379,7 +2451,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
-
+	/*
+	 * @see statistic.dossier.peding.total_list
+	 */
 	@Override
 	public JSONObject getDossierList17(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
@@ -2447,8 +2521,43 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		return result;
 	}
 
+	@Override
+	public JSONObject getDossierList18(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			if (Validator.isNotNull(fromDate)) {
+				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+			}
 
-	
-	
+			if (Validator.isNotNull(toDate)) {
+				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
 
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
 }
