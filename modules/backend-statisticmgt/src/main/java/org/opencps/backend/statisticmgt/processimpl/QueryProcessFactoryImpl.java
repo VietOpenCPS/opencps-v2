@@ -1245,6 +1245,1209 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 		return result;
 	}
+
+	@Override
+	public JSONObject getDossierList2(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_RECEIVING_ONLINE_LIST_DOSSIER.getType());
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+			if (Validator.isNotNull(fromDate)) {
+				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(toDate)) {
+				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject getDossierList3(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_RELEASED_TOTAL_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+			if (Validator.isNotNull(fromDate)) {
+				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(toDate)) {
+				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject getDossierList4(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_RELEASED_BETIMES_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+			if (Validator.isNotNull(fromDate)) {
+				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(toDate)) {
+				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject getDossierList5(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_RELEASED_ONTIME_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+			if (Validator.isNotNull(fromDate)) {
+				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(toDate)) {
+				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject getDossierList6(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_RELEASED_OVERTIME_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+			if (Validator.isNotNull(fromDate)) {
+				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(toDate)) {
+				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject getDossierList7(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_DONE_TOTAL_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+			if (Validator.isNotNull(fromDate)) {
+				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(toDate)) {
+				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject getDossierList8(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_DONE_BETIMES_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+			if (Validator.isNotNull(fromDate)) {
+				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(toDate)) {
+				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject getDossierList9(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_DONE_ONTIME_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+			if (Validator.isNotNull(fromDate)) {
+				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(toDate)) {
+				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject getDossierList10(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_DONE_OVERTIME_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+			if (Validator.isNotNull(fromDate)) {
+				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(toDate)) {
+				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+	@Override
+	public JSONObject getDossierList11(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_PROCESSING_TOTAL_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	
+	
+
+	@Override
+	public JSONObject getDossierList12(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_PROCESSING_ONTIME_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject getDossierList13(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end, Integer day)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_PROCESSING_NEAREXPIRED_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+			if(day == null || day < 0) {
+				sqlTemplate = sqlTemplate.replace("{day}", String.valueOf(2));
+			} else {
+				sqlTemplate = sqlTemplate.replace("{day}", String.valueOf(day));
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject getDossierList14(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_PROCESSING_OVERTIME_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject getDossierList15(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_REJECT_TOTAL_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+			if (Validator.isNotNull(fromDate)) {
+				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(toDate)) {
+				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	
+
+	@Override
+	public JSONObject getDossierList16(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_TAKEBACK_TOTAL_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+			if (Validator.isNotNull(fromDate)) {
+				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(toDate)) {
+				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+			}
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject getDossierList17(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end)
+			throws SQLException {
+		Integer size_list = 0;
+		if (start == null || end == null) {
+			start = 0;
+			size_list = 30;
+		} else {
+			size_list = end - start;
+		}
+		
+		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				dossierStatus, QueryType.STATISTIC_DOSSIER_PEDING_TOTAL_LIST.getType());
+		
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		try {
+			System.out.println("sqlTemplate: " + sqlTemplate);
+			
+			_log.info("sqlTemplate 20: " + sqlTemplate);
+			sqlTemplate = sqlTemplate.replace("[String]", "");
+			sqlTemplate = sqlTemplate.replace("[Integer]", "");
+			sqlTemplate = sqlTemplate.replace("[Date]", "");
+			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
+			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
+			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size_list));
+			if (domainCodes != null && domainCodes.length > 0) {
+				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			
+
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+
+			if (originalities != null && originalities.length > 0) {
+				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+			}
+			
+			_log.info("sql: " + sqlTemplate);
+
+			System.out.println("sql: " + sqlTemplate);
+			
+			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			for(int i=0; i<data.length(); i++) {
+				JSONObject obj = data.getJSONObject(i);
+				obj.get("receiveDate").toString();
+			}
+			int indexFrom = sqlTemplate.indexOf("FROM");
+		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
+		    int count = QueryUtil.getCount(sqlTemplate);
+			result.put(Constants.TOTAL, count);
+			result.put(Constants.DATA, data);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return result;
+	}
+
+
 	
 	
 

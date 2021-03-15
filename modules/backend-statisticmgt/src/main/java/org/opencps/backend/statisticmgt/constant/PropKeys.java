@@ -44,4 +44,38 @@ public class PropKeys {
 	public static final String STATISTIC_DOSSIER_PEDING_TOTAL_COUNT = "statistic.dossier.peding.total_count";
 	
 	public static final String STATISTIC_DOSSIER_RECEIVING_OFFLINE_LIST_DOSSIER = "statistic.dossier.receiving_offline.list_dossier";
+	
+	public static final String STATISTIC_DOSSIER_RECEIVING_ONLINE_LIST_DOSSIER = "statistic.dossier.receiving_online.list_dossier";
+	
+	public static final String STATISTIC_DOSSIER_RELEASED_TOTAL_LIST = "statistic.dossier.released.total_list";
+	
+	public static final String STATISTIC_DOSSIER_RELEASED_BETIMES_LIST = "statistic.dossier.released.betimes_list";
+	
+	public static final String STATISTIC_DOSSIER_RELEASED_ONTIME_LIST = "statistic.dossier.released.ontime_list";
+	
+	public static final String STATISTIC_DOSSIER_RELEASED_OVERTIME_LIST = "statistic.dossier.released.overtime_list";
+	
+	public static final String STATISTIC_DOSSIER_DONE_TOTAL_LIST = "statistic.dossier.done.total_list";
+	
+	public static final String STATISTIC_DOSSIER_DONE_BETIMES_LIST = "statistic.dossier.done.betimes_list";
+
+	public static final String STATISTIC_DOSSIER_DONE_ONTIME_LIST = "statistic.dossier.done.ontime_list";
+	
+	public static final String STATISTIC_DOSSIER_DONE_OVERTIME_LIST = "statistic.dossier.done.overtime_list";
+	
+	public static final String STATISTIC_DOSSIER_PROCESSING_TOTAL_LIST = "statistic.dossier.processing.total_list";
+	
+	public static final String STATISTIC_DOSSIER_PROCESSING_ONTIME_LIST = "statistic.dossier.processing.ontime_list";
+	
+	public static final String STATISTIC_DOSSIER_PROCESSING_NEAREXPIRED_LIST = "statistic.dossier.processing.nearexpired_list";
+	
+	public static final String STATISTIC_DOSSIER_PROCESSING_OVERTIME_LIST = "statistic.dossier.processing.overtime_list";
+	
+	public static final String STATISTIC_DOSSIER_REJECT_TOTAL_LIST = "statistic.dossier.reject.total_list";
+	
+	public static final String STATISTIC_DOSSIER_TAKEBACK_TOTAL_LIST = "statistic.dossier.takeback.total_list";
+
+	public static final String STATISTIC_DOSSIER_PEDING_TOTAL_LIST = "statistic.dossier.peding.total_list";
+
+
 }

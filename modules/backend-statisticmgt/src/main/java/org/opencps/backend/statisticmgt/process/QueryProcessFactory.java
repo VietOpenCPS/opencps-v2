@@ -28,5 +28,22 @@ public interface QueryProcessFactory {
 	public JSONObject getDossierCount17(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException;
 	public JSONObject getDossierCount18(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException;
 	public JSONObject getDossierCount19(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate) throws SQLException;
-	public JSONObject getDossierList1(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start_list, Integer end_list) throws SQLException;
+	public JSONObject getDossierList1(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList2(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList3(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList4(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList5(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList6(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList7(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList8(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList9(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList10(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList11(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList12(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList13(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end, Integer day) throws SQLException;
+	public JSONObject getDossierList14(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList15(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList16(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	public JSONObject getDossierList17(long groupId, String fromDate, String toDate, int[] originalities, String[] domainCodes, String[] dossierStatus, String sqlTemplate, Integer start, Integer end) throws SQLException;
+	
 }

@@ -167,12 +167,75 @@ public class ActionUtil {
 				return createResponseSchema(groupId, strFromDate, strToDate, ParamUtil.getArrayParams(originalities, 0),
 						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(dossierStatus), type);
 			}
-
 			if (type == 20) {
 				return factory.getDossierList1(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
-			}  else {
+			} else if (type == 21) {
+				return factory.getDossierList2(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 22) {
+				return factory.getDossierList3(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 23) {
+				return factory.getDossierList4(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 24) {
+				return factory.getDossierList5(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 25) {
+				return factory.getDossierList6(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 26) {
+				return factory.getDossierList7(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 27) {
+				return factory.getDossierList8(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 28) {
+				return factory.getDossierList9(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 29) {
+				return factory.getDossierList10(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 30) {
+				return factory.getDossierList11(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 31) {
+				return factory.getDossierList12(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 32) {
+				return factory.getDossierList13(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end, day);
+			} else if (type == 33) {
+				return factory.getDossierList14(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 34) {
+				return factory.getDossierList15(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 35) {
+				return factory.getDossierList16(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else if (type == 36) {
+				return factory.getDossierList17(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(dossierStatus), sqlTemplate, start, end);
+			} else {
 				return createResponseSchema(groupId, strFromDate, strToDate, ParamUtil.getArrayParams(originalities, 0),
 						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(dossierStatus), type);
 			}

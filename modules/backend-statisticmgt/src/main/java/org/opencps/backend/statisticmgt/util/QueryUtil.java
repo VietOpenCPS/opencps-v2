@@ -60,7 +60,41 @@ public class QueryUtil {
 
 		STATISTIC_DOSSIER_PEDING_TOTAL_COUNT(19),
 
-		STATISTIC_DOSSIER_RECEIVING_OFFLINE_LIST_DOSSIER(20);
+		STATISTIC_DOSSIER_RECEIVING_OFFLINE_LIST_DOSSIER(20),
+		
+		STATISTIC_DOSSIER_RECEIVING_ONLINE_LIST_DOSSIER(21),
+		
+		STATISTIC_DOSSIER_RELEASED_TOTAL_LIST(22),
+		
+		STATISTIC_DOSSIER_RELEASED_BETIMES_LIST(23),
+		
+		STATISTIC_DOSSIER_RELEASED_ONTIME_LIST(24),
+		
+		STATISTIC_DOSSIER_RELEASED_OVERTIME_LIST(25),
+		
+		STATISTIC_DOSSIER_DONE_TOTAL_LIST(26),
+		
+		STATISTIC_DOSSIER_DONE_BETIMES_LIST(27),
+		
+		STATISTIC_DOSSIER_DONE_ONTIME_LIST(28),
+		
+		STATISTIC_DOSSIER_DONE_OVERTIME_LIST(29),
+		
+		STATISTIC_DOSSIER_PROCESSING_TOTAL_LIST(30),
+		
+		STATISTIC_DOSSIER_PROCESSING_ONTIME_LIST(31),
+		
+		STATISTIC_DOSSIER_PROCESSING_NEAREXPIRED_LIST(32),
+		
+		STATISTIC_DOSSIER_PROCESSING_OVERTIME_LIST(33),
+		
+		STATISTIC_DOSSIER_REJECT_TOTAL_LIST(34),
+		
+		STATISTIC_DOSSIER_TAKEBACK_TOTAL_LIST(35),
+		
+		STATISTIC_DOSSIER_PEDING_TOTAL_LIST(36);
+		
+		
 		
 		private QueryType(int type) {
 			this.type = type;
@@ -130,6 +164,54 @@ public class QueryUtil {
 				break;
 			case 20:
 				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_OFFLINE_LIST_DOSSIER);
+				break;
+			case 21:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_ONLINE_LIST_DOSSIER);
+				break;
+			case 22:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_TOTAL_LIST);
+				break;
+			case 23:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_BETIMES_LIST);
+				break;
+			case 24:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_ONTIME_LIST);
+				break;
+			case 25:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_OVERTIME_LIST);
+				break;
+			case 26:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DONE_TOTAL_LIST);
+				break;
+			case 27:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DONE_BETIMES_LIST);
+				break;
+			case 28:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DONE_ONTIME_LIST);
+				break;
+			case 29:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DONE_OVERTIME_LIST);
+				break;
+			case 30:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_TOTAL_LIST);
+				break;
+			case 31:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_ONTIME_LIST);
+				break;
+			case 32:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_NEAREXPIRED_LIST);
+				break;
+			case 33:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_OVERTIME_LIST);
+				break;
+			case 34:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_REJECT_TOTAL_LIST);
+				break;
+			case 35:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_TAKEBACK_TOTAL_LIST);
+				break;
+			case 36:
+				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PEDING_TOTAL_LIST);
 				break;
 			default:
 				this.sqlTemplate = StringPool.BLANK;
@@ -224,8 +306,6 @@ public class QueryUtil {
 						} else if (dataTypeName.equals(boolean.class.getName())) {
 							dataRow.put(key, rs.getBoolean(key));
 						} else if (dataTypeName.equals(Date.class.getName())) {
-							_log.info("rs.getDate(key): " + rs.getDate(key));
-							System.out.println("rs.getDate(key): " + rs.getDate(key));
 							dataRow.put(key, DatetimeUtil.convertDatetoDateString(rs.getDate(key)));
 						} else {
 							dataRow.put(key, rs.getString(key));
