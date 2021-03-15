@@ -440,7 +440,6 @@ public class PayGateIntegrationApplication extends Application {
 	public Response paylaterCallback(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,  String body) throws PortalException {
-		System.out.println("Body: " + body);
 		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
 		JSONObject result = keypayAction.paylaterCallback(user, serviceContext, body);
 
