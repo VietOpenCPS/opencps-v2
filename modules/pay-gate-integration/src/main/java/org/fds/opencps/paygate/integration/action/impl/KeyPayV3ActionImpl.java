@@ -284,9 +284,11 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			if (body != null && body.length() > 0) {
 				_log.info("=======body========" + body);
 				JSONObject data = JSONFactoryUtil.createJSONObject(body);
+				JSONObject billInfo = JSONFactoryUtil.createJSONObject(data.getString(KeyPayV3Term.BILL_INFO));
 				String transactionId = data.getString(KeyPayV3Term.TRANSACTION_ID);
-				String dossierId = KeyPayV3Utils.decodeTransactionId(transactionId);
-				Dossier dossier = DossierLocalServiceUtil.fetchDossier(Long.parseLong(dossierId));
+				String dossierNo = billInfo.getString(KeyPayV3Term.MAHOSO);
+				Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
+				_log.debug("DossierNo: " + dossierNo);
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
 				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 						.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
@@ -297,7 +299,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 				String version = schema.getString(KeyPayV3Term.VERSION);
 				String hash_key_1 = schema.getString(KeyPayV3Term.CLIENT_KEY_1);
 				String check_sum = KeyPayV3Utils.genCallbackChecksumReceived(addition_fee, client_id, command, trans_amount, transactionId, version, hash_key_1);
-				_log.info("Checksum" + check_sum);
+				_log.debug("Checksum" + check_sum);
 				if (check_sum.equals(data.getString(KeyPayV3Term.CHECK_SUM))
 						&& KeyPayV3Term.DA_THANH_TOAN.equals(data.getString(KeyPayV3Term.STATUS))) {
 					boolean doAction = doActionPP(user, dossier.getGroupId(), dossier, paymentFile, data, serviceContext);
