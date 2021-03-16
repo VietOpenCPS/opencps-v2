@@ -48,8 +48,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -97,8 +97,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -144,8 +144,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -197,8 +197,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -248,8 +248,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -293,8 +293,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -338,8 +338,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -383,8 +383,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -428,8 +428,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -473,8 +473,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -518,8 +518,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -563,8 +563,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -608,8 +608,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -644,8 +644,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -681,8 +681,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -721,8 +721,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -756,8 +756,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -803,8 +803,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			_log.info("sqlTemplate 18: " + sqlTemplate);
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -848,8 +848,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		try {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -903,8 +903,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -971,8 +971,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1045,8 +1045,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1120,8 +1120,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1196,8 +1196,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1271,8 +1271,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1346,8 +1346,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1421,8 +1421,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1496,8 +1496,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1571,8 +1571,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1646,8 +1646,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1709,8 +1709,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1772,8 +1772,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1841,8 +1841,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1904,8 +1904,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -1977,8 +1977,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
@@ -2052,8 +2052,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{start}", String.valueOf(start));
 			sqlTemplate = sqlTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String params_domainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlTemplate = sqlTemplate.replace("{domainCode}", params_domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
