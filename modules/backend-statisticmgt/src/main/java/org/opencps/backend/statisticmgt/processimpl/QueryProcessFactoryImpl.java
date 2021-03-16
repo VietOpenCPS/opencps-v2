@@ -1224,7 +1224,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_RECEIVING_OFFLINE_LIST_DOSSIER.getType());
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -1272,11 +1272,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -1303,7 +1300,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_RECEIVING_ONLINE_LIST_DOSSIER.getType());
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -1351,11 +1348,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -1383,7 +1377,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_RELEASED_TOTAL_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -1431,11 +1425,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -1463,7 +1454,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_RELEASED_BETIMES_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -1511,11 +1502,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -1544,7 +1532,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_RELEASED_ONTIME_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -1592,11 +1580,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -1624,7 +1609,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_RELEASED_OVERTIME_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -1672,11 +1657,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -1704,7 +1686,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_DONE_TOTAL_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -1752,11 +1734,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -1784,7 +1763,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_DONE_BETIMES_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -1832,11 +1811,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -1864,7 +1840,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_DONE_ONTIME_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -1912,11 +1888,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -1944,7 +1917,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_DONE_OVERTIME_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -1992,11 +1965,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -2024,7 +1994,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_PROCESSING_TOTAL_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -2061,11 +2031,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -2096,7 +2063,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_PROCESSING_ONTIME_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -2132,11 +2099,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -2164,7 +2128,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_PROCESSING_NEAREXPIRED_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -2206,11 +2170,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -2238,7 +2199,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_PROCESSING_OVERTIME_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -2275,11 +2236,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -2307,7 +2265,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_REJECT_TOTAL_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -2355,11 +2313,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -2389,7 +2344,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_TAKEBACK_TOTAL_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -2437,11 +2392,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -2469,7 +2421,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		JSONObject result = ActionUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				dossierStatus, QueryType.STATISTIC_DOSSIER_PEDING_TOTAL_LIST.getType());
 		
-		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMap(sqlTemplate);
+		LinkedHashMap<String, Class<?>> columns = LinkedHashMapUtil.getLinkHashMapUsingRegression(sqlTemplate);
 		try {
 			System.out.println("sqlTemplate: " + sqlTemplate);
 			
@@ -2506,11 +2458,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
-			for(int i=0; i<data.length(); i++) {
-				JSONObject obj = data.getJSONObject(i);
-				obj.get("receiveDate").toString();
-			}
-			int indexFrom = sqlTemplate.indexOf("FROM");
+			sqlTemplate = sqlTemplate.toLowerCase();
+			int indexFrom = sqlTemplate.indexOf("from");
 		    sqlTemplate = "SELECT COUNT(*) ".concat(sqlTemplate.substring(indexFrom));
 		    int count = QueryUtil.getCount(sqlTemplate);
 			result.put(Constants.TOTAL, count);
@@ -2550,10 +2499,11 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			
 			_log.info("sql: " + sqlTemplate);
-
 			System.out.println("sql: " + sqlTemplate);
 			
 			JSONArray data = QueryUtil.getData(sqlTemplate, columns);
+			
+			result.put(Constants.TOTAL, data.length());
 			result.put(Constants.DATA, data);
 		} catch (Exception e) {
 			_log.error(e);
