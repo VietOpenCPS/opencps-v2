@@ -90,7 +90,6 @@ public class DossierNumberGenerator {
 
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		String dossierNumber = StringPool.BLANK;
-		_log.debug("seriNumberPattern: "+seriNumberPattern);
 		ServiceProcess sp = ServiceProcessLocalServiceUtil.getByG_PNO(groupId, dossier.getProcessNo());
 		
 		if (sp != null && SCOPE_GOV_AGENCY_CODE_PATTERN.contentEquals(sp.getDossierNoPattern())) {
@@ -113,8 +112,6 @@ public class DossierNumberGenerator {
 				}
 			}
 		}
-
-		_log.debug("seriNumberPattern: "+seriNumberPattern);
 		
 		if (dossier != null) {
 			String codePatternGov = CODE_PATTERN_GOV;
@@ -407,9 +404,9 @@ public class DossierNumberGenerator {
 			dossierNumber = seriNumberPattern;
 		}
 
-		_log.debug("++++dossierNumber:"+dossierNumber);
-		boolean isDuplicateDossierNo = DossierLocalServiceUtil.isDuplicateDossierNo(groupId,dossierNumber);
 
+		boolean isDuplicateDossierNo = DossierLocalServiceUtil.isDuplicateDossierNo(groupId,dossierNumber);
+		_log.debug("++++dossierNumber:"+dossierNumber+"| isDuplicateDossierNo:"+isDuplicateDossierNo+"|dossierId: "+dossierId);
 		if(Validator.isNull(dossierNumber)){
 			return dossierNumber;
 		}
