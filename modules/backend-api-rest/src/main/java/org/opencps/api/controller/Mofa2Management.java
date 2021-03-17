@@ -12,14 +12,22 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("dossiers")
-@Api(value = "dossiers" ,tags = "dossiers")
+@Path("/mofa2")
+@Api(value = "/mofa2" ,tags = "mofa2")
 public interface Mofa2Management {
-    @POST
-    @Path("/mofa2")
+    @GET
+    @Path("/createMofa2")
     @Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Response createMofa2(@Context HttpServletRequest request, @Context HttpHeaders header,
-                                           @Context ServiceContext serviceContext, @BeanParam DossierInputModel dossierInputModel ,
-                                           @FormParam("dossierId") long dossierId, @FormParam("serverCode") String serverCode);
+                                           @Context ServiceContext serviceContext ,
+                                           @FormParam("dossierId") long dossierId);
+
+    @GET
+    @Path("/KTHochieu")
+    @Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public Response getKTHoChieu(@Context HttpServletRequest request, @Context HttpHeaders header,
+                                @Context ServiceContext serviceContext,
+                                @FormParam("ktHoChieu") long ktHoChieu,@FormParam("soHC") String soHC, @FormParam("soPhep") String soPhep);
 }
