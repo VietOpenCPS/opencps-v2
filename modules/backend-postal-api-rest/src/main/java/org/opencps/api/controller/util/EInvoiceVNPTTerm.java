@@ -1,6 +1,15 @@
 package org.opencps.api.controller.util;
 
 public class EInvoiceVNPTTerm {
+	
+	//Key config in epaymentConfig
+	public static final String ACCOUNT = "account";
+	public static final String ACPASS = "acpass";
+	public static final String USER_NAME = "username";
+	public static final String PASS_WORD = "password";
+	public static final String PATTERN = "pattern";
+	public static final String SERIAL = "serial";
+	public static final String CONVERT = "convert";
 
 	//common
 	public static final String NAME_SPACE = "tem";
@@ -9,9 +18,24 @@ public class EInvoiceVNPTTerm {
 	public static final String importAndPublishInvFile = "ImportAndPublishInv.xml";	
 	public static final String downloadInvPDFFkeyNoPayFile = "downloadInvPDFFkeyNoPay.xml";
 	
-	//Soap xml request api UpdateCus
-	public static final String UPDATE_CUS = "tem:UpdateCus";
-	public static final String XMLCUSDATA = "tem:XMLCusData";
+	//XML Node
+	public static final String XML_INVDATA = "tem:xmlInvData";
+	public static final String XML_UPDATE_CUS = "tem:UpdateCus";
+	public static final String XML_CUSDATA = "tem:XMLCusData";
+	public static final String XML_ACCOUNT = "tem:Account";
+	public static final String XML_ACPASS= "tem:ACpass";
+	public static final String XML_USERNAME = "tem:username";
+	public static final String XML_PASSWORD = "tem:password";
+	public static final String XML_PATTERN = "tem:pattern";
+	public static final String XML_SERIAL = "tem:serial";
+	public static final String XML_CONVERT = "tem:convert";
+	public static final String XML_PASS = "tem:pass";
+	public static final String XML_UserName = "userName";
+	public static final String XML_UserPass = "userPass";
+	public static final String XML_FKEY = "fkey";
+
+	
+	//api update customer
 	public static final String UPDATE_CUS_SOAP_ENDPOINT = 
 			"https://vpboxaydungadmindemo.vnpt-invoice.com.vn/PublishService.asmx";
 	public static final String UPDATE_CUS_SOAP_ACTION = 
@@ -22,11 +46,8 @@ public class EInvoiceVNPTTerm {
 	public static final String UPDATE_CUS_RES_MESSAGE_ERR3 = "Dữ liệu xml đầu vào không đúng quy định";
 	public static final String UPDATE_CUS_RES_MESSAGE_SUCCESS = "Import dữ liệu khách hàng thành công";
 
-	
-	
-	
+	//api ImportAndPublishInv
 	public static final String IMPORTANDPUBLISHINV = "tem:ImportAndPublishInv";
-	public static final String XMLINVDATA = "tem:xmlInvData";
 	public static final String IMPORTANDPUBLISHINV_SOAP_ENDPOINT = 
 			"https://vpboxaydungadmindemo.vnpt-invoice.com.vn/PublishService.asmx";
 	public static final String IMPORTANDPUBLISHINV_SOAP_ACTION = 
@@ -40,8 +61,8 @@ public class EInvoiceVNPTTerm {
 	public static final String IMPORTANDPUBLISHINV_RES_MESSAGE_ERR20 = "Pattern và serial không phù hợp, hoặc không tồn tại BIÊN LAI đã đăng kí có sử dụng Pattern và serial truyền vào";
 	public static final String IMPORTANDPUBLISHINV_RES_MESSAGE_SUCCESS = "Biên lai đã phát hành thành công";
 
+	//api downloadInvPDFFkeyNoPay
 	public static final String DOWNLOADINVPDFFKEYNOPAY = "downloadInvPDFFkeyNoPay";
-	public static final String FKEY = "fkey";
 	public static final String DOWNLOADINVPDFFKEYNOPAY_SOAP_ENDPOINT = 
 			"https://vpboxaydungadmindemo.vnpt-invoice.com.vn/PortalService.asmx?wsdl";
 	public static final String DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION = 

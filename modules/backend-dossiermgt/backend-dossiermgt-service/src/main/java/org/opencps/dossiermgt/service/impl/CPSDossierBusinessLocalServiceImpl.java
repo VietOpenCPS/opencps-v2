@@ -3080,6 +3080,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				}
 				_log.info("==========Payment after add paygov111: " + epaymentConfigJSON);
+				
+				_log.info("============EInvoice VNPT========= : " + epaymentConfigJSON);
+				if (epaymentConfigJSON.has(KeyPayTerm.EINVOICE_VNPT_CONFIG)) {
+					try {
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.EINVOICE_VNPT_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.EINVOICE_VNPT_CONFIG, schema);
+						paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+								epaymentProfileJsonNew.toJSONString(), context);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+				}
+				
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (JSONException e) {
@@ -3213,6 +3226,18 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
 					createTransactionKeypayV3(dossier, dossier.getDossierActionId());
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			if (epaymentConfigJSON.has(KeyPayTerm.EINVOICE_VNPT_CONFIG)) {
+				try {
+					epaymentProfileJSON.put(KeyPayTerm.EINVOICE_VNPT_CONFIG, true);
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.EINVOICE_VNPT_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.EINVOICE_VNPT_CONFIG, schema);
 //					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 //							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {

@@ -19,6 +19,11 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,6 +64,7 @@ import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
@@ -1185,29 +1191,15 @@ public class DossierMgtUtils {
 	}
 	
 	private static boolean checkSendInvoiceVNPT(Dossier dossier) {
-		_log.info("TESTTTTTTTTTTTTT");
+		
+		_log.info("Cấu hình cho phép lấy hóa đơn điên tử của VNPT");
 		boolean result = false;
 		PaymentFileActions actions = new PaymentFileActionsImpl();
 		PaymentFile paymentFile = actions.getPaymentFiles(dossier.getGroupId(), dossier.getDossierId());
-		if (paymentFile != null) {
-			
-			InvokeREST rest = new InvokeREST();
-			
-			ServiceContext context = new ServiceContext();
-			context.setUserId(dossier.getUserId());
-			String endPoint = "postal/ImportAndPublishInv";
-			
-			HashMap<String, String> properties = new HashMap<String, String>();
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("dossierId", dossier.getDossierId());
-			
-			JSONObject restCreateInvoiceObj = rest.callPostAPI(dossier.getGroupId(), HttpMethods.POST, ConstantUtils.CONTENT_TYPE_JSON, 
-					RESTFulConfiguration.SERVER_PATH_BASE, endPoint, RESTFulConfiguration.SERVER_USER, 
-					RESTFulConfiguration.SERVER_PASS, properties, params, context);
-			_log.info("Hóa đơn điện tử VNPT : " + restCreateInvoiceObj.toJSONString());
-			if(restCreateInvoiceObj.getInt("Status") == HttpStatus.SC_OK) {
-				result = true;
-			}			
+		if (paymentFile != null && Validator.isNull(paymentFile.getInvoicePayload())) {			
+			paymentFile.setInvoicePayload("VNPT");
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+			result = true;
 		}
 		return result;
 	}

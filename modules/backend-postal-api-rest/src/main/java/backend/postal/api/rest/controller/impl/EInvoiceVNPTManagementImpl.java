@@ -5,6 +5,7 @@ import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -107,12 +108,137 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 	private static final Log _log = LogFactoryUtil.getLog(EInvoiceVNPTManagementImpl.class);		
 
 	@Override
-	public Response ImportAndPublishInv(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long dossierId) throws Exception {
+	public Response downloadInvPDFFkeyNoPay(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long dossierId)
+			throws JAXBException, XMLStreamException, Exception {
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+		String result = StringPool.BLANK;
+		// Hồ sơ có thanh toán và được cấu hình in biên lai
+		if(dossier != null && paymentFile != null && paymentFile.getInvoicePayload().contentEquals("VNPT")) {
+			
+			// Call api phát hành biên lai			
+			Response importInvResponse = importAndPublishInv(request, header, company, locale, user, serviceContext, dossier, paymentFile);			
+			int status = importInvResponse.getStatus();
+			if (status != HttpStatus.SC_OK) {
+				return Response.status(HttpStatus.SC_NOT_FOUND)
+						   .entity("Hồ sơ không có hóa đơn điện tử VNPT")
+						   .type(MediaType.APPLICATION_JSON)
+						   .build();
+			}
+			
+			//Cấu hình đầu vào cho node của file xml downloadInvPDFFkeyNoPay
+			JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject("EINVOICE_VNPT_CONFIG").getJSONObject("downloadInvPDFFkeyNoPay");
+			String xmlUsername = schema.getString(EInvoiceVNPTTerm.USER_NAME);
+			String xmlPassword = schema.getString(EInvoiceVNPTTerm.PASS_WORD);
+			
+			//Read file xml 		
+			String realPath = PropsUtil.get(ConfigProps.EINV_VNPT_HOME) + "/" ;
+			File xmlFile = new File(realPath + EInvoiceVNPTTerm.downloadInvPDFFkeyNoPayFile);
+			
+			String soapRequest = "";			
+			JSONObject importInv = JSONFactoryUtil.createJSONObject(importInvResponse.getEntity().toString());
+			String fkey = importInv.getString("Fkey");
+			
+			if (xmlFile.exists()) {
+				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder dBuilder;
+				
+				try {
+					
+					dBuilder = dbFactory.newDocumentBuilder();
+		            Document doc = dBuilder.parse(xmlFile);
+		            doc.getDocumentElement().normalize();
+		            
+		            // Set node value
+		            NodeList nodeList = doc.getElementsByTagName(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY);
+		            Element element = null;
+		            for (int i =0; i< nodeList.getLength(); i++) {
+		            	element = (Element) nodeList.item(i);
+		            	Node fkeyNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_FKEY).item(0).getFirstChild();
+		            	fkeyNode.setNodeValue(fkey);
+		            	Node xmlUserNameNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_UserName).item(0).getFirstChild();
+		            	xmlUserNameNode.setNodeValue(xmlUsername);
+		            	Node xmlPassWordNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_UserPass).item(0).getFirstChild();
+		            	xmlPassWordNode.setNodeValue(xmlPassword);
+		            }
+		            
+		            doc.getDocumentElement().normalize();
+		            StringWriter sw = new StringWriter();
+		            TransformerFactory tf = TransformerFactory.newInstance();
+		            Transformer transformer = tf.newTransformer();
+		            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+		            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+		            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+
+		            transformer.transform(new DOMSource(doc), new StreamResult(sw));
+		            soapRequest = removeSpecialChar(sw.toString());		  
+		            
+		            _log.debug("downloadInvPDFFkeyNoPay : " + soapRequest);
+
+		            HashMap<String, String> properties = new HashMap<String, String>();
+		            properties.put("Content-Type","text/xml; charset=utf-8");
+		            properties.put("SOAPAction", EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION);
+		            
+					result = callSoapApi("POST", EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ENDPOINT, 
+							properties, soapRequest, EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION);
+					
+					_log.info("DownloadInvPDFFkeyNoPayResponse : " + result.toString());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+
+		}
+		
+		DownloadInvPDFFkeyNoPayResponse doFkeyNoPayResponse = unMarshalXmlToDownloadInvPDFFkeyNoPayResponse(result);
+		String downloadInvPDFFkeyNoPayResult = doFkeyNoPayResponse.getDownloadInvPDFFkeyNoPayResult();
+		switch (downloadInvPDFFkeyNoPayResult) {
+		case "ERR:1":
+			return Response.status(HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION)
+						   .entity(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES_MESSAGE_ERR1)
+						   .type(MediaType.APPLICATION_JSON)
+						   .build();
+		case "ERR:6":
+			return Response.status(HttpStatus.SC_BAD_REQUEST)
+					   .entity(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES_MESSAGE_ERR6)
+					   .type(MediaType.APPLICATION_JSON)
+					   .build();
+		case "ERR:7":
+			return Response.status(HttpStatus.SC_NOT_IMPLEMENTED)
+					   .entity(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES_MESSAGE_ERR7)
+					   .type(MediaType.APPLICATION_JSON)
+					   .build();
+		default:
+			// download bien lai
+			Response saveResponse = uploadEInvoicePDF(paymentFile, downloadInvPDFFkeyNoPayResult, groupId, serviceContext, user, request);
+			if(saveResponse.getStatus() == 200) {
+				if(paymentFile.getInvoiceFileEntryId() > 0) {
+					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
+
+					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+							true);
+					
+					ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+					responseBuilder.header("Content-Disposition",
+							"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+					responseBuilder.header("Content-Type", fileEntry.getMimeType());
+
+					return responseBuilder.build();
+				}
+			}
+		}
+		return null;
+	}
+
+	private Response importAndPublishInv(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Dossier dossier, PaymentFile paymentFile) throws Exception {
+		
 		String result = "";
 		if(dossier != null && paymentFile != null) {
 						
@@ -120,7 +246,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 			validRequiredParam(dossier, paymentFile);
 
 			// update customer info from system to third party
-			Response jsonObjectResponse = updateCus(dossier);
+			Response jsonObjectResponse = updateCus(dossier, paymentFile);
 			int status = jsonObjectResponse.getStatus();
 			if (status != HttpStatus.SC_OK) {
 				return Response.status(HttpStatus.SC_NOT_FOUND)
@@ -128,6 +254,17 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 						   .type(MediaType.APPLICATION_JSON)
 						   .build();
 			}
+			
+			JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject("EINVOICE_VNPT_CONFIG").getJSONObject("ImportAndPublishInv");
+
+			String xmlAccount = schema.getString(EInvoiceVNPTTerm.ACCOUNT);
+			String xmlAcpass = schema.getString(EInvoiceVNPTTerm.ACPASS);
+			String xmlUsername = schema.getString(EInvoiceVNPTTerm.USER_NAME);
+			String xmlPassword = schema.getString(EInvoiceVNPTTerm.PASS_WORD);
+			String xmlPattern = schema.getString(EInvoiceVNPTTerm.PATTERN);
+			String xmlSerial = schema.getString(EInvoiceVNPTTerm.SERIAL);
+			String xmlConvert = schema.getString(EInvoiceVNPTTerm.CONVERT);
+					
 			
 			// Set value for ListInvModel
 			ProductModel productModel = new ProductModel();
@@ -179,6 +316,8 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 			String soapRequest = "";
 			String xmlInvData = convertListInvModelToXml(listInvModel);
 			
+			_log.info("xmlInvData " + xmlInvData);
+			
 			if (xmlFile.exists()) {
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder dBuilder;
@@ -194,8 +333,24 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 		            Element element = null;
 		            for (int i =0; i< nodeList.getLength(); i++) {
 		            	element = (Element) nodeList.item(i);
-		            	Node xmlInvDataNode = element.getElementsByTagName(EInvoiceVNPTTerm.XMLINVDATA).item(0).getFirstChild();
-		            	xmlInvDataNode.setNodeValue(xmlInvData);	            	
+		            	Node xmlInvDataNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_INVDATA).item(0).getFirstChild();
+		            	Node xmlAccountNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_ACCOUNT).item(0).getFirstChild();
+		            	Node xmlAcpasstNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_ACPASS).item(0).getFirstChild();
+		            	Node xmlUsernameNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_USERNAME).item(0).getFirstChild();
+		            	Node xmlPasswordNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_PASSWORD).item(0).getFirstChild();
+		            	Node xmlPatternNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_PATTERN).item(0).getFirstChild();
+		            	Node xmlSerialNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_SERIAL).item(0).getFirstChild();
+		            	Node xmlConvertNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_CONVERT).item(0).getFirstChild();
+
+		            	xmlInvDataNode.setNodeValue(xmlInvData);
+		            	xmlAccountNode.setNodeValue(xmlAccount);
+		            	xmlAcpasstNode.setNodeValue(xmlAcpass);
+		            	xmlUsernameNode.setNodeValue(xmlUsername);
+		            	xmlPasswordNode.setNodeValue(xmlPassword);
+		            	xmlPatternNode.setNodeValue(xmlPattern);
+		            	xmlSerialNode.setNodeValue(xmlSerial);
+		            	xmlConvertNode.setNodeValue(xmlConvert);
+
 		            }
 		            
 		            doc.getDocumentElement().normalize();
@@ -210,6 +365,8 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 		            transformer.transform(new DOMSource(doc), new StreamResult(sw));
 		            soapRequest = removeSpecialChar(sw.toString());		            
 
+		            _log.info("ImportAndPublishInv : " + soapRequest);
+		            
 		            HashMap<String, String> properties = new HashMap<String, String>();
 		            properties.put("Content-Type","text/xml; charset=utf-8");
 		            properties.put("SOAPAction", EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_SOAP_ACTION);
@@ -266,8 +423,12 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 				paymentFile.setEinvoice(eInvObj.toJSONString());
 				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 				
+				JSONObject jbResponse = JSONFactoryUtil.createJSONObject();
+				jbResponse.put("Fkey", fKey);
+				jbResponse.put("ImportAndPublishInvResult", importAndPublishInvResult);
+				jbResponse.put("Message", EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_RES_MESSAGE_SUCCESS);
 				return Response.status(HttpStatus.SC_OK)
-						   .entity(EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_RES_MESSAGE_SUCCESS)
+						   .entity(jbResponse.toJSONString())
 						   .type(MediaType.APPLICATION_JSON)
 						   .build();
 			}
@@ -275,8 +436,14 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 		return null;
 	}
 	
-	private Response updateCus(Dossier dossier) throws JAXBException, XMLStreamException, URISyntaxException, IOException {
+	private Response updateCus(Dossier dossier, PaymentFile paymentFile) throws JAXBException, XMLStreamException, URISyntaxException, IOException, Exception {
 		
+		JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject("EINVOICE_VNPT_CONFIG").getJSONObject("UpdateCus");
+		
+		String xmlUsername = schema.getString(EInvoiceVNPTTerm.USER_NAME);
+		String xmlPassword = schema.getString(EInvoiceVNPTTerm.PASS_WORD);
+		String xmlConvert = schema.getString(EInvoiceVNPTTerm.CONVERT);
+
 		// Create ListCustomerModel		
 		CustomerModel customerModel = new CustomerModel();
 		customerModel.setName(dossier.getApplicantName());
@@ -323,12 +490,18 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 	            doc.getDocumentElement().normalize();
 	            
 	            // Change value node xmlCusData 
-	            NodeList nodeList = doc.getElementsByTagName(EInvoiceVNPTTerm.UPDATE_CUS);
+	            NodeList nodeList = doc.getElementsByTagName(EInvoiceVNPTTerm.XML_UPDATE_CUS);
 	            Element element = null;
 	            for (int i =0; i< nodeList.getLength(); i++) {
 	            	element = (Element) nodeList.item(i);
-	            	Node xmlCusDataNode = element.getElementsByTagName(EInvoiceVNPTTerm.XMLCUSDATA).item(0).getFirstChild();
-	            	xmlCusDataNode.setNodeValue(xmlCusData);	            	
+	            	Node xmlCusDataNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_CUSDATA).item(0).getFirstChild();
+	            	xmlCusDataNode.setNodeValue(xmlCusData);
+	            	Node xmlUserNameNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_USERNAME).item(0).getFirstChild();
+	            	xmlUserNameNode.setNodeValue(xmlUsername);
+	            	Node xmlPassWordNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_PASS).item(0).getFirstChild();
+	            	xmlPassWordNode.setNodeValue(xmlPassword);
+	            	Node xmlConvertNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_CONVERT).item(0).getFirstChild();
+	            	xmlConvertNode.setNodeValue(xmlConvert);
 	            }
 	            
 	            doc.getDocumentElement().normalize();
@@ -342,6 +515,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 	            transformer.transform(new DOMSource(doc), new StreamResult(sw));
 	            
 	            soapRequest = removeSpecialChar(sw.toString());
+	            _log.info("UpdateCus: " + soapRequest);
 	            
 	            HashMap<String, String> properties = new HashMap<String, String>();
 	            properties.put("Content-Type","text/xml; charset=utf-8");
@@ -482,112 +656,6 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 	}
 
 	
-	@Override
-	public Response downloadInvPDFFkeyNoPay(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long dossierId)
-			throws JAXBException, XMLStreamException, Exception {
-		
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-		String result = "";
-		if(dossier != null && paymentFile != null) {
-							
-			//Read file xml 		
-			String realPath = PropsUtil.get(ConfigProps.EINV_VNPT_HOME) + "/" ;
-			File xmlFile = new File(realPath + EInvoiceVNPTTerm.downloadInvPDFFkeyNoPayFile);
-			
-			String soapRequest = "";
-			JSONObject eInvoice = JSONFactoryUtil.createJSONObject(paymentFile.getEinvoice());
-			String fkey = eInvoice.getString("Fkey");
-			
-			if (xmlFile.exists()) {
-				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder dBuilder;
-				
-				try {
-					
-					dBuilder = dbFactory.newDocumentBuilder();
-		            Document doc = dBuilder.parse(xmlFile);
-		            doc.getDocumentElement().normalize();
-		            
-		            // Change value node fkey
-		            NodeList nodeList = doc.getElementsByTagName(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY);
-		            Element element = null;
-		            for (int i =0; i< nodeList.getLength(); i++) {
-		            	element = (Element) nodeList.item(i);
-		            	Node fkeyNode = element.getElementsByTagName(EInvoiceVNPTTerm.FKEY).item(0).getFirstChild();
-		            	fkeyNode.setNodeValue(fkey);	            	
-		            }
-		            
-		            doc.getDocumentElement().normalize();
-		            StringWriter sw = new StringWriter();
-		            TransformerFactory tf = TransformerFactory.newInstance();
-		            Transformer transformer = tf.newTransformer();
-		            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-		            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-		            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-
-		            transformer.transform(new DOMSource(doc), new StreamResult(sw));
-		            soapRequest = removeSpecialChar(sw.toString());		            
-
-		            HashMap<String, String> properties = new HashMap<String, String>();
-		            properties.put("Content-Type","text/xml; charset=utf-8");
-		            properties.put("SOAPAction", EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION);
-		            
-					result = callSoapApi("POST", EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ENDPOINT, 
-							properties, soapRequest, EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION);
-					
-					_log.info("DownloadInvPDFFkeyNoPayResponse : " + result.toString());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-			}
-
-		}
-		
-		DownloadInvPDFFkeyNoPayResponse doFkeyNoPayResponse = unMarshalXmlToDownloadInvPDFFkeyNoPayResponse(result);
-		String downloadInvPDFFkeyNoPayResult = doFkeyNoPayResponse.getDownloadInvPDFFkeyNoPayResult();
-		switch (downloadInvPDFFkeyNoPayResult) {
-		case "ERR:1":
-			return Response.status(HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION)
-						   .entity(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES_MESSAGE_ERR1)
-						   .type(MediaType.APPLICATION_JSON)
-						   .build();
-		case "ERR:6":
-			return Response.status(HttpStatus.SC_BAD_REQUEST)
-					   .entity(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES_MESSAGE_ERR6)
-					   .type(MediaType.APPLICATION_JSON)
-					   .build();
-		case "ERR:7":
-			return Response.status(HttpStatus.SC_NOT_IMPLEMENTED)
-					   .entity(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES_MESSAGE_ERR7)
-					   .type(MediaType.APPLICATION_JSON)
-					   .build();
-		default:
-			// download bien lai
-			Response saveResponse = uploadEInvoicePDF(paymentFile, downloadInvPDFFkeyNoPayResult, groupId, serviceContext, user, request);
-			if(saveResponse.getStatus() == 200) {
-				if(paymentFile.getInvoiceFileEntryId() > 0) {
-					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
-
-					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
-							true);
-					
-					ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-					responseBuilder.header("Content-Disposition",
-							"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-					responseBuilder.header("Content-Type", fileEntry.getMimeType());
-
-					return responseBuilder.build();
-				}
-			}
-		}
-		return null;
-	}
 	
 	private static DownloadInvPDFFkeyNoPayResponse unMarshalXmlToDownloadInvPDFFkeyNoPayResponse(String input) throws JAXBException, XMLStreamException {
 		XMLInputFactory xif = XMLInputFactory.newFactory();
