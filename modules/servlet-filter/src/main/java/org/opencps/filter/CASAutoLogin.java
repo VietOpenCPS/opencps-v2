@@ -47,10 +47,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Wesley Gong
  * @author Daeyoung Song
  */
-@Component(
-	configurationPid = "com.liferay.portal.security.sso.cas.configuration.CASConfiguration",
-	immediate = true, service = AutoLogin.class
-)
+//@Component(
+////	configurationPid = "com.liferay.portal.security.sso.cas.configuration.CASConfiguration",
+//	immediate = true, service = AutoLogin.class
+//)
 public class CASAutoLogin extends BaseAutoLogin {
 	public static final String CAS_FORCE_LOGOUT = "CAS_FORCE_LOGOUT";
 
@@ -84,7 +84,7 @@ public class CASAutoLogin extends BaseAutoLogin {
 			HttpServletRequest request, HttpServletResponse response)
 		throws Exception {
 		
-		System.out.println("=============================================AAAAAAAAAA: ");
+		System.out.println("AAAAAAAAAA: ");
 		System.out.println("request: "+request);
 
 		HttpSession session = request.getSession();
@@ -119,10 +119,10 @@ public class CASAutoLogin extends BaseAutoLogin {
 			session.removeAttribute(CAS_NO_SUCH_USER_EXCEPTION);
 
 			//session.setAttribute(CASWebKeys.CAS_FORCE_LOGOUT, Boolean.TRUE);
-			//session.setAttribute(CAS_FORCE_LOGOUT, Boolean.TRUE);
+			session.setAttribute(CAS_FORCE_LOGOUT, Boolean.TRUE);
 
 			//String redirect = casConfiguration.noSuchUserRedirectURL();
-			String redirect = "https://tmotcua.haugiang.gov.vn/web/mot-cua-dien-tu-tinh-hau-giang/register#/login";
+			String redirect = "http://183.91.11.60:8080";
 
 			request.setAttribute(AutoLogin.AUTO_LOGIN_REDIRECT, redirect);
 
