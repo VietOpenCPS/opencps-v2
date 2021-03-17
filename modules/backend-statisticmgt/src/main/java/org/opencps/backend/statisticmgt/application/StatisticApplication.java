@@ -67,6 +67,7 @@ public class StatisticApplication extends Application {
 			@QueryParam("day") Integer day) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
 		JSONObject result = ActionUtil.getCountDossier(groupId, fromDate, toDate, originalities, domainCode, 
 				dossierStatus, type, day);
 	
@@ -89,6 +90,7 @@ public class StatisticApplication extends Application {
 			@QueryParam("end") Integer end) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
 		JSONObject result = ActionUtil.getListDossier(groupId, fromDate, toDate, originalities, domainCode, 
 				dossierStatus, type, day, start, end);
 	

@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +14,11 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.opencps.backend.statisticmgt.constant.PropKeys;
+import org.opencps.backend.statisticmgt.constant.PropValues;
 
 /**
  * @author trungnt
@@ -60,164 +64,136 @@ public class QueryUtil {
 
 		STATISTIC_DOSSIER_PEDING_TOTAL_COUNT(19),
 
-		STATISTIC_DOSSIER_RECEIVING_OFFLINE_LIST_DOSSIER(20),
-		
-		STATISTIC_DOSSIER_RECEIVING_ONLINE_LIST_DOSSIER(21),
-		
-		STATISTIC_DOSSIER_RELEASED_TOTAL_LIST(22),
-		
-		STATISTIC_DOSSIER_RELEASED_BETIMES_LIST(23),
-		
-		STATISTIC_DOSSIER_RELEASED_ONTIME_LIST(24),
-		
-		STATISTIC_DOSSIER_RELEASED_OVERTIME_LIST(25),
-		
-		STATISTIC_DOSSIER_DONE_TOTAL_LIST(26),
-		
-		STATISTIC_DOSSIER_DONE_BETIMES_LIST(27),
-		
-		STATISTIC_DOSSIER_DONE_ONTIME_LIST(28),
-		
-		STATISTIC_DOSSIER_DONE_OVERTIME_LIST(29),
-		
-		STATISTIC_DOSSIER_PROCESSING_TOTAL_LIST(30),
-		
-		STATISTIC_DOSSIER_PROCESSING_ONTIME_LIST(31),
-		
-		STATISTIC_DOSSIER_PROCESSING_NEAREXPIRED_LIST(32),
-		
-		STATISTIC_DOSSIER_PROCESSING_OVERTIME_LIST(33),
-		
-		STATISTIC_DOSSIER_REJECT_TOTAL_LIST(34),
-		
-		STATISTIC_DOSSIER_TAKEBACK_TOTAL_LIST(35),
-		
-		STATISTIC_DOSSIER_PEDING_TOTAL_LIST(36),
-		
-		STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT(37);
-		
+		STATISTIC_DOSSIER_RECEIVING_OFFLINE_LIST_DOSSIER(2),
+
+		STATISTIC_DOSSIER_RECEIVING_ONLINE_LIST_DOSSIER(4),
+
+		STATISTIC_DOSSIER_RELEASED_TOTAL_LIST(5),
+
+		STATISTIC_DOSSIER_RELEASED_BETIMES_LIST(6),
+
+		STATISTIC_DOSSIER_RELEASED_ONTIME_LIST(7),
+
+		STATISTIC_DOSSIER_RELEASED_OVERTIME_LIST(8),
+
+		STATISTIC_DOSSIER_DONE_TOTAL_LIST(9),
+
+		STATISTIC_DOSSIER_DONE_BETIMES_LIST(10),
+
+		STATISTIC_DOSSIER_DONE_ONTIME_LIST(11),
+
+		STATISTIC_DOSSIER_DONE_OVERTIME_LIST(12),
+
+		STATISTIC_DOSSIER_PROCESSING_TOTAL_LIST(13),
+
+		STATISTIC_DOSSIER_PROCESSING_ONTIME_LIST(14),
+
+		STATISTIC_DOSSIER_PROCESSING_NEAREXPIRED_LIST(15),
+
+		STATISTIC_DOSSIER_PROCESSING_OVERTIME_LIST(16),
+
+		STATISTIC_DOSSIER_REJECT_TOTAL_LIST(17),
+
+		STATISTIC_DOSSIER_TAKEBACK_TOTAL_LIST(18),
+
+		STATISTIC_DOSSIER_PEDING_TOTAL_LIST(19),
+
+		STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT(20);
+
 		private QueryType(int type) {
 			this.type = type;
 
 			switch (type) {
 			case 1:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_OFFLINE_TOTAL_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_OFFLINE_TOTAL_COUNT);
+				this.sqlSearchTemplate = StringPool.BLANK;
 				break;
 
 			case 2:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_OFFLINE_DOMAIN_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_OFFLINE_DOMAIN_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_OFFLINE_LIST_DOSSIER);
 				break;
 
 			case 3:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_ONLINE_TOTAL_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_ONLINE_TOTAL_COUNT);
+				this.sqlSearchTemplate = StringPool.BLANK;
 				break;
 
 			case 4:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_ONLINE_DOMAIN_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_ONLINE_DOMAIN_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_ONLINE_LIST_DOSSIER);
 				break;
 
 			case 5:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_TOTAL_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_TOTAL_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_TOTAL_LIST);
 				break;
 
 			case 6:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_BETIMES_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_BETIMES_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_BETIMES_LIST);
+				
 				break;
 			case 7:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_ONTIME_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_ONTIME_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_ONTIME_LIST);
 				break;
 			case 8:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_OVERTIME_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_OVERTIME_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_OVERTIME_LIST);
 				break;
 			case 9:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DONE_TOTAL_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DONE_TOTAL_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DONE_TOTAL_LIST);
 				break;
 			case 10:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DONE_BETIMES_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DONE_BETIMES_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DONE_BETIMES_LIST);
+				
 				break;
 			case 11:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DONE_ONTIME_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DONE_ONTIME_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DONE_ONTIME_LIST);
 				break;
 			case 12:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DONE_OVERTIME_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DONE_OVERTIME_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DONE_OVERTIME_LIST);
 				break;
 			case 13:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_TOTAL_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_TOTAL_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_TOTAL_LIST);
 				break;
 			case 14:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_ONTIME_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_ONTIME_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_ONTIME_LIST);
 				break;
 			case 15:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_NEAREXPIRED_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_NEAREXPIRED_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_NEAREXPIRED_LIST);
 				break;
 			case 16:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_OVERTIME_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_OVERTIME_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_OVERTIME_LIST);
 				break;
 			case 17:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_REJECT_TOTAL_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_REJECT_TOTAL_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_REJECT_TOTAL_LIST);
 				break;
 			case 18:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_TAKEBACK_TOTAL_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_TAKEBACK_TOTAL_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_TAKEBACK_TOTAL_LIST);
 				break;
 			case 19:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PEDING_TOTAL_COUNT);
+				this.sqlCountTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_PEDING_TOTAL_COUNT);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_PEDING_TOTAL_LIST);
 				break;
 			case 20:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_OFFLINE_LIST_DOSSIER);
+				this.sqlSearchTemplate = PropUtil.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT);
 				break;
-			case 21:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RECEIVING_ONLINE_LIST_DOSSIER);
-				break;
-			case 22:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_TOTAL_LIST);
-				break;
-			case 23:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_BETIMES_LIST);
-				break;
-			case 24:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_ONTIME_LIST);
-				break;
-			case 25:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_RELEASED_OVERTIME_LIST);
-				break;
-			case 26:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DONE_TOTAL_LIST);
-				break;
-			case 27:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DONE_BETIMES_LIST);
-				break;
-			case 28:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DONE_ONTIME_LIST);
-				break;
-			case 29:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DONE_OVERTIME_LIST);
-				break;
-			case 30:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_TOTAL_LIST);
-				break;
-			case 31:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_ONTIME_LIST);
-				break;
-			case 32:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_NEAREXPIRED_LIST);
-				break;
-			case 33:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PROCESSING_OVERTIME_LIST);
-				break;
-			case 34:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_REJECT_TOTAL_LIST);
-				break;
-			case 35:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_TAKEBACK_TOTAL_LIST);
-				break;
-			case 36:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_PEDING_TOTAL_LIST);
-				break;
-			case 37:
-				this.sqlTemplate = PropUtil.getProperty(PropKeys.STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT);
-				break;
+			
 			default:
-				this.sqlTemplate = StringPool.BLANK;
+				this.sqlSearchTemplate = StringPool.BLANK;
+				this.sqlCountTemplate = StringPool.BLANK;
 				break;
 			}
 
@@ -227,16 +203,27 @@ public class QueryUtil {
 			return type;
 		}
 
-		public static String getSQLQueryTemplate(int type) {
+		public static String getSQLCountQueryTemplate(int type) {
 			for (QueryType e : values()) {
 				if (e.type == type) {
-					return e.sqlTemplate;
+					return e.sqlCountTemplate;
 				}
 			}
 			return StringPool.BLANK;
 		}
+		
+		public static String getSQLSearchQueryTemplate(int type) {
+			for (QueryType e : values()) {
+				if (e.type == type) {
+					return e.sqlSearchTemplate;
+				}
+			}
+			return StringPool.BLANK;
+		}
+		
+		String sqlCountTemplate;
 
-		String sqlTemplate;
+		String sqlSearchTemplate;
 
 		int type;
 	}
@@ -266,7 +253,7 @@ public class QueryUtil {
 	public static JSONArray getData(String sql, LinkedHashMap<String, Class<?>> columns) {
 
 		JSONArray data = JSONFactoryUtil.createJSONArray();
-		
+
 		try (PreparedStatement pst = ConnectionUtil._getConnection().prepareStatement(sql)) {
 
 			try (ResultSet rs = pst.executeQuery()) {
@@ -281,7 +268,7 @@ public class QueryUtil {
 						String key = entry.getKey();
 						Class<?> dataType = entry.getValue();
 						String dataTypeName = dataType.getName();
-						
+
 						if (dataTypeName.equals(String.class.getName())) {
 							dataRow.put(key, rs.getString(key));
 						} else if (dataTypeName.equals(Long.class.getName())) {
@@ -326,6 +313,77 @@ public class QueryUtil {
 //		ConnectionUtil.closeConnection();
 
 		return data;
+	}
+
+	public static LinkedHashMap<String, Class<?>> getDataColumnMap(String sqlTemplate) {
+		LinkedHashMap<String, Class<?>> columns = new LinkedHashMap<String, Class<?>>();
+
+		Pattern pattern = Pattern.compile("^select[ ](.*)[ ]from", Pattern.CASE_INSENSITIVE);
+
+		Matcher matcher = pattern.matcher(sqlTemplate);
+
+		String select = StringPool.BLANK;
+
+		while (matcher.find()) {
+			select = matcher.group();
+		}
+
+		if (Validator.isNull(select)) {
+			return columns;
+		}
+
+		pattern = Pattern.compile("([a-z]+|[A-Z]+|[0-9]+)(\\[([a-z]+|[A-Z]+)\\])", Pattern.CASE_INSENSITIVE);
+
+		matcher = pattern.matcher(select);
+
+		String group = StringPool.BLANK;
+
+		while (matcher.find()) {
+
+			group = matcher.group();
+
+			String dataType = group.substring(group.lastIndexOf(StringPool.OPEN_BRACKET) + 1,
+					group.lastIndexOf(StringPool.CLOSE_BRACKET));
+			String columnName = group.substring(0, group.lastIndexOf(StringPool.OPEN_BRACKET));
+
+			if (dataType.equalsIgnoreCase("string")) {
+				columns.put(columnName, String.class);
+			} else if (dataType.equalsIgnoreCase("long")) {
+				columns.put(columnName, Long.class);
+			} else if (dataType.equalsIgnoreCase("integer")) {
+				columns.put(columnName, Integer.class);
+			} else if (dataType.equalsIgnoreCase("int")) {
+				columns.put(columnName, Integer.class);
+			} else if (dataType.equalsIgnoreCase("double")) {
+				columns.put(columnName, Double.class);
+			} else if (dataType.equalsIgnoreCase("float")) {
+				columns.put(columnName, Float.class);
+			} else if (dataType.equalsIgnoreCase("short")) {
+				columns.put(columnName, Short.class);
+			} else if (dataType.equalsIgnoreCase("boolean")) {
+				columns.put(columnName, Boolean.class);
+			} else if (dataType.equalsIgnoreCase("date")) {
+				columns.put(columnName, Date.class);
+			} else {
+
+			}
+		}
+		return columns;
+	}
+
+	public static int[] getPageAndSize(Integer start, Integer end) {
+		
+		int size = 0;
+
+		if (start == null || end == null) {
+			start = 0;
+			size = PropValues.CONFIG_DOSSIER_STATISTIC_SIZE_LIST;
+		} else {
+			start = start < 0 ? 0 : start;
+			size = (end - start) <= 0 ? size : (end - start);
+		}
+
+		return new int[] { start, size };
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(QueryUtil.class);

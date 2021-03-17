@@ -15,8 +15,9 @@ public class PropUtil {
 	private static Log _log = LogFactoryUtil.getLog(PropUtil.class);
 
 	public static Properties _queryProperties = null;
+	public static Properties _configurationProperties = null;
 
-	public static void loadProperties() {
+	public static void loadQueryProperties() {
 		InputStream is = null;
 		try {
 
@@ -36,17 +37,50 @@ public class PropUtil {
 			}
 		}
 	}
+	
+	public static void loadConfigProperties() {
+		InputStream is = null;
+		try {
 
-	public static String getProperty(String key) {
+			is = PropUtil.class.getClassLoader().getResourceAsStream("configuration.properties");
+			_configurationProperties = System.getProperties();
+			_configurationProperties.load(is);
+
+		} catch (Exception e) {
+			_log.error(e);
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					_log.error(e);
+				}
+			}
+		}
+	}
+
+	public static String getQueryProperty(String key) {
 		if (_queryProperties == null) {
-			loadProperties();
+			loadQueryProperties();
 		}
 
 		return _queryProperties.getProperty(key);
 	}
 
-	public static Properties getQueryproperties() {
+	public static Properties getQueryProperties() {
 		return _queryProperties;
+	}
+	
+	public static String getConfigProperty(String key) {
+		if (_configurationProperties == null) {
+			loadConfigProperties();
+		}
+
+		return _configurationProperties.getProperty(key);
+	}
+
+	public static Properties getConfigProperties() {
+		return _configurationProperties;
 	}
 
 }
