@@ -918,6 +918,7 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 				List<String> createFileTempNoList = ListUtil.toList(StringUtil.split(createDossierFiles));
+				_log.info("createDossierFiles: " + createDossierFiles);
 				List<String> returnFileTempNoList = ListUtil.toList(StringUtil.split(returnDossierFiles));
 
 				DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId,
@@ -1000,7 +1001,7 @@ public class DossierActionsImpl implements DossierActions {
 								JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formDataDeliverables);
 
 								// End add generate deliverable if has deliverable type
-								//								_log.info("strDeliverableType: "+strDeliverableType);
+								_log.info("strDeliverableType: "+strDeliverableType);
 								if (Validator.isNull(strDeliverableType)) {
 									List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 										.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT }, false,
@@ -1030,6 +1031,10 @@ public class DossierActionsImpl implements DossierActions {
 								} else {
 									DeliverableType deliverableTypeObject = DeliverableTypeLocalServiceUtil
 										.getByCode(groupId, strDeliverableType);
+									if(Validator.isNull(deliverableTypeObject)){
+										deliverableTypeObject = DeliverableTypeLocalServiceUtil
+												.getByCode(0L, strDeliverableType);
+									}
 									//									_log.info("Deliverable type: " + deliverableTypeObject);
 									if (deliverableTypeObject != null) {
 										String mappingData = deliverableTypeObject.getMappingData();
@@ -1140,6 +1145,7 @@ public class DossierActionsImpl implements DossierActions {
 												createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
 												createFiles.put(createFile);
 											} else {
+												_log.info("Vaoooooo 222222");
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 													.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT },
 														false, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -1280,7 +1286,7 @@ public class DossierActionsImpl implements DossierActions {
 																						.generateDeliverableNumber(
 																							groupId,
 																							companyId,
-																							dlt.getDeliverableTypeId()));
+																							dlt.getDeliverableTypeId(), dossierId));
 
 																				DossierFileLocalServiceUtil
 																					.updateFormData(groupId,

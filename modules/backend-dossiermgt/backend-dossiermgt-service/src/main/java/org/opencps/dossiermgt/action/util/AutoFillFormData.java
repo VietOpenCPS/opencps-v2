@@ -215,7 +215,6 @@ public class AutoFillFormData {
 			for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
 
 				String value = String.valueOf(entry.getValue());
-				_log.info("VALUE KEYYYY: " + value);
 				if (value.startsWith(StringPool.UNDERLINE) && !value.contains(StringPool.COLON)) {
 
 					if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_NAME).equals(value)) {
@@ -398,7 +397,11 @@ public class AutoFillFormData {
 									}
 									myCHK = myCHK.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK);
 								} else {
-									myCHK = jsonOtherMap.get(variable).toString();
+									if(Validator.isNotNull(jsonOtherMap.get(variable))) {
+										myCHK = jsonOtherMap.get(variable).toString();
+									}else{
+										myCHK = StringPool.BLANK;
+									}
 								}
 							} catch (Exception e) {
 								// TODO: handle exception
@@ -634,9 +637,14 @@ public class AutoFillFormData {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
 							serviceContext.getUserId());
 
-					Deliverable deliverable = DeliverableLocalServiceUtil.getByF_GID_DI_STATE(dossier.getGroupId(), dossier.getDossierId(), DeliverableTerm.DELIVERABLE_STATE_VALID_INT);
-					if(Validator.isNotNull(deliverable)){
-						_deliverableCode = deliverable.getDeliverableCode();
+					List<DossierFile> lstFile = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossier.getDossierId());
+					if(lstFile !=null && !lstFile.isEmpty()){
+						for(DossierFile item : lstFile){
+							if(Validator.isNotNull(item.getDeliverableCode())){
+								_deliverableCode = item.getDeliverableCode();
+								break;
+							}
+						}
 					}
 					// _log.info("GET EMPLOYEE ID ____" +
 					// serviceContext.getUserId());
@@ -802,8 +810,6 @@ public class AutoFillFormData {
 								&& dossierFile.getFormData().trim().length() != 0) {
 							JSONObject jsonOtherData = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
 							Map<String, Object> jsonOtherMap = jsonToMap(jsonOtherData);
-							// _log.info("JSON other map: " +
-							// Arrays.toString(jsonOtherMap.entrySet().toArray()));
 							String myCHK = StringPool.BLANK;
 							try {
 								if (variable.contains(StringPool.COLON)) {
@@ -813,7 +819,11 @@ public class AutoFillFormData {
 									}
 									myCHK = myCHK.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK);
 								} else {
-									myCHK = jsonOtherMap.get(variable).toString();
+									if(Validator.isNotNull(jsonOtherMap.get(variable))) {
+										myCHK = jsonOtherMap.get(variable).toString();
+									}else{
+										myCHK = StringPool.BLANK;
+									}
 								}
 							} catch (Exception e) {
 								// TODO: handle exception
