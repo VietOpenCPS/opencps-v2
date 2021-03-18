@@ -106,49 +106,54 @@ public class DeliverableNumberGenerator {
 
 				while (m.find()) {
 					String tmp = m.group(1);
-
+					_log.info("tmp : " + tmp);
 					if (r.toString().equals(codePattern)) {
 						_log.info("CODEPattern : " + codePattern);
 
-						String number = countByInit(pattern, deliverableType.getCounter());
-
+						String number = countByInit(pattern, tmp, deliverableType.getCounter());
+						_log.info("Number : " + number);
+						
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+						_log.info("tmp1 : " + tmp);
 						if (number.length() < tmp.length()) {
 							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+							_log.info("number1 : " + number);
 						}
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
+						_log.info("seriNumberPattern1 : " + seriNumberPattern);
 					} else if (r.toString().equals(datetimePattern)) {
 
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), "OK");
-
+						_log.info("seriNumberPattern2 : " + seriNumberPattern);
+						
 					} else if (r.toString().equals(dayPattern)) {
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
-
+						
 						if (day.length() < tmp.length()) {
-							day = tmp.substring(0, tmp.length() - day.length()).concat(day);
+							day = tmp.substring(0, tmp.length() - day.length()).concat(day);							
 						} else if (day.length() > tmp.length()) {
-							day = day.substring(day.length() - tmp.length(), day.length());
+							day = day.substring(day.length() - tmp.length(), day.length());	
 						}
 
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), day);
 
 					} else if (r.toString().equals(monthPattern)) {
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
-
+						
 						if (month.length() < tmp.length()) {
-							month = tmp.substring(0, tmp.length() - month.length()).concat(month);
+							month = tmp.substring(0, tmp.length() - month.length()).concat(month);							
 						} else if (month.length() > tmp.length()) {
-							month = month.substring(month.length() - tmp.length(), month.length());
+							month = month.substring(month.length() - tmp.length(), month.length());							
 						}
 
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), month);
-
+						
 					} else if (r.toString().equals(yearPattern)) {
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
-
+						
 						if (year.length() < tmp.length()) {
-							year = tmp.substring(0, tmp.length() - year.length()).concat(year);
+							year = tmp.substring(0, tmp.length() - year.length()).concat(year);							
 						} else if (year.length() > tmp.length()) {
 							year = year.substring(year.length() - tmp.length(), year.length());
 						}
@@ -157,10 +162,12 @@ public class DeliverableNumberGenerator {
 
 					}
 					m = r.matcher(seriNumberPattern);
+					_log.info("seriNumberPattern6 : " + seriNumberPattern);
 				}
 			}
 
 			deliverableNumber = seriNumberPattern;
+			_log.info("deliverableNumber : " + deliverableNumber);
 		}
 		return deliverableNumber;
 	}
@@ -304,14 +311,13 @@ public class DeliverableNumberGenerator {
 	private static final String YEAR_DATEFORMAT = "yyyy";
 	private static final String COUNTER_NUMBER_FORMAT = "%07d";
 	
-	private static String countByInit(String pattern, long count) {
+	private static String countByInit(String pattern, String tmp, long count) {
 		
-		String certNumber;
-
+		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
+		String format = PERCENT_ZERO + lengthPatern + NUMBER_FORMAT;		
+		long _counterNumber = 0;
 		try {
-
-			long _counterNumber = 0;
-
+			
 			Calendar cal = Calendar.getInstance();
 
 			cal.setTime(new Date());
@@ -322,35 +328,47 @@ public class DeliverableNumberGenerator {
 
 			String certConfigId = PRE_FIX_CERT + pattern + StringPool.AT + curYear;
 			
+			Counter counter = null;
 			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigId);
 			_log.info("counterConfig: " + JSONFactoryUtil.looseSerialize(counterConfig));
-
+			
 			if (Validator.isNotNull(counterConfig)) {
-				counterConfig.setCurrentId(counterConfig.getCurrentId() + 1);
-				CounterLocalServiceUtil.updateCounter(counterConfig);
-				
-				_counterNumber = counterConfig.getCurrentId();
-				
-				certNumber = String.format(COUNTER_NUMBER_FORMAT, _counterNumber); 
-				
+				// create counter config
+				_counterNumber = counterConfig.getCurrentId() + 1;
+				do {
+					counterConfig.setCurrentId(_counterNumber);
+					try {
+						counter = CounterLocalServiceUtil.updateCounter(counterConfig);
+					} catch (Exception e) {
+						_counterNumber += 1;
+						_log.debug(e);
+					}
+				} while (counter == null);
+
 			} else {
+				_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
 				counterConfig = CounterLocalServiceUtil.createCounter(certConfigId);
-				
-				counterConfig.setCurrentId(count);
-				CounterLocalServiceUtil.updateCounter(counterConfig);
-				
-				_counterNumber = counterConfig.getCurrentId();
-				certNumber = String.format(COUNTER_NUMBER_FORMAT, _counterNumber); 
+				// increment CurrentCounter
+				_counterNumber = counterConfig.getCurrentId() + 1;
+				do {
+					counterConfig.setCurrentId(_counterNumber);
+					try {
+						counter = CounterLocalServiceUtil.updateCounter(counterConfig);
+					} catch (Exception e) {
+						_counterNumber += 1;
+						_log.debug(e);
+					}
+				} while (counter == null);
 			}
 
 
 		} catch (Exception e) {
 			_log.debug(e);
 			//_log.error(e);
-			certNumber = "" + count;
+			String certNumber = "" + count;
 		}
 		
-		return certNumber;
+		return String.format(format, _counterNumber);
 
 	}	
 	
