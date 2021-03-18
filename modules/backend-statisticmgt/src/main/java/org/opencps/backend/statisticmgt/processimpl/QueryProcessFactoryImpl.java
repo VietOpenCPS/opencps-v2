@@ -55,7 +55,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
 			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
-				String paramsGovAgencyCodes = ParamUtil.generalTextParam(domainCodes[0]);
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
@@ -127,11 +127,24 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
+			
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
 				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
@@ -188,10 +201,22 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
@@ -248,10 +273,22 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
@@ -308,16 +345,28 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
+				String params = ParamUtil.generalTextParam(dossierStatus[0]);
 				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus = {dossierStatus}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
@@ -330,9 +379,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount5: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -363,16 +413,28 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
+				String params = ParamUtil.generalTextParam(dossierStatus[0]);
 				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus = {dossierStatus}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
@@ -385,9 +447,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount6: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -418,16 +481,28 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
+				String params = ParamUtil.generalTextParam(dossierStatus[0]);
 				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus = {dossierStatus}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
@@ -440,9 +515,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount7: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -473,16 +549,28 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
+				String params = ParamUtil.generalTextParam(dossierStatus[0]);
 				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus = {dossierStatus}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
@@ -495,9 +583,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount8: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -527,10 +616,22 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
@@ -549,9 +650,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount9: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -581,10 +683,22 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
@@ -603,9 +717,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount10: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -635,10 +750,22 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
@@ -657,9 +784,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount11: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -689,10 +817,22 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
@@ -711,9 +851,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount12: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -744,10 +885,22 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
@@ -756,9 +909,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount13: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -790,10 +944,22 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
@@ -802,9 +968,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount14: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -837,10 +1004,22 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 			if (day == null || day < 0) {
 				sqlTemplate = sqlTemplate.replace("{day}", String.valueOf(2));
@@ -854,9 +1033,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount15: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -887,10 +1067,22 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
@@ -899,9 +1091,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount16: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -931,16 +1124,34 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
 				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+			if (originalities != null && originalities.length > 0) {
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
@@ -951,11 +1162,6 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
-			}
-			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
-			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount17: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -986,16 +1192,22 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
-				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlTemplate = sqlTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
@@ -1007,10 +1219,17 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
-			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlTemplate = sqlTemplate.replace("{dossierStatus}", params);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
+			if (originalities != null && originalities.length > 0) {
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount18: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -1040,10 +1259,22 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			sqlTemplate = sqlTemplate.replace("{groupId}", String.valueOf(groupId));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlTemplate = sqlTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlTemplate = sqlTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlTemplate = sqlTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
 			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
@@ -1052,9 +1283,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlTemplate = sqlTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
 			}
 			if (originalities != null && originalities.length > 0) {
-				sqlTemplate = sqlTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlTemplate = sqlTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlTemplate = sqlTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierCount19: " + sqlTemplate);
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -1105,32 +1337,39 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
 			}
-
 			if (Validator.isNotNull(toDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
-
-			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
-			}
-
 			if (originalities != null && originalities.length > 0) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
 			} else {
@@ -1184,32 +1423,39 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
 			}
-
 			if (Validator.isNotNull(toDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
-
-			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
-			}
-
 			if (originalities != null && originalities.length > 0) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
 			} else {
@@ -1255,36 +1501,44 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus = {dossierStatus}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
 			}
-
 			if (Validator.isNotNull(toDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
-
-			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
-			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierList3: " + sqlSearchTemplate);
 
@@ -1327,36 +1581,44 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus = {dossierStatus}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
 			}
-
 			if (Validator.isNotNull(toDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
-
-			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
-			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 
 			_log.debug("getDossierList4: " + sqlSearchTemplate);
@@ -1400,36 +1662,44 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus = {dossierStatus}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
 			}
-
 			if (Validator.isNotNull(toDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
-
-			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
-			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierList5: " + sqlSearchTemplate);
 
@@ -1472,36 +1742,44 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus = {dossierStatus}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
 			}
-
 			if (Validator.isNotNull(toDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
-
-			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
-			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 
 			_log.debug("getDossierList6: " + sqlSearchTemplate);
@@ -1544,36 +1822,44 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
 			}
-
 			if (Validator.isNotNull(toDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
-
-			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
-			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierList7: " + sqlSearchTemplate);
 
@@ -1615,36 +1901,44 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
 			}
-
 			if (Validator.isNotNull(toDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
-
-			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
-			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierList8: " + sqlSearchTemplate);
 
@@ -1686,36 +1980,44 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
 			}
-
 			if (Validator.isNotNull(toDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
-
-			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
-			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 
 			_log.debug("getDossierList9: " + sqlSearchTemplate);
@@ -1758,36 +2060,44 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
+			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+				String params = ParamUtil.generalTextParam(dossierStatus);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(fromDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
 			}
-
 			if (Validator.isNotNull(toDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{toDate}", ParamUtil.generalTextParam(toDate));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
-
-			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-				String params = ParamUtil.generalTextParam(dossierStatus);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
-			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierList10: " + sqlSearchTemplate);
 
@@ -1830,24 +2140,34 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
 			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 
 			_log.debug("getDossierList11: " + sqlSearchTemplate);
@@ -1891,24 +2211,34 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
 			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierList12: " + sqlSearchTemplate);
 
@@ -1950,31 +2280,40 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{groupId}", String.valueOf(groupId));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
-			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
-			}
-
 			if (day == null || day < 0) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{day}", String.valueOf(2));
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{day}", String.valueOf(day));
 			}
-
+			if (domainCodes != null && domainCodes.length > 0) {
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
 			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierList13: " + sqlSearchTemplate);
 
@@ -2017,24 +2356,34 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
 			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierList14: " + sqlSearchTemplate);
 
@@ -2075,12 +2424,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{groupId}", String.valueOf(groupId));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
-			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
-			}
+			
 
 			if (Validator.isNotNull(fromDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
@@ -2094,18 +2438,35 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
 
+			if (domainCodes != null && domainCodes.length > 0) {
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
 			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 
 			_log.debug("getDossierList15: " + sqlSearchTemplate);
@@ -2145,13 +2506,6 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{groupId}", String.valueOf(groupId));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
-			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
-				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
-			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
-			}
-
 			if (Validator.isNotNull(fromDate)) {
 				sqlSearchTemplate = sqlSearchTemplate.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
 			} else {
@@ -2164,18 +2518,35 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 			}
 
+			if (domainCodes != null && domainCodes.length > 0) {
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
+			}
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
 			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 
 			_log.debug("getDossierList16: " + sqlSearchTemplate);
@@ -2218,24 +2589,34 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlSearchTemplate = sqlSearchTemplate.replace("{start}", String.valueOf(start));
 			sqlSearchTemplate = sqlSearchTemplate.replace("{size}", String.valueOf(size));
 			if (domainCodes != null && domainCodes.length > 0) {
-				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+				String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes[0]);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{domainCode}", paramsDomainCodes);
 			} else {
 				sqlSearchTemplate = sqlSearchTemplate.replace("AND t2.domainCode = {domainCode}", StringPool.BLANK);
 			}
-
+			if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+				String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{govAgencyCode}", paramsGovAgencyCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.govAgencyCode = {govAgencyCode}", StringPool.BLANK);
+			}
+			if (serviceCodes != null && serviceCodes.length > 0) {
+				String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes[0]);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{serviceCode}", paramsServiceCodes);
+			} else {
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.serviceCode = {serviceCode}", StringPool.BLANK);
+			}
 			if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
 				String params = ParamUtil.generalTextParam(dossierStatus);
 				sqlSearchTemplate = sqlSearchTemplate.replace("{dossierStatus}", params);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})",
-						StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
 			}
-
 			if (originalities != null && originalities.length > 0) {
-				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", String.valueOf(originalities[0]));
+				String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+				sqlSearchTemplate = sqlSearchTemplate.replace("{originality}", paramsOriginalities);
 			} else {
-				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
+				sqlSearchTemplate = sqlSearchTemplate.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 			}
 			_log.debug("getDossierList17: " + sqlSearchTemplate);
 

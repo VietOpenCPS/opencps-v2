@@ -66,4 +66,10 @@ public class ParamUtil {
 
 		return StringPool.APOSTROPHE + StringUtil.merge(params, "','") + StringPool.APOSTROPHE;
 	}
+	public static String generalTextParam(int[] params) {
+		if (Validator.isNull(params)){
+			return StringPool.BLANK;
+		}
+		return StringPool.APOSTROPHE + StringUtil.merge(params, "','") + StringPool.APOSTROPHE;
+	}
 }
