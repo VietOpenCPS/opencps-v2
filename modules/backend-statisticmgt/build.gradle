@@ -16,4 +16,7 @@ dependencies {
 	compile group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxrs', version: '3.0.3'
 	compile group: 'org.apache.cxf', name: 'cxf-rt-transports-http', version: '3.0.3'
 	compile group: 'org.apache.cxf', name: 'cxf-rt-rs-client', version: '3.0.3'
+	
+	 // Use JUnit test framework
+	testCompile group: "junit", name: "junit", version: "4.12"
 }

@@ -20,7 +20,7 @@ public class ActionUtil {
 	private static Log _log = LogFactoryUtil.getLog(ActionUtil.class);
 
 	public static JSONObject createResponseSchema(long groupId, String fromDate, String toDate, int[] originalities,
-			String[] domainCodes, String[] dossierStatus, int type, String... msg) {
+			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus, int type, String... msg) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		JSONObject condition = JSONFactoryUtil.createJSONObject();
@@ -45,7 +45,7 @@ public class ActionUtil {
 	}
 
 	public static JSONObject getCountDossier(long groupId, long fromDate, long toDate, String originalities,
-			String domainCode, String dossierStatus, int type, Integer day) {
+			String domainCode, String govAgencyCode, String serviceCode, String dossierStatus, int type, Integer day) {
 
 		String sqlCountTemplate = QueryType.getSQLCountQueryTemplate(type);
 
@@ -59,101 +59,102 @@ public class ActionUtil {
 			if (Validator.isNull(sqlCountTemplate)) {
 				_log.info("Can't get sqltemplate width type = " + type);
 				return createResponseSchema(groupId, strFromDate, strToDate, ParamUtil.getArrayParams(originalities, 0),
-						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(dossierStatus), type);
+						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode), ParamUtil.getArrayParams(dossierStatus), type);
 			}
 
 			if (type == 1) {
 				return factory.getDossierCount1(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 2) {
 				return factory.getDossierCount2(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 3) {
 				return factory.getDossierCount3(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 4) {
 				return factory.getDossierCount4(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 5) {
 				return factory.getDossierCount5(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 6) {
 				return factory.getDossierCount6(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 7) {
 				return factory.getDossierCount7(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 8) {
 				return factory.getDossierCount8(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 9) {
 				return factory.getDossierCount9(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 10) {
 				return factory.getDossierCount10(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 11) {
 				return factory.getDossierCount11(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 12) {
 				return factory.getDossierCount12(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 13) {
 				return factory.getDossierCount13(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 14) {
 				return factory.getDossierCount14(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 15) {
 				return factory.getDossierCount15(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate, day);
 			} else if (type == 16) {
 				return factory.getDossierCount16(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 17) {
 				return factory.getDossierCount17(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 18) {
 				return factory.getDossierCount18(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else if (type == 19) {
 				return factory.getDossierCount19(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlCountTemplate);
 			} else {
 				return createResponseSchema(groupId, strFromDate, strToDate, ParamUtil.getArrayParams(originalities, 0),
-						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(dossierStatus), type);
+						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode), ParamUtil.getArrayParams(dossierStatus), type);
 			}
 		} catch (Exception e) {
 			_log.error(e);
 
 			return createResponseSchema(groupId, strFromDate, strToDate, ParamUtil.getArrayParams(originalities, 0),
-					ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(dossierStatus), type,
+					ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode), ParamUtil.getArrayParams(dossierStatus), type,
 					new String[] { e.getMessage() });
 		}
 
 	}
 
 	public static JSONObject getListDossier(long groupId, long fromDate, long toDate, String originalities,
-			String domainCode, String dossierStatus, int type, Integer day, Integer start, Integer end) {
+			String domainCode, String govAgencyCode, String serviceCode, String dossierStatus, int type, Integer day,
+			Integer start, Integer end) {
 
 		String sqlSearchTemplate = QueryType.getSQLSearchQueryTemplate(type);
 
@@ -168,205 +169,205 @@ public class ActionUtil {
 				_log.info("Can't get sqltemplate width type = " + type);
 
 				return createResponseSchema(groupId, strFromDate, strToDate, ParamUtil.getArrayParams(originalities, 0),
-						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(dossierStatus), type);
+						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode), ParamUtil.getArrayParams(dossierStatus), type);
 			}
 
 			JSONObject totalObj = null;
 
 			if (type == 1) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 
 				return factory.getDossierList1(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 2) {
 
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus,
 						QueryType.STATISTIC_DOSSIER_RECEIVING_OFFLINE_TOTAL_COUNT.getType(), day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 
 				return factory.getDossierList2(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 3) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList3(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 4) {
 
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus,
 						QueryType.STATISTIC_DOSSIER_RECEIVING_ONLINE_TOTAL_COUNT.getType(), day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 
 				return factory.getDossierList4(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 5) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList5(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 6) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList6(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 7) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList7(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 8) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList8(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 9) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList9(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 10) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList10(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 11) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList11(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 12) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList12(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 13) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList13(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 14) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList14(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 15) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList15(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end, day)
 						.put(Constants.TOTAL, total);
 			} else if (type == 16) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList16(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 17) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList17(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 18) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList18(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 19) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList19(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else if (type == 20) {
-				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, dossierStatus, type,
+				totalObj = getCountDossier(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode, serviceCode, dossierStatus, type,
 						day);
 
 				int total = (totalObj != null && totalObj.has(Constants.TOTAL)) ? totalObj.getInt(Constants.TOTAL) : 0;
 				return factory.getDossierList20(groupId, strFromDate, strToDate,
-						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), sqlSearchTemplate, start, end)
 						.put(Constants.TOTAL, total);
 			} else {
 				return createResponseSchema(groupId, strFromDate, strToDate, ParamUtil.getArrayParams(originalities, 0),
-						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(dossierStatus), type);
+						ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode), ParamUtil.getArrayParams(dossierStatus), type);
 			}
 		} catch (Exception e) {
 			_log.error(e);
 
 			return createResponseSchema(groupId, strFromDate, strToDate, ParamUtil.getArrayParams(originalities, 0),
-					ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(dossierStatus), type,
+					ParamUtil.getArrayParams(domainCode), ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode), ParamUtil.getArrayParams(dossierStatus), type,
 					new String[] { e.getMessage() });
 		}
 	}
