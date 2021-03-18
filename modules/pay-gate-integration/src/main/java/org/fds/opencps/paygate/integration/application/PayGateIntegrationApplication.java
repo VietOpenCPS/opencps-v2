@@ -438,10 +438,12 @@ public class PayGateIntegrationApplication extends Application {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.findPaymentFileByDossierId(dossier.getGroupId(), dossierId);
 				JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 						.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-				String checkKey = data.getString(KeyPayV3Term.KEY_PAY_SUCCESS);
+				String keySuccess = data.getString(KeyPayV3Term.KEY_PAY_SUCCESS);
+				String keyFail = data.getString(KeyPayV3Term.KEY_PAY_FAIL);
 				String qrCode = data.getString(KeyPayV3Term.QRCODE_PAY);
 				String imageStr = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wCEAAgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNEBCAgICAkICQoKCQ0ODA4NExEQEBETHBQWFBYUHCsbHxsbHxsrJi4lIyUuJkQ1Ly81RE5CPkJOX1VVX3dxd5yc0f/CABEIABQAFAMBIgACEQEDEQH/xAAVAAEBAAAAAAAAAAAAAAAAAAAAB//aAAgBAQAAAAC/gH//xAAUAQEAAAAAAAAAAAAAAAAAAAAA/9oACAECEAAAAA//xAAUAQEAAAAAAAAAAAAAAAAAAAAA/9oACAEDEAAAAA//xAAUEAEAAAAAAAAAAAAAAAAAAAAw/9oACAEBAAE/AB//xAAUEQEAAAAAAAAAAAAAAAAAAAAg/9oACAECAQE/AB//xAAUEQEAAAAAAAAAAAAAAAAAAAAg/9oACAEDAQE/AB//2Q==";
-				if(Validator.isNotNull(checkKey) && Validator.isNull(qrCode)){
+				if(Validator.isNotNull(keySuccess) || Validator.isNotNull(keyFail) && Validator.isNull(qrCode)){
+					System.out.println("Vaoo " + tryCount);
 					try {
 						file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response, imageStr);
 						break;
@@ -450,6 +452,7 @@ public class PayGateIntegrationApplication extends Application {
 					}
 
 				}
+				System.out.println("Vaoo " + tryCount);
 				file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response,"");
 				tryCount++;
 				if (tryCount == MAX_TRY_COUNT ) break;

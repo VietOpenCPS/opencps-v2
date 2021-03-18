@@ -2055,6 +2055,16 @@ public class DossierManagementImpl implements DossierManagement {
 									}
 									else {
 										_log.info(666644444);
+										// A Duẩn đối với action 8888 => nếu là inside mà không có quy trình( processAction)
+										// thì vẫn thực hiện doAction
+										if (DossierActionTerm.OUTSIDE_ACTION_PAYMENT.equals(actionCode)) {
+											dossierResult = actions.doAction(
+													groupId, userId, dossier, option, null,
+													actionCode, actionUser, input.getActionNote(),
+													input.getPayload(), input.getAssignUsers(),
+													input.getPayment(), actConfig.getSyncType(),
+													serviceContext, errorModel);
+										}
 										// TODO: Error
 									}
 								}
