@@ -3662,12 +3662,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Date dueDate = null;
 			if (Validator.isNotNull(getDueDateByPayload(payload))) {
 				dueDate = getDueDateByPayload(payload);
-				_log.info("DUEDATE1: " + dueDate);
 			} else if (Validator.isNotNull(durationCount) && durationCount > 0 && !areEqualDouble(durationCount, 0.00d, 3)) {
 				// dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, dossier.getGroupId());
 				DueDateUtils dueDateUtils = new DueDateUtils(now, durationCount, durationUnit, dossier.getGroupId());
 				dueDate = dueDateUtils.getDueDate();
-				_log.info("DUEDATE2: " + dueDate);
 			}
 
 			if (Validator.isNotNull(dueDate)) {
@@ -4254,7 +4252,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 				//				_log.info("dueDateTEST111: "+dueDate);
 				dossierAction.setActionOverdue(overdue);
-				_log.info("DUEDATE3 : " + dueDate);
 				dossierAction.setDueDate(dueDate);
 				//				_log.info("========STEP DUE DATE SET DUE DATE: " + dossierAction.getStepCode());
 				//				DossierAction dActTest = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
