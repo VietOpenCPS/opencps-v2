@@ -26,6 +26,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.opencps.backend.statisticmgt.constant.Constants;
 import org.opencps.backend.statisticmgt.util.ActionUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
@@ -63,12 +64,12 @@ public class StatisticApplication extends Application {
 			@QueryParam("toDate") long toDate, @QueryParam("originalities") String originalities,
 			@QueryParam("domainCode") String domainCode, @QueryParam("govAgencyCode") String govAgencyCode,
 			@QueryParam("serviceCode") String serviceCode, @QueryParam("dossierStatus") String dossierStatus,
-			@QueryParam("type") int type, @QueryParam("day") Integer day) {
+			@QueryParam("type") int type, @QueryParam("day") Integer day, @QueryParam("groupBy") String groupBy) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		JSONObject result = ActionUtil.getCountDossier(groupId, fromDate, toDate, originalities, domainCode,
-				govAgencyCode, serviceCode, dossierStatus, type, day);
+		JSONObject result = ActionUtil.getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode,
+				govAgencyCode, serviceCode, dossierStatus, day, groupBy, 0, 0, type, Constants.COUNT);
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 	}
@@ -84,12 +85,33 @@ public class StatisticApplication extends Application {
 			@QueryParam("domainCode") String domainCode, @QueryParam("govAgencyCode") String govAgencyCode,
 			@QueryParam("serviceCode") String serviceCode, @QueryParam("dossierStatus") String dossierStatus,
 			@QueryParam("type") int type, @QueryParam("day") Integer day, @QueryParam("start") Integer start,
-			@QueryParam("end") Integer end) {
+			@QueryParam("end") Integer end, @QueryParam("groupBy") String groupBy) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		JSONObject result = ActionUtil.getListDossier(groupId, fromDate, toDate, originalities, domainCode,
-				govAgencyCode, serviceCode, dossierStatus, type, day, start, end);
+		JSONObject result = ActionUtil.getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode,
+				govAgencyCode, serviceCode, dossierStatus, day, groupBy, start, end, type, Constants.LIST);
+
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
+	}
+	
+	@POST
+	@Path("/dossier/groupcount")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response groupCountDossier(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("fromDate") long fromDate,
+			@QueryParam("toDate") long toDate, @QueryParam("originalities") String originalities,
+			@QueryParam("domainCode") String domainCode, @QueryParam("govAgencyCode") String govAgencyCode,
+			@QueryParam("serviceCode") String serviceCode, @QueryParam("dossierStatus") String dossierStatus,
+			@QueryParam("type") int type, @QueryParam("day") Integer day, @QueryParam("start") Integer start,
+			@QueryParam("end") Integer end, @QueryParam("groupBy") String groupBy) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		JSONObject result = ActionUtil.getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode,
+				govAgencyCode, serviceCode, dossierStatus, day, groupBy, start, end, type, Constants.GROUP_COUNT);
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 	}

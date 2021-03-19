@@ -21,7 +21,11 @@ public class Constants {
 	public static final String CONDITIONS = "conditions";
 	public static final String DATA = "data";
 	public static final String TYPE = "type";
+	public static final String SUBTYPE = "subType";
 	public static final String MESSAGES = "messages";
 	public static final String DAY = "day";
-
+	public static final String COUNT = "count";
+	public static final String LIST = "list";
+	public static final String GROUP_COUNT = "groupCount";
+	public static final String TOTAL_COUNT = "totalCount";
 }
