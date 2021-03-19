@@ -592,6 +592,12 @@ public class ApplicantLocalServiceUtil {
 		return getService().verifyApplicant(applicantId);
 	}
 
+	public static org.opencps.usermgt.model.Applicant verifyApplicantWithValue(
+		long applicantId, int verification)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().verifyApplicantWithValue(applicantId, verification);
+	}
+
 	public static ApplicantLocalService getService() {
 		return _serviceTracker.getService();
 	}

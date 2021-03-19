@@ -654,6 +654,10 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return serviceConfigPersistence.findByF_GAC(govAgencyCode);
 	}
 
+	public ServiceConfig fetchByGID_SI_GOV_LEVEL(long groupId, long serviceInfo, String govAgencyCode, int serviceLevel) {
+		return serviceConfigPersistence.fetchByGID_SI_GOV_LEVEL(groupId,serviceInfo,govAgencyCode,serviceLevel);
+	}
+
 	public List<ServiceConfig> getByLevel(long groupId, int level) {
 		return serviceConfigPersistence.findByGID_LEVEL(groupId, level);
 	}

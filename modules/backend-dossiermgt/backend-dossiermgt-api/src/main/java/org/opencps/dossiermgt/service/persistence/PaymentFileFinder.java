@@ -31,4 +31,7 @@ public interface PaymentFileFinder {
 	public java.util.List<org.opencps.dossiermgt.model.PaymentFile> findPaymentByG_S_M(
 		int paymentStatus, String paymentMethod, long groupId, int start,
 		int end);
+
+	public org.opencps.dossiermgt.model.PaymentFile findPaymentFileByDossierId(
+		long groupId, long dossierId);
 }

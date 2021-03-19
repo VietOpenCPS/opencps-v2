@@ -181,9 +181,7 @@ public class EFormManagementImpl implements EFormManagement{
 	}
 
 	@Override
-	public Response addEFromOfFileTemplateAuth(HttpServletRequest request, HttpHeaders header, Company company,
-										   Locale locale, User user, ServiceContext serviceContext, EFormInputModel input) {
-
+	public Response addEFromOfFileTemplateAuth(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, EFormInputModel input) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = serviceContext.getUserId();
 
@@ -207,19 +205,16 @@ public class EFormManagementImpl implements EFormManagement{
 			String secret = Validator.isNotNull(input.getSecret()) ? input.getSecret() : StringPool.BLANK;
 			String govAgencyCode = Validator.isNotNull(input.getGovAgencyCode()) ? input.getGovAgencyCode() : StringPool.BLANK;
 
-
 			EForm eFormInfo = actions.updateEForm(userId, groupId, 0, eFormNo, serviceInfoId, fileTemplateNo, eFormName,
 					formScriptFileId, formReportFileId, eFormData, email, secret, govAgencyCode, serviceContext);
 
 			EFormDataModel result = EFormUtils.mappingForGetDetail(eFormInfo);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-
 		} catch (Exception e) {
 
 			return BusinessExceptionImpl.processException(e);
 		}
-
 	}
 
 	@Override

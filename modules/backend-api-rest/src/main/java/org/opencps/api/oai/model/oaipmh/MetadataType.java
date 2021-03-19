@@ -43,6 +43,7 @@ import javax.xml.bind.annotation.XmlType;
     "role",
     "deliverableType",
     "deliverable",
+    "userApp"
 })
 public class MetadataType {
 
@@ -54,6 +55,16 @@ public class MetadataType {
     protected OMDeliverableType deliverableType;
 	@XmlElement(name = "Deliverable")
     protected OMDeliverable deliverable;
+    @XmlElement(name = "User")
+    protected OMApplicant userApp;
+
+    public OMApplicant getUserApp() {
+        return userApp;
+    }
+
+    public void setUserApp(OMApplicant userApp) {
+        this.userApp = userApp;
+    }
 
     /**
      * Gets the value of the user property.

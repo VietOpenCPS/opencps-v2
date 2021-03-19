@@ -988,7 +988,7 @@ public class RestfulController {
 						Deliverable openCPSDeliverable = DeliverableLocalServiceUtil
 								.fetchDeliverable(Long.valueOf(pk));
 
-						openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
+//						openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
 						openCPSDeliverable.setFileAttachs(String.valueOf(fileAttach.getFileEntryId()));
 						String formData = openCPSDeliverable.getFormData();
 						if (Validator.isNotNull(formData)) {
@@ -1473,60 +1473,60 @@ public class RestfulController {
 			if (Validator.isNull(userData)) {
 				throw new OpenCPSNotFoundException(User.class.getName());
 			}
-			List<Dossier> dossiers = DossierLocalServiceUtil.findByG_U_DO(groupId,userId);
-			try {
-				if (dossiers != null) {
-					Applicant checkApplicant = null;
-					boolean checkDone = false;
-					boolean checkReceiving = false;
-					int countDossier = 0;
-					for (Dossier dossier : dossiers) {
-						checkApplicant = dossier.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId()) : null;
-						if (checkApplicant != null) {
-							if (DossierTerm.DOSSIER_STATUS_DONE.contentEquals(dossier.getDossierStatus())
-									&& dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
-								checkDone = true;
-								break;
-							} else if (DossierTerm.DOSSIER_STATUS_RECEIVING.contentEquals(dossier.getDossierStatus())
-									&& dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
-								countDossier = DossierLocalServiceUtil.countByG_UID_DS(dossier.getGroupId(), dossier.getUserId(),
-										DossierTerm.DOSSIER_STATUS_RECEIVING);
-								checkReceiving = true;
-							}
-						}
-					}
-					if (Validator.isNotNull(checkApplicant)) {
-						if (checkReceiving && !checkDone) {
-							_log.debug("DOSSIER_STATUS_RECEIVING ");
-							_log.debug("APPLICANT NUMBER OF CREATE DOSSIER: " + countDossier);
-							ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.COUNTER_VERIFY_CREATEDOSSIER);
-							if (Validator.isNotNull(serverConfig)) {
-								JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-								int counter = Integer.valueOf(configObj.getString(DossierTerm.COUNTER));
-								_log.debug("CONFIG COUNTER " + counter);
-								if (Validator.isNotNull(counter)) {
-									if (countDossier >= counter) {
-											checkApplicant.setVerification(ApplicantTerm.LOCKED_DOSSIER);
-											ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
-									} else if (countDossier < counter) {
-										checkApplicant.setVerification(ApplicantTerm.UNLOCKED);
-										ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
-									}
-								}
-							}
-						} else if (checkDone) {
-							_log.debug(" DOSSIER_STATUS_DONE");
-							if (checkApplicant.getVerification() == ApplicantTerm.LOCKED
-									|| checkApplicant.getVerification() == ApplicantTerm.LOCKED_DOSSIER) {
-								checkApplicant.setVerification(ApplicantTerm.UNLOCKED);
-								ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
-							}
-						}
-					}
-				}
-			}catch (Exception e){
-				e.getMessage();
-			}
+//			List<Dossier> dossiers = DossierLocalServiceUtil.findByG_U_DO(groupId,userId);
+//			try {
+//				if (dossiers != null) {
+//					Applicant checkApplicant = null;
+//					boolean checkDone = false;
+//					boolean checkReceiving = false;
+//					int countDossier = 0;
+//					for (Dossier dossier : dossiers) {
+//						checkApplicant = dossier.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId()) : null;
+//						if (checkApplicant != null) {
+//							if (DossierTerm.DOSSIER_STATUS_DONE.contentEquals(dossier.getDossierStatus())
+//									&& dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+//								checkDone = true;
+//								break;
+//							} else if (DossierTerm.DOSSIER_STATUS_RECEIVING.contentEquals(dossier.getDossierStatus())
+//									&& dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+//								countDossier = DossierLocalServiceUtil.countByG_UID_DS(dossier.getGroupId(), dossier.getUserId(),
+//										DossierTerm.DOSSIER_STATUS_RECEIVING);
+//								checkReceiving = true;
+//							}
+//						}
+//					}
+//					if (Validator.isNotNull(checkApplicant)) {
+//						if (checkReceiving && !checkDone) {
+//							_log.debug("DOSSIER_STATUS_RECEIVING ");
+//							_log.debug("APPLICANT NUMBER OF CREATE DOSSIER: " + countDossier);
+//							ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.COUNTER_VERIFY_CREATEDOSSIER);
+//							if (Validator.isNotNull(serverConfig)) {
+//								JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+//								int counter = Integer.valueOf(configObj.getString(DossierTerm.COUNTER));
+//								_log.debug("CONFIG COUNTER " + counter);
+//								if (Validator.isNotNull(counter)) {
+//									if (countDossier >= counter) {
+//											checkApplicant.setVerification(ApplicantTerm.LOCKED_DOSSIER);
+//											ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
+//									} else if (countDossier < counter) {
+//										checkApplicant.setVerification(ApplicantTerm.UNLOCKED);
+//										ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
+//									}
+//								}
+//							}
+//						} else if (checkDone) {
+//							_log.debug(" DOSSIER_STATUS_DONE");
+//							if (checkApplicant.getVerification() == ApplicantTerm.LOCKED
+//									|| checkApplicant.getVerification() == ApplicantTerm.LOCKED_DOSSIER) {
+//								checkApplicant.setVerification(ApplicantTerm.UNLOCKED);
+//								ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
+//							}
+//						}
+//					}
+//				}
+//			}catch (Exception e){
+//				e.getMessage();
+//			}
 
 			String token = GraphQLUtils.buildTokenLogin(userData, groupId);
 			response.setHeader("jwt-token", token);

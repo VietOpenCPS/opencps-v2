@@ -183,7 +183,6 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext) : actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
 						groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			//_log.info("jsonData.hit: "+jsonData.get(ConstantUtils.DATA));
 			List<Document> lstDocs = new ArrayList<Document>();
 			if (Validator.isNotNull(query.getAgency())) {
 				int total = 0;
@@ -1030,8 +1029,12 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				}
 
 				//Update service file template
-				serviceFileTemplate.setFormScriptFileId(formScriptId);
-				serviceFileTemplate.setFormReportFileId(formReportId);
+				if(Validator.isNotNull(formScriptId)) {
+					serviceFileTemplate.setFormScriptFileId(formScriptId);
+				}
+				if(Validator.isNotNull(formReportId)) {
+					serviceFileTemplate.setFormReportFileId(formReportId);
+				}
 				if (Validator.isNotNull(templateName))
 					serviceFileTemplate.setTemplateName(templateName);
 

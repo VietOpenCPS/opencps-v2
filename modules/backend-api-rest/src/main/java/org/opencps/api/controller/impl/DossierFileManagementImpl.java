@@ -1541,9 +1541,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			DossierFileActions action = new DossierFileActionsImpl();
 			DossierFileModel result = new DossierFileModel();
-			if (Validator.isNull(fileEntryId)) {
+			if (Validator.isNotNull(fileEntryId)) {
 				FileEntry fileEntryOld = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
-
 				String fileTemplateNo = dossierTemplateNo + dossierPartNo;
 				DossierFile dossierFile =
 						action.addDossierFileByFileEntryId(
