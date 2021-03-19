@@ -7,6 +7,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.sql.SQLException;
+
 import org.opencps.backend.statisticmgt.constant.Constants;
 import org.opencps.backend.statisticmgt.processimpl.QueryProcessFactoryImpl;
 import org.opencps.backend.statisticmgt.util.QueryUtil.QueryType;
@@ -371,5 +373,22 @@ public class ActionUtil {
 					new String[] { e.getMessage() });
 		}
 	}
+	public static JSONObject getSystemLog(int type, long logId, long groupId, long createDate, String className, String moduleName, String message, String typeLog, Integer line) {
+		QueryProcessFactoryImpl factory = new QueryProcessFactoryImpl();
+
+		String strFromDate = DatetimeUtil.convertTimestampToStringDatetime(createDate, DatetimeUtil._YYYY_MM_DD);
+		try {
+			if(type == 1) {
+				return factory.getSystemLogList1(logId, groupId, strFromDate, className, moduleName, message, typeLog, line);
+			}
+			else {
+				return null;
+			}
+		} catch (SQLException e) {
+			_log.error(e);
+			return null;
+		}
+	}
+	
 
 }

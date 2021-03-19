@@ -87,7 +87,6 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			} else {
 				sqlTemplate = sqlTemplate.replace("AND t1.originality = {originality}", StringPool.BLANK);
 			}
-
 			_log.debug("getDossierCount1: " + sqlTemplate);
 
 			int count = QueryUtil.getCount(sqlTemplate);
@@ -2669,6 +2668,12 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			_log.error(e);
 		}
 		return result;
+	}
+
+	@Override
+	public JSONObject getSystemLogList1(long logId, long groupId, String createDate, String className,
+			String moduleName, String message, String typeLog, Integer line) throws SQLException {
+		return null;
 	}
 
 }

@@ -93,4 +93,23 @@ public class StatisticApplication extends Application {
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 	}
+	@GET
+	@Path("/systemlog/test")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response testSystemLog(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext) {
+		return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
+	}
+	@POST
+	@Path("/systemlog/list")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response listSystemLog(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext) {
+		return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
+	}
+	
 }

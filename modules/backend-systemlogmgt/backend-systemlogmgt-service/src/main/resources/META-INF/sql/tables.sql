@@ -4,6 +4,7 @@ create table opencps_systemlog (
 	groupId LONG,
 	createDate DATE null,
 	className VARCHAR(75) null,
+	moduleName VARCHAR(75) null,
 	message VARCHAR(75) null,
 	type_ VARCHAR(75) null,
 	line INTEGER
