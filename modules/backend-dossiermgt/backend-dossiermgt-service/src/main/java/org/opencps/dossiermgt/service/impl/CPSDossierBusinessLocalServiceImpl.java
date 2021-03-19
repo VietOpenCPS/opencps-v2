@@ -237,14 +237,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(proAction.getCreateDossiers())) {
 				_log.info("proAction.getCreateDossiers(): "+proAction.getCreateDossiers());
 				if (proAction.getCreateDossiers().contains(StringPool.POUND)) {
-					String[] splitCDs = createDossiers.split(StringPool.POUND);
+					String[] splitCDs = proAction.getCreateDossiers().split(StringPool.POUND);
 					if (splitCDs.length == 2) {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers")) + StringPool.POUND + splitCDs[1];
 					} else {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
 					}
 				} else if (proAction.getCreateDossiers().contains(StringPool.AT)) {
-					String[] splitCDs = createDossiers.split(StringPool.AT);
+					String[] splitCDs = proAction.getCreateDossiers().split(StringPool.AT);
 					if (splitCDs.length != 2) {
 						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
 					} else {
@@ -768,20 +768,29 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				//Put dossier note
 				payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
-				//Put dossier note
-				payloadObject.put(DossierTerm.SUBMIT_DATE,
-						dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0);
+				//Put dossier submit date khi la ho so goc
+				if (Validator.isNull(dossier.getOriginDossierNo()) && dossier.getOriginDossierId() == 0) {
+					payloadObject.put(DossierTerm.SUBMIT_DATE,
+							dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0);
+				}
+				
 
 				//			_log.info("Flag changed: " + flagChanged);
 				payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
 				//Always inform due date
 				if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM
 						&& Validator.isNotNull(dossier.getDueDate())) {
+					//Chi update duedate khi ho so la ho so goc
+					if (Validator.isNull(dossier.getOriginDossierNo()) && dossier.getOriginDossierId() == 0) {
 					payloadObject.put(DossierTerm.DUE_DATE, dossier.getDueDate().getTime());
+					}
 				}
 				if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM
 						&& Validator.isNotNull(dossier.getReceiveDate())) {
+					//Chi update receive date khi ho so la ho so goc
+					if (Validator.isNull(dossier.getOriginDossierNo()) && dossier.getOriginDossierId() == 0) {
 					payloadObject.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate().getTime());
+					}
 				}
 				if (Validator.isNotNull(dossier.getServerNo())
 						&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
@@ -3653,10 +3662,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Date dueDate = null;
 			if (Validator.isNotNull(getDueDateByPayload(payload))) {
 				dueDate = getDueDateByPayload(payload);
+				_log.info("DUEDATE1: " + dueDate);
 			} else if (Validator.isNotNull(durationCount) && durationCount > 0 && !areEqualDouble(durationCount, 0.00d, 3)) {
 				// dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, dossier.getGroupId());
 				DueDateUtils dueDateUtils = new DueDateUtils(now, durationCount, durationUnit, dossier.getGroupId());
 				dueDate = dueDateUtils.getDueDate();
+				_log.info("DUEDATE2: " + dueDate);
 			}
 
 			if (Validator.isNotNull(dueDate)) {
@@ -4243,6 +4254,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 				//				_log.info("dueDateTEST111: "+dueDate);
 				dossierAction.setActionOverdue(overdue);
+				_log.info("DUEDATE3 : " + dueDate);
 				dossierAction.setDueDate(dueDate);
 				//				_log.info("========STEP DUE DATE SET DUE DATE: " + dossierAction.getStepCode());
 				//				DossierAction dActTest = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
@@ -4265,8 +4277,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setLastSendDate(new Date());
 			}
 		}
-
-		return bResult;
+		_log.info("bResult : " + JSONFactoryUtil.looseSerialize(bResult));
+		return bResult;	
 	}
 
 	public static boolean areEqualDouble(double a, double b, int precision) {
