@@ -1028,4 +1028,29 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
+
+	@Override
+	public Response genDeliverable(HttpServletRequest request, HttpHeaders header, Company company,
+								   Locale locale, User user, ServiceContext serviceContext, String typeCode,
+								   String govAgencyCode) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		_log.info("groupId: " + groupId);
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			_log.debug("typeCode: " + typeCode);
+			_log.debug("govAgencyCode: " + govAgencyCode);
+			String deliverableCode = DeliverableNumberGenerator.genDeliverableNumberByGovType(groupId,typeCode,govAgencyCode);
+			return Response.status(HttpURLConnection.HTTP_OK).entity(deliverableCode).build();
+
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
 }
