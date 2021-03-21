@@ -2,8 +2,8 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false" default-lazy="false">
-	<import class="org.opencps.backend.systemlogmgt.model.SystemLog" />
-	<class name="org.opencps.backend.systemlogmgt.model.impl.SystemLogImpl" table="opencps_systemlog">
+	<import class="backend.systemlogmgt.model.SystemLog" />
+	<class name="backend.systemlogmgt.model.impl.SystemLogImpl" table="opencps_systemlog">
 		<id access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="logId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -11,6 +11,7 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="createDate" type="org.hibernate.type.TimestampType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="className" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="moduleName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="message" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" column="type_" name="type" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="line" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />

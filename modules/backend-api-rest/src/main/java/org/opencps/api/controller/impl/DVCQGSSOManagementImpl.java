@@ -29,7 +29,6 @@ import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.SSOIntegration;
 import org.opencps.dossiermgt.action.impl.SSOIntegrationImpl;
 import org.opencps.usermgt.action.impl.DVCQGSSOActionImpl;
-
 public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	private static final Log _log = LogFactoryUtil.getLog(DVCQGSSOManagementImpl.class);
 	private static final String MIC_SSO_KEY_CONFIG = "MIC-OPENID";
