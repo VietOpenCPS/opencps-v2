@@ -283,7 +283,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 			invoiceModel.setCusName(dossier.getApplicantName());
 			invoiceModel.setCusAddress(dossier.getAddress());
 			invoiceModel.setCusPhone(dossier.getContactTelNo());
-			invoiceModel.setPaymentMethod(StringPool.BLANK);
+			invoiceModel.setPaymentMethod(paymentFile.getPaymentMethod());
 			invoiceModel.setKindOfService(StringPool.BLANK);
 			
 			if (dossier.getApplicantIdType().contentEquals("business")) {
