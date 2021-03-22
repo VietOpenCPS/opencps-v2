@@ -225,6 +225,7 @@ public class PaymentFileUtils {
 		model.setInvoiceNo(paymentFile.getInvoiceNo());
 		model.setConfirmPayload(paymentFile.getConfirmPayload());
 		model.setEinvoice(paymentFile.getEinvoice());
+		model.setInvoicePayload(paymentFile.getInvoicePayload());
 
 		return model;
 	}
@@ -240,6 +241,10 @@ public class PaymentFileUtils {
 			if(paymentProfileJson.has("PAYGOV_CONFIG")) {
 				paymentProfileJson.remove("PAYGOV_CONFIG");
 				paymentProfileJson.put("isPaygov", true);
+			}
+			
+			if (paymentProfileJson.has("KEYPAY_LATE_CONFIG")) {
+				paymentProfileJson.remove("KEYPAY_LATE_CONFIG");
 			}
 			return paymentProfileJson.toString();
 		} catch (Exception e) {

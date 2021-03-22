@@ -1157,21 +1157,32 @@ public class DefaultSignatureManagementImpl
 							if (formData.has(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)){
 								
 								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)));
+								deliverable.setFileEntryId(fileEntryId);
+								deliverable.setFileAttachs(String.valueOf(fileEntryId));
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
 							} else if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 								deliverable.setDeliverableState(DeliverableTerm.DELIVERABLE_STATE_VALID_INT);
+								deliverable.setFileEntryId(fileEntryId);
+								deliverable.setFileAttachs(String.valueOf(fileEntryId));
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
 							}
+							if(Validator.isNotNull(deliverable)){
+								result.put("Deliverable", deliverable);
+							}
 						} else if (deliverable != null) {
-							
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
 							if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 								deliverable.setDeliverableState(DeliverableTerm.DELIVERABLE_STATE_VALID_INT);
+								deliverable.setFileEntryId(fileEntryId);
+								deliverable.setFileAttachs(String.valueOf(fileEntryId));
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
+							}
+							if(Validator.isNotNull(deliverable)){
+								result.put("Deliverable", deliverable);
 							}
 						}
 					}

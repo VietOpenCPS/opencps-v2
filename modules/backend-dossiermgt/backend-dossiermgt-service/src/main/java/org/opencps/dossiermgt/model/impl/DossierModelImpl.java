@@ -322,11 +322,12 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	public static final long POSTALCODESEND_COLUMN_BITMASK = 131072L;
 	public static final long PROCESSNO_COLUMN_BITMASK = 262144L;
 	public static final long REFERENCEUID_COLUMN_BITMASK = 524288L;
-	public static final long SERVICECODE_COLUMN_BITMASK = 1048576L;
-	public static final long USERID_COLUMN_BITMASK = 2097152L;
-	public static final long UUID_COLUMN_BITMASK = 4194304L;
-	public static final long VIAPOSTAL_COLUMN_BITMASK = 8388608L;
-	public static final long VNPOSTALSTATUS_COLUMN_BITMASK = 16777216L;
+	public static final long SERVERNO_COLUMN_BITMASK = 1048576L;
+	public static final long SERVICECODE_COLUMN_BITMASK = 2097152L;
+	public static final long USERID_COLUMN_BITMASK = 4194304L;
+	public static final long UUID_COLUMN_BITMASK = 8388608L;
+	public static final long VIAPOSTAL_COLUMN_BITMASK = 16777216L;
+	public static final long VNPOSTALSTATUS_COLUMN_BITMASK = 33554432L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.Dossier"));
 
@@ -2487,7 +2488,17 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public void setServerNo(String serverNo) {
+		_columnBitmask |= SERVERNO_COLUMN_BITMASK;
+
+		if (_originalServerNo == null) {
+			_originalServerNo = _serverNo;
+		}
+
 		_serverNo = serverNo;
+	}
+
+	public String getOriginalServerNo() {
+		return GetterUtil.getString(_originalServerNo);
 	}
 
 	@Override
@@ -3088,6 +3099,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		dossierModelImpl._originalViaPostal = dossierModelImpl._viaPostal;
 
 		dossierModelImpl._setOriginalViaPostal = false;
+
+		dossierModelImpl._originalServerNo = dossierModelImpl._serverNo;
 
 		dossierModelImpl._originalOriginality = dossierModelImpl._originality;
 
@@ -4635,6 +4648,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private boolean _online;
 	private boolean _original;
 	private String _serverNo;
+	private String _originalServerNo;
 	private Date _endorsementDate;
 	private String _lockState;
 	private int _originality;

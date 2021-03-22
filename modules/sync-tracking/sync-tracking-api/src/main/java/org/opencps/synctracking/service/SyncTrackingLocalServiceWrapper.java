@@ -210,6 +210,12 @@ public class SyncTrackingLocalServiceWrapper implements SyncTrackingLocalService
 	}
 
 	@Override
+	public org.opencps.synctracking.model.SyncTracking getByDossierNo(
+		long groupId, String dossierNo) {
+		return _syncTrackingLocalService.getByDossierNo(groupId, dossierNo);
+	}
+
+	@Override
 	public java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupId(
 		long groupId, int start, int end) {
 		return _syncTrackingLocalService.getByGroupId(groupId, start, end);
@@ -245,6 +251,20 @@ public class SyncTrackingLocalServiceWrapper implements SyncTrackingLocalService
 		java.util.Date toDate, int start, int end) {
 		return _syncTrackingLocalService.getByGroupIdAndServiceCodeAndDate(groupId,
 			serviceCode, fromDate, toDate, start, end);
+	}
+
+	@Override
+	public org.opencps.synctracking.model.SyncTracking getByReferenceUid(
+		long groupId, String referenceUid) {
+		return _syncTrackingLocalService.getByReferenceUid(groupId, referenceUid);
+	}
+
+	@Override
+	public java.util.List<org.opencps.synctracking.model.SyncTracking> getByReferenceUidAndDate(
+		long groupId, String referenceUid, java.util.Date fromDate,
+		java.util.Date toDate, int start, int end) {
+		return _syncTrackingLocalService.getByReferenceUidAndDate(groupId,
+			referenceUid, fromDate, toDate, start, end);
 	}
 
 	@Override

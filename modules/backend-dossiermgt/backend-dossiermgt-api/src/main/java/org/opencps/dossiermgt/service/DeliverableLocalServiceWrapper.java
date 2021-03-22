@@ -17,7 +17,6 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
-import org.opencps.dossiermgt.model.Deliverable;
 
 /**
  * Provides a wrapper for {@link DeliverableLocalService}.
@@ -255,14 +254,15 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	}
 
 	@Override
-	public org.opencps.dossiermgt.model.Deliverable fetchByGID_DID(
-		long groupId, long dossierId) {
-		return _deliverableLocalService.fetchByGID_DID(groupId, dossierId);
+	public org.opencps.dossiermgt.model.Deliverable fetchByGID_AID(
+		long groupId, String applicantIdNo) {
+		return _deliverableLocalService.fetchByGID_AID(groupId, applicantIdNo);
 	}
 
 	@Override
-	public Deliverable fetchByGID_AID(long groupId, String applicantIdNo) {
-		return _deliverableLocalService.fetchByGID_AID(groupId, applicantIdNo);
+	public org.opencps.dossiermgt.model.Deliverable fetchByGID_DID(
+		long groupId, long dossierId) {
+		return _deliverableLocalService.fetchByGID_DID(groupId, dossierId);
 	}
 
 	@Override
@@ -283,6 +283,14 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 		String uuid, long groupId) {
 		return _deliverableLocalService.fetchDeliverableByUuidAndGroupId(uuid,
 			groupId);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByCreateDate(
+		String createDateStart, String createDateEnd, String deliverableType,
+		long deliverableState) {
+		return _deliverableLocalService.findDeliverableByCreateDate(createDateStart,
+			createDateEnd, deliverableType, deliverableState);
 	}
 
 	@Override
@@ -314,6 +322,13 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 		long groupId, String deliverableCode) {
 		return _deliverableLocalService.getByF_GID_DCODE(groupId,
 			deliverableCode);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Deliverable getByF_GID_DI_STATE(
+		long groupId, long dossierId, int deliverableState) {
+		return _deliverableLocalService.getByF_GID_DI_STATE(groupId, dossierId,
+			deliverableState);
 	}
 
 	/**

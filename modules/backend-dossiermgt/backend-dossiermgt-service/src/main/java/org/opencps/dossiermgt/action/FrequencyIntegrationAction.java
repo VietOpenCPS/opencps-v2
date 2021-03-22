@@ -13,6 +13,6 @@ public interface FrequencyIntegrationAction {
     public List<ProfileReceiver> getDossiers(String token) throws Exception; // API 3.9
     public ProfileInModel getDetailDossier(String token, ProfileReceiver profileReceiver) throws Exception; //API 3.10
     public void sendStatusProfile(String token, long dossierId, String isSendMultipleUnit) throws Exception; //API 3.11 Duan call
-    public void syncDossierToDVCBoManual(String token, long dossierId) throws Exception; //API 3.12
+    public void syncDossierToDVCBoManual(String token, long dossierId, boolean isUpdate) throws Exception; //API 3.12
     public void sendStatusProfileToDVCBo(String token, long dossierId) throws Exception; //API 3.13
 }

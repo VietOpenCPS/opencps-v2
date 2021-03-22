@@ -743,6 +743,7 @@ public class DossierActionsImpl implements DossierActions {
 					List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
 						.findByP_S_ID(processStep.getProcessStepId());
 					_log.debug("ROLE LIST: " + processStepRoleList.size());
+					_log.info("ROLE LIST: " + JSONFactoryUtil.looseSerialize(processStepRoleList));
 					if (Validator.isNotNull(processStep.getRoleAsStep())) {
 						String[] steps = StringUtil.split(processStep.getRoleAsStep());
 						for (String stepCode : steps) {
@@ -760,9 +761,11 @@ public class DossierActionsImpl implements DossierActions {
 						if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
 							List<ProcessStepRole> lstStepRoles = new ArrayList<>();
 							for (ProcessStepRole psr : processStepRoleList) {
+								_log.info("CONDITION : " + psr.getCondition());
 								if (Validator.isNotNull(psr.getCondition())) {
 									String[] conditions = StringUtil.split(psr.getCondition());
 
+									_log.info("CONDITIONS : " + conditions.toString());
 									if (DossierMgtUtils.checkPreCondition(conditions, dossier, user,"")) {
 										lstStepRoles.add(psr);
 									}
@@ -918,6 +921,7 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 				List<String> createFileTempNoList = ListUtil.toList(StringUtil.split(createDossierFiles));
+				_log.info("createDossierFiles: " + createDossierFiles);
 				List<String> returnFileTempNoList = ListUtil.toList(StringUtil.split(returnDossierFiles));
 
 				DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId,
@@ -1000,7 +1004,7 @@ public class DossierActionsImpl implements DossierActions {
 								JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formDataDeliverables);
 
 								// End add generate deliverable if has deliverable type
-								//								_log.info("strDeliverableType: "+strDeliverableType);
+								_log.info("strDeliverableType: "+strDeliverableType);
 								if (Validator.isNull(strDeliverableType)) {
 									List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 										.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT }, false,
@@ -1030,6 +1034,10 @@ public class DossierActionsImpl implements DossierActions {
 								} else {
 									DeliverableType deliverableTypeObject = DeliverableTypeLocalServiceUtil
 										.getByCode(groupId, strDeliverableType);
+									if(Validator.isNull(deliverableTypeObject)){
+										deliverableTypeObject = DeliverableTypeLocalServiceUtil
+												.getByCode(0L, strDeliverableType);
+									}
 									//									_log.info("Deliverable type: " + deliverableTypeObject);
 									if (deliverableTypeObject != null) {
 										String mappingData = deliverableTypeObject.getMappingData();
@@ -1037,12 +1045,7 @@ public class DossierActionsImpl implements DossierActions {
 										if (mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) {
 											String deliverables = mappingDataObj
 												.getString(DeliverableTypesTerm.DELIVERABLES_KEY);
-											//											_log.info("--------DELIVERABLES----------" + deliverables);
-											//											_log.info("--------HAS E SIGNATURE----------"
-											//													+ processAction.getESignature());
-											//											_log.info("---------FILE TEMPLATE NO--------" + fileTemplateNo);
 											if (Validator.isNull(deliverables)) {
-												//												_log.info("--------DELIVERABLES IS NULL----------" + deliverables);
 												// Add one deliverable
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 													.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT },
@@ -1144,9 +1147,8 @@ public class DossierActionsImpl implements DossierActions {
 												createFile.put(ConstantUtils.FILE_ENTRY_ID, fileEntryId);
 												createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
 												createFiles.put(createFile);
-												//												_log.info("----DELIVERABLES CREATE FILE JSON-----" + createFile.toString());
 											} else {
-												//												_log.info("--------DELIVERABLES IS NOT NULL----------" + deliverables);
+												_log.info("Vaoooooo 222222");
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 													.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT },
 														false, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -1167,6 +1169,7 @@ public class DossierActionsImpl implements DossierActions {
 													createFile.put(DossierPartTerm.FILE_TEMPLATE_NO, fileTemplateNo);
 													createFile.put(DossierFileTerm.COUNTER, 1);
 													createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
+													createFiles.put(createFile);
 												} else {
 													eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
 														: false;
@@ -1286,7 +1289,7 @@ public class DossierActionsImpl implements DossierActions {
 																						.generateDeliverableNumber(
 																							groupId,
 																							companyId,
-																							dlt.getDeliverableTypeId()));
+																							dlt.getDeliverableTypeId(), dossierId));
 
 																				DossierFileLocalServiceUtil
 																					.updateFormData(groupId,

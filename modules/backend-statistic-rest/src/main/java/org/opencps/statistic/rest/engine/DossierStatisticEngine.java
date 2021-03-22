@@ -280,7 +280,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 										if (mapInt.getKey() == month) {
 											StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 											JSONArray jsonArr = statisticEngineUpdate.convertMapDataList(mapInt.getValue());
-											//
+											// 
 											String sbUpdate = DossierStatisticUtils.invokeUpdateStatistic(jsonEndPoint,
 													JSONFactoryUtil.looseSerialize(jsonArr));
 											if (Validator.isNotNull(sbUpdate)) {
@@ -397,8 +397,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						try {
 							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
 								engineUpdateAction, serviceDomainResponse, calculateLastData);
-							if (calculateData != null && jsonEndPoint != null) {
-								for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateData.entrySet()) {
+							if (calculateLastData != null && jsonEndPoint != null) {
+
+								for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateLastData.entrySet()) {
 									if (mapInt.getKey() == lastMonth) {
 										
 										StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
@@ -514,7 +515,6 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			Map<Integer, Map<String, DossierStatisticData>> calculateData)
 			throws Exception {
 //		engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-		
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
 		payload.setCalculate(true);
@@ -615,6 +615,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				GetDossierData model = new GetDossierData();
 				model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
 				model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+				model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
 				model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
 				model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
 				if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {

@@ -24,19 +24,31 @@ public interface QLVGManagement {
     @Path("/{dossierId}/sendDocuments")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response sendProfile(@PathParam("dossierId") long dossierId);
+    public Response sendProfile(@PathParam("dossierId") long dossierId, @Context User user);
 
     @PUT
-    @Path("/{id}")
+    @Path("")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({
             MediaType.APPLICATION_JSON
     })
     public Response updateProfile(@Context HttpServletRequest request, @Context HttpHeaders header,
                                   @Context Company company, @Context Locale locale, @Context User user,
-                                  @Context ServiceContext serviceContext, @PathParam("id") String id,
+                                  @Context ServiceContext serviceContext, @Multipart("id") String id,
                                   @Multipart("file") File file,
                                   @Multipart("displayName") String displayName,
                                   @Multipart("fileType") String fileType,
                                   @Multipart("actionCode") String actionCode);
+
+    @GET
+    @Path("/{dossierId}/qlvbcts")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response testReceiveDossierCTS(@PathParam("dossierId") long dossierId);
+
+    @POST
+    @Path("/{dossierId}/qlvbcts")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response testSendDossierCTS(@PathParam("dossierId") long dossierId);
 }

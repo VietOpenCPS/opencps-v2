@@ -17,6 +17,7 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import org.opencps.dossiermgt.model.PaymentFile;
 
 /**
  * Provides a wrapper for {@link PaymentFileLocalService}.
@@ -308,6 +309,11 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 	@Override
 	public String findSumPaymentAmountDay(long groupId, String date) {
 		return _paymentFileLocalService.findSumPaymentAmountDay(groupId, date);
+	}
+
+	@Override
+	public PaymentFile findPaymentFileByDossierId(long groupId, long dossierId) {
+		return _paymentFileLocalService.findPaymentFileByDossierId(groupId, dossierId);
 	}
 
 	@Override
