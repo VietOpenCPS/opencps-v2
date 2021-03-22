@@ -768,20 +768,29 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				//Put dossier note
 				payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
-				//Put dossier note
-				payloadObject.put(DossierTerm.SUBMIT_DATE,
-						dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0);
+				//Put dossier submit date khi la ho so goc
+				if (Validator.isNull(dossier.getOriginDossierNo()) && dossier.getOriginDossierId() == 0) {
+					payloadObject.put(DossierTerm.SUBMIT_DATE,
+							dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0);
+				}
+				
 
 				//			_log.info("Flag changed: " + flagChanged);
 				payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
 				//Always inform due date
 				if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM
 						&& Validator.isNotNull(dossier.getDueDate())) {
+					//Chi update duedate khi ho so la ho so goc
+					if (Validator.isNull(dossier.getOriginDossierNo()) && dossier.getOriginDossierId() == 0) {
 					payloadObject.put(DossierTerm.DUE_DATE, dossier.getDueDate().getTime());
+					}
 				}
 				if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM
 						&& Validator.isNotNull(dossier.getReceiveDate())) {
+					//Chi update receive date khi ho so la ho so goc
+					if (Validator.isNull(dossier.getOriginDossierNo()) && dossier.getOriginDossierId() == 0) {
 					payloadObject.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate().getTime());
+					}
 				}
 				if (Validator.isNotNull(dossier.getServerNo())
 						&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
@@ -4265,8 +4274,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setLastSendDate(new Date());
 			}
 		}
-
-		return bResult;
+		_log.info("bResult : " + JSONFactoryUtil.looseSerialize(bResult));
+		return bResult;	
 	}
 
 	public static boolean areEqualDouble(double a, double b, int precision) {
