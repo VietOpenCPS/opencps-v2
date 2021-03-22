@@ -85,6 +85,9 @@ public class EFormUtils {
 		model.seteFormData(input.getEFormData());
 		model.setEmail(input.getEmail());
 		model.setSecret(input.getSecret());
+		if(Validator.isNotNull(input.getGovAgencyCode())){
+			model.setGovAgencyCode(input.getGovAgencyCode());
+		}
 //		model.setCheckinDate(
 //				APIDateTimeUtils.convertDateToString(input.getModifiedDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 //		model.setGateNumber(input.getGateNumber());

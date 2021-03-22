@@ -24,7 +24,7 @@ public interface BookingActions {
 	public Booking updateBooking(long userId, long groupId, long bookingId, String className, long classPK,
 			String serviceCode, String codeNumber, String bookingName, String gateNumber, Integer state,
 			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode, Boolean online,
-			String bookingInTime, String telNo, ServiceContext serviceContext);
+			String bookingInTime, String telNo, String govAgencyCode, ServiceContext serviceContext);
 
 	public Booking deleteBookingById(long id, ServiceContext serviceContext);
 

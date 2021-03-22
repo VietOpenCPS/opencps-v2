@@ -361,10 +361,12 @@ public class EFormLocalServiceWrapper implements EFormLocalService,
 		long groupId, long eFormId, String eFormNo, String serviceCode,
 		String fileTemplateNo, String eFormName, long formScriptFileId,
 		long formReportFileId, String eFormData, String email, String secret,
+		String govAgencyCode,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return _eFormLocalService.updateEForm(userId, groupId, eFormId,
 			eFormNo, serviceCode, fileTemplateNo, eFormName, formScriptFileId,
-			formReportFileId, eFormData, email, secret, serviceContext);
+			formReportFileId, eFormData, email, secret, govAgencyCode,
+			serviceContext);
 	}
 
 	@Override

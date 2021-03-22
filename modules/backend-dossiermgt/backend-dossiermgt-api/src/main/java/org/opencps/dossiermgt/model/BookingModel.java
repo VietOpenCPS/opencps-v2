@@ -442,6 +442,21 @@ public interface BookingModel extends BaseModel<Booking>, GroupedModel,
 	 */
 	public void setTelNo(String telNo);
 
+	/**
+	 * Returns the gov agency code of this booking.
+	 *
+	 * @return the gov agency code of this booking
+	 */
+	@AutoEscape
+	public String getGovAgencyCode();
+
+	/**
+	 * Sets the gov agency code of this booking.
+	 *
+	 * @param govAgencyCode the gov agency code of this booking
+	 */
+	public void setGovAgencyCode(String govAgencyCode);
+
 	@Override
 	public boolean isNew();
 
