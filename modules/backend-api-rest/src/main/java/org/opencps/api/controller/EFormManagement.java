@@ -66,6 +66,21 @@ public interface EFormManagement {
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "body params for post") @BeanParam EFormInputModel input);
 
+	@POST
+	@Path("/add")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Add eForm from serviceFileTemplate", response = ServiceInfoInputModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a ServiceInfo entity was added", response = ServiceInfoInputModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response addEFromOfFileTemplateAuth(@Context HttpServletRequest request, @Context HttpHeaders header,
+											   @Context Company company, @Context Locale locale, @Context User user,
+											   @Context ServiceContext serviceContext,
+											   @ApiParam(value = "body params for post") @BeanParam EFormInputModel input);
+
 	@GET
 	@Path("/{eFormNo}/password/{secret}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })

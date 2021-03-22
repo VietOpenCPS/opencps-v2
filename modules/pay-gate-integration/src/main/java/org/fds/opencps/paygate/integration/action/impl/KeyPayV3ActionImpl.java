@@ -12,9 +12,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.awt.image.BufferedImage;
@@ -27,7 +24,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -244,7 +244,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 		return result;
 	}
 
-	public File getQrCode(User user, long dossierId, ServiceContext serviceContext, HttpServletRequest request, HttpServletResponse response) {
+	public File getQrCode(User user, long dossierId, ServiceContext serviceContext, HttpServletRequest request, HttpServletResponse response, String imaStr) {
 		
 		File outputfile = null;
 		try {
@@ -253,7 +253,9 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 					.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
 			String imageStr = data.getString(KeyPayV3Term.QRCODE_PAY);
-
+			if(Validator.isNotNull(imaStr)){
+				imageStr = imaStr;
+			}
 			if(Validator.isNotNull(imageStr)) {
 				String imageDataBytes = imageStr.split(",")[1];
 
