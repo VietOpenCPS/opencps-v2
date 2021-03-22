@@ -50,6 +50,7 @@ public class EFormSoap implements Serializable {
 		soapModel.setEFormData(model.getEFormData());
 		soapModel.setEmail(model.getEmail());
 		soapModel.setSecret(model.getSecret());
+		soapModel.setGovAgencyCode(model.getGovAgencyCode());
 
 		return soapModel;
 	}
@@ -238,6 +239,14 @@ public class EFormSoap implements Serializable {
 		_secret = secret;
 	}
 
+	public String getGovAgencyCode() {
+		return _govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		_govAgencyCode = govAgencyCode;
+	}
+
 	private String _uuid;
 	private long _eFormId;
 	private long _groupId;
@@ -255,4 +264,5 @@ public class EFormSoap implements Serializable {
 	private String _eFormData;
 	private String _email;
 	private String _secret;
+	private String _govAgencyCode;
 }

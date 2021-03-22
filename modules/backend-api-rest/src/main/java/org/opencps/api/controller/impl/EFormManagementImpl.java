@@ -156,6 +156,7 @@ public class EFormManagementImpl implements EFormManagement{
 			String eFormData = Validator.isNotNull(input.geteFormData()) ? input.geteFormData() : StringPool.BLANK;
 			String email = Validator.isNotNull(input.getEmail()) ? input.getEmail() : StringPool.BLANK;
 			String secret = Validator.isNotNull(input.getSecret()) ? input.getSecret() : StringPool.BLANK;
+			String govAgencyCode = Validator.isNotNull(input.getGovAgencyCode()) ? input.getGovAgencyCode() : StringPool.BLANK;
 
 //			Date checkDate = null;
 //			if (Validator.isNotNull(input.getCheckinDate())) {
@@ -166,7 +167,7 @@ public class EFormManagementImpl implements EFormManagement{
 //			Integer state = input.getState() != null ? input.getState() : 0;
 
 			EForm eFormInfo = actions.updateEForm(userId, groupId, 0, eFormNo, serviceInfoId, fileTemplateNo, eFormName,
-					formScriptFileId, formReportFileId, eFormData, email, secret, serviceContext);
+					formScriptFileId, formReportFileId, eFormData, email, secret, govAgencyCode, serviceContext);
 
 			EFormDataModel result = EFormUtils.mappingForGetDetail(eFormInfo);
 
@@ -202,10 +203,10 @@ public class EFormManagementImpl implements EFormManagement{
 			String eFormData = Validator.isNotNull(input.geteFormData()) ? input.geteFormData() : StringPool.BLANK;
 			String email = Validator.isNotNull(input.getEmail()) ? input.getEmail() : StringPool.BLANK;
 			String secret = Validator.isNotNull(input.getSecret()) ? input.getSecret() : StringPool.BLANK;
+			String govAgencyCode = Validator.isNotNull(input.getGovAgencyCode()) ? input.getGovAgencyCode() : StringPool.BLANK;
 
 			EForm eFormInfo = actions.updateEForm(userId, groupId, 0, eFormNo, serviceInfoId, fileTemplateNo, eFormName,
-					formScriptFileId, formReportFileId, eFormData, email, secret, serviceContext);
-
+					formScriptFileId, formReportFileId, eFormData, email, secret, govAgencyCode, serviceContext);
 
 			EFormDataModel result = EFormUtils.mappingForGetDetail(eFormInfo);
 
@@ -362,6 +363,7 @@ public class EFormManagementImpl implements EFormManagement{
 				Long formReportFileId = input.getFormReportFileId();
 				String eFormData = input.geteFormData();
 				String email = input.getEmail();
+				String govAgencyCode = input.getGovAgencyCode();
 				//String checkinDate = input.getCheckinDate();
 				//String gateNumber = input.getGateNumber();
 				//Integer state = input.getState();
@@ -371,7 +373,7 @@ public class EFormManagementImpl implements EFormManagement{
 				//}
 
 				eform = actions.updateEForm(userId, groupId, eform.getEFormId(), eFormNo, serviceInfoId, fileTemplateNo,
-						eFormName, formScriptFileId, formReportFileId, eFormData, email, secret, serviceContext);
+						eFormName, formScriptFileId, formReportFileId, eFormData, email, secret, govAgencyCode,serviceContext);
 			}
 
 			EFormDataModel result = EFormUtils.mappingForGetDetail(eform);
