@@ -2931,7 +2931,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 										  ProcessAction proAction, DossierAction previousAction, Dossier dossier, ServiceContext context)
 			throws PortalException {
 		PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
-		_log.info("Before oldPaymentFile : " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
 		String paymentFee =  StringPool.BLANK;
 		Long feeAmount =  0l, serviceAmount =  0l, shipAmount =  0l;
 		String paymentNote =  StringPool.BLANK;
@@ -3111,7 +3110,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					serviceAmount, shipAmount, paymentAmount, paymentNote, epaymentProfile, bankInfo, paymentStatus,
 					paymentMethod, context);
 		
-			_log.info("Before paymentFile : " + JSONFactoryUtil.looseSerialize(paymentFile));
 			long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName() + "paymentFileNo");
 
 			Calendar cal = Calendar.getInstance();
@@ -3267,7 +3265,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			_log.info("==========Payment after add paygov222: " + epaymentConfigJSON);
 		}
-		_log.info("oldPaymentFile : " + JSONFactoryUtil.looseSerialize(oldPaymentFile));
 		return oldPaymentFile;
 	}
 
