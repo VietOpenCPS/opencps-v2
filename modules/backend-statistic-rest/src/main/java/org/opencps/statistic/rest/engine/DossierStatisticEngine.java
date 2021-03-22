@@ -103,7 +103,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		_log.debug("START STATISTIC DOSSIER: " + isRunningDossier);
+		_log.info("START STATISTIC DOSSIER: " + isRunningDossier);
 		if (!isRunningDossier && CALCULATE_DOSSIER_STATISTIC_ENABLE) {
 			isRunningDossier = true;
 		}
@@ -113,17 +113,18 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		long startTime = System.currentTimeMillis();
 		Date nowLog = new Date();
 		try {
-			_log.debug("START TRACE LOG STATISTICS TIME: " + nowLog);
-			_log.debug("START STATISTICS TIME: " + (System.currentTimeMillis() - startTime) + " ms");
-			
-			DossierStatisticUtils.invokeDossierStatistic();
+			_log.info("START TRACE LOG STATISTICS TIME: " + nowLog);
+			_log.info("START STATISTICS TIME: " + (System.currentTimeMillis() - startTime) + " ms");
+
+			DossierStatisticUtils dossierStatisticUtils = new DossierStatisticUtils();
+			dossierStatisticUtils.invokeDossierStatistic();
 
 			}
 		catch (Exception e) {
 			_log.error(e);
 		}
-		_log.debug("END TRACE LOG STATISTICS TIME: " + nowLog);
-		_log.debug("STATISTICS END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
+		_log.info("END TRACE LOG STATISTICS TIME: " + nowLog);
+		_log.info("STATISTICS END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 		isRunningDossier = false;
 	}
 
