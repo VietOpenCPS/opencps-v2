@@ -239,6 +239,8 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 				}else{
 					schema.put(KeyPayV3Term.KEY_PAY_FAIL, "Fail");
 				}
+			}else{
+				schema.put(KeyPayV3Term.KEY_PAY_FAIL, "Fail");
 			}
 			epaymentProfile.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
 			PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),

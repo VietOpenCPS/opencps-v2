@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import org.opencps.api.controller.Mofa2Management;
 import org.opencps.api.dossier.model.DossierInputModel;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
@@ -52,13 +53,11 @@ public class Mofa2ManagementImpl implements Mofa2Management {
         try {
             String result = StringPool.BLANK;
             long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-            _log.info("Vaooooo1 11111");
             DossierFile dossierFile = null;
             List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossierId, "TP01", false);
              dossierFile = dossierFiles.get(0);
             JSONObject fileJSON = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
             JSONArray thanhvienArr = fileJSON.getJSONArray("thanh_vien_doan");
-            _log.info("thanhvienArr: " + thanhvienArr);
             Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
             if(Validator.isNotNull(dossier)){
                 result = insertMofa2(groupId, dossier, CONNECT_MOFA2, thanhvienArr);
@@ -78,6 +77,7 @@ public class Mofa2ManagementImpl implements Mofa2Management {
             StringBuilder sb = new StringBuilder();
             if (sc != null && arrayFile != null) {
                 JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
+                _log.info("Config: " + JSONFactoryUtil.looseSerialize(configObj));
                 PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByG_DID(groupId, dossier.getDossierId());
                 serverUrl = configObj.getString(CREATE);
                 URL urlVoid = new URL(serverUrl);
@@ -87,17 +87,47 @@ public class Mofa2ManagementImpl implements Mofa2Management {
                 JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
 
                 // Phép nhập cảnh
-
                 JSONArray hsThiThucArray = JSONFactoryUtil.createJSONArray();
                 /** Thanh Vien */
-                jsonBody.put("So_Bien_Nhan", dossier.getDossierCounter());
-                jsonBody.put("Du_Kien_Thu", paymentFile.getPaymentAmount());
+                jsonBody.put("Ten", org.json.JSONObject.NULL);
+                jsonBody.put("ID", org.json.JSONObject.NULL);
+                jsonBody.put("DossierId", dossier.getDossierId());
+                jsonBody.put("Ten_Kd",org.json.JSONObject.NULL);
+                jsonBody.put("Ten_Co_Quan", org.json.JSONObject.NULL);
+                jsonBody.put("So_Dien_Thoai", org.json.JSONObject.NULL);
+                jsonBody.put("So_Dien_Thoai_Cq", org.json.JSONObject.NULL);
+                jsonBody.put("So_Luong_Hc", org.json.JSONObject.NULL);
+                jsonBody.put("So_Luong_To_Khai", org.json.JSONObject.NULL);
+                jsonBody.put("Giay_To_Kem_Theo", org.json.JSONObject.NULL);
+                jsonBody.put("Noi_Hen_Tra_Kq_Id",org.json.JSONObject.NULL);
+                jsonBody.put("Noi_Hen_Tra_Kq", org.json.JSONObject.NULL);
+                jsonBody.put("Ngay_Hen_Tra", org.json.JSONObject.NULL);
+                jsonBody.put("Ngay_Huy", org.json.JSONObject.NULL);
+                jsonBody.put("Nguoi_Huy", org.json.JSONObject.NULL);
+                jsonBody.put("Ly_Do_Huy", org.json.JSONObject.NULL);
+                jsonBody.put("Ghi_Chu", org.json.JSONObject.NULL);
+                jsonBody.put("LOAI", org.json.JSONObject.NULL);
+                jsonBody.put("Bl_Ten_Cq_Ca_Nhan", org.json.JSONObject.NULL);
+                jsonBody.put("Bl_Dia_Chi_Id", org.json.JSONObject.NULL);
+                jsonBody.put("Bl_Dia_Chi_Chi_Tiet", org.json.JSONObject.NULL);
+                jsonBody.put("Bl_So_Dien_Thoai", org.json.JSONObject.NULL);
+                jsonBody.put("So_Cv_Den", org.json.JSONObject.NULL);
+                jsonBody.put("Ngay_Cv_Den", org.json.JSONObject.NULL);
+                jsonBody.put("Loai_Cv_Den", org.json.JSONObject.NULL);
+                jsonBody.put("Noi_Gui_Cv_Den", org.json.JSONObject.NULL);
+                jsonBody.put("Noi_Dung_Tra_Loi", org.json.JSONObject.NULL);
+                jsonBody.put("Ngay_Luu_Ho_So", org.json.JSONObject.NULL);
+                jsonBody.put("Nguoi_Luu_Ho_So", org.json.JSONObject.NULL);
+                jsonBody.put("So_Giay_Hen", org.json.JSONObject.NULL);
+                jsonBody.put("Noi_Gui_Cv_Den_Id", org.json.JSONObject.NULL);
+                jsonBody.put("So_Bien_Nhan", Validator.isNotNull(dossier.getDossierCounter()) ? dossier.getDossierCounter() : org.json.JSONObject.NULL);
+                jsonBody.put("Du_Kien_Thu", Validator.isNotNull(paymentFile.getPaymentAmount()) ? paymentFile.getPaymentAmount() : org.json.JSONObject.NULL);
                 jsonBody.put("Don_Vi_Tien_Te", "$");
-                jsonBody.put("Nguoi_Tao", dossier.getUserName());
-                jsonBody.put("Ngay_Tao", dossier.getCreateDate());
-                jsonBody.put("Nguoi_Nhan", dossier.getApplicantName());
-                jsonBody.put("Ngay_Nhan", dossier.getReceiveDate());
-                jsonBody.put("so_ho_so", dossier.getDossierNo());
+                jsonBody.put("Nguoi_Tao", Validator.isNotNull(dossier.getUserName()) ? dossier.getUserName() : org.json.JSONObject.NULL);
+                jsonBody.put("Ngay_Tao", APIDateTimeUtils.convertDateToString(dossier.getCreateDate(), APIDateTimeUtils._MONTH_DAY_YEAR_DATE));
+                jsonBody.put("Nguoi_Nhan", Validator.isNotNull(dossier.getApplicantName()) ? dossier.getApplicantName() : org.json.JSONObject.NULL);
+                jsonBody.put("Ngay_Nhan", APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._MONTH_DAY_YEAR_DATE));
+                jsonBody.put("so_ho_so", arrayFile.length());
                 if (arrayFile != null) {
                     for (int i = 0; i < arrayFile.length(); i++) {
                         JSONObject thanhvienJSON = arrayFile.getJSONObject(i);
@@ -116,7 +146,7 @@ public class Mofa2ManagementImpl implements Mofa2Management {
                             }
                             //Body HsThiThuc
                             if (thanhvienJSON != null) {
-                                hsThiThucJson = hsThiThuc(thanhvienJSON, dossier);
+                                hsThiThucJson = hsThiThuc(thanhvienJSON, dossier, hsThiThucJson);
                             }
 
                             //HS Anh
@@ -153,13 +183,12 @@ public class Mofa2ManagementImpl implements Mofa2Management {
                 conn.setRequestMethod(HttpMethod.POST);
                 conn.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
                 conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-                conn.setRequestProperty("Content-Length", StringPool.BLANK + Integer.toString(jsonData.toString().getBytes().length));
+                conn.setRequestProperty(HttpHeaders.CONTENT_LENGTH, StringPool.BLANK + Integer.toString(jsonData.toString().getBytes().length));
                 conn.setUseCaches(false);
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
-                _log.debug("JSON DATA: " + jsonData.toString());
                 OutputStream osLogin = conn.getOutputStream();
-                osLogin.write(jsonBody.toString().getBytes());
+                osLogin.write(jsonData.toString().getBytes());
                 osLogin.close();
 
                 BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -175,53 +204,52 @@ public class Mofa2ManagementImpl implements Mofa2Management {
         return null;
     }
 
-    private static JSONObject hsThiThuc(JSONObject thanhvienJSON, Dossier dossier) {
-        JSONObject hsThiThucJson = JSONFactoryUtil.createJSONObject();
-        hsThiThucJson.put("Id", thanhvienJSON.getString("Id"));
-        hsThiThucJson.put("Ca_Nhan_Id", thanhvienJSON.getString("Ca_Nhan_Id"));
-        hsThiThucJson.put("Quoc_Tich_Hn_Id", thanhvienJSON.getString("Quoc_Tich_Hn_Id"));
-        hsThiThucJson.put("So_Ho_Chieu", thanhvienJSON.getString("So_Ho_Chieu"));
-        hsThiThucJson.put("Ma_To_Khai", thanhvienJSON.getString("Ma_To_Khai"));
-        hsThiThucJson.put("Buoc_Xl", thanhvienJSON.getString("Buoc_Xl"));
-        hsThiThucJson.put("So_Bien_Nhan", thanhvienJSON.getString("So_Bien_Nhan"));
-        hsThiThucJson.put("Ten", thanhvienJSON.getString("Ten"));
-        hsThiThucJson.put("Ten_Kd", thanhvienJSON.getString("Ten_Kd"));
-        hsThiThucJson.put("So_Dien_Thoai", thanhvienJSON.getString("So_Dien_Thoai"));
-        hsThiThucJson.put("So_Dien_Thoai_Cq", thanhvienJSON.getString("So_Dien_Thoai_Cq"));
-        hsThiThucJson.put("So_Luong_Hc", thanhvienJSON.getString("So_Luong_Hc"));
-        hsThiThucJson.put("So_Luong_To_Khai", thanhvienJSON.getString("So_Luong_To_Khai"));
-        hsThiThucJson.put("Giay_To_Kem_Theo", thanhvienJSON.getString("Giay_To_Kem_Theo"));
-        hsThiThucJson.put("Noi_Hen_Tra_Kq_Id", thanhvienJSON.getString("Noi_Hen_Tra_Kq_Id"));
-        hsThiThucJson.put("Noi_Hen_Tra_Kq", thanhvienJSON.getString("Noi_Hen_Tra_Kq"));
-        hsThiThucJson.put("Ngay_Hen_Tra", thanhvienJSON.getString("Ngay_Hen_Tra"));
-        hsThiThucJson.put("Du_Kien_Thu", thanhvienJSON.getString("Du_Kien_Thu"));
-        hsThiThucJson.put("Don_Vi_Tien_Te", thanhvienJSON.getString("Don_Vi_Tien_Te"));
-        hsThiThucJson.put("Ngay_Huy", thanhvienJSON.getString("Ngay_Huy"));
-        hsThiThucJson.put("Nguoi_Huy", thanhvienJSON.getString("Nguoi_Huy"));
-        hsThiThucJson.put("Ly_Do_Huy", thanhvienJSON.getString("Ly_Do_Huy"));
-        hsThiThucJson.put("Ghi_Chu", thanhvienJSON.getString("Ghi_Chu"));
-        hsThiThucJson.put("Nguoi_Tao", thanhvienJSON.getString("Nguoi_Tao"));
-        hsThiThucJson.put("Ngay_Tao", thanhvienJSON.getString("Ngay_Tao"));
-        hsThiThucJson.put("Ngay_Lap_Phieu", thanhvienJSON.getString("Ngay_Lap_Phieu"));
-        hsThiThucJson.put("Nguoi_Sua_Cuoi", thanhvienJSON.getString("Nguoi_Sua_Cuoi"));
-        hsThiThucJson.put("Ngay_Sua_Cuoi", thanhvienJSON.getString("Ngay_Sua_Cuoi"));
-        hsThiThucJson.put("LOAI", thanhvienJSON.getString("LOAI"));
-        hsThiThucJson.put("Nguoi_Nhan", thanhvienJSON.getString("Nguoi_Nhan"));
-        hsThiThucJson.put("Ngay_Nhan", thanhvienJSON.getString("Ngay_Nhan"));
-        hsThiThucJson.put("Bl_Ten_Cq_Ca_Nhan", thanhvienJSON.getString("Bl_Ten_Cq_Ca_Nhan"));
-        hsThiThucJson.put("Bl_Dia_Chi_Id", thanhvienJSON.getString("Bl_Dia_Chi_Id"));
-        hsThiThucJson.put("Bl_Dia_Chi_Chi_Tiet", thanhvienJSON.getString("Bl_Dia_Chi_Chi_Tiet"));
-        hsThiThucJson.put("Bl_So_Dien_Thoai", thanhvienJSON.getString("Bl_So_Dien_Thoai"));
-        hsThiThucJson.put("So_Cv_Den", thanhvienJSON.getString("So_Cv_Den"));
-        hsThiThucJson.put("Ngay_Cv_Den", thanhvienJSON.getString("Ngay_Cv_Den"));
-        hsThiThucJson.put("Loai_Cv_Den", thanhvienJSON.getString("Loai_Cv_Den"));
-        hsThiThucJson.put("Noi_Gui_Cv_Den", thanhvienJSON.getString("Noi_Gui_Cv_Den"));
-        hsThiThucJson.put("Noi_Dung_Tra_Loi", thanhvienJSON.getString("Noi_Dung_Tra_Loi"));
-        hsThiThucJson.put("Ngay_Luu_Ho_So", thanhvienJSON.getString("Ngay_Luu_Ho_So"));
-        hsThiThucJson.put("Nguoi_Luu_Ho_So", thanhvienJSON.getString("Nguoi_Luu_Ho_So"));
-        hsThiThucJson.put("so_ho_so", dossier.getDossierNo());
-        hsThiThucJson.put("So_Giay_Hen", thanhvienJSON.getString("So_Giay_Hen"));
-        hsThiThucJson.put("Noi_Gui_Cv_Den_Id", thanhvienJSON.getString("Noi_Gui_Cv_Den_Id"));
+    private static JSONObject hsThiThuc(JSONObject thanhvienJSON, Dossier dossier, JSONObject hsThiThucJson) {
+        hsThiThucJson.put("Id", Validator.isNotNull(thanhvienJSON.getString("Id")) ? thanhvienJSON.getString("Id") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ca_Nhan_Id", Validator.isNotNull(thanhvienJSON.getString("Ca_Nhan_Id"))? thanhvienJSON.getString("Ca_Nhan_Id") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Quoc_Tich_Hn_Id", Validator.isNotNull(thanhvienJSON.getString("Quoc_Tich_Hn_Id")) ? thanhvienJSON.getString("Quoc_Tich_Hn_Id") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("So_Ho_Chieu", Validator.isNotNull(thanhvienJSON.getString("So_Ho_Chieu")) ? thanhvienJSON.getString("So_Ho_Chieu") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ma_To_Khai", Validator.isNotNull(thanhvienJSON.getString("Ma_To_Khai")) ? thanhvienJSON.getString("Ma_To_Khai") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Buoc_Xl", Validator.isNotNull(thanhvienJSON.getString("Buoc_Xl")) ? thanhvienJSON.getString("Buoc_Xl"): org.json.JSONObject.NULL);
+        hsThiThucJson.put("So_Bien_Nhan", Validator.isNotNull(thanhvienJSON.getString("So_Bien_Nhan")) ? thanhvienJSON.getString("So_Bien_Nhan") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ten", Validator.isNotNull(thanhvienJSON.getString("Ten")) ? thanhvienJSON.getString("Ten") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ten_Kd", Validator.isNotNull(thanhvienJSON.getString("Ten_Kd")) ? thanhvienJSON.getString("Ten_Kd") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("So_Dien_Thoai", Validator.isNotNull(thanhvienJSON.getString("So_Dien_Thoai")) ? thanhvienJSON.getString("So_Dien_Thoai") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("So_Dien_Thoai_Cq", Validator.isNotNull(thanhvienJSON.getString("So_Dien_Thoai_Cq")) ? thanhvienJSON.getString("So_Dien_Thoai_Cq") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("So_Luong_Hc", Validator.isNotNull(thanhvienJSON.getString("So_Luong_Hc")) ? thanhvienJSON.getString("So_Luong_Hc") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("So_Luong_To_Khai", Validator.isNotNull(thanhvienJSON.getString("So_Luong_To_Khai")) ? thanhvienJSON.getString("So_Luong_To_Khai") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Giay_To_Kem_Theo", Validator.isNotNull(thanhvienJSON.getString("Giay_To_Kem_Theo")) ? thanhvienJSON.getString("Giay_To_Kem_Theo") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Noi_Hen_Tra_Kq_Id", Validator.isNotNull(thanhvienJSON.getString("Noi_Hen_Tra_Kq_Id")) ? thanhvienJSON.getString("Noi_Hen_Tra_Kq_Id") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Noi_Hen_Tra_Kq", Validator.isNotNull(thanhvienJSON.getString("Noi_Hen_Tra_Kq")) ? thanhvienJSON.getString("Noi_Hen_Tra_Kq") : org.json.JSONObject.NULL );
+        hsThiThucJson.put("Ngay_Hen_Tra", Validator.isNotNull(thanhvienJSON.getString("Ngay_Hen_Tra")) ? thanhvienJSON.getString("Ngay_Hen_Tra") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Du_Kien_Thu", Validator.isNotNull(thanhvienJSON.getString("Du_Kien_Thu")) ? thanhvienJSON.getString("Du_Kien_Thu") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Don_Vi_Tien_Te", Validator.isNotNull(thanhvienJSON.getString("Don_Vi_Tien_Te")) ? thanhvienJSON.getString("Don_Vi_Tien_Te") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ngay_Huy", Validator.isNotNull(thanhvienJSON.getString("Ngay_Huy")) ? thanhvienJSON.getString("Ngay_Huy") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Nguoi_Huy", Validator.isNotNull(thanhvienJSON.getString("Nguoi_Huy")) ? thanhvienJSON.getString("Nguoi_Huy") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ly_Do_Huy", Validator.isNotNull(thanhvienJSON.getString("Ly_Do_Huy")) ? thanhvienJSON.getString("Ly_Do_Huy") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ghi_Chu", Validator.isNotNull(thanhvienJSON.getString("Ghi_Chu")) ? thanhvienJSON.getString("Ghi_Chu"): org.json.JSONObject.NULL);
+        hsThiThucJson.put("Nguoi_Tao", Validator.isNotNull(thanhvienJSON.getString("Nguoi_Tao")) ? thanhvienJSON.getString("Nguoi_Tao") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ngay_Tao", Validator.isNotNull(thanhvienJSON.getString("Ngay_Tao")) ? thanhvienJSON.getString("Ngay_Tao") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ngay_Lap_Phieu", Validator.isNotNull(thanhvienJSON.getString("Ngay_Lap_Phieu")) ? thanhvienJSON.getString("Ngay_Lap_Phieu") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Nguoi_Sua_Cuoi", Validator.isNotNull(thanhvienJSON.getString("Nguoi_Sua_Cuoi")) ? thanhvienJSON.getString("Nguoi_Sua_Cuoi") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ngay_Sua_Cuoi", Validator.isNotNull(thanhvienJSON.getString("Ngay_Sua_Cuoi")) ? thanhvienJSON.getString("Ngay_Sua_Cuoi") :  org.json.JSONObject.NULL);
+        hsThiThucJson.put("LOAI", Validator.isNotNull(thanhvienJSON.getString("LOAI")) ? thanhvienJSON.getString("LOAI") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Nguoi_Nhan", Validator.isNotNull(thanhvienJSON.getString("Nguoi_Nhan")) ? thanhvienJSON.getString("Nguoi_Nhan") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ngay_Nhan", Validator.isNotNull(thanhvienJSON.getString("Ngay_Nhan")) ? thanhvienJSON.getString("Ngay_Nhan") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Bl_Ten_Cq_Ca_Nhan", Validator.isNotNull(thanhvienJSON.getString("Bl_Ten_Cq_Ca_Nhan")) ? thanhvienJSON.getString("Bl_Ten_Cq_Ca_Nhan") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Bl_Dia_Chi_Id", Validator.isNotNull(thanhvienJSON.getString("Bl_Dia_Chi_Id")) ? thanhvienJSON.getString("Bl_Dia_Chi_Id") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Bl_Dia_Chi_Chi_Tiet", Validator.isNotNull(thanhvienJSON.getString("Bl_Dia_Chi_Chi_Tiet")) ? thanhvienJSON.getString("Bl_Dia_Chi_Chi_Tiet") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Bl_So_Dien_Thoai", Validator.isNotNull(thanhvienJSON.getString("Bl_So_Dien_Thoai")) ? thanhvienJSON.getString("Bl_So_Dien_Thoai") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("So_Cv_Den", Validator.isNotNull(thanhvienJSON.getString("So_Cv_Den")) ? thanhvienJSON.getString("So_Cv_Den") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ngay_Cv_Den", Validator.isNotNull(thanhvienJSON.getString("Ngay_Cv_Den")) ? thanhvienJSON.getString("Ngay_Cv_Den") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Loai_Cv_Den", Validator.isNotNull(thanhvienJSON.getString("Loai_Cv_Den")) ? thanhvienJSON.getString("Loai_Cv_Den") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Noi_Gui_Cv_Den", Validator.isNotNull(thanhvienJSON.getString("Noi_Gui_Cv_Den")) ? thanhvienJSON.getString("Noi_Gui_Cv_Den") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Noi_Dung_Tra_Loi", Validator.isNotNull(thanhvienJSON.getString("Noi_Dung_Tra_Loi")) ? thanhvienJSON.getString("Noi_Dung_Tra_Loi") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Ngay_Luu_Ho_So", Validator.isNotNull(thanhvienJSON.getString("Ngay_Luu_Ho_So")) ? thanhvienJSON.getString("Ngay_Luu_Ho_So") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Nguoi_Luu_Ho_So", Validator.isNotNull(thanhvienJSON.getString("Nguoi_Luu_Ho_So")) ? thanhvienJSON.getString("Nguoi_Luu_Ho_So") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("so_ho_so", Validator.isNotNull(dossier.getDossierNo()) ? dossier.getDossierNo(): org.json.JSONObject.NULL);
+        hsThiThucJson.put("So_Giay_Hen", Validator.isNotNull(thanhvienJSON.getString("So_Giay_Hen")) ? thanhvienJSON.getString("So_Giay_Hen") : org.json.JSONObject.NULL);
+        hsThiThucJson.put("Noi_Gui_Cv_Den_Id", Validator.isNotNull(thanhvienJSON.getString("Noi_Gui_Cv_Den_Id")) ? thanhvienJSON.getString("Noi_Gui_Cv_Den_Id"): org.json.JSONObject.NULL);
         return hsThiThucJson;
     }
 
