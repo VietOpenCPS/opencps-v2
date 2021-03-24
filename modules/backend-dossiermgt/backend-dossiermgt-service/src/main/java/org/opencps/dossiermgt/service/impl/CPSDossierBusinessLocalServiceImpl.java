@@ -9035,7 +9035,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			//				throw new UnauthorizationException();
 			//			}
 
-			PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
+//			PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
+			PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.findPaymentFileByDossierId(dossier.getGroupId(), dossierId);
 			String referenceUid = input.getReferenceUid();
 			if (Validator.isNull(referenceUid)) {
 				referenceUid = PortalUUIDUtil.generate();
@@ -9099,7 +9100,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getConfirmPayload())) {
 				paymentFile.setConfirmPayload(input.getConfirmPayload());
 			}
-
+			paymentFile.setEpaymentProfile(input.getEpaymentProfile());
 			paymentFile = paymentFileLocalService.updatePaymentFile(paymentFile);
 		}
 
