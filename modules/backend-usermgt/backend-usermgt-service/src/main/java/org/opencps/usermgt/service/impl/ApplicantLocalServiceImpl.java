@@ -615,7 +615,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Applicant applicant = applicantPersistence.fetchByF_APLC_GID(groupId, applicantIdNo);
 
 		if (Validator.isNotNull(applicant))
-			throw new DuplicateApplicantIdException("DuplicateApplicantIdException");
+			throw new DuplicateApplicantIdException("DuplicateApplicantIdException-" + applicant.getContactEmail());
 
 		applicant = applicantPersistence.fetchByF_GID_CTEM(groupId, email);
 

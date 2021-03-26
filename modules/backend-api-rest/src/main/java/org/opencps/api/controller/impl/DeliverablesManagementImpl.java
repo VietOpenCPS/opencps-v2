@@ -1046,6 +1046,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			_log.debug("typeCode: " + typeCode);
 			_log.debug("govAgencyCode: " + govAgencyCode);
 			String deliverableCode = DeliverableNumberGenerator.genDeliverableNumberByGovType(groupId,typeCode,govAgencyCode);
+			_log.debug("DeliverableCode :  " + deliverableCode);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(deliverableCode).build();
 
 		}
