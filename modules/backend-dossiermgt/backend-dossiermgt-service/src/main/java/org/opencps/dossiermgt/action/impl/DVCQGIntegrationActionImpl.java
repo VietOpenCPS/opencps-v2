@@ -614,7 +614,58 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					dossierAction != null ? convertDate2String(dossierAction.getCreateDate()) : StringPool.BLANK);
 		}
 
-		object.put("PhongBanXuLy", "");// ko bb
+		//sequenceRole- PhongBanXuLy
+		//
+		String sequenceRole      = "";
+		String dateReturnDossier = "";
+		try {
+			String submissionNote = dossier.getSubmissionNote();
+
+			if(Validator.isNull(submissionNote)) {
+				throw new Exception("No submissionNote found with dossierId: " + dossier.getDossierId());
+			}
+
+			JSONObject subJson = JSONFactoryUtil.createJSONObject(submissionNote);
+			if(Validator.isNull(subJson) || !subJson.has("data")) {
+				throw new Exception("No json found for submissionNote with dossierId: " + dossier.getDossierId());
+			}
+
+			JSONArray data = subJson.getJSONArray("data");
+			JSONObject oneData;
+			JSONObject oneAction;
+			JSONArray actions;
+			String actionCode;
+
+			for(int i = 0; i< data.length(); i++) {
+				oneData = data.getJSONObject(i);
+				if(Validator.isNull(oneData)) {
+					continue;
+				}
+				actions = oneData.getJSONArray("actions");
+				if(Validator.isNull(actions) || actions.length() ==0) {
+					continue;
+				}
+				oneAction = actions.getJSONObject(0);
+				if(Validator.isNull(oneAction)) {
+					continue;
+				}
+				actionCode = oneAction.getString("actionCode");
+
+				if(Validator.isNotNull(dossierAction.getActionCode()) &&
+						actionCode.equals(dossierAction.getActionCode())) {
+					sequenceRole = oneData.getString("sequenceRole");
+					if(oneAction.has("dueDate") && !oneAction.getString("dueDate").isEmpty()) {
+						Date date = new Date(Long.parseLong(oneAction.getString("dueDate")));
+						dateReturnDossier = convertDate2String(date);
+					}
+				}
+			}
+		}catch (Exception e) {
+			_log.error("Error when add PhongBanXuLy or NgayKetThucTheoQuyDinh");
+			e.printStackTrace();
+		}
+
+		object.put("PhongBanXuLy", sequenceRole);// ko bb
 		String processContent = "";
 		if(Validator.isNotNull(dossierAction)) {
 			String actionName = Validator.isNotNull(dossierAction.getActionName())
@@ -632,7 +683,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("NoiDungXuLy", processContent);
 		object.put("TrangThai", getMappingStatus(groupId, dossier));
 		object.put("NgayBatDau", "");// ko bb
-		object.put("NgayKetThucTheoQuyDinh", "");// ko bb
+		object.put("NgayKetThucTheoQuyDinh", dateReturnDossier);// ko bb
 
 		return object;
 	}
