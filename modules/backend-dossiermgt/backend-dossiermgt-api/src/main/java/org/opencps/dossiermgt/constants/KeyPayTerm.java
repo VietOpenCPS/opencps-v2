@@ -127,4 +127,5 @@ public class KeyPayTerm {
 	public static final String KEYPAY_LATE= "keypay_late";
 	public static final String MINUTELY_PATTERN = "minutely#";
 	public static final String ENDPOINT_KEYPAY = "o/pgi/keypayv3/create";
+	public static final String EINVOICE_VNPT_CONFIG = "EINVOICE_VNPT_CONFIG";
 }

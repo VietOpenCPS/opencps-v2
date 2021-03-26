@@ -225,6 +225,7 @@ public class PaymentFileUtils {
 		model.setInvoiceNo(paymentFile.getInvoiceNo());
 		model.setConfirmPayload(paymentFile.getConfirmPayload());
 		model.setEinvoice(paymentFile.getEinvoice());
+		model.setInvoicePayload(paymentFile.getInvoicePayload());
 
 		return model;
 	}

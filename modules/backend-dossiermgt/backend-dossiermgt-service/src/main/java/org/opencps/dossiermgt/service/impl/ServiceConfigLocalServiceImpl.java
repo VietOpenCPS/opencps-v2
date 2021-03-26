@@ -179,7 +179,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 				cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
 						groupId + StringPool.BLANK, (Serializable)tempServiceConfigs, ttl);
 			}
-			return tempServiceConfigs;
+			return tempServiceConfigs;		
 		}
 	}
 

@@ -10,6 +10,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
 import backend.postal.api.rest.controller.impl.EInvoiceManagementImpl;
+import backend.postal.api.rest.controller.impl.EInvoiceVNPTManagementImpl;
 import backend.postal.api.rest.controller.impl.EvaluationManagementImpl;
 import backend.postal.api.rest.controller.impl.SInvoiceManagementImpl;
 import backend.postal.api.rest.controller.impl.VNPostManagementImpl;
@@ -48,6 +49,7 @@ public class BackendPostalApiRestApplication extends Application {
 		singletons.add(new VNPostManagementImpl());
 		singletons.add(new VotingManagementImpl());
 		singletons.add(new SInvoiceManagementImpl());
+		singletons.add(new EInvoiceVNPTManagementImpl());
 		
 		singletons.add(this);
 		

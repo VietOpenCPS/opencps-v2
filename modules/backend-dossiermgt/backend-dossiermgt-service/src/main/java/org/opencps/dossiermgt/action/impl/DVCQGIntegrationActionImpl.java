@@ -120,6 +120,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private static final String HCM_TIMEZONE = "Asia/Ho_Chi_Minh";
 	private static final String DVCQG_INTEGRATION = "DVCQG_INTEGRATION";
 
+	private static final Integer TIMEOUT_DVCQG = 6;
+
 	private String convertDate2String(Date date) {
 
 		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(LUCENE_DATE_FORMAT);
@@ -1215,7 +1217,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
-			conn.setReadTimeout(60 * 1000);
+			conn.setReadTimeout(TIMEOUT_DVCQG * 1000);
 
 			byte[] postData = body.toJSONString().getBytes("UTF-8");
 			int postDataLength = postData.length;
@@ -1803,7 +1805,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
-			conn.setReadTimeout(60 * 1000);
+			conn.setReadTimeout(TIMEOUT_DVCQG * 1000);
 
 			byte[] postData = body.toJSONString().getBytes("UTF-8");
 			int postDataLength = postData.length;
@@ -1885,7 +1887,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
-			conn.setReadTimeout(60 * 1000);
+			conn.setReadTimeout(TIMEOUT_DVCQG * 1000);
 
 			byte[] postData = body.toJSONString().getBytes("UTF-8");
 			int postDataLength = postData.length;
@@ -1984,7 +1986,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
-			conn.setReadTimeout(60 * 1000);
+			conn.setReadTimeout(TIMEOUT_DVCQG * 1000);
 
 			byte[] postData = body.toJSONString().getBytes("UTF-8");
 			int postDataLength = postData.length;
@@ -2162,7 +2164,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
-			conn.setReadTimeout(60 * 1000);
+			conn.setReadTimeout(TIMEOUT_DVCQG * 1000);
 
 			byte[] postData = body.toJSONString().getBytes("UTF-8");
 			_log.debug("body:" + body.toJSONString());

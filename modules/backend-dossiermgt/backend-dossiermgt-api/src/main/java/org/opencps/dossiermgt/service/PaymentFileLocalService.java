@@ -250,9 +250,9 @@ public interface PaymentFileLocalService extends BaseLocalService,
 
 	public List<PaymentFile> findByPT(int paymentStatus);
 
-	public String findSumPaymentAmountDay(long groupId, String date);
-
 	public PaymentFile findPaymentFileByDossierId(long groupId, long dossierId);
+
+	public String findSumPaymentAmountDay(long groupId, String date);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
