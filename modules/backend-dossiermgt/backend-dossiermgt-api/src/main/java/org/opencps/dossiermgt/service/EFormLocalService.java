@@ -305,6 +305,6 @@ public interface EFormLocalService extends BaseLocalService,
 	public EForm updateEForm(long userId, long groupId, long eFormId,
 		String eFormNo, String serviceCode, String fileTemplateNo,
 		String eFormName, long formScriptFileId, long formReportFileId,
-		String eFormData, String email, String secret,
+		String eFormData, String email, String secret, String govAgencyCode,
 		ServiceContext serviceContext);
 }

@@ -864,6 +864,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
+			_log.info("PaymentInput: " + JSONFactoryUtil.looseSerialize(input.getEpaymentProfile()));
 			PaymentFile paymentFile = CPSDossierBusinessLocalServiceUtil.createPaymentFileByDossierId(groupId, serviceContext, id, PaymentFileUtils.convertFormModelToInputModel(input));		
 
 			PaymentFileInputModel result = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);

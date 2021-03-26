@@ -257,7 +257,8 @@ public interface DeliverableLocalService extends BaseLocalService,
 	public Deliverable getByF_GID_DCODE(long groupId, String deliverableCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Deliverable getByF_GID_DI_STATE(long groupId, long dossierId, int deliverableState);
+	public Deliverable getByF_GID_DI_STATE(long groupId, long dossierId,
+		int deliverableState);
 
 	/**
 	* Returns the deliverable with the primary key.

@@ -57,7 +57,7 @@ public class EFormActionsImpl implements EFormActions{
 	@Override
 	public EForm updateEForm(long userId, long groupId, long eFormId, String eFormNo, long serviceInfoId,
 			String fileTemplateNo, String eFormName, Long formScriptFileId, Long formReportFileId, String eFormData,
-			String email, String secret, ServiceContext serviceContext) {
+			String email, String secret, String govAgencyCode, ServiceContext serviceContext) {
 		
 		try {
 			String eFormNoPattern = StringPool.BLANK;
@@ -92,7 +92,7 @@ public class EFormActionsImpl implements EFormActions{
 
 			return EFormLocalServiceUtil.updateEForm(userId, groupId, eFormId, eFormNo,
 					service != null ? service.getServiceCode() : StringPool.BLANK, fileTemplateNo, eFormName,
-					formScriptFileId, formReportFileId, eFormData, email, secret, serviceContext);
+					formScriptFileId, formReportFileId, eFormData, email, secret,govAgencyCode, serviceContext);
 		} catch (Exception e) {
 			_log.error(e);
 		}

@@ -99,6 +99,7 @@ public class BookingUtils {
 		model.setCount(input.getCount());
 		model.setOnline(input.getOnline());
 		model.setBookingInTime(input.getBookingInTime());
+		model.setGovAgencyCode(input.getGovAgencyCode());
 
 		return model;
 	}

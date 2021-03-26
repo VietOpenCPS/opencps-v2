@@ -112,7 +112,14 @@ import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.*;
 
 import org.opencps.dossiermgt.action.impl.*;
-import org.opencps.dossiermgt.action.util.*;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.DossierActionUtils;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.NotarizationCounterNumberGenerator;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
@@ -2055,6 +2062,16 @@ public class DossierManagementImpl implements DossierManagement {
 									}
 									else {
 										_log.info(666644444);
+										// A Duẩn đối với action 8888 => nếu là inside mà không có quy trình( processAction)
+										// thì vẫn thực hiện doAction
+										if (DossierActionTerm.OUTSIDE_ACTION_PAYMENT.equals(actionCode)) {
+											dossierResult = actions.doAction(
+													groupId, userId, dossier, option, null,
+													actionCode, actionUser, input.getActionNote(),
+													input.getPayload(), input.getAssignUsers(),
+													input.getPayment(), actConfig.getSyncType(),
+													serviceContext, errorModel);
+										}
 										// TODO: Error
 									}
 								}
@@ -9297,7 +9314,7 @@ public class DossierManagementImpl implements DossierManagement {
 			deliverableCode =
 					DeliverableNumberGenerator.generateDeliverableNumber(
 							groupId, context.getCompanyId(),
-							dlt.getDeliverableTypeId());
+							dlt.getDeliverableTypeId(), dossier.getDossierId());
 
 
 			DeliverableLocalServiceUtil.addDeliverableSign(

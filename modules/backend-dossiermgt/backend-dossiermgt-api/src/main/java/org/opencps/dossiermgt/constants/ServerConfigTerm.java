@@ -16,4 +16,6 @@ public class ServerConfigTerm {
 	public static final String BDHN_CONNECT = "BDHN_CONNECT";
 	public static final String SENDER_ADDRESS = "senderAddress";
 	public static final String COUNTER_VERIFY_CREATEDOSSIER = "COUNTER_VERIFY_CREATEDOSSIER";
+	public static final String SYNC_MOFA2 = "SYNC_MOFA2";
+	public static final String SERVER_NO_MOFA2 = "ADD_TO_KHAI_MOFA2";
 }
