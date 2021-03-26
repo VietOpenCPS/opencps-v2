@@ -58,7 +58,7 @@ public class PublishEventHSKMScheduler extends BaseMessageListener {
 			? Integer.valueOf(PropsUtil.get("opencps.sync.dvcqg.time"))
 			: 20;
 
-	private volatile ThreadPoolExecutor threadPoolExecutor;
+	private static volatile ThreadPoolExecutor threadPoolExecutor;
 
 	private int corePoolSize    = 15;
 	private int maximumPoolSize = 60;
