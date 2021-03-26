@@ -1,65 +1,51 @@
 <?xml version="1.0"?>
-<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.2.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_2_0.dtd">
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.1.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_1_0.dtd">
 
-<service-builder dependency-injector="ds" package-path="backend.systemlogmgt">
+<service-builder  package-path="org.opencps.backend.systemlogmgt">
 	<namespace>SystemLogMgt</namespace>
 	<!--<entity data-source="sampleDataSource" local-service="true" name="Foo" remote-service="false" session-factory="sampleSessionFactory" table="foo" tx-manager="sampleTransactionManager uuid="true"">-->
-	<entity local-service="true" remote-service="false" uuid="true" name="SystemLog" table="opencps_systemlog">
+	<entity local-service="true" name="SystemLog" remote-service="false" uuid="true" table="opencps_systemlog">
 
 		<!-- PK fields -->
 		<column name="logId" type="long" primary="true"></column>
 		<!-- Group instance -->
 		<column name="groupId" type="long"></column>
         <column name="createDate" type="Date"></column>
-        <column name="className" type="String"></column>
         <column name="moduleName" type="String"></column>
+        <column name="preLine" type="int"></column>
+        <column name="preMethod" type="String"></column>
+        <column name="line" type="int"></column>
+        <column name="method" type="String"></column>
         <column name="message" type="String"></column>
         <column name="type" type="String"></column>
-        <column name="line" type="int"></column>
-		<!-- Audit fields -->
-
-		<!-- Other fields -->
-
-		<!-- Order -->
-        
-        
+        <column name="threadId" type="String"></column>
 
 		<!-- Finder methods -->
+        
+		
 
-		<finder name="CreateDateGreater" return-type="Collection">
-            <finder-column name="createDate" comparator="&gt;="></finder-column>
-		</finder>
-		<finder name="CreateDateLesser" return-type="Collection">
-            <finder-column name="createDate" comparator="&lt;="></finder-column>
-		</finder>
-		<finder name="LogId" return-type="SystemLog">
-            <finder-column name="logId" comparator="=" case-sensitive="false"></finder-column>
-        </finder>
-        <finder name="ClassName" return-type="Collection">
-            <finder-column name="className" comparator="="></finder-column>
-        </finder>
-        <finder name="ModuleName" return-type="Collection">
-            <finder-column name="moduleName" comparator="="></finder-column>
-        </finder>
-        <finder name="Type" return-type="Collection">
-            <finder-column name="type" comparator="="></finder-column>
-        </finder>
-        <finder name="Line" return-type="Collection">
-            <finder-column name="line" comparator="="></finder-column>
-        </finder>
-        <finder name="LineGreater" return-type="Collection">
-            <finder-column name="line" comparator="&gt;"></finder-column>
-        </finder>
-        <finder name="LineLesser" return-type="Collection">
-            <finder-column name="line" comparator="&lt;"></finder-column>
-        </finder>
 		<!-- References -->
-        <finder name="GroupId" return-type="Collection">
-            <finder-column name="groupId" comparator="="></finder-column>
+        <finder name="multipleGroupId" return-type="Collection">
+            <finder-column name="groupId" comparator="=" arrayable-operator="OR"></finder-column>
         </finder>
-        
-        
-        
+        <finder name="multipleType" return-type="Collection">
+            <finder-column name="type" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
+        <finder name="multiplemoduleName" return-type="Collection">
+            <finder-column name="moduleName" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
+        <finder name="multiplePreMethod" return-type="Collection">
+            <finder-column name="preMethod" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
+        <finder name="multipleMethod" return-type="Collection">
+            <finder-column name="method" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
+        <finder name="multipleThreadId" return-type="Collection">
+            <finder-column name="threadId" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
+        <finder name="likeMessage" return-type="Collection">
+            <finder-column name="message" comparator="LIKE"></finder-column>
+        </finder>
 
 		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
 		<reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
