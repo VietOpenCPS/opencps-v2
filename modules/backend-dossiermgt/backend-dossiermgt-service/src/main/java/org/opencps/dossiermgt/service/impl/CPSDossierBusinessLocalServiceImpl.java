@@ -5733,15 +5733,23 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				// Check giao dịch đã được thanh toán chưa
 				String key = StringPool.BLANK;
+				String resultVoid = StringPool.BLANK;
 				JSONObject paymentObject = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 				key = paymentObject.getString(SyncServerTerm.KEY_SALE);
 				_log.info("Call API Hủy Thanh toán");
 				String result = POSVCBUtils.checkResultPOSVCB(groupId, dossier.getGovAgencyCode(), key);
-				if("00".equals(result)) {
-					String resultVoid = POSVCBUtils.voidPOSVCB(groupId, dossier.getGovAgencyCode(),
-							 SyncServerTerm.CURRENCY_CODE, "",  dossier.getDossierNo(), result);
-					_log.info(" --- Result VCB ---  : "  + resultVoid);
+				if(Validator.isNotNull(result)) {
+					JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
+					if ("00".equals(resultJSON.getString("RESPONSE_CODE"))) {
+						resultVoid = POSVCBUtils.voidPOSVCB(groupId, dossier.getGovAgencyCode(),
+								SyncServerTerm.CURRENCY_CODE, "", dossier.getDossierNo(), resultJSON, paymentFile.getPaymentNote());
+					} else {
+						resultVoid = "Giao dịch chưa được khởi tạo";
+					}
+				}else{
+					resultVoid = "Mất kết nối đến máy POS";
 				}
+				_log.info(" --- Result VCB ---  : " + resultVoid);
 			}catch (Exception e){
 				e.getMessage();
 			}

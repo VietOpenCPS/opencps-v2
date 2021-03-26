@@ -231,12 +231,11 @@ public class POSVCBUtils {
     }
 
     public static String voidPOSVCB( long groupId, String govAgencyCode, String currencyCode, String staffId,
-                                     String orderId,  String result) {
+                                     String orderId,  JSONObject resultJSON, String addPrint) {
 
         try {
             JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode);
             JSONObject reponseJSON = getRequestConnectionPOSVCB(groupId, defaultJSON);
-            JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
             StringBuilder sb = new StringBuilder();
             if (Validator.isNotNull(defaultJSON) && Validator.isNotNull(reponseJSON) && Validator.isNotNull(resultJSON.getString(SyncServerTerm.INVOICE))) {
                 _log.info("Vaooooooo 111111111");
@@ -247,17 +246,15 @@ public class POSVCBUtils {
                 String merchantId = StringPool.BLANK;
                 String clientId = StringPool.BLANK;
                 String invoice = StringPool.BLANK;
-                String addPrint = StringPool.BLANK;
                 String addData = StringPool.BLANK;
                 String amount = StringPool.BLANK;
 
-                serialNumber = resultJSON.getString(SyncServerTerm.SERIAL_NUMBER);
+                serialNumber = reponseJSON.getString(SyncServerTerm.SERIAL_NUMBER);
                 refId = resultJSON.getString(SyncServerTerm.REF_ID);
                 merchantOutletId = reponseJSON.getString(SyncServerTerm.MERCHANT_OUTLET_ID);
                 merchantId = reponseJSON.getString(SyncServerTerm.MERCHANT_ID);
                 clientId = reponseJSON.getString(SyncServerTerm.CLIENT_ID);
                 invoice = resultJSON.getString(SyncServerTerm.INVOICE);
-                addPrint = resultJSON.getString(SyncServerTerm.ADD_PRINT);
                 addData = resultJSON.getString(SyncServerTerm.ADD_DATA);
                 amount = resultJSON.getString(SyncServerTerm.AMOUNT);
 
@@ -284,6 +281,7 @@ public class POSVCBUtils {
                 jsonBody.put("CLIENT_ID", clientId);
 
                 String data = jsonBody.toString();
+                _log.info("Data: " + data);
 
                 String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
                 byte[] keyData = thirdPartyKey.getBytes();
@@ -292,7 +290,7 @@ public class POSVCBUtils {
 
                 jsonBodyEncrypt.put("KEY", defaultJSON.getString(SyncServerTerm.THIRD_PARTY_ID));
                 jsonBodyEncrypt.put("VALUE", encrypt3DES1(keyData, data));
-                _log.info("Vaooooooo 22222222");
+                _log.info("Vaooooooo 22222222: " + jsonBodyEncrypt.toString());
                 String body = "=" + jsonBodyEncrypt.toString();
 
                 _log.debug("POST DATA: " + body);
