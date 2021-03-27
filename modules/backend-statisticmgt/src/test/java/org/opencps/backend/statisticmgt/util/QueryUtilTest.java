@@ -12,11 +12,11 @@ public class QueryUtilTest {
 	@Test
 	public void testGetSQLQueryTemplate() {
 	
-		String sqlQueryTemplate = QueryUtil.getSQLQueryTemplate(1, Constants.COUNT);
+		//String sqlQueryTemplate = QueryUtil.getSQLQueryTemplate(1, Constants.COUNT);
 		
-		System.out.println("type:1|subtype:count " + sqlQueryTemplate);
+		//System.out.println("type:1|subtype:count " + sqlQueryTemplate);
 		
-		assertTrue(sqlQueryTemplate.length() > 0);
+		//assertTrue(sqlQueryTemplate.length() > 0);
 		
 		//sqlQueryTemplate = QueryUtil.getSQLQueryTemplate(1, Constants.LIST);
 		
@@ -32,26 +32,18 @@ public class QueryUtilTest {
 	}
 	
 	@Test
-	public void testCalculate() {
-	
-		int result = QueryUtil.calcualate(1, 2);
+	public void test() {
+		//boolean result = QueryUtil.test1("processing", "processing");
+		//assertTrue(result);
+		//result = QueryUtil.test2("processing_202", "processing_202");
+		//assertTrue(result);
+		//createlog(Class, msg,type)
+		String[] a = QueryUtil.test3("");
 		
-		assertTrue(result > 10);
+		System.out.println(a[0]);
 		
+		assertTrue(a != null && a.length > 0);
 		
-		result = QueryUtil.calcualate(6, 7);
-		
-		assertTrue(result > 20);
-		//sqlQueryTemplate = QueryUtil.getSQLQueryTemplate(1, Constants.LIST);
-		
-		//System.out.println("type:1|subtype:list " + sqlQueryTemplate);
-		
-		//assertTrue(sqlQueryTemplate.length() > 0);
-		
-		//sqlQueryTemplate = QueryUtil.getSQLQueryTemplate(1, Constants.GROUP_COUNT);
-		
-		//System.out.println("type:1|subtype:group_count " + sqlQueryTemplate);
-		
-		//assertTrue(sqlQueryTemplate.length() > 0);
+		System.out.println("4 " +Thread.currentThread().getId() + "|" + Thread.currentThread().getName() + "|" + Thread.currentThread().getContextClassLoader().getClass().getName());
 	}
 }

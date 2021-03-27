@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
  *
  */
 public class QueryProcessFactoryImplTest {
+	
 	@Test
 	public void testGetQuerySchema() {
 		QueryProcessFactoryImpl factoryImpl = new QueryProcessFactoryImpl();
@@ -577,4 +578,5 @@ public class QueryProcessFactoryImplTest {
 		assertFalse(sql == null || sql.isEmpty() || sql.contains("{") || sql.contains("}") || sql.contains("[")
 				|| sql.contains("]") || columnMap == null || columnMap.isEmpty());
 	}
+	
 }

@@ -385,7 +385,8 @@ public class QueryUtil {
 						} else if (dataTypeName.equals(boolean.class.getName())) {
 							dataRow.put(key, rs.getBoolean(key));
 						} else if (dataTypeName.equals(Date.class.getName())) {
-							dataRow.put(key, DatetimeUtil.convertDatetoDateString(rs.getDate(key)));
+							dataRow.put(key,
+									DatetimeUtil.convertDateToString(rs.getDate(key), DatetimeUtil._DD_MM_YYYY));
 						} else {
 							dataRow.put(key, rs.getString(key));
 						}
@@ -485,13 +486,8 @@ public class QueryUtil {
 		} else if (subType.equals(Constants.LIST)) {
 			sqlQueryTemplate = QueryType.getSQLSearchQueryTemplate(type);
 		}
-
+		System.out.println("5 " + Thread.currentThread().getId() + "|" + Thread.currentThread().getName());
 		return sqlQueryTemplate;
-	}
-	
-	public static int calcualate(int a, int b) {
-		a = a * 10/3 - 2 + b;
-		return a * b;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(QueryUtil.class);

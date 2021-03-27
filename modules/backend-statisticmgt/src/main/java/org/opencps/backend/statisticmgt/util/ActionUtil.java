@@ -1,12 +1,20 @@
 package org.opencps.backend.statisticmgt.util;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.opencps.backend.statisticmgt.constant.Constants;
 import org.opencps.backend.statisticmgt.constant.PropValues;
 import org.opencps.backend.statisticmgt.processimpl.QueryProcessFactoryImpl;
+import org.opencps.bundlemgt.classloader.util.ClassLoaderFactoryUtil;
 
 /**
  * @author trungnt
@@ -15,6 +23,74 @@ import org.opencps.backend.statisticmgt.processimpl.QueryProcessFactoryImpl;
 public class ActionUtil {
 
 	private static Log _log = LogFactoryUtil.getLog(ActionUtil.class);
+
+	public static String exportDossierStatistic(long groupId, long fromDate, long toDate, String originalities,
+			String domainCode, String govAgencyCode, String serviceCode, String dossierStatus, Integer day,
+			String groupBy, Integer start, Integer end, int type, String subType) {
+
+		String result = StringPool.BLANK;
+
+		JSONObject obj = getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode,
+				serviceCode, dossierStatus, day, groupBy, start, end, type, subType);
+		String strFromDate = DatetimeUtil.convertTimestampToStringDatetime(fromDate, DatetimeUtil._YYYY_MM_DD);
+
+		String strToDate = DatetimeUtil.convertTimestampToStringDatetime(toDate, DatetimeUtil._YYYY_MM_DD);
+		HashMap<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("currentDay", String.valueOf(DatetimeUtil.getCurrentDay()));
+		dataMap.put("currentMonth", String.valueOf(DatetimeUtil.getCurrentMonth()));
+		dataMap.put("currentYear", String.valueOf(DatetimeUtil.getCurrentYear()));
+		dataMap.put("fromDate", strFromDate);
+		dataMap.put("toDate", strToDate);
+		String govAgencyName = StringPool.BLANK;
+		String domainName = StringPool.BLANK;
+
+		int total = 0;
+
+		List<Object[]> dataList = new ArrayList<Object[]>();
+
+		if (obj != null && obj.has(Constants.DATA)) {
+			JSONArray data = obj.getJSONArray(Constants.DATA);
+			if (data != null && data.length() > 0) {
+				JSONObject firstRow = data.getJSONObject(0);
+				total = data.length();
+				govAgencyName = firstRow.getString("govAgencyName");
+				domainName = firstRow.getString("domainName");
+				dataMap.put("govAgencyName", govAgencyName.toUpperCase());
+				dataMap.put("domainName", domainName);
+				dataMap.put("total", String.valueOf(total));
+
+				Object[] objects = null;
+
+				JSONObject dataRow = null;
+				for (int i = 0; i < data.length(); i++) {
+					objects = new Object[firstRow.length()];
+					dataRow = data.getJSONObject(i);
+					objects[0] = String.valueOf(i + 1);
+					objects[1] = dataRow.getString("dossierNo");
+					objects[2] = dataRow.getString("dossierName");
+					objects[3] = dataRow.getString("applicantName");
+					objects[4] = dataRow.getString("receiveDate");
+					objects[5] = dataRow.getString("dueDate");
+					objects[6] = dataRow.getString("dossierStatusText");
+
+					dataList.add(objects);
+				}
+
+				dataMap.put("data", dataList);
+			}
+		}
+
+		try {
+			result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
+					StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_1), dataMap);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		_log.info("=========> Result " + result);
+		
+		return result;
+	}
 
 	public static JSONObject getDossierStatistic(long groupId, long fromDate, long toDate, String originalities,
 			String domainCode, String govAgencyCode, String serviceCode, String dossierStatus, Integer day,
@@ -56,9 +132,10 @@ public class ActionUtil {
 					originalities = String.valueOf(3);
 				}
 
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "processing, planning";
-				}
+				/*
+				 * if (Validator.isNull(dossierStatus)) { dossierStatus =
+				 * "processing, planning"; }
+				 */
 				return factory.getDossierStatistic2(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -73,10 +150,10 @@ public class ActionUtil {
 				if (Validator.isNull(originalities)) {
 					originalities = String.valueOf(2);
 				}
-
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "processing, planning";
-				}
+				/*
+				 * if (Validator.isNull(dossierStatus)) { dossierStatus =
+				 * "processing, planning"; }
+				 */
 				return factory.getDossierStatistic4(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -86,10 +163,9 @@ public class ActionUtil {
 				if (Validator.isNull(originalities)) {
 					originalities = "2,3";
 				}
-
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "done";
-				}
+				/*
+				 * if (Validator.isNull(dossierStatus)) { dossierStatus = "done"; }
+				 */
 				return factory.getDossierStatistic5(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -99,10 +175,9 @@ public class ActionUtil {
 				if (Validator.isNull(originalities)) {
 					originalities = "2,3";
 				}
-
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "done";
-				}
+				/*
+				 * if (Validator.isNull(dossierStatus)) { dossierStatus = "done"; }
+				 */
 				return factory.getDossierStatistic6(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -112,10 +187,9 @@ public class ActionUtil {
 				if (Validator.isNull(originalities)) {
 					originalities = "2,3";
 				}
-
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "done";
-				}
+				/*
+				 * if (Validator.isNull(dossierStatus)) { dossierStatus = "done"; }
+				 */
 				return factory.getDossierStatistic7(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -125,10 +199,9 @@ public class ActionUtil {
 				if (Validator.isNull(originalities)) {
 					originalities = "2,3";
 				}
-
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "done";
-				}
+				/*
+				 * if (Validator.isNull(dossierStatus)) { dossierStatus = "done"; }
+				 */
 				return factory.getDossierStatistic8(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),

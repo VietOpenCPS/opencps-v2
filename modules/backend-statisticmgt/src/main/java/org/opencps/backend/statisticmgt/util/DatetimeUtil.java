@@ -16,6 +16,8 @@ import java.util.TimeZone;
 public class DatetimeUtil {
 	public static final String _YYYY_MM_DD = "yyyy-MM-dd";
 
+	public static final String _DD_MM_YYYY = "dd/MM/yyyy";
+
 	public static final String _VN_TIME_ZONE = "Asia/Ho_Chi_Minh";
 
 	public static String convertTimestampToStringDatetime(long time, String pattern) {
@@ -47,13 +49,35 @@ public class DatetimeUtil {
 
 		return calendar.getTimeInMillis();
 	}
-	public static String convertDatetoDateString(Date date) {
+
+	public static String convertDateToString(Date date, String format) {
 		if (date == null) {
 			return null;
 		}
-		 DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");  
-         String strDate = dateFormat.format(date);  
-         return strDate;
+		DateFormat dateFormat = new SimpleDateFormat(format);
+		String strDate = dateFormat.format(date);
+		return strDate;
+	}
+
+	public static int getCurrentYear() {
+		Date now = new Date();
+		Calendar c = Calendar.getInstance();
+		c.setTime(now);
+		return c.get(Calendar.YEAR);
+	}
+
+	public static int getCurrentMonth() {
+		Date now = new Date();
+		Calendar c = Calendar.getInstance();
+		c.setTime(now);
+		return c.get(Calendar.MONTH) + 1;
+	}
+
+	public static int getCurrentDay() {
+		Date now = new Date();
+		Calendar c = Calendar.getInstance();
+		c.setTime(now);
+		return c.get(Calendar.DAY_OF_YEAR);
 	}
 
 }

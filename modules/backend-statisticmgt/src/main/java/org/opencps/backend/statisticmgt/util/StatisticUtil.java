@@ -1,10 +1,21 @@
 package org.opencps.backend.statisticmgt.util;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.opencps.backend.statisticmgt.constant.Constants;
+import org.opencps.backend.statisticmgt.constant.PropValues;
+import org.opencps.backend.statisticmgt.exception.TemplateDirException;
+import org.opencps.backend.statisticmgt.exception.TemplateFileExeption;
 
 /**
  * @author trungnt
@@ -36,5 +47,25 @@ public class StatisticUtil {
 		}
 
 		return result;
+	}
+
+	public static String getTemplateFilePath(String fileName) throws Exception {
+
+		String dir = PropsUtil.get(PropsKeys.LIFERAY_HOME) + PropValues.TEMPLATES_REPORTS_DIR;
+
+		Path path = Paths.get(dir);
+
+		if (!Files.exists(path)) {
+			throw new TemplateDirException(dir + " does not exist.");
+		}
+
+		String filePath = dir + StringPool.SLASH + fileName;
+
+		File file = new File(filePath);
+		if (!file.exists()) {
+			throw new TemplateFileExeption(filePath + " does not exist.");
+		}
+
+		return filePath;
 	}
 }

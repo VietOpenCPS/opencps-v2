@@ -133,36 +133,10 @@ public class PropKeys {
 	public static final String STATISTIC_DOSSIER_DASHBROAD_GROUP_TOTAL_COUNT = "statistic.dossier.dashbroad.group.total_count";
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
-
-	
-	
+	//other
 	public static final String CONFIG_DOSSIER_STATISTIC_SIZE_LIST = "config.dossier_statistic.size_list";
+	public static final String TEMPLATES_REPORTS_DIR = "templates.reports.dir";
+	public static final String TEMPLATES_REPORTS_FILENAME_1 = "templates.reports.filename1";
 	
 }

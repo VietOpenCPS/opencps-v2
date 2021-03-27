@@ -184,6 +184,10 @@ public class PropValues {
 	public static final String STATISTIC_DOSSIER_DASHBROAD_GROUP_TOTAL_COUNT = PropUtil
 			.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DASHBROAD_GROUP_TOTAL_COUNT);
 
+	// other
 	public static final int CONFIG_DOSSIER_STATISTIC_SIZE_LIST = GetterUtil
 			.getInteger(PropUtil.getConfigProperty(PropKeys.CONFIG_DOSSIER_STATISTIC_SIZE_LIST));
+
+	public static final String TEMPLATES_REPORTS_DIR = PropUtil.getConfigProperty(PropKeys.TEMPLATES_REPORTS_DIR);
+	public static final String TEMPLATES_REPORTS_FILENAME_1 = PropUtil.getConfigProperty(PropKeys.TEMPLATES_REPORTS_FILENAME_1);
 }
