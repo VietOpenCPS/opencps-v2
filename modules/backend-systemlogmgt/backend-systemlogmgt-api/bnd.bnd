@@ -1,0 +1,10 @@
+Bundle-Name: backend-systemlogmgt-api
+Bundle-SymbolicName: backend.systemlogmgt.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	backend.systemlogmgt.exception,\
+	backend.systemlogmgt.model,\
+	backend.systemlogmgt.service,\
+	backend.systemlogmgt.service.persistence
+-check: EXPORTS
+-includeresource: META-INF/service.xml=../backend-systemlogmgt-service/service.xml
