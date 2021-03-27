@@ -179,7 +179,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 				cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
 						groupId + StringPool.BLANK, (Serializable)tempServiceConfigs, ttl);
 			}
-			return tempServiceConfigs;
+			return tempServiceConfigs;		
 		}
 	}
 
@@ -652,6 +652,10 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 	public List<ServiceConfig> getByGovAgencyCode(String govAgencyCode) {
 		return serviceConfigPersistence.findByF_GAC(govAgencyCode);
+	}
+
+	public ServiceConfig fetchByGID_SI_GOV_LEVEL(long groupId, long serviceInfo, String govAgencyCode, int serviceLevel) {
+		return serviceConfigPersistence.fetchByGID_SI_GOV_LEVEL(groupId,serviceInfo,govAgencyCode,serviceLevel);
 	}
 
 	public List<ServiceConfig> getByLevel(long groupId, int level) {

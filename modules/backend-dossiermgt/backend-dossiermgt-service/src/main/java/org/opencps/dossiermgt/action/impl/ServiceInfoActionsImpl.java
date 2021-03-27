@@ -419,7 +419,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 	}
 
 	@Override
-	public boolean deleteAllServiceConfig(long userId, long groupId, long serviceInfoId,
+	public boolean deleteAllServiceConfig(long userId, long groupId, long serviceInfoId,ServiceConfig serviceConfigOld,
 			ServiceContext serviceContext) {
 		boolean flag = false;
 		try {
@@ -441,7 +441,9 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 						}
 					}
 					if (flag) {
-						ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.deleteServiceConfig(config);
+						if(Validator.isNull(serviceConfigOld)) {
+							ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.deleteServiceConfig(config);
+						}
 //						if (serviceConfig == null) {
 //							flag = false;
 //						}

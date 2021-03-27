@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import java.util.Date;
 import java.util.List;
 
+import com.liferay.portal.kernel.util.OrderByComparator;
 import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.service.base.PublishQueueLocalServiceBaseImpl;
 
@@ -182,8 +183,13 @@ public class PublishQueueLocalServiceImpl
 		return publishQueuePersistence.findBySTS_SN_NOT(statuses, serverNo, start, end);
 	}
 
-	public List<PublishQueue> getByStatusesAndServerNo(int[] statuses, String serverNo, int start, int end) {
-		return publishQueuePersistence.findBySTS_SN(statuses, serverNo, start, end);
+	public List<PublishQueue> getByStatusesAndServerNo(int[] statuses, String serverNo, int start, int end
+			, OrderByComparator<PublishQueue> orderByComparator) {
+		return publishQueuePersistence.findBySTS_SN(statuses, serverNo, start, end, orderByComparator);
 	}
-	
+
+	public List<PublishQueue> getByDossierIdAndServerNo(long dossierId, String serverNo, int start, int end
+			, OrderByComparator<PublishQueue> orderByComparator) {
+		return publishQueuePersistence.findByDID_SN(dossierId, serverNo, start, end, orderByComparator);
+	}
 }

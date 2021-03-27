@@ -83,7 +83,7 @@ public class DossierFinderImpl extends DossierFinderBaseImpl implements DossierF
 					"            group by OV.votingId " +
 					"            order by votingId asc";
 
-			_log.info("Query get list voting: " + sql);
+			_log.debug("Query get list voting: " + sql);
 			SQLQuery query = session.createSQLQuery(sql);
 			query.setCacheable(false);
 			query.addScalar("classPK", Type.STRING);

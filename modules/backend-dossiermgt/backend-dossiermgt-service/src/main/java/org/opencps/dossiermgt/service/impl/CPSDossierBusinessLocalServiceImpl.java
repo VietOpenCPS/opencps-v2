@@ -17,7 +17,9 @@ package org.opencps.dossiermgt.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import backend.auth.api.exception.BusinessExceptionImpl;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
@@ -82,6 +84,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.adminconfig.model.DynamicReport;
 import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
@@ -107,11 +110,14 @@ import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDatePhaseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
+import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.util.AccentUtils;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.ConfigCounterNumberGenerator;
@@ -127,6 +133,7 @@ import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.VNPostCLSUtils;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
@@ -163,6 +170,7 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.impl.DossierImpl;
 import org.opencps.dossiermgt.model.impl.DossierModelImpl;
 import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
@@ -573,7 +581,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 		}
 	}
-
+	private static final int MAX_TRY_COUNT = 10;
+	private static final String QRCODE_PAY = "qrcode_pay";
 	private boolean createDossierDocumentPostAction(long groupId, long userId, Dossier dossier,
 			DossierAction dossierAction, JSONObject payloadObject, Employee employee, User user,
 			String documentTypeList, ServiceContext context)
@@ -612,9 +621,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					} else {
 						formDataObj.put(Field.USER_NAME, user.getFullName());
 					}
-
 					Message message = new Message();
-					// _log.info("Document script: " + dt.getDocumentScript());
+//					 _log.info("Document script: " + formDataObj.toJSONString());
 					JSONObject msgData = JSONFactoryUtil.createJSONObject();
 					msgData.put(ConstantUtils.CLASS_NAME, DossierDocument.class.getName());
 					msgData.put(Field.CLASS_PK, dossierDocument.getDossierDocumentId());
@@ -1551,6 +1559,82 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					assignUsers, payment, hsltDossier, context);
 		}
 
+		List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossierId);
+		DossierFileActions actions = new DossierFileActionsImpl();
+		try {
+			if(proAction.getESignature() && dossierFiles != null && !dossierFiles.isEmpty()) {
+				for (DossierFile item : dossierFiles) {
+					boolean eForm = false;
+					DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId,
+							item.getDossierTemplateNo(), item.getDossierPartNo());
+					DeliverableType dlt = DeliverableTypeLocalServiceUtil
+							.getByCode(groupId,
+									dossierPart.getDeliverableType());
+					eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
+							: false;
+
+					if (!eForm || !dossierPart.getESign() || !item.getEForm()) {
+						continue;
+					}
+					JSONObject mappingDataObj = JSONFactoryUtil
+							.createJSONObject(dlt.getMappingData());
+					if (!mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) continue;
+					String deliverables = mappingDataObj.getString(
+							DeliverableTypesTerm.DELIVERABLES_KEY);
+
+					//Cut lấy value của deliverableKey trong giay phep
+					if(Validator.isNotNull(deliverables)) {
+						String newString = deliverables.substring(1);
+						String[] stringSplit = newString.split(StringPool.AT);
+						String variable = stringSplit[0];
+						//Note: key deliverableType được cấu hình trong thành phần tồn tại trong dossierFile sau khi được mapping dữ liệu
+						JSONObject formDataObj = JSONFactoryUtil
+								.createJSONObject(item.getFormData());
+						if (formDataObj.has(variable)) {
+							JSONArray deliverablesArr = JSONFactoryUtil
+									.createJSONArray(formDataObj
+											.getString(variable));
+
+							for (int i = 0; i < deliverablesArr
+									.length(); i++) {
+								JSONObject deliverableObj = null;
+								deliverableObj = deliverablesArr
+										.getJSONObject(i);
+								Iterator<?> keys = formDataObj.keys();
+								while (keys.hasNext()) {
+									String key = (String) keys.next();
+									if (!key.equals(variable)) {
+										deliverableObj.put(key,
+												formDataObj.get(key));
+									}
+								}
+								if (Validator.isNotNull(dossier.getApplicantIdNo())) {
+									deliverableObj.put(DossierTerm.APPLICANT_ID_NO, dossier.getApplicantIdNo());
+								}
+								if(Validator.isNotNull(dossier.getDossierNo())){
+									deliverableObj.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+								}
+								_log.debug("deliverableObj -------: " + JSONFactoryUtil.looseSerialize(deliverableObj));
+								createDeliverable(dossierId, dossier, dossierPart, actions, dlt, deliverableObj, userId, groupId, context);
+
+							}
+						}
+					}else {
+						Deliverable deliverable = DeliverableLocalServiceUtil.fetchByGID_DID(groupId, dossierId);
+						JSONObject deliverablObj =  JSONFactoryUtil.createJSONObject(deliverable.getFormData());
+						if(Validator.isNotNull(dossier.getDossierNo())){
+							deliverablObj.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+						}
+						if (Validator.isNotNull(deliverable)) {
+							updateDeliverable(deliverable, userId, groupId, dossierPart, dlt, deliverablObj, context);
+						}
+					}
+				}
+			}
+		}catch (Exception e){
+			e.getMessage();
+		}
+
 		//Update dossier
 		dossierLocalService.updateDossier(dossier);
 
@@ -1559,6 +1643,120 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//		indexer.reindex(dossier);
 
 		return dossierAction;
+	}
+	//Update deliverables
+	private void updateDeliverable(Deliverable deliverable, long userId, long groupId, DossierPart dossierPart, DeliverableType dlt , JSONObject deliverablObj, ServiceContext context){
+
+		if(Validator.isNotNull(deliverable) && deliverable.getDeliverableState() == 0){
+			_log.info("Update Deliverable");
+			if (dlt.getFormReportFileId() > 0) {
+				try {
+					DLFileEntry dlFileEntry =
+							DLFileEntryLocalServiceUtil.getFileEntry(
+									dlt.getFormReportFileId());
+					long fileEntryId = 0L;
+					if (dlFileEntry.getContentStream() != null) {
+							FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+									userId, groupId, dlFileEntry.getContentStream(), dossierPart.getPartName(), StringPool.BLANK,
+									0L, context);
+
+							if (fileEntry != null) {
+								fileEntryId = fileEntry.getFileEntryId();
+								_log.info("FileEntry : " + fileEntryId);
+								deliverable.setFileEntryId(fileEntryId);
+								deliverable.setFileAttachs(String.valueOf(fileEntryId));
+							}
+					}
+					deliverable.setDeliverableState(1);
+					deliverable.setFormData(deliverablObj.toString());
+					DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+				}
+				catch (Exception e) {
+					_log.debug(e);
+				}
+			}
+		}
+	}
+	//Create deliverables
+	private void createDeliverable(long dossierId, Dossier dossier,  DossierPart dossierPart,
+								  DossierFileActions actions, DeliverableType dlt, JSONObject deliverableObj,
+								  long userId, long groupId, ServiceContext context) throws PortalException {
+		DossierFile dossierFile = null;
+		InputStream is = null;
+		String deliverableCode = StringPool.BLANK;
+		long fileEntryId = 0;
+		try {
+			if (dlt.getFormReportFileId() > 0) {
+				try {
+					DLFileEntry dlFileEntry =
+							DLFileEntryLocalServiceUtil.getFileEntry(
+									dlt.getFormReportFileId());
+
+					is = dlFileEntry.getContentStream();
+
+					FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+							userId, groupId, dlFileEntry.getContentStream(), dossierPart.getPartName(), StringPool.BLANK,
+							0L, context);
+
+					if (fileEntry != null) {
+						fileEntryId = fileEntry.getFileEntryId();
+					}
+				}
+				catch (Exception e) {
+					_log.debug(e);
+				}
+			}
+
+			dossierFile = actions.addDossierFileEForm(
+					groupId, dossierId,
+					StringPool.BLANK,
+					dossier.getDossierTemplateNo(),
+					dossierPart.getPartNo(),
+					dossierPart.getFileTemplateNo(),
+					dossierPart.getPartName(),
+					dossierPart.getPartName(), 0L, is,
+					StringPool.BLANK,
+					String.valueOf(false),
+					context);
+			dossierFile = actions.updateDossierFileFormData(
+					groupId, dossier.getDossierId(), dossierFile.getReferenceUid(),
+					Validator.isNotNull(deliverableObj.toString()) ? deliverableObj.toString() : dossierFile.getFormData(), context);
+
+			if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+				deliverableCode =
+						DeliverableNumberGenerator.generateDeliverableNumber(
+								groupId, context.getCompanyId(),
+								dlt.getDeliverableTypeId(), dossierId);
+			}
+
+			Deliverable deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
+					groupId, dlt.getTypeCode(), dlt.getTypeName(), Validator.isNotNull(dossierFile.getDeliverableCode()) ? dossierFile.getDeliverableCode() : deliverableCode,
+					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantIdNo(),
+					dossier.getApplicantName(), "", "", "",
+					null, String.valueOf(1), dossier.getDossierId(), dossierFile.getFileEntryId(),
+					dlt.getFormScriptFileId(), dlt.getFormReportFileId(), deliverableObj.toString(),
+					String.valueOf(dossierFile.getFileEntryId()), context);
+
+			_log.debug("Deliverable: " + deliverable.getFileEntryId());
+			if(Validator.isNotNull(deliverable)){
+				if(deliverable.getFileEntryId() < 1 ){
+					deliverable.setFileEntryId(fileEntryId);
+				}
+				deliverable.setFileAttachs(String.valueOf(fileEntryId));
+				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+			}
+
+		}catch (Exception e) {
+			e.getMessage();
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
+		}
 	}
 
 	public void initDossierActionUser(String stepCode, long serviceProcessId, Dossier dossier,
@@ -2611,8 +2809,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//		ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 		String paymentMethod = "";
 		String confirmPayload = "";
+		_log.info("payment : " + payment);
+		_log.info("proAction : " + JSONFactoryUtil.looseSerialize(proAction));
 		try {
 			JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
+			_log.info("paymentObj : " + JSONFactoryUtil.looseSerialize(paymentObj));
 			if (paymentObj.has("paymentMethod")) {
 				paymentMethod = paymentObj.getString("paymentMethod");
 			}
@@ -2626,8 +2827,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
 				|| proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI
 				&& Validator.isNotNull(payment)) {
-
+			_log.info("111111");
 			createPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
+			
 		} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI) {
 
 			// neu chua co payment file thi phai tao payment file
@@ -2636,6 +2838,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				oldPaymentFile = createPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier,
 						context);
+				_log.info("222222");
 			}
 
 //			try {
@@ -2664,7 +2867,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON, baseUrl,
 						CINVOICEUrl, StringPool.BLANK, StringPool.BLANK, properties, params, context);
-
+				_log.info("resultObj : " + JSONFactoryUtil.looseSerialize(resultObj));
 			}
 
 			if (Validator.isNotNull(oldPaymentFile)) {
@@ -2737,7 +2940,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 										  ProcessAction proAction, DossierAction previousAction, Dossier dossier, ServiceContext context)
 			throws PortalException {
 		PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
-
 		String paymentFee =  StringPool.BLANK;
 		Long feeAmount =  0l, serviceAmount =  0l, shipAmount =  0l;
 		String paymentNote =  StringPool.BLANK;
@@ -2891,6 +3093,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				}
 				_log.info("==========Payment after add paygov111: " + epaymentConfigJSON);
+				
+				_log.info("============EInvoice VNPT========= : " + epaymentConfigJSON);
+				if (epaymentConfigJSON.has(KeyPayTerm.EINVOICE_VNPT_CONFIG)) {
+					try {
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.EINVOICE_VNPT_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.EINVOICE_VNPT_CONFIG, schema);
+						paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+								epaymentProfileJsonNew.toJSONString(), context);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+				}
+				
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (JSONException e) {
@@ -2903,7 +3118,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					dossier.getDossierId(), dossier.getReferenceUid(), paymentFee, advanceAmount, feeAmount,
 					serviceAmount, shipAmount, paymentAmount, paymentNote, epaymentProfile, bankInfo, paymentStatus,
 					paymentMethod, context);
-
+		
 			long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName() + "paymentFileNo");
 
 			Calendar cal = Calendar.getInstance();
@@ -3024,6 +3239,18 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
 					createTransactionKeypayV3(dossier, dossier.getDossierActionId());
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			if (epaymentConfigJSON.has(KeyPayTerm.EINVOICE_VNPT_CONFIG)) {
+				try {
+					epaymentProfileJSON.put(KeyPayTerm.EINVOICE_VNPT_CONFIG, true);
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.EINVOICE_VNPT_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.EINVOICE_VNPT_CONFIG, schema);
 //					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 //							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {

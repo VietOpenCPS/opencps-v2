@@ -834,6 +834,11 @@ public class DeliverableLocalServiceImpl
 			strDeliverableCode, state);
 	}
 
+	@Override
+	public List<Deliverable> findDeliverableByCreateDate(String createDateStart, String createDateEnd, String deliverableType, long deliverableState) {
+		return deliverableFinder.findDeliverableByCreateDate(createDateStart, createDateEnd,deliverableType,deliverableState);
+	}
+
 	// Get info Output DB
 	public List<Deliverable> getDeliverableByModifiedDate(
 		String synsDate, String deliverableType, long deliverableState) {
@@ -1416,7 +1421,6 @@ public class DeliverableLocalServiceImpl
 		object.setFormReport(objectData.getString(DeliverableTerm.FORM_REPORT));
 		// new field to save QD
 		if (objectData.getLong(DeliverableTerm.FILE_ENTRY_ID) > 0) {
-			object.setFileAttachs(objectData.getString(DeliverableTerm.FILE_ENTRY_ID));
 			object.setFileEntryId(objectData.getLong(DeliverableTerm.FILE_ENTRY_ID));
 		}
 		object.setDeliverableState(Integer.valueOf(objectData.getInt(DeliverableTerm.DELIVERABLE_STATE, 1)));
@@ -1540,6 +1544,11 @@ public class DeliverableLocalServiceImpl
 
 		return deliverablePersistence.fetchByF_GID_DCODE(
 			groupId, deliverableCode);
+	}
+
+	@Override
+	public Deliverable getByF_GID_DI_STATE(long groupId, long dossierId, int deliverableState) {
+		return deliverablePersistence.fetchByF_GID_DI_STATE(groupId, dossierId, deliverableState);
 	}
 
 	protected String getDictItemName(

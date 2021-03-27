@@ -420,6 +420,14 @@
 			<finder-column name="serviceLevel" />
 		</finder>
 
+		<finder return-type="ServiceConfig" name="GID_SI_GOV_LEVEL">
+			<finder-column name="groupId" />
+			<finder-column name="serviceInfoId" />
+			<finder-column name="govAgencyCode" />
+			<finder-column name="serviceLevel" />
+		</finder>
+
+
 	</entity>
 
 	<entity name="ProcessOption" table="opencps_processoption"
@@ -2251,6 +2259,11 @@
 			<finder-column name="groupId"/>
 			<finder-column name="applicantIdNo"/>
 		</finder>
+		<finder return-type="Deliverable" name="F_GID_DI_STATE">
+			<finder-column name="groupId"/>
+			<finder-column name="dossierId"/>
+			<finder-column name="deliverableState"/>
+		</finder>
 <!-- 		<order> -->
 <!-- 			<order-column name="modifiedDate" order-by="asc" /> -->
 <!-- 			<order-column name="issueDate" order-by="asc" /> -->
@@ -2756,6 +2769,11 @@
 			<finder-column name="groupId" />	
 			<finder-column name="dossierId" />	
 			<finder-column name="serverNo" />					
+		</finder>
+
+		<finder return-type="Collection" name="DID_SN">
+			<finder-column name="dossierId" />
+			<finder-column name="serverNo" />
 		</finder>
 
 		<finder return-type="Collection" name="G_DID_SN_NST">

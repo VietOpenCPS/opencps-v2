@@ -4,8 +4,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlRootElement
-public class QLVBHGModel {
+public class QLVBModel {
     public String trichYeu;
     public String maHoSo;
-    public List<FileVBHGModel> files;
+    public List<FileVBModel> files;
+    public String tenHoSo;
+    public String documentCode;
 }
