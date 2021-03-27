@@ -154,4 +154,39 @@ public class StatisticApplication extends Application {
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 	}
 
+	@POST
+	@Path("/dossier/groupcount/export")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response exportGroupCountDossier(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("fromDate") long fromDate,
+			@QueryParam("toDate") long toDate, @QueryParam("originalities") String originalities,
+			@QueryParam("domainCode") String domainCode, @QueryParam("govAgencyCode") String govAgencyCode,
+			@QueryParam("serviceCode") String serviceCode, @QueryParam("dossierStatus") String dossierStatus,
+			@QueryParam("type") int type, @QueryParam("day") Integer day, @QueryParam("start") Integer start,
+			@QueryParam("end") Integer end, @QueryParam("groupBy") String groupBy) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		String filePath = ActionUtil.exportDossierStatistic(groupId, fromDate, toDate, originalities, domainCode,
+				govAgencyCode, serviceCode, dossierStatus, day, groupBy, start, end, type, Constants.GROUP_COUNT);
+
+		File file = new File(filePath);
+
+		if (file != null && file.exists()) {
+			String fileName = System.currentTimeMillis() + ".xlsx";
+
+			ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+			responseBuilder.header("Content-Disposition", fileName).header(HttpHeaders.CONTENT_TYPE,
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+			return responseBuilder.build();
+		} else {
+
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		}
+	}
+
 }

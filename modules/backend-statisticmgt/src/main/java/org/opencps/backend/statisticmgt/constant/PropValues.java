@@ -189,5 +189,10 @@ public class PropValues {
 			.getInteger(PropUtil.getConfigProperty(PropKeys.CONFIG_DOSSIER_STATISTIC_SIZE_LIST));
 
 	public static final String TEMPLATES_REPORTS_DIR = PropUtil.getConfigProperty(PropKeys.TEMPLATES_REPORTS_DIR);
+	
 	public static final String TEMPLATES_REPORTS_FILENAME_1 = PropUtil.getConfigProperty(PropKeys.TEMPLATES_REPORTS_FILENAME_1);
+	
+	public static final String TEMPLATES_REPORTS_FILENAME_2 = PropUtil.getConfigProperty(PropKeys.TEMPLATES_REPORTS_FILENAME_2);
+	
+	public static final String TEMPLATES_REPORTS_FILENAME_3 = PropUtil.getConfigProperty(PropKeys.TEMPLATES_REPORTS_FILENAME_3);
 }
