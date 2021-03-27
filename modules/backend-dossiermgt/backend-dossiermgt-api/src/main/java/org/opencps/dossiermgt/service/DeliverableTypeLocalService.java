@@ -225,6 +225,10 @@ public interface DeliverableTypeLocalService extends BaseLocalService,
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DeliverableType> getDeliverableTypeByGroupId(long[] groupId,
+		int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DeliverableType getDeliverableTypebyId(long groupId,
 		String deliverableTypeId) throws PortalException;
 
@@ -347,7 +351,4 @@ public interface DeliverableTypeLocalService extends BaseLocalService,
 	public DeliverableType updateMappingData(long groupId,
 		long deliverableTypeId, String mappingData,
 		ServiceContext serviceContext) throws PortalException, SystemException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DeliverableType> getDeliverableTypeByGroupId(long[] groupId ,int start, int end);
 }

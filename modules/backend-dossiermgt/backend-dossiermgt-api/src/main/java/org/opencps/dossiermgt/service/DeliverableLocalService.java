@@ -237,6 +237,10 @@ public interface DeliverableLocalService extends BaseLocalService,
 	public Deliverable fetchDeliverableByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public List<Deliverable> findDeliverableByCreateDate(
+		String createDateStart, String createDateEnd, String deliverableType,
+		long deliverableState);
+
 	public List<Deliverable> findDeliverableByState(String strDeliverableCode,
 		int state);
 
@@ -251,6 +255,10 @@ public interface DeliverableLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Deliverable getByF_GID_DCODE(long groupId, String deliverableCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Deliverable getByF_GID_DI_STATE(long groupId, long dossierId,
+		int deliverableState);
 
 	/**
 	* Returns the deliverable with the primary key.

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.dossier.model.ActionExecutedModel;
@@ -799,8 +801,7 @@ public class DossierActionUtils {
 						//
 						long fileEntryId = dossierFile.getFileEntryId();
 						if (fileEntryId > 0) {
-							FileEntry file =
-								DLAppServiceUtil.getFileEntry(fileEntryId);
+							DLFileEntry file = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
 							if (file != null) {
 								dActionReturnFile.setFileType(
 									file.getMimeType());

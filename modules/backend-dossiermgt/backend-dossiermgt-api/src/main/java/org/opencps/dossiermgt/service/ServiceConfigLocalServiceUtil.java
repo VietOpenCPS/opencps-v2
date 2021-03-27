@@ -206,6 +206,13 @@ public class ServiceConfigLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.dossiermgt.model.ServiceConfig fetchByGID_SI_GOV_LEVEL(
+		long groupId, long serviceInfo, String govAgencyCode, int serviceLevel) {
+		return getService()
+				   .fetchByGID_SI_GOV_LEVEL(groupId, serviceInfo,
+			govAgencyCode, serviceLevel);
+	}
+
 	public static org.opencps.dossiermgt.model.ServiceConfig fetchServiceConfig(
 		long serviceConfigId) {
 		return getService().fetchServiceConfig(serviceConfigId);

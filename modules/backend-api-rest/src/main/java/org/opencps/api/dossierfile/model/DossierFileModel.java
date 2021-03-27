@@ -71,7 +71,8 @@ import javax.xml.bind.annotation.XmlType;
     "formData",
     "formReport",
     "formScript",
-    "dossierId"
+    "dossierId",
+    "isSync"
 })
 @XmlRootElement(name = "DossierFileModel")
 public class DossierFileModel {
@@ -97,7 +98,16 @@ public class DossierFileModel {
     protected String formReport;
     protected String formScript;
     protected Long dossierId;
-    
+    protected boolean isSync;
+
+    public boolean isSync() {
+        return isSync;
+    }
+
+    public void setSync(boolean sync) {
+        isSync = sync;
+    }
+
     public String getFormScript() {
 		return formScript;
 	}

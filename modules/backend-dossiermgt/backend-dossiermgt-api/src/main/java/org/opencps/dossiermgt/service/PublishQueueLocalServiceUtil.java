@@ -202,6 +202,14 @@ public class PublishQueueLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByDossierIdAndServerNo(
+		long dossierId, String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.PublishQueue> orderByComparator) {
+		return getService()
+				   .getByDossierIdAndServerNo(dossierId, serverNo, start, end,
+			orderByComparator);
+	}
+
 	public static org.opencps.dossiermgt.model.PublishQueue getByG_DID_SN(
 		long groupId, long dossierId, String serverNo) {
 		return getService().getByG_DID_SN(groupId, dossierId, serverNo);
@@ -236,9 +244,11 @@ public class PublishQueueLocalServiceUtil {
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByStatusesAndServerNo(
-		int[] statuses, String serverNo, int start, int end) {
+		int[] statuses, String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.PublishQueue> orderByComparator) {
 		return getService()
-				   .getByStatusesAndServerNo(statuses, serverNo, start, end);
+				   .getByStatusesAndServerNo(statuses, serverNo, start, end,
+			orderByComparator);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {

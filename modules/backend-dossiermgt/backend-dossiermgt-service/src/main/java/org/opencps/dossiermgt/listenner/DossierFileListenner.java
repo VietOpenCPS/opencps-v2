@@ -114,6 +114,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				DeliverableType dlvType =
 					DeliverableTypeLocalServiceUtil.getByCode(
 						model.getGroupId(), deliverableType);
+				if(Validator.isNull(dlvType)){
+					dlvType =
+							DeliverableTypeLocalServiceUtil.getByCode(
+									0L, deliverableType);
+				}
 
 				JSONObject formDataContent = JSONFactoryUtil.createJSONObject();
 
@@ -533,6 +538,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			DeliverableType dlvType =
 				DeliverableTypeLocalServiceUtil.getByCode(
 					model.getGroupId(), dossierPart.getDeliverableType());
+			if(Validator.isNull(dlvType)){
+				dlvType =
+						DeliverableTypeLocalServiceUtil.getByCode(
+								0L, dossierPart.getDeliverableType());
+			}
 
 			Dossier dossier =
 				DossierLocalServiceUtil.getDossier(model.getDossierId());

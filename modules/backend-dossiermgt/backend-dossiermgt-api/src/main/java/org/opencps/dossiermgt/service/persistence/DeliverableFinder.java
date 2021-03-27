@@ -30,4 +30,8 @@ public interface DeliverableFinder {
 
 	public org.opencps.dossiermgt.model.DossierFile findFileTemplateNo(
 		long id, String fileTemplateNo);
+
+	public java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByCreateDate(
+		String createDateStart, String createDateEnd, String deliverableType,
+		long deliverableState);
 }

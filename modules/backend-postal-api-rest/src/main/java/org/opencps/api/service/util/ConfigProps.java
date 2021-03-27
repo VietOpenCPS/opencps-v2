@@ -11,6 +11,8 @@ import aQute.bnd.annotation.ProviderType;
 @ProviderType
 public class ConfigProps {
 
+	public static final String EINV_VNPT_HOME = "einvoicevnpt.home";
+	
 	public static void addProperties(Properties properties) {
 		_instance._configuration.addProperties(properties);
 	}

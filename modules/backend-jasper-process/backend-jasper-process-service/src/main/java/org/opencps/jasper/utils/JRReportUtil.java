@@ -120,7 +120,7 @@ public class JRReportUtil {
 			// fix json enter char
 			//hot fix
 //			jsonData = quoteHTML(jsonData);
-//			_log.info("JASPER JSON DATA: " + jsonData);
+			_log.info("JASPER JSON DATA: " + jsonData);
 			if (isJsonObject(jsonData)) {
 				//_log.info("JSON Object");
 			JasperReport reportTemplate = JRReportTemplate.getJasperReport(jrxmlTemplate);

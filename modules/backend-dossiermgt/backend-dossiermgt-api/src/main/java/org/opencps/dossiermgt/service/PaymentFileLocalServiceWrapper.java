@@ -306,6 +306,13 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.PaymentFile findPaymentFileByDossierId(
+		long groupId, long dossierId) {
+		return _paymentFileLocalService.findPaymentFileByDossierId(groupId,
+			dossierId);
+	}
+
+	@Override
 	public String findSumPaymentAmountDay(long groupId, String date) {
 		return _paymentFileLocalService.findSumPaymentAmountDay(groupId, date);
 	}

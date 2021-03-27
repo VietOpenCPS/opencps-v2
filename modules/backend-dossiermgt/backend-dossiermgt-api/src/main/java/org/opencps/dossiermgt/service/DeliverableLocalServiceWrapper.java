@@ -286,6 +286,14 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByCreateDate(
+		String createDateStart, String createDateEnd, String deliverableType,
+		long deliverableState) {
+		return _deliverableLocalService.findDeliverableByCreateDate(createDateStart,
+			createDateEnd, deliverableType, deliverableState);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByState(
 		String strDeliverableCode, int state) {
 		return _deliverableLocalService.findDeliverableByState(strDeliverableCode,
@@ -314,6 +322,13 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 		long groupId, String deliverableCode) {
 		return _deliverableLocalService.getByF_GID_DCODE(groupId,
 			deliverableCode);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Deliverable getByF_GID_DI_STATE(
+		long groupId, long dossierId, int deliverableState) {
+		return _deliverableLocalService.getByF_GID_DI_STATE(groupId, dossierId,
+			deliverableState);
 	}
 
 	/**

@@ -26,7 +26,7 @@ create index IX_8D12CC2D on opencps_deliverable (deliverableState, govAgencyCode
 create index IX_B5D727C6 on opencps_deliverable (groupId, applicantIdNo[$COLUMN_LENGTH:128$]);
 create index IX_6113CEF4 on opencps_deliverable (groupId, deliverableCode[$COLUMN_LENGTH:128$]);
 create index IX_CBA1DBE2 on opencps_deliverable (groupId, deliverableId);
-create index IX_E86EDBAE on opencps_deliverable (groupId, dossierId);
+create index IX_277A1074 on opencps_deliverable (groupId, dossierId, deliverableState);
 create index IX_59547196 on opencps_deliverable (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_7586598 on opencps_deliverable (uuid_[$COLUMN_LENGTH:75$], groupId);
 
@@ -267,6 +267,7 @@ create index IX_85322B32 on opencps_processsteprole (processStepId);
 create index IX_30CABA8B on opencps_processsteprole (roleCode[$COLUMN_LENGTH:255$]);
 create index IX_134D7D60 on opencps_processsteprole (uuid_[$COLUMN_LENGTH:75$]);
 
+create index IX_96CAAE8A on opencps_publish_queue (dossierId, serverNo[$COLUMN_LENGTH:255$]);
 create index IX_3EBC1A0E on opencps_publish_queue (groupId, dossierId, serverNo[$COLUMN_LENGTH:255$], status);
 create index IX_62B041F5 on opencps_publish_queue (status, modifiedDate);
 create index IX_7D659302 on opencps_publish_queue (status, serverNo[$COLUMN_LENGTH:255$]);
@@ -300,7 +301,7 @@ create unique index IX_22CC0D32 on opencps_registrationtemplate (uuid_[$COLUMN_L
 
 create index IX_29DADB16 on opencps_serviceconfig (govAgencyCode[$COLUMN_LENGTH:128$]);
 create index IX_E713E0A0 on opencps_serviceconfig (groupId, govAgencyCode[$COLUMN_LENGTH:128$]);
-create index IX_ABABE3D2 on opencps_serviceconfig (groupId, serviceInfoId, govAgencyCode[$COLUMN_LENGTH:128$]);
+create index IX_5ED8CC55 on opencps_serviceconfig (groupId, serviceInfoId, govAgencyCode[$COLUMN_LENGTH:128$], serviceLevel);
 create index IX_195F08D3 on opencps_serviceconfig (groupId, serviceLevel);
 create index IX_4F240C8E on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_6FC25E90 on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:75$], groupId);
