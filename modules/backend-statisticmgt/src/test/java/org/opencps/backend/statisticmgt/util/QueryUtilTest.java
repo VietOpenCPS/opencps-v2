@@ -31,19 +31,5 @@ public class QueryUtilTest {
 		//assertTrue(sqlQueryTemplate.length() > 0);
 	}
 	
-	@Test
-	public void test() {
-		//boolean result = QueryUtil.test1("processing", "processing");
-		//assertTrue(result);
-		//result = QueryUtil.test2("processing_202", "processing_202");
-		//assertTrue(result);
-		//createlog(Class, msg,type)
-		String[] a = QueryUtil.test3("");
-		
-		System.out.println(a[0]);
-		
-		assertTrue(a != null && a.length > 0);
-		
-		System.out.println("4 " +Thread.currentThread().getId() + "|" + Thread.currentThread().getName() + "|" + Thread.currentThread().getContextClassLoader().getClass().getName());
-	}
+	
 }
