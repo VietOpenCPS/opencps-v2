@@ -5,6 +5,8 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -32,9 +34,9 @@ public class ActionUtil {
 
 		JSONObject obj = getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode,
 				serviceCode, dossierStatus, day, groupBy, start, end, type, subType);
-		String strFromDate = DatetimeUtil.convertTimestampToStringDatetime(fromDate, DatetimeUtil._YYYY_MM_DD);
-
-		String strToDate = DatetimeUtil.convertTimestampToStringDatetime(toDate, DatetimeUtil._YYYY_MM_DD);
+		String strFromDate = DatetimeUtil.convertTimestampToStringDatetime(fromDate, DatetimeUtil._DD_MM_YYYY);
+		String strToDate = DatetimeUtil.convertTimestampToStringDatetime(toDate, DatetimeUtil._DD_MM_YYYY);
+		
 		HashMap<String, Object> dataMap = new HashMap<String, Object>();
 		dataMap.put("currentDay", String.valueOf(DatetimeUtil.getCurrentDay()));
 		dataMap.put("currentMonth", String.valueOf(DatetimeUtil.getCurrentMonth()));
@@ -44,51 +46,155 @@ public class ActionUtil {
 		String govAgencyName = StringPool.BLANK;
 		String domainName = StringPool.BLANK;
 
-		int total = 0;
+		if (subType.equals(Constants.LIST)) {
 
-		List<Object[]> dataList = new ArrayList<Object[]>();
+			int total = 0;
 
-		if (obj != null && obj.has(Constants.DATA)) {
-			JSONArray data = obj.getJSONArray(Constants.DATA);
-			if (data != null && data.length() > 0) {
-				JSONObject firstRow = data.getJSONObject(0);
-				total = data.length();
-				govAgencyName = firstRow.getString("govAgencyName");
-				domainName = firstRow.getString("domainName");
-				dataMap.put("govAgencyName", govAgencyName.toUpperCase());
-				dataMap.put("domainName", domainName);
-				dataMap.put("total", String.valueOf(total));
+			List<Object[]> dataList = new ArrayList<Object[]>();
 
-				Object[] objects = null;
+			if (obj != null && obj.has(Constants.DATA)) {
+				JSONArray data = obj.getJSONArray(Constants.DATA);
+				if (data != null && data.length() > 0) {
+					JSONObject firstRow = data.getJSONObject(0);
+					total = data.length();
+					govAgencyName = firstRow.getString("govAgencyName");
+					domainName = firstRow.getString("domainName");
+					dataMap.put("govAgencyName", govAgencyName.toUpperCase());
+					dataMap.put("domainName", domainName);
+					dataMap.put("total", String.valueOf(total));
 
-				JSONObject dataRow = null;
-				for (int i = 0; i < data.length(); i++) {
-					objects = new Object[firstRow.length()];
-					dataRow = data.getJSONObject(i);
-					objects[0] = String.valueOf(i + 1);
-					objects[1] = dataRow.getString("dossierNo");
-					objects[2] = dataRow.getString("dossierName");
-					objects[3] = dataRow.getString("applicantName");
-					objects[4] = dataRow.getString("receiveDate");
-					objects[5] = dataRow.getString("dueDate");
-					objects[6] = dataRow.getString("dossierStatusText");
+					Object[] objects = null;
 
-					dataList.add(objects);
+					JSONObject dataRow = null;
+					for (int i = 0; i < data.length(); i++) {
+						objects = new Object[firstRow.length()];
+						dataRow = data.getJSONObject(i);
+						objects[0] = String.valueOf(i + 1);
+						objects[1] = dataRow.getString("dossierNo");
+						objects[2] = dataRow.getString("dossierName");
+						objects[3] = dataRow.getString("applicantName");
+						objects[4] = dataRow.getString("receiveDate");
+						objects[5] = dataRow.getString("dueDate");
+						objects[6] = dataRow.getString("dossierStatusText");
+
+						dataList.add(objects);
+					}
+
+					dataMap.put("data", dataList);
+				}
+			}
+
+			try {
+				result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
+						StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_1), dataMap);
+			} catch (Exception e) {
+				_log.error(e);
+			}
+
+		} else if (subType.equals(Constants.GROUP_COUNT)) {
+
+			Group group = GroupLocalServiceUtil.fetchGroup(groupId);
+
+			if (Validator.isNotNull(group)) {
+
+				govAgencyName = group.getGroupKey();
+
+			}
+
+			String[] total = new String[11];
+
+			List<Object[]> dataList = new ArrayList<Object[]>();
+
+			if (obj != null && obj.has(Constants.DATA)) {
+				JSONArray data = obj.getJSONArray(Constants.DATA);
+				if (data != null && data.length() > 0) {
+
+					JSONObject lastRow = data.getJSONObject(data.length() - 1);
+
+					int receivedCount = lastRow.getInt("receivedCount");// 5
+					int remainingCount = lastRow.getInt("remainingCount");// 4
+					int betimesCount = lastRow.getInt("betimesCount");// 7
+					int ontimeCount = lastRow.getInt("ontimeCount");// 8
+					int overtimeCount = lastRow.getInt("overtimeCount");// 9
+					int undueCount = lastRow.getInt("undueCount");// 11
+					int overdueCount = lastRow.getInt("overdueCount");// 12
+
+					total[0] = String.valueOf((remainingCount + receivedCount));// 4+5
+					total[1] = String.valueOf(remainingCount);// 4
+					total[2] = String.valueOf(receivedCount);// 5
+					total[3] = String.valueOf(betimesCount + ontimeCount + overtimeCount);// 7 +8 +9
+					total[4] = String.valueOf(betimesCount);// 7
+					total[5] = String.valueOf(ontimeCount);// 8
+					total[6] = String.valueOf(overtimeCount);// 9
+					total[7] = String.valueOf(undueCount + overdueCount);// 11+12
+					total[8] = String.valueOf(undueCount);// 11
+					total[9] = String.valueOf(overdueCount);// 12
+					total[10] = String.valueOf(overtimeCount);// 9
+					// govAgencyName = firstRow.getString("govAgencyName");
+
+					dataMap.put("govAgencyName", govAgencyName.toUpperCase());
+
+					dataMap.put("total", total);
+
+					Object[] objects = null;
+
+					JSONObject dataRow = null;
+
+					for (int i = 0; i < data.length() - 1; i++) {
+						objects = new Object[13];
+						dataRow = data.getJSONObject(i);
+
+						receivedCount = dataRow.getInt("receivedCount");// 5
+						remainingCount = dataRow.getInt("remainingCount");// 4
+						betimesCount = dataRow.getInt("betimesCount");// 7
+						ontimeCount = dataRow.getInt("ontimeCount");// 8
+						overtimeCount = dataRow.getInt("overtimeCount");// 9
+						undueCount = dataRow.getInt("undueCount");// 11
+						overdueCount = dataRow.getInt("overdueCount");// 12
+
+						objects[0] = String.valueOf(i + 1);
+						if (groupBy.equalsIgnoreCase("serviceCode")) {
+							objects[1] = dataRow.getString("serviceName");
+						} else {
+							objects[1] = dataRow.getString("domainName");
+						}
+
+						objects[2] = String.valueOf((remainingCount + receivedCount));// 4+5
+						objects[3] = String.valueOf(remainingCount);// 4
+						objects[4] = String.valueOf(receivedCount);// 5
+						objects[5] = String.valueOf(betimesCount + ontimeCount + overtimeCount);// 7 +8 +9
+						objects[6] = String.valueOf(betimesCount);// 7
+
+						objects[7] = String.valueOf(ontimeCount);// 8
+
+						objects[8] = String.valueOf(overtimeCount);// 9
+						objects[9] = String.valueOf(undueCount + overdueCount);// 11+12
+						objects[10] = String.valueOf(undueCount);// 11
+						objects[11] = String.valueOf(overdueCount);// 12
+						objects[12] = String.valueOf(overtimeCount);// 9
+
+						dataList.add(objects);
+					}
+
+					dataMap.put("data", dataList);
+				}
+			}
+
+			try {
+				if (groupBy.equalsIgnoreCase("serviceCode")) {
+					result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
+							StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_3), dataMap);
+				} else {
+					result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
+							StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_2), dataMap);
 				}
 
-				dataMap.put("data", dataList);
+			} catch (Exception e) {
+				_log.error(e);
 			}
+
 		}
 
-		try {
-			result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
-					StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_1), dataMap);
-		} catch (Exception e) {
-			_log.error(e);
-		}
-
-		_log.info("=========> Result " + result);
-		
 		return result;
 	}
 

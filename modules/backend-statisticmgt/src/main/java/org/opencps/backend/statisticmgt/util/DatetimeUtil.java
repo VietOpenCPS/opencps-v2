@@ -77,7 +77,7 @@ public class DatetimeUtil {
 		Date now = new Date();
 		Calendar c = Calendar.getInstance();
 		c.setTime(now);
-		return c.get(Calendar.DAY_OF_YEAR);
+		return c.get(Calendar.DAY_OF_MONTH);
 	}
 
 }
