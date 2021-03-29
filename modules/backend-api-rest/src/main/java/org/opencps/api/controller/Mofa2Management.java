@@ -16,12 +16,12 @@ import javax.ws.rs.core.Response;
 @Api(value = "/mofa2" ,tags = "mofa2")
 public interface Mofa2Management {
     @GET
-    @Path("/createMofa2")
+    @Path("/createMofa2/{dossierId}")
     @Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Response createMofa2(@Context HttpServletRequest request, @Context HttpHeaders header,
                                            @Context ServiceContext serviceContext ,
-                                           @FormParam("dossierId") long dossierId);
+                                           @PathParam("dossierId") long dossierId);
 
     @GET
     @Path("/KTHochieu")
