@@ -19,7 +19,14 @@ public class ConnectionUtil {
 
 	public static Connection _getConnection() {
 		if (Validator.isNotNull(_connection)) {
-			return _connection;
+			try {
+				if (!_connection.isClosed()) {
+					return _connection;
+				}
+			} catch (Exception e) {
+				_log.warn("connection is close");
+			}
+
 		}
 
 		try {

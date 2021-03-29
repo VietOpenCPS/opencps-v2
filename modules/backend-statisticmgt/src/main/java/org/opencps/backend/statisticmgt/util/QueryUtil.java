@@ -334,6 +334,7 @@ public class QueryUtil {
 			}
 		} catch (SQLException sqle) {
 			_log.warn(sqle.getMessage(), sqle);
+			ConnectionUtil._getConnection();
 		}
 
 		return count;
@@ -398,6 +399,7 @@ public class QueryUtil {
 			}
 		} catch (SQLException sqle) {
 			_log.error(sqle.getMessage(), sqle);
+			ConnectionUtil._getConnection();
 		}
 
 		return data;
@@ -486,7 +488,7 @@ public class QueryUtil {
 		} else if (subType.equals(Constants.LIST)) {
 			sqlQueryTemplate = QueryType.getSQLSearchQueryTemplate(type);
 		}
-		System.out.println("5 " + Thread.currentThread().getId() + "|" + Thread.currentThread().getName());
+		//System.out.println("5 " + Thread.currentThread().getId() + "|" + Thread.currentThread().getName());
 		return sqlQueryTemplate;
 	}
 
