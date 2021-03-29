@@ -1037,7 +1037,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("groupId: " + groupId);
 		BackendAuth auth = new BackendAuthImpl();
-
+		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -1047,7 +1047,10 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			_log.debug("govAgencyCode: " + govAgencyCode);
 			String deliverableCode = DeliverableNumberGenerator.genDeliverableNumberByGovType(groupId,typeCode,govAgencyCode);
 			_log.debug("DeliverableCode :  " + deliverableCode);
-			return Response.status(HttpURLConnection.HTTP_OK).entity(deliverableCode).build();
+			if(Validator.isNotNull(deliverableCode)){
+				result.put("deliverableCode",deliverableCode);
+			}
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toString()).build();
 
 		}
 		catch (Exception e) {
