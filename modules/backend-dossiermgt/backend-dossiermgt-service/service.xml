@@ -2773,6 +2773,11 @@
 			<finder-column name="serverNo" />					
 		</finder>
 
+		<finder return-type="Collection" name="DID_SN">
+			<finder-column name="dossierId" />
+			<finder-column name="serverNo" />
+		</finder>
+
 		<finder return-type="Collection" name="G_DID_SN_NST">
 			<finder-column name="groupId" />	
 			<finder-column name="dossierId" />	

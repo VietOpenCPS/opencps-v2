@@ -1,0 +1,8 @@
+Bundle-Name: backend-statisticmgt
+Bundle-SymbolicName: org.opencps.backend.statisticmgt
+Bundle-Version: 1.0.0
+Export-Package: \
+	org.opencps.backend.statisticmgt.application,\
+	org.opencps.backend.statisticmgt.context,\
+	org.opencps.backend.statisticmgt.util,\
+	org.opencps.backend.statisticmgt_
