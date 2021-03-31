@@ -89,6 +89,7 @@ public class DossierNumberGenerator {
 			throws ParseException, SearchException {
 
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		_log.debug("==generateDossierNumber=="+dossier.getDossierId());
 		String dossierNumber = StringPool.BLANK;
 		ServiceProcess sp = ServiceProcessLocalServiceUtil.getByG_PNO(groupId, dossier.getProcessNo());
 		
