@@ -52,7 +52,7 @@ public class Mofa2ManagementImpl implements Mofa2Management {
     public Response createMofa2(HttpServletRequest request, HttpHeaders header, ServiceContext serviceContext, long dossierId) {
         try {
             String result = StringPool.BLANK;
-            long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+            long groupId = 0L;
             DossierFile dossierFile = null;
             List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossierId, "TP01", false);
              dossierFile = dossierFiles.get(0);
@@ -60,6 +60,7 @@ public class Mofa2ManagementImpl implements Mofa2Management {
             JSONArray thanhvienArr = fileJSON.getJSONArray("thanh_vien_doan");
             Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
             if(Validator.isNotNull(dossier)){
+                groupId = dossier.getGroupId();
                 result = insertMofa2(groupId, dossier, CONNECT_MOFA2, thanhvienArr);
             }
             _log.info("Result: " + result);
@@ -73,6 +74,7 @@ public class Mofa2ManagementImpl implements Mofa2Management {
     public static String insertMofa2(long groupId, Dossier dossier, String serverCode, JSONArray arrayFile){
         String serverUrl = StringPool.BLANK;
         try {
+            _log.debug("ServerCode :  " + serverCode + " groupId : " + groupId);
             ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverCode);
             StringBuilder sb = new StringBuilder();
             if (sc != null && arrayFile != null) {

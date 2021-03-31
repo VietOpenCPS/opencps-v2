@@ -6403,6 +6403,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if (!auth.isAuth(serviceContext)) {
 			throw new UnauthenticationException();
 		}
+		Dossier	 dossier = null;
 
 		ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
 				input.getDossierTemplateNo(), groupId);
@@ -6552,7 +6553,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			} catch (Exception e) {
 				_log.debug(e);
 			}
-			Dossier dossier = dossierLocalService.initDossier(groupId, 0l, referenceUid, counter,
+			 dossier = dossierLocalService.initDossier(groupId, 0l, referenceUid, counter,
 					input.getServiceCode(), serviceName, input.getGovAgencyCode(), govAgencyName,
 					input.getApplicantName(), input.getApplicantIdType(), input.getApplicantIdNo(), appIdDate,
 					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
@@ -6713,14 +6714,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						.convertStringToDate(input.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 			}
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
-			return dossierLocalService.updateDossier(dossier);
+			dossierLocalService.updateDossier(dossier);
 
 		} else {
 			List<Dossier> oldDossiers = dossierLocalService.getByU_G_GAC_SC_DTNO_DS_O(userId, groupId,
 					input.getServiceCode(), input.getGovAgencyCode(), input.getDossierTemplateNo(), StringPool.BLANK,
 					Integer.valueOf(input.getOriginality()));
 
-			Dossier dossier = null;
 
 			Dossier oldRefDossier = Validator.isNotNull(input.getReferenceUid())
 					? dossierLocalService.getByRef(groupId, input.getReferenceUid())
@@ -7082,8 +7082,40 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 				}
 			}
-			return dossier;
 		}
+		if(Validator.isNotNull(input.getActionCode())){
+			ActionConfig actConfig =
+					ActionConfigLocalServiceUtil.getByCode(
+							groupId, input.getActionCode());
+			String serviceCode = dossier.getServiceCode();
+			String govAgencyCode = dossier.getGovAgencyCode();
+			String dossierTempNo = dossier.getDossierTemplateNo();
+			String actionCode = input.getActionCode();
+			boolean insideProcess = actConfig.getInsideProcess();
+			String actionUser = input.getActionUser();
+			if (employee != null) {
+				actionUser = employee.getFullName();
+			}
+			else {
+				if (Validator.isNull(actionUser)) {
+					actionUser = user.getFullName();
+				}
+			}
+			if (actConfig != null && insideProcess && dossier.getDossierActionId() == 0) {
+				if (option != null) {
+					ProcessAction proAction = getProcessAction(user.getUserId(), groupId, dossier, actionCode,
+							serviceProcessId);
+					if (proAction != null) {
+						doAction(groupId, userId, dossier, option, proAction, actionCode, actionUser, input.getActionNote(),
+								input.getPayload(), input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(), serviceContext);
+					}else {
+						// TODO Error
+					}
+
+				}
+			}
+		}
+		return dossier;
 
 	}
 
@@ -9909,7 +9941,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					files.put(jsonObject);
 					returnDocument = true;
 				}
-				/**
+
 				List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil
 						.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
@@ -9928,7 +9960,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						}
 					}
 				}
-				*/
 			}
 		} catch (Exception e) {
 			_log.error(e);

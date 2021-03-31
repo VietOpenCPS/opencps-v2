@@ -2472,6 +2472,7 @@ public class DossierManagementImpl implements DossierManagement {
 								jsonParams = JSONFactoryUtil
 										.createJSONObject(configObj.getString(KeyPayTerm.PARAMS));
 							}
+							_log.info("Param: " + JSONFactoryUtil.looseSerialize(jsonParams.toString()));
 							if (jsonParams != null) {
 								JSONObject jsonHeader = JSONFactoryUtil
 										.createJSONObject(jsonParams.getString(KeyPayTerm.HEADER));
