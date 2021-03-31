@@ -9458,6 +9458,7 @@ public class DossierManagementImpl implements DossierManagement {
 									   User user, ServiceContext serviceContext, long dossierId, String dossierStatus) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		_log.info("===updateDeliverableStatus==="+dossierId+"|dossierStatus:"+dossierStatus);
 		try{
 			if(dossierId > 0){
 				Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
