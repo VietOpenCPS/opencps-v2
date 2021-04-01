@@ -1573,6 +1573,137 @@ public interface SystemLogPersistence extends BasePersistence<SystemLog> {
 	public int countBylikeMessage(String message);
 
 	/**
+	* Returns all the system logs where threadId = &#63;.
+	*
+	* @param threadId the thread ID
+	* @return the matching system logs
+	*/
+	public java.util.List<SystemLog> findBythreadId(String threadId);
+
+	/**
+	* Returns a range of all the system logs where threadId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SystemLogModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param threadId the thread ID
+	* @param start the lower bound of the range of system logs
+	* @param end the upper bound of the range of system logs (not inclusive)
+	* @return the range of matching system logs
+	*/
+	public java.util.List<SystemLog> findBythreadId(String threadId, int start,
+		int end);
+
+	/**
+	* Returns an ordered range of all the system logs where threadId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SystemLogModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param threadId the thread ID
+	* @param start the lower bound of the range of system logs
+	* @param end the upper bound of the range of system logs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching system logs
+	*/
+	public java.util.List<SystemLog> findBythreadId(String threadId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SystemLog> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the system logs where threadId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SystemLogModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param threadId the thread ID
+	* @param start the lower bound of the range of system logs
+	* @param end the upper bound of the range of system logs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching system logs
+	*/
+	public java.util.List<SystemLog> findBythreadId(String threadId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SystemLog> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first system log in the ordered set where threadId = &#63;.
+	*
+	* @param threadId the thread ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching system log
+	* @throws NoSuchSystemLogException if a matching system log could not be found
+	*/
+	public SystemLog findBythreadId_First(String threadId,
+		com.liferay.portal.kernel.util.OrderByComparator<SystemLog> orderByComparator)
+		throws NoSuchSystemLogException;
+
+	/**
+	* Returns the first system log in the ordered set where threadId = &#63;.
+	*
+	* @param threadId the thread ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching system log, or <code>null</code> if a matching system log could not be found
+	*/
+	public SystemLog fetchBythreadId_First(String threadId,
+		com.liferay.portal.kernel.util.OrderByComparator<SystemLog> orderByComparator);
+
+	/**
+	* Returns the last system log in the ordered set where threadId = &#63;.
+	*
+	* @param threadId the thread ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching system log
+	* @throws NoSuchSystemLogException if a matching system log could not be found
+	*/
+	public SystemLog findBythreadId_Last(String threadId,
+		com.liferay.portal.kernel.util.OrderByComparator<SystemLog> orderByComparator)
+		throws NoSuchSystemLogException;
+
+	/**
+	* Returns the last system log in the ordered set where threadId = &#63;.
+	*
+	* @param threadId the thread ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching system log, or <code>null</code> if a matching system log could not be found
+	*/
+	public SystemLog fetchBythreadId_Last(String threadId,
+		com.liferay.portal.kernel.util.OrderByComparator<SystemLog> orderByComparator);
+
+	/**
+	* Returns the system logs before and after the current system log in the ordered set where threadId = &#63;.
+	*
+	* @param logId the primary key of the current system log
+	* @param threadId the thread ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next system log
+	* @throws NoSuchSystemLogException if a system log with the primary key could not be found
+	*/
+	public SystemLog[] findBythreadId_PrevAndNext(long logId, String threadId,
+		com.liferay.portal.kernel.util.OrderByComparator<SystemLog> orderByComparator)
+		throws NoSuchSystemLogException;
+
+	/**
+	* Removes all the system logs where threadId = &#63; from the database.
+	*
+	* @param threadId the thread ID
+	*/
+	public void removeBythreadId(String threadId);
+
+	/**
+	* Returns the number of system logs where threadId = &#63;.
+	*
+	* @param threadId the thread ID
+	* @return the number of matching system logs
+	*/
+	public int countBythreadId(String threadId);
+
+	/**
 	* Caches the system log in the entity cache if it is enabled.
 	*
 	* @param systemLog the system log

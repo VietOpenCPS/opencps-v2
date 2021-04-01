@@ -46,6 +46,9 @@
         <finder name="likeMessage" return-type="Collection">
             <finder-column name="message" comparator="LIKE"></finder-column>
         </finder>
+        <finder name="threadId" return-type="Collection">
+            <finder-column name="threadId" comparator="="></finder-column>
+        </finder>
 
 		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
 		<reference entity="AssetTag" package-path="com.liferay.portlet.asset" />

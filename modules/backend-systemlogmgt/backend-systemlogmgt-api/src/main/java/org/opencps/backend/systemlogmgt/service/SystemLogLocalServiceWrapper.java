@@ -253,12 +253,13 @@ public class SystemLogLocalServiceWrapper implements SystemLogLocalService,
 
 	@Override
 	public java.util.List<org.opencps.backend.systemlogmgt.model.SystemLog> getSystemLogByDynamicQuery(
-		Long logId, String groupId, String moduleName, String createDate,
+		String logId, String groupId, String moduleNames, String createDate,
 		Integer preLine, String preMethod, Integer line, String method,
-		String message, String type, String threadId) {
+		String message, String type, String threadId, java.util.Date fromDate,
+		java.util.Date toDate) throws java.text.ParseException {
 		return _systemLogLocalService.getSystemLogByDynamicQuery(logId,
-			groupId, moduleName, createDate, preLine, preMethod, line, method,
-			message, type, threadId);
+			groupId, moduleNames, createDate, preLine, preMethod, line, method,
+			message, type, threadId, fromDate, toDate);
 	}
 
 	@Override
@@ -307,6 +308,12 @@ public class SystemLogLocalServiceWrapper implements SystemLogLocalService,
 	public java.util.List<org.opencps.backend.systemlogmgt.model.SystemLog> getSystemLogByMultipleType(
 		String[] types) {
 		return _systemLogLocalService.getSystemLogByMultipleType(types);
+	}
+
+	@Override
+	public java.util.List<org.opencps.backend.systemlogmgt.model.SystemLog> getSystemLogByThreadId(
+		String threadId) {
+		return _systemLogLocalService.getSystemLogByThreadId(threadId);
 	}
 
 	/**

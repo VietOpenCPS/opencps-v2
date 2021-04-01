@@ -23,6 +23,8 @@ public class Constants {
 	public static final String MESSAGE = "message";
 	public static final String TYPE = "type";
 	public static final String THREADID = "threadId";
+	public static final String FROMDATE = "fromDate";
+	public static final String TODATE = "toDate";
 	
 	public static final String CONDITIONS = "conditions";
 	public static final String DATA = "data";

@@ -1,4 +1,4 @@
-package org.opencps.backend.systemlogmgt.util;
+package org.opencps.backend.systemlogmgt.service.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
