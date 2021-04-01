@@ -440,7 +440,7 @@ public class DossierStatisticUtils {
 
 	public static final int GROUP_TYPE_SITE = 1;
 
-	public static void invokeDossierStatistic() throws Exception{
+	public void invokeDossierStatistic() throws Exception{
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 
 		List<Group> groups = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,

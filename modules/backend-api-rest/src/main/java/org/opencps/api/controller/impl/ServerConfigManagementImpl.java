@@ -402,7 +402,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			ServerConfigSearchModel query) {
 		//BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-
+		_log.info("===getProtocolConnectOfServerConfigs===");
 		try {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();

@@ -267,6 +267,7 @@ create index IX_85322B32 on opencps_processsteprole (processStepId);
 create index IX_30CABA8B on opencps_processsteprole (roleCode[$COLUMN_LENGTH:255$]);
 create index IX_134D7D60 on opencps_processsteprole (uuid_[$COLUMN_LENGTH:75$]);
 
+create index IX_96CAAE8A on opencps_publish_queue (dossierId, serverNo[$COLUMN_LENGTH:255$]);
 create index IX_3EBC1A0E on opencps_publish_queue (groupId, dossierId, serverNo[$COLUMN_LENGTH:255$], status);
 create index IX_62B041F5 on opencps_publish_queue (status, modifiedDate);
 create index IX_7D659302 on opencps_publish_queue (status, serverNo[$COLUMN_LENGTH:255$]);

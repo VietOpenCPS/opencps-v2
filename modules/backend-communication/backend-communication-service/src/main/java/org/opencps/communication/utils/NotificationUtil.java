@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.liferay.portal.kernel.util.*;
 import org.opencps.communication.constants.MailVariables;
 import org.opencps.communication.constants.SendSMSTerm;
 import org.opencps.communication.model.NotificationQueue;
@@ -35,9 +36,6 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.HttpMethods;
-import com.liferay.portal.kernel.util.Base64;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author trungnt
@@ -230,10 +228,23 @@ public class NotificationUtil {
 					// _log.info("guestUrl: "+guestUrl);
 				}
 
+				String fromUserName = StringPool.BLANK;
+
+				String adminEmailFromName = PrefsPropsUtil.getString(PropsKeys.ADMIN_EMAIL_FROM_NAME, StringPool.BLANK);
+
+				if(Validator.isNotNull(adminEmailFromName)){
+					fromUserName = adminEmailFromName;
+				}else{
+					fromUserName = queue.getFromUsername();
+				}
+
 				messageEntry = new MBMessageEntry(
-					queue.getFromUsername(), queue.getToUserId(),
+						fromUserName, queue.getToUserId(),
 					queue.getToEmail(), queue.getToUsername(), serviceContext);
 
+				_log.debug("++++messageEntry.getFromName(1):"+messageEntry.getFromName());
+
+				messageEntry = new MBMessageEntry();
 				messageEntry.setCreateDate(queue.getCreateDate());
 				messageEntry.setEmailBody(emailBody);
 				messageEntry.setEmailSubject(emailSubject);
@@ -328,7 +339,7 @@ public class NotificationUtil {
 					messageEntry.setSendZalo(sendMesZalo);
 				}
 
-				// _log.info("create mail message: " + messageEntry);
+				_log.debug("++++messageEntry.getFromName(1):"+messageEntry.getFromName());
 
 			}
 			catch (Exception e) {

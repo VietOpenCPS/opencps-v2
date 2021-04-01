@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import backend.auth.api.exception.CommonExceptionImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -38,19 +39,16 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.servlet.HttpMethods;
-import com.liferay.portal.kernel.util.DateUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.*;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.io.File;
 import java.net.URL;
+import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -58,10 +56,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Base64;
 import java.util.stream.Collectors;
 
 import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.HttpMethod;
@@ -136,6 +136,9 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -9457,6 +9460,152 @@ public class DossierManagementImpl implements DossierManagement {
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response updateDeliverableStatus(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+									   User user, ServiceContext serviceContext, long dossierId, String dossierStatus) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		_log.info("===updateDeliverableStatus==="+dossierId+"|dossierStatus:"+dossierStatus);
+		try{
+			if(dossierId > 0){
+				Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+
+				String dossierNo = dossier.getDossierNo();
+				String serviceCode = dossier.getServiceCode();
+				String referenceUid = dossier.getReferenceUid();
+
+
+				StringBuilder endPoint = new StringBuilder(PropsUtil.get("org.opencps.taubien.forward.endpoint")+"/tbtv-service/callback?");
+				endPoint.append("dossierNo=").append(dossierNo);
+				endPoint.append(StringPool.AMPERSAND).append("serviceCode=").append(serviceCode);
+				if(Validator.isNotNull(dossierStatus)){
+					endPoint.append(StringPool.AMPERSAND).append("dossierStatus=").append(dossierStatus);
+				}
+				if(Validator.isNotNull(dossierStatus)){
+					endPoint.append(StringPool.AMPERSAND).append("referenceUid=").append(referenceUid);
+				}
+				JSONObject result = forwardToTauBien(endPoint.toString());
+
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
+
+			}else{
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("No DossierId").build();
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+			return CommonExceptionImpl.processException(e);
+		}
+	}
+
+	public JSONObject createHttpConnection(String endpoint) {
+
+		URLConnection conn = null;
+
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			URL url = new URL(endpoint);
+
+			conn =  url.openConnection();
+
+			//conn.setRequestMethod(HttpMethods.GET);
+			//conn.setDoInput(true);
+			//conn.setDoOutput(true);
+			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			conn.setRequestProperty("Charset", "utf-8");
+			//conn.setInstanceFollowRedirects(true);
+			conn.setReadTimeout(60 * 1000);
+			conn.connect();
+
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+			String output = StringPool.BLANK;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = bufferedReader.readLine()) != null) {
+				sb.append(output);
+			}
+
+			try {
+				result = JSONFactoryUtil.createJSONObject(sb.toString());
+
+			} catch (JSONException e) {
+
+			}
+
+			return result;
+
+		} catch (Exception e) {
+			_log.error(e);
+			return null;
+		}
+	}
+
+	public JSONObject forwardToTauBien(String endpoint) throws Exception {
+
+		if(endpoint.contains("https")){
+			return createHttpsConnection(endpoint);
+		}else{
+			return createHttpConnection(endpoint);
+		}
+	}
+
+	public JSONObject createHttpsConnection(String endpoint) throws Exception {
+
+		HttpsURLConnection httpsConn = null;
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			URL url = new URL(endpoint);
+
+			httpsConn = (HttpsURLConnection) url.openConnection();
+
+			httpsConn.setRequestMethod("GET");
+			httpsConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			httpsConn.setRequestProperty("Charset", "utf-8");
+			httpsConn.setInstanceFollowRedirects(true);
+			httpsConn.setReadTimeout(60 * 1000);
+			TrustManager myTrustManager = new TrustManager();
+			httpsConn = myTrustManager.disableSSL(httpsConn);
+
+			httpsConn.connect();
+
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpsConn.getInputStream()));
+
+			String output = StringPool.BLANK;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = bufferedReader.readLine()) != null) {
+				sb.append(output);
+			}
+
+			try {
+				result = JSONFactoryUtil.createJSONObject(sb.toString());
+
+			} catch (JSONException e) {
+
+			}
+
+			return result;
+
+		} catch (Exception e) {
+			_log.error(e);
+			throw new Exception(e);
+
+		} finally {
+			if (httpsConn != null) {
+				httpsConn.disconnect();
+			}
 		}
 	}
 }

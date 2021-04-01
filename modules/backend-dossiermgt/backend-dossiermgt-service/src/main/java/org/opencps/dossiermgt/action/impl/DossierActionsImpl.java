@@ -754,6 +754,7 @@ public class DossierActionsImpl implements DossierActions {
 					List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
 						.findByP_S_ID(processStep.getProcessStepId());
 					_log.debug("ROLE LIST: " + processStepRoleList.size());
+					_log.info("ROLE LIST: " + JSONFactoryUtil.looseSerialize(processStepRoleList));
 					if (Validator.isNotNull(processStep.getRoleAsStep())) {
 						String[] steps = StringUtil.split(processStep.getRoleAsStep());
 						for (String stepCode : steps) {
@@ -771,9 +772,11 @@ public class DossierActionsImpl implements DossierActions {
 						if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
 							List<ProcessStepRole> lstStepRoles = new ArrayList<>();
 							for (ProcessStepRole psr : processStepRoleList) {
+								_log.info("CONDITION : " + psr.getCondition());
 								if (Validator.isNotNull(psr.getCondition())) {
 									String[] conditions = StringUtil.split(psr.getCondition());
 
+									_log.info("CONDITIONS : " + conditions.toString());
 									if (DossierMgtUtils.checkPreCondition(conditions, dossier, user,"")) {
 										lstStepRoles.add(psr);
 									}

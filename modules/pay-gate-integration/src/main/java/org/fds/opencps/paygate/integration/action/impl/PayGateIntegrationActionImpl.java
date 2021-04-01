@@ -1667,33 +1667,24 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				if (!maXacthuc.equals(maXacthuc_tmp)) {
 					// return PayGateUtil.createResponseMessage(-1, "error: check_sum invalid");
 				}
-
 				// int status = data.getInt(PayGateTerm.STATUS);
+				boolean doAction = false;
+				if ("00".equals(maLoi)) {
 
-//				if ("00".equals(maLoi)) {
-//
-//					boolean doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, data, serviceContext);
-//
-//					if (doAction) {
-//						return PayGateUtil.createResponseMessage("00", "Thành công", maDoitac,
-//								maThamchieu, thoigianGD, maXacthuc);
-//					} else {
-//						return PayGateUtil.createResponseMessage("99", "Các lỗi khác", maDoitac,
-//								maThamchieu, thoigianGD, maXacthuc);
-//					}
-//				} else {
-//					return PayGateUtil.createResponseMessage("99", "Các lỗi khác", maDoitac,
-//							maThamchieu, thoigianGD, maXacthuc);
-//				}
-				boolean doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, data, serviceContext);
+					 doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, data, serviceContext);
 
-				if (doAction) {
-					return PayGateUtil.createResponseMessage("00", "Thành công", maDoitac,
-							maThamchieu, thoigianGD, maXacthuc);
+					if (doAction) {
+						return PayGateUtil.createResponseMessage("00", "Thành công", maDoitac,
+								maThamchieu, thoigianGD, maXacthuc);
+					} else {
+						return PayGateUtil.createResponseMessage("99", "Các lỗi khác", maDoitac,
+								maThamchieu, thoigianGD, maXacthuc);
+					}
 				} else {
 					return PayGateUtil.createResponseMessage("99", "Các lỗi khác", maDoitac,
 							maThamchieu, thoigianGD, maXacthuc);
 				}
+
 			} else {
 				return PayGateUtil.createResponseMessage(-1, "error: data empty of not found server config");
 			}

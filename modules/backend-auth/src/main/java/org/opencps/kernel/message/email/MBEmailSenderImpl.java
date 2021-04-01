@@ -199,7 +199,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 					break;
 				}
 			}
-			_log.info("Send email: " + needSendEmail + ", " + messageEntry.getToAddress());
+			_log.info("Send email: " + needSendEmail + ", " + needSendEmail);
 
 			if (needSendEmail) {
 
@@ -208,17 +208,28 @@ public class MBEmailSenderImpl implements MBEmailSender {
 				mailMessage.setTo(messageEntry.getToAddress());
 				mailMessage.setBody(messageEntry.getEmailBody());
 				mailMessage.setHTMLFormat(true);
-//					_log.debug("messageEntry FROM1: " + messageEntry.getFrom().getAddress());
-//					_log.debug("mailMessage FROM1: " + mailMessage.getFrom().getAddress());
+
 				String smtpUser = PrefsPropsUtil.getString(PropsKeys.MAIL_SESSION_MAIL_SMTP_USER, StringPool.BLANK);
-				_log.debug("Send from email: " + smtpUser);
+				String adminEmailFromName =PrefsPropsUtil.getString(PropsKeys.ADMIN_EMAIL_FROM_NAME, StringPool.BLANK);  
+				_log.info("smtpUser: " + smtpUser);
+				_log.info("adminEmailFromName: " + adminEmailFromName);
 				if (Validator.isNotNull(smtpUser)) {
 					messageEntry.getFrom().setAddress(smtpUser);
+					
+					if(Validator.isNotNull(adminEmailFromName)) {
+						messageEntry.setFromName(adminEmailFromName);
+					}
+					
 					mailMessage.setFrom(messageEntry.getFrom());
-//						_log.debug("SEND EMAIL FROM2: " + messageEntry.getFrom());
-					// mailMessage.addFileAttachment(file);
+
 				}
-				MailServiceUtil.sendEmail(mailMessage);
+				
+
+				try {
+					MailServiceUtil.sendEmail(mailMessage);
+				}catch(Exception e){
+					_log.error(e);
+				}
 			}
 		}
 

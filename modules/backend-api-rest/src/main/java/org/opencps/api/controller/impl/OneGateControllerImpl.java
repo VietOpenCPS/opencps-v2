@@ -205,7 +205,6 @@ public class OneGateControllerImpl implements OneGateController {
 			String serviceCodeOld = "";
 			if (serviceConfigs != null) {
 				for (ServiceConfig serviceConfig : serviceConfigs) {
-
 					if (serviceConfig.getServiceLevel() >= 2 && ((e != null && (Validator.isNull(e.getScope())))
 							|| (e != null && Validator.isNotNull(e.getScope())
 									&& e.getScope().indexOf(serviceConfig.getGovAgencyCode()) >= 0))) {
