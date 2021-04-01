@@ -9178,6 +9178,7 @@ public class DossierManagementImpl implements DossierManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
 			JSONObject result = JSONFactoryUtil.createJSONObject();
+			DossierDetailModel resultDetail = null;
 			if (Validator.isNotNull(dossier)) {
 				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getDossierId());
 				for (DossierFile item : dossierFiles) {
@@ -9193,18 +9194,21 @@ public class DossierManagementImpl implements DossierManagement {
 							.createJSONObject(dlt.getMappingData());
 					if (!mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) continue;
 
-					mapDeliverable(mappingDataObj, input.getFormdata(), dossier, dossierPart, dlt, groupId, userId, result, serviceContext);
-					DossierDetailModel resultDetail =
-							DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+					result = mapDeliverable(mappingDataObj, input.getFormdata(), dossier, dossierPart, dlt, groupId, userId, serviceContext);
+					if (Validator.isNotNull(result)) {
+						resultDetail =
+								DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+					}
 					return Response.status(HttpStatus.SC_OK).entity(resultDetail).build();
 				}
 			} else if (Validator.isNull(dossier)) {
 				DeliverableType dlt = DeliverableTypeLocalServiceUtil.getByCode(groupId, input.getTypeCode());
 				JSONObject mappingDataObj = JSONFactoryUtil
 						.createJSONObject(dlt.getMappingData());
-				mapDeliverable(mappingDataObj, input.getFormdata(), dossier, null, dlt, groupId, userId, result, serviceContext);
+				_log.debug("deliverableType: " + JSONFactoryUtil.looseSerialize(dlt.getMappingData()));
+				result = mapDeliverable(mappingDataObj, input.getFormdata(), dossier, null, dlt, groupId, userId, serviceContext);
 
-				return Response.status(HttpStatus.SC_OK).build();
+				return Response.status(HttpStatus.SC_OK).entity(result.toString()).build();
 			}
 		} catch (Exception e) {
 			e.getMessage();
@@ -9214,9 +9218,9 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	private JSONObject mapDeliverable(JSONObject mappingDataObj, String formdata, Dossier dossier, DossierPart dossierPart, DeliverableType dlt,
-									  long groupId, long userId, JSONObject result, ServiceContext serviceContext) {
+									  long groupId, long userId,  ServiceContext serviceContext) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
-
 			String deliverables = mappingDataObj.getString(
 					DeliverableTypesTerm.DELIVERABLES_KEY);
 			if (Validator.isNotNull(deliverables)) {
@@ -9250,13 +9254,18 @@ public class DossierManagementImpl implements DossierManagement {
 						if (dossier != null && Validator.isNotNull(dossier.getDossierNo())) {
 							deliverableObj.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 						}
+						_log.debug("Vaooooooooo createDeliverable");
 						result = createDeliverable(Validator.isNotNull(dossier) ? dossier : null, Validator.isNotNull(dossierPart) ? dossierPart : null, dlt, deliverableObj, userId, groupId, serviceContext);
 
 					}
+				}else{
+					result.put("RETURN_MSG","Không có key cầu hình trong formData truyền lên");
 				}
+			}else{
+				result.put("RETURN_MSG","Không có cấu hình trong deliverableType");
 			}
 		} catch (Exception e) {
-			e.getMessage();
+			BusinessExceptionImpl.processException(e);
 		}
 		return result;
 	}
@@ -9305,8 +9314,8 @@ public class DossierManagementImpl implements DossierManagement {
 			deliverableCode =
 					DeliverableNumberGenerator.generateDeliverableNumber(
 							groupId, context.getCompanyId(),
-							dlt.getDeliverableTypeId(), dossier.getDossierId());
-
+							dlt.getDeliverableTypeId(), dossier !=null ? dossier.getDossierId() : 0L);
+			_log.debug("DeliverableCode: " + deliverableCode);
 
 			DeliverableLocalServiceUtil.addDeliverableSign(
 					groupId, dlt.getTypeCode(), dlt.getTypeName(),
@@ -9326,10 +9335,10 @@ public class DossierManagementImpl implements DossierManagement {
 				dossierFile.setDeliverableCode(deliverableObj.getString(DeliverableTerm.DELIVERABLE_CODE));
 				DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 			}
-			result.put("RETURN_MSG", "Success");
+			result.put("RETURN_MSG", "Tạo Deliverable thành công");
 		} catch (Exception e) {
-			e.getMessage();
-			result.put("RETURN_MSG", "ERROR");
+			result.put("RETURN_MSG", "Tạo Deliverable không thành công");
+			BusinessExceptionImpl.processException(e);
 		} finally {
 			if (is != null) {
 				try {
