@@ -52,7 +52,7 @@ public class Mofa2ManagementImpl implements Mofa2Management {
     public Response createMofa2(HttpServletRequest request, HttpHeaders header, ServiceContext serviceContext, long dossierId) {
         try {
             String result = StringPool.BLANK;
-            long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+            long groupId = 0L;
             DossierFile dossierFile = null;
             List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossierId, "TP01", false);
              dossierFile = dossierFiles.get(0);
@@ -60,6 +60,7 @@ public class Mofa2ManagementImpl implements Mofa2Management {
             JSONArray thanhvienArr = fileJSON.getJSONArray("thanh_vien_doan");
             Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
             if(Validator.isNotNull(dossier)){
+                groupId = dossier.getGroupId();
                 result = insertMofa2(groupId, dossier, CONNECT_MOFA2, thanhvienArr);
             }
             _log.info("Result: " + result);
@@ -73,6 +74,7 @@ public class Mofa2ManagementImpl implements Mofa2Management {
     public static String insertMofa2(long groupId, Dossier dossier, String serverCode, JSONArray arrayFile){
         String serverUrl = StringPool.BLANK;
         try {
+            _log.debug("ServerCode :  " + serverCode + " groupId : " + groupId);
             ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverCode);
             StringBuilder sb = new StringBuilder();
             if (sc != null && arrayFile != null) {
@@ -143,16 +145,20 @@ public class Mofa2ManagementImpl implements Mofa2Management {
                             JSONObject phepNhapCanh = thanhvienJSON.getJSONObject("PhepNhapCanh");
                             if (phepNhapCanh != null) {
                                 hsThiThucJson.put("PhepNhapCanh", phepNhapCanh);
+                            }else{
+                                hsThiThucJson.put("PhepNhapCanh", org.json.JSONObject.NULL);
                             }
                             //Body HsThiThuc
                             if (thanhvienJSON != null) {
-                                hsThiThucJson = hsThiThuc(thanhvienJSON, dossier, hsThiThucJson);
+                                hsThiThucJson = hsThiThuc(thanhvienJSON, hsThiThucJson, arrayFile.length());
                             }
 
                             //HS Anh
                             JSONArray hsAnh = thanhvienJSON.getJSONArray("HsAnh");
                             if (hsAnh != null) {
                                 hsThiThucJson.put("HsAnh", hsAnh);
+                            }else{
+                                hsThiThucJson.put("HsAnh", org.json.JSONObject.NULL);
                             }
 
                             //HS tre em di cung
@@ -165,6 +171,11 @@ public class Mofa2ManagementImpl implements Mofa2Management {
                             JSONArray hsThanNhan = thanhvienJSON.getJSONArray("HsThanNhan");
                             if (hsThanNhan != null) {
                                 hsThiThucJson.put("HsThanNhan", hsThanNhan);
+                            }
+                            //HS Thi Thuc Noi
+                            JSONObject hsThiThucNoi = thanhvienJSON.getJSONObject("HsThiThucNoi");
+                            if (hsThiThucNoi != null) {
+                                hsThiThucJson.put("HsThiThucNoi", hsThiThucNoi);
                             }
 
                         } catch (Exception e) {
@@ -204,7 +215,7 @@ public class Mofa2ManagementImpl implements Mofa2Management {
         return null;
     }
 
-    private static JSONObject hsThiThuc(JSONObject thanhvienJSON, Dossier dossier, JSONObject hsThiThucJson) {
+    private static JSONObject hsThiThuc(JSONObject thanhvienJSON, JSONObject hsThiThucJson, int arrayLength) {
         hsThiThucJson.put("Id", Validator.isNotNull(thanhvienJSON.getString("Id")) ? thanhvienJSON.getString("Id") : org.json.JSONObject.NULL);
         hsThiThucJson.put("Ca_Nhan_Id", Validator.isNotNull(thanhvienJSON.getString("Ca_Nhan_Id"))? thanhvienJSON.getString("Ca_Nhan_Id") : org.json.JSONObject.NULL);
         hsThiThucJson.put("Quoc_Tich_Hn_Id", Validator.isNotNull(thanhvienJSON.getString("Quoc_Tich_Hn_Id")) ? thanhvienJSON.getString("Quoc_Tich_Hn_Id") : org.json.JSONObject.NULL);
@@ -247,9 +258,11 @@ public class Mofa2ManagementImpl implements Mofa2Management {
         hsThiThucJson.put("Noi_Dung_Tra_Loi", Validator.isNotNull(thanhvienJSON.getString("Noi_Dung_Tra_Loi")) ? thanhvienJSON.getString("Noi_Dung_Tra_Loi") : org.json.JSONObject.NULL);
         hsThiThucJson.put("Ngay_Luu_Ho_So", Validator.isNotNull(thanhvienJSON.getString("Ngay_Luu_Ho_So")) ? thanhvienJSON.getString("Ngay_Luu_Ho_So") : org.json.JSONObject.NULL);
         hsThiThucJson.put("Nguoi_Luu_Ho_So", Validator.isNotNull(thanhvienJSON.getString("Nguoi_Luu_Ho_So")) ? thanhvienJSON.getString("Nguoi_Luu_Ho_So") : org.json.JSONObject.NULL);
-        hsThiThucJson.put("so_ho_so", Validator.isNotNull(dossier.getDossierNo()) ? dossier.getDossierNo(): org.json.JSONObject.NULL);
+        hsThiThucJson.put("so_ho_so", arrayLength);
         hsThiThucJson.put("So_Giay_Hen", Validator.isNotNull(thanhvienJSON.getString("So_Giay_Hen")) ? thanhvienJSON.getString("So_Giay_Hen") : org.json.JSONObject.NULL);
         hsThiThucJson.put("Noi_Gui_Cv_Den_Id", Validator.isNotNull(thanhvienJSON.getString("Noi_Gui_Cv_Den_Id")) ? thanhvienJSON.getString("Noi_Gui_Cv_Den_Id"): org.json.JSONObject.NULL);
+        hsThiThucJson.put("Loai_To_Khai", Validator.isNotNull(thanhvienJSON.getString("Loai_To_Khai")) ? thanhvienJSON.getString("Loai_To_Khai"): org.json.JSONObject.NULL);
+        hsThiThucJson.put("Noi_Nop_Hs_Id", Validator.isNotNull(thanhvienJSON.getString("Noi_Nop_Hs_Id")) ? thanhvienJSON.getString("Noi_Nop_Hs_Id"): org.json.JSONObject.NULL);
         return hsThiThucJson;
     }
 

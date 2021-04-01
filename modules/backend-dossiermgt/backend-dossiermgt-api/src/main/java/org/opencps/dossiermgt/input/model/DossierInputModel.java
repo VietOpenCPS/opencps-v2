@@ -78,6 +78,52 @@ public class DossierInputModel {
 	private String vnpostalProfile;
 	private Integer fromViaPostal;
 	private String formMeta;
+	private String actionCode;
+	private String actionNote;
+	private String assignUsers;
+	private String payload;
+	private String actionUser;
+
+	public String getActionUser() {
+		return actionUser;
+	}
+
+	public void setActionUser(String actionUser) {
+		this.actionUser = actionUser;
+	}
+
+
+	public String getPayload() {
+		return payload;
+	}
+
+	public void setPayload(String payload) {
+		this.payload = payload;
+	}
+
+	public String getAssignUsers() {
+		return assignUsers;
+	}
+
+	public void setAssignUsers(String assignUsers) {
+		this.assignUsers = assignUsers;
+	}
+
+	public String getActionNote() {
+		return actionNote;
+	}
+
+	public void setActionNote(String actionNote) {
+		this.actionNote = actionNote;
+	}
+
+	public String getActionCode() {
+		return actionCode;
+	}
+
+	public void setActionCode(String actionCode) {
+		this.actionCode = actionCode;
+	}
 
 	public String getFormMeta() {
 		return formMeta;
