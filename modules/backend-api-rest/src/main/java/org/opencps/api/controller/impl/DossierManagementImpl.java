@@ -9232,6 +9232,7 @@ public class DossierManagementImpl implements DossierManagement {
 				JSONObject formDataObj = JSONFactoryUtil
 						.createJSONObject(formdata);
 				if (formDataObj.has(variable)) {
+					_log.debug("FormData: " + JSONFactoryUtil.looseSerialize(formdata));
 					JSONArray deliverablesArr = JSONFactoryUtil
 							.createJSONArray(formDataObj
 									.getString(variable));
