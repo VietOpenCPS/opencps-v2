@@ -47,8 +47,8 @@ public class JasperUtilsManagermentImpl implements JasperUtilsManagerment {
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		_log.info("jsonDataStr: " + jsonDataStr);
-		_log.info("documentScriptStr: " + scriptStr);
+		_log.debug("jsonDataStr: " + jsonDataStr);
+		_log.debug("documentScriptStr: " + scriptStr);
 		Date dateStart = new Date();
 		try {
 
@@ -66,13 +66,13 @@ public class JasperUtilsManagermentImpl implements JasperUtilsManagerment {
 				jsonData.put(Field.USER_NAME, user.getFullName());
 			}
 			jsonData.put(ConstantUtils.API_JSON_URL, serviceContext.getPortalURL());
-			_log.info("jsonData: " + jsonData);
+			_log.debug("jsonData: " + jsonData);
 			Message message = new Message();
 			message.put(ConstantUtils.API_JSON_FORM_REPORT, scriptStr);
 			message.put(ConstantUtils.API_JSON_FORM_DATA, jsonData.toJSONString());
 
 			Date dateEnd = new Date();
-			_log.info(
+			_log.debug(
 				"TIME Part 1: " + (dateEnd.getTime() - dateStart.getTime()) +
 					" ms");
 			try {
@@ -94,14 +94,14 @@ public class JasperUtilsManagermentImpl implements JasperUtilsManagerment {
 				responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
 
 				Date dateEnd1 = new Date();
-				_log.info(
+				_log.debug(
 					"TIME Part 2: " +
 						(dateEnd1.getTime() - dateStart1.getTime()) + " ms");
 				return responseBuilder.build();
 
 			}
 			catch (MessageBusException e) {
-				_log.info(e);
+				_log.debug(e);
 				throw new Exception(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_PREVIEW_NOT_AVAILABLE));
 			}
 

@@ -238,13 +238,14 @@ public class NotificationUtil {
 					fromUserName = queue.getFromUsername();
 				}
 
+				_log.debug("+++fromUserName:"+fromUserName);
+
 				messageEntry = new MBMessageEntry(
 						fromUserName, queue.getToUserId(),
 					queue.getToEmail(), queue.getToUsername(), serviceContext);
 
 				_log.debug("++++messageEntry.getFromName(1):"+messageEntry.getFromName());
 
-				messageEntry = new MBMessageEntry();
 				messageEntry.setCreateDate(queue.getCreateDate());
 				messageEntry.setEmailBody(emailBody);
 				messageEntry.setEmailSubject(emailSubject);
@@ -257,56 +258,11 @@ public class NotificationUtil {
 				messageEntry.setData(queue.getPayload());
 				messageEntry.setDossierNo(Validator.isNotNull(dossierNo) ? dossierNo : StringPool.BLANK);
 
-				// _log.info(emailBody);
-
-				// _log.info(userUrl);
-
-				// messageEntry.setFromEmail();
-
 				boolean sendEmail = true;
 				boolean sendNotify = true;
 				boolean sendSMS = false;
 				boolean sendMesZalo = false;
 
-//				if (queue.getToUserId() > 0) {
-					// Preferences preferences =
-					// PreferencesLocalServiceUtil.fetchByF_userId(
-					// serviceContext.getScopeGroupId(),
-					// queue.getToUserId());
-					// if (preferences != null &&
-					// Validator.isNotNull(preferences.getPreferences())) {
-					// try {
-					// JSONObject pref = JSONFactoryUtil.createJSONObject(
-					// preferences.getPreferences());
-					// if (pref.has(queue.getNotificationType())) {
-					// JSONObject object = pref.getJSONObject(
-					// queue.getNotificationType());
-					// if (object != null &&
-					// object.has(queue.getClassName())) {
-					// JSONObject conf = object.getJSONObject(
-					// queue.getClassName());
-					// sendEmail = conf.getBoolean("email");
-					// sendNotify = conf.getBoolean("notify");
-					// sendSMS = conf.getBoolean("sms");
-					// }
-					// }
-					// }
-					// catch (Exception e) {
-					// _log.debug(e);
-					// //_log.error(e);
-					// }
-					// }
-//					if (template != null) {
-//						// sendEmail = template.getSendEmail();
-//						sendNotify = template.getSendNotification();
-//						// sendSMS = template.getSendSMS();
-//						sendMesZalo = template.getSendNotification();
-//					}
-//				}
-//				else {
-//					sendNotify = false;
-//					sendMesZalo = false;
-//				}
 
 				if (template != null) {
 					sendEmail = template.getSendEmail();
@@ -339,7 +295,7 @@ public class NotificationUtil {
 					messageEntry.setSendZalo(sendMesZalo);
 				}
 
-				_log.debug("++++messageEntry.getFromName(1):"+messageEntry.getFromName());
+				_log.debug("++++messageEntry.getFromName(2):"+messageEntry.getFromName());
 
 			}
 			catch (Exception e) {
