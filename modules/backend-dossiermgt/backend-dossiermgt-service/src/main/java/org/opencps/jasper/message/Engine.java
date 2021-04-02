@@ -227,7 +227,7 @@ public class Engine implements MessageListener {
 			}
 			else if (engineClass.isAssignableFrom(DossierDocument.class)) {
 				DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.fetchDossierDocument(classPK);
-				
+				_log.info("LOG DossierDocument: " + JSONFactoryUtil.looseSerialize(dossierDocument));
 				if (dossierDocument != null) {
 				ServiceContext serviceContext = new ServiceContext();
     			_log.info("jasper export dossier document: " + classPK + ", " + dossierDocument + ", service context: " + serviceContext );
