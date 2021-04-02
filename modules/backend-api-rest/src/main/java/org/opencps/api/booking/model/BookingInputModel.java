@@ -68,7 +68,8 @@ import javax.xml.bind.annotation.XmlType;
  "online",
  "groupIdBooking",
  "telNo",
- "bypassCaptcha"
+ "bypassCaptcha",
+ "govAgencyCode"
 })
 
 @XmlRootElement(name = "BookingInputModel")
@@ -105,6 +106,16 @@ public class BookingInputModel {
 	protected String telNo;
 	@FormParam(value = "bypassCaptcha")
 	protected Boolean bypassCaptcha;
+	@FormParam(value = "govAgencyCode")
+	protected String govAgencyCode;
+
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
 
 	public String getClassName() {
 		return className;

@@ -31,6 +31,7 @@ import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.DossierLocalService;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalService;
 import org.opencps.dossiermgt.service.ProcessOptionLocalService;
 import org.opencps.dossiermgt.service.ServiceConfigLocalService;
@@ -125,7 +126,12 @@ public class GogoShellTool {
 				long startDossierId = Long.valueOf(params[0]);
 				long endDossierId = Long.valueOf(params[1]);
 				for(long i = startDossierId; i <= endDossierId; i++) {
-					reindex(i);
+					Dossier dossier = DossierLocalServiceUtil.fetchDossier(i);
+					if(dossier != null) {
+						_log.info("reindex_range: " + i);
+						reindex(i);
+					}
+					
 				}
 				break;
 			default:

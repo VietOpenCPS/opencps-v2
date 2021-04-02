@@ -35,35 +35,12 @@ import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierFileUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
-import org.opencps.dossiermgt.model.AccessToken;
-import org.opencps.dossiermgt.model.ActionConfig;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.DossierStatusMapping;
-import org.opencps.dossiermgt.model.ProcessAction;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceFileTemplate;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.model.ServiceInfoMapping;
+import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.impl.ServiceInfoImpl;
-import org.opencps.dossiermgt.service.AccessTokenLocalServiceUtil;
-import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierStatusMappingLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigMappingLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
 import org.opencps.usermgt.model.Answer;
@@ -614,7 +591,58 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					dossierAction != null ? convertDate2String(dossierAction.getCreateDate()) : StringPool.BLANK);
 		}
 
-		object.put("PhongBanXuLy", "");// ko bb
+		//sequenceRole- PhongBanXuLy
+		//
+		String sequenceRole      = "";
+		String dateReturnDossier = "";
+		try {
+			String submissionNote = dossier.getSubmissionNote();
+
+			if(Validator.isNull(submissionNote)) {
+				throw new Exception("No submissionNote found with dossierId: " + dossier.getDossierId());
+			}
+
+			JSONObject subJson = JSONFactoryUtil.createJSONObject(submissionNote);
+			if(Validator.isNull(subJson) || !subJson.has("data")) {
+				throw new Exception("No json found for submissionNote with dossierId: " + dossier.getDossierId());
+			}
+
+			JSONArray data = subJson.getJSONArray("data");
+			JSONObject oneData;
+			JSONObject oneAction;
+			JSONArray actions;
+			String actionCode;
+
+			for(int i = 0; i< data.length(); i++) {
+				oneData = data.getJSONObject(i);
+				if(Validator.isNull(oneData)) {
+					continue;
+				}
+				actions = oneData.getJSONArray("actions");
+				if(Validator.isNull(actions) || actions.length() ==0) {
+					continue;
+				}
+				oneAction = actions.getJSONObject(0);
+				if(Validator.isNull(oneAction)) {
+					continue;
+				}
+				actionCode = oneAction.getString("actionCode");
+
+				if(Validator.isNotNull(dossierAction.getActionCode()) &&
+						actionCode.equals(dossierAction.getActionCode())) {
+					sequenceRole = oneData.getString("sequenceRole");
+					if(oneAction.has("dueDate") && !oneAction.getString("dueDate").isEmpty()) {
+						Date date = new Date(Long.parseLong(oneAction.getString("dueDate")));
+						dateReturnDossier = convertDate2String(date);
+					}
+				}
+			}
+		}catch (Exception e) {
+			_log.error("Error when add PhongBanXuLy or NgayKetThucTheoQuyDinh");
+			e.printStackTrace();
+		}
+
+		object.put("PhongBanXuLy", sequenceRole);// ko bb
 		String processContent = "";
 		if(Validator.isNotNull(dossierAction)) {
 			String actionName = Validator.isNotNull(dossierAction.getActionName())
@@ -632,7 +660,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("NoiDungXuLy", processContent);
 		object.put("TrangThai", getMappingStatus(groupId, dossier));
 		object.put("NgayBatDau", "");// ko bb
-		object.put("NgayKetThucTheoQuyDinh", "");// ko bb
+		object.put("NgayKetThucTheoQuyDinh", dateReturnDossier);// ko bb
 
 		return object;
 	}
@@ -2054,14 +2082,31 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return result;
 	}
 
-	private boolean hasSyncDossier(String dossierNo, JSONObject config, String accessToken) {
-		JSONObject searchData = searchDossier(dossierNo, config, accessToken);
-		if (searchData != null && searchData.has("result")) {
-			JSONArray result = searchData.getJSONArray("result");
-			if (result != null && result.length() > 0) {
+	private boolean hasSyncDossier(Dossier dossier, JSONObject config, String accessToken) {
+		try {
+			String dossierNo = dossier.getDossierNo();
+			// duan idea
+			List<PublishQueue> publishQueue =  PublishQueueLocalServiceUtil.getByG_DID_SN_NST(dossier.getGroupId(),
+					dossier.getDossierId(), ServerConfigTerm.DVCQG_INTEGRATION, PublishQueueTerm.STATE_RECEIVED_ACK);
+
+			if(Validator.isNotNull(publishQueue) && publishQueue.size() > 0) {
+				_log.info("Dossier " + dossierNo + " has been created on DVCQG");
 				return true;
+			} else {
+				_log.info("Dossier " + dossierNo + " does not existed on DVCQG or not appear in queue");
 			}
 
+			// trung idea
+			JSONObject searchData = searchDossier(dossierNo, config, accessToken);
+			if (searchData != null && searchData.has("result")) {
+				JSONArray result = searchData.getJSONArray("result");
+				if (result != null && result.length() > 0) {
+					return true;
+				}
+
+			}
+		} catch (Exception e) {
+			_log.error("Error when get has sync dossier: " + e.getMessage());
 		}
 		return false;
 	}
@@ -2270,7 +2315,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					result = syncData(serverConfig, body);
 
 				} else {
-					boolean hasSync = hasSyncDossier(dossier.getDossierNo(), config, accessToken);
+					boolean hasSync = hasSyncDossier(dossier, config, accessToken);
 					JSONObject synsObject = createSyncDossierBodyRequest(groupId, dossier, config, accessToken,
 							request);
 

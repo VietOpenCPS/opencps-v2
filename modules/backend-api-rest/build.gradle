@@ -67,7 +67,8 @@ dependencies {
     compile name : "filters-2.0.235", transitive:false
     compile name : "jcaptcha-2.0-alpha-1-SNAPSHOT", transitive:false
     compile name : "jcaptcha-api-1.0", transitive:false
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.7' 
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
+	compile name: 'json-20090211', transitive:false
 	testCompile group: "junit", name: "junit", version: "4.12"
 	
 	// https://mvnrepository.com/artifact/org.apache.poi/poi

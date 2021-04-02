@@ -82,6 +82,7 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 		attributes.put("online", isOnline());
 		attributes.put("bookingInTime", getBookingInTime());
 		attributes.put("telNo", getTelNo());
+		attributes.put("govAgencyCode", getGovAgencyCode());
 
 		return attributes;
 	}
@@ -225,6 +226,12 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 		if (telNo != null) {
 			setTelNo(telNo);
 		}
+
+		String govAgencyCode = (String)attributes.get("govAgencyCode");
+
+		if (govAgencyCode != null) {
+			setGovAgencyCode(govAgencyCode);
+		}
 	}
 
 	@Override
@@ -360,6 +367,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	@Override
 	public String getGateNumber() {
 		return _booking.getGateNumber();
+	}
+
+	/**
+	* Returns the gov agency code of this booking.
+	*
+	* @return the gov agency code of this booking
+	*/
+	@Override
+	public String getGovAgencyCode() {
+		return _booking.getGovAgencyCode();
 	}
 
 	/**
@@ -681,6 +698,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	@Override
 	public void setGateNumber(String gateNumber) {
 		_booking.setGateNumber(gateNumber);
+	}
+
+	/**
+	* Sets the gov agency code of this booking.
+	*
+	* @param govAgencyCode the gov agency code of this booking
+	*/
+	@Override
+	public void setGovAgencyCode(String govAgencyCode) {
+		_booking.setGovAgencyCode(govAgencyCode);
 	}
 
 	/**
