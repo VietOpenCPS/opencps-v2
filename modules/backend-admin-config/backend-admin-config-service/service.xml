@@ -94,7 +94,7 @@
 		
         <finder name="F_DRID" return-type="Collection">
             <finder-column name="dynamicReportId"></finder-column>
-        </finder>
+        </finder> 
 
         <finder name="F_RIDS" return-type="Collection">
             <finder-column name="roleId" comparator="=" arrayable-operator="OR"></finder-column>
@@ -105,5 +105,62 @@
             <finder-column name="roleId"></finder-column>
         </finder>
 				
+	</entity>
+	
+	<entity name="ApiManager" uuid="false" local-service="true"
+		remote-service="false" table="opencps_api_manager">
+		
+		<!-- PK fields -->
+		<column name="apiManagerId" type="long" primary="true" />
+		<column name="groupId" type="long" />
+		<column name="apiCode" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		<column name="userId" type="long" />
+		<column name="apiName" type="String" />
+		<column name="apiDescription" type="String" />
+		<column name="apiStatus" type="int" />
+		<column name="className" type="String" />
+		
+		<finder return-type="ApiManager" name="F_ID">
+			<finder-column name="id"></finder-column>
+		</finder>
+		
+		<finder return-type="ApiManager" name="F_apiCode">
+			<finder-column name="apiCode"></finder-column>
+		</finder>	
+		
+		<finder return-type="Collection" name="F_GID">
+			<finder-column name="groupId"></finder-column>
+		</finder>	
+		
+	</entity>
+	
+	<entity name="ApiRole" uuid="false" local-service="true"
+		remote-service="false" table="opencps_api_role">
+		
+		<!-- PK fields -->
+		<column name="apiRoleId" type="long" primary="true" />
+		<column name="groupId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		<column name="userId" type="long" />
+		<column name="apiCode" type="String" />
+		<column name="roleId" type="int" />
+		<column name="roleCode" type="String" />
+		<column name="apiRoleStatus" type="int" />
+		
+		<finder return-type="ApiRole" name="F_ID">
+			<finder-column name="id"></finder-column>
+		</finder>
+		
+		<finder return-type="ApiRole" name="F_roleCode">
+			<finder-column name="roleCode"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_GID">
+			<finder-column name="groupId"></finder-column>
+		</finder>		
+		
 	</entity>	
 </service-builder>
