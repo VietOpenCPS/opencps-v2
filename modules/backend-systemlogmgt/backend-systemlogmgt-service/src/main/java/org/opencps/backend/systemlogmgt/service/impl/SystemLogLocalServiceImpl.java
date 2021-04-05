@@ -27,6 +27,8 @@ import com.liferay.portal.kernel.portlet.PortletClassLoaderUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +37,7 @@ import org.opencps.backend.systemlogmgt.service.SystemLogLocalServiceUtil;
 import org.opencps.backend.systemlogmgt.service.base.SystemLogLocalServiceBaseImpl;
 import org.opencps.backend.systemlogmgt.service.persistence.SystemLogPersistence;
 import org.opencps.backend.systemlogmgt.service.persistence.impl.SystemLogPersistenceImpl;
-import org.opencps.backend.systemlogmgt.util.ParamUtil;
+import org.opencps.backend.systemlogmgt.service.util.ParamUtil;
 
 /**
  * The implementation of the system log local service.
@@ -115,50 +117,68 @@ public class SystemLogLocalServiceImpl extends SystemLogLocalServiceBaseImpl {
 	public List<SystemLog> getSystemLogByLikeMessage(String message){
 		return systemLogPersistence.findBylikeMessage(message);
 	}
+	public List<SystemLog> getSystemLogByThreadId(String threadId){
+		return systemLogPersistence.findBythreadId(threadId);
+	}
 	
-	public List<SystemLog> getSystemLogByDynamicQuery(Long logId, String groupId, String moduleName, String createDate, Integer preLine, String preMethod, Integer line, String method, String message, String type, String threadId){
+
+	public List<SystemLog> getSystemLogByDynamicQuery(String logId, String groupId, String moduleNames, String createDate, Integer preLine, String preMethod, Integer line, String method, String message, String type, String threadId, Date fromDate, Date toDate) throws ParseException{
 		
 		ClassLoader classLoader = getClass().getClassLoader();
 		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(SystemLog.class, classLoader);
 
 		if(Validator.isNotNull(logId)) {
-			dynamicQuery.add(PropertyFactoryUtil.forName("logId").eq(logId));
+			Long logIdLong = Long.parseLong(logId);
+			dynamicQuery.add(PropertyFactoryUtil.forName("logId").eq(logIdLong));
 		}
 		if(Validator.isNotNull(groupId)) {
 			Long groupIdLong = Long.parseLong(groupId);
 			dynamicQuery.add(RestrictionsFactoryUtil.eq("groupId", groupIdLong));
 		}
 		if(Validator.isNotNull(createDate)) {
-			dynamicQuery.add(RestrictionsFactoryUtil.eq("createDate", createDate));
+			 Date date1= new SimpleDateFormat("yyyy-MM-dd").parse(createDate);  
+			dynamicQuery.add(RestrictionsFactoryUtil.eq("createDate", date1));
 		}
-		if(Validator.isNotNull(moduleName)) {
-			dynamicQuery.add(RestrictionsFactoryUtil.eq("moduleName", moduleName));
+		if(Validator.isNotNull(moduleNames)) {
+			String[] moduleName = ParamUtil.getArrayParams(moduleNames);
+			dynamicQuery.add(RestrictionsFactoryUtil.in("moduleName", moduleName));
 		}
 		if(Validator.isNotNull(preLine)) {
 			dynamicQuery.add(RestrictionsFactoryUtil.eq("preLine", preLine));
 		}
 		if(Validator.isNotNull(preMethod)) {
-			dynamicQuery.add(RestrictionsFactoryUtil.eq("preMethod", preMethod));
+			String[] preMethods = ParamUtil.getArrayParams(preMethod);
+			dynamicQuery.add(RestrictionsFactoryUtil.eq("preMethod", preMethods));
 		}
 		if(Validator.isNotNull(line)) {
 			dynamicQuery.add(RestrictionsFactoryUtil.eq("line", line));
 		}
 		if(Validator.isNotNull(method)) {
-			dynamicQuery.add(RestrictionsFactoryUtil.eq("method", method));
+			String[] methods = ParamUtil.getArrayParams(method);
+			dynamicQuery.add(RestrictionsFactoryUtil.in("method", methods));
 		}
 		if(Validator.isNotNull(message)) {
 			dynamicQuery.add(RestrictionsFactoryUtil.like("message", message));
 		}
 		if(Validator.isNotNull(type)) {
-			dynamicQuery.add(RestrictionsFactoryUtil.eq("type", type));
+			String[] types = ParamUtil.getArrayParams(type);
+			dynamicQuery.add(RestrictionsFactoryUtil.in("type", types));
 		}
 		if(Validator.isNotNull(threadId)) {
-			dynamicQuery.add(RestrictionsFactoryUtil.eq("threadId", threadId));
+			String[] threadIds = ParamUtil.getArrayParams(threadId);
+			dynamicQuery.add(RestrictionsFactoryUtil.in("threadId", threadIds));
+		} 
+		if(Validator.isNotNull(fromDate)) {
+			dynamicQuery.add(RestrictionsFactoryUtil.ge("createDate", fromDate));
 		}
+		if(Validator.isNotNull(toDate)) {
+			dynamicQuery.add(RestrictionsFactoryUtil.le("createDate", toDate));
+		}
+		
 		List<SystemLog> result = systemLogLocalService.dynamicQuery(dynamicQuery);
-		
-		
 		return result;
 	}
+	
+	
 
 }

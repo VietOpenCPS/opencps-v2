@@ -36,6 +36,9 @@ import org.opencps.backend.systemlogmgt.model.SystemLog;
 
 import java.io.Serializable;
 
+import java.text.ParseException;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -211,10 +214,11 @@ public interface SystemLogLocalService extends BaseLocalService,
 	public SystemLog getSystemLog(long logId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SystemLog> getSystemLogByDynamicQuery(Long logId,
-		String groupId, String moduleName, String createDate, Integer preLine,
+	public List<SystemLog> getSystemLogByDynamicQuery(String logId,
+		String groupId, String moduleNames, String createDate, Integer preLine,
 		String preMethod, Integer line, String method, String message,
-		String type, String threadId);
+		String type, String threadId, Date fromDate, Date toDate)
+		throws ParseException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SystemLog> getSystemLogByLikeMessage(String message);
@@ -240,6 +244,9 @@ public interface SystemLogLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SystemLog> getSystemLogByMultipleType(String[] types);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SystemLog> getSystemLogByThreadId(String threadId);
 
 	/**
 	* Returns the system log matching the UUID and group.
