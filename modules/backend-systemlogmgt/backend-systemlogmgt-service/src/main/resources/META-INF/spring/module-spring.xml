@@ -7,6 +7,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
 >
+	<bean class="org.opencps.backend.systemlogmgt.service.impl.SystemLogServiceTestImpl" id="org.opencps.backend.systemlogmgt.service.impl.SystemLogServiceTest" />
 	<bean class="org.opencps.backend.systemlogmgt.service.impl.SystemLogLocalServiceImpl" id="org.opencps.backend.systemlogmgt.service.SystemLogLocalService" />
 	<bean class="org.opencps.backend.systemlogmgt.service.persistence.impl.SystemLogPersistenceImpl" id="org.opencps.backend.systemlogmgt.service.persistence.SystemLogPersistence" parent="basePersistence" />
 </beans>
