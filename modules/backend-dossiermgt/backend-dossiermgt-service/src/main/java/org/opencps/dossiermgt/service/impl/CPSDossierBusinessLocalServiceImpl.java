@@ -268,7 +268,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			createDossiers = proAction.getCreateDossiers();
 		}
 		_log.info("createDossiers: "+createDossiers);
-		if (Validator.isNotNull(createDossiers)) {
+		if (Validator.isNotNull(createDossiers) && dossier.getOriginDossierId() == 0L && Validator.isNull(dossier.getOriginDossierNo())) {
 			//Create new HSLT
 			String GOVERNMENT_AGENCY = ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY);
 			_log.info("GOVERNMENT_AGENCY: "+GOVERNMENT_AGENCY);
@@ -314,7 +314,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.info("serviceCode: " + serviceCode);
 			_log.info("dossierTemplateNo: " + dossierTemplateNo);
 
-			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(),
+			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, Validator.isNotNull(serviceCode) ? serviceCode : dossier.getServiceCode(),
 					govAgencyCode);
 			_log.info("serviceConfig: " + serviceConfig);
 			if (serviceConfig != null) {
@@ -340,7 +340,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if (foundOption != null) {
 					ServiceProcess ltProcess = serviceProcessLocalService
 							.fetchServiceProcess(foundOption.getServiceProcessId());
-
+					_log.info("Vaoooooo foundOption");
 					DossierTemplate dossierTemplate = dossierTemplateLocalService
 							.fetchDossierTemplate(foundOption.getDossierTemplateId());
 					//					String delegateName = dossier.getDelegateName();
@@ -374,28 +374,41 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					crossDossierObj.put(DossierTerm.SERVICE_CODE, serviceCode);
 					payloadObj.put(DossierTerm.CROSS_DOSSIER, crossDossierObj);
 					Dossier oldHslt = null;
+					_log.info("Server: " + serverSync + "  govSyn: " + govSync);
 					if(Validator.isNotNull(serverSync) && Validator.isNotNull(govSync)){
-						_log.debug("GovSync: " + govSync + " serverSync: " + serverSync);
+						_log.info("GovSync: " + govSync + " serverSync: " + serverSync);
 						oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_SN_ODID(groupId,
-								dossier.getApplicantIdNo(), dossier.getServiceCode(), govSync,
+								dossier.getApplicantIdNo(), Validator.isNotNull(serviceCode) ? serviceCode : dossier.getServiceCode(), govSync,
 								dossierTemplate.getTemplateNo(), dossier.getDossierId(), serverSync);
 					}else {
-						_log.debug("Not Server Sync");
+						_log.info("Not Server Sync");
+						_log.info("groupId: " + groupId);
+						_log.info("applicantIdNo: " + dossier.getApplicantIdNo());
+						_log.info("serviceCode: " + serviceCode);
+						_log.info(" dossier.getServiceCode(): " +  dossier.getServiceCode());
+						_log.info("govAgencyCode: " + govAgencyCode);
+						_log.info("getTemplateNo: " + dossierTemplate.getTemplateNo());
+						_log.info("getDossierId: " + dossier.getDossierId());
+
+						// Luu y: Sau khi hs goc tao duoc hs trung gian => doActionMapping => 1200 => check hs cos originDossierId = Id hs trung gian
+						// => case nay dang sai
+						//=> Sua neu action la 1200 thi bo dk tim originDossierId hoac bo han dk tim originDossierId
 						oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_ODID(groupId,
-								dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode,
+								dossier.getApplicantIdNo(),Validator.isNotNull(serviceCode) ? serviceCode : dossier.getServiceCode(), govAgencyCode,
 								dossierTemplate.getTemplateNo(), dossier.getDossierId());
 					}
 					Dossier hsltDossier = null;
-
+					_log.info("oldHslt: " + JSONFactoryUtil.looseSerialize(oldHslt));
 					if (oldHslt != null) {
 						if (oldHslt.getOriginality() < 0) {
 							oldHslt.setOriginality(-oldHslt.getOriginality());
 						}
 						hsltDossier = oldHslt;
 					}
+					_log.info("hsltDossier: " + JSONFactoryUtil.looseSerialize(hsltDossier));
 					if (hsltDossier == null) {
 						hsltDossier = dossierLocalService.initDossier(groupId, 0l, UUID.randomUUID().toString(),
-								dossier.getCounter(), dossier.getServiceCode(), dossier.getServiceName(), govAgencyCode,
+								dossier.getCounter(), Validator.isNotNull(serviceCode) ? serviceCode : dossier.getServiceCode(), dossier.getServiceName(), govAgencyCode,
 								govAgencyName, dossier.getApplicantName(), dossier.getApplicantIdType(),
 								dossier.getApplicantIdNo(), dossier.getApplicantIdDate(), dossier.getAddress(),
 								dossier.getCityCode(), dossier.getCityName(), dossier.getDistrictCode(),
@@ -501,7 +514,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							dossier.setLockState(curStep.getLockState());
 						}
 						dossier.setDossierNote(dossierNote);
-						;
 					}
 
 					return hsltDossier;
@@ -512,7 +524,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				return null;
 			}
 		} else {
-			return null;
+			return dossier;
 		}
 	}
 
@@ -911,11 +923,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
 		} else {
 			if (Validator.isNotNull(hsltDossier)) {
+				_log.info("HSLT: " + JSONFactoryUtil.looseSerialize(hsltDossier));
 					ProcessOption optionOrigin = getProcessOption(hsltDossier.getServiceCode(),
 							hsltDossier.getGovAgencyCode(), hsltDossier.getDossierTemplateNo(), groupId);
 					ProcessAction actionOrigin = getProcessAction(groupId, hsltDossier.getDossierId(),
 							hsltDossier.getReferenceUid(), actionConfig.getMappingAction(),
 							optionOrigin.getServiceProcessId());
+					_log.info("ActionConfig: " + actionConfig.getMappingAction());
 					doAction(groupId, userId, hsltDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(),
 							actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
 			} else {
@@ -6887,7 +6901,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				Date appIdDate = null;
 
 				try {
-					appIdDate = sdf.parse(input.getApplicantIdDate());
+					if(Validator.isNotNull(input.getApplicantIdDate())) {
+						appIdDate = sdf.parse(input.getApplicantIdDate());
+					}
 
 				} catch (Exception e) {
 					_log.debug(e);
