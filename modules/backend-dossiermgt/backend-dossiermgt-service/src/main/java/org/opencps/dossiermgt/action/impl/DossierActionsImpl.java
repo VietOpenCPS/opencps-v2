@@ -1997,21 +1997,6 @@ public class DossierActionsImpl implements DossierActions {
 		DossierAction dossierAction = null;
 
 		Dossier dossier = getDossier(groupId, dossierId, referenceUid);
-		// _log.info("dossier: " + dossier);
-
-		//		String type = StringPool.BLANK;
-
-		//		if (dossier != null) {
-		//			String dossierStatus = dossier.getDossierStatus().toLowerCase();
-		//			if (Validator.isNotNull(dossierStatus) && !dossierStatus.equals("new")) {
-		//				String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
-		//				_log.info("applicantNote: "+applicantNote);
-		//
-		//				dossier.setApplicantNote(applicantNote);
-		//
-		//				DossierLocalServiceUtil.updateDossier(dossier);
-		//			}
-		//		}
 
 		if (Validator.isNull(dossier)) {
 			throw new NotFoundException("DossierNotFoundException");
@@ -2027,8 +2012,7 @@ public class DossierActionsImpl implements DossierActions {
 			option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 				dossier.getDossierTemplateNo(), groupId);
 		} catch (Exception e) {
-			_log.debug(e);
-			//_log.error(e);
+			_log.error(e);
 			throw new NotFoundException("ServiceProcessNotFoundException");
 		}
 
@@ -2060,15 +2044,11 @@ public class DossierActionsImpl implements DossierActions {
 				DossierPaymentUtils.processPaymentFile(processAction, processAction.getPaymentFee(), groupId, dossierId, userId,
 					context, serviceProcess.getServerNo());
 			} catch (Exception e) {
-
-				_log.debug(e);
-				//_log.error(e);
+				_log.error(e);
 				_log.info("Can not create PaymentFile with pattern \"" + processAction.getPaymentFee() + "\"");
 			}
 
 		}
-
-		//		boolean isSubmitType = isSubmitType(processAction);
 
 		boolean hasDossierSync = false;
 
@@ -2076,14 +2056,6 @@ public class DossierActionsImpl implements DossierActions {
 			hasDossierSync = hasDossierSync(groupId, dossierId, referenceUid, processAction);
 		}
 
-		// TODO take a look later
-
-		//		boolean hasForedDossierSync = forcedDossierSync(groupId, dossierId, referenceUid, processAction, isSubmitType);
-		//
-		//		boolean isCreateDossier = hasCreateDossier(groupId, dossierId, referenceUid, actionCode, serviceProcessId,
-		//				hasDossierSync);
-
-		// TODO Hard fix for test
 		List<String> types = new ArrayList<>();
 		types.add(OCPSUserUtils.APPLICANT_01);
 		types.add(OCPSUserUtils.APPLICANT_02);
@@ -2095,8 +2067,6 @@ public class DossierActionsImpl implements DossierActions {
 		ProcessStep curStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 
 		int actionOverdue = getActionDueDate(groupId, dossierId, referenceUid, processActionId);
-
-		//		Date dueDate = getDueDate(groupId, dossierId, referenceUid, processActionId);
 
 		String payload = buildPayload(groupId, dossierId, referenceUid, processActionId);
 		actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
@@ -2150,10 +2120,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 
 			// Add DossierActionUser
-
 			DossierActionUserImpl dossierActionUser = new DossierActionUserImpl();
-
-			_log.debug("subUsers***" + subUsers);
 
 			if (Validator.isNotNull(subUsers)) {
 				JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(subUsers);
@@ -2169,14 +2136,11 @@ public class DossierActionsImpl implements DossierActions {
 				StringPool.BLANK, dossierAction.getStepInstruction(), context);
 
 		} else {
-
 			_log.info("NEXT_ACTION");
 
 			JSONObject jsStatus = JSONFactoryUtil.createJSONObject();
 
 			JSONObject jsSubStatus = JSONFactoryUtil.createJSONObject();
-
-			// String syncActionCode = processAction.getSyncActionCode();
 
 			_log.info("curStep.getDossierStatus(): " + curStep.getDossierStatus());
 			getDossierStatus(jsStatus, groupId, DOSSIER_SATUS_DC_CODE, curStep.getDossierStatus());
@@ -2226,23 +2190,11 @@ public class DossierActionsImpl implements DossierActions {
 				dossierActionUser.initDossierActionUser(processAction, dossier, processAction.getAllowAssignUser(), dossierAction, userId, groupId,
 					assignUserId);
 			}
-			//_log.info("UPDATE DOSSIER STATUS************");
-			//_log.info(curStep.getDossierStatus());
-			//_log.info(curStep.getDossierSubStatus());
-			//_log.info("*********************************");
-			// Set dossierStatus by CUR_STEP
-			// LamTV: Update lockState when Sync
+
 			dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, referenceUid, curStep.getDossierStatus(),
 				jsStatus.getString(curStep.getDossierStatus()), curStep.getDossierSubStatus(),
 				jsSubStatus.getString(curStep.getDossierSubStatus()), curStep.getLockState(),
 				dossierAction.getStepInstruction(), context);
-
-			//_log.info(jsStatus.toJSONString());
-			//_log.info(jsSubStatus.toJSONString());
-
-			//_log.info("dossier_" + dossier.getDossierStatus());
-
-			//_log.info("*********************************");
 
 			if (Validator.isNull(dossier.getDossierNo())
 				&& (curStep.getDossierStatus().contentEquals(DossierStatusConstants.PAYING)
@@ -2276,49 +2228,8 @@ public class DossierActionsImpl implements DossierActions {
 
 			_log.info("hasDossierSync:" + hasDossierSync);
 			if (hasDossierSync) {
-				// SyncAction
-				//				int method = 0;
 				_log.info("PROCESS update Dossier Sync:" + hasDossierSync);
-				//				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-				//						isCreateDossier, method, dossierAction.getPrimaryKey(), StringPool.BLANK,
-				//						serviceProcess.getServerNo());
-
-				// TODO add SYNC for DossierFile and PaymentFile here
-
-				//TODO: process SyncDossierFile
 				processSyncDossierFile(dossierId, dossier.getReferenceUid(), processAction, groupId, userId, serviceProcess.getServerNo());
-				// SyncDossierFile
-				//List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.getByDossierIdAndIsNew(dossierId, true);
-
-				// check return file
-				//List<String> returnDossierFileTemplateNos = ListUtil
-				//		.toList(StringUtil.split(processAction.getReturnDossierFiles()));
-
-				//_log.info("__return dossierFiles" + processAction.getReturnDossierFiles());
-
-				//for (DossierFile dosserFile : lsDossierFile) {
-
-				//	_log.info("&&&StartUpdateDossierFile" + new Date());
-
-				//	dosserFile.setIsNew(false);
-
-				//	DossierFileLocalServiceUtil.updateDossierFile(dosserFile);
-
-				//	_log.info("&&&EndUpdateDossierFile" + new Date());
-
-				//	_log.info("__dossierPart" + processAction.getReturnDossierFiles());
-				//	_log.info("__dossierPart" + dosserFile.getFileTemplateNo());
-
-				//	if (returnDossierFileTemplateNos.contains(dosserFile.getFileTemplateNo())) {
-				//		_log.info("START SYNC DOSSIER FILE");
-				//		DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId,
-				//				dossier.getReferenceUid(), false, 1, dosserFile.getDossierFileId(),
-				//				dosserFile.getReferenceUid(), serviceProcess.getServerNo());
-
-				//	}
-
-				//}
-
 			}
 
 			String preCondition = processAction.getPreCondition();
@@ -2350,8 +2261,6 @@ public class DossierActionsImpl implements DossierActions {
 
 					// To index
 					DossierLocalServiceUtil.syncDossier(dossier);
-
-					// add dossierLog
 
 					// in CLIENT
 
@@ -2472,7 +2381,6 @@ public class DossierActionsImpl implements DossierActions {
 
 						context.setScopeGroupId(dossier.getGroupId());
 					}
-
 				}
 
 				_log.info("REJECT_CORRECTING....");
@@ -2552,10 +2460,6 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 			}
-
-			// Add PaymentSync
-
-
 		}
 
 		ProcessStep postStep = ProcessStepLocalServiceUtil.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
@@ -2573,12 +2477,8 @@ public class DossierActionsImpl implements DossierActions {
 		// 3. get plugin has autoRun
 		// 4. Create update formData
 
-		//		_log.info("IN_CURRENT_STEP:" + curStep.getStepCode() + curStep.getStepName());
-
 		List<ProcessPlugin> plugins = ProcessPluginLocalServiceUtil.getProcessPlugins(serviceProcessId,
 			curStep != null ? curStep.getStepCode() : StringPool.BLANK);
-
-		//		_log.info("WE_HAVE_PLUGINS:" + plugins.size());
 
 		List<ProcessPlugin> autoPlugins = new ArrayList<ProcessPlugin>();
 
