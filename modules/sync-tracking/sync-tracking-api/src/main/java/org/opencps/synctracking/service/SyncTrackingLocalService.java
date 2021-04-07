@@ -65,6 +65,10 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link SyncTrackingLocalServiceUtil} to access the sync tracking local service. Add custom service methods to {@link org.opencps.synctracking.service.impl.SyncTrackingLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	public SyncTracking addSyncTracking(long groupId, String dossierNo,
+		String referenceUid, String api, String fromUnit, String toUnitSingle,
+		String bodyRequest, String bodyResponse, long trackingId,
+		String serviceCode, int stateSync);
 
 	/**
 	* Adds the sync tracking to the database. Also notifies the appropriate model listeners.

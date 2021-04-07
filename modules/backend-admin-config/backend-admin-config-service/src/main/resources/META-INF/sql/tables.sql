@@ -13,6 +13,37 @@ create table opencps_adminconfig (
 	publicManager BOOLEAN
 );
 
+create table opencps_api_manager (
+	apiManagerId LONG not null primary key,
+	groupId LONG,
+	apiCode VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	userId LONG,
+	apiName VARCHAR(75) null,
+	apiDescription VARCHAR(75) null,
+	apiStatus INTEGER,
+	className VARCHAR(75) null
+);
+
+create table opencps_api_mânger (
+	reportRoleId LONG not null primary key,
+	dynamicReportId LONG,
+	roleId LONG
+);
+
+create table opencps_api_role (
+	apiRoleId LONG not null primary key,
+	groupId LONG,
+	createDate DATE null,
+	modifiedDate DATE null,
+	userId LONG,
+	apiCode VARCHAR(75) null,
+	roleId INTEGER,
+	roleCode VARCHAR(75) null,
+	apiRoleStatus INTEGER
+);
+
 create table opencps_dynamicreport (
 	dynamicReportId LONG not null primary key,
 	groupId LONG,

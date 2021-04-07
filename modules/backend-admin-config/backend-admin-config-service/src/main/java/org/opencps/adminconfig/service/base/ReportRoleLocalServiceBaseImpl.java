@@ -45,6 +45,8 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.adminconfig.model.ReportRole;
 import org.opencps.adminconfig.service.ReportRoleLocalService;
 import org.opencps.adminconfig.service.persistence.AdminConfigPersistence;
+import org.opencps.adminconfig.service.persistence.ApiManagerPersistence;
+import org.opencps.adminconfig.service.persistence.ApiRolePersistence;
 import org.opencps.adminconfig.service.persistence.DynamicReportPersistence;
 import org.opencps.adminconfig.service.persistence.ReportRolePersistence;
 
@@ -357,6 +359,81 @@ public abstract class ReportRoleLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the api manager local service.
+	 *
+	 * @return the api manager local service
+	 */
+	public org.opencps.adminconfig.service.ApiManagerLocalService getApiManagerLocalService() {
+		return apiManagerLocalService;
+	}
+
+	/**
+	 * Sets the api manager local service.
+	 *
+	 * @param apiManagerLocalService the api manager local service
+	 */
+	public void setApiManagerLocalService(
+		org.opencps.adminconfig.service.ApiManagerLocalService apiManagerLocalService) {
+		this.apiManagerLocalService = apiManagerLocalService;
+	}
+
+	/**
+	 * Returns the api manager persistence.
+	 *
+	 * @return the api manager persistence
+	 */
+	public ApiManagerPersistence getApiManagerPersistence() {
+		return apiManagerPersistence;
+	}
+
+	/**
+	 * Sets the api manager persistence.
+	 *
+	 * @param apiManagerPersistence the api manager persistence
+	 */
+	public void setApiManagerPersistence(
+		ApiManagerPersistence apiManagerPersistence) {
+		this.apiManagerPersistence = apiManagerPersistence;
+	}
+
+	/**
+	 * Returns the api role local service.
+	 *
+	 * @return the api role local service
+	 */
+	public org.opencps.adminconfig.service.ApiRoleLocalService getApiRoleLocalService() {
+		return apiRoleLocalService;
+	}
+
+	/**
+	 * Sets the api role local service.
+	 *
+	 * @param apiRoleLocalService the api role local service
+	 */
+	public void setApiRoleLocalService(
+		org.opencps.adminconfig.service.ApiRoleLocalService apiRoleLocalService) {
+		this.apiRoleLocalService = apiRoleLocalService;
+	}
+
+	/**
+	 * Returns the api role persistence.
+	 *
+	 * @return the api role persistence
+	 */
+	public ApiRolePersistence getApiRolePersistence() {
+		return apiRolePersistence;
+	}
+
+	/**
+	 * Sets the api role persistence.
+	 *
+	 * @param apiRolePersistence the api role persistence
+	 */
+	public void setApiRolePersistence(ApiRolePersistence apiRolePersistence) {
+		this.apiRolePersistence = apiRolePersistence;
+	}
+
+	/**
 	 * Returns the dynamic report local service.
 	 *
 	 * @return the dynamic report local service
@@ -601,6 +678,14 @@ public abstract class ReportRoleLocalServiceBaseImpl
 	protected org.opencps.adminconfig.service.AdminConfigLocalService adminConfigLocalService;
 	@BeanReference(type = AdminConfigPersistence.class)
 	protected AdminConfigPersistence adminConfigPersistence;
+	@BeanReference(type = org.opencps.adminconfig.service.ApiManagerLocalService.class)
+	protected org.opencps.adminconfig.service.ApiManagerLocalService apiManagerLocalService;
+	@BeanReference(type = ApiManagerPersistence.class)
+	protected ApiManagerPersistence apiManagerPersistence;
+	@BeanReference(type = org.opencps.adminconfig.service.ApiRoleLocalService.class)
+	protected org.opencps.adminconfig.service.ApiRoleLocalService apiRoleLocalService;
+	@BeanReference(type = ApiRolePersistence.class)
+	protected ApiRolePersistence apiRolePersistence;
 	@BeanReference(type = org.opencps.adminconfig.service.DynamicReportLocalService.class)
 	protected org.opencps.adminconfig.service.DynamicReportLocalService dynamicReportLocalService;
 	@BeanReference(type = DynamicReportPersistence.class)

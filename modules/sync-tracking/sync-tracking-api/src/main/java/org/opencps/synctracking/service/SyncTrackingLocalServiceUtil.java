@@ -42,6 +42,15 @@ public class SyncTrackingLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.synctracking.service.impl.SyncTrackingLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static org.opencps.synctracking.model.SyncTracking addSyncTracking(
+		long groupId, String dossierNo, String referenceUid, String api,
+		String fromUnit, String toUnitSingle, String bodyRequest,
+		String bodyResponse, long trackingId, String serviceCode, int stateSync) {
+		return getService()
+				   .addSyncTracking(groupId, dossierNo, referenceUid, api,
+			fromUnit, toUnitSingle, bodyRequest, bodyResponse, trackingId,
+			serviceCode, stateSync);
+	}
 
 	/**
 	* Adds the sync tracking to the database. Also notifies the appropriate model listeners.

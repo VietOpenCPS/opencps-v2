@@ -31,6 +31,29 @@
 		<field name="groupFilter" type="boolean" />
 		<field name="publicManager" type="boolean" />
 	</model>
+	<model name="org.opencps.adminconfig.model.ApiManager">
+		<field name="apiManagerId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="apiCode" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="userId" type="long" />
+		<field name="apiName" type="String" />
+		<field name="apiDescription" type="String" />
+		<field name="apiStatus" type="int" />
+		<field name="className" type="String" />
+	</model>
+	<model name="org.opencps.adminconfig.model.ApiRole">
+		<field name="apiRoleId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="userId" type="long" />
+		<field name="apiCode" type="String" />
+		<field name="roleId" type="int" />
+		<field name="roleCode" type="String" />
+		<field name="apiRoleStatus" type="int" />
+	</model>
 	<model name="org.opencps.adminconfig.model.DynamicReport">
 		<field name="dynamicReportId" type="long" />
 		<field name="groupId" type="long" />

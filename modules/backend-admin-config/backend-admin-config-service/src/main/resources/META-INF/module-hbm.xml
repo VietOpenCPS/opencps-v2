@@ -3,6 +3,8 @@
 
 <hibernate-mapping auto-import="false" default-lazy="false">
 	<import class="org.opencps.adminconfig.model.AdminConfig" />
+	<import class="org.opencps.adminconfig.model.ApiManager" />
+	<import class="org.opencps.adminconfig.model.ApiRole" />
 	<import class="org.opencps.adminconfig.model.DynamicReport" />
 	<import class="org.opencps.adminconfig.model.ReportRole" />
 	<class name="org.opencps.adminconfig.model.impl.AdminConfigImpl" table="opencps_adminconfig">
@@ -20,6 +22,33 @@
 		<property name="extForm" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="groupFilter" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="publicManager" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+	</class>
+	<class name="org.opencps.adminconfig.model.impl.ApiManagerImpl" table="opencps_api_manager">
+		<id name="apiManagerId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="apiCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="apiName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="apiDescription" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="apiStatus" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="className" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.adminconfig.model.impl.ApiRoleImpl" table="opencps_api_role">
+		<id name="apiRoleId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="apiCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="roleId" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="roleCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="apiRoleStatus" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.adminconfig.model.impl.DynamicReportImpl" table="opencps_dynamicreport">
 		<id name="dynamicReportId" type="long">

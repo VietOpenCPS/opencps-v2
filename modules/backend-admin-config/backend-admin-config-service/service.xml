@@ -123,7 +123,7 @@
 		<column name="className" type="String" />
 		
 		<finder return-type="ApiManager" name="F_ID">
-			<finder-column name="id"></finder-column>
+			<finder-column name="apiManagerId"></finder-column>
 		</finder>
 		
 		<finder return-type="ApiManager" name="F_apiCode">
@@ -151,7 +151,7 @@
 		<column name="apiRoleStatus" type="int" />
 		
 		<finder return-type="ApiRole" name="F_ID">
-			<finder-column name="id"></finder-column>
+			<finder-column name="apiRoleId"></finder-column>
 		</finder>
 		
 		<finder return-type="ApiRole" name="F_roleCode">
@@ -162,5 +162,6 @@
 			<finder-column name="groupId"></finder-column>
 		</finder>		
 		
-	</entity>	
+	</entity>
+
 </service-builder>

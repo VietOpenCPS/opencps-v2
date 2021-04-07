@@ -33,6 +33,16 @@ public class SyncTrackingLocalServiceWrapper implements SyncTrackingLocalService
 		_syncTrackingLocalService = syncTrackingLocalService;
 	}
 
+	@Override
+	public org.opencps.synctracking.model.SyncTracking addSyncTracking(
+		long groupId, String dossierNo, String referenceUid, String api,
+		String fromUnit, String toUnitSingle, String bodyRequest,
+		String bodyResponse, long trackingId, String serviceCode, int stateSync) {
+		return _syncTrackingLocalService.addSyncTracking(groupId, dossierNo,
+			referenceUid, api, fromUnit, toUnitSingle, bodyRequest,
+			bodyResponse, trackingId, serviceCode, stateSync);
+	}
+
 	/**
 	* Adds the sync tracking to the database. Also notifies the appropriate model listeners.
 	*
