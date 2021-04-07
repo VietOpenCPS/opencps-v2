@@ -17,6 +17,7 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import org.opencps.dossiermgt.model.DossierDocument;
 
 /**
  * Provides a wrapper for {@link DossierLocalService}.
@@ -722,6 +723,11 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	public java.util.List<Object[]> getListVotingByDossier(long groupId,
 		java.util.List<String> listDossier) {
 		return _dossierLocalService.getListVotingByDossier(groupId, listDossier);
+	}
+
+	@Override
+	public DossierDocument findDossierDocumentByDossierId(long dossierId) {
+		return _dossierLocalService.findDossierDocumentByDossierId(dossierId);
 	}
 
 	/**

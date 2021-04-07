@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service;
 
 import aQute.bnd.annotation.ProviderType;
 
+import org.opencps.dossiermgt.model.DossierDocument;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -670,6 +671,10 @@ public class DossierLocalServiceUtil {
 	public static java.util.List<Object[]> getListVotingByDossier(
 		long groupId, java.util.List<String> listDossier) {
 		return getService().getListVotingByDossier(groupId, listDossier);
+	}
+
+	public static DossierDocument findDossierDocumentByDossierId(long dossierId) {
+		return getService().findDossierDocumentByDossierId(dossierId);
 	}
 
 	/**

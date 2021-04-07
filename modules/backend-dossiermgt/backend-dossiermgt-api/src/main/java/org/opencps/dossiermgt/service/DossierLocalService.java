@@ -44,11 +44,7 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.*;
 
 import java.io.Serializable;
 
@@ -485,6 +481,9 @@ public interface DossierLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Object[]> getListVotingByDossier(long groupId,
 		List<String> listDossier);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DossierDocument findDossierDocumentByDossierId(long dossierId);
 
 	/**
 	* Returns the OSGi service identifier.
