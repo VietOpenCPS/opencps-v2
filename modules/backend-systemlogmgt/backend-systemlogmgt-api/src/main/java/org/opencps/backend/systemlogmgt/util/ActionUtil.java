@@ -31,20 +31,10 @@ public class ActionUtil {
 
 	private static Log _log = LogFactoryUtil.getLog(ActionUtil.class);
 	
-	public static JSONObject createResponseSchema(String logId, String groupId, String moduleName, String method, String threadId, String fromDate, String toDate, String... msg) {
+	public static JSONObject createResponseSchema(String... msg) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		JSONObject condition = JSONFactoryUtil.createJSONObject();
 		
-		condition.put(Constants.LOGID, logId);
-		condition.put(Constants.GROUPID, groupId);
-		condition.put(Constants.MODULENAME, moduleName);
-		condition.put(Constants.METHOD, method);
-		condition.put(Constants.THREADID, threadId);
-		condition.put(Constants.FROMDATE, fromDate);
-		condition.put(Constants.TODATE, toDate);
-
-		result.put(Constants.CONDITIONS, condition);
 		result.put(Constants.TOTAL, 0);
 		result.put(Constants.DATA, JSONFactoryUtil.createJSONArray());
 
@@ -56,7 +46,7 @@ public class ActionUtil {
 	}
 	public static JSONObject execDiagram(String threadId, Long logId) throws JSONException {
 		
-		JSONObject result = ActionUtil.createResponseSchema(null, null, null, null, null, null, null);
+		JSONObject result = ActionUtil.createResponseSchema();
 		JSONArray data = JSONFactoryUtil.createJSONArray();
 		List<SystemLog> listSystemLog = null;
 		try {
@@ -98,7 +88,7 @@ public class ActionUtil {
 			}
 			result.put(Constants.TOTAL, data.length());
 			result.put(Constants.DATA, data);
-			result.put(Constants.MESSAGE, MessageDiagram);
+			result.put(Constants.MESSAGES, MessageDiagram);
 			
 		}
 		SystemLogServiceTestUtil.info(5L, "SystemLog", "Successful", "[{\"key\":\"name\",\"value\":\"Bao Cao\"},{\"key\":\"DonVi\",\"value\":\"Hau Giang\"},{\"key\":\"data\",\"value\":\"\"}]");
@@ -108,7 +98,7 @@ public class ActionUtil {
 	
 	public static JSONObject searchSystemLog(Long logId, Long groupId, String moduleName, String method, String threadId, Long fromDate, Long toDate) throws JSONException {
 		
-		JSONObject result = ActionUtil.createResponseSchema(null, null, null, null, null, null, null);
+		JSONObject result = ActionUtil.createResponseSchema();
 		JSONArray data = JSONFactoryUtil.createJSONArray();
 		Date fromDateTime = null;
 		Date toDateTime = null;
@@ -143,7 +133,7 @@ public class ActionUtil {
 			}
 			result.put(Constants.TOTAL, data.length());
 			result.put(Constants.DATA, data);
-			result.put(Constants.MESSAGES, "Successful");
+			result.put(Constants.MESSAGES, "SuccessFull");
 			SystemLogServiceTestUtil.info(5L, "SystemLog", "Successful", "[{\"key\":\"name\",\"value\":\"Bao Cao\"},{\"key\":\"DonVi\",\"value\":\"Hau Giang\"},{\"key\":\"data\",\"value\":\"\"}]");
 			
 		} else {
@@ -151,6 +141,7 @@ public class ActionUtil {
 			result.put(Constants.DATA, data);
 			result.put(Constants.MESSAGES, "No Data - Query Sucessful");
 			SystemLogServiceTestUtil.info(5L, "SystemLog", "No Data - Query Sucessful","[{\"key\":\"name\",\"value\":\"Bao Cao\"},{\"key\":\"DonVi\",\"value\":\"Hau Giang\"},{\"key\":\"data\",\"value\":\"\"}]");
+
 		}
 		
 		return result;
