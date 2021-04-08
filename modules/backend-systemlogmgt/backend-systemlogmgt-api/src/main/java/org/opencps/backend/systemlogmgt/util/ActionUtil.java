@@ -18,6 +18,8 @@ import java.util.List;
 
 
 import org.opencps.backend.systemlogmgt.service.SystemLogLocalServiceUtil;
+import org.opencps.backend.systemlogmgt.service.SystemLogServiceTest;
+import org.opencps.backend.systemlogmgt.service.SystemLogServiceTestUtil;
 import org.opencps.backend.systemlogmgt.constant.Constants;
 import org.opencps.backend.systemlogmgt.model.SystemLog;
 
@@ -97,15 +99,17 @@ public class ActionUtil {
 			result.put(Constants.TOTAL, data.length());
 			result.put(Constants.DATA, data);
 			result.put(Constants.MESSAGE, MessageDiagram);
+			
 		}
+		SystemLogServiceTestUtil.info(5L, "SystemLog", "Successful", "[{\"key\":\"name\",\"value\":\"Bao Cao\"},{\"key\":\"DonVi\",\"value\":\"Hau Giang\"},{\"key\":\"data\",\"value\":\"\"}]");
 		return result;
 		
 	}
 	
 	public static JSONObject searchSystemLog(Long logId, Long groupId, String moduleName, String method, String threadId, Long fromDate, Long toDate) throws JSONException {
+		
 		JSONObject result = ActionUtil.createResponseSchema(null, null, null, null, null, null, null);
 		JSONArray data = JSONFactoryUtil.createJSONArray();
-		
 		Date fromDateTime = null;
 		Date toDateTime = null;
 		List<SystemLog> listSystemLog = null;
@@ -140,12 +144,17 @@ public class ActionUtil {
 			result.put(Constants.TOTAL, data.length());
 			result.put(Constants.DATA, data);
 			result.put(Constants.MESSAGES, "Successful");
+			SystemLogServiceTestUtil.info(5L, "SystemLog", "Successful", "[{\"key\":\"name\",\"value\":\"Bao Cao\"},{\"key\":\"DonVi\",\"value\":\"Hau Giang\"},{\"key\":\"data\",\"value\":\"\"}]");
+			
 		} else {
 			result.put(Constants.TOTAL, 0);
 			result.put(Constants.DATA, data);
 			result.put(Constants.MESSAGES, "No Data - Query Sucessful");
+			SystemLogServiceTestUtil.info(5L, "SystemLog", "No Data - Query Sucessful","[{\"key\":\"name\",\"value\":\"Bao Cao\"},{\"key\":\"DonVi\",\"value\":\"Hau Giang\"},{\"key\":\"data\",\"value\":\"\"}]");
 		}
+		
 		return result;
+		
 	}
 	
 	

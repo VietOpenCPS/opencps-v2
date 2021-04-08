@@ -8,8 +8,8 @@ import aQute.bnd.annotation.ProviderType;
 public interface SystemLogServiceTest {
 	public String test();
 	
-	public void debug(Long groupId, String moduleName, String message, String... param);
-	public void error(Long groupId, String moduleName, String message, String... param);
-	public void info(Long groupId, String moduleName, String message, String... param);
-	public void warn(Long groupId, String moduleName, String message, String... param);
+	public SystemLog debug(Long groupId, String moduleName, String message, String... param);
+	public SystemLog error(Long groupId, String moduleName, String message, String... param);
+	public SystemLog info(Long groupId, String moduleName, String message, String... param);
+	public SystemLog warn(Long groupId, String moduleName, String message, String... param);
 }
