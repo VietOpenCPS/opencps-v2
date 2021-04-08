@@ -726,8 +726,8 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
-	public DossierDocument findDossierDocumentByDossierId(long dossierId) {
-		return _dossierLocalService.findDossierDocumentByDossierId(dossierId);
+	public DossierDocument findDossierDocumentByDossierId(long dossierDocumentId) {
+		return _dossierLocalService.findDossierDocumentByDossierId(dossierDocumentId);
 	}
 
 	/**

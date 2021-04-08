@@ -138,10 +138,10 @@ public class DossierFinderImpl extends DossierFinderBaseImpl implements DossierF
 	}
 
 	@Override
-	public DossierDocument findDossierDocumentByDossierId(long dossierId) {
+	public DossierDocument findDossierDocumentByDossierId(long dossierDocumentId) {
 		Session session = null;
 		DossierDocument dossierDocument = null;
-		String sql = " SELECT * FROM opencps_dossierdocument WHERE dossierId = " + dossierId + " ORDER BY createDate DESC";
+		String sql = " SELECT * FROM opencps_dossierdocument WHERE dossierDocumentId = " + dossierDocumentId + " ";
 		_log.info("SQL: "+ sql);
 		try {
 			session = openSession();

@@ -483,7 +483,7 @@ public interface DossierLocalService extends BaseLocalService,
 		List<String> listDossier);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DossierDocument findDossierDocumentByDossierId(long dossierId);
+	public DossierDocument findDossierDocumentByDossierId(long dossierDocumentId);
 
 	/**
 	* Returns the OSGi service identifier.

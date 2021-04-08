@@ -673,8 +673,8 @@ public class DossierLocalServiceUtil {
 		return getService().getListVotingByDossier(groupId, listDossier);
 	}
 
-	public static DossierDocument findDossierDocumentByDossierId(long dossierId) {
-		return getService().findDossierDocumentByDossierId(dossierId);
+	public static DossierDocument findDossierDocumentByDossierId(long dossierDocumentId) {
+		return getService().findDossierDocumentByDossierId(dossierDocumentId);
 	}
 
 	/**

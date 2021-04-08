@@ -32,5 +32,5 @@ public interface DossierFinder {
 		String code, long groupId);
 
 	public org.opencps.dossiermgt.model.DossierDocument findDossierDocumentByDossierId(
-			long dossierId);
+			long dossierDocumentId);
 }

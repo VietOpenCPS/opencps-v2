@@ -7818,8 +7818,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	@Override
-	public DossierDocument findDossierDocumentByDossierId(long dossierId) {
-		return dossierFinder.findDossierDocumentByDossierId(dossierId);
+	public DossierDocument findDossierDocumentByDossierId(long dossierDocumentId) {
+		return dossierFinder.findDossierDocumentByDossierId(dossierDocumentId);
 	}
 
 	public Dossier fetchByDO_POST_SEND_GROUP(String postpostalCodeSend, long groupId) {
