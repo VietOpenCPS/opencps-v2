@@ -20,18 +20,17 @@ public class ConnectionUtil {
 	public static Connection _getConnection() {
 		if (Validator.isNotNull(_connection)) {
 			try {
-				if (!_connection.isClosed()) {
+				if (!_connection.isClosed() && _connection.isValid(3)) {
 					return _connection;
 				}
 			} catch (Exception e) {
 				_log.warn("connection is close");
 			}
-
 		}
 
 		try {
 			DataSource dataSource = InfrastructureUtil.getDataSource();
-
+			//dataSource.setLoginTimeout(30);
 			_connection = dataSource.getConnection();
 		} catch (Exception e) {
 			_log.warn(e, e);

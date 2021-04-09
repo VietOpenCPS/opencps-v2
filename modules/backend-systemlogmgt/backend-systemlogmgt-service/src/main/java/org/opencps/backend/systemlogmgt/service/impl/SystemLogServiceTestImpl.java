@@ -2,7 +2,6 @@ package org.opencps.backend.systemlogmgt.service.impl;
 
 import com.liferay.portal.kernel.bean.BeanReference;
 
-import org.opencps.backend.systemlogmgt.service.SystemLogLocalService;
 import org.opencps.backend.systemlogmgt.service.SystemLogServiceTest;
 
 import aQute.bnd.annotation.ProviderType;
@@ -18,5 +17,5 @@ public class SystemLogServiceTestImpl implements SystemLogServiceTest{
 
 	
 	@BeanReference(type = SystemLogServiceTest.class)
-	protected SystemLogLocalService SystemLogServiceTest;
+	protected SystemLogServiceTest SystemLogServiceTest;
 }

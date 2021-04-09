@@ -528,7 +528,6 @@ public class ActionUtil {
 			}
 		} catch (Exception e) {
 			_log.error(e);
-
 			return StatisticUtil.createResponseSchema(groupId, strFromDate, strToDate,
 					ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 					ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
