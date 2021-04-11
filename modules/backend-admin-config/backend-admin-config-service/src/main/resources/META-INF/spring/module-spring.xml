@@ -17,4 +17,6 @@
 	<bean class="org.opencps.adminconfig.service.persistence.impl.DynamicReportPersistenceImpl" id="org.opencps.adminconfig.service.persistence.DynamicReportPersistence" parent="basePersistence" />
 	<bean class="org.opencps.adminconfig.service.impl.ReportRoleLocalServiceImpl" id="org.opencps.adminconfig.service.ReportRoleLocalService" />
 	<bean class="org.opencps.adminconfig.service.persistence.impl.ReportRolePersistenceImpl" id="org.opencps.adminconfig.service.persistence.ReportRolePersistence" parent="basePersistence" />
+	<bean class="org.opencps.adminconfig.service.impl.SyncTrackingLocalServiceImpl" id="org.opencps.adminconfig.service.SyncTrackingLocalService" />
+	<bean class="org.opencps.adminconfig.service.persistence.impl.SyncTrackingPersistenceImpl" id="org.opencps.adminconfig.service.persistence.SyncTrackingPersistence" parent="basePersistence" />
 </beans>

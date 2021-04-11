@@ -1,3 +1,7 @@
+create index IX_7DCDD958 on opencps_synctracking (api[$COLUMN_LENGTH:75$], createDate, modifiedDate);
+create index IX_99F57BF6 on opencps_synctracking (api[$COLUMN_LENGTH:75$], dossierNo[$COLUMN_LENGTH:75$], createDate, modifiedDate);
+create index IX_5298CB8C on opencps_synctracking (api[$COLUMN_LENGTH:75$], serviceCode[$COLUMN_LENGTH:75$], createDate, modifiedDate);
+create index IX_4154E142 on opencps_synctracking (api[$COLUMN_LENGTH:75$], serviceCode[$COLUMN_LENGTH:75$], dossierNo[$COLUMN_LENGTH:75$], createDate, modifiedDate);
 create index IX_347F1D6B on opencps_synctracking (groupId, createDate, createDate);
 create index IX_5D8AF1B8 on opencps_synctracking (groupId, createDate, modifiedDate);
 create index IX_FC376796 on opencps_synctracking (groupId, dossierNo[$COLUMN_LENGTH:75$], createDate, modifiedDate);

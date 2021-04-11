@@ -106,6 +106,10 @@ import java.util.Base64;
 import java.util.*;
 
 public class ApplicantManagementImpl implements ApplicantManagement {
+	
+	private static final String API_LIST_APPLICANT = "API_LIST_APPLICANT";
+	private static final String API_VIEW_APPLICANT = "API_VIEW_APPLICANT";
+	
 	private final String USER_03 = "USER-03";
 	private final String USER_05 = "USER-05";
 	@Override
@@ -401,10 +405,20 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					serviceContext.getCompanyId(), groupId, params, sorts, query.getStart(), query.getEnd(),
 					serviceContext);
 
+			JSONObject bodyResponse = JSONFactoryUtil.createJSONObject();
+			
 			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
 				results.getData().addAll(ApplicantUtils.mappingToApplicantResults((List<Document>) jsonData.get(ConstantUtils.DATA)));
+				
+				bodyResponse.put("status", HttpURLConnection.HTTP_OK);
+				bodyResponse.put("total", results.getTotal());
 			}
+			
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_LIST_APPLICANT, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					JSONFactoryUtil.looseSerialize(query), bodyResponse.toJSONString());
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
@@ -447,6 +461,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				applicant = actions.getApplicantDetail(serviceContext, id);
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
+				
+				// ghi log vao syncTracking
+				OpenCPSUtils.addSyncTracking(API_VIEW_APPLICANT, user.getUserId(),
+						applicant.getGroupId(), StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+						String.valueOf(id), JSONFactoryUtil.looseSerialize(results));
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {

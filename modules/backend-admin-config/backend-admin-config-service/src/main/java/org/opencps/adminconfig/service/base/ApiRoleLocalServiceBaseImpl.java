@@ -49,6 +49,7 @@ import org.opencps.adminconfig.service.persistence.ApiManagerPersistence;
 import org.opencps.adminconfig.service.persistence.ApiRolePersistence;
 import org.opencps.adminconfig.service.persistence.DynamicReportPersistence;
 import org.opencps.adminconfig.service.persistence.ReportRolePersistence;
+import org.opencps.adminconfig.service.persistence.SyncTrackingPersistence;
 
 import java.io.Serializable;
 
@@ -503,6 +504,44 @@ public abstract class ApiRoleLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
+	 * Returns the sync tracking local service.
+	 *
+	 * @return the sync tracking local service
+	 */
+	public org.opencps.adminconfig.service.SyncTrackingLocalService getSyncTrackingLocalService() {
+		return syncTrackingLocalService;
+	}
+
+	/**
+	 * Sets the sync tracking local service.
+	 *
+	 * @param syncTrackingLocalService the sync tracking local service
+	 */
+	public void setSyncTrackingLocalService(
+		org.opencps.adminconfig.service.SyncTrackingLocalService syncTrackingLocalService) {
+		this.syncTrackingLocalService = syncTrackingLocalService;
+	}
+
+	/**
+	 * Returns the sync tracking persistence.
+	 *
+	 * @return the sync tracking persistence
+	 */
+	public SyncTrackingPersistence getSyncTrackingPersistence() {
+		return syncTrackingPersistence;
+	}
+
+	/**
+	 * Sets the sync tracking persistence.
+	 *
+	 * @param syncTrackingPersistence the sync tracking persistence
+	 */
+	public void setSyncTrackingPersistence(
+		SyncTrackingPersistence syncTrackingPersistence) {
+		this.syncTrackingPersistence = syncTrackingPersistence;
+	}
+
+	/**
 	 * Returns the counter local service.
 	 *
 	 * @return the counter local service
@@ -687,6 +726,10 @@ public abstract class ApiRoleLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected org.opencps.adminconfig.service.ReportRoleLocalService reportRoleLocalService;
 	@BeanReference(type = ReportRolePersistence.class)
 	protected ReportRolePersistence reportRolePersistence;
+	@BeanReference(type = org.opencps.adminconfig.service.SyncTrackingLocalService.class)
+	protected org.opencps.adminconfig.service.SyncTrackingLocalService syncTrackingLocalService;
+	@BeanReference(type = SyncTrackingPersistence.class)
+	protected SyncTrackingPersistence syncTrackingPersistence;
 	@ServiceReference(type = com.liferay.counter.kernel.service.CounterLocalService.class)
 	protected com.liferay.counter.kernel.service.CounterLocalService counterLocalService;
 	@ServiceReference(type = com.liferay.portal.kernel.service.ClassNameLocalService.class)

@@ -31,6 +31,8 @@ import org.opencps.api.adminconfig.model.ApiManagerResultsModel;
 import org.opencps.api.adminconfig.model.ApiRoleDetailModel;
 import org.opencps.api.adminconfig.model.ApiRoleInputModel;
 import org.opencps.api.adminconfig.model.ApiRoleResultsModel;
+import org.opencps.api.adminconfig.model.DtoResponse;
+import org.opencps.api.adminconfig.model.SyncTrackingQuery;
 import org.opencps.api.faq.model.QuestionDetailModel;
 import org.opencps.api.faq.model.QuestionInputModel;
 import org.opencps.api.faq.model.QuestionResultsModel;
@@ -278,4 +280,26 @@ public interface AdminConfigManagement {
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext, @PathParam("id") String id);
+	
+	
+	@GET
+	@Path("/log-report")
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@ApiOperation(value = "Get all log report", response = DtoResponse.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response getLogReport(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext, @BeanParam SyncTrackingQuery input);
 }

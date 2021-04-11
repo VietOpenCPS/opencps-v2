@@ -12,7 +12,7 @@
  * details.
  */
 
-package org.opencps.synctracking.service;
+package org.opencps.adminconfig.service;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -23,16 +23,16 @@ import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Provides the local service utility for SyncTracking. This utility wraps
- * {@link org.opencps.synctracking.service.impl.SyncTrackingLocalServiceImpl} and is the
+ * {@link org.opencps.adminconfig.service.impl.SyncTrackingLocalServiceImpl} and is the
  * primary access point for service operations in application layer code running
  * on the local server. Methods of this service will not have security checks
  * based on the propagated JAAS credentials because this service can only be
  * accessed from within the same VM.
  *
- * @author giaonn
+ * @author binhth
  * @see SyncTrackingLocalService
- * @see org.opencps.synctracking.service.base.SyncTrackingLocalServiceBaseImpl
- * @see org.opencps.synctracking.service.impl.SyncTrackingLocalServiceImpl
+ * @see org.opencps.adminconfig.service.base.SyncTrackingLocalServiceBaseImpl
+ * @see org.opencps.adminconfig.service.impl.SyncTrackingLocalServiceImpl
  * @generated
  */
 @ProviderType
@@ -40,7 +40,7 @@ public class SyncTrackingLocalServiceUtil {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify this class directly. Add custom service methods to {@link org.opencps.synctracking.service.impl.SyncTrackingLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
+	 * Never modify this class directly. Add custom service methods to {@link org.opencps.adminconfig.service.impl.SyncTrackingLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
 
 	/**
@@ -49,8 +49,8 @@ public class SyncTrackingLocalServiceUtil {
 	* @param syncTracking the sync tracking
 	* @return the sync tracking that was added
 	*/
-	public static org.opencps.synctracking.model.SyncTracking addSyncTracking(
-		org.opencps.synctracking.model.SyncTracking syncTracking) {
+	public static org.opencps.adminconfig.model.SyncTracking addSyncTracking(
+		org.opencps.adminconfig.model.SyncTracking syncTracking) {
 		return getService().addSyncTracking(syncTracking);
 	}
 
@@ -60,14 +60,9 @@ public class SyncTrackingLocalServiceUtil {
 	* @param trackingId the primary key for the new sync tracking
 	* @return the new sync tracking
 	*/
-	public static org.opencps.synctracking.model.SyncTracking createSyncTracking(
+	public static org.opencps.adminconfig.model.SyncTracking createSyncTracking(
 		long trackingId) {
 		return getService().createSyncTracking(trackingId);
-	}
-
-	public static org.opencps.synctracking.model.SyncTracking createSyncTrackingManual(
-		org.opencps.synctracking.model.SyncTrackingQuery syncTrackingQuery) {
-		return getService().createSyncTrackingManual(syncTrackingQuery);
 	}
 
 	/**
@@ -86,7 +81,7 @@ public class SyncTrackingLocalServiceUtil {
 	* @return the sync tracking that was removed
 	* @throws PortalException if a sync tracking with the primary key could not be found
 	*/
-	public static org.opencps.synctracking.model.SyncTracking deleteSyncTracking(
+	public static org.opencps.adminconfig.model.SyncTracking deleteSyncTracking(
 		long trackingId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().deleteSyncTracking(trackingId);
@@ -98,8 +93,8 @@ public class SyncTrackingLocalServiceUtil {
 	* @param syncTracking the sync tracking
 	* @return the sync tracking that was removed
 	*/
-	public static org.opencps.synctracking.model.SyncTracking deleteSyncTracking(
-		org.opencps.synctracking.model.SyncTracking syncTracking) {
+	public static org.opencps.adminconfig.model.SyncTracking deleteSyncTracking(
+		org.opencps.adminconfig.model.SyncTracking syncTracking) {
 		return getService().deleteSyncTracking(syncTracking);
 	}
 
@@ -122,7 +117,7 @@ public class SyncTrackingLocalServiceUtil {
 	* Performs a dynamic query on the database and returns a range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.synctracking.model.impl.SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.adminconfig.model.impl.SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -140,7 +135,7 @@ public class SyncTrackingLocalServiceUtil {
 	* Performs a dynamic query on the database and returns an ordered range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.synctracking.model.impl.SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.adminconfig.model.impl.SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -181,7 +176,7 @@ public class SyncTrackingLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
-	public static org.opencps.synctracking.model.SyncTracking fetchSyncTracking(
+	public static org.opencps.adminconfig.model.SyncTracking fetchSyncTracking(
 		long trackingId) {
 		return getService().fetchSyncTracking(trackingId);
 	}
@@ -193,7 +188,7 @@ public class SyncTrackingLocalServiceUtil {
 	* @param groupId the primary key of the group
 	* @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
 	*/
-	public static org.opencps.synctracking.model.SyncTracking fetchSyncTrackingByUuidAndGroupId(
+	public static org.opencps.adminconfig.model.SyncTracking fetchSyncTrackingByUuidAndGroupId(
 		String uuid, long groupId) {
 		return getService().fetchSyncTrackingByUuidAndGroupId(uuid, groupId);
 	}
@@ -202,58 +197,81 @@ public class SyncTrackingLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static org.opencps.synctracking.model.SyncTracking getByDossierNo(
-		long groupId, String dossierNo) {
-		return getService().getByDossierNo(groupId, dossierNo);
+	public static java.util.List<org.opencps.adminconfig.model.SyncTracking> getByApiAndDate(
+		String api, java.util.Date fromDate, java.util.Date toDate, int start,
+		int end) {
+		return getService().getByApiAndDate(api, fromDate, toDate, start, end);
 	}
 
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupId(
-		long groupId, int start, int end) {
-		return getService().getByGroupId(groupId, start, end);
-	}
-
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDate(
-		long groupId, java.util.Date fromDate, java.util.Date toDate,
-		int start, int end) {
-		return getService()
-				   .getByGroupIdAndDate(groupId, fromDate, toDate, start, end);
-	}
-
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDossierNoAndDate(
-		long groupId, String dossierNo, java.util.Date fromDate,
+	public static java.util.List<org.opencps.adminconfig.model.SyncTracking> getByApiAndDossierNoAndDate(
+		String api, String dossierNo, java.util.Date fromDate,
 		java.util.Date toDate, int start, int end) {
 		return getService()
-				   .getByGroupIdAndDossierNoAndDate(groupId, dossierNo,
-			fromDate, toDate, start, end);
+				   .getByApiAndDossierNoAndDate(api, dossierNo, fromDate,
+			toDate, start, end);
 	}
 
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDossierNoAndServiceCodeAndDate(
-		long groupId, String dossierNo, String serviceCode,
+	public static java.util.List<org.opencps.adminconfig.model.SyncTracking> getByApiAndServiceCodeAndDate(
+		String api, String serviceCode, java.util.Date fromDate,
+		java.util.Date toDate, int start, int end) {
+		return getService()
+				   .getByApiAndServiceCodeAndDate(api, serviceCode, fromDate,
+			toDate, start, end);
+	}
+
+	public static java.util.List<org.opencps.adminconfig.model.SyncTracking> getByApiAndServiceCodeAndDossierNoAndDate(
+		String api, String dossierNo, String serviceCode,
 		java.util.Date fromDate, java.util.Date toDate, int start, int end) {
 		return getService()
-				   .getByGroupIdAndDossierNoAndServiceCodeAndDate(groupId,
-			dossierNo, serviceCode, fromDate, toDate, start, end);
+				   .getByApiAndServiceCodeAndDossierNoAndDate(api, dossierNo,
+			serviceCode, fromDate, toDate, start, end);
 	}
 
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndServiceCodeAndDate(
-		long groupId, String serviceCode, java.util.Date fromDate,
+	public static java.util.List<org.opencps.adminconfig.model.SyncTracking> getByDate(
+		java.util.Date fromDate, java.util.Date toDate, int start, int end) {
+		return getService().getByDate(fromDate, toDate, start, end);
+	}
+
+	public static org.opencps.adminconfig.model.SyncTracking getByDossierNo(
+		String dossierNo) {
+		return getService().getByDossierNo(dossierNo);
+	}
+
+	public static java.util.List<org.opencps.adminconfig.model.SyncTracking> getByDossierNoAndDate(
+		String dossierNo, java.util.Date fromDate, java.util.Date toDate,
+		int start, int end) {
+		return getService()
+				   .getByDossierNoAndDate(dossierNo, fromDate, toDate, start,
+			end);
+	}
+
+	public static java.util.List<org.opencps.adminconfig.model.SyncTracking> getByDossierNoAndServiceCodeAndDate(
+		String dossierNo, String serviceCode, java.util.Date fromDate,
 		java.util.Date toDate, int start, int end) {
 		return getService()
-				   .getByGroupIdAndServiceCodeAndDate(groupId, serviceCode,
+				   .getByDossierNoAndServiceCodeAndDate(dossierNo, serviceCode,
 			fromDate, toDate, start, end);
 	}
 
-	public static org.opencps.synctracking.model.SyncTracking getByReferenceUid(
-		long groupId, String referenceUid) {
-		return getService().getByReferenceUid(groupId, referenceUid);
+	public static org.opencps.adminconfig.model.SyncTracking getByReferenceUid(
+		String referenceUid) {
+		return getService().getByReferenceUid(referenceUid);
 	}
 
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByReferenceUidAndDate(
-		long groupId, String referenceUid, java.util.Date fromDate,
-		java.util.Date toDate, int start, int end) {
+	public static java.util.List<org.opencps.adminconfig.model.SyncTracking> getByReferenceUidAndDate(
+		String referenceUid, java.util.Date fromDate, java.util.Date toDate,
+		int start, int end) {
 		return getService()
-				   .getByReferenceUidAndDate(groupId, referenceUid, fromDate,
-			toDate, start, end);
+				   .getByReferenceUidAndDate(referenceUid, fromDate, toDate,
+			start, end);
+	}
+
+	public static java.util.List<org.opencps.adminconfig.model.SyncTracking> getByServiceCodeAndDate(
+		String serviceCode, java.util.Date fromDate, java.util.Date toDate,
+		int start, int end) {
+		return getService()
+				   .getByServiceCodeAndDate(serviceCode, fromDate, toDate,
+			start, end);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -287,7 +305,7 @@ public class SyncTrackingLocalServiceUtil {
 	* @return the sync tracking
 	* @throws PortalException if a sync tracking with the primary key could not be found
 	*/
-	public static org.opencps.synctracking.model.SyncTracking getSyncTracking(
+	public static org.opencps.adminconfig.model.SyncTracking getSyncTracking(
 		long trackingId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getSyncTracking(trackingId);
@@ -301,7 +319,7 @@ public class SyncTrackingLocalServiceUtil {
 	* @return the matching sync tracking
 	* @throws PortalException if a matching sync tracking could not be found
 	*/
-	public static org.opencps.synctracking.model.SyncTracking getSyncTrackingByUuidAndGroupId(
+	public static org.opencps.adminconfig.model.SyncTracking getSyncTrackingByUuidAndGroupId(
 		String uuid, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getSyncTrackingByUuidAndGroupId(uuid, groupId);
@@ -311,14 +329,14 @@ public class SyncTrackingLocalServiceUtil {
 	* Returns a range of all the sync trackings.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.synctracking.model.impl.SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.adminconfig.model.impl.SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of sync trackings
 	* @param end the upper bound of the range of sync trackings (not inclusive)
 	* @return the range of sync trackings
 	*/
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getSyncTrackings(
+	public static java.util.List<org.opencps.adminconfig.model.SyncTracking> getSyncTrackings(
 		int start, int end) {
 		return getService().getSyncTrackings(start, end);
 	}
@@ -330,7 +348,7 @@ public class SyncTrackingLocalServiceUtil {
 	* @param companyId the primary key of the company
 	* @return the matching sync trackings, or an empty list if no matches were found
 	*/
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getSyncTrackingsByUuidAndCompanyId(
+	public static java.util.List<org.opencps.adminconfig.model.SyncTracking> getSyncTrackingsByUuidAndCompanyId(
 		String uuid, long companyId) {
 		return getService().getSyncTrackingsByUuidAndCompanyId(uuid, companyId);
 	}
@@ -345,9 +363,9 @@ public class SyncTrackingLocalServiceUtil {
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the range of matching sync trackings, or an empty list if no matches were found
 	*/
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getSyncTrackingsByUuidAndCompanyId(
+	public static java.util.List<org.opencps.adminconfig.model.SyncTracking> getSyncTrackingsByUuidAndCompanyId(
 		String uuid, long companyId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.synctracking.model.SyncTracking> orderByComparator) {
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.adminconfig.model.SyncTracking> orderByComparator) {
 		return getService()
 				   .getSyncTrackingsByUuidAndCompanyId(uuid, companyId, start,
 			end, orderByComparator);
@@ -362,14 +380,23 @@ public class SyncTrackingLocalServiceUtil {
 		return getService().getSyncTrackingsCount();
 	}
 
+	public static org.opencps.adminconfig.model.SyncTracking updateSyncTracking(
+		long userId, long groupId, long trackingId, String dossierNo,
+		String referenceUid, String serviceCode, int stateSync, String api,
+		String bodyRequest, String bodyResponse) {
+		return getService()
+				   .updateSyncTracking(userId, groupId, trackingId, dossierNo,
+			referenceUid, serviceCode, stateSync, api, bodyRequest, bodyResponse);
+	}
+
 	/**
 	* Updates the sync tracking in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
 	* @param syncTracking the sync tracking
 	* @return the sync tracking that was updated
 	*/
-	public static org.opencps.synctracking.model.SyncTracking updateSyncTracking(
-		org.opencps.synctracking.model.SyncTracking syncTracking) {
+	public static org.opencps.adminconfig.model.SyncTracking updateSyncTracking(
+		org.opencps.adminconfig.model.SyncTracking syncTracking) {
 		return getService().updateSyncTracking(syncTracking);
 	}
 

@@ -11,6 +11,7 @@ package org.opencps.api.adminconfig.model;
 import javax.xml.bind.annotation.XmlRegistry;
 
 
+
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
@@ -98,6 +99,18 @@ public class ObjectFactory {
      */
     public ApiRoleInputModel createApiRoleInputModel() {
         return new ApiRoleInputModel();
+    }
+    
+    public SyncTrackingQuery createSyncTrackingQuery() {
+    	return new SyncTrackingQuery();
+    }
+    
+    public DtoResponse createDtoResponse() {
+    	return new DtoResponse();
+    }
+    
+    public SyncTrackingResponse createSyncTrackingResponse() {
+    	return new SyncTrackingResponse();
     }
 
 }

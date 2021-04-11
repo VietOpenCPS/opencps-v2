@@ -58,11 +58,10 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.opencps.adminconfig.model.ApiManager;
-import org.opencps.adminconfig.service.ApiManagerLocalServiceUtil;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ServiceInfoManagement;
 import org.opencps.api.controller.util.MessageUtil;
+import org.opencps.api.controller.util.OpenCPSUtils;
 import org.opencps.api.controller.util.ServiceInfoUtils;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplateResultsModel;
@@ -87,11 +86,9 @@ import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.input.model.SyncTrackingInfo;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
@@ -100,15 +97,14 @@ import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
-import org.opencps.synctracking.model.SyncTracking;
-import org.opencps.synctracking.model.SyncTrackingQuery;
-import org.opencps.synctracking.service.SyncTrackingLocalServiceUtil;
-import org.opencps.synctracking.service.persistence.SyncTrackingPersistence;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
+	private static final String API_LIST_SERVICEINFO = "API_LIST_SERVICEINFO";
+	private static final String API_VIEW_SERVICEINFO = "API_VIEW_SERVICEINFO";
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response getServiceInfos(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -241,29 +237,16 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //			
 //		    builder.cacheControl(cc);
 //		    
-//		    return builder.build();
-			
-			ApiManager apiManager = ApiManagerLocalServiceUtil.findByApiCode("API_LIST_SERVICEINFO");
-			
-			if (apiManager != null) {
-				_log.info("APIManager :" + JSONFactoryUtil.looseSerialize(apiManager));
-				
-				String dossierNo = "a";
-				String referenceUid = "b";
-				String api = apiManager.getApiDescription();
-				String fromUnit = "c";
-				String toUnitSingle = "d";
-				String bodyRequest = JSONFactoryUtil.looseSerialize(query);
-				String bodyResponse = JSONFactoryUtil.looseSerialize(results.getTotal());
-				String serviceCode = "e";
-				
-				/*SyncTracking syncTracking = SyncTrackingLocalServiceUtil.addSyncTracking(groupId, 
-						dossierNo, referenceUid, api, fromUnit, toUnitSingle, bodyRequest, 
-						bodyResponse, 0l, serviceCode, 0);*/
-				List<SyncTracking> lst = SyncTrackingLocalServiceUtil.getByGroupId(groupId, 0, 15);
-				_log.info("SyncTracking :" + JSONFactoryUtil.looseSerialize(lst));
-			}
+//		    return builder.build();			
 
+			JSONObject bodyResponse = JSONFactoryUtil.createJSONObject();
+			bodyResponse.put("status", HttpURLConnection.HTTP_OK);
+			bodyResponse.put("total", results.getTotal());
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_LIST_SERVICEINFO, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					JSONFactoryUtil.looseSerialize(query), bodyResponse.toJSONString());
+			
 		    return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		} catch (Exception e) {
 			_log.error(e.getMessage());
@@ -366,19 +349,13 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
                     
 		    return builder.build();
                     */
-			ApiManager apiManager = ApiManagerLocalServiceUtil.findByApiCode("API_VIEW_SERVICEINFO");
 			
-			if (apiManager != null) {
-				SyncTrackingQuery syncTrackingQuery = new SyncTrackingQuery();
-				syncTrackingQuery.groupId = groupId;
-				syncTrackingQuery.api = apiManager.getApiDescription();
-				syncTrackingQuery.bodyRequest = id;
-				syncTrackingQuery.bodyResponse = JSONFactoryUtil.looseSerialize(results);
-				
-				SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
-			}
-			
-                    return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_VIEW_SERVICEINFO, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, serviceInfo.getServiceCode(), 0,
+					id, JSONFactoryUtil.looseSerialize(results));
+						
+           return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

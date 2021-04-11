@@ -50,8 +50,6 @@ dependencies {
 	compileOnly project(":modules:backend-statistic-service:backend-statistic-service-service")
 	compileOnly project(":modules:backend-feedback:backend-feedback-api")
 	compileOnly project(":modules:backend-feedback:backend-feedback-service")
-	compileOnly project(":modules:sync-tracking:sync-tracking-api")
-	compileOnly project(":modules:sync-tracking:sync-tracking-service")
 
 	compileOnly project(":modules:backend-auth")
 	// https://mvnrepository.com/artifact/uk.org.okapibarcode/okapibarcode

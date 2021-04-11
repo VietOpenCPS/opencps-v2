@@ -12,7 +12,7 @@
  * details.
  */
 
-package org.opencps.synctracking.service;
+package org.opencps.adminconfig.service;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -35,8 +35,7 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
-import org.opencps.synctracking.model.SyncTracking;
-import org.opencps.synctracking.model.SyncTrackingQuery;
+import org.opencps.adminconfig.model.SyncTracking;
 
 import java.io.Serializable;
 
@@ -49,10 +48,10 @@ import java.util.List;
  * credentials because this service can only be accessed from within the same
  * VM.
  *
- * @author giaonn
+ * @author binhth
  * @see SyncTrackingLocalServiceUtil
- * @see org.opencps.synctracking.service.base.SyncTrackingLocalServiceBaseImpl
- * @see org.opencps.synctracking.service.impl.SyncTrackingLocalServiceImpl
+ * @see org.opencps.adminconfig.service.base.SyncTrackingLocalServiceBaseImpl
+ * @see org.opencps.adminconfig.service.impl.SyncTrackingLocalServiceImpl
  * @generated
  */
 @ProviderType
@@ -63,7 +62,7 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link SyncTrackingLocalServiceUtil} to access the sync tracking local service. Add custom service methods to {@link org.opencps.synctracking.service.impl.SyncTrackingLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify or reference this interface directly. Always use {@link SyncTrackingLocalServiceUtil} to access the sync tracking local service. Add custom service methods to {@link org.opencps.adminconfig.service.impl.SyncTrackingLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
 
 	/**
@@ -83,9 +82,6 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	*/
 	@Transactional(enabled = false)
 	public SyncTracking createSyncTracking(long trackingId);
-
-	public SyncTracking createSyncTrackingManual(
-		SyncTrackingQuery syncTrackingQuery);
 
 	/**
 	* @throws PortalException
@@ -128,7 +124,7 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	* Performs a dynamic query on the database and returns a range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.synctracking.model.impl.SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.adminconfig.model.impl.SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -143,7 +139,7 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	* Performs a dynamic query on the database and returns an ordered range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.synctracking.model.impl.SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.adminconfig.model.impl.SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -191,34 +187,48 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SyncTracking getByDossierNo(long groupId, String dossierNo);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByGroupId(long groupId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByGroupIdAndDate(long groupId, Date fromDate,
+	public List<SyncTracking> getByApiAndDate(String api, Date fromDate,
 		Date toDate, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByGroupIdAndDossierNoAndDate(long groupId,
+	public List<SyncTracking> getByApiAndDossierNoAndDate(String api,
 		String dossierNo, Date fromDate, Date toDate, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByGroupIdAndDossierNoAndServiceCodeAndDate(
-		long groupId, String dossierNo, String serviceCode, Date fromDate,
-		Date toDate, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByGroupIdAndServiceCodeAndDate(long groupId,
+	public List<SyncTracking> getByApiAndServiceCodeAndDate(String api,
 		String serviceCode, Date fromDate, Date toDate, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SyncTracking getByReferenceUid(long groupId, String referenceUid);
+	public List<SyncTracking> getByApiAndServiceCodeAndDossierNoAndDate(
+		String api, String dossierNo, String serviceCode, Date fromDate,
+		Date toDate, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByReferenceUidAndDate(long groupId,
-		String referenceUid, Date fromDate, Date toDate, int start, int end);
+	public List<SyncTracking> getByDate(Date fromDate, Date toDate, int start,
+		int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SyncTracking getByDossierNo(String dossierNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByDossierNoAndDate(String dossierNo,
+		Date fromDate, Date toDate, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByDossierNoAndServiceCodeAndDate(
+		String dossierNo, String serviceCode, Date fromDate, Date toDate,
+		int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SyncTracking getByReferenceUid(String referenceUid);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByReferenceUidAndDate(String referenceUid,
+		Date fromDate, Date toDate, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByServiceCodeAndDate(String serviceCode,
+		Date fromDate, Date toDate, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -266,7 +276,7 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	* Returns a range of all the sync trackings.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.synctracking.model.impl.SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link org.opencps.adminconfig.model.impl.SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of sync trackings
@@ -309,6 +319,11 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSyncTrackingsCount();
+
+	public SyncTracking updateSyncTracking(long userId, long groupId,
+		long trackingId, String dossierNo, String referenceUid,
+		String serviceCode, int stateSync, String api, String bodyRequest,
+		String bodyResponse);
 
 	/**
 	* Updates the sync tracking in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

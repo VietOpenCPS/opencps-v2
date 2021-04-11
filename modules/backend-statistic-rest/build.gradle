@@ -44,6 +44,9 @@ dependencies {
 	
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-service")
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-api")	
+	
+	compileOnly project(":modules:backend-api-rest")	
+	
 }
 repositories {
     flatDir {

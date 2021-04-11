@@ -66,3 +66,26 @@ create table opencps_reportrole (
 	dynamicReportId LONG,
 	roleId LONG
 );
+
+create table opencps_synctracking (
+	uuid_ VARCHAR(75) null,
+	trackingId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	dossierNo VARCHAR(75) null,
+	referenceUid VARCHAR(75) null,
+	serverNo VARCHAR(75) null,
+	protocol VARCHAR(75) null,
+	stateSync INTEGER,
+	serviceCode VARCHAR(75) null,
+	api VARCHAR(75) null,
+	fromUnit VARCHAR(75) null,
+	toUnit VARCHAR(75) null,
+	bodyRequest VARCHAR(75) null,
+	response VARCHAR(75) null,
+	metaData VARCHAR(75) null
+);
