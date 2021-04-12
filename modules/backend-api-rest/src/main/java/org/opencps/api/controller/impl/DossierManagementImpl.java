@@ -780,8 +780,7 @@ public class DossierManagementImpl implements DossierManagement {
 				//Unstep
 				String unstep = query.getUnstep();
 				if (Validator.isNotNull(unstep)) {
-					String[] unstepArr = unstep.split(StringPool.COMMA);
-					params.put(DossierTerm.DON_VI_NHAN, donvinhan);
+					params.put(DossierTerm.DON_VI_NHAN, unstep);
 				}
 
 				if (Validator.isNotNull(top)) {
@@ -1317,6 +1316,12 @@ public class DossierManagementImpl implements DossierManagement {
 			Integer fromViaPostal = query.getFromViaPostal();
 			if (fromViaPostal != null) {
 				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
+			}
+
+			//Unstep
+			String unstep = query.getUnstep();
+			if (Validator.isNotNull(unstep)) {
+				params.put(DossierTerm.UNSTEP,unstep);
 			}
 
 			Sort[] sorts = null;
