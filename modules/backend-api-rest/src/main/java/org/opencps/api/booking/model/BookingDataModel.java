@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlType;
     "serviceGroupCode",
     "count",
     "online",
-    "bookingInTime"
+    "bookingInTime",
+	"govAgencyCode"
 })
 @XmlRootElement(name = "BookingDataModel")
 public class BookingDataModel {
@@ -52,6 +53,15 @@ public class BookingDataModel {
 	protected Integer count;
 	protected boolean online;
 	protected String bookingInTime;
+	protected String govAgencyCode;
+
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
 
 	public Long getBookingId() {
 		return bookingId;

@@ -1,0 +1,2 @@
+contextPath=/statistic
+jaxRsApplicationFilterStrings=(component.name=org.opencps.backend.statisticmgt.application.StatisticApplication)

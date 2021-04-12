@@ -77,9 +77,9 @@ public interface EFormManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response addEFromOfFileTemplateAuth(@Context HttpServletRequest request, @Context HttpHeaders header,
-											   @Context Company company, @Context Locale locale, @Context User user,
-											   @Context ServiceContext serviceContext,
-											   @ApiParam(value = "body params for post") @BeanParam EFormInputModel input);
+										   @Context Company company, @Context Locale locale, @Context User user,
+										   @Context ServiceContext serviceContext,
+										   @ApiParam(value = "body params for post") @BeanParam EFormInputModel input);
 
 	@GET
 	@Path("/{eFormNo}/password/{secret}")
