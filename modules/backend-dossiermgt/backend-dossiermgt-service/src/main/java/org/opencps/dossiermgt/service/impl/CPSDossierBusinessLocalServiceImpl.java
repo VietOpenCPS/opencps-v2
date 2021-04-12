@@ -922,17 +922,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			doAction(groupId, userId, hslt, optionHslt, actionHslt, actionConfig.getMappingAction(), actionUserHslt,
 					actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
 		} else {
-			if (Validator.isNotNull(hsltDossier)) {
-				_log.info("HSLT: " + JSONFactoryUtil.looseSerialize(hsltDossier));
-					ProcessOption optionOrigin = getProcessOption(hsltDossier.getServiceCode(),
-							hsltDossier.getGovAgencyCode(), hsltDossier.getDossierTemplateNo(), groupId);
-					ProcessAction actionOrigin = getProcessAction(groupId, hsltDossier.getDossierId(),
-							hsltDossier.getReferenceUid(), actionConfig.getMappingAction(),
-							optionOrigin.getServiceProcessId());
-					_log.info("ActionConfig: " + actionConfig.getMappingAction());
-					doAction(groupId, userId, hsltDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(),
-							actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
-			} else {
+//			if (Validator.isNotNull(hsltDossier)) {
+//				_log.info("HSLT: " + JSONFactoryUtil.looseSerialize(hsltDossier));
+//					ProcessOption optionOrigin = getProcessOption(hsltDossier.getServiceCode(),
+//							hsltDossier.getGovAgencyCode(), hsltDossier.getDossierTemplateNo(), groupId);
+//					ProcessAction actionOrigin = getProcessAction(groupId, hsltDossier.getDossierId(),
+//							hsltDossier.getReferenceUid(), actionConfig.getMappingAction(),
+//							optionOrigin.getServiceProcessId());
+//					_log.info("ActionConfig: " + actionConfig.getMappingAction());
+//					doAction(groupId, userId, hsltDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(),
+//							actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
+//			} else {
 				Dossier originDossier = dossierLocalService.getByOrigin(groupId, dossier.getDossierId());
 				if (originDossier != null) {
 					ProcessOption optionOrigin = getProcessOption(originDossier.getServiceCode(),
@@ -943,7 +943,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					doAction(groupId, userId, originDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(),
 							actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
 				}
-			}
+//			}
 		}
 	}
 
