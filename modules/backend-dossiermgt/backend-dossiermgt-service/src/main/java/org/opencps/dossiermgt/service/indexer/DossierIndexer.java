@@ -485,6 +485,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 						// if (Validator.isNotNull(dossierAction.getStepCode())) {
 						document.addTextSortable(DossierTerm.STEP_CODE, dossierAction.getStepCode());
+						document.addTextSortable(DossierTerm.UNSTEP, dossierAction.getStepCode());
 						// }
 						// if (Validator.isNotNull(dossierAction.getStepName())) {
 						document.addTextSortable(DossierTerm.STEP_NAME, dossierAction.getStepName());

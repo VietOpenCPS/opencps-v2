@@ -493,13 +493,13 @@ public class DossierManagementImpl implements DossierManagement {
 				String toSubmitDate =
 						APIDateTimeUtils.convertNormalDateToLuceneDate(
 								query.getToSubmitDate());
-				
+
 				String fromDueDate =
 						APIDateTimeUtils.convertNormalDateToLuceneDate(
-							query.getFromDueDate());
+								query.getFromDueDate());
 				String toDueDate =
-					APIDateTimeUtils.convertNormalDateToLuceneDate(
-						query.getToDueDate());
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getToDueDate());
 				// Process Statistic
 				String fromReleaseDate =
 						APIDateTimeUtils.convertNormalDateToLuceneDate(
@@ -775,6 +775,13 @@ public class DossierManagementImpl implements DossierManagement {
 							params.put(DossierTerm.DON_VI_NHAN, donvinhan);
 						}
 					}
+				}
+
+				//Unstep
+				String unstep = query.getUnstep();
+				if (Validator.isNotNull(unstep)) {
+					String[] unstepArr = unstep.split(StringPool.COMMA);
+					params.put(DossierTerm.DON_VI_NHAN, donvinhan);
 				}
 
 				if (Validator.isNotNull(top)) {

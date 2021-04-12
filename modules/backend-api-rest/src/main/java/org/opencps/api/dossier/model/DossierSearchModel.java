@@ -316,6 +316,16 @@ public class DossierSearchModel {
 	protected String createDateEnd;
 	@QueryParam(value = "level")
 	protected String level;
+	@QueryParam(value = "unstep")
+	protected String unstep;
+
+	public String getUnstep() {
+		return unstep;
+	}
+
+	public void setUnstep(String unstep) {
+		this.unstep = unstep;
+	}
 
 	public String getLevel() {
 		return level;
