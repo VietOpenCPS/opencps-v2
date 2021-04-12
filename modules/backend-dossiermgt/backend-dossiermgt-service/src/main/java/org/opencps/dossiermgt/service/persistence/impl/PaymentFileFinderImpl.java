@@ -11,7 +11,11 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
+import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.impl.DeliverableImpl;
+import org.opencps.dossiermgt.model.impl.DossierFileImpl;
 import org.opencps.dossiermgt.model.impl.PaymentFileImpl;
 import org.opencps.dossiermgt.service.persistence.PaymentFileFinder;
 
@@ -204,5 +208,38 @@ public class PaymentFileFinderImpl extends PaymentFileFinderBaseImpl implements 
 		}
 
 		return null;
+	}
+
+	@Override
+	public PaymentFile findPaymentFileByDossierId(long groupId, long dossierId) {
+		Session session = null;
+		PaymentFile paymentFile = null;
+		String sql = " SELECT * FROM opencps_paymentfile WHERE"
+				+ " dossierId = "+dossierId+" AND"
+				+ " groupId = "+groupId+" "
+				+ " ORDER BY createDate DESC";
+		_log.info("SQL: "+ sql);
+		try {
+			session = openSession();
+
+			SQLQuery q = session.createSQLQuery(sql);
+			q.setCacheable(false);
+			q.addEntity("opencps_paymentfile", PaymentFileImpl.class);
+			paymentFile = (PaymentFile) q.uniqueResult();
+
+		}
+		catch (Exception e) {
+			try {
+				throw new SystemException(e);
+			}
+			catch (SystemException se) {
+				_log.error(se);
+			}
+		}
+		finally {
+			closeSession(session);
+		}
+
+		return paymentFile;
 	}
 }

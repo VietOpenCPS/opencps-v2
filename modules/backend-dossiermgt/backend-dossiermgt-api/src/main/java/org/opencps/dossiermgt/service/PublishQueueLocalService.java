@@ -188,6 +188,11 @@ public interface PublishQueueLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PublishQueue> getByDossierIdAndServerNo(long dossierId,
+		String serverNo, int start, int end,
+		OrderByComparator<PublishQueue> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PublishQueue getByG_DID_SN(long groupId, long dossierId,
 		String serverNo);
 
@@ -211,7 +216,8 @@ public interface PublishQueueLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PublishQueue> getByStatusesAndServerNo(int[] statuses,
-		String serverNo, int start, int end);
+		String serverNo, int start, int end,
+		OrderByComparator<PublishQueue> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();

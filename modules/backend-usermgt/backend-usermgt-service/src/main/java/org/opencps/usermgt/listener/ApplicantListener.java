@@ -92,6 +92,34 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 			_log.info("Applicant Log trigger!: "+model.getContactEmail());
 			if (model.getMappingUserId() > 0) {
 				if (Validator.isNotNull(model.getActivationCode())) {
+					//create applicant with groupid = 0
+					//binhth add user applicant to siteGroup
+
+					long userId = model.getMappingUserId();
+
+					GroupLocalServiceUtil.addUserGroup(userId, model.getGroupId());
+					//Add applicant to search
+					long companyId = model.getCompanyId();
+					String applicantIdNo = model.getApplicantIdNo();
+					String applicantName = model.getApplicantName();
+					String applicantIdType = model.getApplicantIdType();
+					Date applicantIdDate = model.getApplicantIdDate();
+					String address = model.getAddress();
+					String cityCode = model.getCityCode();
+					String cityName = model.getCityName();
+					String districtCode = model.getDistrictCode();
+					String districtName = model.getDistrictName();
+					String wardCode = model.getWardCode();
+					String wardName = model.getWardName();
+					String contactName = model.getContactName();
+					String contactTelNo = model.getContactTelNo();
+					String contactEmail = model.getContactEmail();
+
+					ApplicantLocalServiceUtil.updateApplicant(0l, userId, companyId, applicantName, applicantIdType, applicantIdNo,
+							applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+							contactName, contactTelNo, contactEmail);
+
+					//Send notification
 					NotificationQueue queue = null;
 					
 					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
@@ -149,32 +177,6 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 					
 					NotificationQueue notiQueue = NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 					_log.info("notiQueue: "+ notiQueue);
-					
-					//binhth add user applicant to siteGroup
-					
-					long userId = model.getMappingUserId();
-					
-					GroupLocalServiceUtil.addUserGroup(userId, model.getGroupId());
-					//Add applicant to search
-					long companyId = model.getCompanyId();
-					String applicantIdNo = model.getApplicantIdNo();
-					String applicantName = model.getApplicantName();
-					String applicantIdType = model.getApplicantIdType();
-					Date applicantIdDate = model.getApplicantIdDate();
-					String address = model.getAddress();
-					String cityCode = model.getCityCode();
-					String cityName = model.getCityName();
-					String districtCode = model.getDistrictCode();
-					String districtName = model.getDistrictName();
-					String wardCode = model.getWardCode();
-					String wardName = model.getWardName();
-					String contactName = model.getContactName();
-					String contactTelNo = model.getContactTelNo();
-					String contactEmail = model.getContactEmail();
-					
-					ApplicantLocalServiceUtil.updateApplicant(0l, userId, companyId, applicantName, applicantIdType, applicantIdNo,
-							applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
-							contactName, contactTelNo, contactEmail);
 				}
 			}
 		} catch (Exception e) {

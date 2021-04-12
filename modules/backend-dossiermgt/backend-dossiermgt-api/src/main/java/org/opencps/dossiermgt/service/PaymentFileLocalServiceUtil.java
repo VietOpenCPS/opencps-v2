@@ -293,6 +293,11 @@ public class PaymentFileLocalServiceUtil {
 		return getService().findByPT(paymentStatus);
 	}
 
+	public static org.opencps.dossiermgt.model.PaymentFile findPaymentFileByDossierId(
+		long groupId, long dossierId) {
+		return getService().findPaymentFileByDossierId(groupId, dossierId);
+	}
+
 	public static String findSumPaymentAmountDay(long groupId, String date) {
 		return getService().findSumPaymentAmountDay(groupId, date);
 	}
