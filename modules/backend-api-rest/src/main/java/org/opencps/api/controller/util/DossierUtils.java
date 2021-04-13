@@ -479,6 +479,7 @@ public class DossierUtils {
 			
 			model.setLastActionUserId(GetterUtil.getLong(doc.get(DossierTerm.USER_DOSSIER_ACTION_ID)));
 			model.setStepCode(doc.get(DossierTerm.STEP_CODE));
+			model.setUnStep(doc.get(DossierTerm.UNSTEP));
 			model.setStepName(doc.get(DossierTerm.STEP_NAME));
 			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
 //			model.setStepOverdue(StringPool.BLANK);

@@ -316,7 +316,7 @@ public class DossierSearchModel {
 	protected String createDateEnd;
 	@QueryParam(value = "level")
 	protected String level;
-	@QueryParam(value = "unstep")
+	@QueryParam(value = "un_step")
 	protected String unstep;
 
 	public String getUnstep() {

@@ -780,7 +780,7 @@ public class DossierManagementImpl implements DossierManagement {
 				//Unstep
 				String unstep = query.getUnstep();
 				if (Validator.isNotNull(unstep)) {
-					params.put(DossierTerm.DON_VI_NHAN, unstep);
+					params.put(DossierTerm.UNSTEP, unstep);
 				}
 
 				if (Validator.isNotNull(top)) {

@@ -3440,7 +3440,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
 		}
-
+		_log.debug("Unstep" + unstep);
 		if (Validator.isNotNull(unstep)) {
 			String[] stepArr = StringUtil.split(unstep);
 			if (stepArr != null && stepArr.length > 0) {
