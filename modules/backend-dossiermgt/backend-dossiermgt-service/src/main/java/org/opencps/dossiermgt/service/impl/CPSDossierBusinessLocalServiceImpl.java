@@ -753,8 +753,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					|| actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM) {
 
 				payloadObject.put(DossierTerm.CONSTANT_DOSSIER_FILES, dossierFilesArr);
-
-				if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
+				_log.info("ProcessAction: " + JSONFactoryUtil.looseSerialize(proAction));
+				if (proAction.getReturnDossierFiles() !=null && !"".equals(proAction.getReturnDossierFiles())) {
 					List<DossierFile> lsDossierFile = lstFiles;
 					dossierFilesArr = JSONFactoryUtil.createJSONArray();
 
@@ -895,7 +895,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 	private void doMappingAction(long groupId, long userId, Employee employee, Dossier dossier,
 								 ActionConfig actionConfig, String actionUser, String actionNote, String payload, String assignUsers,
-								 String payment, Dossier hsltDossier, ServiceContext context) throws PortalException, Exception {
+								 String payment, long dossierIdHSLL, ServiceContext context) throws PortalException, Exception {
 		ActionConfig mappingConfig = actionConfigLocalService.getByCode(groupId, actionConfig.getMappingAction());
 		if (dossier.getOriginDossierId() != 0) {
 			Dossier hslt = dossierLocalService.fetchDossier(dossier.getOriginDossierId());
@@ -922,17 +922,18 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			doAction(groupId, userId, hslt, optionHslt, actionHslt, actionConfig.getMappingAction(), actionUserHslt,
 					actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
 		} else {
-//			if (Validator.isNotNull(hsltDossier)) {
-//				_log.info("HSLT: " + JSONFactoryUtil.looseSerialize(hsltDossier));
-//					ProcessOption optionOrigin = getProcessOption(hsltDossier.getServiceCode(),
-//							hsltDossier.getGovAgencyCode(), hsltDossier.getDossierTemplateNo(), groupId);
-//					ProcessAction actionOrigin = getProcessAction(groupId, hsltDossier.getDossierId(),
-//							hsltDossier.getReferenceUid(), actionConfig.getMappingAction(),
-//							optionOrigin.getServiceProcessId());
-//					_log.info("ActionConfig: " + actionConfig.getMappingAction());
-//					doAction(groupId, userId, hsltDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(),
-//							actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
-//			} else {
+			if (dossierIdHSLL > 0) {
+				Dossier hsltDossier = DossierLocalServiceUtil.fetchDossier(dossierIdHSLL);
+				_log.info("HSLT: " + JSONFactoryUtil.looseSerialize(hsltDossier));
+					ProcessOption optionOrigin = getProcessOption(hsltDossier.getServiceCode(),
+							hsltDossier.getGovAgencyCode(), hsltDossier.getDossierTemplateNo(), groupId);
+					ProcessAction actionOrigin = getProcessAction(groupId, hsltDossier.getDossierId(),
+							hsltDossier.getReferenceUid(), actionConfig.getMappingAction(),
+							optionOrigin.getServiceProcessId());
+					_log.info("ActionConfig: " + actionConfig.getMappingAction());
+					doAction(groupId, userId, hsltDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(),
+							actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
+			} else {
 				Dossier originDossier = dossierLocalService.getByOrigin(groupId, dossier.getDossierId());
 				if (originDossier != null) {
 					ProcessOption optionOrigin = getProcessOption(originDossier.getServiceCode(),
@@ -943,7 +944,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					doAction(groupId, userId, originDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(),
 							actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
 				}
-//			}
+			}
 		}
 	}
 
@@ -1570,7 +1571,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
 		if (Validator.isNotNull(actionConfig) && Validator.isNotNull(actionConfig.getMappingAction())) {
 			doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, newObj.toJSONString(),
-					assignUsers, payment, hsltDossier, context);
+					assignUsers, payment, hsltDossier.getDossierId() > 0 ? hsltDossier.getDossierId() : 0, context);
 		}
 
 		List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossierId);
