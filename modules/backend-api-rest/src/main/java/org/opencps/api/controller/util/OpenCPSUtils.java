@@ -116,6 +116,7 @@ public class OpenCPSUtils {
             List<SyncTracking> syncTrackingList;
             List<SyncTracking> syncTrackingPaginate;
             
+            _log.info("33333");
             // 1-1-1| 1-1-0| 1-0-0| 1-0-1| 0-1-1| 0-1-0| 0-0-1| 0-0-0
             _log.info("hasApi :" + hasApi);
             _log.info("hasDossierNo :" + hasDossierNo);

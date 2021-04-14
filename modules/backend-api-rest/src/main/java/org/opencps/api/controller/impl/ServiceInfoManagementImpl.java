@@ -113,6 +113,8 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 
 		ServiceInfoResultsModel results = new ServiceInfoResultsModel();
+		JSONObject bodyResponse = JSONFactoryUtil.createJSONObject();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (query.getEnd() == 0) {
@@ -123,7 +125,6 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -239,17 +240,21 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //		    
 //		    return builder.build();			
 
-			JSONObject bodyResponse = JSONFactoryUtil.createJSONObject();
 			bodyResponse.put("status", HttpURLConnection.HTTP_OK);
 			bodyResponse.put("total", results.getTotal());
 			// ghi log vao syncTracking
 			OpenCPSUtils.addSyncTracking(API_LIST_SERVICEINFO, user.getUserId(),
-					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 1,
 					JSONFactoryUtil.looseSerialize(query), bodyResponse.toJSONString());
 			
 		    return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		} catch (Exception e) {
 			_log.error(e.getMessage());
+			// ghi log vao syncTracking
+			bodyResponse.put("status", HttpURLConnection.HTTP_INTERNAL_ERROR);
+			OpenCPSUtils.addSyncTracking(API_LIST_SERVICEINFO, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					JSONFactoryUtil.looseSerialize(query), bodyResponse.toJSONString());
 			return BusinessExceptionImpl.processException(e);
 		}
 
@@ -316,9 +321,9 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 
 		ServiceInfoDetailModel results = new ServiceInfoDetailModel();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			ServiceInfo serviceInfo = null;
 
@@ -352,12 +357,16 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			
 			// ghi log vao syncTracking
 			OpenCPSUtils.addSyncTracking(API_VIEW_SERVICEINFO, user.getUserId(),
-					groupId, StringPool.NULL,StringPool.NULL, serviceInfo.getServiceCode(), 0,
+					groupId, StringPool.NULL,StringPool.NULL, serviceInfo.getServiceCode(), 1,
 					id, JSONFactoryUtil.looseSerialize(results));
 						
            return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_VIEW_SERVICEINFO, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					id, StringPool.NULL);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

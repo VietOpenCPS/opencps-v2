@@ -90,6 +90,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 		// TODO
 		BackendAuth auth = new BackendAuthImpl();
+		long groupId =
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		JSONObject bodyResponse = JSONFactoryUtil.createJSONObject();
 
 		try {
 
@@ -101,10 +104,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			if (search.getEnd() == 0) {
 				search.setStart(QueryUtil.ALL_POS);
 				search.setEnd(QueryUtil.ALL_POS);
-			}
-
-			long groupId =
-				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			}			
 
 			// Default sort by modifiedDate
 			String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), Field.MODIFIED_DATE);
@@ -176,12 +176,11 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 			results.put(ConstantUtils.DATA, formDataArr);
 			
-			JSONObject bodyResponse = JSONFactoryUtil.createJSONObject();
 			bodyResponse.put("status", HttpURLConnection.HTTP_OK);
 			bodyResponse.put("total", results.getInt(ConstantUtils.TOTAL));
 			// ghi log vao syncTracking
 			OpenCPSUtils.addSyncTracking(API_LIST_DELIVERABLE, user.getUserId(),
-					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 1,
 					JSONFactoryUtil.looseSerialize(search), bodyResponse.toJSONString());
 						
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
@@ -189,6 +188,12 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			// return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		}
 		catch (Exception e) {
+			
+			bodyResponse.put("status", HttpURLConnection.HTTP_INTERNAL_ERROR);
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_LIST_DELIVERABLE, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					JSONFactoryUtil.looseSerialize(search), bodyResponse.toJSONString());
 			return BusinessExceptionImpl.processException(e);
 		}
 
@@ -249,7 +254,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		// long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -271,13 +276,17 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			// ghi log vao syncTracking
 			OpenCPSUtils.addSyncTracking(API_VIEW_DELIVERABLE, user.getUserId(),
-					deliverableInfo.getGroupId(), StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					deliverableInfo.getGroupId(), StringPool.NULL,StringPool.NULL, StringPool.NULL, 1,
 					String.valueOf(id), JSONFactoryUtil.looseSerialize(results));
 			
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_VIEW_DELIVERABLE, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					String.valueOf(id),  StringPool.NULL);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

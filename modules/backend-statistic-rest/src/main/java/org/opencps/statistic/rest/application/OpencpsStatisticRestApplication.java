@@ -720,6 +720,9 @@ public class OpencpsStatisticRestApplication extends Application {
 	@Path("/votingsCountPoint")
 	public VotingResultResponse searchVotingStatisticCountPoint(@HeaderParam("groupId") long groupId,
 																@BeanParam VotingSearchModel query, @Context HttpServletRequest request) {
+		
+		User user = (User) request.getAttribute("USER");
+
 		try {
 			String fromStatisticDate = query.getFromStatisticDate() != null ? query.getFromStatisticDate() : "1/1/2019";
 			String toStatisticDate = query.getToStatisticDate() != null ? query.getToStatisticDate() : "1/1/2100";
@@ -764,14 +767,18 @@ public class OpencpsStatisticRestApplication extends Application {
 			statisticResponse.setData(listVotingResult);
 
 			// ghi log vao syncTracking
-			User user = (User) request.getAttribute("USER");
 			OpenCPSUtils.addSyncTracking(API_VOTING_STATISTIC, user.getUserId(), 
 					groupId, StringPool.NULL, StringPool.NULL, StringPool.NULL, 
-					0, JSONFactoryUtil.looseSerialize(query), JSONFactoryUtil.looseSerialize(statisticResponse));
+					1, JSONFactoryUtil.looseSerialize(query), JSONFactoryUtil.looseSerialize(statisticResponse));
 			
 			return statisticResponse;
 		}catch (Exception e) {
 			LOG.error("error", e);
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_VOTING_STATISTIC, user.getUserId(), 
+					groupId, StringPool.NULL, StringPool.NULL, StringPool.NULL, 
+					0, JSONFactoryUtil.looseSerialize(query),  StringPool.NULL);
+			
 			OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
 			serviceExceptionDetails.setFaultCode(String.valueOf(HttpURLConnection.HTTP_INTERNAL_ERROR));

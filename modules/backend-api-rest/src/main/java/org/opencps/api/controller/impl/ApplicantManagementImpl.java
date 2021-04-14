@@ -356,6 +356,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		ApplicantResultsModel results = new ApplicantResultsModel();
 		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		JSONObject bodyResponse = JSONFactoryUtil.createJSONObject();
+
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -381,7 +384,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					APIDateTimeUtils.convertNormalDateToLuceneDate(
 							query.getToRegistryDate());
 
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -405,7 +407,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					serviceContext.getCompanyId(), groupId, params, sorts, query.getStart(), query.getEnd(),
 					serviceContext);
 
-			JSONObject bodyResponse = JSONFactoryUtil.createJSONObject();
 			
 			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
@@ -417,12 +418,18 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			
 			// ghi log vao syncTracking
 			OpenCPSUtils.addSyncTracking(API_LIST_APPLICANT, user.getUserId(),
-					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 1,
 					JSONFactoryUtil.looseSerialize(query), bodyResponse.toJSONString());
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
+			
+			bodyResponse.put("status", HttpURLConnection.HTTP_INTERNAL_ERROR);
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_LIST_APPLICANT, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					JSONFactoryUtil.looseSerialize(query), bodyResponse.toJSONString());
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -464,7 +471,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				
 				// ghi log vao syncTracking
 				OpenCPSUtils.addSyncTracking(API_VIEW_APPLICANT, user.getUserId(),
-						applicant.getGroupId(), StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+						applicant.getGroupId(), StringPool.NULL,StringPool.NULL, StringPool.NULL, 1,
 						String.valueOf(id), JSONFactoryUtil.looseSerialize(results));
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
@@ -473,6 +480,10 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 		} catch (Exception e) {
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_VIEW_APPLICANT, user.getUserId(),
+					applicant.getGroupId(), StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					String.valueOf(id), JSONFactoryUtil.looseSerialize(results));
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

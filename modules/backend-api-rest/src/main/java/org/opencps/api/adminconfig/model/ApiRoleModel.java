@@ -51,6 +51,7 @@ import javax.xml.bind.annotation.XmlType;
     "apiCode",
     "roleId",
     "roleCode",
+    "roleName",
     "apiRoleStatus"
 })
 public class ApiRoleModel {
@@ -67,6 +68,8 @@ public class ApiRoleModel {
     protected long roleId;
     @XmlElement(required = true)
     protected String roleCode;
+    @XmlElement(required = true)
+    protected String roleName;
     protected int apiRoleStatus;
 
     /**
@@ -228,8 +231,17 @@ public class ApiRoleModel {
     public void setRoleCode(String value) {
         this.roleCode = value;
     }
+    
 
-    /**
+    public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	/**
      * Gets the value of the apiRoleStatus property.
      * 
      */

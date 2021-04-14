@@ -83,6 +83,8 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.springframework.http.HttpStatus;
 
 import backend.admin.config.whiteboard.BundleLoader;
@@ -962,6 +964,10 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 					model.setUserId(user.getUserId());
 					model.setGroupId(groupId);
 					
+					JobPos jobPos = JobPosLocalServiceUtil.fetchByF_mappingRoleId(groupId, apiRole.getRoleId());
+					if (Validator.isNotNull(jobPos)) {
+						model.setRoleName(jobPos.getTitle());
+					}
 					lstModels.add(model);
 				}
 				result.getData().addAll(lstModels);
@@ -1108,12 +1114,13 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 		DtoResponse response = new DtoResponse();
 		
 		try {
-			
+			_log.info("11111");
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			
+			_log.info("22222");
 			response = new OpenCPSUtils().getLogReports(input);
+			_log.info("Response :" + JSONFactoryUtil.looseSerialize(response));
 			ResponseBuilder builder = Response.status(HttpURLConnection.HTTP_OK).entity(response);
 			buildCrossOriginHeader(builder, request, METHOD_GET);
 			
