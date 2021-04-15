@@ -2062,105 +2062,7 @@ public class DossierManagementImpl implements DossierManagement {
 									}
 								}
 							}
-							// if (dossierResult != null) {
-							// String actionCodeResult =
-							// dossierResult.getActionCode();
-							// _log.info("actionCodeResult: "+actionCodeResult);
-							// if (Validator.isNotNull(actionCodeResult)) {
-							// ActionConfig actConfigResult =
-							// ActionConfigLocalServiceUtil.getByCode(groupId,
-							// actionCodeResult);
-							// int dateOption = actConfigResult.getDateOption();
-							// _log.info("dateOption: "+dateOption);
-							// _log.info("dossierResult.getDossierActionId():
-							// "+dossierResult.getDossierActionId());
-							// if (dateOption ==
-							// DossierTerm.DATE_OPTION_CAL_WAITING) {
-							// DossierAction dActEnd =
-							// DossierActionLocalServiceUtil
-							// .fetchDossierAction(dossierResult.getDossierActionId());
-							// if (dActEnd != null) {
-							// _log.info("dActEnd.getPreviousActionId():
-							// "+dActEnd.getPreviousActionId());
-							// DossierAction dActStart =
-							// DossierActionLocalServiceUtil
-							// .fetchDossierAction(dActEnd.getPreviousActionId());
-							// if (dActStart != null) {
-							// long createEnd =
-							// dActEnd.getCreateDate().getTime();
-							// long createStart =
-							// dActStart.getCreateDate().getTime();
-							// _log.info("createStart: "+createStart);
-							// _log.info("createEnd: "+createEnd);
-							// if (createEnd > createStart) {
-							// long extendDateTimeStamp =
-							// ExtendDueDateUtils.getTimeWaitingByHoliday(createStart,
-							// createEnd, groupId);
-							// _log.info("extendDateTimeStamp:
-							// "+extendDateTimeStamp);
-							// if (extendDateTimeStamp > 0) {
-							// dossier =
-							// DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
-							// long hoursCount = (long) (extendDateTimeStamp /
-							// (1000 * 60 * 60));
-							// _log.info("hoursCount: "+hoursCount);
-							// //_log.info("dossier.getExtendDate():
-							// "+dossier.getExtendDate());
-							// List<Holiday> holidayList =
-							// HolidayLocalServiceUtil
-							// .getHolidayByGroupIdAndType(groupId, 0);
-							// List<Holiday> extendWorkDayList =
-							// HolidayLocalServiceUtil
-							// .getHolidayByGroupIdAndType(groupId, 1);
-							//
-							// Date dueDateExtend =
-							// HolidayUtils.getEndDate(groupId,
-							// dossier.getDueDate(), hoursCount, holidayList,
-							// extendWorkDayList);
-							// _log.info("dueDateExtend: "+dueDateExtend);
-							// if (dueDateExtend != null) {
-							// dossier.setDueDate(dueDateExtend);
-							// //dossier.setCorrecttingDate(null);
-							// DossierLocalServiceUtil.updateDossier(dossier);
-							// }
-							// }
-							// }
-							// }
-							// }
-							// } else if (dateOption ==
-							// DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
-							// dossier =
-							// DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
-							// if (dossier.getDueDate() != null) {
-							// //dossier.setCorrecttingDate(dossier.getDueDate());
-							// //dossier.setDueDate(null);
-							// dossier.setLockState(DossierTerm.PAUSE_STATE);
-							// DossierLocalServiceUtil.updateDossier(dossier);
-							// }
-							// }
-							// else if (dateOption ==
-							// DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
-							// dossier =
-							// DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
-							// if (dossier.getDueDate() != null) {
-							// ServiceProcess serviceProcess =
-							// ServiceProcessLocalServiceUtil
-							// .fetchServiceProcess(dossierResult.getServiceProcessId());
-							// if (serviceProcess != null) {
-							// Date newDueDate = HolidayUtils.getDueDate(new
-							// Date(),
-							// serviceProcess.getDurationCount(),
-							// serviceProcess.getDurationUnit(), groupId);
-							// if (newDueDate != null) {
-							// dossier.setDueDate(newDueDate);
-							// DossierLocalServiceUtil.updateDossier(dossier);
-							// }
-							// }
-							//
-							// }
-							// }
-							// }
-							// }
+
 						}
 						else {
 							_log.info(77777);
@@ -2189,74 +2091,7 @@ public class DossierManagementImpl implements DossierManagement {
 							_log.warn("Error when update due date and last receive date: " + e.getMessage());
 							_log.warn("Still running...");
 						}
-						// Process send email or sms
-						// if (dossierResult != null) {
-						// String notificationType =
-						// actConfig.getNotificationType();
-						//
-						// if (Validator.isNotNull(notificationType)) {
-						// long notificationQueueId =
-						// CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
-						//
-						// NotificationQueue queue =
-						// NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-						// Process add notification queue
-						// Date now = new Date();
-						//
-						// Calendar cal = Calendar.getInstance();
-						// cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-						//
-						// queue.setCreateDate(now);
-						// queue.setModifiedDate(now);
-						// queue.setGroupId(groupId);
-						// queue.setCompanyId(company.getCompanyId());
-						//
-						// queue.setNotificationType(notificationType);
-						// queue.setClassName(Dossier.class.getName());
-						// queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
-						// queue.setToUsername(dossier.getUserName());
-						// queue.setToUserId(dossier.getUserId());
-						// queue.setToEmail(dossier.getContactEmail());
-						// queue.setToTelNo(dossier.getContactTelNo());
-						// if (notificationType.contains("APLC")) {
-						// if (dossier.getOriginality() == 3) {
-						// queue.setToEmail(dossier.getDelegateEmail());
-						// queue.setToTelNo(dossier.getDelegateTelNo());
-						// } else {
-						// queue.setToEmail(dossier.getContactEmail());
-						// queue.setToTelNo(dossier.getContactTelNo());
-						// }
-						// } else if (notificationType.contains("EPLC")) {
-						// Employee employee =
-						// EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId,
-						// dossier.getUserId());
-						// if (employee != null) {
-						// queue.setToEmail(employee.getEmail());
-						// queue.setToTelNo(employee.getTelNo());
-						// }
-						// } else {
-						// queue.setToEmail(dossier.getContactEmail());
-						// queue.setToTelNo(dossier.getContactTelNo());
-						// }
-						//
-						// JSONObject payload =
-						// JSONFactoryUtil.createJSONObject();
-						// try {
-						// _log.info("START PAYLOAD: ");
-						// payload.put(
-						// "Dossier", JSONFactoryUtil.createJSONObject(
-						// JSONFactoryUtil.looseSerialize(dossier)));
-						// }
-						// catch (JSONException parse) {
-						// _log.error(parse);
-						// }
-						// _log.info("payloadTest: "+payload.toJSONString());
-						// queue.setPayload(payload.toJSONString());
-						// queue.setExpireDate(cal.getTime());
-						//
-						// NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
-						// }
-						// }
+
 					}
 					else {
 						ProcessOption option = DossierUtils.getProcessOption(
@@ -2327,21 +2162,6 @@ public class DossierManagementImpl implements DossierManagement {
 				
 			}
 
-			// DossierAction dossierAction = actions.doAction(groupId, dossier,
-			// option, proAction,
-			// actionCode, input.getActionUser(),
-			// input.getActionNote(), input.getPayload(),
-			// input.getAssignUsers(), serviceContext);
-
-			// DossierAction dossierAction = actions.doAction(groupId,
-			// dossier.getDossierId(),
-			// dossier.getReferenceUid(), input.getActionCode(), 0l,
-			// input.getActionUser(),
-			// input.getActionNote(), input.getAssignUserId(), 0l, subUsers,
-			// serviceContext);
-
-			// return
-			// Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerializeDeep(dossierAction)).build();
 			if (dossierResult != null) {
 				_log.debug("TRUEEEEEEEEEEEEEEEEEEEEEEEEE");
 				long dossierActionId = dossierResult.getDossierActionId();
@@ -2378,15 +2198,6 @@ public class DossierManagementImpl implements DossierManagement {
 				_log.debug("Done add post action");
 				}
 
-				// String strDossierResult =
-				// JSONFactoryUtil.looseSerializeDeep(dossierResult);
-				// JSONObject jsonData = null;
-				// if (Validator.isNotNull(strDossierResult)) {
-				// jsonData =
-				// JSONFactoryUtil.createJSONObject(strDossierResult);
-				// jsonData.put(DossierActionTerm.DOSSIER_DOCUMENT_ID,
-				// dossierDocumentId);
-				// }
 				return Response.status(HttpURLConnection.HTTP_OK).entity(dAction).build();
 			}
 			else {
@@ -2396,29 +2207,10 @@ public class DossierManagementImpl implements DossierManagement {
 				return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(
 					errorJson.toJSONString()).build();
 			}
-			// ProcessOption option = getProcessOption(dossier.getServiceCode(),
-			// dossier.getGovAgencyCode(),
-			// dossier.getDossierTemplateNo(), groupId);
-
-			// ProcessAction action = getProcessAction(dossier,
-			// input.getActionCode(), option.getServiceProcessId());
-
-			// dossierPermission.hasPermitDoAction(groupId,
-			// user.getUserId(), dossier, option.getServiceProcessId(),
-			// action);
-
-			// DossierAction dossierAction = actions.doAction(groupId,
-			// dossier.getDossierId(),
-			// dossier.getReferenceUid(), input.getActionCode(),
-			// action.getProcessActionId(),
-			// input.getActionUser(), input.getActionNote(),
-			// input.getAssignUserId(), user.getUserId(),
-			// subUsers, serviceContext);
 
 		}
 		catch (Exception e) {
-			_log.info("ERROrrr: " + e.getMessage());
-			_log.debug(e);
+			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -2570,7 +2362,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			return "";
 		} catch (Exception e) {
-			_log.debug("Error when process post action: " + e.getMessage());
+			_log.error(e);
 			return "";
 		}
 	}

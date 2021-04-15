@@ -190,6 +190,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 		MBMessageEntry messageEntry, String portletId,
 		ServiceContext... serviceContexts) {
 
+		_log.debug("---send---");
 		if (messageEntry != null && messageEntry.isSendEmail() && messageEntry.getToAddress().length > 0) {
 //			_log.debug("===SEND_MAIL_TO_ADD=======" + messageEntry.getToAddress()[0].getAddress());
 			boolean needSendEmail = false;
@@ -199,7 +200,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 					break;
 				}
 			}
-			_log.info("Send email: " + needSendEmail + ", " + needSendEmail);
+			_log.debug("Send email: " + needSendEmail );
 
 			if (needSendEmail) {
 
@@ -211,14 +212,14 @@ public class MBEmailSenderImpl implements MBEmailSender {
 
 				String smtpUser = PrefsPropsUtil.getString(PropsKeys.MAIL_SESSION_MAIL_SMTP_USER, StringPool.BLANK);
 				String adminEmailFromName =PrefsPropsUtil.getString(PropsKeys.ADMIN_EMAIL_FROM_NAME, StringPool.BLANK);  
-				_log.info("smtpUser: " + smtpUser);
-				_log.info("adminEmailFromName: " + adminEmailFromName);
+				_log.debug("smtpUser: " + smtpUser);
+				_log.debug("adminEmailFromName: " + adminEmailFromName);
 				if (Validator.isNotNull(smtpUser)) {
 					messageEntry.getFrom().setAddress(smtpUser);
 					
-					if(Validator.isNotNull(adminEmailFromName)) {
-						messageEntry.setFromName(adminEmailFromName);
-					}
+//					if(Validator.isNotNull(adminEmailFromName)) {
+//						messageEntry.setFromName(adminEmailFromName);
+//					}
 					
 					mailMessage.setFrom(messageEntry.getFrom());
 
