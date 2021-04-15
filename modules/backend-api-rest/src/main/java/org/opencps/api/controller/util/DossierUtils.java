@@ -1847,7 +1847,9 @@ public class DossierUtils {
 			model.setApplicantName(doc.getApplicantName() != null ? doc.getApplicantName().toUpperCase().replace(";", "; ") : StringPool.BLANK);
 			model.setDossierNo(doc.getDossierNo());
 			model.setOriginality(originality);
-			model.setDueDate(doc.getDueDate().toGMTString());
+			if(Validator.isNotNull(doc.getDueDate())) {
+				model.setDueDate(doc.getDueDate().toGMTString());
+			}
 			if(Validator.isNotNull(doc.getExtendDate())) {
 				model.setExtendDate(doc.getExtendDate().toGMTString());
 			}
