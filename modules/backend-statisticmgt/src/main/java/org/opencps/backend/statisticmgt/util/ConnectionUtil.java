@@ -23,7 +23,9 @@ public class ConnectionUtil {
 				if (!_connection.isClosed() && _connection.isValid(3)) {
 					return _connection;
 				}
+				closeConnection();
 			} catch (Exception e) {
+				closeConnection();
 				_log.warn("connection is close");
 			}
 		}
