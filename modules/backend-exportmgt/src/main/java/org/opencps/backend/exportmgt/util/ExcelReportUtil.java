@@ -146,6 +146,13 @@ public class ExcelReportUtil {
 							}
 							// increment last row index
 							lr += (dataSize - 1);
+						} else if (dataSize == 1) {
+							for (int c = fc; c < lc; c++) {
+
+								String value = row.getCell(c).getStringCellValue();
+								value = ExcelParseUtil.parse(value, map, 0);
+								row.getCell(c).setCellValue(value);
+							}
 						}
 					} else {
 						// insert data

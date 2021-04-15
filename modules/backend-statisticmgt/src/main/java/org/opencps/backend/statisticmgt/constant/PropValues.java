@@ -108,7 +108,7 @@ public class PropValues {
 			.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DONE_GROUP_OVERTIME_COUNT);
 
 	public static final String STATISTIC_DOSSIER_DONE_OVERTIME_LIST = PropUtil
-			.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DONE_GROUP_OVERTIME_COUNT);
+			.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DONE_OVERTIME_LIST);
 
 	// type=13
 	public static final String STATISTIC_DOSSIER_PROCESSING_TOTAL_COUNT = PropUtil

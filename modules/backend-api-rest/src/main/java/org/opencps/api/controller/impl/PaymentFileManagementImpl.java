@@ -920,9 +920,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			if (dossier != null) {
 				PaymentFileActions action = new PaymentFileActionsImpl();
-				PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);
-				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getByInvoiceTemplateNo(groupId, paymentFile.getInvoiceTemplateNo());
-				
+				PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);				
+				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, dossier.getGovAgencyCode());
 				//String formData = JSONFactoryUtil.looseSerialize(paymentFile);
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(paymentFile));
 				String formReport = paymentConfig.getInvoiceForm();
@@ -1109,7 +1108,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			//Update Invoice File EntryId
 			//PaymentFileActions action = new PaymentFileActionsImpl();
 			//PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);
-			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getByInvoiceTemplateNo(groupId, paymentFile.getInvoiceTemplateNo());
+			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, dossier.getGovAgencyCode());
 			
 			//String formData = JSONFactoryUtil.looseSerialize(paymentFile);
 			JSONObject jsonData = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(paymentFile));

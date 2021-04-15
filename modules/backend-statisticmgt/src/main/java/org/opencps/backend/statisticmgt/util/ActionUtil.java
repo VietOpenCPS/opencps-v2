@@ -36,13 +36,66 @@ public class ActionUtil {
 				serviceCode, dossierStatus, day, groupBy, start, end, type, subType);
 		String strFromDate = DatetimeUtil.convertTimestampToStringDatetime(fromDate, DatetimeUtil._DD_MM_YYYY);
 		String strToDate = DatetimeUtil.convertTimestampToStringDatetime(toDate, DatetimeUtil._DD_MM_YYYY);
-		
+		String reportName = StringPool.BLANK;
+
+		switch (type) {
+		case 2:
+			reportName = "HỒ SƠ TIẾP NHẬN TRỰC TIẾP";
+			break;
+		case 4:
+			reportName = "HỒ SƠ TIẾP NHẬN TRỰC TUYẾN";
+			break;
+		case 5:
+			reportName = "HỒ SƠ ĐÃ TRẢ KẾT QUẢ";
+			break;
+		case 9:
+			reportName = "HỒ SƠ HOÀN THÀNH GIẢI QUYẾT";
+			break;
+		case 10:
+			reportName = "HỒ SƠ HOÀN THÀNH SỚM HẠN";
+			break;
+		case 11:
+			reportName = "HỒ SƠ HOÀN THÀNH ĐÚNG HẠN";
+			break;
+		case 12:
+			reportName = "HỒ SƠ HOÀN THÀNH TRỄ HẠN";
+			break;
+		case 17:
+			reportName = "HỒ SƠ TỪ CHỐI GIẢI QUYẾT";
+			break;
+		case 18:
+			reportName = "HỒ SƠ RÚT KHÔNG GIẢI QUYẾT";
+			break;
+		case 13:
+			reportName = "HỒ SƠ ĐANG THỤ LÝ GIẢI QUYẾT";
+			break;
+		case 14:
+			reportName = "HỒ SƠ ĐANG GIẢI QUYẾT CÒN HẠN";
+			break;
+		case 15:
+			reportName = "HỒ SƠ ĐANG GIẢI QUYẾT SẮP ĐẾN HẠN";
+			break;
+		case 16:
+			reportName = "HỒ SƠ ĐANG GIẢI QUYẾT QUÁ HẠN";
+			break;
+		case 19:
+			reportName = "HỒ SƠ TẠM DỪNG BỔ SUNG ĐIỀU KIỆN";
+			break;
+		default:
+			break;
+		}
+
 		HashMap<String, Object> dataMap = new HashMap<String, Object>();
-		dataMap.put("currentDay", String.valueOf(DatetimeUtil.getCurrentDay()));
-		dataMap.put("currentMonth", String.valueOf(DatetimeUtil.getCurrentMonth()));
+
+		int currentDay = DatetimeUtil.getCurrentDay();
+		int currentMonth = DatetimeUtil.getCurrentMonth();
+		dataMap.put("currentDay", currentDay >= 10 ? String.valueOf(currentDay) : "0" + currentDay);
+		dataMap.put("currentMonth",
+				currentMonth >= 10 ? String.valueOf(DatetimeUtil.getCurrentMonth()) : "0" + currentMonth);
 		dataMap.put("currentYear", String.valueOf(DatetimeUtil.getCurrentYear()));
 		dataMap.put("fromDate", strFromDate);
 		dataMap.put("toDate", strToDate);
+		dataMap.put("reportName", reportName);
 		String govAgencyName = StringPool.BLANK;
 		String domainName = StringPool.BLANK;
 
@@ -475,7 +528,6 @@ public class ActionUtil {
 			}
 		} catch (Exception e) {
 			_log.error(e);
-
 			return StatisticUtil.createResponseSchema(groupId, strFromDate, strToDate,
 					ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 					ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
