@@ -63,6 +63,8 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyService;
 import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyServiceImpl;
+import org.opencps.datamgt.model.DictItemMapping;
+import org.opencps.datamgt.service.DictItemMappingLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
@@ -844,9 +846,17 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 				result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 				if (result != null){
+					//Get ma don vi
+					String unitCode;
+					DictItemMapping itemMapping = DictItemMappingLocalServiceUtil.fetchByF_IC(dossier.getGovAgencyCode());
+					if(Validator.isNull(itemMapping) || itemMapping.getItemCodeDVCQG().isEmpty()) {
+						throw new Exception("No itemMapping or itemCodeDVCQG was found with item code " + dossier.getGovAgencyCode());
+					}
+					unitCode = itemMapping.getItemCodeDVCQG();
+
 					result.setAddress(dossier.getAddress() + ", " + dossier.getWardName() +
 							", " + dossier.getDistrictName() + ", " + dossier.getCityName());
-					result.setOrderId(dossier.getDossierNo() + "-01");
+					result.setOrderId(unitCode + "-" + dossier.getDossierNo() + "-01");
 				}
 			}
 
