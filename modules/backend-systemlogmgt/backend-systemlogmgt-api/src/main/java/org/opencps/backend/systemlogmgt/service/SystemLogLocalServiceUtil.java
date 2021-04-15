@@ -42,13 +42,13 @@ public class SystemLogLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.backend.systemlogmgt.service.impl.SystemLogLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static org.opencps.backend.systemlogmgt.model.SystemLog addNewSystemLog(
+	public static org.opencps.backend.systemlogmgt.model.SystemLog addSystemLog(
 		Long groupId, String moduleName, Integer preLine, String preMethod,
 		Integer line, String method, String message, String type,
-		String threadId) {
+		String threadId, String param) {
 		return getService()
-				   .addNewSystemLog(groupId, moduleName, preLine, preMethod,
-			line, method, message, type, threadId);
+				   .addSystemLog(groupId, moduleName, preLine, preMethod, line,
+			method, message, type, threadId, param);
 	}
 
 	/**
@@ -73,11 +73,6 @@ public class SystemLogLocalServiceUtil {
 		return getService().createSystemLog(logId);
 	}
 
-	public static org.opencps.backend.systemlogmgt.model.SystemLog deleteOldSystemLog(
-		long logId) throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().deleteOldSystemLog(logId);
-	}
-
 	/**
 	* @throws PortalException
 	*/
@@ -96,6 +91,11 @@ public class SystemLogLocalServiceUtil {
 	*/
 	public static org.opencps.backend.systemlogmgt.model.SystemLog deleteSystemLog(
 		long logId) throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().deleteSystemLog(logId);
+	}
+
+	public static org.opencps.backend.systemlogmgt.model.SystemLog deleteSystemLog(
+		Long logId) throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().deleteSystemLog(logId);
 	}
 
@@ -241,59 +241,11 @@ public class SystemLogLocalServiceUtil {
 	}
 
 	public static java.util.List<org.opencps.backend.systemlogmgt.model.SystemLog> getSystemLogByDynamicQuery(
-		String logId, String groupId, String moduleNames, String createDate,
-		Integer preLine, String preMethod, Integer line, String method,
-		String message, String type, String threadId, java.util.Date fromDate,
-		java.util.Date toDate) throws java.text.ParseException {
+		Long logId, Long groupId, String moduleName, String method,
+		String threadId, java.util.Date fromDate, java.util.Date toDate) {
 		return getService()
-				   .getSystemLogByDynamicQuery(logId, groupId, moduleNames,
-			createDate, preLine, preMethod, line, method, message, type,
-			threadId, fromDate, toDate);
-	}
-
-	public static java.util.List<org.opencps.backend.systemlogmgt.model.SystemLog> getSystemLogByLikeMessage(
-		String message) {
-		return getService().getSystemLogByLikeMessage(message);
-	}
-
-	public static org.opencps.backend.systemlogmgt.model.SystemLog getSystemLogByLogId(
-		long logId) throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().getSystemLogByLogId(logId);
-	}
-
-	public static java.util.List<org.opencps.backend.systemlogmgt.model.SystemLog> getSystemLogByMultipleGroupId(
-		long[] groupIds) {
-		return getService().getSystemLogByMultipleGroupId(groupIds);
-	}
-
-	public static java.util.List<org.opencps.backend.systemlogmgt.model.SystemLog> getSystemLogByMultipleMethod(
-		String[] methods) {
-		return getService().getSystemLogByMultipleMethod(methods);
-	}
-
-	public static java.util.List<org.opencps.backend.systemlogmgt.model.SystemLog> getSystemLogByMultipleModuleName(
-		String[] moduleNames) {
-		return getService().getSystemLogByMultipleModuleName(moduleNames);
-	}
-
-	public static java.util.List<org.opencps.backend.systemlogmgt.model.SystemLog> getSystemLogByMultiplePreMethod(
-		String[] preMethods) {
-		return getService().getSystemLogByMultiplePreMethod(preMethods);
-	}
-
-	public static java.util.List<org.opencps.backend.systemlogmgt.model.SystemLog> getSystemLogByMultipleThreadId(
-		String[] threadIds) {
-		return getService().getSystemLogByMultipleThreadId(threadIds);
-	}
-
-	public static java.util.List<org.opencps.backend.systemlogmgt.model.SystemLog> getSystemLogByMultipleType(
-		String[] types) {
-		return getService().getSystemLogByMultipleType(types);
-	}
-
-	public static java.util.List<org.opencps.backend.systemlogmgt.model.SystemLog> getSystemLogByThreadId(
-		String threadId) {
-		return getService().getSystemLogByThreadId(threadId);
+				   .getSystemLogByDynamicQuery(logId, groupId, moduleName,
+			method, threadId, fromDate, toDate);
 	}
 
 	/**
@@ -333,16 +285,6 @@ public class SystemLogLocalServiceUtil {
 	*/
 	public static int getSystemLogsCount() {
 		return getService().getSystemLogsCount();
-	}
-
-	public static org.opencps.backend.systemlogmgt.model.SystemLog updateOldSystemLog(
-		Long logId, Long groupId, String moduleName, Integer preLine,
-		String preMethod, Integer line, String method, String message,
-		String type, String threadId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService()
-				   .updateOldSystemLog(logId, groupId, moduleName, preLine,
-			preMethod, line, method, message, type, threadId);
 	}
 
 	/**
