@@ -3,6 +3,7 @@ package org.opencps.api.controller.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.liferay.portal.kernel.util.Validator;
 import org.opencps.api.serviceconfig.model.ProcessOption;
 import org.opencps.api.serviceconfig.model.ServiceConfig;
 import org.opencps.api.serviceconfig.model.ServiceConfigDetailModel;
@@ -12,6 +13,7 @@ import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
@@ -20,6 +22,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
+import org.opencps.usermgt.action.ApplicantActions;
+import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 public class ServiceConfigUtils {
 	private static Log _log = LogFactoryUtil.getLog(ServiceConfigUtils.class);
@@ -85,33 +92,90 @@ public class ServiceConfigUtils {
 		return processes;
 	}
 
-	public static List<ServiceConfig> mappingToServiceConfigResults(List<Document> documents) {
+	public static List<ServiceConfig> mappingToServiceConfigResults(List<Document> documents, long groupId, long userId) {
 		List<ServiceConfig> configs = new ArrayList<ServiceConfig>();
+		ApplicantActions actions = new ApplicantActionsImpl();
+		try {
 
-		for (Document doc : documents) {
-			ServiceConfig config = new ServiceConfig();
 
-			config.setServiceConfigId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
-			config.setCreateDate(doc.get(Field.CREATE_DATE));
-			config.setModifiedDate(doc.get(Field.MODIFIED_DATE));
-			config.setServiceInfoId(GetterUtil.getInteger(doc.get(ServiceConfigTerm.SERVICEINFO_ID)));
-			config.setServiceCode(doc.get(ServiceConfigTerm.SERVICE_CODE));
-			config.setServiceName(doc.get(ServiceConfigTerm.SERVICE_NAME));
-			config.setDomainCode_0020(doc.get(ServiceConfigTerm.DOMAIN_CODE));
-			config.setDomainName(doc.get(ServiceConfigTerm.DOMAIN_NAME));
-			config.setGovAgencyCode(doc.get(ServiceConfigTerm.GOVAGENCY_CODE));
-			config.setGovAgencyName(doc.get(ServiceConfigTerm.GOVAGENCY_NAME));
-			config.setServiceInstruction(doc.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
-			config.setServiceLevel(doc.get(ServiceConfigTerm.SERVICE_LEVEL));
-			config.setServiceUrl(doc.get(ServiceConfigTerm.SERVICE_URL));
-			config.setForCitizen(doc.get(ServiceConfigTerm.FOR_CITIZEN));
-			config.setForBusiness(doc.get(ServiceConfigTerm.FOR_BUSINESS));
-			config.setPostalService(doc.get(ServiceConfigTerm.POSTAL_SERVICE));
-			config.setRegistration(doc.get(ServiceConfigTerm.REGISTRATION));
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			Applicant applicant = actions.getApplicantByMappingUserId(userId);
+			if (Validator.isNotNull(employee)) {
+				for (Document doc : documents) {
+					ServiceConfig config = new ServiceConfig();
 
-			configs.add(config);
+					config.setServiceConfigId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+					config.setCreateDate(doc.get(Field.CREATE_DATE));
+					config.setModifiedDate(doc.get(Field.MODIFIED_DATE));
+					config.setServiceInfoId(GetterUtil.getInteger(doc.get(ServiceConfigTerm.SERVICEINFO_ID)));
+					config.setServiceCode(doc.get(ServiceConfigTerm.SERVICE_CODE));
+					config.setServiceName(doc.get(ServiceConfigTerm.SERVICE_NAME));
+					config.setDomainCode_0020(doc.get(ServiceConfigTerm.DOMAIN_CODE));
+					config.setDomainName(doc.get(ServiceConfigTerm.DOMAIN_NAME));
+					config.setGovAgencyCode(doc.get(ServiceConfigTerm.GOVAGENCY_CODE));
+					config.setGovAgencyName(doc.get(ServiceConfigTerm.GOVAGENCY_NAME));
+					config.setServiceInstruction(doc.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
+					config.setServiceLevel(doc.get(ServiceConfigTerm.SERVICE_LEVEL));
+					config.setServiceUrl(doc.get(ServiceConfigTerm.SERVICE_URL));
+					config.setForCitizen(doc.get(ServiceConfigTerm.FOR_CITIZEN));
+					config.setForBusiness(doc.get(ServiceConfigTerm.FOR_BUSINESS));
+					config.setPostalService(doc.get(ServiceConfigTerm.POSTAL_SERVICE));
+					config.setRegistration(doc.get(ServiceConfigTerm.REGISTRATION));
+
+					configs.add(config);
+				}
+			} else {
+				boolean citizen = false;
+				boolean business = false;
+				boolean active = false;
+				if(Validator.isNotNull(applicant)) {
+					if("citizen".equals(applicant.getApplicantIdType())){
+						citizen = true;
+					}else if("business".equals(applicant.getApplicantIdType())){
+						business = true;
+					}
+					for (Document doc : documents) {
+						ServiceConfig config = new ServiceConfig();
+						long serviceConfigId = Long.parseLong(doc.get(ServiceConfigTerm.SERVICECONFIG_ID));
+						List<org.opencps.dossiermgt.model.ProcessOption> lstOption = ProcessOptionLocalServiceUtil.getByServiceConfigId(serviceConfigId);
+						if (lstOption !=null && !lstOption.isEmpty()) {
+							for(org.opencps.dossiermgt.model.ProcessOption option : lstOption){
+//								if(citizen && option.isForCitizen()){
+//									active = true;
+//									break;
+//								}else if (business && option.isForBusiness()){
+//									active = true;
+//									break;
+//								}
+							}
+							if(active) {
+								config.setServiceConfigId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+								config.setCreateDate(doc.get(Field.CREATE_DATE));
+								config.setModifiedDate(doc.get(Field.MODIFIED_DATE));
+								config.setServiceInfoId(GetterUtil.getInteger(doc.get(ServiceConfigTerm.SERVICEINFO_ID)));
+								config.setServiceCode(doc.get(ServiceConfigTerm.SERVICE_CODE));
+								config.setServiceName(doc.get(ServiceConfigTerm.SERVICE_NAME));
+								config.setDomainCode_0020(doc.get(ServiceConfigTerm.DOMAIN_CODE));
+								config.setDomainName(doc.get(ServiceConfigTerm.DOMAIN_NAME));
+								config.setGovAgencyCode(doc.get(ServiceConfigTerm.GOVAGENCY_CODE));
+								config.setGovAgencyName(doc.get(ServiceConfigTerm.GOVAGENCY_NAME));
+								config.setServiceInstruction(doc.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
+								config.setServiceLevel(doc.get(ServiceConfigTerm.SERVICE_LEVEL));
+								config.setServiceUrl(doc.get(ServiceConfigTerm.SERVICE_URL));
+								config.setForCitizen(doc.get(ServiceConfigTerm.FOR_CITIZEN));
+								config.setForBusiness(doc.get(ServiceConfigTerm.FOR_BUSINESS));
+								config.setPostalService(doc.get(ServiceConfigTerm.POSTAL_SERVICE));
+								config.setRegistration(doc.get(ServiceConfigTerm.REGISTRATION));
+
+								configs.add(config);
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.getMessage();
 		}
-
 		return configs;
 	}
 
