@@ -85,7 +85,9 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 			{ "instructionNote", Types.VARCHAR },
 			{ "submissionNote", Types.VARCHAR },
 			{ "sampleCount", Types.BIGINT },
-			{ "registerBookCode", Types.VARCHAR }
+			{ "registerBookCode", Types.VARCHAR },
+			{ "forCitizen", Types.BOOLEAN },
+			{ "forBusiness", Types.BOOLEAN }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -108,9 +110,11 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 		TABLE_COLUMNS_MAP.put("submissionNote", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("sampleCount", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("registerBookCode", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("forCitizen", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("forBusiness", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_processoption (uuid_ VARCHAR(75) null,processOptionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceConfigId LONG,optionOrder INTEGER,optionName VARCHAR(500) null,autoSelect VARCHAR(500) null,dossierTemplateId LONG,serviceProcessId LONG,instructionNote TEXT null,submissionNote TEXT null,sampleCount LONG,registerBookCode VARCHAR(100) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_processoption (uuid_ VARCHAR(75) null,processOptionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceConfigId LONG,optionOrder INTEGER,optionName VARCHAR(500) null,autoSelect VARCHAR(500) null,dossierTemplateId LONG,serviceProcessId LONG,instructionNote TEXT null,submissionNote TEXT null,sampleCount LONG,registerBookCode VARCHAR(100) null,forCitizen BOOLEAN,forBusiness BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_processoption";
 	public static final String ORDER_BY_JPQL = " ORDER BY processOption.processOptionId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_processoption.processOptionId ASC";
@@ -192,6 +196,8 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 		attributes.put("submissionNote", getSubmissionNote());
 		attributes.put("sampleCount", getSampleCount());
 		attributes.put("registerBookCode", getRegisterBookCode());
+		attributes.put("forCitizen", isForCitizen());
+		attributes.put("forBusiness", isForBusiness());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -307,6 +313,18 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 
 		if (registerBookCode != null) {
 			setRegisterBookCode(registerBookCode);
+		}
+
+		Boolean forCitizen = (Boolean)attributes.get("forCitizen");
+
+		if (forCitizen != null) {
+			setForCitizen(forCitizen);
+		}
+
+		Boolean forBusiness = (Boolean)attributes.get("forBusiness");
+
+		if (forBusiness != null) {
+			setForBusiness(forBusiness);
 		}
 	}
 
@@ -628,6 +646,36 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 	}
 
 	@Override
+	public boolean getForCitizen() {
+		return _forCitizen;
+	}
+
+	@Override
+	public boolean isForCitizen() {
+		return _forCitizen;
+	}
+
+	@Override
+	public void setForCitizen(boolean forCitizen) {
+		_forCitizen = forCitizen;
+	}
+
+	@Override
+	public boolean getForBusiness() {
+		return _forBusiness;
+	}
+
+	@Override
+	public boolean isForBusiness() {
+		return _forBusiness;
+	}
+
+	@Override
+	public void setForBusiness(boolean forBusiness) {
+		_forBusiness = forBusiness;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				ProcessOption.class.getName()));
@@ -682,6 +730,8 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 		processOptionImpl.setSubmissionNote(getSubmissionNote());
 		processOptionImpl.setSampleCount(getSampleCount());
 		processOptionImpl.setRegisterBookCode(getRegisterBookCode());
+		processOptionImpl.setForCitizen(isForCitizen());
+		processOptionImpl.setForBusiness(isForBusiness());
 
 		processOptionImpl.resetOriginalValues();
 
@@ -871,12 +921,16 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 			processOptionCacheModel.registerBookCode = null;
 		}
 
+		processOptionCacheModel.forCitizen = isForCitizen();
+
+		processOptionCacheModel.forBusiness = isForBusiness();
+
 		return processOptionCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(41);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -914,6 +968,10 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 		sb.append(getSampleCount());
 		sb.append(", registerBookCode=");
 		sb.append(getRegisterBookCode());
+		sb.append(", forCitizen=");
+		sb.append(isForCitizen());
+		sb.append(", forBusiness=");
+		sb.append(isForBusiness());
 		sb.append("}");
 
 		return sb.toString();
@@ -921,7 +979,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(58);
+		StringBundler sb = new StringBundler(64);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.ProcessOption");
@@ -999,6 +1057,14 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 			"<column><column-name>registerBookCode</column-name><column-value><![CDATA[");
 		sb.append(getRegisterBookCode());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>forCitizen</column-name><column-value><![CDATA[");
+		sb.append(isForCitizen());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>forBusiness</column-name><column-value><![CDATA[");
+		sb.append(isForBusiness());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1041,6 +1107,8 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 	private String _submissionNote;
 	private long _sampleCount;
 	private String _registerBookCode;
+	private boolean _forCitizen;
+	private boolean _forBusiness;
 	private long _columnBitmask;
 	private ProcessOption _escapedModel;
 }

@@ -844,7 +844,9 @@ create table opencps_processoption (
 	instructionNote TEXT null,
 	submissionNote TEXT null,
 	sampleCount LONG,
-	registerBookCode VARCHAR(100) null
+	registerBookCode VARCHAR(100) null,
+	forCitizen BOOLEAN,
+	forBusiness BOOLEAN
 );
 
 create table opencps_processsequence (

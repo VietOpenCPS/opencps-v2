@@ -51,6 +51,8 @@ public class ProcessOptionSoap implements Serializable {
 		soapModel.setSubmissionNote(model.getSubmissionNote());
 		soapModel.setSampleCount(model.getSampleCount());
 		soapModel.setRegisterBookCode(model.getRegisterBookCode());
+		soapModel.setForCitizen(model.isForCitizen());
+		soapModel.setForBusiness(model.isForBusiness());
 
 		return soapModel;
 	}
@@ -247,6 +249,30 @@ public class ProcessOptionSoap implements Serializable {
 		_registerBookCode = registerBookCode;
 	}
 
+	public boolean getForCitizen() {
+		return _forCitizen;
+	}
+
+	public boolean isForCitizen() {
+		return _forCitizen;
+	}
+
+	public void setForCitizen(boolean forCitizen) {
+		_forCitizen = forCitizen;
+	}
+
+	public boolean getForBusiness() {
+		return _forBusiness;
+	}
+
+	public boolean isForBusiness() {
+		return _forBusiness;
+	}
+
+	public void setForBusiness(boolean forBusiness) {
+		_forBusiness = forBusiness;
+	}
+
 	private String _uuid;
 	private long _processOptionId;
 	private long _groupId;
@@ -265,4 +291,6 @@ public class ProcessOptionSoap implements Serializable {
 	private String _submissionNote;
 	private long _sampleCount;
 	private String _registerBookCode;
+	private boolean _forCitizen;
+	private boolean _forBusiness;
 }

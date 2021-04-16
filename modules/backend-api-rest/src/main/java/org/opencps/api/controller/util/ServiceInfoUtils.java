@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.liferay.portal.kernel.util.Validator;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplates;
 import org.opencps.api.serviceinfo.model.ServiceInfoDetailModel;
@@ -28,17 +29,24 @@ import org.opencps.dossiermgt.action.ServiceConfigActions;
 import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.impl.ServiceInfoImpl;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
+import org.opencps.usermgt.action.ApplicantActions;
+import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 public class ServiceInfoUtils {
 
 	@SuppressWarnings("unchecked")
-	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents, long groupId,
+	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents, long groupId, long userId,
 			ServiceContext serviceContext) {
 		List<ServiceInfoModel> data = new ArrayList<ServiceInfoModel>();
 
@@ -93,18 +101,57 @@ public class ServiceInfoUtils {
 				List<ServiceConfig> lstScs = ServiceConfigLocalServiceUtil.getByServiceInfo(Long.valueOf(doc.get(Field.GROUP_ID)), GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 				
 //				List<Document> serviceConfigs = (List<Document>) jsonData.get("data");
+				ApplicantActions actions = new ApplicantActionsImpl();
+				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, serviceContext.getUserId());
+				if(Validator.isNotNull(employee)){
+					for (ServiceConfig sc : lstScs) {
+						ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
+						cf.setGovAgencyCode(sc.getGovAgencyCode());
+						cf.setGovAgencyName(sc.getGovAgencyName());
+						cf.setServiceInstruction(sc.getServiceInstruction());
+						cf.setServiceUr(sc.getServiceUrl());
+						cf.setServiceLevel(sc.getServiceLevel());
+						cf.setServiceConfigId(sc.getServiceConfigId());
 
-				for (ServiceConfig sc : lstScs) {
-					ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
+						lsServiceConfig.add(cf);
+					}
+				}else {
+					Applicant applicant = actions.getApplicantByMappingUserId(userId);
+					boolean citizen = false;
+					boolean business = false;
+					boolean active = false;
+					if(Validator.isNotNull(applicant)) {
+						if("citizen".equals(applicant.getApplicantIdType())){
+							citizen = true;
+						}else if("business".equals(applicant.getApplicantIdType())){
+							business = true;
+						}
+						for (ServiceConfig sc : lstScs) {
+							ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
+							List<ProcessOption> lstOption = ProcessOptionLocalServiceUtil.getByServiceConfigId(sc.getServiceConfigId());
+							if (lstOption !=null && !lstOption.isEmpty()) {
+								for(ProcessOption option : lstOption){
+									if(citizen && option.isForCitizen()){
+										active = true;
+										break;
+									}else if (business && option.isForBusiness()){
+										active = true;
+										break;
+									}
+								}
+								if(active) {
+									cf.setGovAgencyCode(sc.getGovAgencyCode());
+									cf.setGovAgencyName(sc.getGovAgencyName());
+									cf.setServiceInstruction(sc.getServiceInstruction());
+									cf.setServiceUr(sc.getServiceUrl());
+									cf.setServiceLevel(sc.getServiceLevel());
+									cf.setServiceConfigId(sc.getServiceConfigId());
 
-					cf.setGovAgencyCode(sc.getGovAgencyCode());
-					cf.setGovAgencyName(sc.getGovAgencyName());
-					cf.setServiceInstruction(sc.getServiceInstruction());
-					cf.setServiceUr(sc.getServiceUrl());
-					cf.setServiceLevel(sc.getServiceLevel());
-					cf.setServiceConfigId(sc.getServiceConfigId());
-					
-					lsServiceConfig.add(cf);
+									lsServiceConfig.add(cf);
+								}
+							}
+						}
+					}
 				}
 //				for (Document serviceConfig : serviceConfigs) {
 //					ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();

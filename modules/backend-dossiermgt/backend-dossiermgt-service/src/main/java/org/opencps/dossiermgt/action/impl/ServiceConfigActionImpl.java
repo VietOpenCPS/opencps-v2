@@ -138,11 +138,11 @@ public class ServiceConfigActionImpl implements ServiceConfigActions {
 	public void updateOptionDB(long userId, long groupId, String optionCode, String optionName, long serviceConfigId,
 			Integer seqOrder, String autoSelect, String instructionNote, String submissionNote, String templateNo,
 			String templateName, String processNo, String processName, String registerBookCode, Integer sampleCount,
-			ServiceContext context) {
+			boolean forCitizen, boolean forBusiness, ServiceContext context) {
 
 		ProcessOptionLocalServiceUtil.updateOptionDB(userId, groupId, optionCode, optionName, serviceConfigId, seqOrder,
 				autoSelect, instructionNote, submissionNote, templateNo, templateName, processNo, processName,
-				registerBookCode, sampleCount, context);
+				registerBookCode, sampleCount, forCitizen, forBusiness, context);
 	}
 
 }

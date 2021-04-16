@@ -1240,6 +1240,8 @@ public class ProcessUpdateDBUtils {
 				String processName;
 				String registerBookCode;
 				Integer sampleCount = 0;
+				boolean forCitizen = true;
+				boolean forBusiness = true;
 				for (ProcessOption option : optionList) {
 					optionCode = option.getOptionCode();
 					optionName = option.getOptionName();
@@ -1253,10 +1255,12 @@ public class ProcessUpdateDBUtils {
 					processName = option.getProcessName();
 					registerBookCode = option.getRegisterBookCode();
 					sampleCount = option.getSampleCount();
+					forCitizen = option.isForCitizen();
+					forBusiness = option.isForBusiness();
 					//
 					actionConfig.updateOptionDB(userId, groupId, optionCode, optionName, serviceConfigId, seqOrder,
 							autoSelect, instructionNote, submissionNote, templateNo, templateName, processNo, processName,
-							registerBookCode, sampleCount, serviceContext);
+							registerBookCode, sampleCount, forCitizen, forBusiness, serviceContext);
 				}
 			}
 		} catch (Exception e) {
