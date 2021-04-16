@@ -196,7 +196,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("HinhThuc", String.valueOf(HinhThuc));
 		object.put("NgayKetThucXuLy", convertDate2String(dossier.getReleaseDate()));// ko bb
 		object.put("DonViXuLy", dossier.getGovAgencyName());
-		object.put("GhiChu", dossier.getDossierNote());// ko bb
+		//Giao remove this because dossierNote length > 2k
+//		object.put("GhiChu", dossier.getDossierNote());// ko bb
 
 		JSONArray DanhSachLePhi = JSONFactoryUtil.createJSONArray();
 		object.put("DanhSachLePhi", DanhSachLePhi);// ko bb
@@ -375,7 +376,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("HinhThuc", String.valueOf(HinhThuc));
 		object.put("NgayKetThucXuLy", convertDate2String(dossier.getReleaseDate()));// ko bb
 		object.put("DonViXuLy", dossier.getGovAgencyName());
-		object.put("GhiChu", dossier.getDossierNote());// ko bb
+		//Giao remove this because dossierNote length > 2k
+//		object.put("GhiChu", dossier.getDossierNote());// ko bb
 
 		JSONArray DanhSachLePhi = JSONFactoryUtil.createJSONArray();
 		object.put("DanhSachLePhi", DanhSachLePhi);// ko bb
@@ -3441,7 +3443,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, processAction, actionCode,
 					applicant.getApplicantName(), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 					StringPool.BLANK, actConfig.getSyncType(), serviceContext, errorModel);
-			_log.info("ttkm result: " + "create dossier error|" + MaHoSo);
+//			_log.info("ttkm result: " + "create dossier error|" + MaHoSo);
 			return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
 
 		} catch (Exception e) {
