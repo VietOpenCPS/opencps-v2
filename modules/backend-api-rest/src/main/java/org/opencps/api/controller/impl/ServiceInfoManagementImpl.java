@@ -120,6 +120,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			long userId = user.getUserId();
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -205,7 +206,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			
 			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			results.getData()
-				.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get(ConstantUtils.DATA), groupId, serviceContext));
+				.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get(ConstantUtils.DATA), groupId, userId, serviceContext));
 			
 //			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
 //		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
