@@ -533,21 +533,15 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						//Add userActionId
 						//document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, dossierAction.getUserId());
 						List<DossierAction> listDossierActions = DossierActionLocalServiceUtil.findByG_DID(object.getGroupId(), object.getDossierId());
-						_log.info("listDossierActions :" + JSONFactoryUtil.looseSerialize(listDossierActions));
 						if (listDossierActions != null && listDossierActions.size() > 0) {
 							Set<String> setUserId = new HashSet<String>();
 							for (DossierAction dossierAction2 : listDossierActions) {
-								_log.info("dossierAction2.getUserId() :" + dossierAction2.getUserId());
-								_log.info("dossierAction.getUserId() :" + dossierAction.getUserId());
-
 								if (dossierAction2.getUserId() != dossierAction.getUserId() 
 										&& dossierAction2.getNextActionId() > 0) {
 									setUserId.add(String.valueOf(dossierAction2.getUserId()));									
 								}
 							}
-							_log.info("setUserId : " + setUserId);
 							String userPeriodActionIds = String.join(",", setUserId);
-							_log.info("userPeriodActionIds : " + userPeriodActionIds);
 							document.addTextSortable(DossierTerm.USER_DOSSIER_ACTION_ID, userPeriodActionIds);
 						}
 					} else {
