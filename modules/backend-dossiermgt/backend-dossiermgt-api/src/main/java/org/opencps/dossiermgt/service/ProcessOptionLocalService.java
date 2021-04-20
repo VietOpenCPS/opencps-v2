@@ -331,7 +331,8 @@ public interface ProcessOptionLocalService extends BaseLocalService,
 		Integer seqOrder, String autoSelect, String instructionNote,
 		String submissionNote, String templateNo, String templateName,
 		String processNo, String processName, String registerBookCode,
-		Integer sampleCount, ServiceContext context);
+		Integer sampleCount, boolean forCitizen, boolean forBusiness,
+		ServiceContext context);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessOption updateProcessOption(long groupId, String optionName,
