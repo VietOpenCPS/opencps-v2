@@ -251,7 +251,7 @@ public class DossierManagementImpl implements DossierManagement {
 			// boolean isCitizen = false;
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
 				query.setStart(0);
-				query.setEnd(100);
+				query.setEnd(10);
 			}
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
