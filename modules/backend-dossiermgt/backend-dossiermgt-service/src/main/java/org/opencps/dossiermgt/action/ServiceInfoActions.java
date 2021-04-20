@@ -24,7 +24,7 @@ public interface ServiceInfoActions {
 	public ServiceInfo updateServiceInfo(long userId, long groupId, long serviceInfoId, String serviceCode,
 			String serviceName, String processText, String methodText, String dossierText, String conditionText,
 			String durationText, String applicantText, String resultText, String regularText, String feeText,
-			String administrationCode, String domainCode, int maxLevel, boolean public_, String govAgencyText,
+			String administrationCode, String domainCode, int maxLevel, boolean public_, String govAgencyText, String tagCode, String tagName,
 			ServiceContext serviceContext) throws PortalException;
 
 	public ServiceInfo getByCode(String serviceCode, long groupId);

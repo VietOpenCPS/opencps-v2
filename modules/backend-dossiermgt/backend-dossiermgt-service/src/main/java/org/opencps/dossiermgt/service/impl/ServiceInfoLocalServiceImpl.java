@@ -127,7 +127,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	public ServiceInfo addServiceInfo(long userId, long groupId, String serviceCode, String serviceName,
 			String processText, String methodText, String dossierText, String conditionText, String durationText,
 			String applicantText, String resultText, String regularText, String feeText, String administrationCode,
-			String domainCode, int maxLevel, boolean activeStatus, String govAgencyText, ServiceContext serviceContext)
+			String domainCode, int maxLevel, boolean activeStatus, String govAgencyText, String tagCode, String tagName, ServiceContext serviceContext)
 			throws PortalException {
 
 		User user = userLocalService.getUser(userId);
@@ -180,6 +180,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 		serviceInfo.setPublic_(activeStatus);
 		serviceInfo.setGovAgencyText(govAgencyText);
+		serviceInfo.setTagCode(tagCode);
+		serviceInfo.setTagName(tagName);
 
 		serviceInfoPersistence.update(serviceInfo);
 
@@ -206,7 +208,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	public ServiceInfo updateServiceInfo(long groupId, long serviceInfoId, String serviceCode, String serviceName,
 			String processText, String methodText, String dossierText, String conditionText, String durationText,
 			String applicantText, String resultText, String regularText, String feeText, String administrationCode,
-			String domainCode, int maxLevel, boolean activeStatus, String govAgencyText, ServiceContext serviceContext)
+			String domainCode, int maxLevel, boolean activeStatus, String govAgencyText, String tagCode, String tagName, ServiceContext serviceContext)
 			throws PortalException {
 
 		Date now = new Date();
@@ -264,6 +266,13 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		if (Validator.isNotNull(govAgencyText))
 			serviceInfo.setGovAgencyText(govAgencyText);
 
+		if (Validator.isNotNull(tagCode)) {
+			serviceInfo.setTagCode(tagCode);
+		}
+
+		if (Validator.isNotNull(tagName)) {
+			serviceInfo.setTagName(tagName);
+		}
 		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE, administrationCode,
 				groupId);
 		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN, domainCode, groupId);
@@ -404,7 +413,9 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		String public_ = String.valueOf((params.get(ServiceInfoTerm.PUBLIC_)));
 		String mapping = String.valueOf((params.get(ServiceInfoTerm.MAPPING)));
 		String synced = String.valueOf((params.get(ServiceInfoTerm.SYNCED)));
-		
+		String tagCode = String.valueOf((params.get(ServiceInfoTerm.TAGCODE)));
+		String tagName = String.valueOf((params.get(ServiceInfoTerm.TAGNAME)));
+
 		if (Validator.isNotNull(administration)) {
 			MultiMatchQuery query = new MultiMatchQuery(administration);
 
@@ -462,7 +473,18 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		
+
+		if(Validator.isNotNull(tagCode)) {
+			MultiMatchQuery query = new MultiMatchQuery(tagCode);
+			query.addFields(ServiceInfoTerm.TAGCODE);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if(Validator.isNotNull(tagName)) {
+			MultiMatchQuery query = new MultiMatchQuery(tagName);
+			query.addFields(ServiceInfoTerm.TAGNAME);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 

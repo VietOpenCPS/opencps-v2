@@ -1068,7 +1068,9 @@ create table opencps_serviceinfo (
 	public_ BOOLEAN,
 	govAgencyText TEXT null,
 	isNotarization BOOLEAN,
-	serviceNameTitle VARCHAR(500) null
+	serviceNameTitle VARCHAR(500) null,
+	tagCode VARCHAR(75) null,
+	tagName VARCHAR(75) null
 );
 
 create table opencps_serviceinfomapping (

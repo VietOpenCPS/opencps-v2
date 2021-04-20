@@ -74,7 +74,9 @@ import javax.xml.bind.annotation.XmlType;
     "administrationName",
     "domainName",
     "active",
-    "govAgencyText"
+    "govAgencyText",
+    "tagCode",
+    "tagName"
 
 })
 @XmlRootElement(name = "ServiceInfoInputModel")
@@ -154,8 +156,32 @@ public class ServiceInfoInputModel {
 	@DefaultValue(StringPool.BLANK)
 	@FormParam(value = "govAgencyText")
 	protected String govAgencyText;
-	
-	public String get_public() {
+
+    @DefaultValue(StringPool.BLANK)
+    @FormParam(value = "tagCode")
+    protected String tagCode;
+
+    @DefaultValue(StringPool.BLANK)
+    @FormParam(value = "tagName")
+    protected String tagName;
+
+    public String getTagCode() {
+        return tagCode;
+    }
+
+    public void setTagCode(String tagCode) {
+        this.tagCode = tagCode;
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
+    public String get_public() {
 		return _public;
 	}
 
