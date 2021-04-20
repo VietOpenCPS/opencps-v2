@@ -240,13 +240,18 @@ public class DossierManagementImpl implements DossierManagement {
 		String emailLogin = user.getEmailAddress();
 		DossierActions actions = new DossierActionsImpl();
 		DossierResultsModel results = null;
-
+		BackendAuth auth = new BackendAuthImpl();
 		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
 			boolean isViaPostal = query.isIstheViaPostal();
 			// boolean isCitizen = false;
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
-				query.setStart(QueryUtil.ALL_POS);
-				query.setEnd(QueryUtil.ALL_POS);
+				query.setStart(0);
+				query.setEnd(10);
 			}
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
