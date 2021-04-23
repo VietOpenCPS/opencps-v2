@@ -1833,8 +1833,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						} else {
 							assigned = DossierActionUserTerm.NOT_ASSIGNED;
 						}
-
-						updateDossierUser(dossier, processStepRole, user);
+						if(checkGovDossierEmployee(dossier, employee)) {
+							updateDossierUser(dossier, processStepRole, user);
+						}
 						List<DossierActionUser> lstDau = dossierActionUserLocalService
 								.getByDossierUserAndStepCode(dossier.getDossierId(), user.getUserId(), stepCode);
 						DossierActionUser lastDau = (lstDau.size() > 0 ? lstDau.get(0) : null);
@@ -1843,15 +1844,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								lastDau = dau;
 							}
 						}
-
-						if (lastDau != null) {
-							addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(),
-									user.getUserId(), dossierAction.getDossierActionId(), lastDau.getModerator(), false,
-									stepCode, dossier.getDossierId(), lastDau.getAssigned(), lastDau.getDelegacy());
-						} else {
-							addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(),
-									user.getUserId(), dossierAction.getDossierActionId(), mod, false, stepCode,
-									dossier.getDossierId(), assigned, 0);
+						if(checkGovDossierEmployee(dossier, employee)) {
+							if (lastDau != null) {
+								addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(),
+										user.getUserId(), dossierAction.getDossierActionId(), lastDau.getModerator(), false,
+										stepCode, dossier.getDossierId(), lastDau.getAssigned(), lastDau.getDelegacy());
+							} else {
+								addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(),
+										user.getUserId(), dossierAction.getDossierActionId(), mod, false, stepCode,
+										dossier.getDossierId(), assigned, 0);
+							}
 						}
 					}
 				}
@@ -6209,8 +6211,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						} else {
 							assigned = DossierActionUserTerm.NOT_ASSIGNED;
 						}
-
-						updateDossierUser(dossier, processStepRole, user);
+						if(checkGovDossierEmployee(dossier, employee)) {
+							updateDossierUser(dossier, processStepRole, user);
+						}
 						List<DossierActionUser> lstDau = dossierActionUserLocalService
 								.getByDossierUserAndStepCode(dossier.getDossierId(), user.getUserId(), stepCode);
 						DossierActionUser lastDau = (lstDau.size() > 0 ? lstDau.get(0) : null);
@@ -6219,15 +6222,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								lastDau = dau;
 							}
 						}
-
-						if (lastDau != null) {
-							addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(),
-									user.getUserId(), dossierAction.getDossierActionId(), lastDau.getModerator(), false,
-									stepCode, dossier.getDossierId(), lastDau.getAssigned(), lastDau.getDelegacy());
-						} else {
-							addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(),
-									user.getUserId(), dossierAction.getDossierActionId(), mod, false, stepCode,
-									dossier.getDossierId(), assigned, 0);
+						if(checkGovDossierEmployee(dossier, employee)) {
+							if (lastDau != null) {
+								addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(),
+										user.getUserId(), dossierAction.getDossierActionId(), lastDau.getModerator(), false,
+										stepCode, dossier.getDossierId(), lastDau.getAssigned(), lastDau.getDelegacy());
+							} else {
+								addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(),
+										user.getUserId(), dossierAction.getDossierActionId(), mod, false, stepCode,
+										dossier.getDossierId(), assigned, 0);
+							}
 						}
 					}
 				}
@@ -7038,6 +7042,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			List<ServiceProcessRole> lstProcessRoles = serviceProcessRoleLocalService
 					.findByS_P_ID(process.getServiceProcessId());
 			if (lstDus.size() == 0) {
+				_log.debug("InitDossierUser ------");
 				DossierUserActions duActions = new DossierUserActionsImpl();
 				//					duActions.initDossierUser(groupId, dossier);
 				duActions.initDossierUser(groupId, dossier, process, lstProcessRoles);
@@ -8533,6 +8538,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	private void createDossierUsers(long groupId, Dossier dossier, ServiceProcess process,
 									List<ServiceProcessRole> lstProcessRoles) {
 		List<DossierUser> lstDaus = dossierUserLocalService.findByDID(dossier.getDossierId());
+		_log.debug("Tạo dossierUser ----------");
 		int count = 0;
 		long[] roleIds = new long[lstProcessRoles.size()];
 		for (ServiceProcessRole spr : lstProcessRoles) {
@@ -8598,16 +8604,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					//					pk.setDossierId(dossier.getDossierId());
 					//					pk.setUserId(e.getMappingUserId());
 					//					DossierUser ds = DossierUserLocalServiceUtil.fetchDossierUser(pk);
-					if (mapDaus.get(e.getMappingUserId()) == null) {
-						//					if (ds == null) {
-						dossierUserLocalService.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(),
-								moderator, Boolean.FALSE);
-					} else {
-						DossierUser ds = mapDaus.get(e.getMappingUserId());
-
-						if (moderator == 1 && ds.getModerator() == 0) {
-							ds.setModerator(1);
-							dossierUserLocalService.updateDossierUser(ds);
+					_log.debug("Scope : " + e.getScope());
+					if (checkGovDossierEmployee(dossier, e)) {
+						if (mapDaus.get(e.getMappingUserId()) == null) {
+							dossierUserLocalService.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(),
+									moderator, Boolean.FALSE);
+						} else {
+							DossierUser ds = mapDaus.get(e.getMappingUserId());
+							if (moderator == 1 && ds.getModerator() == 0) {
+								ds.setModerator(1);
+								dossierUserLocalService.updateDossierUser(ds);
+							}
 						}
 					}
 				}
