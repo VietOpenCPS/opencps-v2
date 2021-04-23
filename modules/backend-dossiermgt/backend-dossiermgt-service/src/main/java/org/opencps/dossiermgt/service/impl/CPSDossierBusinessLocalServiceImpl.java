@@ -2251,15 +2251,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
 									fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();
 								}
-								NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId,
-										notificationType, Dossier.class.getName(),
-										String.valueOf(dossier.getDossierId()), payloadObj.toJSONString(), fromFullName,
-										dossier.getApplicantName(), foundApplicant.getMappingUserId(),
-										isSendNotiEmail ? dossier.getContactEmail() : StringPool.BLANK,
-										isSendNotiSMS ? dossier.getContactTelNo() : StringPool.BLANK,
-										Validator.isNotNull(publicationDate) ? publicationDate : now,
-										Validator.isNotNull(expiredCal) ? expiredCal : expired,
-										context);
+								//chi gui sms, email cho hsmc goc
+								if (dossier.getOriginality() != 1 && (dossier.getOriginDossierId() == 0 && Validator.isNull(dossier.getOriginDossierNo()))) {
+									NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId,
+											notificationType, Dossier.class.getName(),
+											String.valueOf(dossier.getDossierId()), payloadObj.toJSONString(), fromFullName,
+											dossier.getApplicantName(), foundApplicant.getMappingUserId(),
+											isSendNotiEmail ? dossier.getContactEmail() : StringPool.BLANK,
+											isSendNotiSMS ? dossier.getContactTelNo() : StringPool.BLANK,
+											Validator.isNotNull(publicationDate) ? publicationDate : now,
+											Validator.isNotNull(expiredCal) ? expiredCal : expired,
+											context);
+								}
+								
 							}
 						} catch (NoSuchUserException e) {
 							_log.debug(e);
