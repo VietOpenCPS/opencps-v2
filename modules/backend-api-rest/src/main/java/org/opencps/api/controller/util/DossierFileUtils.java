@@ -21,6 +21,8 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
 public class DossierFileUtils {
 	private static final Log _log = LogFactoryUtil.getLog(DossierFileUtils.class);
@@ -47,7 +49,14 @@ public class DossierFileUtils {
         }
 
         DossierFileModel model = new DossierFileModel();
-
+        try {
+            DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(dossierFile.getGroupId(), dossierFile.getDossierTemplateNo(), dossierFile.getDossierPartNo());
+            if(Validator.isNotNull(dossierPart)){
+                model.seteSign(dossierPart.getESign());
+            }
+        } catch (Exception e){
+            e.getMessage();
+       }
         model.setCreateDate(
             APIDateTimeUtils.convertDateToString(dossierFile.getCreateDate()));
         model.setModifiedDate(

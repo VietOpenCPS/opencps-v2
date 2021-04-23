@@ -76,6 +76,7 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 		attributes.put("eFormData", getEFormData());
 		attributes.put("email", getEmail());
 		attributes.put("secret", getSecret());
+		attributes.put("govAgencyCode", getGovAgencyCode());
 
 		return attributes;
 	}
@@ -182,6 +183,12 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 
 		if (secret != null) {
 			setSecret(secret);
+		}
+
+		String govAgencyCode = (String)attributes.get("govAgencyCode");
+
+		if (govAgencyCode != null) {
+			setGovAgencyCode(govAgencyCode);
 		}
 	}
 
@@ -298,6 +305,16 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 	@Override
 	public long getFormScriptFileId() {
 		return _eForm.getFormScriptFileId();
+	}
+
+	/**
+	* Returns the gov agency code of this e form.
+	*
+	* @return the gov agency code of this e form
+	*/
+	@Override
+	public String getGovAgencyCode() {
+		return _eForm.getGovAgencyCode();
 	}
 
 	/**
@@ -539,6 +556,16 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 	@Override
 	public void setFormScriptFileId(long formScriptFileId) {
 		_eForm.setFormScriptFileId(formScriptFileId);
+	}
+
+	/**
+	* Sets the gov agency code of this e form.
+	*
+	* @param govAgencyCode the gov agency code of this e form
+	*/
+	@Override
+	public void setGovAgencyCode(String govAgencyCode) {
+		_eForm.setGovAgencyCode(govAgencyCode);
 	}
 
 	/**

@@ -75,7 +75,8 @@ create table opencps_booking (
 	count INTEGER,
 	online_ BOOLEAN,
 	bookingInTime VARCHAR(255) null,
-	telNo VARCHAR(128) null
+	telNo VARCHAR(128) null,
+	govAgencyCode VARCHAR(75) null
 );
 
 create table opencps_configcounter (
@@ -613,7 +614,8 @@ create table opencps_eform (
 	formReportFileId LONG,
 	eFormData TEXT null,
 	email VARCHAR(255) null,
-	secret VARCHAR(75) null
+	secret VARCHAR(75) null,
+	govAgencyCode VARCHAR(75) null
 );
 
 create table opencps_menuconfig (
@@ -844,7 +846,9 @@ create table opencps_processoption (
 	instructionNote TEXT null,
 	submissionNote TEXT null,
 	sampleCount LONG,
-	registerBookCode VARCHAR(100) null
+	registerBookCode VARCHAR(100) null,
+	forCitizen BOOLEAN,
+	forBusiness BOOLEAN
 );
 
 create table opencps_processsequence (
@@ -1068,7 +1072,9 @@ create table opencps_serviceinfo (
 	public_ BOOLEAN,
 	govAgencyText TEXT null,
 	isNotarization BOOLEAN,
-	serviceNameTitle VARCHAR(500) null
+	serviceNameTitle VARCHAR(500) null,
+	tagCode VARCHAR(75) null,
+	tagName VARCHAR(75) null
 );
 
 create table opencps_serviceinfomapping (

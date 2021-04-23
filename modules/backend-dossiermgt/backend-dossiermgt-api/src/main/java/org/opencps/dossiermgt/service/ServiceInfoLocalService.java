@@ -79,7 +79,7 @@ public interface ServiceInfoLocalService extends BaseLocalService,
 		String durationText, String applicantText, String resultText,
 		String regularText, String feeText, String administrationCode,
 		String domainCode, int maxLevel, boolean activeStatus,
-		String govAgencyText, ServiceContext serviceContext)
+		String govAgencyText, String tagCode, String tagName, ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -342,7 +342,7 @@ public interface ServiceInfoLocalService extends BaseLocalService,
 		String durationText, String applicantText, String resultText,
 		String regularText, String feeText, String administrationCode,
 		String domainCode, int maxLevel, boolean activeStatus,
-		String govAgencyText, ServiceContext serviceContext)
+		String govAgencyText, String tagCode, String tagName, ServiceContext serviceContext)
 		throws PortalException;
 
 	/**

@@ -2930,7 +2930,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 								serviceInfo.getApplicantText(), serviceInfo.getResultText(),
 								serviceInfo.getRegularText(), serviceInfo.getFeeText(),
 								serviceInfo.getAdministrationCode(), serviceInfo.getDomainCode(),
-								serviceInfo.getMaxLevel(), false, serviceInfo.getGovAgencyText(), serviceContext);
+								serviceInfo.getMaxLevel(), false, serviceInfo.getGovAgencyText(), serviceInfo.getTagCode(),
+								serviceInfo.getTagName(), serviceContext);
 					}
 				} catch (Exception e) {
 					_log.error(e);
