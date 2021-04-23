@@ -34,7 +34,7 @@ import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DeviceResolver;
 import org.springframework.mobile.device.LiteDeviceResolver;
 
-@Component(immediate = true, property = { "key=servlet.service.events.post" }, service = LifecycleAction.class)
+//@Component(immediate = true, property = { "key=servlet.service.events.post" }, service = LifecycleAction.class)
 public class OpenCPSTraceAction extends Action {
 
 	@Override
