@@ -2252,7 +2252,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 									fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();
 								}
 								//chi gui sms, email cho hsmc goc
-								if (dossier.getOriginality() != 1 && (dossier.getOriginDossierId() == 0 && Validator.isNull(dossier.getOriginDossierNo()))) {
+								if (dossier.getOriginality() != 1 && dossier.getOriginDossierId() == 0 && Validator.isNull(dossier.getOriginDossierNo())) {
 									NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId,
 											notificationType, Dossier.class.getName(),
 											String.valueOf(dossier.getDossierId()), payloadObj.toJSONString(), fromFullName,
