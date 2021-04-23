@@ -1471,7 +1471,7 @@ public class DossierUtils {
 //					DossierUser ds = DossierUserLocalServiceUtil.fetchDossierUser(pk);
 					if(checkGovDossierEmployee(dossier, e)) {
 						if (mapDaus.get(e.getMappingUserId()) == null) {
-							_log.info("Scope : " + e.getScope());
+							_log.debug("Scope : " + e.getScope());
 							DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(), moderator, Boolean.FALSE);
 						} else {
 							DossierUser ds = mapDaus.get(e.getMappingUserId());
