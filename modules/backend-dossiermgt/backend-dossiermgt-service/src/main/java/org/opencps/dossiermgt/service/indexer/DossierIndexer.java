@@ -539,9 +539,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						if (listDossierActions != null && listDossierActions.size() > 0) {
 							Set<String> setUserId = new HashSet<String>();
 							for (DossierAction dossierAction2 : listDossierActions) {
-								if (dossierAction2.getUserId() != dossierAction.getUserId() 
-										&& dossierAction2.getNextActionId() > 0) {
-									setUserId.add(String.valueOf(dossierAction2.getUserId()));									
+								if ((dossierAction2.getUserId() != dossierAction.getUserId()
+										&& dossierAction2.getNextActionId() > 0)
+										||(dossierAction2.getUserId() == dossierAction.getUserId()
+										&& dossierAction2.getPreviousActionId() > 0
+										&& dossierAction2.getNextActionId() == 0)) {
+									setUserId.add(String.valueOf(dossierAction2.getUserId()));
 								}
 							}
 							String userPeriodActionIds = String.join(",", setUserId);
