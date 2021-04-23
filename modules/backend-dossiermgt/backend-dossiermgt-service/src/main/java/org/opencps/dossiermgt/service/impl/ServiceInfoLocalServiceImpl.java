@@ -575,6 +575,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		String public_ = String.valueOf((params.get(ServiceInfoTerm.PUBLIC_)));
 		String mapping = String.valueOf((params.get(ServiceInfoTerm.MAPPING)));
 		String synced = String.valueOf((params.get(ServiceInfoTerm.SYNCED)));
+		String tagCode = String.valueOf((params.get(ServiceInfoTerm.TAGCODE)));
+		String tagName = String.valueOf((params.get(ServiceInfoTerm.TAGNAME)));
 		if (Validator.isNotNull(administration)) {
 			MultiMatchQuery query = new MultiMatchQuery(administration);
 
@@ -638,6 +640,18 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 			query.addFields(ServiceInfoTerm.SYNCED);
 
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if(Validator.isNotNull(tagCode)) {
+			MultiMatchQuery query = new MultiMatchQuery(tagCode);
+			query.addFields(ServiceInfoTerm.TAGCODE);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if(Validator.isNotNull(tagName)) {
+			MultiMatchQuery query = new MultiMatchQuery(tagName);
+			query.addFields(ServiceInfoTerm.TAGNAME);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
@@ -823,7 +837,12 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		object.setAdministrationCode(objectData.getString(ServiceInfoTerm.ADMINISTRATION_CODE));
 		object.setDomainCode(objectData.getString(ServiceInfoTerm.DOMAIN_CODE));
 		object.setServiceNameTitle(objectData.getString(ServiceInfoTerm.SERVICE_NAME_TITLE));
-
+		if (objectData.has(ServiceInfoTerm.TAGCODE)) {
+			object.setTagCode(objectData.getString(ServiceInfoTerm.TAGCODE));
+		}
+		if (objectData.has(ServiceInfoTerm.TAGNAME)) {
+			object.setTagName(objectData.getString(ServiceInfoTerm.TAGNAME));
+		}
 		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE,
 				objectData.getString(ServiceInfoTerm.ADMINISTRATION_CODE), objectData.getLong(Field.GROUP_ID));
 		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN,
