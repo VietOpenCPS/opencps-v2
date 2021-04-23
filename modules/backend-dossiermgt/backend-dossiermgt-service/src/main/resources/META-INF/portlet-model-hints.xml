@@ -114,6 +114,7 @@
 		<field name="telNo" type="String">
 			<hint name="max-length">128</hint>
 		</field>
+		<field name="govAgencyCode" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ConfigCounter">
 		<field name="uuid" type="String" />
@@ -1006,6 +1007,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="secret" type="String" />
+		<field name="govAgencyCode" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.MenuConfig">
 		<field name="uuid" type="String" />

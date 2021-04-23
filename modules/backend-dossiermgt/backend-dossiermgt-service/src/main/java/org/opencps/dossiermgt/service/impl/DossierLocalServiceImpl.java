@@ -79,16 +79,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ProcessStep;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
@@ -7847,6 +7838,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public java.util.List<Object[]> getListVotingByDossier(long groupId, List<String> listDossier) {
 		return dossierFinder.getListVotingByDossier(groupId, listDossier);
 	}
+
+	@Override
+	public DossierDocument findDossierDocumentByDossierId(long dossierDocumentId) {
+		return dossierFinder.findDossierDocumentByDossierId(dossierDocumentId);
+	}
+
 	public Dossier fetchByDO_POST_SEND_GROUP(String postpostalCodeSend, long groupId) {
 		return dossierPersistence.fetchByDO_POST_SEND_GROUP(postpostalCodeSend, groupId);
 	}

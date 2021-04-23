@@ -175,6 +175,7 @@ public class InvokeREST {
 
 			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
 			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+			_log.info("response: " +  response);
 
 			conn.disconnect();
 

@@ -672,6 +672,10 @@ public class DossierLocalServiceUtil {
 		return getService().getListVotingByDossier(groupId, listDossier);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierDocument findDossierDocumentByDossierId(long dossierDocumentId) {
+		return getService().findDossierDocumentByDossierId(dossierDocumentId);
+	}
+
 	/**
 	* Returns the OSGi service identifier.
 	*
