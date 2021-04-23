@@ -485,6 +485,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 						// if (Validator.isNotNull(dossierAction.getStepCode())) {
 						document.addTextSortable(DossierTerm.STEP_CODE, dossierAction.getStepCode());
+						document.addTextSortable(DossierTerm.UNSTEP, dossierAction.getStepCode());
+						_log.debug("Document: " + JSONFactoryUtil.looseSerialize(document.get(DossierTerm.UNSTEP)));
 						// }
 						// if (Validator.isNotNull(dossierAction.getStepName())) {
 						document.addTextSortable(DossierTerm.STEP_NAME, dossierAction.getStepName());
@@ -905,7 +907,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					_log.debug(e);
 				}
 			}
-
 		} catch (Exception e) {
 			_log.error(e);
 		}

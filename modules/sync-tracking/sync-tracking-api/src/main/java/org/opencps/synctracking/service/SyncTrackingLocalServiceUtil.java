@@ -212,6 +212,11 @@ public class SyncTrackingLocalServiceUtil {
 		return getService().getByGroupId(groupId, start, end);
 	}
 
+	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndApi(
+		long groupId, String api, int start, int end) {
+		return getService().getByGroupIdAndApi(groupId, api, start, end);
+	}
+
 	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDate(
 		long groupId, java.util.Date fromDate, java.util.Date toDate,
 		int start, int end) {

@@ -197,6 +197,10 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	public List<SyncTracking> getByGroupId(long groupId, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByGroupIdAndApi(long groupId, String api,
+		int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SyncTracking> getByGroupIdAndDate(long groupId, Date fromDate,
 		Date toDate, int start, int end);
 

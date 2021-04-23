@@ -78,6 +78,8 @@ public class ProcessOptionWrapper implements ProcessOption,
 		attributes.put("submissionNote", getSubmissionNote());
 		attributes.put("sampleCount", getSampleCount());
 		attributes.put("registerBookCode", getRegisterBookCode());
+		attributes.put("forCitizen", isForCitizen());
+		attributes.put("forBusiness", isForBusiness());
 
 		return attributes;
 	}
@@ -191,6 +193,18 @@ public class ProcessOptionWrapper implements ProcessOption,
 		if (registerBookCode != null) {
 			setRegisterBookCode(registerBookCode);
 		}
+
+		Boolean forCitizen = (Boolean)attributes.get("forCitizen");
+
+		if (forCitizen != null) {
+			setForCitizen(forCitizen);
+		}
+
+		Boolean forBusiness = (Boolean)attributes.get("forBusiness");
+
+		if (forBusiness != null) {
+			setForBusiness(forBusiness);
+		}
 	}
 
 	@Override
@@ -246,6 +260,26 @@ public class ProcessOptionWrapper implements ProcessOption,
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return _processOption.getExpandoBridge();
+	}
+
+	/**
+	* Returns the for business of this process option.
+	*
+	* @return the for business of this process option
+	*/
+	@Override
+	public boolean getForBusiness() {
+		return _processOption.getForBusiness();
+	}
+
+	/**
+	* Returns the for citizen of this process option.
+	*
+	* @return the for citizen of this process option
+	*/
+	@Override
+	public boolean getForCitizen() {
+		return _processOption.getForCitizen();
 	}
 
 	/**
@@ -428,6 +462,26 @@ public class ProcessOptionWrapper implements ProcessOption,
 		return _processOption.isEscapedModel();
 	}
 
+	/**
+	* Returns <code>true</code> if this process option is for business.
+	*
+	* @return <code>true</code> if this process option is for business; <code>false</code> otherwise
+	*/
+	@Override
+	public boolean isForBusiness() {
+		return _processOption.isForBusiness();
+	}
+
+	/**
+	* Returns <code>true</code> if this process option is for citizen.
+	*
+	* @return <code>true</code> if this process option is for citizen; <code>false</code> otherwise
+	*/
+	@Override
+	public boolean isForCitizen() {
+		return _processOption.isForCitizen();
+	}
+
 	@Override
 	public boolean isNew() {
 		return _processOption.isNew();
@@ -497,6 +551,26 @@ public class ProcessOptionWrapper implements ProcessOption,
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
 		_processOption.setExpandoBridgeAttributes(serviceContext);
+	}
+
+	/**
+	* Sets whether this process option is for business.
+	*
+	* @param forBusiness the for business of this process option
+	*/
+	@Override
+	public void setForBusiness(boolean forBusiness) {
+		_processOption.setForBusiness(forBusiness);
+	}
+
+	/**
+	* Sets whether this process option is for citizen.
+	*
+	* @param forCitizen the for citizen of this process option
+	*/
+	@Override
+	public void setForCitizen(boolean forCitizen) {
+		_processOption.setForCitizen(forCitizen);
 	}
 
 	/**

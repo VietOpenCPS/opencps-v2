@@ -46,9 +46,9 @@ public class JWTAuthHeaderAuthVerifier extends BasicAuthHeaderAutoLogin implemen
 
 		String authorization = request.getHeader("Authorization");
 
-		_log.info("JWTAuthHeaderAuthVerifier secret:" + secret);
+		_log.debug("JWTAuthHeaderAuthVerifier secret:" + secret);
 		
-		_log.info("Authorization:" + authorization);
+		_log.debug("Authorization:" + authorization);
 
 		if (Validator.isNotNull(authorization)) {
 			String[] schemaData = StringUtil.split(authorization, StringPool.SPACE);
