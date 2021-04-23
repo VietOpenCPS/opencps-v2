@@ -145,7 +145,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 							DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())));
 
 					PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-					if (result.getDossierId() != null && paymentFile != null && (paymentFile.getPaymentStatus() == 2)) { // ||
+					if (result.getDossierId() != null && paymentFile != null && (paymentFile.getPaymentStatus() == 2 || paymentFile.getPaymentStatus() == 1)) { // ||
 																															// paymentFile.getPaymentStatus()
 																															// ==
 																															// 5

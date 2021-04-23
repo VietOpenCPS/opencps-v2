@@ -434,4 +434,7 @@ public class DossierTerm {
 	public static final String DELIVERABLE_NAME = "deliverableName";
 	public static final String CREATE_DATE_START = "createDateStart";
 	public static final String CREATE_DATE_END = "createDateEnd";
+	public static final String UNSTEP = "un_step";
+	public static final String FOR_CITIZEN = "forCitizen";
+	public static final String FOR_BUSINESS = "forBusiness";
 }

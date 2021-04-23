@@ -170,6 +170,7 @@ public class BookingManagementImpl implements BookingManagement{
 			String serviceGroupCode = input.getServiceGroupCode();
 			boolean online = Boolean.valueOf(input.getOnline());
 			String telNo = input.getTelNo();
+			String govAgencyCode = input.getGovAgencyCode();
 			Date checkinDate = null;
 			if (Validator.isNotNull(state) && state == 1 && !online) {
 				checkinDate = new Date();
@@ -636,11 +637,11 @@ public class BookingManagementImpl implements BookingManagement{
 			if (booking != null) {
 				booking = actions.updateBooking(userId, groupId, booking.getBookingId(), className, classPK,
 						serviceCode, codeNumber, bookingName, gateNumber, state, checkinDate, bookingDate, speaking,
-						serviceGroupCode, online, bookingInTime, telNo, serviceContext);
+						serviceGroupCode, online, bookingInTime, telNo, govAgencyCode, serviceContext);
 			} else {
 				booking = actions.updateBooking(userId, groupId, 0, className, classPK, serviceCode, codeNumber,
 						bookingName, gateNumber, state, checkinDate, bookingDate, speaking, serviceGroupCode,
-						online, bookingInTime, telNo, serviceContext);
+						online, bookingInTime, telNo,govAgencyCode, serviceContext);
 			}
 
 			BookingDataModel result = BookingUtils.mappingForGetDetail(booking);
@@ -714,6 +715,7 @@ public class BookingManagementImpl implements BookingManagement{
 				_log.info("state: "+state);
 				String serviceGroupCode = input.getServiceGroupCode();
 				String telNo = input.getTelNo();
+				String govAgencyCode = input.getGovAgencyCode();
 				Date checkinDate = null;
 				if (Validator.isNotNull(state) && state == 1) {
 					checkinDate = new Date();
@@ -734,7 +736,7 @@ public class BookingManagementImpl implements BookingManagement{
 
 				booking = actions.updateBooking(userId, groupId, booking.getBookingId(), className, classPK,
 						serviceCode, codeNumber, bookingName, gateNumber, state, checkinDate, bookingDate, speaking,
-						serviceGroupCode, online, bookingInTime, telNo, serviceContext);
+						serviceGroupCode, online, bookingInTime, telNo,govAgencyCode, serviceContext);
 			}
 
 			BookingDataModel result = BookingUtils.mappingForGetDetail(booking);
