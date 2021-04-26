@@ -89,7 +89,7 @@ public class PersonStatisticSumYearCalcular {
 				}
 
 			} catch (Exception e) {
-				_log.error(e);
+				  ;
 			}
 
 		}
@@ -123,7 +123,7 @@ public class PersonStatisticSumYearCalcular {
 							}
 						}
 					} catch (Exception e) {
-						_log.error(e);
+						  ;
 					}
 				}
 			}
@@ -158,7 +158,7 @@ public class PersonStatisticSumYearCalcular {
 							}
 						}
 					} catch (Exception e) {
-						_log.error(e);
+						  ;
 					}
 				}				
 			}
@@ -198,7 +198,7 @@ public class PersonStatisticSumYearCalcular {
 									}
 								}
 							} catch (Exception e) {
-								_log.error(e);
+								  ;
 							}
 						}
 					}
@@ -228,7 +228,7 @@ public class PersonStatisticSumYearCalcular {
 							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
 						}						
 					} catch (JSONException e) {
-						_log.error(e);
+						  ;
 					}
 				}
 			}
@@ -268,7 +268,7 @@ public class PersonStatisticSumYearCalcular {
 								}
 							}
 						} catch (Exception e) {
-							_log.error(e);
+							  ;
 						}
 					}
 				}
@@ -296,7 +296,7 @@ public class PersonStatisticSumYearCalcular {
 							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
 						}						
 					} catch (JSONException e) {
-						_log.error(e);
+						  ;
 					}
 				}
 			}
@@ -337,7 +337,7 @@ public class PersonStatisticSumYearCalcular {
 										}
 									}
 								} catch (Exception e) {
-									_log.error(e);
+									  ;
 								}
 							}
 						}
@@ -367,7 +367,7 @@ public class PersonStatisticSumYearCalcular {
 							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
 						}						
 					} catch (JSONException e) {
-						_log.error(e);
+						  ;
 					}
 				}
 			}
@@ -408,7 +408,7 @@ public class PersonStatisticSumYearCalcular {
 										}
 									}
 								} catch (Exception e) {
-									_log.error(e);
+									  ;
 								}
 							}
 						}
@@ -439,7 +439,7 @@ public class PersonStatisticSumYearCalcular {
 							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
 						}						
 					} catch (JSONException e) {
-						_log.error(e);
+						  ;
 					}
 				}
 			}
@@ -489,7 +489,7 @@ public class PersonStatisticSumYearCalcular {
 												}
 											}
 										} catch (Exception e) {
-											_log.error(e);
+											  ;
 										}
 									}
 								}
@@ -538,7 +538,7 @@ public class PersonStatisticSumYearCalcular {
 				}
 			}
 		} catch (PortalException e) {
-			_log.error(e);
+			  ;
 		}
 
 		return votingList;
@@ -583,7 +583,7 @@ public class PersonStatisticSumYearCalcular {
 				}
 			}
 		} catch (PortalException e) {
-			_log.error(e);
+			  ;
 		}
 
 		return null;

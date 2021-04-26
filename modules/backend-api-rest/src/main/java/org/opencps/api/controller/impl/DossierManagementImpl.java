@@ -112,7 +112,14 @@ import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.*;
 
 import org.opencps.dossiermgt.action.impl.*;
-import org.opencps.dossiermgt.action.util.*;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.DossierActionUtils;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.NotarizationCounterNumberGenerator;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
@@ -240,13 +247,18 @@ public class DossierManagementImpl implements DossierManagement {
 		String emailLogin = user.getEmailAddress();
 		DossierActions actions = new DossierActionsImpl();
 		DossierResultsModel results = null;
-
+		BackendAuth auth = new BackendAuthImpl();
 		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
 			boolean isViaPostal = query.isIstheViaPostal();
 			// boolean isCitizen = false;
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
-				query.setStart(QueryUtil.ALL_POS);
-				query.setEnd(QueryUtil.ALL_POS);
+				query.setStart(0);
+				query.setEnd(10);
 			}
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
@@ -493,13 +505,13 @@ public class DossierManagementImpl implements DossierManagement {
 				String toSubmitDate =
 						APIDateTimeUtils.convertNormalDateToLuceneDate(
 								query.getToSubmitDate());
-				
+
 				String fromDueDate =
 						APIDateTimeUtils.convertNormalDateToLuceneDate(
-							query.getFromDueDate());
+								query.getFromDueDate());
 				String toDueDate =
-					APIDateTimeUtils.convertNormalDateToLuceneDate(
-						query.getToDueDate());
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getToDueDate());
 				// Process Statistic
 				String fromReleaseDate =
 						APIDateTimeUtils.convertNormalDateToLuceneDate(
@@ -775,6 +787,12 @@ public class DossierManagementImpl implements DossierManagement {
 							params.put(DossierTerm.DON_VI_NHAN, donvinhan);
 						}
 					}
+				}
+
+				//Unstep
+				String unstep = query.getUnstep();
+				if (Validator.isNotNull(unstep)) {
+					params.put(DossierTerm.UNSTEP, unstep);
 				}
 
 				if (Validator.isNotNull(top)) {
@@ -1310,6 +1328,12 @@ public class DossierManagementImpl implements DossierManagement {
 			Integer fromViaPostal = query.getFromViaPostal();
 			if (fromViaPostal != null) {
 				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
+			}
+
+			//Unstep
+			String unstep = query.getUnstep();
+			if (Validator.isNotNull(unstep)) {
+				params.put(DossierTerm.UNSTEP,unstep);
 			}
 
 			Sort[] sorts = null;
@@ -2055,6 +2079,16 @@ public class DossierManagementImpl implements DossierManagement {
 									}
 									else {
 										_log.info(666644444);
+										// A Duẩn đối với action 8888 => nếu là inside mà không có quy trình( processAction)
+										// thì vẫn thực hiện doAction
+										if (DossierActionTerm.OUTSIDE_ACTION_PAYMENT.equals(actionCode)) {
+											dossierResult = actions.doAction(
+													groupId, userId, dossier, option, null,
+													actionCode, actionUser, input.getActionNote(),
+													input.getPayload(), input.getAssignUsers(),
+													input.getPayment(), actConfig.getSyncType(),
+													serviceContext, errorModel);
+										}
 										// TODO: Error
 									}
 								}
@@ -2455,6 +2489,7 @@ public class DossierManagementImpl implements DossierManagement {
 								jsonParams = JSONFactoryUtil
 										.createJSONObject(configObj.getString(KeyPayTerm.PARAMS));
 							}
+							_log.info("Param: " + JSONFactoryUtil.looseSerialize(jsonParams.toString()));
 							if (jsonParams != null) {
 								JSONObject jsonHeader = JSONFactoryUtil
 										.createJSONObject(jsonParams.getString(KeyPayTerm.HEADER));

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Map;
 
 import org.opencps.bundlemgt.classloader.ExcelReportClassLoader;
+import org.opencps.bundlemgt.classloader.FeedbackClassLoader;
 import org.opencps.bundlemgt.classloader.JasperClassLoader;
 
 import com.liferay.petra.string.StringPool;
@@ -62,6 +63,20 @@ public class ClassLoaderFactoryUtil {
 		} catch (Exception e) {
 			_log.error(e);
 			return StringPool.BLANK;
+		}
+	}
+
+	public static Object getListComments(long groupId, String className, String classPK) {
+		try {
+			FeedbackClassLoader classLoader = new FeedbackClassLoader();
+			Object object = classLoader.getComments().invoke(classLoader.getClassLoader(String.class.getName()),
+					groupId, className, classPK);
+			if (object != null) {
+				return object;
+			}
+			return null;
+		} catch (Exception e) {
+			return null;
 		}
 	}
 

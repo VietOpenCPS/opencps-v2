@@ -343,6 +343,21 @@ public interface EFormModel extends BaseModel<EForm>, GroupedModel, ShardedModel
 	 */
 	public void setSecret(String secret);
 
+	/**
+	 * Returns the gov agency code of this e form.
+	 *
+	 * @return the gov agency code of this e form
+	 */
+	@AutoEscape
+	public String getGovAgencyCode();
+
+	/**
+	 * Sets the gov agency code of this e form.
+	 *
+	 * @param govAgencyCode the gov agency code of this e form
+	 */
+	public void setGovAgencyCode(String govAgencyCode);
+
 	@Override
 	public boolean isNew();
 

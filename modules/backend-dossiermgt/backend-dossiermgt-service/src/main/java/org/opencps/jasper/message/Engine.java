@@ -29,13 +29,7 @@ import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.RegistrationForm;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
+import org.opencps.dossiermgt.service.*;
 
 public class Engine implements MessageListener {
 
@@ -226,8 +220,9 @@ public class Engine implements MessageListener {
 				}
 			}
 			else if (engineClass.isAssignableFrom(DossierDocument.class)) {
-				DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.fetchDossierDocument(classPK);
-				
+//				DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.fetchDossierDocument(classPK);
+				DossierDocument dossierDocument = DossierLocalServiceUtil.findDossierDocumentByDossierId(classPK);
+				_log.info("LOG DossierDocument: " + JSONFactoryUtil.looseSerialize(dossierDocument));
 				if (dossierDocument != null) {
 				ServiceContext serviceContext = new ServiceContext();
     			_log.info("jasper export dossier document: " + classPK + ", " + dossierDocument + ", service context: " + serviceContext );

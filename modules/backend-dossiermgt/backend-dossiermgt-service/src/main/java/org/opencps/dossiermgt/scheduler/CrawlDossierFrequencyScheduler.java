@@ -65,11 +65,11 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
                     if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
                         result = integrationAction.crawlDossierLGSP(profile, token);
 
-                        if(result) {
-                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
-                        } else {
+                        if(!result) {
                             _log.error("Crawl profile id: " + oneDossier.getProfileId() + " error");
                         }
+                        // always remove profile from lgsp
+                        integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
                     }
                     _log.info("Done crawl one profile id: " + oneDossier.getProfileId());
                 } catch (Exception e) {
@@ -80,6 +80,7 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
 
             _log.info("End crawl dossier frequency!!!");
         } catch (Exception e){
+            e.printStackTrace();
             _log.error("Error crawl dossier frequency: " + e.getMessage());
         }
         isRunning = false;

@@ -83,7 +83,8 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 			{ "formReportFileId", Types.BIGINT },
 			{ "eFormData", Types.VARCHAR },
 			{ "email", Types.VARCHAR },
-			{ "secret", Types.VARCHAR }
+			{ "secret", Types.VARCHAR },
+			{ "govAgencyCode", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -105,9 +106,10 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 		TABLE_COLUMNS_MAP.put("eFormData", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("email", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("secret", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("govAgencyCode", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_eform (uuid_ VARCHAR(75) null,eFormId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,eFormNo VARCHAR(128) null,serviceCode VARCHAR(128) null,fileTemplateNo VARCHAR(128) null,eFormName VARCHAR(512) null,formScriptFileId LONG,formReportFileId LONG,eFormData TEXT null,email VARCHAR(255) null,secret VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_eform (uuid_ VARCHAR(75) null,eFormId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,eFormNo VARCHAR(128) null,serviceCode VARCHAR(128) null,fileTemplateNo VARCHAR(128) null,eFormName VARCHAR(512) null,formScriptFileId LONG,formReportFileId LONG,eFormData TEXT null,email VARCHAR(255) null,secret VARCHAR(75) null,govAgencyCode VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_eform";
 	public static final String ORDER_BY_JPQL = " ORDER BY eForm.eFormId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_eform.eFormId ASC";
@@ -186,6 +188,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 		attributes.put("eFormData", getEFormData());
 		attributes.put("email", getEmail());
 		attributes.put("secret", getSecret());
+		attributes.put("govAgencyCode", getGovAgencyCode());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -295,6 +298,12 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 
 		if (secret != null) {
 			setSecret(secret);
+		}
+
+		String govAgencyCode = (String)attributes.get("govAgencyCode");
+
+		if (govAgencyCode != null) {
+			setGovAgencyCode(govAgencyCode);
 		}
 	}
 
@@ -588,6 +597,21 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 	}
 
 	@Override
+	public String getGovAgencyCode() {
+		if (_govAgencyCode == null) {
+			return "";
+		}
+		else {
+			return _govAgencyCode;
+		}
+	}
+
+	@Override
+	public void setGovAgencyCode(String govAgencyCode) {
+		_govAgencyCode = govAgencyCode;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				EForm.class.getName()));
@@ -641,6 +665,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 		eFormImpl.setEFormData(getEFormData());
 		eFormImpl.setEmail(getEmail());
 		eFormImpl.setSecret(getSecret());
+		eFormImpl.setGovAgencyCode(getGovAgencyCode());
 
 		eFormImpl.resetOriginalValues();
 
@@ -828,12 +853,20 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 			eFormCacheModel.secret = null;
 		}
 
+		eFormCacheModel.govAgencyCode = getGovAgencyCode();
+
+		String govAgencyCode = eFormCacheModel.govAgencyCode;
+
+		if ((govAgencyCode != null) && (govAgencyCode.length() == 0)) {
+			eFormCacheModel.govAgencyCode = null;
+		}
+
 		return eFormCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -869,6 +902,8 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 		sb.append(getEmail());
 		sb.append(", secret=");
 		sb.append(getSecret());
+		sb.append(", govAgencyCode=");
+		sb.append(getGovAgencyCode());
 		sb.append("}");
 
 		return sb.toString();
@@ -876,7 +911,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(55);
+		StringBundler sb = new StringBundler(58);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.EForm");
@@ -950,6 +985,10 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 			"<column><column-name>secret</column-name><column-value><![CDATA[");
 		sb.append(getSecret());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>govAgencyCode</column-name><column-value><![CDATA[");
+		sb.append(getGovAgencyCode());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -985,6 +1024,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 	private String _eFormData;
 	private String _email;
 	private String _secret;
+	private String _govAgencyCode;
 	private long _columnBitmask;
 	private EForm _escapedModel;
 }
