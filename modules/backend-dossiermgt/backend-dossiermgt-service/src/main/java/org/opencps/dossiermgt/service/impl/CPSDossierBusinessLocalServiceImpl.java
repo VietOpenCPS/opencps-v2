@@ -6413,7 +6413,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 									for (User u : users) {
 										if (mapEmps.containsKey(u.getUserId())) {
 											Employee emp = mapEmps.get(u.getUserId());
-											_log.info("user: "+ u.getUserId() + "|checkGovDossierEmployee: "+ checkGovDossierEmployee(dossier, emp));
+//											_log.info("user: "+ u.getUserId() + "|checkGovDossierEmployee: "+ checkGovDossierEmployee(dossier, emp));
 											if (checkGovDossierEmployee(dossier, emp)) {
 												_log.info("Trueeeeeee");
 												DossierUserPK duPk = new DossierUserPK();
@@ -8606,7 +8606,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					//					pk.setDossierId(dossier.getDossierId());
 					//					pk.setUserId(e.getMappingUserId());
 					//					DossierUser ds = DossierUserLocalServiceUtil.fetchDossierUser(pk);
-					_log.debug("Scope : " + e.getScope());
+//					_log.debug("Scope : " + e.getScope());
 					if (checkGovDossierEmployee(dossier, e)) {
 						if (mapDaus.get(e.getMappingUserId()) == null) {
 							dossierUserLocalService.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(),
