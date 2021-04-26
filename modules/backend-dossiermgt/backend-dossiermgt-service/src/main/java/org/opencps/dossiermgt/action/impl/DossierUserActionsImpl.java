@@ -187,8 +187,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 						for (User user : users) {
 							org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
 							Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
-							_log.debug("Scope Employee " + emp.getScope());
-							_log.debug("GovAgencyCode " + dossier.getGovAgencyCode());
 							if(checkGovDossierEmployee(dossier, emp)) {
 								if (du != null) {
 									du.setModerator(mod);
@@ -208,8 +206,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 							for (User user : users) {
 								org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
 								Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
-								_log.debug("Scope Employee " + emp.getScope());
-								_log.debug("GovAgencyCode " + dossier.getGovAgencyCode());
 								if(checkGovDossierEmployee(dossier, emp)) {
 									if (du != null) {
 										du.setModerator(mod);
