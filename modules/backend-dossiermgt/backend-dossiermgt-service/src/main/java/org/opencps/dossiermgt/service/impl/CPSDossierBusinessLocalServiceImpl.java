@@ -319,7 +319,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(),
 					govAgencyCode);
-			_log.info("serviceConfig: " + serviceConfig);
+//			_log.info("serviceConfig: " + serviceConfig);
 			if (serviceConfig != null) {
 				List<ProcessOption> lstOptions = processOptionLocalService
 						.getByServiceProcessId(serviceConfig.getServiceConfigId());
@@ -408,7 +408,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						}
 						hsltDossier = oldHslt;
 					}
-					_log.info("hsltDossier: " + JSONFactoryUtil.looseSerialize(hsltDossier));
+//					_log.info("hsltDossier: " + JSONFactoryUtil.looseSerialize(hsltDossier));
 					if (hsltDossier == null) {
 						hsltDossier = dossierLocalService.initDossier(groupId, 0l, UUID.randomUUID().toString(),
 								dossier.getCounter(), dossier.getServiceCode(), dossier.getServiceName(), govAgencyCode,
