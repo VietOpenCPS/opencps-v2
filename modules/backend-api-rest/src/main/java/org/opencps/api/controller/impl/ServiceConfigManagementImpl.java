@@ -137,7 +137,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			results.getData()
 					.addAll(ServiceConfigUtils.mappingToServiceConfigResults((List<Document>) jsonData.get(ConstantUtils.DATA), groupId, userId));
-			results.setTotal(results.getData().size());
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
