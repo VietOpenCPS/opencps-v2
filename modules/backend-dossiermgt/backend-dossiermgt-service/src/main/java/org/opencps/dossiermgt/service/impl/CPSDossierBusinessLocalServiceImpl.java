@@ -317,7 +317,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.info("serviceCode: " + serviceCode);
 			_log.info("dossierTemplateNo: " + dossierTemplateNo);
 
-			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, Validator.isNotNull(serviceCode) ? serviceCode : dossier.getServiceCode(),
+			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(),
 					govAgencyCode);
 			_log.info("serviceConfig: " + serviceConfig);
 			if (serviceConfig != null) {
@@ -411,7 +411,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					_log.info("hsltDossier: " + JSONFactoryUtil.looseSerialize(hsltDossier));
 					if (hsltDossier == null) {
 						hsltDossier = dossierLocalService.initDossier(groupId, 0l, UUID.randomUUID().toString(),
-								dossier.getCounter(), Validator.isNotNull(serviceCode) ? serviceCode : dossier.getServiceCode(), dossier.getServiceName(), govAgencyCode,
+								dossier.getCounter(), dossier.getServiceCode(), dossier.getServiceName(), govAgencyCode,
 								govAgencyName, dossier.getApplicantName(), dossier.getApplicantIdType(),
 								dossier.getApplicantIdNo(), dossier.getApplicantIdDate(), dossier.getAddress(),
 								dossier.getCityCode(), dossier.getCityName(), dossier.getDistrictCode(),
