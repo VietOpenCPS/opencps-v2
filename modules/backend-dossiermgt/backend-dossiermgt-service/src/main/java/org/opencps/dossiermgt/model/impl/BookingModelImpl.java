@@ -91,7 +91,8 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 			{ "count", Types.INTEGER },
 			{ "online_", Types.BOOLEAN },
 			{ "bookingInTime", Types.VARCHAR },
-			{ "telNo", Types.VARCHAR }
+			{ "telNo", Types.VARCHAR },
+			{ "govAgencyCode", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -119,9 +120,10 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		TABLE_COLUMNS_MAP.put("online_", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("bookingInTime", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("telNo", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("govAgencyCode", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_booking (uuid_ VARCHAR(75) null,bookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(255) null,classPK LONG,serviceCode VARCHAR(128) null,codeNumber VARCHAR(255) null,bookingName VARCHAR(512) null,checkinDate DATE null,gateNumber VARCHAR(255) null,state_ INTEGER,bookingDate DATE null,speaking BOOLEAN,serviceGroupCode VARCHAR(255) null,count INTEGER,online_ BOOLEAN,bookingInTime VARCHAR(255) null,telNo VARCHAR(128) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_booking (uuid_ VARCHAR(75) null,bookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(255) null,classPK LONG,serviceCode VARCHAR(128) null,codeNumber VARCHAR(255) null,bookingName VARCHAR(512) null,checkinDate DATE null,gateNumber VARCHAR(255) null,state_ INTEGER,bookingDate DATE null,speaking BOOLEAN,serviceGroupCode VARCHAR(255) null,count INTEGER,online_ BOOLEAN,bookingInTime VARCHAR(255) null,telNo VARCHAR(128) null,govAgencyCode VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_booking";
 	public static final String ORDER_BY_JPQL = " ORDER BY booking.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_booking.createDate DESC";
@@ -210,6 +212,7 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		attributes.put("online", isOnline());
 		attributes.put("bookingInTime", getBookingInTime());
 		attributes.put("telNo", getTelNo());
+		attributes.put("govAgencyCode", getGovAgencyCode());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -355,6 +358,12 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 
 		if (telNo != null) {
 			setTelNo(telNo);
+		}
+
+		String govAgencyCode = (String)attributes.get("govAgencyCode");
+
+		if (govAgencyCode != null) {
+			setGovAgencyCode(govAgencyCode);
 		}
 	}
 
@@ -769,6 +778,21 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 	}
 
 	@Override
+	public String getGovAgencyCode() {
+		if (_govAgencyCode == null) {
+			return "";
+		}
+		else {
+			return _govAgencyCode;
+		}
+	}
+
+	@Override
+	public void setGovAgencyCode(String govAgencyCode) {
+		_govAgencyCode = govAgencyCode;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Booking.class.getName()));
@@ -828,6 +852,7 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		bookingImpl.setOnline(isOnline());
 		bookingImpl.setBookingInTime(getBookingInTime());
 		bookingImpl.setTelNo(getTelNo());
+		bookingImpl.setGovAgencyCode(getGovAgencyCode());
 
 		bookingImpl.resetOriginalValues();
 
@@ -1059,12 +1084,20 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 			bookingCacheModel.telNo = null;
 		}
 
+		bookingCacheModel.govAgencyCode = getGovAgencyCode();
+
+		String govAgencyCode = bookingCacheModel.govAgencyCode;
+
+		if ((govAgencyCode != null) && (govAgencyCode.length() == 0)) {
+			bookingCacheModel.govAgencyCode = null;
+		}
+
 		return bookingCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(47);
+		StringBundler sb = new StringBundler(49);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1112,6 +1145,8 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		sb.append(getBookingInTime());
 		sb.append(", telNo=");
 		sb.append(getTelNo());
+		sb.append(", govAgencyCode=");
+		sb.append(getGovAgencyCode());
 		sb.append("}");
 
 		return sb.toString();
@@ -1119,7 +1154,7 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(73);
+		StringBundler sb = new StringBundler(76);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.Booking");
@@ -1217,6 +1252,10 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 			"<column><column-name>telNo</column-name><column-value><![CDATA[");
 		sb.append(getTelNo());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>govAgencyCode</column-name><column-value><![CDATA[");
+		sb.append(getGovAgencyCode());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1264,6 +1303,7 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 	private boolean _setOriginalOnline;
 	private String _bookingInTime;
 	private String _telNo;
+	private String _govAgencyCode;
 	private long _columnBitmask;
 	private Booking _escapedModel;
 }

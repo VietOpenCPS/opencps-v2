@@ -75,7 +75,8 @@ create table opencps_booking (
 	count INTEGER,
 	online_ BOOLEAN,
 	bookingInTime VARCHAR(255) null,
-	telNo VARCHAR(128) null
+	telNo VARCHAR(128) null,
+	govAgencyCode VARCHAR(75) null
 );
 
 create table opencps_configcounter (
@@ -613,7 +614,8 @@ create table opencps_eform (
 	formReportFileId LONG,
 	eFormData TEXT null,
 	email VARCHAR(255) null,
-	secret VARCHAR(75) null
+	secret VARCHAR(75) null,
+	govAgencyCode VARCHAR(75) null
 );
 
 create table opencps_menuconfig (

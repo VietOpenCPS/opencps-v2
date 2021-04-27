@@ -535,20 +535,33 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						//Add userActionId
 						//document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, dossierAction.getUserId());
 						List<DossierAction> listDossierActions = DossierActionLocalServiceUtil.findByG_DID(object.getGroupId(), object.getDossierId());
-						_log.info("listDossierActions :" + JSONFactoryUtil.looseSerialize(listDossierActions));
+						_log.debug("listDossierActions : " + JSONFactoryUtil.looseSerialize(listDossierActions));
 						if (listDossierActions != null && listDossierActions.size() > 0) {
 							Set<String> setUserId = new HashSet<String>();
 							for (DossierAction dossierAction2 : listDossierActions) {
-								if ((dossierAction2.getUserId() != dossierAction.getUserId()
-										&& dossierAction2.getNextActionId() > 0)
-										||(dossierAction2.getUserId() == dossierAction.getUserId()
-										&& dossierAction2.getPreviousActionId() > 0
-										&& dossierAction2.getNextActionId() == 0)) {
-									setUserId.add(String.valueOf(dossierAction2.getUserId()));
+								if (dossierAction2.getPreviousActionId() > 0) {
+									if (dossierAction2.getUserId() != dossierAction.getUserId()
+											&& dossierAction2.getNextActionId() > 0) {
+										setUserId.add(String.valueOf(dossierAction2.getUserId()));
+										_log.debug("setUserId1 : " + setUserId);
+									}else if(dossierAction2.getUserId() == dossierAction.getUserId()
+											&& dossierAction2.getNextActionId() == 0) {
+										List<DossierActionUser> lstdossierActionUser = DossierActionUserLocalServiceUtil.getByDID_DAID(dossierAction2.getDossierId(), dossierAction2.getDossierActionId());
+										_log.debug("lstdossierActionUser :" + JSONFactoryUtil.looseSerialize(lstdossierActionUser));
+										if (lstdossierActionUser != null && lstdossierActionUser.size() > 0) {
+											for (DossierActionUser doActionUser : lstdossierActionUser) {
+												if (doActionUser.getUserId() != dossierAction2.getUserId()
+														&& doActionUser.getStepCode().contentEquals(dossierAction2.getStepCode())) {
+													setUserId.add(String.valueOf(dossierAction2.getUserId()));
+													_log.debug("setUserId2 : " + setUserId);
+												}
+											}
+										}
+									}
 								}
 							}
 							String userPeriodActionIds = String.join(",", setUserId);
-							_log.info("userPeriodActionIds :" + userPeriodActionIds);
+							_log.info("userPeriodActionIds : " + userPeriodActionIds);
 							document.addTextSortable(DossierTerm.USER_DOSSIER_ACTION_ID, userPeriodActionIds);
 						}
 					} else {

@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlType;
     "secret",
     "checkinDate",
     "gateNumber",
-    "state"
+    "state",
+	"govAgencyCode"
 })
 @XmlRootElement(name = "EFormDataModel")
 public class EFormDataModel {
@@ -48,6 +49,15 @@ public class EFormDataModel {
 	protected String checkinDate;
 	protected String gateNumber;
 	protected Integer state;
+	protected String govAgencyCode;
+
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
 
 	public Long geteFormId() {
 		return eFormId;

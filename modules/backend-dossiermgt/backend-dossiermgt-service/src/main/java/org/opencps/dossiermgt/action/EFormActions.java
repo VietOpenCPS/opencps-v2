@@ -16,7 +16,7 @@ public interface EFormActions {
 
 	public EForm updateEForm(long userId, long groupId, long eFormId, String eFormNo, long serviceInfoId,
 			String fileTemplateNo, String eFormName, Long formScriptFileId, Long formReportFileId, String eFormData,
-			String email, String secret, ServiceContext serviceContext);
+			String email, String secret, String govAgencyCode, ServiceContext serviceContext);
 
 	public EForm updateDataByEFormNo(long eFormId, String eFormData, ServiceContext serviceContext);
 

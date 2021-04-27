@@ -444,7 +444,7 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 	public Booking updateBooking(long userId, long groupId, long bookingId, String className, long classPK,
 			String serviceCode, String codeNumber, String bookingName, String gateNumber, Integer state,
 			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode, Boolean online,
-			String bookingInTime, String telNo, ServiceContext serviceContext) {
+			String bookingInTime, String telNo, String govAgencyCode, ServiceContext serviceContext) {
 
 		Date now = new Date();
 
@@ -477,6 +477,8 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 					booking.setBookingInTime(bookingInTime);
 				if (Validator.isNotNull(telNo))
 					booking.setTelNo(telNo);
+				if(Validator.isNotNull(govAgencyCode))
+					booking.setGovAgencyCode(govAgencyCode);
 
 				//Check date before
 				Calendar calUpdate = Calendar.getInstance();
@@ -533,6 +535,7 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 			booking.setServiceGroupCode(serviceGroupCode);
 			booking.setBookingInTime(bookingInTime);
 			booking.setTelNo(telNo);
+			booking.setGovAgencyCode(govAgencyCode);
 			//Get max count booking in day
 			_log.info("serviceGroupCode: "+serviceGroupCode);
 			int countCode = bookingFinder.findBookingMaxByServiceGroupCode(groupId, serviceGroupCode);

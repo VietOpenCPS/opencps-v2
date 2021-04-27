@@ -22,11 +22,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.ws.rs.core.Response;
 
@@ -1473,21 +1469,27 @@ public class DossierUtils {
 //					pk.setDossierId(dossier.getDossierId());
 //					pk.setUserId(e.getMappingUserId());
 //					DossierUser ds = DossierUserLocalServiceUtil.fetchDossierUser(pk);
-					if (mapDaus.get(e.getMappingUserId()) == null) {
-//					if (ds == null) {
-						DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(), moderator, Boolean.FALSE);						
-					}
-					else {
-						DossierUser ds = mapDaus.get(e.getMappingUserId());
-						
-						if (moderator == 1 && ds.getModerator() == 0) {
-							ds.setModerator(1);
-							DossierUserLocalServiceUtil.updateDossierUser(ds);
+					if(checkGovDossierEmployee(dossier, e)) {
+						if (mapDaus.get(e.getMappingUserId()) == null) {
+//							_log.debug("Scope : " + e.getScope());
+							DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(), moderator, Boolean.FALSE);
+						} else {
+							DossierUser ds = mapDaus.get(e.getMappingUserId());
+							if (moderator == 1 && ds.getModerator() == 0) {
+								ds.setModerator(1);
+								DossierUserLocalServiceUtil.updateDossierUser(ds);
+							}
 						}
 					}
 				}
 			}
 		}
+	}
+	private static boolean checkGovDossierEmployee(Dossier dossier, Employee e) {
+		if (e != null && (Validator.isNull(e.getScope()) || (Arrays.asList(e.getScope().split(StringPool.COMMA)).indexOf(dossier.getGovAgencyCode()) >= 0))) {
+			return true;
+		}
+		return false;
 	}
 
 	public static DossierActionDetailModel mappingDossierAction(DossierAction dAction, long dossierDocumentId) {
@@ -1848,7 +1850,9 @@ public class DossierUtils {
 			model.setApplicantName(doc.getApplicantName() != null ? doc.getApplicantName().toUpperCase().replace(";", "; ") : StringPool.BLANK);
 			model.setDossierNo(doc.getDossierNo());
 			model.setOriginality(originality);
-			model.setDueDate(doc.getDueDate().toGMTString());
+			if(Validator.isNotNull(doc.getDueDate())) {
+				model.setDueDate(doc.getDueDate().toGMTString());
+			}
 			if(Validator.isNotNull(doc.getExtendDate())) {
 				model.setExtendDate(doc.getExtendDate().toGMTString());
 			}

@@ -64,7 +64,7 @@ public class EFormCacheModel implements CacheModel<EForm>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -100,6 +100,8 @@ public class EFormCacheModel implements CacheModel<EForm>, Externalizable {
 		sb.append(email);
 		sb.append(", secret=");
 		sb.append(secret);
+		sb.append(", govAgencyCode=");
+		sb.append(govAgencyCode);
 		sb.append("}");
 
 		return sb.toString();
@@ -194,6 +196,13 @@ public class EFormCacheModel implements CacheModel<EForm>, Externalizable {
 			eFormImpl.setSecret(secret);
 		}
 
+		if (govAgencyCode == null) {
+			eFormImpl.setGovAgencyCode("");
+		}
+		else {
+			eFormImpl.setGovAgencyCode(govAgencyCode);
+		}
+
 		eFormImpl.resetOriginalValues();
 
 		return eFormImpl;
@@ -224,6 +233,7 @@ public class EFormCacheModel implements CacheModel<EForm>, Externalizable {
 		eFormData = objectInput.readUTF();
 		email = objectInput.readUTF();
 		secret = objectInput.readUTF();
+		govAgencyCode = objectInput.readUTF();
 	}
 
 	@Override
@@ -306,6 +316,13 @@ public class EFormCacheModel implements CacheModel<EForm>, Externalizable {
 		else {
 			objectOutput.writeUTF(secret);
 		}
+
+		if (govAgencyCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(govAgencyCode);
+		}
 	}
 
 	public String uuid;
@@ -325,4 +342,5 @@ public class EFormCacheModel implements CacheModel<EForm>, Externalizable {
 	public String eFormData;
 	public String email;
 	public String secret;
+	public String govAgencyCode;
 }
