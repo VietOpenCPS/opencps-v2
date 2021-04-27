@@ -560,7 +560,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 									}
 								}
 							}
-							String userPeriodActionIds = String.join(",", setUserId);
+							String userPeriodActionIds = String.join(" ", setUserId);
 							_log.info("userPeriodActionIds : " + userPeriodActionIds);
 							document.addTextSortable(DossierTerm.USER_DOSSIER_ACTION_ID, userPeriodActionIds);
 						}
