@@ -71,7 +71,7 @@ public class KeyPayV3Utils {
 				}
 
 				result = JSONFactoryUtil.createJSONObject(sb.toString());
-				_log.info("result " + result);
+//				_log.info("result " + result);
 
 			}
 		} catch (Exception e) {

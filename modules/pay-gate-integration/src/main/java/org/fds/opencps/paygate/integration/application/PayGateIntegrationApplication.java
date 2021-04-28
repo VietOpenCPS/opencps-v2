@@ -3,6 +3,8 @@ package org.fds.opencps.paygate.integration.application;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
@@ -43,6 +45,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.event.message.KeypayV3Event;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
@@ -442,8 +445,9 @@ public class PayGateIntegrationApplication extends Application {
 				String keyFail = data.getString(KeyPayV3Term.KEY_PAY_FAIL);
 				String qrCode = data.getString(KeyPayV3Term.QRCODE_PAY);
 				String imageStr = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wCEAAgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNEBCAgICAkICQoKCQ0ODA4NExEQEBETHBQWFBYUHCsbHxsbHxsrJi4lIyUuJkQ1Ly81RE5CPkJOX1VVX3dxd5yc0f/CABEIABQAFAMBIgACEQEDEQH/xAAVAAEBAAAAAAAAAAAAAAAAAAAAB//aAAgBAQAAAAC/gH//xAAUAQEAAAAAAAAAAAAAAAAAAAAA/9oACAECEAAAAA//xAAUAQEAAAAAAAAAAAAAAAAAAAAA/9oACAEDEAAAAA//xAAUEAEAAAAAAAAAAAAAAAAAAAAw/9oACAEBAAE/AB//xAAUEQEAAAAAAAAAAAAAAAAAAAAg/9oACAECAQE/AB//xAAUEQEAAAAAAAAAAAAAAAAAAAAg/9oACAEDAQE/AB//2Q==";
+				_log.info("KeySuccess: " + keySuccess);
 				if(Validator.isNotNull(keySuccess) || Validator.isNotNull(keyFail) && Validator.isNull(qrCode)){
-					System.out.println("Vaoo " + tryCount);
+					_log.info("Vaoo " + tryCount);
 					try {
 						file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response, imageStr);
 						break;
@@ -452,7 +456,7 @@ public class PayGateIntegrationApplication extends Application {
 					}
 
 				}
-				System.out.println("Vaoo " + tryCount);
+				_log.info("Vaoo " + tryCount);
 				file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response,"");
 				tryCount++;
 				if (tryCount == MAX_TRY_COUNT ) break;
@@ -496,5 +500,7 @@ public class PayGateIntegrationApplication extends Application {
 
 		return Response.status(200).entity(result.toString()).build();
 	}
+
+	private Log _log = LogFactoryUtil.getLog(PayGateIntegrationApplication.class);
 
 }

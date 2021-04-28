@@ -134,4 +134,9 @@ public class DossierFinderImpl extends DossierFinderBaseImpl implements DossierF
 		}
 		return null;
 	}
+
+	@Override
+	public Dossier findDossierById(long dossierId) {
+		return null;
+	}
 }

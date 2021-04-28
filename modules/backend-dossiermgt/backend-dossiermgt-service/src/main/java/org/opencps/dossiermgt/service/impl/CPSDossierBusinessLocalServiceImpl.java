@@ -3239,6 +3239,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
 					createTransactionKeypayV3(dossier, dossier.getDossierActionId());
+//					createKeypayV3(dossier);
 //					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 //							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
@@ -5184,6 +5185,31 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId));
 		_log.info("=============create keypay v3============");
 		MessageBusUtil.sendMessage(DossierTerm.KEYPAY_V3_DESTINATION, message);
+	}
+	private void createKeypayV3(Dossier dossier) {
+		try {
+			long groupId = dossier.getGroupId();
+			long dossierId = dossier.getDossierId();
+			InvokeREST callRest = new InvokeREST();
+			String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
+			HashMap<String, String> properties = new HashMap<String, String>();
+			Map<String, Object> params = new HashMap<>();
+			ServiceContext context = null;
+
+			params.put(DossierTerm.DOSSIER_ID, dossierId);
+//			_log.info("DossierId " + dossierId + " GroupId " + groupId);
+			//Hồ sơ đẩy sang chưa kịp tạo ==> Để sleep 2s để hồ sơ có thể tạo
+//			Thread.sleep(TIME_SLEEP);
+			Dossier dossier3 = DossierLocalServiceUtil.fetchDossier(dossierId);
+			_log.info(" Log Dossier " + JSONFactoryUtil.looseSerialize(dossier3));
+			JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON, baseUrl,
+					KeyPayTerm.ENDPOINT_KEYPAY, "", "", properties, params, context);
+			_log.info("baseUrl: " + baseUrl + KeyPayTerm.ENDPOINT_KEYPAY);
+//			_log.info("Call post API SEND keypayv3 result: " + resultObj.toJSONString());
+			_log.info(params);
+		} catch (Exception e) {
+			e.getMessage();
+		}
 	}
 
 	private void integrateTTTT(Dossier dossier, ServiceContext context, long dossierActionId) {
