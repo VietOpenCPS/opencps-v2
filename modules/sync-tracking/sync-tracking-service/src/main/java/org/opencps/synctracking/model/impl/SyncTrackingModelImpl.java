@@ -131,15 +131,16 @@ public class SyncTrackingModelImpl extends BaseModelImpl<SyncTracking>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.synctracking.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.synctracking.model.SyncTracking"),
 			true);
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 2L;
-	public static final long DOSSIERNO_COLUMN_BITMASK = 4L;
-	public static final long GROUPID_COLUMN_BITMASK = 8L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 16L;
-	public static final long PROTOCOL_COLUMN_BITMASK = 32L;
-	public static final long REFERENCEUID_COLUMN_BITMASK = 64L;
-	public static final long SERVICECODE_COLUMN_BITMASK = 128L;
-	public static final long UUID_COLUMN_BITMASK = 256L;
+	public static final long API_COLUMN_BITMASK = 1L;
+	public static final long COMPANYID_COLUMN_BITMASK = 2L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 4L;
+	public static final long DOSSIERNO_COLUMN_BITMASK = 8L;
+	public static final long GROUPID_COLUMN_BITMASK = 16L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 32L;
+	public static final long PROTOCOL_COLUMN_BITMASK = 64L;
+	public static final long REFERENCEUID_COLUMN_BITMASK = 128L;
+	public static final long SERVICECODE_COLUMN_BITMASK = 256L;
+	public static final long UUID_COLUMN_BITMASK = 512L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.synctracking.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.synctracking.model.SyncTracking"));
 
@@ -631,7 +632,17 @@ public class SyncTrackingModelImpl extends BaseModelImpl<SyncTracking>
 
 	@Override
 	public void setApi(String api) {
+		_columnBitmask |= API_COLUMN_BITMASK;
+
+		if (_originalApi == null) {
+			_originalApi = _api;
+		}
+
 		_api = api;
+	}
+
+	public String getOriginalApi() {
+		return GetterUtil.getString(_originalApi);
 	}
 
 	@Override
@@ -851,6 +862,8 @@ public class SyncTrackingModelImpl extends BaseModelImpl<SyncTracking>
 		syncTrackingModelImpl._originalProtocol = syncTrackingModelImpl._protocol;
 
 		syncTrackingModelImpl._originalServiceCode = syncTrackingModelImpl._serviceCode;
+
+		syncTrackingModelImpl._originalApi = syncTrackingModelImpl._api;
 
 		syncTrackingModelImpl._columnBitmask = 0;
 	}
@@ -1168,6 +1181,7 @@ public class SyncTrackingModelImpl extends BaseModelImpl<SyncTracking>
 	private String _serviceCode;
 	private String _originalServiceCode;
 	private String _api;
+	private String _originalApi;
 	private String _fromUnit;
 	private String _toUnit;
 	private String _bodyRequest;

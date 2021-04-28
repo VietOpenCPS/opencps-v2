@@ -65,7 +65,7 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(41);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -103,6 +103,10 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 		sb.append(sampleCount);
 		sb.append(", registerBookCode=");
 		sb.append(registerBookCode);
+		sb.append(", forCitizen=");
+		sb.append(forCitizen);
+		sb.append(", forBusiness=");
+		sb.append(forBusiness);
 		sb.append("}");
 
 		return sb.toString();
@@ -188,6 +192,9 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 			processOptionImpl.setRegisterBookCode(registerBookCode);
 		}
 
+		processOptionImpl.setForCitizen(forCitizen);
+		processOptionImpl.setForBusiness(forBusiness);
+
 		processOptionImpl.resetOriginalValues();
 
 		return processOptionImpl;
@@ -222,6 +229,10 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 
 		sampleCount = objectInput.readLong();
 		registerBookCode = objectInput.readUTF();
+
+		forCitizen = objectInput.readBoolean();
+
+		forBusiness = objectInput.readBoolean();
 	}
 
 	@Override
@@ -296,6 +307,10 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 		else {
 			objectOutput.writeUTF(registerBookCode);
 		}
+
+		objectOutput.writeBoolean(forCitizen);
+
+		objectOutput.writeBoolean(forBusiness);
 	}
 
 	public String uuid;
@@ -316,4 +331,6 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 	public String submissionNote;
 	public long sampleCount;
 	public String registerBookCode;
+	public boolean forCitizen;
+	public boolean forBusiness;
 }

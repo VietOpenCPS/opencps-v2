@@ -105,6 +105,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			long userId = user.getUserId();
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -132,11 +133,11 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			JSONObject jsonData = actions.getServiceConfigs(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+
 
 			results.getData()
-					.addAll(ServiceConfigUtils.mappingToServiceConfigResults((List<Document>) jsonData.get(ConstantUtils.DATA)));
-
+					.addAll(ServiceConfigUtils.mappingToServiceConfigResults((List<Document>) jsonData.get(ConstantUtils.DATA), groupId, userId));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {

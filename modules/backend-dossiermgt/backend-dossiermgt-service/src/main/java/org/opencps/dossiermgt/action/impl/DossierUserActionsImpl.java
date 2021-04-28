@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.DossierUserActions;
@@ -22,6 +23,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 public class DossierUserActionsImpl implements DossierUserActions {
 	private static final Log _log = LogFactoryUtil.getLog(DossierUserActionsImpl.class);
@@ -72,14 +75,16 @@ public class DossierUserActionsImpl implements DossierUserActions {
 						List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
 						for (User user : users) {
 							org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
-							
-							if (du != null) {
-								du.setModerator(mod);
-								du.setVisited(true);
-								
-								DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
-							} else {						
-								DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
+							Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+							if(checkGovDossierEmployee(dossier, emp)) {
+								if (du != null) {
+									du.setModerator(mod);
+									du.setVisited(true);
+
+									DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
+								} else {
+									DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
+								}
 							}
 						}										
 					}
@@ -89,14 +94,16 @@ public class DossierUserActionsImpl implements DossierUserActions {
 							List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
 							for (User user : users) {
 								org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
-								
-								if (du != null) {
-									du.setModerator(mod);
-									du.setVisited(true);
-									
-									DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
-								} else {						
-									DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
+								Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+								if(checkGovDossierEmployee(dossier, emp)) {
+									if (du != null) {
+										du.setModerator(mod);
+										du.setVisited(true);
+
+										DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
+									} else {
+										DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
+									}
 								}
 							}																	
 						}
@@ -179,14 +186,16 @@ public class DossierUserActionsImpl implements DossierUserActions {
 						List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
 						for (User user : users) {
 							org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
-							
-							if (du != null) {
-								du.setModerator(mod);
-								du.setVisited(true);
-								
-								DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
-							} else {						
-								DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
+							Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+							if(checkGovDossierEmployee(dossier, emp)) {
+								if (du != null) {
+									du.setModerator(mod);
+									du.setVisited(true);
+
+									DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
+								} else {
+									DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
+								}
 							}
 						}										
 					}
@@ -196,14 +205,16 @@ public class DossierUserActionsImpl implements DossierUserActions {
 							List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
 							for (User user : users) {
 								org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
-								
-								if (du != null) {
-									du.setModerator(mod);
-									du.setVisited(true);
-									
-									DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
-								} else {						
-									DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
+								Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+								if(checkGovDossierEmployee(dossier, emp)) {
+									if (du != null) {
+										du.setModerator(mod);
+										du.setVisited(true);
+
+										DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
+									} else {
+										DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
+									}
 								}
 							}																	
 						}
@@ -215,5 +226,12 @@ public class DossierUserActionsImpl implements DossierUserActions {
 			_log.error(e);
 //			e.printStackTrace();
 		}		
+	}
+	private boolean checkGovDossierEmployee(Dossier dossier, Employee e) {
+		if (e != null && (Validator.isNull(e.getScope()) || (Arrays.asList(e.getScope().split(StringPool.COMMA)).indexOf(dossier.getGovAgencyCode()) >= 0))) {
+			return true;
+		}
+
+		return false;
 	}
 }

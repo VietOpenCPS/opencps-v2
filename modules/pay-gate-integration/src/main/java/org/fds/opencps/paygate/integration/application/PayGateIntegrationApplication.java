@@ -430,7 +430,7 @@ public class PayGateIntegrationApplication extends Application {
 		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
-		File file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
+		File file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response,"");
 		int tryCount = 0;
 		while (file == null) {
 			try {
@@ -438,12 +438,22 @@ public class PayGateIntegrationApplication extends Application {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.findPaymentFileByDossierId(dossier.getGroupId(), dossierId);
 				JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 						.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-				String checkKey = data.getString(KeyPayV3Term.KEY_PAY_SUCCESS);
+				String keySuccess = data.getString(KeyPayV3Term.KEY_PAY_SUCCESS);
+				String keyFail = data.getString(KeyPayV3Term.KEY_PAY_FAIL);
 				String qrCode = data.getString(KeyPayV3Term.QRCODE_PAY);
-				if(Validator.isNotNull(checkKey) && Validator.isNull(qrCode)){
-					break;
+				String imageStr = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wCEAAgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNEBCAgICAkICQoKCQ0ODA4NExEQEBETHBQWFBYUHCsbHxsbHxsrJi4lIyUuJkQ1Ly81RE5CPkJOX1VVX3dxd5yc0f/CABEIABQAFAMBIgACEQEDEQH/xAAVAAEBAAAAAAAAAAAAAAAAAAAAB//aAAgBAQAAAAC/gH//xAAUAQEAAAAAAAAAAAAAAAAAAAAA/9oACAECEAAAAA//xAAUAQEAAAAAAAAAAAAAAAAAAAAA/9oACAEDEAAAAA//xAAUEAEAAAAAAAAAAAAAAAAAAAAw/9oACAEBAAE/AB//xAAUEQEAAAAAAAAAAAAAAAAAAAAg/9oACAECAQE/AB//xAAUEQEAAAAAAAAAAAAAAAAAAAAg/9oACAEDAQE/AB//2Q==";
+				if(Validator.isNotNull(keySuccess) || Validator.isNotNull(keyFail) && Validator.isNull(qrCode)){
+					System.out.println("Vaoo " + tryCount);
+					try {
+						file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response, imageStr);
+						break;
+					}catch (Exception e){
+						e.getMessage();
+					}
+
 				}
-				file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response);
+				System.out.println("Vaoo " + tryCount);
+				file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response,"");
 				tryCount++;
 				if (tryCount == MAX_TRY_COUNT ) break;
 				if (file != null ) break;
@@ -476,12 +486,11 @@ public class PayGateIntegrationApplication extends Application {
 	 * */
 	@POST
 	@Path("/keypayv3/paylater-callback")
-	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({ MediaType.APPLICATION_JSON})
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response paylaterCallback(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @FormParam("body") String body) throws PortalException {
-
+			@Context ServiceContext serviceContext,  String body) throws PortalException {
 		KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
 		JSONObject result = keypayAction.paylaterCallback(user, serviceContext, body);
 

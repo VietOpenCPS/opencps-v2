@@ -235,7 +235,8 @@ import javax.xml.bind.annotation.XmlType;
 	"totalAmount",
 	"votingCode4",
 	"votingName4",
-	"resultVotingCode4"
+	"resultVotingCode4",
+	"unStep"
 })
 public class DossierDataModel {
 
@@ -377,6 +378,15 @@ public class DossierDataModel {
 	protected String votingCode4;
 	protected String votingName4;
 	protected Integer resultVotingCode4;
+	protected String unStep;
+
+	public String getUnStep() {
+		return unStep;
+	}
+
+	public void setUnStep(String unStep) {
+		this.unStep = unStep;
+	}
 
 	public String getVotingCode1() {
 		return votingCode1;

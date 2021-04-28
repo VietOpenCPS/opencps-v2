@@ -8,6 +8,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierDocument;
+import org.opencps.dossiermgt.model.impl.DossierDocumentImpl;
 import org.opencps.dossiermgt.model.impl.DossierImpl;
 import org.opencps.dossiermgt.service.persistence.DossierFinder;
 import org.opencps.dossiermgt.service.persistence.NotarizationFinder;
@@ -133,5 +135,36 @@ public class DossierFinderImpl extends DossierFinderBaseImpl implements DossierF
 			closeSession(session);
 		}
 		return null;
+	}
+
+	@Override
+	public DossierDocument findDossierDocumentByDossierId(long dossierDocumentId) {
+		Session session = null;
+		DossierDocument dossierDocument = null;
+		String sql = " SELECT * FROM opencps_dossierdocument WHERE dossierDocumentId = " + dossierDocumentId + " ";
+		_log.info("SQL: "+ sql);
+		try {
+			session = openSession();
+
+			SQLQuery q = session.createSQLQuery(sql);
+			q.setCacheable(false);
+			q.addEntity("DossierDocument", DossierDocumentImpl.class);
+			dossierDocument = (DossierDocument) q.uniqueResult();
+
+		}
+		catch (Exception e) {
+			try {
+				throw new SystemException(e);
+			}
+			catch (SystemException se) {
+				_log.error(se);
+			}
+		}
+		finally {
+			closeSession(session);
+		}
+
+		return dossierDocument;
+
 	}
 }

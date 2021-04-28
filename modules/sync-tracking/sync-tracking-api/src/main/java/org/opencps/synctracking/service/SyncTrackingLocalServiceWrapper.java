@@ -222,6 +222,13 @@ public class SyncTrackingLocalServiceWrapper implements SyncTrackingLocalService
 	}
 
 	@Override
+	public java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndApi(
+		long groupId, String api, int start, int end) {
+		return _syncTrackingLocalService.getByGroupIdAndApi(groupId, api,
+			start, end);
+	}
+
+	@Override
 	public java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDate(
 		long groupId, java.util.Date fromDate, java.util.Date toDate,
 		int start, int end) {
