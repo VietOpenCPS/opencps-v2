@@ -23,7 +23,7 @@ public class PaymentFileListenner extends BaseModelListener<PaymentFile> {
 
 	@Override
 	public void onBeforeCreate(PaymentFile model) throws ModelListenerException {
-		_log.info("Before Created........... ==> " + model.getDossierId());
+		_log.debug("Before Created........... ==> " + model.getDossierId());
 	}
 	
 	@Override
