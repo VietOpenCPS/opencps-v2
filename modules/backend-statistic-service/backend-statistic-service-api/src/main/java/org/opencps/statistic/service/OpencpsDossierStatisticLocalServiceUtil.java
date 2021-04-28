@@ -234,6 +234,40 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 			receiveDossierSatCount, releaseDossierSatCount, fromViaPostalCount);
 	}
 
+	public static org.opencps.statistic.model.OpencpsDossierStatistic createUniqueByGovMonthYearNonSystem(
+		long companyId, long groupId, String govAgencyCode,
+		String govAgencyName, int month, int year) {
+		return getService()
+				   .createUniqueByGovMonthYearNonSystem(companyId, groupId,
+			govAgencyCode, govAgencyName, month, year);
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic createUniqueByGovMonthYearSystem(
+		long companyId, long groupId, String govAgencyCode,
+		String govAgencyName, int month, int year, String system)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .createUniqueByGovMonthYearSystem(companyId, groupId,
+			govAgencyCode, govAgencyName, month, year, system);
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic createUniqueByMonthYearDomainNonSystem(
+		long companyId, long groupId, int month, int year, String domainCode,
+		String domainName) {
+		return getService()
+				   .createUniqueByMonthYearDomainNonSystem(companyId, groupId,
+			month, year, domainCode, domainName);
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic createUniqueByMonthYearDomainSystem(
+		long companyId, long groupId, int month, int year, String domainCode,
+		String domainName, String system) {
+		return getService()
+				   .createUniqueByMonthYearDomainSystem(companyId, groupId,
+			month, year, domainCode, domainName, system);
+	}
+
 	/**
 	* Deletes the opencps dossier statistic with the primary key from the database. Also notifies the appropriate model listeners.
 	*
@@ -424,6 +458,22 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getByG_M_Y_GOV_DOM_GRO_NOT_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system) {
+		return getService()
+				   .getByG_M_Y_GOV_DOM_GRO_NOT_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system);
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getByG_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system) {
+		return getService()
+				   .getByG_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getByG_Y_GO_DO_GR_SY(
 		long groupId, int year, String[] groupAgencyArr, String domainCode,
 		String groupAgency, String system) {
@@ -462,6 +512,10 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 			govAgencyCode, domainCode, groupAgencyCode, system);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDomainCodes() {
+		return getService().getDomainCodes();
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByMonthsYearAndReport(
 		long groupId, int[] month, int year, int reporting) {
 		return getService()
@@ -490,6 +544,10 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
 		return getService().getExportActionableDynamicQuery(portletDataContext);
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getGovAgencyCodes() {
+		return getService().getGovAgencyCodes();
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
@@ -606,6 +664,36 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getPersistedModel(primaryKeyObj);
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic getUniqueByGovMonthYearNonSystem(
+		long groupId, String govAgencyCode, int month, int year) {
+		return getService()
+				   .getUniqueByGovMonthYearNonSystem(groupId, govAgencyCode,
+			month, year);
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic getUniqueByGovMonthYearSystem(
+		long groupId, String govAgencyCode, int month, int year, String system)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .getUniqueByGovMonthYearSystem(groupId, govAgencyCode,
+			month, year, system);
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic getUniqueByMonthYearDomainNonSystem(
+		long groupId, int month, int year, String domainCode) {
+		return getService()
+				   .getUniqueByMonthYearDomainNonSystem(groupId, month, year,
+			domainCode);
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic getUniqueByMonthYearDomainSystem(
+		long groupId, int month, int year, String domainCode, String system) {
+		return getService()
+				   .getUniqueByMonthYearDomainSystem(groupId, month, year,
+			domainCode, system);
 	}
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic removeByG_M_Y_G_D(

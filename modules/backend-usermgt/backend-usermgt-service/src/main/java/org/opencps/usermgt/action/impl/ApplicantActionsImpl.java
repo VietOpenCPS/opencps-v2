@@ -565,11 +565,14 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		} // Import project not using LGSP
 		else {
 			int flagUser = 0;
+			
+			
 			if (Validator.isNotNull(applicantIdNo)) {
 				List<Applicant> appList = ApplicantLocalServiceUtil.findByAppIds(applicantIdNo);
 				if (appList != null && appList.size() > 0) {
 					for (Applicant applicant : appList) {
 						flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
+						
 						if (flagUser == 2) break;
 					}
 				}
@@ -580,6 +583,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				if (appList != null && appList.size() > 0) {
 					for (Applicant applicant : appList) {
 						flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
+						
 						if (flagUser == 2) break;
 					}
 				}
@@ -594,24 +598,25 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					mappingUserId = appUser.getUserId();
 				}
 			}
+			
+			DictCollection dc = DictCollectionLocalServiceUtil
+					.fetchByF_dictCollectionCode(ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION), groupId);
+			String cityName = getDictItemName(groupId, dc, cityCode);
+			String districtName = getDictItemName(groupId, dc, districtCode);
+			String wardName = getDictItemName(groupId, dc, wardCode);
+			//
+			Date appDate = null;
+			if (Validator.isNotNull(applicantIdDate)) {
+				SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
+				try {
+					appDate = sdf.parse(applicantIdDate);
+				} catch (ParseException e) {
+				}
+			}
 
 			if (flagUser != 2) {
-				DictCollection dc = DictCollectionLocalServiceUtil
-						.fetchByF_dictCollectionCode(ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION), groupId);
-				String cityName = getDictItemName(groupId, dc, cityCode);
-				String districtName = getDictItemName(groupId, dc, districtCode);
-				String wardName = getDictItemName(groupId, dc, wardCode);
-				//
-				Date appDate = null;
-				if (Validator.isNotNull(applicantIdDate)) {
-					SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
-					try {
-						appDate = sdf.parse(applicantIdDate);
-					} catch (ParseException e) {
-					}
-				}
 				
-//				System.out.println("flagUser: "+flagUser);
+
 				//Process update applicant and user
 				if (flagUser == 0) {
 					//Add applicant and user
@@ -711,6 +716,51 @@ public class ApplicantActionsImpl implements ApplicantActions {
 							applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
 							districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
 				}
+			}else if(flagUser == 2) {
+				
+				// Update thong tin applicant
+				
+				Applicant app = null;
+				
+				List<Applicant> appList = ApplicantLocalServiceUtil.findByAppIds(applicantIdNo);
+				if (appList != null && appList.size() > 0) {
+					for (Applicant applicant : appList) {
+						flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
+						if (flagUser == 2) {
+							app = applicant;
+							break;	
+						}
+							
+							
+					}
+				}
+				
+				 if(Validator.isNull(app)) {
+					 
+					 appList = ApplicantLocalServiceUtil.findByContactEmailList(contactEmail);
+					if (appList != null && appList.size() > 0) {
+						for (Applicant applicant : appList) {
+							flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
+							if (flagUser == 2){
+								
+								app = applicant;
+								break;
+								
+								}
+						}
+					}
+				 }
+				 
+				
+				 if(Validator.isNotNull(app)) {
+
+					
+					ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, app.getApplicantId(), applicantIdNo, applicantName,
+							applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, contactName, profile, serviceContext);
+					
+				 }
+				
 			}
 		}
 	}

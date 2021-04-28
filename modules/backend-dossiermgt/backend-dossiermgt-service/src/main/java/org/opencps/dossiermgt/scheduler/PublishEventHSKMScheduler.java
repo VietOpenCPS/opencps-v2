@@ -108,7 +108,7 @@ public class PublishEventHSKMScheduler extends BaseMessageListener {
 					ServerConfigTerm.DVCQG_INTEGRATION, 0, QUANTITY_JOB_DVCQG,
 					new PublishQueueComparator(true, Field.CREATE_DATE, Date.class));
 
-			_log.info("lstPqs  : " + lstPqs.size());
+			_log.debug("lstPqs  : " + lstPqs.size());
 
 			if(Validator.isNull(lstPqs) || lstPqs.size() == 0) {
 				_log.info("No queue found with status " + PublishQueueTerm.STATE_WAITING_SYNC);

@@ -73,10 +73,10 @@ public class DeliverableNumberGenerator {
 						_log.info("Vao 55555555 : " + code);
 						seriNumberPattern = code;
 
-					}else{
-						_log.info("ERRRRRRRRR");
-						seriNumberPattern = deliverableType.getCodePattern();
 					}
+				}else{
+					_log.info("ERRRRRRRRR");
+					seriNumberPattern = deliverableType.getCodePattern();
 				}
 			}catch (Exception e) {
 				seriNumberPattern = deliverableType.getCodePattern();

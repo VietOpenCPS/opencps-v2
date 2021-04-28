@@ -21,8 +21,6 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
@@ -39,97 +37,51 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = DossierSyncProcessingScheduler.class)
 public class DossierSyncProcessingScheduler extends BaseMessageListener {
-	static class Counter {
-		private volatile static int count = 0;
-		public static int getCount(){
-			return count;
-		}
-		public static synchronized void decreaseCount(){
-			count--;
-		}
-
-		public static synchronized void setCount(int countNew){
-			count = countNew;
-		}
-	}
-	private static final String startLine1 = "==========";
-	private static final String startLine2 = "==================";
 	private volatile boolean isRunning = false;
 	private static int timeSyncDossier = Validator.isNotNull(PropsUtil.get("opencps.sync.dossier.time"))
 			? Integer.valueOf(PropsUtil.get("opencps.sync.dossier.time"))
 			: 45;
-	private static volatile ThreadPoolExecutor threadPoolExecutor;
-	private static final Integer QUANTITY_JOB = 15;
-
-	private int corePoolSize    = 5;
-	private int maximumPoolSize = 10;
-	private int queueCapacity   = 5;
-	private int keepAliveTime   = 10;
-
-	public DossierSyncProcessingScheduler(){
-		_log.info("Constructor PublishEventHSKMScheduler");
-		if(Validator.isNull(threadPoolExecutor)){
-			_log.info("Creating threadPoolExecutor first time...");
-			threadPoolExecutor = new ThreadPoolExecutor(
-					corePoolSize, // Số thread mặc định được cấp để xử lý request
-					maximumPoolSize, //Số thread tối đa được dùng
-					keepAliveTime, //thời gian sống 1 thread nếu thread đang ko làm gì
-					java.util.concurrent.TimeUnit.SECONDS, //đơn vị thời gian
-					new ArrayBlockingQueue<>(queueCapacity), //Queue để lưu số lượng request chờ khi số thread trong
-					// corePoolSize được dùng hết, khi số lượng request = queueCapacity thì sẽ tạo 1 thread mới
-					new ThreadPoolExecutor.CallerRunsPolicy()); //Tự động xử lý exception khi số lượng request vượt quá queueCapacity
-		}
-	}
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		if (!isRunning) {
-			isRunning = true;
-		} else {
+
+		_log.debug("====DossierSyncProcessingScheduler doReceive====");
+		_log.debug("====isRunning ===="+isRunning);
+		if (isRunning) {
+
 			return;
 		}
+		else {
+			isRunning = true;
+		}
 		try {
-			_log.info("OpenCPS SYNC DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
-
-			List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByStates(new int[]{DossierSyncTerm.STATE_WAITING_SYNC, DossierSyncTerm.STATE_ALREADY_SENT}, 0, QUANTITY_JOB);
-			int sizeDossierSync = lstSyncs.size();
-			Counter.setCount(sizeDossierSync);
-
+			_log.debug("OpenCPS SYNC DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
+			
+			List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByStates(new int[] { DossierSyncTerm.STATE_WAITING_SYNC, DossierSyncTerm.STATE_ALREADY_SENT }, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			
 			for (DossierSync ds : lstSyncs) {
-				threadPoolExecutor.execute(() -> mainProcess(ds, sizeDossierSync));
-				_log.info("Number thread active: " + threadPoolExecutor.getActiveCount());
+				IMessageProcessor processor = MessageProcessor.getProcessor(ds);
+				if (processor != null) {
+	//				_log.info("Processing: " + ds);
+					processor.process();				
+				}
+				else {
+					_log.info("Do not config sync server");
+				}
 			}
-
-			_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
-		} catch (Exception e) {
+			
+			_log.debug("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
+		}
+		catch (Exception e) {
 			_log.debug(e);
 		}
 		isRunning = false;
 	}
-	private void mainProcess(DossierSync dossierSync, int sizeDossierSync) {
-		_log.info(startLine1 + "Start thread DossierSync " + dossierSync.getDossierId());
-		if (Counter.getCount() == sizeDossierSync) {
-			_log.info("Time start: " + APIDateTimeUtils.convertDateToString(new Date()));
-		}
-
-		IMessageProcessor processor = MessageProcessor.getProcessor(dossierSync);
-		if (processor != null) {
-			_log.info("Processing: " + dossierSync);
-			processor.process();
-		} else {
-			_log.info("Do not config sync server");
-		}
-		Counter.decreaseCount();
-		_log.info(startLine1 + "Counting remain: " + Counter.getCount());
-		if (Counter.getCount() == 0) {
-			_log.info("Time end: " + APIDateTimeUtils.convertDateToString(new Date()));
-		}
-
-	}
-
 	
 	  @Activate
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
+
+		  _log.debug("====DossierSyncProcessingScheduler activate====");
 		  String listenerClass = getClass().getName();
 		//Time engine dossier
 		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, timeSyncDossier, TimeUnit.SECOND);
@@ -149,6 +101,9 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 	  
 	@Deactivate
 	protected void deactivate() {
+
+		_log.debug("====DossierSyncProcessingScheduler deactivate====");
+
 		if (_initialized) {
 			try {
 				_schedulerEngineHelper.unschedule(_schedulerEntryImpl, getStorageType());

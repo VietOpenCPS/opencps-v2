@@ -5936,7 +5936,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String delegateDistrictName, String delegateWardCode,
 			String delegateWardName, double durationCount, int durationUnit,
 			String dossierName, String processNo, String metaData,
-			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal, ServiceContext context)
+			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
+			String dossierCounter,int systemId, ServiceContext context)
 			throws PortalException {
 
 		long userId = context.getUserId();
@@ -6044,10 +6045,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setDossierName(dossierName);
 			dossier.setProcessNo(processNo);
 			dossier.setMetaData(metaData);
-			dossier.setVnpostalStatus(vnpostalStatus);
+			dossier.setSystemId(systemId);
+			
+			if(Validator.isNotNull(vnpostalStatus)) {
+				dossier.setVnpostalStatus(vnpostalStatus);
+			}
 			dossier.setVnpostalProfile(vnpostalProfile);
 			if (Validator.isNotNull(fromViaPostal)) {
 				dossier.setFromViaPostal(fromViaPostal);
+			}
+			if (Validator.isNotNull(dossierCounter)) {
+				dossier.setDossierCounter(dossierCounter);
 			}
 
 			dossier = dossierPersistence.update(dossier);
@@ -6134,6 +6142,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setProcessNo(processNo);
 			if (Validator.isNotNull(metaData))
 				dossier.setProcessNo(metaData);
+			if (Validator.isNotNull(dossierCounter)) {
+				dossier.setDossierCounter(dossierCounter);
+			}
 
 			dossier.setViaPostal(viaPostal);
 			if (viaPostal == 1) {
@@ -6167,12 +6178,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			// if (Validator.isNotNull(applicantNote))
 			dossier.setApplicantNote(applicantNote);
-
-			dossier.setVnpostalStatus(vnpostalStatus);
+			if(Validator.isNotNull(vnpostalStatus)) {
+				dossier.setVnpostalStatus(vnpostalStatus);
+			}
 			dossier.setVnpostalProfile(vnpostalProfile);
 			if (Validator.isNotNull(fromViaPostal)) {
 				dossier.setFromViaPostal(fromViaPostal);
 			}
+			dossier.setSystemId(systemId);
 
 			dossier = dossierPersistence.update(dossier);
 
@@ -6407,6 +6420,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			return dossierPersistence.findByG_DN(groupId, dossierNo);
 		} catch (NoSuchDossierException e) {
 			return null;
+		}
+	}
+	public Boolean isDuplicateDossierNo(long groupId, String dossierNo) {
+
+		try {
+			Dossier dossier = dossierPersistence.findByG_DN(groupId, dossierNo);
+
+			return true;
+		} catch (NoSuchDossierException e) {
+
+			return false;
 		}
 	}
 

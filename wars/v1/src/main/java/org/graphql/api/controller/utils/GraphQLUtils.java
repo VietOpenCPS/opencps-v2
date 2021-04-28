@@ -45,22 +45,32 @@ public class GraphQLUtils {
 				JSONObject user = JSONFactoryUtil.createJSONObject(userStr);
 				String secret = getJWTSecret();
 				Algorithm algorithm = Algorithm.HMAC256(secret);
-				long employeeId = user.getLong(UserTerm.CLASS_PK, 0);
-				List<EmployeeJobPos> empJobPosList = EmployeeJobPosLocalServiceUtil
-						.findByF_EmployeeId(employeeId);
-				ArrayList<String> roles = new ArrayList<String>();
-				for (EmployeeJobPos empJobPos : empJobPosList) {
+				if (Validator.isNotNull(user.getString(UserTerm.EMPLOYEE_FULLNAME))) {
+					long employeeId = user.getLong(UserTerm.CLASS_PK, 0);
+					List<EmployeeJobPos> empJobPosList = EmployeeJobPosLocalServiceUtil
+							.findByF_EmployeeId(employeeId);
+					ArrayList<String> roles = new ArrayList<String>();
+					for (EmployeeJobPos empJobPos : empJobPosList) {
 
-					JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(empJobPos.getJobPostId());
-					roles.add(jobPos.getJobPosCode());
+						JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(empJobPos.getJobPostId());
+						roles.add(jobPos.getJobPosCode());
+					}
+					String token = JWT.create()
+							.withClaim("username", user.getString(UserTerm.SCREEN_NAME))
+							.withClaim("fullName", user.getString(UserTerm.EMPLOYEE_FULLNAME))
+							.withClaim("email", user.getString(UserTerm.EMPLOYEE_EMAIL))
+							.withArrayClaim("role", roles.toArray(new String[0]))
+							.sign(algorithm);
+					return token;
+				} else {
+					String token = JWT.create()
+							.withClaim("username", user.getString(UserTerm.SCREEN_NAME))
+							.withClaim("fullName", user.getString(UserTerm.APPLICANT_NAME))
+							.withClaim("email", user.getString(UserTerm.APPLICANT_CONTACT_EMAIL))
+							.withArrayClaim("role", new String[]{"APPLICANT"})
+							.sign(algorithm);
+					return token;
 				}
-				String token = JWT.create()
-						.withClaim("username", user.getString(UserTerm.SCREEN_NAME))
-						.withClaim("fullName", user.getString(UserTerm.EMPLOYEE_FULLNAME))
-						.withClaim("email", user.getString(UserTerm.EMPLOYEE_EMAIL))
-						.withArrayClaim("role", roles.toArray(new String[0]))
-						.sign(algorithm);
-				return token;
 			}
 		} catch (Exception e) {
 

@@ -243,7 +243,7 @@ public class OneMinute extends BaseMessageListener {
 								}
 
 								if (messageEntry.isSendEmail()) {
-									_log.info("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
+									_log.debug("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
 									MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK, serviceContext);
 									resultSendSMS.setResult(1L);
 								}
@@ -272,6 +272,7 @@ public class OneMinute extends BaseMessageListener {
 						}
 					}
 					catch (Exception e) {
+						_log.error(e);
 						_log.error("Can't send message from queue " + e);
 					}
 				}

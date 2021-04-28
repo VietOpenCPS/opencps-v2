@@ -60,6 +60,15 @@ public class ApplicantLocalServiceUtil {
 		return getService().addApplicant(applicant);
 	}
 
+	public static com.liferay.portal.kernel.model.User addUser(
+		String fullName, String screenName, String email, String password,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .addUser(fullName, screenName, email, password,
+			serviceContext);
+	}
+
 	public static org.opencps.usermgt.model.Applicant adminProcessData(
 		com.liferay.portal.kernel.json.JSONObject objectData)
 		throws org.opencps.usermgt.exception.DuplicateContactEmailException,

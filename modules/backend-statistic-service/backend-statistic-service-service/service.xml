@@ -106,11 +106,35 @@
 			<finder-column name="year"/>
 		</finder>
 
-		<finder return-type="Collection" name="G_D_M_Y">
+		<finder return-type="OpencpsDossierStatistic" name="GID_M_Y_GAC_S" where="domainCode is null">
 			<finder-column name="groupId"/>
-			<finder-column name="domainCode"/>
+			<finder-column name="govAgencyCode"/>
 			<finder-column name="month"/>
-			<finder-column name="year"/>			
+			<finder-column name="year"/>
+			<finder-column name="system"/>			
+		</finder>
+		
+		<finder return-type="OpencpsDossierStatistic" name="GID_M_Y_S_DC" where="govAgencyCode is null">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="system"/>	
+			<finder-column name="domainCode"/>		
+		</finder>
+		
+		<finder return-type="OpencpsDossierStatistic" name="GID_M_Y_GAC" where="domainCode is null and system is null">
+			<finder-column name="groupId"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>		
+		</finder>
+		
+		
+		<finder return-type="OpencpsDossierStatistic" name="GID_M_Y_DC" where="govAgencyCode is null and system is null">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="domainCode"/>		
 		</finder>
 
 		<finder return-type="Collection" name="G_M_Y">
@@ -190,6 +214,24 @@
 			<finder-column name="groupAgencyCode"/>
 			<finder-column name="system"/>
 		</finder>
+        <finder name="G_M_Y_GOV_DOM_GRO_NOT_SYS" return-type="Collection">
+        	<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="groupAgencyCode"/>
+			<finder-column name="system" comparator="!="/>
+        </finder>
+        <finder name="G_M_Y_GOV_DOM_GRO_SYS" return-type="Collection">
+        	<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="groupAgencyCode"/>
+			<finder-column name="system"/>
+        </finder>
 	</entity>
 
 	<entity local-service="true" name="OpencpsVotingStatistic"

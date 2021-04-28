@@ -72,9 +72,9 @@ public class AccessTokenLocalServiceImpl extends AccessTokenLocalServiceBaseImpl
 			accessToken = accessTokenPersistence.findByF_GID_ClassName_First(groupId, className, null);
 			Date now = new Date();
 			if (accessToken.getExpireDate() != null) {
-				_log.info(accessToken.getExpireDate());
-				_log.info(now);
-				_log.info(accessToken.getExpireDate().compareTo(now));
+				_log.debug(accessToken.getExpireDate());
+				_log.debug(now);
+				_log.debug(accessToken.getExpireDate().compareTo(now));
 				if (accessToken.getExpireDate().compareTo(now) == 1) {
 					return accessToken;
 				}else {

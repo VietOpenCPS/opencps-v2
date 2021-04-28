@@ -877,6 +877,10 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.FROM_VIA_POSTAL)) {
 			model.setFromViaPostal(jsonObj.getInt(DossierTerm.FROM_VIA_POSTAL));
 		}
+
+		if (jsonObj.has(DossierTerm.DOSSIER_COUNTER)) {
+			model.setDossierCounter(jsonObj.getString(DossierTerm.DOSSIER_COUNTER));
+		}
 		
 		return model;
 	}	

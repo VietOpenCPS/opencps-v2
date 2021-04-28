@@ -1857,4 +1857,16 @@ public interface DossierManagement {
 					@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
 			@ApiParam(value = "partno of dossier part", required = true) @PathParam("partNo") String partNo,
 			@BeanParam DossierFileModel input);
+
+
+	@GET
+	@Path("/updatedeliverablestatus/{dossierId}/{dossierStatus}")
+	@Produces({
+			MediaType.APPLICATION_JSON
+	})
+	public Response updateDeliverableStatus(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@PathParam("dossierId")long dossierId,@PathParam("dossierStatus")String dossierStatus);
 }

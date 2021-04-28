@@ -89,8 +89,8 @@ public class DossierNumberGenerator {
 			throws ParseException, SearchException {
 
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		_log.debug("==generateDossierNumber=="+dossier.getDossierId());
 		String dossierNumber = StringPool.BLANK;
-		_log.debug("seriNumberPattern: "+seriNumberPattern);
 		ServiceProcess sp = ServiceProcessLocalServiceUtil.getByG_PNO(groupId, dossier.getProcessNo());
 		
 		if (sp != null && SCOPE_GOV_AGENCY_CODE_PATTERN.contentEquals(sp.getDossierNoPattern())) {
@@ -113,8 +113,6 @@ public class DossierNumberGenerator {
 				}
 			}
 		}
-
-		_log.debug("seriNumberPattern: "+seriNumberPattern);
 		
 		if (dossier != null) {
 			String codePatternGov = CODE_PATTERN_GOV;
@@ -406,7 +404,20 @@ public class DossierNumberGenerator {
 
 			dossierNumber = seriNumberPattern;
 		}
-		return dossierNumber;
+
+
+		boolean isDuplicateDossierNo = DossierLocalServiceUtil.isDuplicateDossierNo(groupId,dossierNumber);
+		_log.debug("++++dossierNumber:"+dossierNumber+"| isDuplicateDossierNo:"+isDuplicateDossierNo+"|dossierId: "+dossierId);
+		if(Validator.isNull(dossierNumber)){
+			return dossierNumber;
+		}
+		if(isDuplicateDossierNo){
+			return generateDossierNumber(groupId,  companyId,  dossierId,  processOtionId,
+					seriNumberPattern,  params,  searchContext);
+		}else {
+
+			return dossierNumber;
+		}
 	}
 
 	private static final String CODE = "{code}";
@@ -596,7 +607,7 @@ public class DossierNumberGenerator {
 
 		long _counterNumber = 0;
 		Counter counter = null;
-		_log.info("pattern" + pattern);
+		_log.debug("pattern" + pattern);
 		Counter counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
 		if (Validator.isNotNull(counterDetail)) {
 			// create counter config
@@ -612,7 +623,7 @@ public class DossierNumberGenerator {
 			} while (counter == null);
 
 		} else {
-			_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+			_log.debug("COUTER_CURR_CONFIG_IS_NOT_NULL");
 			counterDetail = CounterLocalServiceUtil.createCounter(pattern);
 			// increment CurrentCounter
 			_counterNumber = counterDetail.getCurrentId() + 1;

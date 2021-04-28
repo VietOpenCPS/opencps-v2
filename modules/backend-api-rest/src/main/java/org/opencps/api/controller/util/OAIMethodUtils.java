@@ -82,31 +82,31 @@ public class OAIMethodUtils {
 
 	public OAIPMHtype calculateIdentify(RequestType query) {
 
-		System.out.println(VerbType.IDENTIFY);
+		_log.debug(VerbType.IDENTIFY);
 		return buildBadReq();
 	}
 
 	public OAIPMHtype calculateListMetadataFormats(RequestType query) {
 
-		System.out.println(VerbType.LIST_METADATA_FORMATS);
+		_log.debug(VerbType.LIST_METADATA_FORMATS);
 		return buildBadReq();
 	}
 
 	public OAIPMHtype calculateListSets(RequestType query) {
 
-		System.out.println(VerbType.LIST_SETS);
+		_log.debug(VerbType.LIST_SETS);
 		return buildBadReq();
 	}
 
 	public OAIPMHtype calculateGetRecord(RequestType query) {
 
-		System.out.println(VerbType.GET_RECORD);
+		_log.debug(VerbType.GET_RECORD);
 		return buildBadReq();
 	}
 
 	public OAIPMHtype calculateListIdentifiers(RequestType query) {
 
-		System.out.println(VerbType.LIST_IDENTIFIERS);
+		_log.debug(VerbType.LIST_IDENTIFIERS);
 		return buildBadReq();
 	}
 
