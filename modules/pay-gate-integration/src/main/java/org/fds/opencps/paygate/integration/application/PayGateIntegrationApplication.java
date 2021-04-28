@@ -441,6 +441,7 @@ public class PayGateIntegrationApplication extends Application {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.findPaymentFileByDossierId(dossier.getGroupId(), dossierId);
 				JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 						.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+				_log.debug("PaymentFile: " + JSONFactoryUtil.looseSerialize(data));
 				String keySuccess = data.getString(KeyPayV3Term.KEY_PAY_SUCCESS);
 				String keyFail = data.getString(KeyPayV3Term.KEY_PAY_FAIL);
 				String qrCode = data.getString(KeyPayV3Term.QRCODE_PAY);

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.fds.opencps.paygate.integration.action.impl;
+package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -13,14 +13,29 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
+import org.opencps.dossiermgt.action.KeyPayV3Action;
+import org.opencps.dossiermgt.action.PaymentFileActions;
+import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
+import org.opencps.dossiermgt.action.util.*;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.MediaType;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,28 +43,6 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.MediaType;
-
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.Validator;
-import org.fds.opencps.paygate.integration.action.KeyPayV3Action;
-import org.fds.opencps.paygate.integration.util.KeyPayV3Term;
-import org.fds.opencps.paygate.integration.util.KeyPayV3Utils;
-import org.fds.opencps.paygate.integration.util.PayGateTerm;
-import org.fds.opencps.paygate.integration.util.PayGateUtil;
-import org.opencps.dossiermgt.action.PaymentFileActions;
-import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.dossiermgt.constants.KeyPayTerm;
-import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.model.*;
-import org.opencps.dossiermgt.service.*;
 
 /**
  * @author moon
@@ -69,48 +62,50 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 	 * javax.servlet.http.HttpServletRequest)
 	 */
 	@Override
-	public String createPaylater(User user, long dossierId, ServiceContext serviceContext,
+	public JSONObject createPaylater(User user, long dossierId, ServiceContext serviceContext,
 			HttpServletRequest request) {
 		String result = StringPool.BLANK;
+		JSONObject schemaJson = JSONFactoryUtil.createJSONObject();
 
 		try {
 
 			Dossier dossier = DossierLocalServiceUtil.findDossierById(dossierId);
-			_log.info("DossierId" + dossierId);
+
 			_log.info("Dossier" + JSONFactoryUtil.looseSerialize(dossier));
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
-			JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+			_log.info("Payment" + JSONFactoryUtil.looseSerialize(paymentFile));
+			 schemaJson = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 					.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-			if (schema == null) {
-				return result;
+			if (schemaJson == null) {
+				return schemaJson;
 			}
 
-			String client_id = schema.getString(KeyPayV3Term.CLIENT_ID);
+			String client_id = schemaJson.getString(KeyPayV3Term.CLIENT_ID);
 			String addition_fee = String.valueOf(paymentFile.getShipAmount());
 			String trans_amount = String.valueOf(paymentFile.getPaymentAmount());
-			String command = schema.getString(KeyPayV3Term.COMMAND_PAYLATER);
-			String version = schema.getString(KeyPayV3Term.VERSION);
-			String hash_key_1 = schema.getString(KeyPayV3Term.CLIENT_KEY_1);
+			String command = schemaJson.getString(KeyPayV3Term.COMMAND_PAYLATER);
+			String version = schemaJson.getString(KeyPayV3Term.VERSION);
+			String hash_key_1 = schemaJson.getString(KeyPayV3Term.CLIENT_KEY_1);
 
 			JSONObject data = JSONFactoryUtil.createJSONObject();
 			String transactionId = KeyPayV3Utils.encodeTransactionId(dossier.getDossierId());
-			data.put(KeyPayV3Term.CLIENT_ID, schema.getString(KeyPayV3Term.CLIENT_ID));
+			data.put(KeyPayV3Term.CLIENT_ID, schemaJson.getString(KeyPayV3Term.CLIENT_ID));
 			data.put(KeyPayV3Term.TRANSACTION_ID, transactionId);
 			data.put(KeyPayV3Term.TRANS_AMOUNT, trans_amount);
 			data.put(KeyPayV3Term.COMMAND, command);// default PAY
 			data.put(KeyPayV3Term.VERSION, version);// default "3.0"
 			data.put(KeyPayV3Term.DESCRIPTION, paymentFile.getPaymentNote());// ?
-			data.put(KeyPayV3Term.LOCALE, schema.getString(KeyPayV3Term.LOCALE));// default vn
-			data.put(KeyPayV3Term.COUNTRY_CODE, schema.getString(KeyPayV3Term.COUNTRY_CODE)); // default vi
-			data.put(KeyPayV3Term.CURRENCY_CODE, schema.getString(KeyPayV3Term.CURRENCY_CODE)); // default VND
-			data.put(KeyPayV3Term.ENVIRONMENT, schema.getString(KeyPayV3Term.ENVIRONMENT)); // default 1-web, 2-app
+			data.put(KeyPayV3Term.LOCALE, schemaJson.getString(KeyPayV3Term.LOCALE));// default vn
+			data.put(KeyPayV3Term.COUNTRY_CODE, schemaJson.getString(KeyPayV3Term.COUNTRY_CODE)); // default vi
+			data.put(KeyPayV3Term.CURRENCY_CODE, schemaJson.getString(KeyPayV3Term.CURRENCY_CODE)); // default VND
+			data.put(KeyPayV3Term.ENVIRONMENT, schemaJson.getString(KeyPayV3Term.ENVIRONMENT)); // default 1-web, 2-app
 			data.put(KeyPayV3Term.BILL_ID, dossier.getDossierId());
 
 			JSONObject bill_info = JSONFactoryUtil.createJSONObject();
-			bill_info.put(KeyPayV3Term.MADICHVU, schema.getString(KeyPayV3Term.MADICHVU)); // thu phi le phi = 2
+			bill_info.put(KeyPayV3Term.MADICHVU, schemaJson.getString(KeyPayV3Term.MADICHVU)); // thu phi le phi = 2
 
 			// moi dich vu cong co 1 thong tin ngan hang thu huong khac nhau
-			JSONObject banksInfo = schema.getJSONObject(KeyPayV3Term.BANKINFO);
+			JSONObject banksInfo = schemaJson.getJSONObject(KeyPayV3Term.BANKINFO);
 			JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
 			if (banksInfo.has(dossier.getServiceCode())) {
 				bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
@@ -126,13 +121,13 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			JSONObject philephiJ = JSONFactoryUtil.createJSONObject();
 			philephiJ.put(KeyPayV3Term.LOAIPHILEPHI, KeyPayV3Term.LOAIPHILEPHI_PHI);
 			philephiJ.put(KeyPayV3Term.MAPHILEPHI, "2");
-			philephiJ.put(KeyPayV3Term.TENPHILEPHI, schema.getString(KeyPayV3Term.TENPHILEPHI_PHI));
+			philephiJ.put(KeyPayV3Term.TENPHILEPHI, schemaJson.getString(KeyPayV3Term.TENPHILEPHI_PHI));
 			philephiJ.put(KeyPayV3Term.SOTIEN, paymentFile.getServiceAmount());
 			philephi.put(philephiJ);
 			JSONObject philephiJ2 = JSONFactoryUtil.createJSONObject();
 			philephiJ2.put(KeyPayV3Term.LOAIPHILEPHI, KeyPayV3Term.LOAIPHILEPHI_LEPHI);
 			philephiJ2.put(KeyPayV3Term.MAPHILEPHI, "2");
-			philephiJ2.put(KeyPayV3Term.TENPHILEPHI, schema.getString(KeyPayV3Term.TENPHILEPHI_LEPHI));
+			philephiJ2.put(KeyPayV3Term.TENPHILEPHI, schemaJson.getString(KeyPayV3Term.TENPHILEPHI_LEPHI));
 			philephiJ2.put(KeyPayV3Term.SOTIEN, paymentFile.getFeeAmount());
 			philephi.put(philephiJ2);
 			bill_info.put(KeyPayV3Term.PHILEPHI, philephi);
@@ -143,8 +138,8 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 //				MaDonVi: 000.00.00.G17 TenDonVi: Bộ Xây dựng
 //
 //				MaCQ và Ten CQ trùng luôn MaDonVi và TenDonVi
-			bill_info.put(KeyPayV3Term.MADONVI, schema.getString(KeyPayV3Term.MADONVI));
-			bill_info.put(KeyPayV3Term.TENDONVI, schema.getString(KeyPayV3Term.TENDONVI));
+			bill_info.put(KeyPayV3Term.MADONVI, schemaJson.getString(KeyPayV3Term.MADONVI));
+			bill_info.put(KeyPayV3Term.TENDONVI, schemaJson.getString(KeyPayV3Term.TENDONVI));
 			bill_info.put(KeyPayV3Term.MAHOSO, dossier.getDossierNo());
 //			ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(dossier.getGroupId(),
 //					dossier.getServiceCode());
@@ -154,7 +149,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			bill_info.put(KeyPayV3Term.MATTHC, dossier.getServiceCode());// ma TTHC  = serviceCode
 			bill_info.put(KeyPayV3Term.TENTTHC, dossier.getServiceName());
 			// TODO: fix
-			bill_info.put(KeyPayV3Term.MADVC, serviceCode + schema.getString(KeyPayV3Term.MADVCAPPEND));// chua xd
+			bill_info.put(KeyPayV3Term.MADVC, serviceCode + schemaJson.getString(KeyPayV3Term.MADVCAPPEND));// chua xd
 			bill_info.put(KeyPayV3Term.TENDVC, dossier.getServiceName());// chua xd
 			bill_info.put(KeyPayV3Term.NOIDUNGTHANHTOAN, paymentFile.getPaymentNote());
 			bill_info.put(KeyPayV3Term.MALOAIHINHTHUPHAT, "");// ko bb;
@@ -203,20 +198,19 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 
 			data.put(KeyPayV3Term.ADDITION_FEE, addition_fee);
 
-//			String check_sum = KeyPayV3Utils.genCreateChecksum(client_id, command, transactionId, hash_key_1);
 			String check_sum = KeyPayV3Utils.genCallbackChecksumReceived(addition_fee,
 					client_id, command, trans_amount, transactionId, version, hash_key_1);
 			_log.info("keypay check_sum " + check_sum);
 
 			data.put(KeyPayV3Term.CHECK_SUM, check_sum);
 
-			String endpoint = schema.getString(KeyPayV3Term.KEYPAY_LATE_CREATE_TRANSACTION_ENDPOINT);
+			String endpoint = schemaJson.getString(KeyPayV3Term.KEYPAY_LATE_CREATE_TRANSACTION_ENDPOINT);
 
 			_log.info("keypay endpoint " + endpoint);
 
 			_log.info("keypay data " + data);
 			// Không có Payment Amount không thực hiện keyPay
-			JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+//			epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 			if(paymentFile.getPaymentAmount() > 0) {
 				JSONObject response = KeyPayV3Utils.postAPI(endpoint, data);
 				_log.info("response " + JSONFactoryUtil.looseSerialize(response));
@@ -225,31 +219,29 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 					if (response.has(KeyPayV3Term.ERROR)
 							&& KeyPayV3Term.ERROR_0.equals(response.getString(KeyPayV3Term.ERROR))) {
 						String qrcode_pay = dataJson.getString(KeyPayV3Term.QRCODE_PAY);
-						_log.debug("QRCODE_PAY :" + qrcode_pay);
-						schema.put(KeyPayV3Term.TRANSACTION_ID, transactionId);
-						schema.put(KeyPayV3Term.QRCODE_PAY, qrcode_pay);
-						schema.put(KeyPayV3Term.TRANS_AMOUNT, trans_amount);
-						schema.put(KeyPayV3Term.ADDITION_FEE, addition_fee);
-						schema.put(KeyPayV3Term.KEY_PAY_SUCCESS, "Success");
+						_log.info("QRCODE_PAY :" + qrcode_pay);
+						schemaJson.put(KeyPayV3Term.TRANSACTION_ID, transactionId);
+						schemaJson.put(KeyPayV3Term.QRCODE_PAY, qrcode_pay);
+						schemaJson.put(KeyPayV3Term.TRANS_AMOUNT, trans_amount);
+						schemaJson.put(KeyPayV3Term.ADDITION_FEE, addition_fee);
+						schemaJson.put(KeyPayV3Term.KEY_PAY_SUCCESS, "Success");
 
 					}else{
-						schema.put(KeyPayV3Term.KEY_PAY_FAIL, "Fail");
+						schemaJson.put(KeyPayV3Term.KEY_PAY_FAIL, "Fail");
 					}
-					result = response.toString();
 				}else{
-					schema.put(KeyPayV3Term.KEY_PAY_FAIL, "Fail");
+					schemaJson.put(KeyPayV3Term.KEY_PAY_FAIL, "Fail");
 				}
 			}else{
-				schema.put(KeyPayV3Term.KEY_PAY_FAIL, "Fail");
+				schemaJson.put(KeyPayV3Term.KEY_PAY_FAIL, "Fail");
 			}
-			epaymentProfile.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
-			PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-					epaymentProfile.toJSONString(), serviceContext);
+//			epaymentProfile.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schemaJson);
+			_log.info("EpaymentFile: " + JSONFactoryUtil.looseSerialize(schemaJson));
 		} catch (Exception e) {
 			_log.error(e);
 		}
 
-		return result;
+		return schemaJson;
 	}
 
 	public File getQrCode(User user, long dossierId, ServiceContext serviceContext, HttpServletRequest request, HttpServletResponse response, String imaStr) {
@@ -258,13 +250,13 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 		try {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.findPaymentFileByDossierId(dossier.getGroupId(), dossierId);
-			JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
-			JSONObject keyPayLateConfig = JSONFactoryUtil.createJSONObject(data.getString(KeyPayTerm.KEYPAY_LATE_CONFIG));
-			String imageStr = keyPayLateConfig.getString(KeyPayV3Term.QRCODE_PAY);
+			JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+					.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+			String imageStr = data.getString(KeyPayV3Term.QRCODE_PAY);
+			_log.info("imageStr: " + JSONFactoryUtil.looseSerialize(imageStr));
 			if(Validator.isNotNull(imaStr)){
 				imageStr = imaStr;
 			}
-			_log.info("Image: " + imageStr);
 			if(Validator.isNotNull(imageStr)) {
 				String imageDataBytes = imageStr.split(",")[1];
 

@@ -109,10 +109,7 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDatePhaseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
-import org.opencps.dossiermgt.action.DossierActions;
-import org.opencps.dossiermgt.action.DossierFileActions;
-import org.opencps.dossiermgt.action.DossierUserActions;
-import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.action.*;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
@@ -3235,13 +3232,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (epaymentConfigJSON.has(KeyPayTerm.KEYPAY_LATE_CONFIG)) {
 				try {
+					User user = UserLocalServiceUtil.fetchUser(userId);
 					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
-					createTransactionKeypayV3(dossier, dossier.getDossierActionId());
+//					createTransactionKeypayV3(dossier, dossier.getDossierActionId());
 //					createKeypayV3(dossier);
-//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-//							epaymentProfileJSON.toJSONString(), context);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfileJSON.toJSONString(), context);
+					KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
+					JSONObject epaymentProFile = keypayAction.createPaylater(user, dossier.getDossierId(), context, null);
+					if(Validator.isNotNull(epaymentProFile)){
+						epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE_CONFIG, epaymentProFile);
+					}
 				} catch (Exception e) {
 					_log.error(e);
 				}
@@ -5199,8 +5202,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			params.put(DossierTerm.DOSSIER_ID, dossierId);
 //			_log.info("DossierId " + dossierId + " GroupId " + groupId);
 			//Hồ sơ đẩy sang chưa kịp tạo ==> Để sleep 2s để hồ sơ có thể tạo
-//			Thread.sleep(TIME_SLEEP);
-			Dossier dossier3 = DossierLocalServiceUtil.fetchDossier(dossierId);
+//			Thread.sleep(3000);
+			Dossier dossier3 = DossierLocalServiceUtil.findDossierById(dossierId);
 			_log.info(" Log Dossier " + JSONFactoryUtil.looseSerialize(dossier3));
 			JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON, baseUrl,
 					KeyPayTerm.ENDPOINT_KEYPAY, "", "", properties, params, context);
