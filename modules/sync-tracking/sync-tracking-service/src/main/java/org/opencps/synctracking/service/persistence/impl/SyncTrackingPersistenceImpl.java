@@ -2503,6 +2503,594 @@ public class SyncTrackingPersistenceImpl extends BasePersistenceImpl<SyncTrackin
 	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_1 = "syncTracking.dossierNo IS NULL";
 	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_2 = "syncTracking.dossierNo = ?";
 	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_3 = "(syncTracking.dossierNo IS NULL OR syncTracking.dossierNo = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_API =
+		new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
+			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, SyncTrackingImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_GID_API",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_API =
+		new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
+			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, SyncTrackingImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByF_GID_API",
+			new String[] { Long.class.getName(), String.class.getName() },
+			SyncTrackingModelImpl.GROUPID_COLUMN_BITMASK |
+			SyncTrackingModelImpl.API_COLUMN_BITMASK |
+			SyncTrackingModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_API = new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
+			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_GID_API",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns all the sync trackings where groupId = &#63; and api = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param api the api
+	 * @return the matching sync trackings
+	 */
+	@Override
+	public List<SyncTracking> findByF_GID_API(long groupId, String api) {
+		return findByF_GID_API(groupId, api, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the sync trackings where groupId = &#63; and api = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param api the api
+	 * @param start the lower bound of the range of sync trackings
+	 * @param end the upper bound of the range of sync trackings (not inclusive)
+	 * @return the range of matching sync trackings
+	 */
+	@Override
+	public List<SyncTracking> findByF_GID_API(long groupId, String api,
+		int start, int end) {
+		return findByF_GID_API(groupId, api, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the sync trackings where groupId = &#63; and api = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param api the api
+	 * @param start the lower bound of the range of sync trackings
+	 * @param end the upper bound of the range of sync trackings (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching sync trackings
+	 */
+	@Override
+	public List<SyncTracking> findByF_GID_API(long groupId, String api,
+		int start, int end, OrderByComparator<SyncTracking> orderByComparator) {
+		return findByF_GID_API(groupId, api, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the sync trackings where groupId = &#63; and api = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncTrackingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param api the api
+	 * @param start the lower bound of the range of sync trackings
+	 * @param end the upper bound of the range of sync trackings (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching sync trackings
+	 */
+	@Override
+	public List<SyncTracking> findByF_GID_API(long groupId, String api,
+		int start, int end, OrderByComparator<SyncTracking> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_API;
+			finderArgs = new Object[] { groupId, api };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_API;
+			finderArgs = new Object[] {
+					groupId, api,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<SyncTracking> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<SyncTracking>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (SyncTracking syncTracking : list) {
+					if ((groupId != syncTracking.getGroupId()) ||
+							!Objects.equals(api, syncTracking.getApi())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_SYNCTRACKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_API_GROUPID_2);
+
+			boolean bindApi = false;
+
+			if (api == null) {
+				query.append(_FINDER_COLUMN_F_GID_API_API_1);
+			}
+			else if (api.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_API_API_3);
+			}
+			else {
+				bindApi = true;
+
+				query.append(_FINDER_COLUMN_F_GID_API_API_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(SyncTrackingModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindApi) {
+					qPos.add(api);
+				}
+
+				if (!pagination) {
+					list = (List<SyncTracking>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<SyncTracking>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first sync tracking in the ordered set where groupId = &#63; and api = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param api the api
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching sync tracking
+	 * @throws NoSuchSyncTrackingException if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking findByF_GID_API_First(long groupId, String api,
+		OrderByComparator<SyncTracking> orderByComparator)
+		throws NoSuchSyncTrackingException {
+		SyncTracking syncTracking = fetchByF_GID_API_First(groupId, api,
+				orderByComparator);
+
+		if (syncTracking != null) {
+			return syncTracking;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", api=");
+		msg.append(api);
+
+		msg.append("}");
+
+		throw new NoSuchSyncTrackingException(msg.toString());
+	}
+
+	/**
+	 * Returns the first sync tracking in the ordered set where groupId = &#63; and api = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param api the api
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking fetchByF_GID_API_First(long groupId, String api,
+		OrderByComparator<SyncTracking> orderByComparator) {
+		List<SyncTracking> list = findByF_GID_API(groupId, api, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last sync tracking in the ordered set where groupId = &#63; and api = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param api the api
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching sync tracking
+	 * @throws NoSuchSyncTrackingException if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking findByF_GID_API_Last(long groupId, String api,
+		OrderByComparator<SyncTracking> orderByComparator)
+		throws NoSuchSyncTrackingException {
+		SyncTracking syncTracking = fetchByF_GID_API_Last(groupId, api,
+				orderByComparator);
+
+		if (syncTracking != null) {
+			return syncTracking;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", api=");
+		msg.append(api);
+
+		msg.append("}");
+
+		throw new NoSuchSyncTrackingException(msg.toString());
+	}
+
+	/**
+	 * Returns the last sync tracking in the ordered set where groupId = &#63; and api = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param api the api
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking fetchByF_GID_API_Last(long groupId, String api,
+		OrderByComparator<SyncTracking> orderByComparator) {
+		int count = countByF_GID_API(groupId, api);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<SyncTracking> list = findByF_GID_API(groupId, api, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the sync trackings before and after the current sync tracking in the ordered set where groupId = &#63; and api = &#63;.
+	 *
+	 * @param trackingId the primary key of the current sync tracking
+	 * @param groupId the group ID
+	 * @param api the api
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next sync tracking
+	 * @throws NoSuchSyncTrackingException if a sync tracking with the primary key could not be found
+	 */
+	@Override
+	public SyncTracking[] findByF_GID_API_PrevAndNext(long trackingId,
+		long groupId, String api,
+		OrderByComparator<SyncTracking> orderByComparator)
+		throws NoSuchSyncTrackingException {
+		SyncTracking syncTracking = findByPrimaryKey(trackingId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SyncTracking[] array = new SyncTrackingImpl[3];
+
+			array[0] = getByF_GID_API_PrevAndNext(session, syncTracking,
+					groupId, api, orderByComparator, true);
+
+			array[1] = syncTracking;
+
+			array[2] = getByF_GID_API_PrevAndNext(session, syncTracking,
+					groupId, api, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected SyncTracking getByF_GID_API_PrevAndNext(Session session,
+		SyncTracking syncTracking, long groupId, String api,
+		OrderByComparator<SyncTracking> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_SYNCTRACKING_WHERE);
+
+		query.append(_FINDER_COLUMN_F_GID_API_GROUPID_2);
+
+		boolean bindApi = false;
+
+		if (api == null) {
+			query.append(_FINDER_COLUMN_F_GID_API_API_1);
+		}
+		else if (api.equals("")) {
+			query.append(_FINDER_COLUMN_F_GID_API_API_3);
+		}
+		else {
+			bindApi = true;
+
+			query.append(_FINDER_COLUMN_F_GID_API_API_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(SyncTrackingModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (bindApi) {
+			qPos.add(api);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(syncTracking);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<SyncTracking> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the sync trackings where groupId = &#63; and api = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param api the api
+	 */
+	@Override
+	public void removeByF_GID_API(long groupId, String api) {
+		for (SyncTracking syncTracking : findByF_GID_API(groupId, api,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(syncTracking);
+		}
+	}
+
+	/**
+	 * Returns the number of sync trackings where groupId = &#63; and api = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param api the api
+	 * @return the number of matching sync trackings
+	 */
+	@Override
+	public int countByF_GID_API(long groupId, String api) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_API;
+
+		Object[] finderArgs = new Object[] { groupId, api };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_SYNCTRACKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_API_GROUPID_2);
+
+			boolean bindApi = false;
+
+			if (api == null) {
+				query.append(_FINDER_COLUMN_F_GID_API_API_1);
+			}
+			else if (api.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_API_API_3);
+			}
+			else {
+				bindApi = true;
+
+				query.append(_FINDER_COLUMN_F_GID_API_API_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindApi) {
+					qPos.add(api);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_API_GROUPID_2 = "syncTracking.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_API_API_1 = "syncTracking.api IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_API_API_2 = "syncTracking.api = ?";
+	private static final String _FINDER_COLUMN_F_GID_API_API_3 = "(syncTracking.api IS NULL OR syncTracking.api = '')";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_PROTOCOL =
 		new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
 			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, SyncTrackingImpl.class,
@@ -8630,6 +9218,15 @@ public class SyncTrackingPersistenceImpl extends BasePersistenceImpl<SyncTrackin
 
 			args = new Object[] {
 					syncTrackingModelImpl.getGroupId(),
+					syncTrackingModelImpl.getApi()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_API, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_API,
+				args);
+
+			args = new Object[] {
+					syncTrackingModelImpl.getGroupId(),
 					syncTrackingModelImpl.getProtocol()
 				};
 
@@ -8717,6 +9314,27 @@ public class SyncTrackingPersistenceImpl extends BasePersistenceImpl<SyncTrackin
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
+					args);
+			}
+
+			if ((syncTrackingModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_API.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						syncTrackingModelImpl.getOriginalGroupId(),
+						syncTrackingModelImpl.getOriginalApi()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_API, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_API,
+					args);
+
+				args = new Object[] {
+						syncTrackingModelImpl.getGroupId(),
+						syncTrackingModelImpl.getApi()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_API, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_API,
 					args);
 			}
 

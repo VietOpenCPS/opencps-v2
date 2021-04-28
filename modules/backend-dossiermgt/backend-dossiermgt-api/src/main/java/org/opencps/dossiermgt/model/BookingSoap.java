@@ -56,6 +56,7 @@ public class BookingSoap implements Serializable {
 		soapModel.setOnline(model.isOnline());
 		soapModel.setBookingInTime(model.getBookingInTime());
 		soapModel.setTelNo(model.getTelNo());
+		soapModel.setGovAgencyCode(model.getGovAgencyCode());
 
 		return soapModel;
 	}
@@ -300,6 +301,14 @@ public class BookingSoap implements Serializable {
 		_telNo = telNo;
 	}
 
+	public String getGovAgencyCode() {
+		return _govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		_govAgencyCode = govAgencyCode;
+	}
+
 	private String _uuid;
 	private long _bookingId;
 	private long _groupId;
@@ -323,4 +332,5 @@ public class BookingSoap implements Serializable {
 	private boolean _online;
 	private String _bookingInTime;
 	private String _telNo;
+	private String _govAgencyCode;
 }

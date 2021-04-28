@@ -1,3 +1,5 @@
+create index IX_269B4D3B on opencps_synctracking (groupId, api[$COLUMN_LENGTH:75$]);
+create index IX_347F1D6B on opencps_synctracking (groupId, createDate, createDate);
 create index IX_5D8AF1B8 on opencps_synctracking (groupId, createDate, modifiedDate);
 create index IX_FC376796 on opencps_synctracking (groupId, dossierNo[$COLUMN_LENGTH:75$], createDate, modifiedDate);
 create index IX_C61B1D01 on opencps_synctracking (groupId, protocol[$COLUMN_LENGTH:75$], dossierNo[$COLUMN_LENGTH:75$]);

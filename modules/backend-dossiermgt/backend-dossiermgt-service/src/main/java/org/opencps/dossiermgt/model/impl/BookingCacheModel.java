@@ -64,7 +64,7 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(47);
+		StringBundler sb = new StringBundler(49);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -112,6 +112,8 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 		sb.append(bookingInTime);
 		sb.append(", telNo=");
 		sb.append(telNo);
+		sb.append(", govAgencyCode=");
+		sb.append(govAgencyCode);
 		sb.append("}");
 
 		return sb.toString();
@@ -233,6 +235,13 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 			bookingImpl.setTelNo(telNo);
 		}
 
+		if (govAgencyCode == null) {
+			bookingImpl.setGovAgencyCode("");
+		}
+		else {
+			bookingImpl.setGovAgencyCode(govAgencyCode);
+		}
+
 		bookingImpl.resetOriginalValues();
 
 		return bookingImpl;
@@ -272,6 +281,7 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 		online = objectInput.readBoolean();
 		bookingInTime = objectInput.readUTF();
 		telNo = objectInput.readUTF();
+		govAgencyCode = objectInput.readUTF();
 	}
 
 	@Override
@@ -370,6 +380,13 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 		else {
 			objectOutput.writeUTF(telNo);
 		}
+
+		if (govAgencyCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(govAgencyCode);
+		}
 	}
 
 	public String uuid;
@@ -395,4 +412,5 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 	public boolean online;
 	public String bookingInTime;
 	public String telNo;
+	public String govAgencyCode;
 }
