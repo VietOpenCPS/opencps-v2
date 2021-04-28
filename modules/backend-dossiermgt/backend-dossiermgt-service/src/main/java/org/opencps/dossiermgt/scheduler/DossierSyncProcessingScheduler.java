@@ -67,7 +67,7 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 	private int keepAliveTime   = 10;
 
 	public DossierSyncProcessingScheduler(){
-		_log.info("Constructor PublishEventHSKMScheduler");
+		_log.info("Constructor DossierSyncProcessingScheduler");
 		if(Validator.isNull(threadPoolExecutor)){
 			_log.info("Creating threadPoolExecutor first time...");
 			threadPoolExecutor = new ThreadPoolExecutor(
