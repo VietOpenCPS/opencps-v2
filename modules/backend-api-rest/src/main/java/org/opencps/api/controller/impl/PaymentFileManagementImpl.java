@@ -803,7 +803,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	//LamTV_Process new API Payment
 	@Override
 	public Response getPaymentFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id, String secretCode) {
+			Locale locale, User user, ServiceContext serviceContext, String id, String secretCode, String unit) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = GetterUtil.getLong(id);
@@ -844,9 +844,12 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFileModel result = null;
 			if (dossier != null) {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-				result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
-				if (result != null){
-					//Get ma don vi
+
+				if(paymentFile == null) {
+					throw new Exception("No payment file was found with dossierId " + dossierId + " and groupId " + groupId);
+				}
+
+				if(Validator.isNotNull(unit) && unit.equals("dongthap")) {
 					String unitCode;
 					DictItemMapping itemMapping = DictItemMappingLocalServiceUtil.fetchByF_IC(dossier.getGovAgencyCode());
 					if(Validator.isNull(itemMapping) || itemMapping.getItemCodeDVCQG().isEmpty()) {
@@ -854,10 +857,43 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					}
 					unitCode = itemMapping.getItemCodeDVCQG();
 
-					result.setAddress(dossier.getAddress() + ", " + dossier.getWardName() +
-							", " + dossier.getDistrictName() + ", " + dossier.getCityName());
-					result.setOrderId(unitCode + "-" + dossier.getDossierNo() + "-01");
+					JSONObject jsonResult = JSONFactoryUtil.createJSONObject();
+					jsonResult.put("error_code", "SUCCESSFUL");
+					jsonResult.put("error_message", "SUCCESSFUL");
+
+					JSONObject data = JSONFactoryUtil.createJSONObject();
+					JSONObject thongTinBienLai = JSONFactoryUtil.createJSONObject();
+					JSONArray payments = JSONFactoryUtil.createJSONArray();
+					JSONObject onePayment = JSONFactoryUtil.createJSONObject();
+					onePayment.put("partnerCode", "PAYGOV_DONGTHAP");
+					onePayment.put("trangThai", paymentFile.getPaymentStatus());
+					onePayment.put("orderId", unitCode + "-" + dossier.getDossierNo() + "-01");
+					onePayment.put("soTien", paymentFile.getPaymentAmount());
+					onePayment.put("moTa", paymentFile.getPaymentNote());
+					payments.put(onePayment);
+					String address = dossier.getAddress() + ", " + dossier.getWardName() +
+							", " + dossier.getDistrictName() + ", " + dossier.getCityName();
+
+					data.put("diaChi", address);
+					data.put("tenNguoiNop", dossier.getDelegateName());
+					data.put("soCMND", dossier.getDelegateIdNo());
+
+					thongTinBienLai.put("tenThuTucHanhChinh", dossier.getServiceName());
+					thongTinBienLai.put("huyenNguoiNop", dossier.getDistrictName());
+					thongTinBienLai.put("tinhNguoiNop", dossier.getCityName());
+					thongTinBienLai.put("ngayQuyetDinh", APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(),
+							"dd-MM-yyyy"));
+					thongTinBienLai.put("maDonViThuHuong", unitCode);
+					thongTinBienLai.put("tenDonViThuHuong", dossier.getGovAgencyName());
+					data.put("thongTinBienLai", thongTinBienLai);
+
+					jsonResult.put("data", data);
+					jsonResult.put("danhSachThanhToan", payments);
+					return Response.status(HttpURLConnection.HTTP_OK).entity(jsonResult.toJSONString()).build();
 				}
+
+
+				result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 			}
 
 
