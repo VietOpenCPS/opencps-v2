@@ -258,8 +258,6 @@ public class OpenCPSRestClient {
 			Map<String, Object> params = OpenCPSConverter.convertExecuteActionHttpParams(model);
 			InvokeREST callRest = new InvokeREST();
 			ServiceContext context = new ServiceContext();
-			_log.info("Request URL: " + requestURL);
-			_log.info("Model doAction " + JSONFactoryUtil.looseSerialize(model));
 
 			JSONObject jsonObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON,
 					baseUrl, requestURL, username,

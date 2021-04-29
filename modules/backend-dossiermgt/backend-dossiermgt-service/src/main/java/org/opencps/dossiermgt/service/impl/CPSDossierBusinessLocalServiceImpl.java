@@ -966,9 +966,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				proAction.getProcessActionId());
 		String actionName = proAction.getActionName();
 		String prevStatus = dossier.getDossierStatus();
+		String dossierIdString = String.valueOf(dossier.getDossierId());
 		_log.debug("Process Step: " + JSONFactoryUtil.looseSerialize(curStep));
 
+		logLineLevelType("createActionAndAssignUser", 101, dossierIdString);
+
 		if (curStep != null) {
+			logLineLevelType("createActionAndAssignUser", 102, dossierIdString);
 			String curStatus = curStep.getDossierStatus();
 			String curSubStatus = curStep.getDossierSubStatus();
 			String stepCode = curStep.getStepCode();
@@ -1001,33 +1005,40 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				} else {
 				}
 			}
+			logLineLevelType("createActionAndAssignUser", 103, dossierIdString);
 			dossierAction = dossierActionLocalService.updateDossierAction(groupId, 0, dossier.getDossierId(),
 					serviceProcess.getServiceProcessId(), dossier.getDossierActionId(), fromStepCode, fromStepName,
 					fromSequenceNo, actionCode, actionUser, actionName, actionNote, actionOverdue, stepCode, stepName,
 					sequenceNo, null, 0l, payload, stepInstruction, state, eventStatus, rollbackable, context);
-			dossier.setDossierActionId(dossierAction.getDossierActionId());
 
-			String dossierNote = StringPool.BLANK;
-			if (dossierAction != null) {
-				dossierNote = dossierAction.getActionNote();
-				if (Validator.isNotNull(dossierNote)) {
-					dossierNote = dossierAction.getStepInstruction();
-				}
+			if(dossierAction == null) {
+				return null;
 			}
+
+			dossier.setDossierActionId(dossierAction.getDossierActionId());
+			logLineLevelType("createActionAndAssignUser", 104, dossierIdString);
+
+			String dossierNote = dossierAction.getActionNote();
+			if (Validator.isNull(dossierNote)) {
+				dossierNote = dossierAction.getStepInstruction();
+			}
+
 			//Update previous action nextActionId
 			Date now = new Date();
-			if (previousAction != null && dossierAction != null) {
+			if (previousAction != null) {
 				previousAction.setNextActionId(dossierAction.getDossierActionId());
 				previousAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
 				previousAction.setModifiedDate(now);
 				previousAction = dossierActionLocalService.updateDossierAction(previousAction);
 			}
 
+			logLineLevelType("updateDossierStatus_" + curStatus, 105, dossierIdString);
 			updateStatus(dossier, curStatus,
 					jsonDataStatusText != null ? jsonDataStatusText.getString(curStatus) : StringPool.BLANK,
 					curSubStatus,
 					jsonDataStatusText != null ? jsonDataStatusText.getString(curSubStatus) : StringPool.BLANK,
 					curStep.getLockState(), dossierNote, context);
+			logLineLevelType("updateDossierStatus", 106, dossierIdString);
 
 			//Cáº­p nháº­t cá»� Ä‘á»“ng bá»™ ngÃ y thÃ¡ng sang cÃ¡c há»‡ thá»‘ng khÃ¡c
 			Map<String, Boolean> resultFlagChanged = updateProcessingDate(dossierAction, previousAction, curStep,
@@ -1039,7 +1050,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		}
-		_log.debug("DossierAction: " + JSONFactoryUtil.looseSerialize(dossierAction));
 		//Thiết lập quyền thao tác hồ sơ
 
 		int allowAssignUser = proAction.getAllowAssignUser();
@@ -1315,6 +1325,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			dossierAction = createActionAndAssignUser(groupId, userId, curStep, actionConfig, dossierAction,
 					previousAction, proAction, dossier, actionCode, actionUser, actionNote, payload, assignUsers,
 					paymentFee, serviceProcess, option, flagChanged, dateOption, context);
+
+			if(dossierAction == null) {
+				logLineLevelDoActionInside(101, dossierIDString);
+				return null;
+			}
+
 			logLineLevelDoActionInside(11, dossierIDString);
 //			_log.debug("dossier generate_DossierNo: "+JSONFactoryUtil.looseSerialize(dossier));
 
@@ -1894,6 +1910,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 	private void logLineLevelDoActionInside(int number, String dossierId) {
 		_log.info("doActionSon" + number + "_" + dossierId + "_log_action");
+	}
+
+	private void logLineLevelType(String type, int number, String dossierId) {
+		_log.info(type + "_"+ number + "_" + dossierId + "_log_action");
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,

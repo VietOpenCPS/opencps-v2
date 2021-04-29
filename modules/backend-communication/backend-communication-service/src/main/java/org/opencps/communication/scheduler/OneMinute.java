@@ -89,6 +89,10 @@ public class OneMinute extends BaseMessageListener {
 		_log.debug("------- END SEND NOTIFICATION: ------: isRunning: "+ isRunning);
 	}
 
+	private void logLineLevel(int number, String dossierId) {
+		_log.info("line_" + number + "_" + dossierId + "_notification");
+	}
+
 	private void doProcessNotification(Message message) {
 		
 		List<NotificationQueue> notificationQueues = NotificationQueueLocalServiceUtil
@@ -272,7 +276,7 @@ public class OneMinute extends BaseMessageListener {
 						}
 					}
 					catch (Exception e) {
-						_log.error("Can't send message from queue " + e);
+//						_log.error("Can't send message from queue " + e);
 					}
 				}
 			}

@@ -556,7 +556,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			}
 
 			actionModel.setPayload(payloadData.toJSONString());
-			_log.info("payload Sync: "+ payloadData.toJSONString());
 		} catch (Exception e) {
 //			actionModel.setPayload(dossierSync.getPayload());
 			_log.info("ERROR Exception");

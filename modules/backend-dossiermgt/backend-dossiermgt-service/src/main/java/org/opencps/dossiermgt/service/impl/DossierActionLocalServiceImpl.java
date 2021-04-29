@@ -610,7 +610,11 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		
 		return results;
 	}
-	
+
+	private void logLineLevelType(String type, int number, String dossierId) {
+		_log.info(type + "_"+ number + "_" + dossierId + "_log_action");
+	}
+
 	//@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateDossierAction(long groupId, long dossierActionId, long dossierId, long serviceProcessId,
 			long previousActionId, String fromStepCode, String fromStepName, String fromSequenceNo, String actionCode,
@@ -622,7 +626,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		long userId = 0l;
 		String fullName = StringPool.BLANK;
 		Date now = new Date();
-
+		String dossierIdString = String.valueOf(dossierId);
 		if (context.getUserId() > 0) {
 			User userAction = userLocalService.getUser(context.getUserId());
 			userId = userAction.getUserId();
@@ -630,9 +634,31 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		}
 
 		if (dossierActionId == 0) {
-			dossierActionId = counterLocalService.increment(DossierAction.class.getName());
+			try {
+				logLineLevelType("updateDossierAction", 1 , dossierIdString);
+				dossierActionId = counterLocalService.increment(DossierAction.class.getName());
+				object = dossierActionPersistence.create(dossierActionId);
+				logLineLevelType("updateDossierAction", 2 , dossierIdString);
+			} catch (Exception e) {
+				logLineLevelType("updateDossierAction", 3 , dossierIdString);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException interruptedException) {
+					interruptedException.printStackTrace();
+				}
+				logLineLevelType("updateDossierAction", 5 , dossierIdString);
 
-			object = dossierActionPersistence.create(dossierActionId);
+				try {
+					dossierActionId = counterLocalService.increment(DossierAction.class.getName());
+					object = dossierActionPersistence.create(dossierActionId);
+				} catch (Exception ex) {
+					_log.info("BOTAY: " + ex.getMessage());
+					return null;
+				}
+
+				logLineLevelType("updateDossierAction", 6 , dossierIdString);
+			}
+
 
 			// Add audit fields
 			object.setCompanyId(context.getCompanyId());

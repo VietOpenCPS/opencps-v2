@@ -81,7 +81,7 @@ public class Engine implements MessageListener {
 	
 	private void _doReceiveJasperRequest(Message message) {
 		// TODO Auto-generated method stub
-		_log.info("Dossier listener receive Jasper .............................");
+		_log.debug("Dossier listener receive Jasper .............................");
 		JSONObject msgData = (JSONObject) message.get("msgToEngine");
 
 		try {
@@ -96,7 +96,7 @@ public class Engine implements MessageListener {
 
 			File file = new File(filePath);
 
-			_log.info("Engine._doReceiveJasperRequest()" + filePath);
+			_log.debug("Engine._doReceiveJasperRequest()" + filePath);
 			Class<?> engineClass = Class.forName(className);
 			
 			if(engineClass.isAssignableFrom(DossierFile.class)) {
@@ -169,7 +169,7 @@ public class Engine implements MessageListener {
 
 				fileEntryId = fileEntry.getFileEntryId();
 
-				_log.info("flagAttach: "+flagAttach);
+				_log.debug("flagAttach: "+flagAttach);
 				if (!flagAttach) {
 					deliverable.setFileEntryId(fileEntryId);
 					DeliverableLocalServiceUtil.updateDeliverable(deliverable);
@@ -222,11 +222,11 @@ public class Engine implements MessageListener {
 			else if (engineClass.isAssignableFrom(DossierDocument.class)) {
 //				DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.fetchDossierDocument(classPK);
 				DossierDocument dossierDocument = DossierLocalServiceUtil.findDossierDocumentByDossierId(classPK);
-				_log.info("LOG DossierDocument: " + JSONFactoryUtil.looseSerialize(dossierDocument));
+				_log.debug("LOG DossierDocument: " + JSONFactoryUtil.looseSerialize(dossierDocument));
 				if (dossierDocument != null) {
 				ServiceContext serviceContext = new ServiceContext();
-    			_log.info("jasper export dossier document: " + classPK + ", " + dossierDocument + ", service context: " + serviceContext );
-    			_log.info("jasper export dossier document: " + dossierDocument );
+    			_log.debug("jasper export dossier document: " + classPK + ", " + dossierDocument + ", service context: " + serviceContext );
+    			_log.debug("jasper export dossier document: " + dossierDocument );
     			
     			serviceContext.setUserId(dossierDocument.getUserId());
     
@@ -251,7 +251,7 @@ public class Engine implements MessageListener {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(classPK);
 				
     			ServiceContext serviceContext = new ServiceContext();
-    			_log.info("jasper export paymentFile: " + classPK + ", " + paymentFile );
+    			_log.debug("jasper export paymentFile: " + classPK + ", " + paymentFile );
     			if (paymentFile != null) {
     				serviceContext.setUserId(paymentFile.getUserId());
         			long fileEntryId = 0;
