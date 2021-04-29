@@ -1,27 +1,26 @@
 package org.opencps.backend.systemlogmgt.util;
 
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashSet;
+import java.util.List;
 
-import javax.ws.rs.QueryParam;
 
-import org.opencps.backend.systemlogmgt.processimpl.QueryProcessFactoryImpl;
-import org.opencps.backend.systemlogmgt.util.DatetimeUtil;
-import org.opencps.backend.systemlogmgt.application.SystemLogApplication;
+import org.opencps.backend.systemlogmgt.service.SystemLogLocalServiceUtil;
+import org.opencps.backend.systemlogmgt.service.SystemLogServiceTest;
+import org.opencps.backend.systemlogmgt.service.SystemLogServiceTestUtil;
 import org.opencps.backend.systemlogmgt.constant.Constants;
-import org.opencps.backend.systemlogmgt.exception.NoSuchSystemLogException;
 import org.opencps.backend.systemlogmgt.model.SystemLog;
 
 /**
@@ -32,30 +31,12 @@ public class ActionUtil {
 
 	private static Log _log = LogFactoryUtil.getLog(ActionUtil.class);
 	
-	public static JSONObject createResponseSchema(String logId, String groupId, String moduleName, String createDate, Integer preLine, String preMethod, 
-			Integer line, String method, String message, String type, String threadId, String fromDate, String toDate, int typeList, String... msg) {
+	public static JSONObject createResponseSchema(String... msg) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		JSONObject condition = JSONFactoryUtil.createJSONObject();
 		
-		condition.put(Constants.LOGID, logId);
-		condition.put(Constants.GROUPID, groupId);
-		condition.put(Constants.MODULENAME, moduleName);
-		condition.put(Constants.CREATE_DATE, createDate);
-		condition.put(Constants.PRELINE, preLine);
-		condition.put(Constants.PREMETHOD, preMethod);
-		condition.put(Constants.LINE, line);
-		condition.put(Constants.METHOD, method);
-		condition.put(Constants.MESSAGE, message);
-		condition.put(Constants.TYPE, type);
-		condition.put(Constants.THREADID, threadId);
-		condition.put(Constants.FROMDATE, fromDate);
-		condition.put(Constants.TODATE, toDate);
-
-		result.put(Constants.CONDITIONS, condition);
 		result.put(Constants.TOTAL, 0);
 		result.put(Constants.DATA, JSONFactoryUtil.createJSONArray());
-		result.put(Constants.TYPE, typeList);
 
 		if (msg != null) {
 			result.put(Constants.MESSAGES, StringUtil.merge(msg));
@@ -63,133 +44,109 @@ public class ActionUtil {
 
 		return result;
 	}
-	public static JSONObject execDiagram(String threadId) {
+	public static JSONObject execDiagram(String threadId, Long logId) throws JSONException {
 		
-		QueryProcessFactoryImpl factory = new QueryProcessFactoryImpl();
-		if(Validator.isNotNull(threadId)) {
-			try {
-				return factory.generateDiagram(threadId);
-			} catch (Exception e) {
-				_log.error(e);
-				return ActionUtil.createResponseSchema(null, null, null, null, null, null, null, null, null, null, threadId, null, null, 0, new String[] { e.getMessage() });
-			}
+		JSONObject result = ActionUtil.createResponseSchema();
+		JSONArray data = JSONFactoryUtil.createJSONArray();
+		List<SystemLog> listSystemLog = null;
+		try {
+			listSystemLog = SystemLogLocalServiceUtil.getSystemLogByDynamicQuery(logId, null, null, null, threadId, null, null);
+		} catch (Exception e) {
+			_log.error(e);
+			result.put(Constants.MESSAGES, e);
 		}
-		return null;
+		if(Validator.isNotNull(listSystemLog)) {
+			String MessageDiagram = null;
+			for(int i=0; i<listSystemLog.size(); i++) {
+				if(Validator.isNull(MessageDiagram)) {
+					MessageDiagram = listSystemLog.get(i).getPreMethod() + " -> " + listSystemLog.get(i).getMethod();
+				} else {
+					if(listSystemLog.get(i-1).getMethod().equals(listSystemLog.get(i).getPreMethod())) {
+						MessageDiagram = MessageDiagram+  " -> " + listSystemLog.get(i).getMethod();
+					}
+				}
+			}
+			List<String> threadIdList = new ArrayList<String>();
+			for (SystemLog systemLog : listSystemLog) {
+				threadIdList.add(systemLog.getThreadId());
+			}
+			HashSet<String> hset = new HashSet<String>(threadIdList);
+			List<String> list = new ArrayList<String>(hset);
+			for (String string : list) {
+				JSONArray arrayLog = JSONFactoryUtil.createJSONArray();
+				JSONObject Log = JSONFactoryUtil.createJSONObject();
+				Log.put("ThreadId", string);
+				for (SystemLog systemLog : listSystemLog) {
+					if(systemLog.getThreadId().equals(string)) {
+						String strResult = JSONFactoryUtil.looseSerialize(systemLog);
+						JSONObject object = JSONFactoryUtil.createJSONObject(strResult);
+						arrayLog.put(ParamUtil.getValuesByColumns(object));
+					}
+				}
+				Log.put("Log", arrayLog);
+				data.put(Log);
+			}
+			result.put(Constants.TOTAL, data.length());
+			result.put(Constants.DATA, data);
+			result.put(Constants.MESSAGES, MessageDiagram);
+			
+		}
+		SystemLogServiceTestUtil.info(5L, "SystemLog", "Successful", "[{\"key\":\"name\",\"value\":\"Bao Cao\"},{\"key\":\"DonVi\",\"value\":\"Hau Giang\"},{\"key\":\"data\",\"value\":\"\"}]");
+		return result;
 		
 	}
 	
-	public static JSONObject findSystemLog(Long fromDate, Long toDate, String preMethods, String methods, String types, String threadId) {
+	public static JSONObject searchSystemLog(Long logId, Long groupId, String moduleName, String method, String threadId, Long fromDate, Long toDate) throws JSONException {
 		
-		QueryProcessFactoryImpl factory = new QueryProcessFactoryImpl();
-		
-		if(Validator.isNull(fromDate) && Validator.isNull(toDate)) {
-			try {
-				return factory.getAllSystemLog();
-			} catch (JSONException e) {
-				_log.error(e);
-				return ActionUtil.createResponseSchema(null, null, null, null, null, null, null, null, null, null, null, fromDate.toString(), toDate.toString(), 0, new String[] { e.getMessage() });
-			}
-		}
+		JSONObject result = ActionUtil.createResponseSchema();
+		JSONArray data = JSONFactoryUtil.createJSONArray();
 		Date fromDateTime = null;
 		Date toDateTime = null;
+		List<SystemLog> listSystemLog = null;
 		if(Validator.isNotNull(fromDate)) {
-			fromDateTime = new Timestamp(fromDate); 
+			fromDateTime = new Timestamp(fromDate);
 		}
 		if(Validator.isNotNull(toDate)) {
-			toDateTime = new Timestamp(toDate); 
+			toDateTime = new Timestamp(toDate);
 		}
-		try {
-			return factory.findSystemLog(fromDateTime, toDateTime, preMethods, methods, types, threadId);
-		} catch (Exception e) {
-			_log.error(e);
-			return ActionUtil.createResponseSchema(null, null, null, null, null, null, null, null, null, null, null, fromDate.toString(), toDate.toString(), 0, new String[] { e.getMessage() });
-		
-		}
-		
-		
-		
-	}
-	public static JSONObject getListSystemLog(String logId, String groupId, String moduleName, Long createDate, Integer preLine, String preMethod, 
-			Integer line, String method, String message, String type, String threadId, int typeList){
-		String strCreateDate;
-		if(createDate != null) {
-			strCreateDate = DatetimeUtil.convertTimestampToStringDatetime(createDate, DatetimeUtil._YYYY_MM_DD);
-		} else {
-			strCreateDate = null;
-		}
-		QueryProcessFactoryImpl factory = new QueryProcessFactoryImpl();
-		
-		try {
-			if(typeList==1) {
-				factory.createNewSystemLog(5L, SystemLog.class.toString(), Thread.currentThread().getStackTrace()[2].getLineNumber(),
-						Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[1].getLineNumber(), 
-						Thread.currentThread().getStackTrace()[1].getMethodName(), "factory.getSystemLogType"+typeList, "List Type " + typeList , SystemLogApplication.threadIdContext.get());
-				return factory.getSystemLogType1(logId, groupId, moduleName, strCreateDate, preLine, preMethod, line, method, message, type, threadId, typeList);
-			} else if(typeList==2) {
-				factory.createNewSystemLog(5L, SystemLog.class.toString(), Thread.currentThread().getStackTrace()[2].getLineNumber(),
-						Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[1].getLineNumber(), 
-						Thread.currentThread().getStackTrace()[1].getMethodName(), "factory.getSystemLogType"+typeList, "List Type " + typeList , SystemLogApplication.threadIdContext.get());
-				return factory.getSystemLogType2(logId, groupId, moduleName, strCreateDate, preLine, preMethod, line, method, message, type, threadId, typeList);
-			} else if(typeList==3) {
-				factory.createNewSystemLog(5L, SystemLog.class.toString(), Thread.currentThread().getStackTrace()[2].getLineNumber(),
-						Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[1].getLineNumber(), 
-						Thread.currentThread().getStackTrace()[1].getMethodName(), "factory.getSystemLogType"+typeList, "List Type " + typeList , SystemLogApplication.threadIdContext.get());
-				return factory.getSystemLogType3(logId, groupId, moduleName, strCreateDate, preLine, preMethod, line, method, message, type, threadId, typeList);
-			} else if(typeList==4) {
-				factory.createNewSystemLog(5L, SystemLog.class.toString(), Thread.currentThread().getStackTrace()[2].getLineNumber(),
-						Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[1].getLineNumber(), 
-						Thread.currentThread().getStackTrace()[1].getMethodName(), "factory.getSystemLogType"+typeList, "List Type " + typeList , SystemLogApplication.threadIdContext.get());
-				return factory.getSystemLogType4(logId, groupId, moduleName, strCreateDate, preLine, preMethod, line, method, message, type, threadId, typeList);
-			} else if(typeList==5) {
-				factory.createNewSystemLog(5L, SystemLog.class.toString(), Thread.currentThread().getStackTrace()[2].getLineNumber(),
-						Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[1].getLineNumber(), 
-						Thread.currentThread().getStackTrace()[1].getMethodName(), "factory.getSystemLogType"+typeList, "List Type " + typeList , SystemLogApplication.threadIdContext.get());
-				return factory.getSystemLogType5(logId, groupId, moduleName, strCreateDate, preLine, preMethod, line, method, message, type, threadId, typeList);
-			} else if(typeList==6) {
-				factory.createNewSystemLog(5L, SystemLog.class.toString(), Thread.currentThread().getStackTrace()[2].getLineNumber(),
-						Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[1].getLineNumber(), 
-						Thread.currentThread().getStackTrace()[1].getMethodName(), "factory.getSystemLogType"+typeList, "List Type " + typeList , SystemLogApplication.threadIdContext.get());
-				return factory.getSystemLogType6(logId, groupId, moduleName, strCreateDate, preLine, preMethod, line, method, message, type, threadId, typeList);
-			} else if(typeList==7) {
-				factory.createNewSystemLog(5L, SystemLog.class.toString(), Thread.currentThread().getStackTrace()[2].getLineNumber(),
-						Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[1].getLineNumber(), 
-						Thread.currentThread().getStackTrace()[1].getMethodName(), "factory.getSystemLogType"+typeList, "List Type " + typeList , SystemLogApplication.threadIdContext.get());
-				return factory.getSystemLogType7(logId, groupId, moduleName, strCreateDate, preLine, preMethod, line, method, message, type, threadId, typeList);
-			} else if(typeList==8) {
-				factory.createNewSystemLog(5L, SystemLog.class.toString(), Thread.currentThread().getStackTrace()[2].getLineNumber(),
-						Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[1].getLineNumber(), 
-						Thread.currentThread().getStackTrace()[1].getMethodName(), "factory.getSystemLogType"+typeList, "List Type " + typeList , SystemLogApplication.threadIdContext.get());
-				return factory.getSystemLogType8(logId, groupId, moduleName, strCreateDate, preLine, preMethod, line, method, message, type, threadId, typeList);
-			} 
-			else {
-				return ActionUtil.createResponseSchema(logId, groupId, moduleName, strCreateDate, preLine, preMethod, line, method, message, type, threadId, null, null, typeList);
+		listSystemLog = SystemLogLocalServiceUtil.getSystemLogByDynamicQuery(logId, groupId, moduleName, method, threadId, fromDateTime, toDateTime);
+		if(Validator.isNotNull(listSystemLog)) {
+			List<String> threadIdList = new ArrayList<String>();
+			for (SystemLog systemLog : listSystemLog) {
+				threadIdList.add(systemLog.getThreadId());
 			}
-		} catch (Exception e) {
-			_log.error(e);
-			return ActionUtil.createResponseSchema(logId, groupId, moduleName, strCreateDate, preLine, preMethod, line, method, message, type, threadId, null, null, typeList, new String[] { e.getMessage() });
+			HashSet<String> hset = new HashSet<String>(threadIdList);
+			List<String> list = new ArrayList<String>(hset);
+			for (String string : list) {
+				JSONArray arrayLog = JSONFactoryUtil.createJSONArray();
+				JSONObject Log = JSONFactoryUtil.createJSONObject();
+				Log.put("ThreadId", string);
+				for (SystemLog systemLog : listSystemLog) {
+					if(systemLog.getThreadId().equals(string)) {
+						String strResult = JSONFactoryUtil.looseSerialize(systemLog);
+						JSONObject object = JSONFactoryUtil.createJSONObject(strResult);
+						arrayLog.put(ParamUtil.getValuesByColumns(object));
+					}
+				}
+				Log.put("Log", arrayLog);
+				data.put(Log);
+			}
+			result.put(Constants.TOTAL, data.length());
+			result.put(Constants.DATA, data);
+			result.put(Constants.MESSAGES, "SuccessFull");
+			SystemLogServiceTestUtil.info(5L, "SystemLog", "Successful", "[{\"key\":\"name\",\"value\":\"Bao Cao\"},{\"key\":\"DonVi\",\"value\":\"Hau Giang\"},{\"key\":\"data\",\"value\":\"\"}]");
 			
+		} else {
+			result.put(Constants.TOTAL, 0);
+			result.put(Constants.DATA, data);
+			result.put(Constants.MESSAGES, "No Data - Query Sucessful");
+			SystemLogServiceTestUtil.info(5L, "SystemLog", "No Data - Query Sucessful","[{\"key\":\"name\",\"value\":\"Bao Cao\"},{\"key\":\"DonVi\",\"value\":\"Hau Giang\"},{\"key\":\"data\",\"value\":\"\"}]");
+
 		}
+		
+		return result;
+		
 	}
-	public static JSONObject actionCreateNew(Long groupId, String moduleName, Integer preLine, String preMethod, 
-			Integer line, String method, String message, String type, String threadId) {
-		QueryProcessFactoryImpl factory = new QueryProcessFactoryImpl();
-		try {
-			return factory.createNewSystemLog(groupId, moduleName, preLine, preMethod, line, method, message, type, threadId);
-		} catch (Exception e) {
-			_log.error(e);
-			return ActionUtil.createResponseSchema(null, groupId.toString(), moduleName, null, preLine, preMethod, line, method, message, type, threadId, null, null, 0, new String[] { e.getMessage() });
-		}
-	}
-	public static JSONObject actionDelete(Long logId) {
-		QueryProcessFactoryImpl factory = new QueryProcessFactoryImpl();
-		try {
-			factory.createNewSystemLog(5L, SystemLog.class.toString(), Thread.currentThread().getStackTrace()[2].getLineNumber(),
-					Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[1].getLineNumber(), 
-					Thread.currentThread().getStackTrace()[1].getMethodName(), "factory.actionDelete logId = "+logId, "Delete" , SystemLogApplication.threadIdContext.get());
-			return factory.deleteSystemLog(logId);
-		} catch (Exception e) {
-			_log.error(e);
-			return ActionUtil.createResponseSchema(String.valueOf(logId), null, null, null, null, null, null, null, null, null,null, null, null, 0, new String[] { e.getMessage() });
-		}
-	}
+	
+	
 }

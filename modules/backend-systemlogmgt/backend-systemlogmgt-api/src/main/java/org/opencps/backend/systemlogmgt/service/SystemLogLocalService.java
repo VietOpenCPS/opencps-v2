@@ -36,8 +36,6 @@ import org.opencps.backend.systemlogmgt.model.SystemLog;
 
 import java.io.Serializable;
 
-import java.text.ParseException;
-
 import java.util.Date;
 import java.util.List;
 
@@ -63,9 +61,9 @@ public interface SystemLogLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link SystemLogLocalServiceUtil} to access the system log local service. Add custom service methods to {@link org.opencps.backend.systemlogmgt.service.impl.SystemLogLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	public SystemLog addNewSystemLog(Long groupId, String moduleName,
+	public SystemLog addSystemLog(Long groupId, String moduleName,
 		Integer preLine, String preMethod, Integer line, String method,
-		String message, String type, String threadId);
+		String message, String type, String threadId, String param);
 
 	/**
 	* Adds the system log to the database. Also notifies the appropriate model listeners.
@@ -85,8 +83,6 @@ public interface SystemLogLocalService extends BaseLocalService,
 	@Transactional(enabled = false)
 	public SystemLog createSystemLog(long logId);
 
-	public SystemLog deleteOldSystemLog(long logId) throws PortalException;
-
 	/**
 	* @throws PortalException
 	*/
@@ -103,6 +99,8 @@ public interface SystemLogLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.DELETE)
 	public SystemLog deleteSystemLog(long logId) throws PortalException;
+
+	public SystemLog deleteSystemLog(Long logId) throws PortalException;
 
 	/**
 	* Deletes the system log from the database. Also notifies the appropriate model listeners.
@@ -214,39 +212,9 @@ public interface SystemLogLocalService extends BaseLocalService,
 	public SystemLog getSystemLog(long logId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SystemLog> getSystemLogByDynamicQuery(String logId,
-		String groupId, String moduleNames, String createDate, Integer preLine,
-		String preMethod, Integer line, String method, String message,
-		String type, String threadId, Date fromDate, Date toDate)
-		throws ParseException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SystemLog> getSystemLogByLikeMessage(String message);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SystemLog getSystemLogByLogId(long logId) throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SystemLog> getSystemLogByMultipleGroupId(long[] groupIds);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SystemLog> getSystemLogByMultipleMethod(String[] methods);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SystemLog> getSystemLogByMultipleModuleName(
-		String[] moduleNames);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SystemLog> getSystemLogByMultiplePreMethod(String[] preMethods);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SystemLog> getSystemLogByMultipleThreadId(String[] threadIds);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SystemLog> getSystemLogByMultipleType(String[] types);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SystemLog> getSystemLogByThreadId(String threadId);
+	public List<SystemLog> getSystemLogByDynamicQuery(Long logId, Long groupId,
+		String moduleName, String method, String threadId, Date fromDate,
+		Date toDate);
 
 	/**
 	* Returns the system log matching the UUID and group.
@@ -281,11 +249,6 @@ public interface SystemLogLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSystemLogsCount();
-
-	public SystemLog updateOldSystemLog(Long logId, Long groupId,
-		String moduleName, Integer preLine, String preMethod, Integer line,
-		String method, String message, String type, String threadId)
-		throws PortalException;
 
 	/**
 	* Updates the system log in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

@@ -69,6 +69,7 @@ public class SystemLogWrapper implements SystemLog, ModelWrapper<SystemLog> {
 		attributes.put("message", getMessage());
 		attributes.put("type", getType());
 		attributes.put("threadId", getThreadId());
+		attributes.put("param", getParam());
 
 		return attributes;
 	}
@@ -145,6 +146,12 @@ public class SystemLogWrapper implements SystemLog, ModelWrapper<SystemLog> {
 
 		if (threadId != null) {
 			setThreadId(threadId);
+		}
+
+		String param = (String)attributes.get("param");
+
+		if (param != null) {
+			setParam(param);
 		}
 	}
 
@@ -231,6 +238,16 @@ public class SystemLogWrapper implements SystemLog, ModelWrapper<SystemLog> {
 	@Override
 	public String getModuleName() {
 		return _systemLog.getModuleName();
+	}
+
+	/**
+	* Returns the param of this system log.
+	*
+	* @return the param of this system log
+	*/
+	@Override
+	public String getParam() {
+		return _systemLog.getParam();
 	}
 
 	/**
@@ -417,6 +434,16 @@ public class SystemLogWrapper implements SystemLog, ModelWrapper<SystemLog> {
 	@Override
 	public void setNew(boolean n) {
 		_systemLog.setNew(n);
+	}
+
+	/**
+	* Sets the param of this system log.
+	*
+	* @param param the param of this system log
+	*/
+	@Override
+	public void setParam(String param) {
+		_systemLog.setParam(param);
 	}
 
 	/**

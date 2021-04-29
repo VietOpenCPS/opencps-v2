@@ -10,5 +10,6 @@ create table opencps_systemlog (
 	method VARCHAR(75) null,
 	message VARCHAR(75) null,
 	type_ VARCHAR(75) null,
-	threadId VARCHAR(75) null
+	threadId VARCHAR(75) null,
+	param VARCHAR(75) null
 );
