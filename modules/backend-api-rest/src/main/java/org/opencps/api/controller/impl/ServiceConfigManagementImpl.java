@@ -328,7 +328,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
 			results.getData()
-					.addAll(ServiceConfigUtils.mappingToProcessOptionResults((List<Document>) jsonData.get(ConstantUtils.DATA)));
+					.addAll(ServiceConfigUtils.mappingToProcessCitizenBussiness((List<Document>) jsonData.get(ConstantUtils.DATA), userId));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 

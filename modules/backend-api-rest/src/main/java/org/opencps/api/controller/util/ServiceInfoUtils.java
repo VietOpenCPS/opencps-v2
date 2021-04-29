@@ -106,38 +106,37 @@ public class ServiceInfoUtils {
 					boolean citizen = false;
 					boolean business = false;
 					boolean active = false;
-					if (Validator.isNotNull(applicant)) {
-						if ("citizen".equals(applicant.getApplicantIdType())) {
-							citizen = true;
-						} else if ("business".equals(applicant.getApplicantIdType())) {
-							business = true;
-						}
-						for (ServiceConfig sc : lstScs) {
-							ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
-							List<ProcessOption> lstOption = ProcessOptionLocalServiceUtil.getByServiceConfigId(sc.getServiceConfigId());
-							if (lstOption != null && !lstOption.isEmpty()) {
-								for (ProcessOption option : lstOption) {
-									if (citizen && option.isForCitizen()) {
-										active = true;
-										break;
-									} else if (business && option.isForBusiness()) {
-										active = true;
-										break;
-									}
+					if ("citizen".equals(applicant.getApplicantIdType())) {
+						citizen = true;
+					} else if ("business".equals(applicant.getApplicantIdType())) {
+						business = true;
+					}
+					for (ServiceConfig sc : lstScs) {
+						ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
+						List<ProcessOption> lstOption = ProcessOptionLocalServiceUtil.getByServiceConfigId(sc.getServiceConfigId());
+						if (lstOption != null && !lstOption.isEmpty()) {
+							for (ProcessOption option : lstOption) {
+								if (citizen && option.isForCitizen()) {
+									active = true;
+									break;
+								} else if (business && option.isForBusiness()) {
+									active = true;
+									break;
 								}
-								if (active) {
-									cf.setGovAgencyCode(sc.getGovAgencyCode());
-									cf.setGovAgencyName(sc.getGovAgencyName());
-									cf.setServiceInstruction(sc.getServiceInstruction());
-									cf.setServiceUr(sc.getServiceUrl());
-									cf.setServiceLevel(sc.getServiceLevel());
-									cf.setServiceConfigId(sc.getServiceConfigId());
+							}
+							if (active) {
+								cf.setGovAgencyCode(sc.getGovAgencyCode());
+								cf.setGovAgencyName(sc.getGovAgencyName());
+								cf.setServiceInstruction(sc.getServiceInstruction());
+								cf.setServiceUr(sc.getServiceUrl());
+								cf.setServiceLevel(sc.getServiceLevel());
+								cf.setServiceConfigId(sc.getServiceConfigId());
 
-									lsServiceConfig.add(cf);
-								}
+								lsServiceConfig.add(cf);
 							}
 						}
 					}
+
 				}else {
 					for (ServiceConfig sc : lstScs) {
 						ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
