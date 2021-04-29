@@ -640,6 +640,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 				object = dossierActionPersistence.create(dossierActionId);
 				logLineLevelType("updateDossierAction", 2 , dossierIdString);
 			} catch (Exception e) {
+				_log.error("Error when creating dossierAction: " + e.getMessage());
 				logLineLevelType("updateDossierAction", 3 , dossierIdString);
 				try {
 					Thread.sleep(1000);
