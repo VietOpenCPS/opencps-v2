@@ -1,5 +1,6 @@
 package org.opencps.backend.systemlogmgt.service;
 
+import org.opencps.backend.systemlogmgt.model.SystemLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.util.tracker.ServiceTracker;
@@ -16,6 +17,42 @@ public class SystemLogServiceTestUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "Error";
+		}
+	}
+	public static SystemLog debug(Long groupId, String moduleName, String message, String... param) {
+		try {
+			SystemLogServiceTest serviceTest = getService();
+			return serviceTest.debug(groupId, moduleName, message, param);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static SystemLog error(Long groupId, String moduleName, String message, String... param) {
+		try {
+			SystemLogServiceTest serviceTest = getService();
+			return serviceTest.error(groupId, moduleName, message, param);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static SystemLog info(Long groupId, String moduleName, String message, String... param) {
+		try {
+			SystemLogServiceTest serviceTest = getService();
+			return serviceTest.info(groupId, moduleName, message, param);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static SystemLog warn(Long groupId, String moduleName, String message, String... param) {
+		try {
+			SystemLogServiceTest serviceTest = getService();
+			return serviceTest.warn(groupId, moduleName, message, param);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 
