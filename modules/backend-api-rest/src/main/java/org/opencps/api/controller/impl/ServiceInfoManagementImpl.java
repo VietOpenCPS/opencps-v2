@@ -203,11 +203,10 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					jsonData.put(ConstantUtils.DATA, lstDocs.subList(query.getStart(), lstDocs.size()));					
 				}
 			}
-			
-			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+
 			results.getData()
-				.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get(ConstantUtils.DATA), groupId, userId, serviceContext));
-			
+				.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get(ConstantUtils.DATA), groupId, userId, query.isFilterApplicant(), serviceContext));
+			results.setTotal(results.getData().size());
 //			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
 //		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 //		    
