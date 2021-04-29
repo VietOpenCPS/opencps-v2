@@ -49,7 +49,6 @@ public class ServiceInfoUtils {
 	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents, long groupId, long userId, boolean filterApplicant,
 			ServiceContext serviceContext) {
 		List<ServiceInfoModel> data = new ArrayList<ServiceInfoModel>();
-		_log.info("filterApplicant: " + filterApplicant);
 		try {
 			for (Document doc : documents) {
 				ServiceInfoModel model = new ServiceInfoModel();
@@ -166,8 +165,6 @@ public class ServiceInfoUtils {
 //				}
 				
 				model.getServiceConfigs().addAll(lsServiceConfig);
-				_log.info("modeL: " + model.getServiceInfoId());
-				_log.info("getServiceConfigs: " + model.getServiceConfigs().size());
 				if(filterApplicant && model.getServiceConfigs().size() >0) {
 					data.add(model);
 				}else if(!filterApplicant){
