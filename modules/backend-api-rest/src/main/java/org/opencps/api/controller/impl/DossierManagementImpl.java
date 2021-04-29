@@ -2148,6 +2148,13 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
+			if (dossierResult == null) {
+				_log.debug("Wronggggg doAction");
+				JSONObject errorJson = JSONFactoryUtil.createJSONObject();
+				errorJson.put(ConstantUtils.API_DOSSIER_JSON_ERROR_KEY, MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_CANNOT_DO_ACTION));
+				return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(null).build();
+			}
+
 			// update notarization
 			List<Notarization> list = NotarizationLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
 			if (list != null) {
@@ -2188,15 +2195,6 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 			}
-
-			if (dossierResult == null) {
-				_log.debug("Wronggggg doAction");
-				JSONObject errorJson = JSONFactoryUtil.createJSONObject();
-				errorJson.put(ConstantUtils.API_DOSSIER_JSON_ERROR_KEY, MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_CANNOT_DO_ACTION));
-				return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(
-						errorJson.toJSONString()).build();
-			}
-
 
 			_log.debug("Doaction oke with dossierActionId: " + dossierResult.getDossierActionId());
 			long dossierActionId = dossierResult.getDossierActionId();
