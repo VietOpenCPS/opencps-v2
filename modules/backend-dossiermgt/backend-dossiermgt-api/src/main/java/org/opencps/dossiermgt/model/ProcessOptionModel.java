@@ -355,6 +355,48 @@ public interface ProcessOptionModel extends BaseModel<ProcessOption>,
 	 */
 	public void setRegisterBookCode(String registerBookCode);
 
+	/**
+	 * Returns the for citizen of this process option.
+	 *
+	 * @return the for citizen of this process option
+	 */
+	public boolean getForCitizen();
+
+	/**
+	 * Returns <code>true</code> if this process option is for citizen.
+	 *
+	 * @return <code>true</code> if this process option is for citizen; <code>false</code> otherwise
+	 */
+	public boolean isForCitizen();
+
+	/**
+	 * Sets whether this process option is for citizen.
+	 *
+	 * @param forCitizen the for citizen of this process option
+	 */
+	public void setForCitizen(boolean forCitizen);
+
+	/**
+	 * Returns the for business of this process option.
+	 *
+	 * @return the for business of this process option
+	 */
+	public boolean getForBusiness();
+
+	/**
+	 * Returns <code>true</code> if this process option is for business.
+	 *
+	 * @return <code>true</code> if this process option is for business; <code>false</code> otherwise
+	 */
+	public boolean isForBusiness();
+
+	/**
+	 * Sets whether this process option is for business.
+	 *
+	 * @param forBusiness the for business of this process option
+	 */
+	public void setForBusiness(boolean forBusiness);
+
 	@Override
 	public boolean isNew();
 

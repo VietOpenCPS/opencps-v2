@@ -186,6 +186,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new VNPostManagementImpl());
 		singletons.add(new FrequencyOfficeManagementImpl());
 		singletons.add(new QLVGManagementImpl());
+		singletons.add(new Mofa2ManagementImpl());
 //		singletons.add(new DossierStatisticManagementImpl());
 		
 		singletons.add(this);

@@ -1,0 +1,10 @@
+Bundle-Name: backend-systemlogmgt-api
+Bundle-SymbolicName: org.opencps.backend.systemlogmgt.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	org.opencps.backend.systemlogmgt.exception,\
+	org.opencps.backend.systemlogmgt.model,\
+	org.opencps.backend.systemlogmgt.service,\
+	org.opencps.backend.systemlogmgt.service.persistence
+-check: EXPORTS
+-includeresource: META-INF/service.xml=../backend-systemlogmgt-service/service.xml

@@ -293,11 +293,9 @@ public class ReadXMLFileUtils {
 					strFile = processListFileProcess(fileEntry, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_SERVICE_INFOS:
-					keyImport = ConstantUtils.SOURCE_SERVICE_INFOS;
 					strFile = processListFileService(fileEntry, folderParentPath, groupId, userId, subFolder, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_SERVICE_CONFIGS:
-					keyImport = ConstantUtils.SOURCE_SERVICE_INFOS;
 					strFile = processListFileService(fileEntry,folderParentPath,groupId,userId, subFolder, serviceContext);
 					break;
 				default:

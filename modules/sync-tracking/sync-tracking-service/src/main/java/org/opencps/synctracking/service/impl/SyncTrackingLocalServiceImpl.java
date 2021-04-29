@@ -64,6 +64,10 @@ public class SyncTrackingLocalServiceImpl
 				toDate, start, end);
 	}
 
+	public List<SyncTracking> getByGroupIdAndApi(long groupId, String api, int start, int end) {
+		return syncTrackingPersistence.findByF_GID_API(groupId, api, start, end);
+	}
+
 	public List<SyncTracking> getByGroupIdAndDossierNoAndServiceCodeAndDate(long groupId, String dossierNo,
 																			String serviceCode, Date fromDate,
 																			Date toDate, int start, int end) {

@@ -145,7 +145,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 							DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())));
 
 					PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-					if (result.getDossierId() != null && paymentFile != null && (paymentFile.getPaymentStatus() == 2)) { // ||
+					if (result.getDossierId() != null && paymentFile != null && (paymentFile.getPaymentStatus() == 2 || paymentFile.getPaymentStatus() == 1)) { // ||
 																															// paymentFile.getPaymentStatus()
 																															// ==
 																															// 5
@@ -333,31 +333,32 @@ public class PublishEventScheduler extends BaseMessageListener {
 				_log.error(e);
 			}
 		}
-		// add by TrungNt
-		else if (ServerConfigTerm.DVCQG_INTEGRATION.equals(sc.getProtocol())) {
-
-			try {
-				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
-
-				JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier, null);
-
-				if (Validator.isNull(result)) {
-					return false;
-				}
-
-				_log.info("result DVCQG: " + result);
-				if (result.has("error_code") && "0".equals(result.getString("error_code"))) {
-					PublishQueueLocalServiceUtil.updatePublishQueue(sc.getGroupId(), pq.getPublishQueueId(), 2,
-							dossier.getDossierId(), sc.getServerNo(), StringPool.BLANK,
-							PublishQueueTerm.STATE_RECEIVED_ACK, 0, String.valueOf(dossier.getDossierNo()),
-							result.toJSONString(), new ServiceContext());
-					return true;
-				}
-			} catch (Exception e) {
-				_log.error(e);
-			}
-			return false;
-		} else if (ServerConfigTerm.TTTT_INTEGRATION.equals(sc.getProtocol())) {
+		// add by TrungNt change to Giao HSKM
+//		else if (ServerConfigTerm.DVCQG_INTEGRATION.equals(sc.getProtocol())) {
+//
+//			try {
+//				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+//
+//				JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier, null);
+//
+//				if (Validator.isNull(result)) {
+//					return false;
+//				}
+//
+//				_log.info("result DVCQG: " + result);
+//				if (result.has("error_code") && "0".equals(result.getString("error_code"))) {
+//					PublishQueueLocalServiceUtil.updatePublishQueue(sc.getGroupId(), pq.getPublishQueueId(), 2,
+//							dossier.getDossierId(), sc.getServerNo(), StringPool.BLANK,
+//							PublishQueueTerm.STATE_RECEIVED_ACK, 0, String.valueOf(dossier.getDossierNo()),
+//							result.toJSONString(), new ServiceContext());
+//					return true;
+//				}
+//			} catch (Exception e) {
+//				_log.error(e);
+//			}
+//			return false;
+//		}
+		else if (ServerConfigTerm.TTTT_INTEGRATION.equals(sc.getProtocol())) {
 			_log.info("Integrating dossier to TTTT...");
 			try {
 				TTTTIntegrationAction integrationAction = new TTTTIntegrationImpl();

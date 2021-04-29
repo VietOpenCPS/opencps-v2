@@ -177,7 +177,7 @@ public class DeliverableNumberGenerator {
 			throws ParseException {
 		DeliverableType deliverableType = null;
 		deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(groupId,typeCode);
-		if(Validator.isNotNull(deliverableType)){
+		if(Validator.isNull(deliverableType)){
 			deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(0L,typeCode);
 		}
 		String seriNumberPattern = null;
