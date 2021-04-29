@@ -3,6 +3,7 @@ package org.opencps.dossiermgt.scheduler;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -23,19 +24,23 @@ import com.liferay.portal.kernel.scheduler.StorageTypeAware;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.TTTTIntegrationAction;
-import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.TTTTIntegrationImpl;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
@@ -47,22 +52,20 @@ import org.opencps.dossiermgt.lgsp.model.MResult;
 import org.opencps.dossiermgt.lgsp.model.Mtoken;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
-import org.opencps.dossiermgt.rest.model.DossierMarkInputModel;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.rest.utils.LGSPRestClient;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
+import org.opencps.dossiermgt.scheduler.PublishEventHSKMScheduler.Counter;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
+import org.opencps.dossiermgt.service.comparator.PublishQueueComparator;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -73,6 +76,47 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = PublishEventScheduler.class)
 public class PublishEventScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
+	
+	static class Counter {
+		private volatile static int count = 0;
+		public static int getCount(){
+			return count;
+		}
+		public static synchronized void decreaseCount(){
+			count--;
+		}
+
+		public static synchronized void setCount(int countNew){
+			count = countNew;
+		}
+	}
+	
+	public PublishEventScheduler () {
+		_log.debug("Constructor PublishEventScheduler");
+
+		if(Validator.isNull(threadPoolExecutor)) {
+			_log.debug("Creating threadPoolExecutor first time...");
+			threadPoolExecutor = new ThreadPoolExecutor(
+					corePoolSize, // Số thread mặc định được cấp để xử lý request
+					maximumPoolSize, //Số thread tối đa được dùng
+					keepAliveTime, //thời gian sống 1 thread nếu thread đang ko làm gì
+					java.util.concurrent.TimeUnit.SECONDS, //đơn vị thời gian
+					new ArrayBlockingQueue<>(queueCapacity), //Queue để lưu số lượng request chờ khi số thread trong
+					// corePoolSize được dùng hết, khi số lượng request = queueCapacity thì sẽ tạo 1 thread mới
+					new ThreadPoolExecutor.CallerRunsPolicy()); //Tự động xử lý exception khi số lượng request vượt quá queueCapacity
+		}
+	}
+	
+	private static final String startLine1 = "==========";
+	private static final String startLine2 = "==================";
+
+	private static volatile ThreadPoolExecutor threadPoolExecutor;
+
+	private int corePoolSize    = 15;
+	private int maximumPoolSize = 60;
+	private int queueCapacity   = 10;
+	private int keepAliveTime   = 10;
+
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
@@ -96,41 +140,113 @@ public class PublishEventScheduler extends BaseMessageListener {
 			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatusesAndNotServerNo(new int[] {
 							PublishQueueTerm.STATE_WAITING_SYNC,
 							PublishQueueTerm.STATE_ALREADY_SENT},
-					ServerConfigTerm.DVCQG_INTEGRATION, 0, 10);
+					ServerConfigTerm.DVCQG_INTEGRATION, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 			_log.debug("lstPqs  : " + lstPqs.size());
 
-			for (PublishQueue pq : lstPqs) {
-				try {
-					pq.setStatus(PublishQueueTerm.STATE_ALREADY_SENT);
-					pq = PublishQueueLocalServiceUtil.updatePublishQueue(pq);
-					boolean result = processPublish(pq);
-					if (!result) {
-						int retry = pq.getRetry();
-						if (retry < PublishQueueTerm.MAX_RETRY) {
-							pq.setRetry(pq.getRetry() + 1);
-							pq.setStatus(PublishQueueTerm.STATE_WAITING_SYNC);
-							PublishQueueLocalServiceUtil.updatePublishQueue(pq);
-						} else {
-							pq.setRetry(0);
-							pq.setStatus(PublishQueueTerm.STATE_ACK_ERROR);
-							PublishQueueLocalServiceUtil.updatePublishQueue(pq);
-						}
-					} else {
-						pq.setStatus(PublishQueueTerm.STATE_RECEIVED_ACK);
-						PublishQueueLocalServiceUtil.updatePublishQueue(pq);
-						// PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
-					}
-				} catch (Exception e) {
-					_log.debug(e);
-				}
+			if(Validator.isNull(lstPqs) || lstPqs.size() == 0) {
+				_log.debug("No queue found with status " + PublishQueueTerm.STATE_WAITING_SYNC);
+				isRunning = false;
+				return;
 			}
-			_log.debug("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
+
+			//Remove duplicated dossierId
+			Set<Long> listDossierId = new HashSet<>();
+			for(PublishQueue queue : lstPqs) {
+				listDossierId.add(queue.getDossierId());
+			}
+			int sizeDossierId = listDossierId.size();
+			Counter.setCount(sizeDossierId);
+			//Core function
+			for(Long dossierId : listDossierId) {
+				threadPoolExecutor.execute(() -> mainProcess(dossierId, sizeDossierId));
+				_log.debug("Number thread active: " + threadPoolExecutor.getActiveCount());
+			}
+
 		}
 		catch (Exception e) {
 			_log.debug(e);
 		}
 		isRunning = false;
+	}
+	
+	private void mainProcess(long dossierId, int sizeDossierId) {
+		
+		_log.debug(startLine1 + "Start thread for dossierId " + dossierId);
+		if(Counter.getCount() == sizeDossierId) {
+			_log.debug("Time start: " + APIDateTimeUtils.convertDateToString(new Date()));
+		}
+		
+		List<PublishQueue> listQueueByDossierId = PublishQueueLocalServiceUtil.getByDossierIdAndNotServerNo(
+				dossierId, ServerConfigTerm.DVCQG_INTEGRATION, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				new PublishQueueComparator(true, Field.CREATE_DATE, Date.class));
+
+		if(Validator.isNull(listQueueByDossierId) || listQueueByDossierId.size() == 0) {
+			_log.warn(startLine2 + "Not found publish queue with dossierId " + dossierId + ", still running...");
+			return;
+		}
+		
+		int queueStatus;
+		long queueIdError = 0;
+		long queueIdCurrent;
+		
+		for (PublishQueue oneQueue : listQueueByDossierId) {
+			
+			queueIdCurrent = oneQueue.getPublishQueueId();
+			queueStatus    = oneQueue.getStatus();
+			
+			try {
+				if(queueStatus == PublishQueueTerm.STATE_RECEIVED_ACK) {
+					continue;
+				}
+
+				if(queueStatus == PublishQueueTerm.STATE_ACK_ERROR) {
+					queueIdError = queueIdCurrent;
+					continue;
+				}
+
+				if (queueIdError != 0) {
+					oneQueue.setStatus(PublishQueueTerm.STATE_ACK_ERROR);
+					PublishQueueLocalServiceUtil.updatePublishQueue(oneQueue);
+					continue;
+				}
+
+				if(queueStatus == PublishQueueTerm.STATE_ALREADY_SENT) {
+					continue;
+				}
+
+				if(queueStatus == PublishQueueTerm.STATE_WAITING_SYNC) {
+					//start sync
+					oneQueue.setStatus(PublishQueueTerm.STATE_ALREADY_SENT);
+					oneQueue = PublishQueueLocalServiceUtil.updatePublishQueue(oneQueue);
+
+					boolean result = processPublish(oneQueue);
+
+					if(result) {
+						oneQueue.setStatus(PublishQueueTerm.STATE_RECEIVED_ACK);
+					} else {
+						oneQueue.setStatus(PublishQueueTerm.STATE_ACK_ERROR);
+						queueIdError = queueIdCurrent;
+					}
+					PublishQueueLocalServiceUtil.updatePublishQueue(oneQueue);
+					_log.debug("Done for dossier: " + dossierId);
+				}
+			} catch (Exception e) {
+				
+				_log.warn("==================Error when submit queue: " + queueIdCurrent + ", status: " + queueStatus);
+				_log.warn(e);
+				_log.warn("==================Still running...");
+				
+				
+			}
+		}
+		
+		Counter.decreaseCount();
+		_log.debug("============Counting remain: " + Counter.getCount());
+		if(Counter.getCount() == 0) {
+			_log.debug("Time end: " + APIDateTimeUtils.convertDateToString(new Date()));
+		}
+		
 	}
 
 	private boolean processPublish(PublishQueue pq) {
@@ -198,12 +314,12 @@ public class PublishEventScheduler extends BaseMessageListener {
 					// StringBuilder acknowlegement = new StringBuilder();
 
 					String payload = pq.getPublishData();
-					System.out.println("dossier Inform: " + dossier.getOriginDossierNo());
+					_log.debug("dossier Inform: " + dossier.getOriginDossierNo());
 					System.out.println("payload Inform: " + payload);
 					JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
 
 					// Sync file HSLT
-					_log.info("payloadObj LT: " + payloadObj);
+					_log.debug("payloadObj LT: " + payloadObj);
 					if (payloadObj.has(DossierSyncTerm.PAYLOAD_SYNC_FILES)) {
 						JSONArray fileArrs = payloadObj.getJSONArray(DossierSyncTerm.PAYLOAD_SYNC_FILES);
 						for (int i = 0; i < fileArrs.length(); i++) {
