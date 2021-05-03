@@ -264,7 +264,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			if(Validator.isNotNull(imaStr)){
 				imageStr = imaStr;
 			}
-			_log.info("Image: " + imageStr);
+			_log.debug("Image: " + imageStr);
 			if(Validator.isNotNull(imageStr)) {
 				String imageDataBytes = imageStr.split(",")[1];
 
