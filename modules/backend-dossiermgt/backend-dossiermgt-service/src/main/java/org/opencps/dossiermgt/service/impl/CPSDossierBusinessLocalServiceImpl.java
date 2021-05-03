@@ -135,6 +135,7 @@ import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.VNPostCLSUtils;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
+import org.opencps.dossiermgt.action.util.POSVCBUtils;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
@@ -5743,15 +5744,86 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		if(DossierActionTerm.ACTION_SPECIAL_WAITING_PAYMENT.equals(actionCode)){
+			// Gửi giao dịch thanh toán lên máy POS
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
-			if (paymentFile != null) {
-				paymentFile.setPaymentStatus(3);
-				paymentFile.setApproveDatetime(new Date());
+			_log.info(" --- Call API Sale RequestData POSVCB --- ");
+			try {
+				String result = POSVCBUtils.saleRequestDataPOSVCB(groupId, dossier.getGovAgencyCode(),
+						paymentFile.getPaymentAmount(), SyncServerTerm.CURRENCY_CODE, "",  paymentFile.getPaymentNote(),
+						dossier.getDossierCounter(),dossier.getDossierNo());
+				JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+				if(Validator.isNotNull(result)) {
+					JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
+					String key = resultJSON.getString("KEY");
+					if (Validator.isNotNull(key)) {
+						_log.info("KEY POS: " + key);
+						epaymentProfile.put(SyncServerTerm.KEY_SALE, key);
+					}
+				}
+				if (paymentFile != null) {
+					paymentFile.setPaymentStatus(3);
+					paymentFile.setApproveDatetime(new Date());
+					paymentFile.setEpaymentProfile(epaymentProfile.toString());
+				}
+				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+				_log.info(" --- Result VCB ---  : "  + result);
+			}catch (Exception e){
+				e.getMessage();
 			}
-			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 		}
-		if(DossierActionTerm.ACTION_SPECIAL_CONFIRM_PAYMENT.equals(actionCode)){
-//			POSVCBUtils.saleRequestDataPOSVCB();
+		if(DossierActionTerm.ACTION_SPECIAL_CONFIRM_PAYMENT.equals(actionCode)) {
+			// Cán bộ xác nhận thanh toán cập nhật lại trạng thái
+			// Check giao dịch đã được thanh toán chưa
+			String key = StringPool.BLANK;
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
+			JSONObject paymentObject = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+			key = paymentObject.getString(SyncServerTerm.KEY_SALE);
+			_log.info("Call API Xác Nhận Thanh toán");
+			String result = POSVCBUtils.checkResultPOSVCB(groupId, dossier.getGovAgencyCode(), key);
+			_log.info("Result thanh toán :" + result);
+			if (Validator.isNotNull(result)) {
+				JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
+				String responseCode = resultJSON.getString("RESPONSE_CODE");
+				if (paymentFile != null && responseCode.equals("00")) {
+					paymentFile.setPaymentStatus(5);
+					paymentFile.setApproveDatetime(new Date());
+					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+					_log.info("Hồ sơ thanh toán thành công");
+				}else if (responseCode.equals("7000")){
+					_log.info("Hồ sơ chưa được thanh toán trên máy POS");
+				}else{
+					_log.info("Hồ sơ chưa gửi thanh toán lên máy POS");
+				}
+			}
+		}
+		if(DossierActionTerm.ACTION_SPECIAL_CANCEL_PAYMENT.equals(actionCode)){
+			// Hủy giao dịch thanh toán lên máy POS
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
+			_log.info(" --- Call API Void RequestData POSVCB --- ");
+			try {
+
+				// Check giao dịch đã được thanh toán chưa
+				String key = StringPool.BLANK;
+				String resultVoid = StringPool.BLANK;
+				JSONObject paymentObject = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+				key = paymentObject.getString(SyncServerTerm.KEY_SALE);
+				_log.info("Call API Hủy Thanh toán");
+				String result = POSVCBUtils.checkResultPOSVCB(groupId, dossier.getGovAgencyCode(), key);
+				if(Validator.isNotNull(result)) {
+					JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
+					if ("00".equals(resultJSON.getString("RESPONSE_CODE"))) {
+						resultVoid = POSVCBUtils.voidPOSVCB(groupId, dossier.getGovAgencyCode(),
+								SyncServerTerm.CURRENCY_CODE, "", dossier.getDossierNo(), resultJSON, paymentFile.getPaymentNote());
+					} else {
+						resultVoid = "Giao dịch chưa được khởi tạo";
+					}
+				}else{
+					resultVoid = "Mất kết nối đến máy POS";
+				}
+				_log.info(" --- Result VCB ---  : " + resultVoid);
+			}catch (Exception e){
+				e.getMessage();
+			}
 		}
 
 		return dossierAction;
