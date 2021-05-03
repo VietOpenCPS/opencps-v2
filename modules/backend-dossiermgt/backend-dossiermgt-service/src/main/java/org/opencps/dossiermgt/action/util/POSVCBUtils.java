@@ -33,7 +33,6 @@ public class POSVCBUtils {
     public static JSONObject getRequestConnectionPOSVCB(long groupId,JSONObject defaultJSON ){
         try {
             StringBuilder sb = new StringBuilder();
-//            _log.debug("SERVER PROXY: " + defaultJSON.toString());
             if (Validator.isNotNull(defaultJSON)) {
                 String serverUrl = StringPool.BLANK;
                 String merchantOutletId = StringPool.BLANK;
@@ -86,11 +85,9 @@ public class POSVCBUtils {
                 }
                 try {
                     String dataSub = sb.toString().replaceAll("\"","");
-                    _log.info("DataSub: " + dataSub);
                     String decrypt = decrypt3DES1(keyData, dataSub);
                     JSONObject response = JSONFactoryUtil.createJSONObject(decrypt);
                     int total = response.getInt("TOTAL");
-                    _log.info("Total: " + total);
                     if (total > 0) {
                         JSONArray reponseArr = response.getJSONArray(SyncServerTerm.CONN);
                         JSONObject reponseJSON = reponseArr.getJSONObject(0);
@@ -136,6 +133,7 @@ public class POSVCBUtils {
         }catch (Exception e){
             _log.debug("Exception ");
             e.getMessage();
+            return null;
         }
         return null;
     }
@@ -189,7 +187,7 @@ public class POSVCBUtils {
                 System.out.println("Data: " + data);
                 String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
                 byte[] keyData = thirdPartyKey.getBytes();
-                System.out.println("keyData: " + keyData);
+//                System.out.println("keyData: " + keyData);
 
                 JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
 
@@ -238,7 +236,6 @@ public class POSVCBUtils {
             JSONObject reponseJSON = getRequestConnectionPOSVCB(groupId, defaultJSON);
             StringBuilder sb = new StringBuilder();
             if (Validator.isNotNull(defaultJSON) && Validator.isNotNull(reponseJSON) && Validator.isNotNull(resultJSON.getString(SyncServerTerm.INVOICE))) {
-                _log.info("Vaooooooo 111111111");
                 String serverUrl = StringPool.BLANK;
                 String serialNumber = StringPool.BLANK;
                 String refId = StringPool.BLANK;
@@ -281,7 +278,6 @@ public class POSVCBUtils {
                 jsonBody.put("CLIENT_ID", clientId);
 
                 String data = jsonBody.toString();
-                _log.info("Data: " + data);
 
                 String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
                 byte[] keyData = thirdPartyKey.getBytes();
@@ -290,7 +286,6 @@ public class POSVCBUtils {
 
                 jsonBodyEncrypt.put("KEY", defaultJSON.getString(SyncServerTerm.THIRD_PARTY_ID));
                 jsonBodyEncrypt.put("VALUE", encrypt3DES1(keyData, data));
-                _log.info("Vaooooooo 22222222: " + jsonBodyEncrypt.toString());
                 String body = "=" + jsonBodyEncrypt.toString();
 
                 _log.debug("POST DATA: " + body);
@@ -314,9 +309,6 @@ public class POSVCBUtils {
                 while ((cp = brf.read()) != -1) {
                     sb.append((char) cp);
                 }
-                _log.info("Vaooooooo 33333: " + sb.toString());
-//                    String dataSub = sb.toString().replaceAll("\"", "");
-//                    String decrypt3D = decrypt3DES1(keyData, dataSub);
                 return decrypt3DES1(keyData, sb.toString().replaceAll("\"", ""));
 
             }
@@ -425,7 +417,6 @@ public class POSVCBUtils {
                 jsonBody.put("EVENT",SyncServerTerm.CHECK_RESULT);
                 jsonBody.put("KEY",key);
                 String data = jsonBody.toString();
-//                byte[] keyData = configObj.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
                 String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
                 byte[] keyData = thirdPartyKey.getBytes();
 
