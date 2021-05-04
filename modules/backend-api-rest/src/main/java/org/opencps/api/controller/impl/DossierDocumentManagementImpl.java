@@ -490,7 +490,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			List<DossierAction> doActionList = DossierActionLocalServiceUtil.findByG_DID(groupId,
 					dossier.getDossierId());
 			JSONArray jsonSequenceDoneArr = getProcessSequenceArrDoneJSON(sequenceArr, sequenceList,doActionList);
-			_log.info("Phieu Hoan Thanh: " + JSONFactoryUtil.looseSerialize(jsonSequenceDoneArr));
 			if (jsonSequenceDoneArr != null) {
 				jsonData.put(ConstantUtils.DOSSIERDOCUMENT_PROCESSSEQUENCEARRDONE_KEY, jsonSequenceDoneArr);
 			}
