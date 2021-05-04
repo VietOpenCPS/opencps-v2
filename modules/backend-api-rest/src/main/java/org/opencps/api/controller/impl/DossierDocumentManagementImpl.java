@@ -122,7 +122,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					if(Validator.isNotNull(paymentFile)){
 						String epaymentProfile = paymentFile.getEpaymentProfile();
 						JSONObject jsonObject = JSONFactoryUtil.createJSONObject(epaymentProfile);
-						String qrCode = StringPool.BLANK;
 						if (jsonObject.has("qrcode_pay")) {
 							jsonData.put("qrcode_pay",jsonObject.getString("qrcode_pay"));
 						}
@@ -152,7 +151,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					Message message = new Message();
 					message.put(DossierDocumentTerm.FORM_REPORT, documentScript);
 					message.put(DossierDocumentTerm.FORM_DATA, jsonData.toJSONString());
-//					String reportType = "word";
+
 					if(Validator.isNotNull(reportType)){
 						message.put(ConstantUtils.API_JSON_REPORT_TYPE, reportType);
 					}
@@ -163,8 +162,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						String previewResponse = (String) MessageBusUtil
 								.sendSynchronousMessage(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW, message, 10000);
 
-//						if (Validator.isNotNull(previewResponse)) {
-//						}
 
 						File file = new File(previewResponse);
 
@@ -493,6 +490,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			List<DossierAction> doActionList = DossierActionLocalServiceUtil.findByG_DID(groupId,
 					dossier.getDossierId());
 			JSONArray jsonSequenceDoneArr = getProcessSequenceArrDoneJSON(sequenceArr, sequenceList,doActionList);
+			_log.info("Phieu Hoan Thanh: " + JSONFactoryUtil.looseSerialize(jsonSequenceDoneArr));
 			if (jsonSequenceDoneArr != null) {
 				jsonData.put(ConstantUtils.DOSSIERDOCUMENT_PROCESSSEQUENCEARRDONE_KEY, jsonSequenceDoneArr);
 			}
@@ -604,7 +602,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 								sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NAME, proSeq.getSequenceName());
 								sequenceObj.put(ProcessSequenceTerm.SEQUENCE_ROLE, proSeq.getSequenceRole());
 								sequenceObj.put(ProcessSequenceTerm.DURATION_COUNT, proSeq.getDurationCount());
-								sequenceObj.put(ProcessSequenceTerm.CREATE_DATE, APIDateTimeUtils.convertDateToString(proSeq.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+								sequenceObj.put(ProcessSequenceTerm.CREATE_DATE, APIDateTimeUtils.convertDateToString(actions.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 							}
 						}
 						if (Validator.isNotNull(actions.getNextActionId())) {
@@ -616,7 +614,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 									sequenceObj.put(ProcessSequenceTerm.NEXT_SEQUENCE_NO, proSeq.getSequenceNo());
 									sequenceObj.put(ProcessSequenceTerm.NEXT_SEQUENCE_NAME, proSeq.getSequenceName());
 									sequenceObj.put(DossierTerm.NEXT_SEQUENCE_ROLE, proSeq.getSequenceRole());
-									sequenceObj.put(ProcessSequenceTerm.CREATE_DATE, APIDateTimeUtils.convertDateToString(proSeq.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+									sequenceObj.put(ProcessSequenceTerm.CREATE_DATE, APIDateTimeUtils.convertDateToString(actions.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 								}
 							}
 						}
