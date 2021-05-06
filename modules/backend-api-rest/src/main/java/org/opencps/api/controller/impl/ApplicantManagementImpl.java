@@ -116,6 +116,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	public Response register(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, ApplicantInputModel input) {
 
+		_log.info("111111");
 		ApplicantActions actions = new ApplicantActionsImpl();
 
 		ApplicantModel result = new ApplicantModel();
@@ -128,9 +129,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
 
+			_log.info("Input :" + JSONFactoryUtil.looseSerialize(input));
 			if (!auth2.checkToken(request, header)) {
 				throw new UnauthenticationException();
 			}
+			_log.info("222222");
 			String applicantName = HtmlUtil.escape(input.getApplicantName());
 			String applicantIdType = HtmlUtil.escape(input.getApplicantIdType());
 			String applicantIdNo = HtmlUtil.escape(input.getApplicantIdNo());
@@ -155,6 +158,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 
 			}
+			_log.info("3333333");
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
 					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
 					cityCode, cityName, districtCode, districtName,
