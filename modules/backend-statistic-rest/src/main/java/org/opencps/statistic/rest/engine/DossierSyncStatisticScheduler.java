@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -51,11 +52,14 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	// Time engine dossier
 	private static int TIME_STATISTIC_CALCULATOR = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.calculator"))
 			? Integer.valueOf(PropsUtil.get("org.opencps.statistic.calculator")) : 30;
-
+	
+	private boolean enableJob = Validator.isNotNull(PropsUtil.get("opencps.sync.dossierstatistic.enable"))
+			? GetterUtil.getBoolean(PropsUtil.get("opencps.sync.dossierstatistic.enable")) : true;
+	
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		System.out.println("START STATISTIC DOSSIER STATISTIC: " + isRunningStatisticSync);
-		if (!isRunningStatisticSync) {
+		_log.info("Cau hinh sync dossierstatistic running: " + isRunningStatisticSync + ", enable: " + enableJob);
+		if (!isRunningStatisticSync && enableJob) {
 			isRunningStatisticSync = true;
 		}
 		else {
@@ -64,8 +68,8 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		long startTime = System.currentTimeMillis();
 		Date nowLog = new Date();
 		try {
-			System.out.println("START TRACE LOG CALCULATOR TIME: " + nowLog);
-			System.out.println("START CALCULATOR TIME: " + (System.currentTimeMillis() - startTime) + " ms");
+			_log.info("START TRACE LOG CALCULATOR TIME: " + nowLog);
+			_log.info("START CALCULATOR TIME: " + (System.currentTimeMillis() - startTime) + " ms");
 			
 			List<ServerConfig> configList = ServerConfigLocalServiceUtil.getByServerAndProtocol("SERVER_STATISTIC_DVC", DossierStatisticConstants.STATISTIC_PROTOCOL);
 			ServerConfig config = null;
@@ -75,7 +79,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 					return;
 				}
 			} else {
-				System.out.println("RETURN CALCULATOR END: " + (System.currentTimeMillis() - startTime) + " ms");
+				_log.info("RETURN CALCULATOR END: " + (System.currentTimeMillis() - startTime) + " ms");
 				return ;
 			}
 
@@ -190,8 +194,8 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		catch (Exception e) {
 			_log.error(e);
 		}
-		System.out.println("END TRACE LOG CALCULATOR TIME: " + nowLog);
-		System.out.println("CALCULATOR END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
+		_log.info("END TRACE LOG CALCULATOR TIME: " + nowLog);
+		_log.info("CALCULATOR END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 
 		isRunningStatisticSync = false;
 	}
