@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -56,6 +57,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -163,7 +165,10 @@ public class DossierManagementImpl implements DossierManagement {
 	private static final String CONFIG_DVCQG_INTEGRATION = "DVCQG_INTEGRATION";
 	private static final String ERROR_CODE = "error_code";
 	private static final String ERROR_MESSAGE = "message";
-
+	
+	private static final String secretkey = "opencps";
+	private static final String DATE_FORMAT = "dd/MM/yyyy hh:mm";
+	private static final String AUTHEN_KEY = "authenKey";
 
 	private String getBodyError(String code, String message) {
 		JSONObject body = JSONFactoryUtil.createJSONObject();
@@ -243,6 +248,7 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierSearchModel query) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		String authenkeyClient = GetterUtil.getString(header.getHeaderString(AUTHEN_KEY));
 		long userId = user.getUserId();
 		String emailLogin = user.getEmailAddress();
 		DossierActions actions = new DossierActionsImpl();
@@ -250,9 +256,22 @@ public class DossierManagementImpl implements DossierManagement {
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 			
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			Date now = APIDateTimeUtils.convertStringToDate(dateFormat.format(new Date()), DATE_FORMAT);
+			String authenkeyServer = DossierUtils.getmd5(secretkey + now.getTime());
+			_log.info("now.getTime() :" + now.getTime());
+			_log.info("authenkeyServer :" + authenkeyServer);
+			_log.info("authenkeyClient :" + authenkeyClient);
+			if (authenkeyClient != null) {
+				if (!authenkeyClient.contentEquals(authenkeyServer)) {
+					throw new UnauthenticationException();
+				}
+			}else {
+				if (!auth.isAuth(serviceContext)) {
+					throw new UnauthenticationException();
+				}
 			}
+		
 			
 			boolean isViaPostal = query.isIstheViaPostal();
 			// boolean isCitizen = false;
