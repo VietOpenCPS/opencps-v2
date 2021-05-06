@@ -317,9 +317,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.info("serviceCode: " + serviceCode);
 			_log.info("dossierTemplateNo: " + dossierTemplateNo);
 
-			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, Validator.isNotNull(serviceCode) ? serviceCode : dossier.getServiceCode(),
+			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(),
 					govAgencyCode);
-			_log.info("serviceConfig: " + serviceConfig);
+//			_log.info("serviceConfig: " + serviceConfig);
 			if (serviceConfig != null) {
 				List<ProcessOption> lstOptions = processOptionLocalService
 						.getByServiceProcessId(serviceConfig.getServiceConfigId());
@@ -408,10 +408,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						}
 						hsltDossier = oldHslt;
 					}
-					_log.info("hsltDossier: " + JSONFactoryUtil.looseSerialize(hsltDossier));
+//					_log.info("hsltDossier: " + JSONFactoryUtil.looseSerialize(hsltDossier));
 					if (hsltDossier == null) {
 						hsltDossier = dossierLocalService.initDossier(groupId, 0l, UUID.randomUUID().toString(),
-								dossier.getCounter(), Validator.isNotNull(serviceCode) ? serviceCode : dossier.getServiceCode(), dossier.getServiceName(), govAgencyCode,
+								dossier.getCounter(), dossier.getServiceCode(), dossier.getServiceName(), govAgencyCode,
 								govAgencyName, dossier.getApplicantName(), dossier.getApplicantIdType(),
 								dossier.getApplicantIdNo(), dossier.getApplicantIdDate(), dossier.getAddress(),
 								dossier.getCityCode(), dossier.getCityName(), dossier.getDistrictCode(),
@@ -2279,15 +2279,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
 									fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();
 								}
-								NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId,
-										notificationType, Dossier.class.getName(),
-										String.valueOf(dossier.getDossierId()), payloadObj.toJSONString(), fromFullName,
-										dossier.getApplicantName(), foundApplicant.getMappingUserId(),
-										isSendNotiEmail ? dossier.getContactEmail() : StringPool.BLANK,
-										isSendNotiSMS ? dossier.getContactTelNo() : StringPool.BLANK,
-										Validator.isNotNull(publicationDate) ? publicationDate : now,
-										Validator.isNotNull(expiredCal) ? expiredCal : expired,
-										context);
+								//chi gui sms, email cho hsmc goc
+								if (dossier.getOriginality() != 1 && dossier.getOriginDossierId() == 0 && Validator.isNull(dossier.getOriginDossierNo())) {
+									NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId,
+											notificationType, Dossier.class.getName(),
+											String.valueOf(dossier.getDossierId()), payloadObj.toJSONString(), fromFullName,
+											dossier.getApplicantName(), foundApplicant.getMappingUserId(),
+											isSendNotiEmail ? dossier.getContactEmail() : StringPool.BLANK,
+											isSendNotiSMS ? dossier.getContactTelNo() : StringPool.BLANK,
+											Validator.isNotNull(publicationDate) ? publicationDate : now,
+											Validator.isNotNull(expiredCal) ? expiredCal : expired,
+											context);
+								}
+								
 							}
 						} catch (NoSuchUserException e) {
 							_log.debug(e);

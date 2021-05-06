@@ -143,6 +143,8 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		
 		document.addKeywordSortable(ServiceInfoTerm.PUBLIC_, Boolean.toString(object.getPublic_()));
 		document.addKeywordSortable(ServiceInfoTerm.GOV_AGENCY_TEXT, object.getGovAgencyText());
+		document.addKeywordSortable(ServiceInfoTerm.TAGCODE, object.getTagCode());
+		document.addKeywordSortable(ServiceInfoTerm.TAGNAME, object.getTagName());
 
 		return document;
 	}

@@ -80,6 +80,7 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
 
             _log.info("End crawl dossier frequency!!!");
         } catch (Exception e){
+            e.printStackTrace();
             _log.error("Error crawl dossier frequency: " + e.getMessage());
         }
         isRunning = false;

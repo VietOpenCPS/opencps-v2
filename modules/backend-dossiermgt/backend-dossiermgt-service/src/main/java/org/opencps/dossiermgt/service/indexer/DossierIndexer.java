@@ -533,7 +533,19 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 							document.addNumberSortable(DossierTerm.DATE_OPTION, 0);
 						}
 						//Add userActionId
-						document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, dossierAction.getUserId());
+						//document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, dossierAction.getUserId());
+						List<DossierAction> listDossierActions = DossierActionLocalServiceUtil.findByG_DID(object.getGroupId(), object.getDossierId());
+						if (listDossierActions != null && listDossierActions.size() > 0) {
+							Set<String> setUserId = new HashSet<String>();
+							for (DossierAction dossierAction2 : listDossierActions) {
+								if (dossierAction2.getUserId() != dossierAction.getUserId() 
+										&& dossierAction2.getNextActionId() > 0) {
+									setUserId.add(String.valueOf(dossierAction2.getUserId()));									
+								}
+							}
+							String userPeriodActionIds = String.join(",", setUserId);
+							document.addTextSortable(DossierTerm.USER_DOSSIER_ACTION_ID, userPeriodActionIds);
+						}
 					} else {
 						//Add userActionId
 						document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, 0);

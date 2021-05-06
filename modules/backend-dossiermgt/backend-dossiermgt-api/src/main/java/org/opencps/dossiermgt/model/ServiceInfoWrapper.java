@@ -90,6 +90,8 @@ public class ServiceInfoWrapper implements ServiceInfo,
 		attributes.put("govAgencyText", getGovAgencyText());
 		attributes.put("isNotarization", isIsNotarization());
 		attributes.put("serviceNameTitle", getServiceNameTitle());
+		attributes.put("tagCode", getTagCode());
+		attributes.put("tagName", getTagName());
 
 		return attributes;
 	}
@@ -275,6 +277,18 @@ public class ServiceInfoWrapper implements ServiceInfo,
 
 		if (serviceNameTitle != null) {
 			setServiceNameTitle(serviceNameTitle);
+		}
+
+		String tagCode = (String)attributes.get("tagCode");
+
+		if (tagCode != null) {
+			setTagCode(tagCode);
+		}
+
+		String tagName = (String)attributes.get("tagName");
+
+		if (tagName != null) {
+			setTagName(tagName);
 		}
 	}
 
@@ -576,6 +590,26 @@ public class ServiceInfoWrapper implements ServiceInfo,
 	@Override
 	public String getServiceNameTitle() {
 		return _serviceInfo.getServiceNameTitle();
+	}
+
+	/**
+	* Returns the tag code of this service info.
+	*
+	* @return the tag code of this service info
+	*/
+	@Override
+	public String getTagCode() {
+		return _serviceInfo.getTagCode();
+	}
+
+	/**
+	* Returns the tag name of this service info.
+	*
+	* @return the tag name of this service info
+	*/
+	@Override
+	public String getTagName() {
+		return _serviceInfo.getTagName();
 	}
 
 	/**
@@ -972,6 +1006,26 @@ public class ServiceInfoWrapper implements ServiceInfo,
 	@Override
 	public void setServiceNameTitle(String serviceNameTitle) {
 		_serviceInfo.setServiceNameTitle(serviceNameTitle);
+	}
+
+	/**
+	* Sets the tag code of this service info.
+	*
+	* @param tagCode the tag code of this service info
+	*/
+	@Override
+	public void setTagCode(String tagCode) {
+		_serviceInfo.setTagCode(tagCode);
+	}
+
+	/**
+	* Sets the tag name of this service info.
+	*
+	* @param tagName the tag name of this service info
+	*/
+	@Override
+	public void setTagName(String tagName) {
+		_serviceInfo.setTagName(tagName);
 	}
 
 	/**

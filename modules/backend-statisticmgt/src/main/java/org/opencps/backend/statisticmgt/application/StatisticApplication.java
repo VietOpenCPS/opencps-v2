@@ -157,7 +157,7 @@ public class StatisticApplication extends Application {
 	@POST
 	@Path("/dossier/groupcount/export")
 	@Consumes({ MediaType.APPLICATION_JSON })
-	@Produces({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_OCTET_STREAM })
 	public Response exportGroupCountDossier(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @QueryParam("fromDate") long fromDate,

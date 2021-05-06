@@ -214,6 +214,12 @@ public class DictItemMappingLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.datamgt.model.DictItemMapping fetchByF_IC(
+		String itemCode) {
+		return _dictItemMappingLocalService.fetchByF_IC(itemCode);
+	}
+
+	@Override
 	public org.opencps.datamgt.model.DictItemMapping fetchDictItemMapping(
 		long mappingId) {
 		return _dictItemMappingLocalService.fetchDictItemMapping(mappingId);

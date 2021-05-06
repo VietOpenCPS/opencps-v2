@@ -49,6 +49,8 @@
 		<column name="govAgencyText" type="String" />
 		<column name="isNotarization" type="boolean" />
 		<column name="serviceNameTitle" type="String"/>
+		<column name="tagCode" type="String"/>
+		<column name="tagName" type="String"/>
 
 		<!-- Order -->
 

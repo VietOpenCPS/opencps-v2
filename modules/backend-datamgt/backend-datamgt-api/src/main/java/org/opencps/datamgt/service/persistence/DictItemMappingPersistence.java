@@ -99,6 +99,51 @@ public interface DictItemMappingPersistence extends BasePersistence<DictItemMapp
 		long collectionId);
 
 	/**
+	* Returns the dict item mapping where itemCode = &#63; or throws a {@link NoSuchDictItemMappingException} if it could not be found.
+	*
+	* @param itemCode the item code
+	* @return the matching dict item mapping
+	* @throws NoSuchDictItemMappingException if a matching dict item mapping could not be found
+	*/
+	public DictItemMapping findByF_IC(String itemCode)
+		throws NoSuchDictItemMappingException;
+
+	/**
+	* Returns the dict item mapping where itemCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param itemCode the item code
+	* @return the matching dict item mapping, or <code>null</code> if a matching dict item mapping could not be found
+	*/
+	public DictItemMapping fetchByF_IC(String itemCode);
+
+	/**
+	* Returns the dict item mapping where itemCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param itemCode the item code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dict item mapping, or <code>null</code> if a matching dict item mapping could not be found
+	*/
+	public DictItemMapping fetchByF_IC(String itemCode,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the dict item mapping where itemCode = &#63; from the database.
+	*
+	* @param itemCode the item code
+	* @return the dict item mapping that was removed
+	*/
+	public DictItemMapping removeByF_IC(String itemCode)
+		throws NoSuchDictItemMappingException;
+
+	/**
+	* Returns the number of dict item mappings where itemCode = &#63;.
+	*
+	* @param itemCode the item code
+	* @return the number of matching dict item mappings
+	*/
+	public int countByF_IC(String itemCode);
+
+	/**
 	* Returns the dict item mapping where groupId = &#63; and itemCodeDVCQG = &#63; and collectionId = &#63; or throws a {@link NoSuchDictItemMappingException} if it could not be found.
 	*
 	* @param groupId the group ID

@@ -8,6 +8,7 @@ create unique index IX_2E778E78 on opencps_comment (uuid_[$COLUMN_LENGTH:75$], g
 create index IX_BD0BDD4F on opencps_dictItemmapping (groupId, collectionId);
 create index IX_23C02E63 on opencps_dictItemmapping (groupId, itemCode[$COLUMN_LENGTH:255$], collectionId);
 create index IX_A1CE1162 on opencps_dictItemmapping (groupId, itemCodeDVCQG[$COLUMN_LENGTH:255$], collectionId);
+create index IX_74756D7C on opencps_dictItemmapping (itemCode[$COLUMN_LENGTH:255$]);
 
 create index IX_A7CA616E on opencps_dictcollection (collectionCode[$COLUMN_LENGTH:100$], groupId);
 create index IX_ABBCA0ED on opencps_dictcollection (groupId);
