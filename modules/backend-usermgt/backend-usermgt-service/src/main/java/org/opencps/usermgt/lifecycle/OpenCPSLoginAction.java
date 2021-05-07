@@ -33,7 +33,7 @@ import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DeviceResolver;
 import org.springframework.mobile.device.LiteDeviceResolver;
 
-@Component(immediate = true, property = { "key=login.events.post" }, service = LifecycleAction.class)
+//@Component(immediate = true, property = { "key=login.events.post" }, service = LifecycleAction.class)
 public class OpenCPSLoginAction extends Action {
 	@Override
 	public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {

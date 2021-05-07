@@ -81,7 +81,9 @@ public class ServiceInfoUtils {
 				model.setSynced(GetterUtil.getInteger(doc.get(ServiceInfoTerm.SYNCED)));
 				//model.setPublic(doc.get(ServiceInfoTerm.PUBLIC_));
 				model.setActive(doc.get(ServiceInfoTerm.PUBLIC_));
-				
+				model.setTagCode(doc.get(ServiceInfoTerm.TAGCODE));
+				model.setTagName(doc.get(ServiceInfoTerm.TAGNAME));
+
 				List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
 
 				//ServiceConfigActions serviceConfigActions = new ServiceConfigActionImpl();
@@ -243,6 +245,8 @@ public class ServiceInfoUtils {
 		model.setMaxLevel(serviceInfo.getMaxLevel());
 		model.setActive(Boolean.toString(serviceInfo.getPublic_()));
 		model.setGovAgencyText(serviceInfo.getGovAgencyText());
+		model.setTagCode(serviceInfo.getTagCode());
+		model.setTagName(serviceInfo.getTagName());
 
 		return model;
 	}
