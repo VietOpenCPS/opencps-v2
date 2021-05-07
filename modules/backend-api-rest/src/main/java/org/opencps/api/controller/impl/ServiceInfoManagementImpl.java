@@ -309,6 +309,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			long userId = user.getUserId();
 
 			ServiceInfo serviceInfo = null;
 
@@ -321,7 +322,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			if (Validator.isNull(serviceInfo)) {
 				throw new Exception();
 			} else {
-				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo);
+				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo, userId);
 			}
                         /*
 			EntityTag etag = new EntityTag(String.valueOf((groupId + StringPool.UNDERLINE + id).hashCode()));
