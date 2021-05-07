@@ -46,7 +46,8 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 public class ServiceInfoUtils {
 
 	@SuppressWarnings("unchecked")
-	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents, long groupId, long userId,
+	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents, long
+			groupId, long userId, boolean filterApplicant,
 			ServiceContext serviceContext) {
 		List<ServiceInfoModel> data = new ArrayList<ServiceInfoModel>();
 
@@ -109,38 +110,37 @@ public class ServiceInfoUtils {
 					boolean citizen = false;
 					boolean business = false;
 					boolean active = false;
-					if (Validator.isNotNull(applicant)) {
-						if ("citizen".equals(applicant.getApplicantIdType())) {
-							citizen = true;
-						} else if ("business".equals(applicant.getApplicantIdType())) {
-							business = true;
-						}
-						for (ServiceConfig sc : lstScs) {
-							ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
-							List<ProcessOption> lstOption = ProcessOptionLocalServiceUtil.getByServiceConfigId(sc.getServiceConfigId());
-							if (lstOption != null && !lstOption.isEmpty()) {
-								for (ProcessOption option : lstOption) {
-									if (citizen && option.isForCitizen()) {
-										active = true;
-										break;
-									} else if (business && option.isForBusiness()) {
-										active = true;
-										break;
-									}
+					if ("citizen".equals(applicant.getApplicantIdType())) {
+						citizen = true;
+					} else if ("business".equals(applicant.getApplicantIdType())) {
+						business = true;
+					}
+					for (ServiceConfig sc : lstScs) {
+						ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
+						List<ProcessOption> lstOption = ProcessOptionLocalServiceUtil.getByServiceConfigId(sc.getServiceConfigId());
+						if (lstOption != null && !lstOption.isEmpty()) {
+							for (ProcessOption option : lstOption) {
+								if (citizen && option.isForCitizen()) {
+									active = true;
+									break;
+								} else if (business && option.isForBusiness()) {
+									active = true;
+									break;
 								}
-								if (active) {
-									cf.setGovAgencyCode(sc.getGovAgencyCode());
-									cf.setGovAgencyName(sc.getGovAgencyName());
-									cf.setServiceInstruction(sc.getServiceInstruction());
-									cf.setServiceUr(sc.getServiceUrl());
-									cf.setServiceLevel(sc.getServiceLevel());
-									cf.setServiceConfigId(sc.getServiceConfigId());
+							}
+							if (active) {
+								cf.setGovAgencyCode(sc.getGovAgencyCode());
+								cf.setGovAgencyName(sc.getGovAgencyName());
+								cf.setServiceInstruction(sc.getServiceInstruction());
+								cf.setServiceUr(sc.getServiceUrl());
+								cf.setServiceLevel(sc.getServiceLevel());
+								cf.setServiceConfigId(sc.getServiceConfigId());
 
-									lsServiceConfig.add(cf);
-								}
+								lsServiceConfig.add(cf);
 							}
 						}
 					}
+
 				}else {
 					for (ServiceConfig sc : lstScs) {
 						ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
@@ -168,7 +168,12 @@ public class ServiceInfoUtils {
 //				}
 				
 				model.getServiceConfigs().addAll(lsServiceConfig);
-				
+				if(filterApplicant && model.getServiceConfigs().size() >0) {
+					data.add(model);
+				}else if(!filterApplicant){
+					data.add(model);
+				}
+
 				data.add(model);
 			}
 		} catch (Exception e) {
