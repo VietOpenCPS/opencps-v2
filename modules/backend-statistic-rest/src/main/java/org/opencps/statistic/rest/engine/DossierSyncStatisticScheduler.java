@@ -51,7 +51,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	private volatile boolean isRunningStatisticSync = false;
 	// Time engine dossier
 	private static int TIME_STATISTIC_CALCULATOR = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.calculator"))
-			? Integer.valueOf(PropsUtil.get("org.opencps.statistic.calculator")) : 30;
+			? Integer.valueOf(PropsUtil.get("org.opencps.statistic.calculator")) : 1440;
 	
 	private boolean enableJob = Validator.isNotNull(PropsUtil.get("opencps.sync.dossierstatistic.enable"))
 			? GetterUtil.getBoolean(PropsUtil.get("opencps.sync.dossierstatistic.enable")) : true;
