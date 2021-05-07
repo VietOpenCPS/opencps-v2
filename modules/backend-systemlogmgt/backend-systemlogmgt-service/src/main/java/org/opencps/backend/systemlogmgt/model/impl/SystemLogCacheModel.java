@@ -66,7 +66,7 @@ public class SystemLogCacheModel implements CacheModel<SystemLog>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -92,6 +92,8 @@ public class SystemLogCacheModel implements CacheModel<SystemLog>,
 		sb.append(type);
 		sb.append(", threadId=");
 		sb.append(threadId);
+		sb.append(", param=");
+		sb.append(param);
 		sb.append("}");
 
 		return sb.toString();
@@ -164,6 +166,13 @@ public class SystemLogCacheModel implements CacheModel<SystemLog>,
 			systemLogImpl.setThreadId(threadId);
 		}
 
+		if (param == null) {
+			systemLogImpl.setParam("");
+		}
+		else {
+			systemLogImpl.setParam(param);
+		}
+
 		systemLogImpl.resetOriginalValues();
 
 		return systemLogImpl;
@@ -187,6 +196,7 @@ public class SystemLogCacheModel implements CacheModel<SystemLog>,
 		message = objectInput.readUTF();
 		type = objectInput.readUTF();
 		threadId = objectInput.readUTF();
+		param = objectInput.readUTF();
 	}
 
 	@Override
@@ -249,6 +259,13 @@ public class SystemLogCacheModel implements CacheModel<SystemLog>,
 		else {
 			objectOutput.writeUTF(threadId);
 		}
+
+		if (param == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(param);
+		}
 	}
 
 	public String uuid;
@@ -263,4 +280,5 @@ public class SystemLogCacheModel implements CacheModel<SystemLog>,
 	public String message;
 	public String type;
 	public String threadId;
+	public String param;
 }

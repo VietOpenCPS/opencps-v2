@@ -72,7 +72,7 @@ public class OneMinute extends BaseMessageListener {
 	
 	@Override
 	protected void doReceive(Message message) {
-		_log.info("=======START SEND NOTIFICATION: ====== : isRunning: "+ isRunning);
+		_log.debug("=======START SEND NOTIFICATION: ====== : isRunning: "+ isRunning);
 		if (!isRunning) {
 			isRunning = true;
 		}
@@ -86,7 +86,11 @@ public class OneMinute extends BaseMessageListener {
 			_log.debug(e);
 		}
 		isRunning = false;
-		_log.info("------- END SEND NOTIFICATION: ------: isRunning: "+ isRunning);
+		_log.debug("------- END SEND NOTIFICATION: ------: isRunning: "+ isRunning);
+	}
+
+	private void logLineLevel(int number, String dossierId) {
+		_log.info("line_" + number + "_" + dossierId + "_notification");
 	}
 
 	private void doProcessNotification(Message message) {
@@ -94,10 +98,10 @@ public class OneMinute extends BaseMessageListener {
 		List<NotificationQueue> notificationQueues = NotificationQueueLocalServiceUtil
 				.findByF_LessThan_ExpireDate(new Date());
 
-		_log.info("notificationQueues check SIZE: "+notificationQueues.size());
+		_log.debug("notificationQueues check SIZE: "+notificationQueues.size());
 		if (notificationQueues != null) {
 
-			_log.info("notificationQueues SIZE: "+notificationQueues.size());
+			_log.debug("notificationQueues SIZE: "+notificationQueues.size());
 			for (NotificationQueue notificationQueue : notificationQueues) {
 				Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil.findByF_TYPE_INTER(
 						notificationQueue.getGroupId(), notificationQueue.getNotificationType(),
@@ -124,7 +128,7 @@ public class OneMinute extends BaseMessageListener {
 							if(messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())){
 
 								if ("BCT".contentEquals(agencySMS)) {
-									_log.info("dossierNo: "+ messageEntry.getDossierNo());
+									_log.debug("dossierNo: "+ messageEntry.getDossierNo());
 									String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(),
 											notificationQueue.getClassPK(), messageEntry.getTextMessage(),
 											messageEntry.getEmailSubject(), messageEntry.getToTelNo(), messageEntry.getDossierNo());
@@ -169,8 +173,8 @@ public class OneMinute extends BaseMessageListener {
 								// Process send SMS
 								Result resultSendSMS = new Result("Success", new Long(1));
 								if (messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())) {
-									_log.info("START SEND SMS");
-									_log.info("messageEntry.getTextMessage(): "+messageEntry.getTextMessage());
+									_log.debug("START SEND SMS");
+									_log.debug("messageEntry.getTextMessage(): "+messageEntry.getTextMessage());
 									String rsMsg = LGSPSMSUtils.sendSMS(notificationQueue.getGroupId(),
 											messageEntry.getTextMessage(), messageEntry.getEmailSubject(),
 											messageEntry.getToTelNo());
@@ -179,11 +183,11 @@ public class OneMinute extends BaseMessageListener {
 										resultSendSMS.setMessage("Success");
 										resultSendSMS.setResult(1L);
 									}
-									_log.info("END SEND SMS");
+									_log.debug("END SEND SMS");
 								}
 
 								if (messageEntry.isSendEmail()) {
-									_log.info("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
+									_log.debug("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
 									LGSPSendMailUtils.sendLGSP(messageEntry, StringPool.BLANK);
 								}
 								if (messageEntry.isSendNotify() || messageEntry.isSendZalo()) {
@@ -221,7 +225,7 @@ public class OneMinute extends BaseMessageListener {
 									 * true; }
 									 */
 
-									_log.info("notificationQueue.getNotificationType(): "
+									_log.debug("notificationQueue.getNotificationType(): "
 											+ notificationQueue.getNotificationType());
 									if ("BCT".contentEquals(agencySMS)) {
 										String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(),
@@ -243,7 +247,7 @@ public class OneMinute extends BaseMessageListener {
 								}
 
 								if (messageEntry.isSendEmail()) {
-									_log.info("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
+									_log.debug("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
 									MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK, serviceContext);
 									resultSendSMS.setResult(1L);
 								}
@@ -272,7 +276,7 @@ public class OneMinute extends BaseMessageListener {
 						}
 					}
 					catch (Exception e) {
-						_log.error("Can't send message from queue " + e);
+//						_log.error("Can't send message from queue " + e);
 					}
 				}
 			}

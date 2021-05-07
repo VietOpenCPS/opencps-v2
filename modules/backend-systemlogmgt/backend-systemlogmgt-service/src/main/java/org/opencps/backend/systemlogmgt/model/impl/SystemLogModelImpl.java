@@ -74,7 +74,8 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 			{ "method", Types.VARCHAR },
 			{ "message", Types.VARCHAR },
 			{ "type_", Types.VARCHAR },
-			{ "threadId", Types.VARCHAR }
+			{ "threadId", Types.VARCHAR },
+			{ "param", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -91,9 +92,10 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 		TABLE_COLUMNS_MAP.put("message", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("type_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("threadId", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("param", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_systemlog (uuid_ VARCHAR(75) null,logId LONG not null primary key,groupId LONG,createDate DATE null,moduleName VARCHAR(75) null,preLine INTEGER,preMethod VARCHAR(75) null,line INTEGER,method VARCHAR(75) null,message VARCHAR(75) null,type_ VARCHAR(75) null,threadId VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_systemlog (uuid_ VARCHAR(75) null,logId LONG not null primary key,groupId LONG,createDate DATE null,moduleName VARCHAR(75) null,preLine INTEGER,preMethod VARCHAR(75) null,line INTEGER,method VARCHAR(75) null,message VARCHAR(75) null,type_ VARCHAR(75) null,threadId VARCHAR(75) null,param VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_systemlog";
 	public static final String ORDER_BY_JPQL = " ORDER BY systemLog.logId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_systemlog.logId ASC";
@@ -110,14 +112,8 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 				"value.object.column.bitmask.enabled.org.opencps.backend.systemlogmgt.model.SystemLog"),
 			true);
 	public static final long GROUPID_COLUMN_BITMASK = 1L;
-	public static final long MESSAGE_COLUMN_BITMASK = 2L;
-	public static final long METHOD_COLUMN_BITMASK = 4L;
-	public static final long MODULENAME_COLUMN_BITMASK = 8L;
-	public static final long PREMETHOD_COLUMN_BITMASK = 16L;
-	public static final long THREADID_COLUMN_BITMASK = 32L;
-	public static final long TYPE_COLUMN_BITMASK = 64L;
-	public static final long UUID_COLUMN_BITMASK = 128L;
-	public static final long LOGID_COLUMN_BITMASK = 256L;
+	public static final long UUID_COLUMN_BITMASK = 2L;
+	public static final long LOGID_COLUMN_BITMASK = 4L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.systemlogmgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.backend.systemlogmgt.model.SystemLog"));
 
@@ -170,6 +166,7 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 		attributes.put("message", getMessage());
 		attributes.put("type", getType());
 		attributes.put("threadId", getThreadId());
+		attributes.put("param", getParam());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -250,6 +247,12 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 		if (threadId != null) {
 			setThreadId(threadId);
 		}
+
+		String param = (String)attributes.get("param");
+
+		if (param != null) {
+			setParam(param);
+		}
 	}
 
 	@Override
@@ -329,17 +332,7 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 
 	@Override
 	public void setModuleName(String moduleName) {
-		_columnBitmask |= MODULENAME_COLUMN_BITMASK;
-
-		if (_originalModuleName == null) {
-			_originalModuleName = _moduleName;
-		}
-
 		_moduleName = moduleName;
-	}
-
-	public String getOriginalModuleName() {
-		return GetterUtil.getString(_originalModuleName);
 	}
 
 	@Override
@@ -364,17 +357,7 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 
 	@Override
 	public void setPreMethod(String preMethod) {
-		_columnBitmask |= PREMETHOD_COLUMN_BITMASK;
-
-		if (_originalPreMethod == null) {
-			_originalPreMethod = _preMethod;
-		}
-
 		_preMethod = preMethod;
-	}
-
-	public String getOriginalPreMethod() {
-		return GetterUtil.getString(_originalPreMethod);
 	}
 
 	@Override
@@ -399,17 +382,7 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 
 	@Override
 	public void setMethod(String method) {
-		_columnBitmask |= METHOD_COLUMN_BITMASK;
-
-		if (_originalMethod == null) {
-			_originalMethod = _method;
-		}
-
 		_method = method;
-	}
-
-	public String getOriginalMethod() {
-		return GetterUtil.getString(_originalMethod);
 	}
 
 	@Override
@@ -424,17 +397,7 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 
 	@Override
 	public void setMessage(String message) {
-		_columnBitmask |= MESSAGE_COLUMN_BITMASK;
-
-		if (_originalMessage == null) {
-			_originalMessage = _message;
-		}
-
 		_message = message;
-	}
-
-	public String getOriginalMessage() {
-		return GetterUtil.getString(_originalMessage);
 	}
 
 	@Override
@@ -449,17 +412,7 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 
 	@Override
 	public void setType(String type) {
-		_columnBitmask |= TYPE_COLUMN_BITMASK;
-
-		if (_originalType == null) {
-			_originalType = _type;
-		}
-
 		_type = type;
-	}
-
-	public String getOriginalType() {
-		return GetterUtil.getString(_originalType);
 	}
 
 	@Override
@@ -474,17 +427,22 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 
 	@Override
 	public void setThreadId(String threadId) {
-		_columnBitmask |= THREADID_COLUMN_BITMASK;
-
-		if (_originalThreadId == null) {
-			_originalThreadId = _threadId;
-		}
-
 		_threadId = threadId;
 	}
 
-	public String getOriginalThreadId() {
-		return GetterUtil.getString(_originalThreadId);
+	@Override
+	public String getParam() {
+		if (_param == null) {
+			return "";
+		}
+		else {
+			return _param;
+		}
+	}
+
+	@Override
+	public void setParam(String param) {
+		_param = param;
 	}
 
 	public long getColumnBitmask() {
@@ -530,6 +488,7 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 		systemLogImpl.setMessage(getMessage());
 		systemLogImpl.setType(getType());
 		systemLogImpl.setThreadId(getThreadId());
+		systemLogImpl.setParam(getParam());
 
 		systemLogImpl.resetOriginalValues();
 
@@ -597,18 +556,6 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 		systemLogModelImpl._originalGroupId = systemLogModelImpl._groupId;
 
 		systemLogModelImpl._setOriginalGroupId = false;
-
-		systemLogModelImpl._originalModuleName = systemLogModelImpl._moduleName;
-
-		systemLogModelImpl._originalPreMethod = systemLogModelImpl._preMethod;
-
-		systemLogModelImpl._originalMethod = systemLogModelImpl._method;
-
-		systemLogModelImpl._originalMessage = systemLogModelImpl._message;
-
-		systemLogModelImpl._originalType = systemLogModelImpl._type;
-
-		systemLogModelImpl._originalThreadId = systemLogModelImpl._threadId;
 
 		systemLogModelImpl._columnBitmask = 0;
 	}
@@ -690,12 +637,20 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 			systemLogCacheModel.threadId = null;
 		}
 
+		systemLogCacheModel.param = getParam();
+
+		String param = systemLogCacheModel.param;
+
+		if ((param != null) && (param.length() == 0)) {
+			systemLogCacheModel.param = null;
+		}
+
 		return systemLogCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -721,6 +676,8 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 		sb.append(getType());
 		sb.append(", threadId=");
 		sb.append(getThreadId());
+		sb.append(", param=");
+		sb.append(getParam());
 		sb.append("}");
 
 		return sb.toString();
@@ -728,7 +685,7 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(40);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.backend.systemlogmgt.model.SystemLog");
@@ -782,6 +739,10 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 			"<column><column-name>threadId</column-name><column-value><![CDATA[");
 		sb.append(getThreadId());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>param</column-name><column-value><![CDATA[");
+		sb.append(getParam());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -800,19 +761,14 @@ public class SystemLogModelImpl extends BaseModelImpl<SystemLog>
 	private boolean _setOriginalGroupId;
 	private Date _createDate;
 	private String _moduleName;
-	private String _originalModuleName;
 	private int _preLine;
 	private String _preMethod;
-	private String _originalPreMethod;
 	private int _line;
 	private String _method;
-	private String _originalMethod;
 	private String _message;
-	private String _originalMessage;
 	private String _type;
-	private String _originalType;
 	private String _threadId;
-	private String _originalThreadId;
+	private String _param;
 	private long _columnBitmask;
 	private SystemLog _escapedModel;
 }
