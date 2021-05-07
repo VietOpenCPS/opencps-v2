@@ -138,9 +138,8 @@ public class PublishEventScheduler extends BaseMessageListener {
 			_log.debug("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatusesAndNotServerNo(new int[] {
-							PublishQueueTerm.STATE_WAITING_SYNC,
-							PublishQueueTerm.STATE_ALREADY_SENT},
-					ServerConfigTerm.DVCQG_INTEGRATION, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+							PublishQueueTerm.STATE_WAITING_SYNC},
+					ServerConfigTerm.DVCQG_INTEGRATION, 0, 180);
 
 			_log.debug("lstPqs  : " + lstPqs.size());
 
@@ -218,6 +217,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 				if(queueStatus == PublishQueueTerm.STATE_WAITING_SYNC) {
 					//start sync
 					oneQueue.setStatus(PublishQueueTerm.STATE_ALREADY_SENT);
+					oneQueue.setModifiedDate(new Date());
 					oneQueue = PublishQueueLocalServiceUtil.updatePublishQueue(oneQueue);
 
 					boolean result = processPublish(oneQueue);
@@ -315,7 +315,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 
 					String payload = pq.getPublishData();
 					_log.debug("dossier Inform: " + dossier.getOriginDossierNo());
-					System.out.println("payload Inform: " + payload);
+					_log.debug("payload Inform: " + payload);
 					JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
 
 					// Sync file HSLT
