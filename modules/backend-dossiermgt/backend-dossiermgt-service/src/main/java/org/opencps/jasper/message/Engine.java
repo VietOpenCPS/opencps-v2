@@ -76,9 +76,9 @@ public class Engine implements MessageListener {
 			_log.error(e);
 		}
 	}
-	
 
-	
+
+	private static final int MAX_TRY_COUNT = 3;
 	private void _doReceiveJasperRequest(Message message) {
 		// TODO Auto-generated method stub
 		_log.debug("Dossier listener receive Jasper .............................");
@@ -222,7 +222,19 @@ public class Engine implements MessageListener {
 			else if (engineClass.isAssignableFrom(DossierDocument.class)) {
 //				DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.fetchDossierDocument(classPK);
 				DossierDocument dossierDocument = DossierLocalServiceUtil.findDossierDocumentByDossierId(classPK);
-				_log.debug("LOG DossierDocument: " + JSONFactoryUtil.looseSerialize(dossierDocument));
+				int tryCount = 0;
+				while (dossierDocument == null) {
+					try {
+						Thread.sleep(2000);
+						dossierDocument = DossierLocalServiceUtil.findDossierDocumentByDossierId(classPK);
+						tryCount++;
+						if (tryCount == MAX_TRY_COUNT ) break;
+						if (dossierDocument != null ) break;
+					} catch (Exception e) {
+						e.getMessage();
+					}
+				}
+				_log.info("LOG DossierDocument: " + JSONFactoryUtil.looseSerialize(dossierDocument));
 				if (dossierDocument != null) {
 				ServiceContext serviceContext = new ServiceContext();
     			_log.debug("jasper export dossier document: " + classPK + ", " + dossierDocument + ", service context: " + serviceContext );

@@ -262,7 +262,7 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.info("now.getTime() :" + now.getTime());
 			_log.info("authenkeyServer :" + authenkeyServer);
 			_log.info("authenkeyClient :" + authenkeyClient);
-			if (authenkeyClient != null) {
+			if (!StringUtils.isEmpty(authenkeyClient)) {
 				if (!authenkeyClient.contentEquals(authenkeyServer)) {
 					throw new UnauthenticationException();
 				}

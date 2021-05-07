@@ -91,7 +91,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 					ServiceProcess sp = ServiceProcessLocalServiceUtil.fetchServiceProcess(dAction.getServiceProcessId());
 
-					//String payload = StringPool.BLANK;
 					if (dAction != null) {
 						String payload = dAction.getPayload();
 						if (Validator.isNotNull(payload)) {
@@ -101,7 +100,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					}
 					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData, sp);
 					jsonData.put("documentCode", StringPool.BLANK);
-					//
+
 					List<DossierDocument> documentList = DossierDocumentLocalServiceUtil.getByG_DocTypeList(groupId, dossier.getDossierId(), typeCode, -1, -1);
 					if (documentList != null && documentList.size() > 0) {
 						for (DossierDocument document : documentList) {
@@ -122,7 +121,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					if(Validator.isNotNull(paymentFile)){
 						String epaymentProfile = paymentFile.getEpaymentProfile();
 						JSONObject jsonObject = JSONFactoryUtil.createJSONObject(epaymentProfile);
-						String qrCode = StringPool.BLANK;
 						if (jsonObject.has("qrcode_pay")) {
 							jsonData.put("qrcode_pay",jsonObject.getString("qrcode_pay"));
 						}
@@ -145,14 +143,11 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 							jsonData.put("paymentMerchantSecureKey",paymentMerchantSecureKey);
 						}
 					}
-					//
-					//_log.debug("jsonData: "+jsonData);
 					jsonData.put(ConstantUtils.API_JSON_URL, serviceContext.getPortalURL());
 					_log.debug("jsonData: "+jsonData);
 					Message message = new Message();
 					message.put(DossierDocumentTerm.FORM_REPORT, documentScript);
 					message.put(DossierDocumentTerm.FORM_DATA, jsonData.toJSONString());
-//					String reportType = "word";
 					if(Validator.isNotNull(reportType)){
 						message.put(ConstantUtils.API_JSON_REPORT_TYPE, reportType);
 					}
@@ -162,9 +157,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						Date dateStart1 = new Date();
 						String previewResponse = (String) MessageBusUtil
 								.sendSynchronousMessage(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW, message, 10000);
-
-//						if (Validator.isNotNull(previewResponse)) {
-//						}
 
 						File file = new File(previewResponse);
 
@@ -604,7 +596,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 								sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NAME, proSeq.getSequenceName());
 								sequenceObj.put(ProcessSequenceTerm.SEQUENCE_ROLE, proSeq.getSequenceRole());
 								sequenceObj.put(ProcessSequenceTerm.DURATION_COUNT, proSeq.getDurationCount());
-								sequenceObj.put(ProcessSequenceTerm.CREATE_DATE, APIDateTimeUtils.convertDateToString(proSeq.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+								sequenceObj.put(ProcessSequenceTerm.CREATE_DATE, APIDateTimeUtils.convertDateToString(actions.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 							}
 						}
 						if (Validator.isNotNull(actions.getNextActionId())) {
@@ -616,7 +608,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 									sequenceObj.put(ProcessSequenceTerm.NEXT_SEQUENCE_NO, proSeq.getSequenceNo());
 									sequenceObj.put(ProcessSequenceTerm.NEXT_SEQUENCE_NAME, proSeq.getSequenceName());
 									sequenceObj.put(DossierTerm.NEXT_SEQUENCE_ROLE, proSeq.getSequenceRole());
-									sequenceObj.put(ProcessSequenceTerm.CREATE_DATE, APIDateTimeUtils.convertDateToString(proSeq.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+									sequenceObj.put(ProcessSequenceTerm.CREATE_DATE, APIDateTimeUtils.convertDateToString(actions.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 								}
 							}
 						}
