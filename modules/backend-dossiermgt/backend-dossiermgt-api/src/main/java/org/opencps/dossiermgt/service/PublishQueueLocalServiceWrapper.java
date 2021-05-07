@@ -210,6 +210,14 @@ public class PublishQueueLocalServiceWrapper implements PublishQueueLocalService
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByDossierIdAndNotServerNo(
+		long dossierId, String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.PublishQueue> orderByComparator) {
+		return _publishQueueLocalService.getByDossierIdAndNotServerNo(dossierId,
+			serverNo, start, end, orderByComparator);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByDossierIdAndServerNo(
 		long dossierId, String serverNo, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.PublishQueue> orderByComparator) {

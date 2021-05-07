@@ -192,4 +192,10 @@ public class PublishQueueLocalServiceImpl
 			, OrderByComparator<PublishQueue> orderByComparator) {
 		return publishQueuePersistence.findByDID_SN(dossierId, serverNo, start, end, orderByComparator);
 	}
+	
+	public List<PublishQueue> getByDossierIdAndNotServerNo(long dossierId, String serverNo, int start, int end
+			, OrderByComparator<PublishQueue> orderByComparator) {
+		
+		return publishQueuePersistence.findByDID_SN_NOT(dossierId, serverNo, start, end, orderByComparator);
+	}
 }

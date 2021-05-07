@@ -4427,7 +4427,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		//Check if dossier is done
 		if (DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
+			
+			_log.debug("+++dossier.getDossierId():"+dossier.getDossierId());
 			List<DossierFile> lstFiles = dossierFileLocalService.getAllDossierFile(dossier.getDossierId());
+			_log.debug("+lstFiles.size():"+lstFiles.size());
 			int countTemplateNo = 0;
 
 			for (DossierFile df : lstFiles) {
