@@ -14,6 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.model.Counter;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -631,6 +632,16 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			User userAction = userLocalService.getUser(context.getUserId());
 			userId = userAction.getUserId();
 			fullName = userAction.getFullName();
+		}
+
+		try {
+			Counter counterDetail = CounterLocalServiceUtil.fetchCounter("org.opencps.dossiermgt.model.DossierAction");
+			if(counterDetail != null) {
+				_log.info("DossierAction current counter: " + counterDetail.getCurrentId() + " with dossier: " + dossierIdString);
+			}
+
+		} catch (Exception e) {
+			_log.error("Error when get DossierAction counter");
 		}
 
 		if (dossierActionId == 0) {

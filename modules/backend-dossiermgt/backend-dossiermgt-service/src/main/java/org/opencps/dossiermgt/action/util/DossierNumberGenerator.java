@@ -601,16 +601,22 @@ public class DossierNumberGenerator {
 		if (Validator.isNotNull(counterDetail)) {
 			// create counter config
 			_counterNumber = counterDetail.getCurrentId() + 1;
+			_log.info("Current counter number1: " + _counterNumber);
+			int count = 0;
 			do {
+				_log.info("count---: " + count);
 				counterDetail.setCurrentId(_counterNumber);
 				try {
 					counter = CounterLocalServiceUtil.updateCounter(counterDetail);
 				} catch (Exception e) {
+					_log.error("Error when create number generator: " + e.getMessage());
 					_counterNumber += 1;
 					_log.debug(e);
 				}
-			} while (counter == null);
+				count ++;
 
+			} while (counter == null);
+			_log.info("Current counter number2: " + _counterNumber);
 		} else {
 			_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
 			counterDetail = CounterLocalServiceUtil.createCounter(pattern);
