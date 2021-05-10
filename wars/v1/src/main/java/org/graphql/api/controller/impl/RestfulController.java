@@ -1497,6 +1497,7 @@ public class RestfulController {
 			if (Validator.isNull(userData)) {
 				throw new OpenCPSNotFoundException(User.class.getName());
 			}
+			_log.info("UserData: " + JSONFactoryUtil.looseSerialize(userData));
 //			List<Dossier> dossiers = DossierLocalServiceUtil.findByG_U_DO(groupId,userId);
 //			try {
 //				if (dossiers != null) {
@@ -1553,6 +1554,7 @@ public class RestfulController {
 //			}
 
 			String token = GraphQLUtils.buildTokenLogin(userData, groupId);
+			_log.info("Token: " + token);
 			response.setHeader("jwt-token", token);
 
 			return new ResponseEntity<UsersUserItem>(JSONFactoryUtil.looseDeserialize(userData, UsersUserItem.class),
