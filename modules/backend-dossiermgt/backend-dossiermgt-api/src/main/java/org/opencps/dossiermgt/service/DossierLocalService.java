@@ -332,6 +332,8 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public Dossier findDossierByDeclarationCode(String code, long groupId);
 
+	public Dossier findDossierById(long dossierId);
+
 	public List<Dossier> findDossierByGroup(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

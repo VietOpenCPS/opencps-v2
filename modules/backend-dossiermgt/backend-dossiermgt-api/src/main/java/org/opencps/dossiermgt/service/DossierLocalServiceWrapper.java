@@ -17,6 +17,7 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import org.opencps.dossiermgt.model.Dossier;
 
 /**
  * Provides a wrapper for {@link DossierLocalService}.
@@ -481,6 +482,11 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	public org.opencps.dossiermgt.model.Dossier findDossierByDeclarationCode(
 		String code, long groupId) {
 		return _dossierLocalService.findDossierByDeclarationCode(code, groupId);
+	}
+
+	@Override
+	public Dossier findDossierById(long dossierId) {
+		return _dossierLocalService.findDossierById(dossierId);
 	}
 
 	@Override

@@ -62,7 +62,7 @@ public class KeypayV3Event implements MessageListener {
 			JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON, baseUrl,
 					KeyPayTerm.ENDPOINT_KEYPAY, "", "", properties, params, context);
 			_log.info("baseUrl: " + baseUrl + KeyPayTerm.ENDPOINT_KEYPAY);
-			_log.info("Call post API SEND keypayv3 result: " + resultObj.toJSONString());
+//			_log.info("Call post API SEND keypayv3 result: " + resultObj.toJSONString());
 			_log.info(params);
 		} catch (Exception e) {
 			e.getMessage();
