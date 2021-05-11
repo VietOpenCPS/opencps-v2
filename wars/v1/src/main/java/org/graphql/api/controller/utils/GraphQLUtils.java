@@ -55,7 +55,6 @@ public class GraphQLUtils {
 						JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(empJobPos.getJobPostId());
 						roles.add(jobPos.getJobPosCode());
 					}
-					_log.info("User: " + JSONFactoryUtil.looseSerialize(user));
 					String token = JWT.create()
 							.withClaim("username", user.getString(UserTerm.SCREEN_NAME))
 							.withClaim("fullName", user.getString(UserTerm.EMPLOYEE_FULLNAME))
