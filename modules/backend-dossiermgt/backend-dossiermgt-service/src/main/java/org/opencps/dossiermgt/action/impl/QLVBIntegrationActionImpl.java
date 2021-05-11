@@ -88,7 +88,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
         try {
             String urlGetToken = this.configJson.getString(QLVBConstants.CONFIG_URL)
                     + this.configJson.getString(QLVBConstants.CONFIG_GET_TOKEN)
-                    + userId;
+                    + userId + "/";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

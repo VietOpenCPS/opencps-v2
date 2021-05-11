@@ -112,12 +112,11 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 		}
 
 		IMessageProcessor processor = MessageProcessor.getProcessor(dossierSync);
+
 		if (processor != null) {
-			_log.info("Processing: " + dossierSync);
 			processor.process();
-		} else {
-			_log.info("Do not config sync server");
 		}
+
 		Counter.decreaseCount();
 		_log.info(startLine1 + "Counting remain: " + Counter.getCount());
 		if (Counter.getCount() == 0) {
