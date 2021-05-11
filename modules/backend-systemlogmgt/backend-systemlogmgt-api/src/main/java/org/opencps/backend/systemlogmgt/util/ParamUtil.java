@@ -102,7 +102,8 @@ public class ParamUtil {
 		output.put("method", input.get("method").toString());
 		output.put("message", input.get("message").toString());
 		output.put("type", input.get("type").toString());
-		output.put("threadId", input.get("threadId").toString());
+//		output.put("threadId", input.get("threadId").toString());
+		output.put("param", input.get("param").toString());
 		return output;
 	}
 	public static JSONArray getValuesByColumns(JSONArray input) {
@@ -121,7 +122,8 @@ public class ParamUtil {
 			objectOuput.put("method", object.get("method").toString());
 			objectOuput.put("message", object.get("message").toString());
 			objectOuput.put("type", object.get("type").toString());
-			objectOuput.put("threadId", object.get("threadId").toString());
+//			objectOuput.put("threadId", object.get("threadId").toString());
+			objectOuput.put("param", object.get("param").toString());
 			output.put(objectOuput);
 		}
 		return output;

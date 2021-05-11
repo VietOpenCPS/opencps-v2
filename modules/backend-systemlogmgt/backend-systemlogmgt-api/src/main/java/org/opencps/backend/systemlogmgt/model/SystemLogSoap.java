@@ -45,6 +45,7 @@ public class SystemLogSoap implements Serializable {
 		soapModel.setMessage(model.getMessage());
 		soapModel.setType(model.getType());
 		soapModel.setThreadId(model.getThreadId());
+		soapModel.setParam(model.getParam());
 
 		return soapModel;
 	}
@@ -193,6 +194,14 @@ public class SystemLogSoap implements Serializable {
 		_threadId = threadId;
 	}
 
+	public String getParam() {
+		return _param;
+	}
+
+	public void setParam(String param) {
+		_param = param;
+	}
+
 	private String _uuid;
 	private long _logId;
 	private long _groupId;
@@ -205,4 +214,5 @@ public class SystemLogSoap implements Serializable {
 	private String _message;
 	private String _type;
 	private String _threadId;
+	private String _param;
 }

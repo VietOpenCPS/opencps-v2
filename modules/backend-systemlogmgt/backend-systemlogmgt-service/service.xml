@@ -19,36 +19,7 @@
         <column name="message" type="String"></column>
         <column name="type" type="String"></column>
         <column name="threadId" type="String"></column>
-
-		<!-- Finder methods -->
-        
-		
-
-		<!-- References -->
-        <finder name="multipleGroupId" return-type="Collection">
-            <finder-column name="groupId" comparator="=" arrayable-operator="OR"></finder-column>
-        </finder>
-        <finder name="multipleType" return-type="Collection">
-            <finder-column name="type" comparator="=" arrayable-operator="OR"></finder-column>
-        </finder>
-        <finder name="multiplemoduleName" return-type="Collection">
-            <finder-column name="moduleName" comparator="=" arrayable-operator="OR"></finder-column>
-        </finder>
-        <finder name="multiplePreMethod" return-type="Collection">
-            <finder-column name="preMethod" comparator="=" arrayable-operator="OR"></finder-column>
-        </finder>
-        <finder name="multipleMethod" return-type="Collection">
-            <finder-column name="method" comparator="=" arrayable-operator="OR"></finder-column>
-        </finder>
-        <finder name="multipleThreadId" return-type="Collection">
-            <finder-column name="threadId" comparator="=" arrayable-operator="OR"></finder-column>
-        </finder>
-        <finder name="likeMessage" return-type="Collection">
-            <finder-column name="message" comparator="LIKE"></finder-column>
-        </finder>
-        <finder name="threadId" return-type="Collection">
-            <finder-column name="threadId" comparator="="></finder-column>
-        </finder>
+        <column name="param" type="String"></column>
 
 		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
 		<reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
