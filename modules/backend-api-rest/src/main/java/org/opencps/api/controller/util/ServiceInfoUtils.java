@@ -154,27 +154,15 @@ public class ServiceInfoUtils {
 						lsServiceConfig.add(cf);
 					}
 				}
-//				for (Document serviceConfig : serviceConfigs) {
-//					ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
-	//
-//					cf.setGovAgencyCode(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_CODE));
-//					cf.setGovAgencyName(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_NAME));
-//					cf.setServiceInstruction(serviceConfig.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
-//					cf.setServiceUr(serviceConfig.get(ServiceConfigTerm.SERVICE_URL));
-//					cf.setServiceLevel(Integer.parseInt(serviceConfig.get(ServiceConfigTerm.SERVICE_LEVEL)));
-//					cf.setServiceConfigId(GetterUtil.getLong(serviceConfig.get(Field.ENTRY_CLASS_PK)));
-//					
-//					lsServiceConfig.add(cf);
-//				}
 				
 				model.getServiceConfigs().addAll(lsServiceConfig);
 				if(filterApplicant && model.getServiceConfigs().size() >0) {
 					data.add(model);
 				}else if(!filterApplicant){
 					data.add(model);
+				}else{
+					data.add(model);
 				}
-
-				data.add(model);
 			}
 		} catch (Exception e) {
 			_log.error(e);
