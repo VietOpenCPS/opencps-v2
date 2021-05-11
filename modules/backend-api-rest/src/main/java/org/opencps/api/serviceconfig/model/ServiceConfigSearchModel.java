@@ -70,7 +70,8 @@ import javax.xml.bind.annotation.XmlType;
     "type",
     "applicantNote",
     "applicantIdType",
-    "serviceConfigId"
+    "serviceConfigId",
+    "exportExcel"
 })
 @XmlRootElement(name = "ServiceConfigSearchModel")
 public class ServiceConfigSearchModel {
@@ -123,6 +124,27 @@ public class ServiceConfigSearchModel {
     protected String applicantIdType;
     @QueryParam(value = "serviceConfigId")
     protected String serviceConfigId;
+    @QueryParam(value = "exportExcel")
+    protected boolean exportExcel;
+    @QueryParam(value = "columnName")
+    protected String columnName;
+
+
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
+
+    public boolean isExportExcel() {
+        return exportExcel;
+    }
+
+    public void setExportExcel(boolean exportExcel) {
+        this.exportExcel = exportExcel;
+    }
 
     public String getServiceConfigId() {
 		return serviceConfigId;

@@ -22,7 +22,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +40,11 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
 import org.opencps.api.constants.ConstantUtils;
+import org.opencps.api.constants.StatisticManagementConstants;
 import org.opencps.api.controller.ServiceConfigManagement;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.ServiceConfigUtils;
@@ -138,12 +145,213 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			results.getData()
 					.addAll(ServiceConfigUtils.mappingToServiceConfigResults((List<Document>) jsonData.get(ConstantUtils.DATA), groupId, userId));
 			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			if(query.isExportExcel()){
+				return exportDataConfig(query.getColumnName(),results.getData());
+			}
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	private static final String STT = "STT";
+
+	public Response exportDataConfig(String columnName, List<org.opencps.api.serviceconfig.model.ServiceConfig> listService) {
+		HSSFWorkbook workbook = null;
+		try {
+			JSONArray headersName = JSONFactoryUtil.createJSONArray();
+			String [] columnNameArr = columnName.split(StringPool.COMMA);
+			for (String key : columnNameArr) {
+				headersName.put(key);
+			}
+			// Create Workbook
+			workbook = new HSSFWorkbook();
+
+			// Create sheet
+			String sheetName = "ServiceConfig"; // table
+			HSSFSheet mainSheet = workbook.createSheet(sheetName);
+			int rowIndex = 0;
+			int stt = 0;
+
+			// Write header
+			writeHeader(mainSheet, rowIndex, headersName);
+			// FontEnd truyền thêm 1 key table để tương ứng map dữ liệu cho table đó
+			if(sheetName.equals("ServiceConfig")) {
+				rowIndex++;
+//				stt++;
+				JSONArray contentData = JSONFactoryUtil.createJSONArray();
+				JSONArray objectData = JSONFactoryUtil.createJSONArray();
+				for (org.opencps.api.serviceconfig.model.ServiceConfig item : listService) {
+					 contentData = mapServiceConfig(item);
+					 objectData.put(contentData);
+				}
+				// Create row
+				if(Validator.isNotNull(objectData)) {
+					for (int i = 0; i < objectData.length(); i++) {
+						Row row = mainSheet.createRow(rowIndex);
+						// Write data on row
+						JSONArray objectDataRow = objectData.getJSONArray(i);
+						writeData(mainSheet, objectDataRow, row, headersName, stt);
+						rowIndex++;
+						stt++;
+					}
+				}
+			}else{
+
+			}
+			// Auto resize column witdth
+			int numberOfColumn = mainSheet.getRow(0).getPhysicalNumberOfCells();
+			autosizeColumn(mainSheet, numberOfColumn);
+
+			// Create file excel
+
+			String fileName = sheetName + StringPool.UNDERLINE
+					+ String.format("%d.xls", System.currentTimeMillis());
+			_log.info("fileName: "+fileName);
+
+			File exportDir = new File(StatisticManagementConstants.FOLDER_EXPORTED);
+			if (!exportDir.exists()) {
+				exportDir.mkdirs();
+			}
+
+			File file = new File(exportDir+ StringPool.SLASH + fileName);
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			workbook.write(bos);
+			byte[] input = bos.toByteArray();
+			try {
+				FileOutputStream out = new FileOutputStream(file);
+				out.write(input);
+				out.flush();
+				out.close();
+				workbook.close();
+			}
+			catch (Exception e) {
+				_log.debug(e);
+			}
+
+			Response.ResponseBuilder responseBuilder = Response.ok((Object) file);
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,attachmentFilename);
+			responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_EXCEL);
+
+
+			return responseBuilder.build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}  finally {
+			if (workbook != null) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
+		}
+	}
+
+	// Auto resize column width
+	private static void autosizeColumn(HSSFSheet sheet, int lastColumn) {
+		for (int columnIndex = 0; columnIndex < lastColumn; columnIndex++) {
+			sheet.autoSizeColumn(columnIndex);
+		}
+	}
+
+
+	public JSONArray mapServiceConfig(org.opencps.api.serviceconfig.model.ServiceConfig config ) {
+		JSONArray contentData = JSONFactoryUtil.createJSONArray();
+		contentData.put(config.getServiceConfigId());
+//		contentData.put(config.getCreateDate());
+//		contentData.put(config.getModifiedDate());
+		contentData.put(config.getServiceInfoId());
+		contentData.put(config.getServiceCode());
+		contentData.put(config.getServiceName());
+		contentData.put(config.getDomainCode_0020());
+		contentData.put(config.getDomainName());
+		contentData.put(config.getGovAgencyCode());
+		contentData.put(config.getGovAgencyName());
+		contentData.put(config.getServiceInstruction());
+		contentData.put(config.getServiceLevel());
+		contentData.put(config.getServiceUrl());
+		contentData.put(config.getForCitizen());
+		contentData.put(config.getForBusiness());
+		contentData.put(config.getPostalService());
+		contentData.put(config.getRegistration());
+		return contentData;
+	}
+	// Create Content Data
+	private static void writeData(HSSFSheet sheet, JSONArray objectDataRow, Row row, JSONArray headerName, int stt) {
+		// create CellStyle
+		CellStyle cellStyle = createStyleForContent(sheet);
+		Cell firstCell = row.createCell(0);
+		firstCell.setCellStyle(cellStyle);
+		firstCell.setCellValue(stt);
+		//Put data vào object -> for header map key header vs keydata -> set cell
+		for (int i = 1; i < headerName.length(); i++) {
+			Cell cell = row.createCell(i);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(objectDataRow.get(i).toString());
+		}
+	}
+
+	// Create CellStyle for content
+	private static CellStyle createStyleForContent(HSSFSheet sheet) {
+		// Create font
+		Font font = sheet.getWorkbook().createFont();
+		font.setFontName("Times New Roman");
+		font.setBold(false);
+		font.setFontHeightInPoints((short) 11); // font size
+		font.setColor(IndexedColors.BLACK.getIndex()); // text color
+
+		// Create CellStyle
+		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+		cellStyle.setFont(font);
+		cellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+		cellStyle.setWrapText(true);
+		cellStyle.setAlignment(HorizontalAlignment.LEFT);
+		return cellStyle;
+	}
+
+	// Create Column Name
+	private static void writeHeader(HSSFSheet sheet, int rowIndex, JSONArray headerArr ) {
+		// create CellStyle
+		CellStyle cellStyle = createStyleForHeader(sheet);
+
+		// Create row
+		Row row = sheet.createRow(rowIndex);
+
+		// Create first cell - STT
+		Cell firstCell = row.createCell(0);
+		firstCell.setCellStyle(cellStyle);
+		firstCell.setCellValue(STT);
+
+		// Create cell
+		for(int i = 1; i< headerArr.length(); i++) {
+			Cell cell = row.createCell(i);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(headerArr.getString(i));
+		}
+	}
+
+	// Create CellStyle for header
+	private static CellStyle createStyleForHeader(HSSFSheet sheet) {
+		// Create font
+		Font font = sheet.getWorkbook().createFont();
+		font.setFontName("Times New Roman");
+		font.setBold(true);
+		font.setFontHeightInPoints((short) 14); // font size
+		font.setColor(IndexedColors.BLACK.getIndex()); // text color
+
+		// Create CellStyle
+		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+		cellStyle.setFont(font);
+		cellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		cellStyle.setBorderBottom(BorderStyle.THIN);
+		return cellStyle;
 	}
 
 	@Override
