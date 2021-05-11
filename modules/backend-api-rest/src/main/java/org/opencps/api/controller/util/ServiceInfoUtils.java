@@ -168,6 +168,8 @@ public class ServiceInfoUtils {
 					data.add(model);
 				}else if(!filterApplicant){
 					data.add(model);
+				}else{
+					data.add(model);
 				}
 			}
 		} catch (Exception e) {
