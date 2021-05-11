@@ -60,7 +60,7 @@ import javax.xml.bind.annotation.XmlType;
     "mapping",
     "synced",
     "tagCode",
-    "tagName"
+    "tagName",
     "synced",
     "filterApplicant"
 })

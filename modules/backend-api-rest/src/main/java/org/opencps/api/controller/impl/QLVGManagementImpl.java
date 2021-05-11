@@ -84,9 +84,13 @@ public class QLVGManagementImpl implements QLVGManagement {
             if(configJson.has(QLVBConstants.CONFIG_IS_PROD)
                     && configJson.getBoolean(QLVBConstants.CONFIG_IS_PROD)
                     && Validator.isNotNull(user)) {
-                userId = Validator.isNotNull(user.getEmailAddress())
-                        ? user.getEmailAddress()
-                        : configJson.getString(QLVBConstants.CONFIG_USER_ID);
+                userId = Validator.isNotNull(user.getScreenName())
+                        ? user.getScreenName()
+                        : "";
+            }
+
+            if(Validator.isNull(userId)) {
+                throw new Exception("No userName was found with dossierId: " + dossierId);
             }
 
             if(eOfficeServer.equals(SERVER_EOFFICE_HAUGIANG)) {
