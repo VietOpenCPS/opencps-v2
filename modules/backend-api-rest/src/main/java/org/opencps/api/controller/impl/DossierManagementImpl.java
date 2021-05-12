@@ -2231,7 +2231,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if(Validator.isNotNull(processActionCurrent)){
 				String postAction = processActionCurrent.getPostAction();
 				if (Validator.isNotNull(postAction) && !postAction.isEmpty()) {
-					String result = processPostAction(postAction, groupId, dossier);
+					String result = processPostAction(postAction, groupId, dossier, user);
 					_log.debug("Result post action:" + result);
 				}
 			}
@@ -2257,7 +2257,7 @@ public class DossierManagementImpl implements DossierManagement {
 			groupId, dossierTemplateNo, config.getServiceConfigId());
 	}
 
-	private String processPostAction(String postAction, long groupId, Dossier dossier) {
+	private String processPostAction(String postAction, long groupId, Dossier dossier, User user) {
 		try {
 			JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(postAction);
 			if (jsonPostData != null) {
@@ -2329,6 +2329,10 @@ public class DossierManagementImpl implements DossierManagement {
 										if (apiUrl.contains("{_dossierNo}")) {
 											apiUrl = apiUrl.replace("{_dossierNo}",
 													String.valueOf(dossier.getDossierNo()));
+										}
+										if (apiUrl.contains("{_userId}")) {
+											apiUrl = apiUrl.replace("{_userId}",
+													String.valueOf(user.getUserId()));
 										}
 									}
 									if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
