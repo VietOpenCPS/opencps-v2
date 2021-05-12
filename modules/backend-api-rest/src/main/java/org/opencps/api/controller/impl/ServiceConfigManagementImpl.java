@@ -146,7 +146,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 					.addAll(ServiceConfigUtils.mappingToServiceConfigResults((List<Document>) jsonData.get(ConstantUtils.DATA), groupId, userId));
 			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			if(query.isExportExcel()){
-				return exportDataConfig(query.getColumnName(),results.getData());
+				return exportDataConfig(query.getColumnName(),query.getTableName(), jsonData);
 			}
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
@@ -158,10 +158,11 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 	private static final String STT = "STT";
 
-	public Response exportDataConfig(String columnName, List<org.opencps.api.serviceconfig.model.ServiceConfig> listService) {
+	public Response exportDataConfig(String columnName,String tableName, JSONObject jsonData) {
 		HSSFWorkbook workbook = null;
 		try {
 			JSONArray headersName = JSONFactoryUtil.createJSONArray();
+			headersName.put("STT");
 			String [] columnNameArr = columnName.split(StringPool.COMMA);
 			for (String key : columnNameArr) {
 				headersName.put(key);
@@ -170,7 +171,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			workbook = new HSSFWorkbook();
 
 			// Create sheet
-			String sheetName = "ServiceConfig"; // table
+			String sheetName = tableName; // table
 			HSSFSheet mainSheet = workbook.createSheet(sheetName);
 			int rowIndex = 0;
 			int stt = 0;
@@ -178,35 +179,23 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			// Write header
 			writeHeader(mainSheet, rowIndex, headersName);
 			// FontEnd truyền thêm 1 key table để tương ứng map dữ liệu cho table đó
-			if(sheetName.equals("ServiceConfig")) {
-				rowIndex++;
-//				stt++;
-				JSONArray contentData = JSONFactoryUtil.createJSONArray();
-				JSONArray objectData = JSONFactoryUtil.createJSONArray();
-				for (org.opencps.api.serviceconfig.model.ServiceConfig item : listService) {
-					 contentData = mapServiceConfig(item);
-					 objectData.put(contentData);
-				}
+			rowIndex++;
+				List<Document> documents = (List<Document>) jsonData.get(ConstantUtils.DATA);
 				// Create row
-				if(Validator.isNotNull(objectData)) {
-					for (int i = 0; i < objectData.length(); i++) {
+				if(Validator.isNotNull(documents)) {
+					for (Document doc : documents) {
 						Row row = mainSheet.createRow(rowIndex);
 						// Write data on row
-						JSONArray objectDataRow = objectData.getJSONArray(i);
-						writeData(mainSheet, objectDataRow, row, headersName, stt);
+						writeData(mainSheet, doc, row, headersName, stt);
 						rowIndex++;
 						stt++;
 					}
 				}
-			}else{
-
-			}
 			// Auto resize column witdth
 			int numberOfColumn = mainSheet.getRow(0).getPhysicalNumberOfCells();
 			autosizeColumn(mainSheet, numberOfColumn);
 
 			// Create file excel
-
 			String fileName = sheetName + StringPool.UNDERLINE
 					+ String.format("%d.xls", System.currentTimeMillis());
 			_log.info("fileName: "+fileName);
@@ -260,30 +249,8 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		}
 	}
 
-
-	public JSONArray mapServiceConfig(org.opencps.api.serviceconfig.model.ServiceConfig config ) {
-		JSONArray contentData = JSONFactoryUtil.createJSONArray();
-		contentData.put(config.getServiceConfigId());
-//		contentData.put(config.getCreateDate());
-//		contentData.put(config.getModifiedDate());
-		contentData.put(config.getServiceInfoId());
-		contentData.put(config.getServiceCode());
-		contentData.put(config.getServiceName());
-		contentData.put(config.getDomainCode_0020());
-		contentData.put(config.getDomainName());
-		contentData.put(config.getGovAgencyCode());
-		contentData.put(config.getGovAgencyName());
-		contentData.put(config.getServiceInstruction());
-		contentData.put(config.getServiceLevel());
-		contentData.put(config.getServiceUrl());
-		contentData.put(config.getForCitizen());
-		contentData.put(config.getForBusiness());
-		contentData.put(config.getPostalService());
-		contentData.put(config.getRegistration());
-		return contentData;
-	}
 	// Create Content Data
-	private static void writeData(HSSFSheet sheet, JSONArray objectDataRow, Row row, JSONArray headerName, int stt) {
+	private static void writeData(HSSFSheet sheet, Document doc, Row row, JSONArray headerName, int stt) {
 		// create CellStyle
 		CellStyle cellStyle = createStyleForContent(sheet);
 		Cell firstCell = row.createCell(0);
@@ -293,7 +260,8 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		for (int i = 1; i < headerName.length(); i++) {
 			Cell cell = row.createCell(i);
 			cell.setCellStyle(cellStyle);
-			cell.setCellValue(objectDataRow.get(i).toString());
+			String key = headerName.get(i).toString();
+			cell.setCellValue(doc.get(key));
 		}
 	}
 
@@ -328,8 +296,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		firstCell.setCellStyle(cellStyle);
 		firstCell.setCellValue(STT);
 
+
 		// Create cell
-		for(int i = 1; i< headerArr.length(); i++) {
+		for(int i = 0; i< headerArr.length(); i++) {
 			Cell cell = row.createCell(i);
 			cell.setCellStyle(cellStyle);
 			cell.setCellValue(headerArr.getString(i));
