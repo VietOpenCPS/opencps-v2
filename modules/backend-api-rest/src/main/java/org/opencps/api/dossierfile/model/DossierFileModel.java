@@ -73,7 +73,8 @@ import javax.xml.bind.annotation.XmlType;
     "formScript",
     "dossierId",
     "isSync",
-    "eSign"
+    "eSign",
+    "dossierMarks"
 })
 @XmlRootElement(name = "DossierFileModel")
 public class DossierFileModel {
@@ -101,6 +102,15 @@ public class DossierFileModel {
     protected Long dossierId;
     protected boolean isSync;
     protected boolean eSign;
+    protected String dossierMarks;
+
+    public String getDossierMarks() {
+        return dossierMarks;
+    }
+
+    public void setDossierMarks(String dossierMarks) {
+        this.dossierMarks = dossierMarks;
+    }
 
     public boolean iseSign() {
         return eSign;
