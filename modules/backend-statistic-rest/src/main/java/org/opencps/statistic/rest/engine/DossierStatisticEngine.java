@@ -143,8 +143,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			for (Group group : groups) {
 				if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
 					sites.add(group);
-				}
+				}				
 			}
+			_log.info("SITES : " + JSONFactoryUtil.looseSerialize(sites));
 	
 			Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 			
@@ -609,12 +610,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			int total = jsonData.getInt(ConstantUtils.TOTAL);
 
 			//_log.info("GET DOSSIER SIZE: " + datas != null ? datas.size() : 0);
-//			_log.info("GET DOSSIER total: " + total);
+			_log.info("GET DOSSIER total: " + total);
 
 			if (total > datas.size()) {
 				JSONObject jsonData2 = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, total, new ServiceContext());
 				datas = (List<Document>) jsonData2.get(ConstantUtils.DATA);
-//				_log.debug("_GET ALL DOSSIER SIZE_: " + datas.size());
+				_log.info("_GET ALL DOSSIER SIZE_: " + datas.size());
 			}
 
 			for (Document doc : datas) {
