@@ -274,7 +274,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //								Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 								processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 									engineUpdateAction, serviceDomainResponse, calculateData);
-								_log.info("2 :" + site.getGroupId() + " || " + month + " || " + yearCurrent + " || " + JSONFactoryUtil.looseSerialize(calculateData.get(5)));
+								_log.info("2 :" + site.getGroupId() + " || " + month + " || " + yearCurrent + " || " + JSONFactoryUtil.looseSerialize(calculateData.get(1)));
 								//
 								if (calculateData != null && jsonEndPoint != null) {
 									for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateData.entrySet()) {
@@ -671,7 +671,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 
 					calculateData.put(month, statisticData);
-					_log.info("1 :" + groupId + " || " + month + " || " + year + " || " + JSONFactoryUtil.looseSerialize(calculateData.get(5)));
+					_log.info("1 :" + groupId + " || " + month + " || " + year + " || " + JSONFactoryUtil.looseSerialize(calculateData.get(1)));
 //					}
 				}
 			}
