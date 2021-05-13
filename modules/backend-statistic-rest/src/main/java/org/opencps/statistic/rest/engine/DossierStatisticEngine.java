@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -142,8 +143,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			for (Group group : groups) {
 				if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
 					sites.add(group);
-				}
+				}				
 			}
+			_log.info("SITES : " + JSONFactoryUtil.looseSerialize(sites));
 	
 			Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 			
@@ -239,7 +241,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				for (int month = 1; month <= monthCurrent; month ++) {
 					boolean flagStatistic = true;
 					if (month < monthCurrent) {
-//						_log.debug("STATISTICS CALCULATE ONE MONTH SITE: " + month + ", " + site.getGroupId() + ", " + site.getName(Locale.getDefault()) + " " + (System.currentTimeMillis() - startTime) + " ms");;
+						_log.info("STATISTICS CALCULATE ONE MONTH SITE: " + month + ", " + site.getGroupId() + ", " + site.getName(Locale.getDefault()) + " " + (System.currentTimeMillis() - startTime) + " ms");;
 						OpencpsDossierStatistic statisticInfo = engineUpdateAction
 								.getStatisticByMonthYearAndNotReport(site.getGroupId(), month, yearCurrent, 0);
 						if (statisticInfo != null) {
@@ -608,12 +610,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			int total = jsonData.getInt(ConstantUtils.TOTAL);
 
 			//_log.info("GET DOSSIER SIZE: " + datas != null ? datas.size() : 0);
-//			_log.info("GET DOSSIER total: " + total);
+			_log.info("GET DOSSIER total: " + total);
 
 			if (total > datas.size()) {
 				JSONObject jsonData2 = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, total, new ServiceContext());
 				datas = (List<Document>) jsonData2.get(ConstantUtils.DATA);
-//				_log.debug("_GET ALL DOSSIER SIZE_: " + datas.size());
+				_log.info("_GET ALL DOSSIER SIZE_: " + datas.size());
 			}
 
 			for (Document doc : datas) {
