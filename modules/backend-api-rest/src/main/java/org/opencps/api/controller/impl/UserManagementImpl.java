@@ -299,7 +299,7 @@ public class UserManagementImpl implements UserManagement {
 			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER))) {
 				throw new PermissionDeniedDataAccessException(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION), null);
 			}
-			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
+			_log.debug("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
 					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
 			int flagNo = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword,
 					serviceContext);
@@ -345,10 +345,10 @@ public class UserManagementImpl implements UserManagement {
 				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 				String captchaId = request.getSession().getId();
 		        try {
-		        	_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+		        	_log.debug("Captcha: " + captchaId + "," + jCaptchaResponse);
 		        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
 		        			jCaptchaResponse);
-		        	_log.info("Check captcha result: " + isResponseCorrect);
+		        	_log.debug("Check captcha result: " + isResponseCorrect);
 		        	if (!isResponseCorrect) {
 		        		ErrorMsgModel error = new ErrorMsgModel();
 		        		error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
@@ -405,10 +405,10 @@ public class UserManagementImpl implements UserManagement {
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			String captchaId = request.getSession().getId();
 	        try {
-	        	_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+	        	_log.debug("Captcha: " + captchaId + "," + jCaptchaResponse);
 	        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
 	        			jCaptchaResponse);
-	        	_log.info("Check captcha result: " + isResponseCorrect);
+	        	_log.debug("Check captcha result: " + isResponseCorrect);
 	        	if (!isResponseCorrect) {
 	        		ErrorMsgModel error = new ErrorMsgModel();
 	        		error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
@@ -476,8 +476,8 @@ public class UserManagementImpl implements UserManagement {
 //						String accessToken = jsonToken.getString("access_token");
 //						String tokenType = jsonToken.getString("token_type");
 //
-//						_log.info("accessToken: " + accessToken);
-//						_log.info("tokenType: " + tokenType);
+//						_log.debug("accessToken: " + accessToken);
+//						_log.debug("tokenType: " + tokenType);
 //
 //						// Dang ky tk cong dan
 //						String message = RegisterLGSPUtils.forgotLGSP(jsonToken, screenname_email);
@@ -512,8 +512,8 @@ public class UserManagementImpl implements UserManagement {
 						String accessToken = jsonToken.getString("token");
 						String refreshToken = jsonToken.getString("refreshToken");
 
-						_log.info("accessToken: " + accessToken);
-						_log.info("refreshToken: " + refreshToken);
+						_log.debug("accessToken: " + accessToken);
+						_log.debug("refreshToken: " + refreshToken);
 
 						String strResult = RegisterLGSPUtils.forgotNewLGSP("Bearer", accessToken, screenname_email);
 
@@ -543,7 +543,7 @@ public class UserManagementImpl implements UserManagement {
 					return BusinessExceptionImpl.processException(e);
 				}
 				
-				_log.info("secretKey: "+secretKey);
+				_log.debug("secretKey: "+secretKey);
 				document = actions.getLGSPForgotConfirm(groupId, company.getCompanyId(), screenname_email, code,
 						secretKey, serviceContext);
 			} else {
@@ -664,7 +664,7 @@ public class UserManagementImpl implements UserManagement {
 
 			ImageIO.write(image, ConstantUtils.PNG, targetFile);
 			
-			_log.info("Absolute Path buildFileName " + buildFileName);
+			_log.debug("Absolute Path buildFileName " + buildFileName);
 			
 			//FileUtils.copyInputStreamToFile(inputStream, targetFile);
 			
@@ -816,7 +816,7 @@ public class UserManagementImpl implements UserManagement {
 				throw new PermissionDeniedDataAccessException(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION), null);
 			}
 
-			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
+			_log.debug("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
 					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
 			boolean syncUserLGSP = Validator.isNotNull(PropsUtil.get("opencps.register.lgsp"))
 					? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
@@ -827,9 +827,9 @@ public class UserManagementImpl implements UserManagement {
 						&& jsonToken.has("expiryDate")) {
 
 					String strUrlChange = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_CHANGE_PASS;
-					_log.info("strUrlChange: " + strUrlChange);
+					_log.debug("strUrlChange: " + strUrlChange);
 					String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
-					_log.info("authStrEnc: " + authStrEnc);
+					_log.debug("authStrEnc: " + authStrEnc);
 
 					StringBuilder sbChange = new StringBuilder();
 					try {
@@ -865,7 +865,7 @@ public class UserManagementImpl implements UserManagement {
 						while ((cpChange = brfChange.read()) != -1) {
 							sbChange.append((char) cpChange);
 						}
-						_log.info("RESULT PROXY: " + sbChange.toString());
+						_log.debug("RESULT PROXY: " + sbChange.toString());
 					} catch (Exception e) {
 						// TODO: handle exception
 					}
@@ -873,7 +873,7 @@ public class UserManagementImpl implements UserManagement {
 			}
 			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, 0,
 					serviceContext);
-			_log.info("flag: "+flag);
+			_log.debug("flag: "+flag);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(String.valueOf(flag)).build();
 
@@ -918,7 +918,6 @@ public class UserManagementImpl implements UserManagement {
 		try {
 			List<Role> roles = user.getRoles();
 			if (roles != null && roles.size() > 0)
-				_log.info("roles:" + roles.size());
 			for (Role role : roles) {
 //				String roleName = StringPool.BLANK;
 				//String roleName;
@@ -1010,9 +1009,9 @@ public class UserManagementImpl implements UserManagement {
 				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 				String captchaId = request.getSession().getId();
 				try {
-					_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+					_log.debug("Captcha: " + captchaId + "," + jCaptchaResponse);
 					boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
-					_log.info("Check captcha result: " + isResponseCorrect);
+					_log.debug("Check captcha result: " + isResponseCorrect);
 					if (!isResponseCorrect) {
 						ErrorMsgModel error = new ErrorMsgModel();
 						error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
@@ -1077,8 +1076,8 @@ public class UserManagementImpl implements UserManagement {
 					String accessToken = jsonToken.getString("access_token");
 					String tokenType = jsonToken.getString("token_type");
 
-					_log.info("accessToken: " + accessToken);
-					_log.info("tokenType: " + tokenType);
+					_log.debug("accessToken: " + accessToken);
+					_log.debug("tokenType: " + tokenType);
 
 					// Dang ky tk cong dan
 					//String message = RegisterLGSPUtils.forgotLGSP(jsonToken, screenname_email);
@@ -1101,7 +1100,7 @@ public class UserManagementImpl implements UserManagement {
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
 			}
 			
-			_log.info("secretKey: "+secretKey);
+			_log.debug("secretKey: "+secretKey);
 			
 			Document document = actions.getLGSPForgotConfirm(groupId, company.getCompanyId(), screenname_email, code,
 					secretKey, serviceContext);

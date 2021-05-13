@@ -76,6 +76,10 @@ public class DictItemMappingLocalServiceImpl
 	public DictItemMapping fetchByF_GID_IC_CID(long groupId, String itemCode, long collectionId) {
 		return dictItemMappingPersistence.fetchByF_GID_IC_CID(groupId, itemCode, collectionId);
 	}
+
+	public DictItemMapping fetchByF_IC(String itemCode) {
+		return dictItemMappingPersistence.fetchByF_IC(itemCode);
+	}
 	
 	public DictItemMapping fetchByF_GID_ICDVCQG_CID(long groupId, String itemCodeDVCQG, long collectionId) {
 		return dictItemMappingPersistence.fetchByF_GID_ICDVCQG_CID(groupId, itemCodeDVCQG, collectionId);

@@ -91,7 +91,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 					ServiceProcess sp = ServiceProcessLocalServiceUtil.fetchServiceProcess(dAction.getServiceProcessId());
 
-					//String payload = StringPool.BLANK;
 					if (dAction != null) {
 						String payload = dAction.getPayload();
 						if (Validator.isNotNull(payload)) {
@@ -101,7 +100,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					}
 					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData, sp);
 					jsonData.put("documentCode", StringPool.BLANK);
-					//
+
 					List<DossierDocument> documentList = DossierDocumentLocalServiceUtil.getByG_DocTypeList(groupId, dossier.getDossierId(), typeCode, -1, -1);
 					if (documentList != null && documentList.size() > 0) {
 						for (DossierDocument document : documentList) {
@@ -144,10 +143,8 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 							jsonData.put("paymentMerchantSecureKey",paymentMerchantSecureKey);
 						}
 					}
-					//
-					//_log.info("jsonData: "+jsonData);
 					jsonData.put(ConstantUtils.API_JSON_URL, serviceContext.getPortalURL());
-					_log.info("jsonData: "+jsonData);
+					_log.debug("jsonData: "+jsonData);
 					Message message = new Message();
 					message.put(DossierDocumentTerm.FORM_REPORT, documentScript);
 					message.put(DossierDocumentTerm.FORM_DATA, jsonData.toJSONString());
@@ -439,7 +436,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 //				sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
 //						serviceProcessId);
 //				if (sequenceList != null) {
-//					//_log.info("START_ Serlist null");
+//					//_log.debug("START_ Serlist null");
 //					CacheLocalServiceUtil.addToCache("ProcessSequence",
 //							groupId +"_"+serviceProcessId, (Serializable) sequenceList,
 //							(int) Time.MINUTE * 30);
@@ -588,14 +585,14 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				if (sequenceArr != null && sequenceArr.length > 0) {
 					for (DossierAction actions : dossierActionList) {
 						JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
-						_log.info("DossierAction: " + actions.getDossierActionId());
+						_log.debug("DossierAction: " + actions.getDossierActionId());
 						DossierAction dossierAction = null;
 						sequenceObj.put(DossierActionTerm.ACTION_NAME, actions.getActionName());
 						sequenceObj.put(DossierActionTerm.ACTION_USER, actions.getActionUser());
 						sequenceObj.put(DossierActionTerm.NEXT_ACTION_ID, actions.getNextActionId());
 						String sequenceNo = actions.getSequenceNo();
 						for (ProcessSequence proSeq : sequenceList) {
-							_log.info("ProcessSequence: " + proSeq.getSequenceNo());
+							_log.debug("ProcessSequence: " + proSeq.getSequenceNo());
 							if (sequenceNo.equals(proSeq.getSequenceNo())) {
 								sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NO, proSeq.getSequenceNo());
 								sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NAME, proSeq.getSequenceName());
@@ -608,7 +605,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 							dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(actions.getNextActionId());
 							String nextSequenceNo = dossierAction.getSequenceNo();
 							for (ProcessSequence proSeq : sequenceList) {
-								_log.info("nextSequenceNo: " + proSeq.getSequenceNo());
+								_log.debug("nextSequenceNo: " + proSeq.getSequenceNo());
 								if (nextSequenceNo.equals(proSeq.getSequenceNo())) {
 									sequenceObj.put(ProcessSequenceTerm.NEXT_SEQUENCE_NO, proSeq.getSequenceNo());
 									sequenceObj.put(ProcessSequenceTerm.NEXT_SEQUENCE_NAME, proSeq.getSequenceName());

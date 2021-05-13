@@ -1756,6 +1756,8 @@
 		<field name="serviceNameTitle" type="String">
 			<hint name="max-length">500</hint>
 		</field>
+		<field name="tagCode" type="String" />
+		<field name="tagName" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceInfoMapping">
 		<field name="serviceInfoMappingId" type="long" />

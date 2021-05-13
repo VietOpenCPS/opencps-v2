@@ -556,7 +556,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			}
 
 			actionModel.setPayload(payloadData.toJSONString());
-			_log.info("payload Sync: "+ payloadData.toJSONString());
 		} catch (Exception e) {
 //			actionModel.setPayload(dossierSync.getPayload());
 			_log.info("ERROR Exception");
@@ -617,7 +616,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			model.setOriginality(DossierTerm.ORIGINALITY_LIENTHONG);
 		}
 //		model.setOnline("true");
-		_log.info("DEBUG SYNC DOSSIER: " + model.getServiceCode() + ", " + model.getGovAgencyCode() + ", " + model.getDossierTemplateNo());
+		_log.info("DEBUG SYNC DOSSIER: " + model.getServiceCode() + ", " + model.getGovAgencyCode()
+				+ ", " + model.getDossierTemplateNo());
 		
 		DossierDetailModel result = client.postDossier(model);
 		StringBuilder messageText = new StringBuilder();
@@ -1033,7 +1033,9 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		//Process action
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 		//_log.debug("SONDT DOSSIER ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierAction));
-		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchByF_GID_SID_AC_PRE_POST(dossierAction.getGroupId(), dossierAction.getServiceProcessId(), dossierAction.getActionCode(), dossierAction.getFromStepCode(), dossierAction.getStepCode());
+		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchByF_GID_SID_AC_PRE_POST(
+				dossierAction.getGroupId(), dossierAction.getServiceProcessId(), dossierAction.getActionCode(),
+				dossierAction.getFromStepCode(), dossierAction.getStepCode());
 		//_log.debug("SONDT PROCESS ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(processAction));
 		//_log.debug("SONDT DOSSIERID PAYMENT REQUEST ================"+ dossier.getDossierId());
 		_log.debug("OpenCPS SYNC PAYMENTFILE FROM SYNCREQUEST : " + APIDateTimeUtils.convertDateToString(new Date()));

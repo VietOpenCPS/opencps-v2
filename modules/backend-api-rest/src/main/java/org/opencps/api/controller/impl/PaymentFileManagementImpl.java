@@ -63,6 +63,8 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyService;
 import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyServiceImpl;
+import org.opencps.datamgt.model.DictItemMapping;
+import org.opencps.datamgt.service.DictItemMappingLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
@@ -801,7 +803,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	//LamTV_Process new API Payment
 	@Override
 	public Response getPaymentFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id, String secretCode) {
+			Locale locale, User user, ServiceContext serviceContext, String id, String secretCode, String unit) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = GetterUtil.getLong(id);
@@ -842,12 +844,56 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFileModel result = null;
 			if (dossier != null) {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-				result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
-				if (result != null){
-					result.setAddress(dossier.getAddress() + ", " + dossier.getWardName() +
-							", " + dossier.getDistrictName() + ", " + dossier.getCityName());
-					result.setOrderId(dossier.getDossierNo() + "-01");
+
+				if(paymentFile == null) {
+					throw new Exception("No payment file was found with dossierId " + dossierId + " and groupId " + groupId);
 				}
+
+				if(Validator.isNotNull(unit) && unit.equals("dongthap")) {
+					String unitCode;
+					DictItemMapping itemMapping = DictItemMappingLocalServiceUtil.fetchByF_IC(dossier.getGovAgencyCode());
+					if(Validator.isNull(itemMapping) || itemMapping.getItemCodeDVCQG().isEmpty()) {
+						throw new Exception("No itemMapping or itemCodeDVCQG was found with item code " + dossier.getGovAgencyCode());
+					}
+					unitCode = itemMapping.getItemCodeDVCQG();
+
+					JSONObject jsonResult = JSONFactoryUtil.createJSONObject();
+					jsonResult.put("error_code", "SUCCESSFUL");
+					jsonResult.put("error_message", "SUCCESSFUL");
+
+					JSONObject data = JSONFactoryUtil.createJSONObject();
+					JSONObject thongTinBienLai = JSONFactoryUtil.createJSONObject();
+					JSONArray payments = JSONFactoryUtil.createJSONArray();
+					JSONObject onePayment = JSONFactoryUtil.createJSONObject();
+					onePayment.put("partnerCode", "PAYGOV_DONGTHAP");
+					onePayment.put("trangThai", paymentFile.getPaymentStatus());
+					onePayment.put("orderId", unitCode + "-" + dossier.getDossierNo() + "-01");
+					onePayment.put("soTien", paymentFile.getPaymentAmount());
+					onePayment.put("moTa", paymentFile.getPaymentNote());
+					payments.put(onePayment);
+					String address = dossier.getAddress() + ", " + dossier.getWardName() +
+							", " + dossier.getDistrictName() + ", " + dossier.getCityName();
+
+					data.put("diaChi", address);
+					data.put("tenNguoiNop", dossier.getDelegateName());
+					data.put("soCMND", dossier.getDelegateIdNo());
+
+					thongTinBienLai.put("tenThuTucHanhChinh", dossier.getServiceName());
+					thongTinBienLai.put("huyenNguoiNop", dossier.getDistrictName());
+					thongTinBienLai.put("tinhNguoiNop", dossier.getCityName());
+					thongTinBienLai.put("ngayQuyetDinh", APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(),
+							"dd-MM-yyyy"));
+					thongTinBienLai.put("maDonViThuHuong", unitCode);
+					thongTinBienLai.put("tenDonViThuHuong", dossier.getGovAgencyName());
+					data.put("thongTinBienLai", thongTinBienLai);
+
+					jsonResult.put("data", data);
+					jsonResult.put("danhSachThanhToan", payments);
+					return Response.status(HttpURLConnection.HTTP_OK).entity(jsonResult.toJSONString()).build();
+				}
+
+
+				result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 			}
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
@@ -910,9 +956,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			if (dossier != null) {
 				PaymentFileActions action = new PaymentFileActionsImpl();
-				PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);
-				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getByInvoiceTemplateNo(groupId, paymentFile.getInvoiceTemplateNo());
-				
+				PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);				
+				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, dossier.getGovAgencyCode());
 				//String formData = JSONFactoryUtil.looseSerialize(paymentFile);
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(paymentFile));
 				String formReport = paymentConfig.getInvoiceForm();
@@ -1100,7 +1145,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			//Update Invoice File EntryId
 			//PaymentFileActions action = new PaymentFileActionsImpl();
 			//PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);
-			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getByInvoiceTemplateNo(groupId, paymentFile.getInvoiceTemplateNo());
+			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, dossier.getGovAgencyCode());
 			
 			//String formData = JSONFactoryUtil.looseSerialize(paymentFile);
 			JSONObject jsonData = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(paymentFile));

@@ -1769,9 +1769,17 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				throw new Exception("No paygov config in payment profile");
 			}
 
+			//Duan idea: Get mdv = itemcodeDVCQG trong dictItemMapping map vs itemcode (govAgencyCode in dossier)
+			DictItemMapping itemMapping = DictItemMappingLocalServiceUtil.fetchByF_IC(dossier.getGovAgencyCode());
+			if(Validator.isNull(itemMapping) || itemMapping.getItemCodeDVCQG().isEmpty()) {
+				throw new Exception("No itemMapping or itemCodeDVCQG was found with item code " + dossier.getGovAgencyCode());
+			}
+
+			String unitCode = itemMapping.getItemCodeDVCQG();
+
 			JSONObject paygovConfig = ePaymentProfile.getJSONObject("PAYGOV_CONFIG");
 			Map<String, Object> body = new HashMap<>();
-			String orderId     = dossier.getDossierNo() + "-01";
+			String orderId     = unitCode + "-" + dossier.getDossierNo() + "-01";
 			long amount        = paymentFile.getPaymentAmount();
 			String requestCode = String.valueOf(dossierId) + System.currentTimeMillis();
 

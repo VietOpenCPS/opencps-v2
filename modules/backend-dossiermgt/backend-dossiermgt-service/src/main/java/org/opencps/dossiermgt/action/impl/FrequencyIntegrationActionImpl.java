@@ -577,6 +577,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
             return token;
         }catch (Exception e) {
+            e.printStackTrace();
             throw new Exception(e.getMessage());
         }
     }
