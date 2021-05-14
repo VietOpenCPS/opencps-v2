@@ -1582,6 +1582,8 @@ public class DossierUtils {
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
 			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
 			model.setDossierSubStatusText(doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
+			model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
+			model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
 
 			ouputs.add(model);
 		}
