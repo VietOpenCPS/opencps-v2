@@ -31,4 +31,5 @@ public class ProcessOptionTerm {
 	public static final String SEQUENCE_NAME = "sequenceName";
 	public static final String FOR_CITIZEN = "forCitizen";
 	public static final String FOR_BUSINESS = "forBusiness";
+
 }

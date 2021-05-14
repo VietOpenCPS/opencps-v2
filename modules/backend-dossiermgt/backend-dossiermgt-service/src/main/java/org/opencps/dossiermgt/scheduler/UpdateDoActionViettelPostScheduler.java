@@ -36,7 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component(immediate = true, service = UpdateDoActionViettelPostScheduler.class)
+//@Component(immediate = true, service = UpdateDoActionViettelPostScheduler.class)
 public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
     private volatile boolean isRunning = false;
 

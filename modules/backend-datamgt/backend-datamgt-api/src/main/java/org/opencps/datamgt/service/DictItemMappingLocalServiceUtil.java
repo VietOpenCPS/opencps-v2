@@ -206,6 +206,11 @@ public class DictItemMappingLocalServiceUtil {
 			collectionId);
 	}
 
+	public static org.opencps.datamgt.model.DictItemMapping fetchByF_IC(
+		String itemCode) {
+		return getService().fetchByF_IC(itemCode);
+	}
+
 	public static org.opencps.datamgt.model.DictItemMapping fetchDictItemMapping(
 		long mappingId) {
 		return getService().fetchDictItemMapping(mappingId);

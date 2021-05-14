@@ -81,7 +81,9 @@ import javax.xml.bind.annotation.XmlType;
     "maxLevel",
     "_public",
     "serviceConfigs",
-    "active"
+    "active",
+    "tagCode",
+    "tagName"
 })
 public class ServiceInfoModel {
 
@@ -108,6 +110,25 @@ public class ServiceInfoModel {
     protected Integer maxLevel;
     @XmlElement(name = "public")
     protected String _public;
+    protected String tagCode;
+    protected String tagName;
+
+    public String getTagCode() {
+        return tagCode;
+    }
+
+    public void setTagCode(String tagCode) {
+        this.tagCode = tagCode;
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
     public String getActive() {
 		return active;
 	}

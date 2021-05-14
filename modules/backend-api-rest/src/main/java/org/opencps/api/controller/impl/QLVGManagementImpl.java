@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.api.controller.QLVGManagement;
@@ -29,6 +30,8 @@ import javax.ws.rs.core.Response;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class QLVGManagementImpl implements QLVGManagement {
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -48,13 +51,25 @@ public class QLVGManagementImpl implements QLVGManagement {
 
     private static final double MAX_FILE_SIZE = 10;
     private List<ServerConfig> listConfig;
+    private ExecutorService executorService;
 
     public QLVGManagementImpl() {
         this.listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(API_SYNC_QLVB, API_SYNC_QLVB);
     }
 
+    private void threadSendHG(String username, QLVBIntegrationAction qlvbAction, long dossierId) {
+        try {
+            _log.info("=====Start send VBHG to BTTTT with dossierId: " + dossierId);
+            String token = qlvbAction.getTokenHG(username);
+            boolean result = qlvbAction.sendVBHG(token, dossierId);
+            _log.info("=====Result send VBHG: " + result);
+        } catch (Exception e) {
+            _log.error("Error when running thread send to HG: " + e.getMessage());
+        }
+    }
+
     @Override
-    public Response sendProfile(long dossierId, User user) {
+    public Response sendProfile(long dossierId, long userId) {
         try {
             if(Validator.isNull(this.listConfig) || this.listConfig.isEmpty()
                     || Validator.isNull(this.listConfig.get(0))) {
@@ -80,18 +95,25 @@ public class QLVGManagementImpl implements QLVGManagement {
             QLVBIntegrationAction qlvbAction = new QLVBIntegrationActionImpl(serverConfig);
             String token;
 
-            String userId = configJson.getString(QLVBConstants.CONFIG_USER_ID);
-            if(configJson.has(QLVBConstants.CONFIG_IS_PROD)
-                    && configJson.getBoolean(QLVBConstants.CONFIG_IS_PROD)
-                    && Validator.isNotNull(user)) {
-                userId = Validator.isNotNull(user.getEmailAddress())
-                        ? user.getEmailAddress()
-                        : configJson.getString(QLVBConstants.CONFIG_USER_ID);
-            }
-
             if(eOfficeServer.equals(SERVER_EOFFICE_HAUGIANG)) {
-                token = qlvbAction.getTokenHG(userId);
-                qlvbAction.sendVBHG(token, dossierId);
+                if(Validator.isNull(userId)) {
+                    throw new Exception("No userId was found");
+                }
+
+                User user = UserLocalServiceUtil.getUser(userId);
+
+                if(Validator.isNull(user)) {
+                    throw new Exception("No user was found with userId " + userId);
+                }
+
+                String username = user.getScreenName();
+                if(Validator.isNull(username)) {
+                    throw new Exception("No userScreenName was found with userId " + userId);
+                }
+
+                executorService = Executors.newSingleThreadExecutor();
+                executorService.execute(() -> threadSendHG(username, qlvbAction, dossierId));
+
             } else if(eOfficeServer.equals(SERVER_EOFFICE_TTTT)) {
                 token = qlvbAction.getTokenTTTT();
                 qlvbAction.sendDocTTTT(token, dossierId);

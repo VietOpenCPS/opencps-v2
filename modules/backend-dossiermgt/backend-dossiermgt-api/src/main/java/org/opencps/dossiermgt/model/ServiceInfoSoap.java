@@ -63,6 +63,8 @@ public class ServiceInfoSoap implements Serializable {
 		soapModel.setGovAgencyText(model.getGovAgencyText());
 		soapModel.setIsNotarization(model.isIsNotarization());
 		soapModel.setServiceNameTitle(model.getServiceNameTitle());
+		soapModel.setTagCode(model.getTagCode());
+		soapModel.setTagName(model.getTagName());
 
 		return soapModel;
 	}
@@ -363,6 +365,22 @@ public class ServiceInfoSoap implements Serializable {
 		_serviceNameTitle = serviceNameTitle;
 	}
 
+	public String getTagCode() {
+		return _tagCode;
+	}
+
+	public void setTagCode(String tagCode) {
+		_tagCode = tagCode;
+	}
+
+	public String getTagName() {
+		return _tagName;
+	}
+
+	public void setTagName(String tagName) {
+		_tagName = tagName;
+	}
+
 	private String _uuid;
 	private long _serviceInfoId;
 	private long _groupId;
@@ -393,4 +411,6 @@ public class ServiceInfoSoap implements Serializable {
 	private String _govAgencyText;
 	private boolean _isNotarization;
 	private String _serviceNameTitle;
+	private String _tagCode;
+	private String _tagName;
 }

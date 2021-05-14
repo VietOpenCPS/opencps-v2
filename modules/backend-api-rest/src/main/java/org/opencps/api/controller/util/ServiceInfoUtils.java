@@ -46,7 +46,8 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 public class ServiceInfoUtils {
 
 	@SuppressWarnings("unchecked")
-	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents, long groupId, long userId, boolean filterApplicant,
+	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents, long
+			groupId, long userId, boolean filterApplicant,
 			ServiceContext serviceContext) {
 		List<ServiceInfoModel> data = new ArrayList<ServiceInfoModel>();
 		try {
@@ -79,7 +80,9 @@ public class ServiceInfoUtils {
 				model.setSynced(GetterUtil.getInteger(doc.get(ServiceInfoTerm.SYNCED)));
 				//model.setPublic(doc.get(ServiceInfoTerm.PUBLIC_));
 				model.setActive(doc.get(ServiceInfoTerm.PUBLIC_));
-				
+				model.setTagCode(doc.get(ServiceInfoTerm.TAGCODE));
+				model.setTagName(doc.get(ServiceInfoTerm.TAGNAME));
+
 				List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
 
 				//ServiceConfigActions serviceConfigActions = new ServiceConfigActionImpl();
@@ -150,18 +153,6 @@ public class ServiceInfoUtils {
 						lsServiceConfig.add(cf);
 					}
 				}
-//				for (Document serviceConfig : serviceConfigs) {
-//					ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
-	//
-//					cf.setGovAgencyCode(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_CODE));
-//					cf.setGovAgencyName(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_NAME));
-//					cf.setServiceInstruction(serviceConfig.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
-//					cf.setServiceUr(serviceConfig.get(ServiceConfigTerm.SERVICE_URL));
-//					cf.setServiceLevel(Integer.parseInt(serviceConfig.get(ServiceConfigTerm.SERVICE_LEVEL)));
-//					cf.setServiceConfigId(GetterUtil.getLong(serviceConfig.get(Field.ENTRY_CLASS_PK)));
-//					
-//					lsServiceConfig.add(cf);
-//				}
 				
 				model.getServiceConfigs().addAll(lsServiceConfig);
 				if(filterApplicant && model.getServiceConfigs().size() >0) {
@@ -241,6 +232,8 @@ public class ServiceInfoUtils {
 		model.setMaxLevel(serviceInfo.getMaxLevel());
 		model.setActive(Boolean.toString(serviceInfo.getPublic_()));
 		model.setGovAgencyText(serviceInfo.getGovAgencyText());
+		model.setTagCode(serviceInfo.getTagCode());
+		model.setTagName(serviceInfo.getTagName());
 
 		return model;
 	}
@@ -325,6 +318,7 @@ public class ServiceInfoUtils {
 		}catch (Exception e){
 			e.getMessage();
 		}
+
 
 		model.getServiceConfigs().addAll(lsServiceConfig);
 		model.getFileTemplates().addAll(mappingToFileTemplates(serviceFileTemplates));
