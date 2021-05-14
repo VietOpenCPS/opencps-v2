@@ -61,7 +61,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, service = ActionCommingScheduler.class)
+//@Component(immediate = true, service = ActionCommingScheduler.class)
 public class ActionCommingScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	private static final int GROUP_TYPE_SITE = 1;

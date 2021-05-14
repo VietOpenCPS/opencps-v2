@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.liferay.counter.kernel.model.Counter;
 import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DataMGTConstants;
@@ -180,6 +181,16 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
 
 			validateApplicantDuplicate(groupId, context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
+
+			try {
+				Counter counterDetail = CounterLocalServiceUtil.fetchCounter("org.opencps.usermgt.model.Applicant");
+				if(counterDetail != null) {
+					_log.info("Applicant current counter: " + counterDetail.getCurrentId());
+				}
+
+			} catch (Exception e) {
+				_log.error("Error when get applicant counter");
+			}
 
 			applicantId = counterLocalService.increment(Applicant.class.getName());
 

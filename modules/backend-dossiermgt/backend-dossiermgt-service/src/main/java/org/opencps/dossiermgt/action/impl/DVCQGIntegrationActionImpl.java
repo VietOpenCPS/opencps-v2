@@ -196,7 +196,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("HinhThuc", String.valueOf(HinhThuc));
 		object.put("NgayKetThucXuLy", convertDate2String(dossier.getReleaseDate()));// ko bb
 		object.put("DonViXuLy", dossier.getGovAgencyName());
-		object.put("GhiChu", dossier.getDossierNote());// ko bb
+		//Giao remove this because dossierNote length > 2k
+//		object.put("GhiChu", dossier.getDossierNote());// ko bb
 
 		JSONArray DanhSachLePhi = JSONFactoryUtil.createJSONArray();
 		object.put("DanhSachLePhi", DanhSachLePhi);// ko bb
@@ -375,7 +376,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("HinhThuc", String.valueOf(HinhThuc));
 		object.put("NgayKetThucXuLy", convertDate2String(dossier.getReleaseDate()));// ko bb
 		object.put("DonViXuLy", dossier.getGovAgencyName());
-		object.put("GhiChu", dossier.getDossierNote());// ko bb
+		//Giao remove this because dossierNote length > 2k
+//		object.put("GhiChu", dossier.getDossierNote());// ko bb
 
 		JSONArray DanhSachLePhi = JSONFactoryUtil.createJSONArray();
 		object.put("DanhSachLePhi", DanhSachLePhi);// ko bb
@@ -2931,7 +2933,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 								serviceInfo.getApplicantText(), serviceInfo.getResultText(),
 								serviceInfo.getRegularText(), serviceInfo.getFeeText(),
 								serviceInfo.getAdministrationCode(), serviceInfo.getDomainCode(),
-								serviceInfo.getMaxLevel(), false, serviceInfo.getGovAgencyText(), serviceContext);
+								serviceInfo.getMaxLevel(), false, serviceInfo.getGovAgencyText(), serviceInfo.getTagCode(),
+								serviceInfo.getTagName(), serviceContext);
 					}
 				} catch (Exception e) {
 					_log.error(e);
@@ -3444,7 +3447,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, processAction, actionCode,
 					applicant.getApplicantName(), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 					StringPool.BLANK, actConfig.getSyncType(), serviceContext, errorModel);
-			_log.debug("ttkm result: " + "create dossier error|" + MaHoSo);
+			_log.info("ttkm result: " + "create dossier success|" + MaHoSo);
 			return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
 
 		} catch (Exception e) {

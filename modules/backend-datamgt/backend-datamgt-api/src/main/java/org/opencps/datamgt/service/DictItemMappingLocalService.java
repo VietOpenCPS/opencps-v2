@@ -185,6 +185,9 @@ public interface DictItemMappingLocalService extends BaseLocalService,
 		String itemCodeDVCQG, long collectionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DictItemMapping fetchByF_IC(String itemCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DictItemMapping fetchDictItemMapping(long mappingId);
 
 	public List<DictItemMapping> findByF_GID_CID(long groupId, long collectionId);

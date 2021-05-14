@@ -551,6 +551,36 @@ public interface ServiceInfoModel extends BaseModel<ServiceInfo>, GroupedModel,
 	 */
 	public void setServiceNameTitle(String serviceNameTitle);
 
+	/**
+	 * Returns the tag code of this service info.
+	 *
+	 * @return the tag code of this service info
+	 */
+	@AutoEscape
+	public String getTagCode();
+
+	/**
+	 * Sets the tag code of this service info.
+	 *
+	 * @param tagCode the tag code of this service info
+	 */
+	public void setTagCode(String tagCode);
+
+	/**
+	 * Returns the tag name of this service info.
+	 *
+	 * @return the tag name of this service info
+	 */
+	@AutoEscape
+	public String getTagName();
+
+	/**
+	 * Sets the tag name of this service info.
+	 *
+	 * @param tagName the tag name of this service info
+	 */
+	public void setTagName(String tagName);
+
 	@Override
 	public boolean isNew();
 

@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Component(immediate = true, service = NotificationMinuteScheduler.class)
+//@Component(immediate = true, service = NotificationMinuteScheduler.class)
 public class NotificationMinuteScheduler extends BaseMessageListener {
     private volatile boolean isRunning = false;
     private static boolean flagJobMail = Validator.isNotNull(PropsUtil.get("opencps.notify.job.mail"))

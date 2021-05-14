@@ -1191,6 +1191,8 @@
 		<property name="govAgencyText" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="isNotarization" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="serviceNameTitle" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="tagCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="tagName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ServiceInfoMappingImpl" table="opencps_serviceinfomapping">
 		<id name="serviceInfoMappingId" type="long">

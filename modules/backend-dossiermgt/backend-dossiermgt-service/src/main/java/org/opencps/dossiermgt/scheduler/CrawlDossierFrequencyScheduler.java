@@ -29,6 +29,9 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
     private volatile boolean isRunning = false;
     private static final Boolean ENABLE_JOB = Validator.isNotNull(PropsUtil.get("org.opencps.frequency.enable"))
             ? Boolean.valueOf(PropsUtil.get("org.opencps.frequency.enable")) : false;
+    private static int timeSyncDossier = Validator.isNotNull(PropsUtil.get("opencps.sync.dossier.time"))
+            ? Integer.valueOf(PropsUtil.get("opencps.sync.dossier.time"))
+            : 45;
     @Override
     protected void doReceive(Message message) throws Exception {
         if (!isRunning && ENABLE_JOB) {
@@ -80,6 +83,7 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
 
             _log.info("End crawl dossier frequency!!!");
         } catch (Exception e){
+            e.printStackTrace();
             _log.error("Error crawl dossier frequency: " + e.getMessage());
         }
         isRunning = false;
