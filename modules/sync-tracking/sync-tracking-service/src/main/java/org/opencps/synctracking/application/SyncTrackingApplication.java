@@ -1,10 +1,14 @@
 package org.opencps.synctracking.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.liferay.counter.kernel.model.Counter;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.portal.kernel.util.Validator;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.synctracking.action.IntegrationOutsideApi;
@@ -26,6 +30,8 @@ import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Component(immediate = true, property = { JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/log-report/",
         JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.log-report" }, service = Application.class)
@@ -103,14 +109,62 @@ public class SyncTrackingApplication extends Application{
         }
     }
 
-    @GET
+    private static volatile ThreadPoolExecutor threadPoolExecutor;
+    private int corePoolSize    = 5;
+    private int maximumPoolSize = 15;
+    private int queueCapacity   = 6;
+    private int keepAliveTime   = 10;
+
+    @POST
     @Path("ping")
+    @Consumes({ MediaType.APPLICATION_JSON })
     @Produces("text/plain")
-    public String ping() {
+    public String ping(String body) {
         try {
+            _log.info("testing...");
+            if(Validator.isNull(threadPoolExecutor)) {
+                _log.info("Creating threadPoolExecutor first time...");
+                threadPoolExecutor = new ThreadPoolExecutor(
+                        corePoolSize, // Số thread mặc định được cấp để xử lý request
+                        maximumPoolSize, //Số thread tối đa được dùng
+                        keepAliveTime, //thời gian sống 1 thread nếu thread đang ko làm gì
+                        java.util.concurrent.TimeUnit.SECONDS, //đơn vị thời gian
+                        new ArrayBlockingQueue<>(queueCapacity), //Queue để lưu số lượng request chờ khi số thread trong
+                        // corePoolSize được dùng hết, khi số lượng request = queueCapacity thì sẽ tạo 1 thread mới
+                        new ThreadPoolExecutor.CallerRunsPolicy()); //Tự động xử lý exception khi số lượng request vượt quá queueCapacity
+            }
+
+
+            JSONObject bodyJson = JSONFactoryUtil.createJSONObject(body);
+            String pattern = bodyJson.getString("pattern");
+            int quantity  = bodyJson.getInt("quantity");
+
+            for(int i = 0; i< quantity; i++) {
+                threadPoolExecutor.execute(() -> increaseCounter(pattern));
+                _log.info("Number thread active: " + threadPoolExecutor.getActiveCount());
+            }
+
+
             return "ok";
         } catch (Exception e) {
             return "error";
         }
     }
+
+    private void increaseCounter(String pattern) {
+        try {
+            Counter currentCounter = CounterLocalServiceUtil.getCounter(pattern);
+            _log.info("======Current Id: "  + currentCounter.getCurrentId());
+            long _counterNumber = currentCounter.getCurrentId() + 1;
+            currentCounter.setCurrentId(_counterNumber);
+            _log.info("Sleeping 9.5");
+//            Thread.sleep(9500);
+            _log.info("Done sleep");
+            Counter newCounter = CounterLocalServiceUtil.updateCounter(currentCounter);
+            _log.info("======Current Id after Tang: "  + newCounter.getCurrentId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
