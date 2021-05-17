@@ -128,59 +128,58 @@ public class ActionUtil {
 
 					JSONObject dataRow = null;
 
-					if("votting".equals(keyVotting)){
-						for (int i = 0; i < data.length(); i++) {
-							objects = new Object[firstRow.length()];
-							dataRow = data.getJSONObject(i);
-							objects[0] = String.valueOf(i + 1);
-							objects[1] = dataRow.getString("dossierNo");
-							objects[2] = dataRow.getString("vote1");
-							objects[3] = dataRow.getString("vote2");
-							objects[4] = dataRow.getString("vote3");
-							objects[5] = dataRow.getString("vote4");
-							objects[6] = dataRow.getString("vote5");
-							objects[7] = dataRow.getString("vote6");
-							objects[8] = dataRow.getString("vote7");
-							objects[9] = dataRow.getString("vote8");
-							objects[10] = dataRow.getString("vote9");
+//					if("votting".equals(keyVotting)){
+//						for (int i = 0; i < data.length(); i++) {
+//							objects = new Object[firstRow.length()];
+//							dataRow = data.getJSONObject(i);
+//							objects[0] = String.valueOf(i + 1);
+//							objects[1] = dataRow.getString("dossierNo");
+//							objects[2] = dataRow.getString("vote1");
+//							objects[3] = dataRow.getString("vote2");
+//							objects[4] = dataRow.getString("vote3");
+//							objects[5] = dataRow.getString("vote4");
+//							objects[6] = dataRow.getString("vote5");
+//							objects[7] = dataRow.getString("vote6");
+//							objects[8] = dataRow.getString("vote7");
+//							objects[9] = dataRow.getString("vote8");
+//							objects[10] = dataRow.getString("vote9");
+//
+//							dataList.add(objects);
+//						}
+//
+//						dataMap.put("data", dataList);
+//						try {
+//							result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
+//									StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_4), dataMap);
+//						} catch (Exception e) {
+//							_log.error(e);
+//						}
+//
+//					}else {
+					for (int i = 0; i < data.length(); i++) {
+						objects = new Object[firstRow.length()];
+						dataRow = data.getJSONObject(i);
+						objects[0] = String.valueOf(i + 1);
+						objects[1] = dataRow.getString("dossierNo");
+						objects[2] = dataRow.getString("dossierName");
+						objects[3] = dataRow.getString("applicantName");
+						objects[4] = dataRow.getString("receiveDate");
+						objects[5] = dataRow.getString("dueDate");
+						objects[6] = dataRow.getString("dossierStatusText");
 
-							dataList.add(objects);
-						}
-
-						dataMap.put("data", dataList);
-						try {
-							result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
-									StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_4), dataMap);
-						} catch (Exception e) {
-							_log.error(e);
-						}
-
-					}else {
-						for (int i = 0; i < data.length(); i++) {
-							objects = new Object[firstRow.length()];
-							dataRow = data.getJSONObject(i);
-							objects[0] = String.valueOf(i + 1);
-							objects[1] = dataRow.getString("dossierNo");
-							objects[2] = dataRow.getString("dossierName");
-							objects[3] = dataRow.getString("applicantName");
-							objects[4] = dataRow.getString("receiveDate");
-							objects[5] = dataRow.getString("dueDate");
-							objects[6] = dataRow.getString("dossierStatusText");
-
-							dataList.add(objects);
-						}
-
-						dataMap.put("data", dataList);
-						try {
-							result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
-									StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_1), dataMap);
-						} catch (Exception e) {
-							_log.error(e);
-						}
+						dataList.add(objects);
 					}
+
+					dataMap.put("data", dataList);
+					try {
+						result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
+								StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_1), dataMap);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+//					}
 				}
 			}
-
 
 
 		} else if (subType.equals(Constants.GROUP_COUNT)) {

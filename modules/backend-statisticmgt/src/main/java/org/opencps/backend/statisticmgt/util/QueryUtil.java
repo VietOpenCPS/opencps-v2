@@ -467,37 +467,37 @@ public class QueryUtil {
 
 			}
 		}
-		try {
-			if(sqlTemplate.contains(PropKeys.VOTE1)){
-				columns.put(PropKeys.VOTE1, Integer.class);
-			}
-			if(sqlTemplate.contains(PropKeys.VOTE2)){
-				columns.put(PropKeys.VOTE2, Integer.class);
-			}
-			if(sqlTemplate.contains(PropKeys.VOTE3)){
-				columns.put(PropKeys.VOTE3, Integer.class);
-			}
-			if(sqlTemplate.contains(PropKeys.VOTE4)){
-				columns.put(PropKeys.VOTE4, Integer.class);
-			}
-			if(sqlTemplate.contains(PropKeys.VOTE5)){
-				columns.put(PropKeys.VOTE5, Integer.class);
-			}
-			if(sqlTemplate.contains(PropKeys.VOTE6)){
-				columns.put(PropKeys.VOTE6, Integer.class);
-			}
-			if(sqlTemplate.contains(PropKeys.VOTE7)){
-				columns.put(PropKeys.VOTE7, Integer.class);
-			}
-			if(sqlTemplate.contains(PropKeys.VOTE8)){
-				columns.put(PropKeys.VOTE8, Integer.class);
-			}
-			if(sqlTemplate.contains(PropKeys.VOTE9)){
-				columns.put(PropKeys.VOTE9, Integer.class);
-			}
-		}catch (Exception e) {
-			e.getMessage();
-		}
+//		try {
+//			if(sqlTemplate.contains(PropKeys.VOTE1)){
+//				columns.put(PropKeys.VOTE1, Integer.class);
+//			}
+//			if(sqlTemplate.contains(PropKeys.VOTE2)){
+//				columns.put(PropKeys.VOTE2, Integer.class);
+//			}
+//			if(sqlTemplate.contains(PropKeys.VOTE3)){
+//				columns.put(PropKeys.VOTE3, Integer.class);
+//			}
+//			if(sqlTemplate.contains(PropKeys.VOTE4)){
+//				columns.put(PropKeys.VOTE4, Integer.class);
+//			}
+//			if(sqlTemplate.contains(PropKeys.VOTE5)){
+//				columns.put(PropKeys.VOTE5, Integer.class);
+//			}
+//			if(sqlTemplate.contains(PropKeys.VOTE6)){
+//				columns.put(PropKeys.VOTE6, Integer.class);
+//			}
+//			if(sqlTemplate.contains(PropKeys.VOTE7)){
+//				columns.put(PropKeys.VOTE7, Integer.class);
+//			}
+//			if(sqlTemplate.contains(PropKeys.VOTE8)){
+//				columns.put(PropKeys.VOTE8, Integer.class);
+//			}
+//			if(sqlTemplate.contains(PropKeys.VOTE9)){
+//				columns.put(PropKeys.VOTE9, Integer.class);
+//			}
+//		}catch (Exception e) {
+//			e.getMessage();
+//		}
 		return columns;
 	}
 
