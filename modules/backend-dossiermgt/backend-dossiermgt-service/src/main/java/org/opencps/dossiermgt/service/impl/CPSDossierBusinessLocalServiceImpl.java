@@ -1456,25 +1456,31 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					if (!eForm || !dossierPart.getESign() || !item.getEForm()) {
 						continue;
 					}
+					_log.debug("Pass-----");
+
 					JSONObject mappingDataObj = JSONFactoryUtil
 							.createJSONObject(dlt.getMappingData());
+					_log.info("JSON: " + JSONFactoryUtil.looseSerialize(mappingDataObj));
 					if (!mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) continue;
 					String deliverables = mappingDataObj.getString(
 							DeliverableTypesTerm.DELIVERABLES_KEY);
-
+					_log.info("deliverables: " + deliverables);
 					//Cut lấy value của deliverableKey trong giay phep
 					if(Validator.isNotNull(deliverables)) {
 						String newString = deliverables.substring(1);
 						String[] stringSplit = newString.split(StringPool.AT);
 						String variable = stringSplit[0];
+						_log.info("variable: " + variable);
 						//Note: key deliverableType được cấu hình trong thành phần tồn tại trong dossierFile sau khi được mapping dữ liệu
 						JSONObject formDataObj = JSONFactoryUtil
 								.createJSONObject(item.getFormData());
+						_log.info("formDataObj: " + JSONFactoryUtil.looseSerialize(formDataObj));
 						if (formDataObj.has(variable)) {
 							JSONArray deliverablesArr = JSONFactoryUtil
 									.createJSONArray(formDataObj
 											.getString(variable));
 
+							_log.info("deliverablesArr: " + JSONFactoryUtil.looseSerialize(deliverablesArr));
 							for (int i = 0; i < deliverablesArr
 									.length(); i++) {
 								JSONObject deliverableObj = null;
