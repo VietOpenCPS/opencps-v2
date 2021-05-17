@@ -3444,7 +3444,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, processAction, actionCode,
 					applicant.getApplicantName(), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 					StringPool.BLANK, actConfig.getSyncType(), serviceContext, errorModel);
-//			_log.info("ttkm result: " + "create dossier error|" + MaHoSo);
+			_log.info("ttkm result: " + "create dossier success|" + MaHoSo);
 			return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
 
 		} catch (Exception e) {

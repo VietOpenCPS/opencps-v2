@@ -29,4 +29,7 @@ public class ProcessOptionTerm {
 	public static final String PROCESS_SEQUENCE_ID = "processSequenceId";
 	public static final String SEQUENCE_ROLE = "sequenceRole";
 	public static final String SEQUENCE_NAME = "sequenceName";
+	public static final String FOR_CITIZEN = "forCitizen";
+	public static final String FOR_BUSINESS = "forBusiness";
+
 }

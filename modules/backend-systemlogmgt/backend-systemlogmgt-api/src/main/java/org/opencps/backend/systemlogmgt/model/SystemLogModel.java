@@ -237,6 +237,21 @@ public interface SystemLogModel extends BaseModel<SystemLog> {
 	 */
 	public void setThreadId(String threadId);
 
+	/**
+	 * Returns the param of this system log.
+	 *
+	 * @return the param of this system log
+	 */
+	@AutoEscape
+	public String getParam();
+
+	/**
+	 * Sets the param of this system log.
+	 *
+	 * @param param the param of this system log
+	 */
+	public void setParam(String param);
+
 	@Override
 	public boolean isNew();
 

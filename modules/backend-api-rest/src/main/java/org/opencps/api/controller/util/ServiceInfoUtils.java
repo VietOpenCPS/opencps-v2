@@ -46,7 +46,8 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 public class ServiceInfoUtils {
 
 	@SuppressWarnings("unchecked")
-	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents, long groupId, long userId,
+	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents, long
+			groupId, long userId, boolean filterApplicant,
 			ServiceContext serviceContext) {
 		List<ServiceInfoModel> data = new ArrayList<ServiceInfoModel>();
 
@@ -109,38 +110,37 @@ public class ServiceInfoUtils {
 					boolean citizen = false;
 					boolean business = false;
 					boolean active = false;
-					if (Validator.isNotNull(applicant)) {
-						if ("citizen".equals(applicant.getApplicantIdType())) {
-							citizen = true;
-						} else if ("business".equals(applicant.getApplicantIdType())) {
-							business = true;
-						}
-						for (ServiceConfig sc : lstScs) {
-							ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
-							List<ProcessOption> lstOption = ProcessOptionLocalServiceUtil.getByServiceConfigId(sc.getServiceConfigId());
-							if (lstOption != null && !lstOption.isEmpty()) {
-								for (ProcessOption option : lstOption) {
-									if (citizen && option.isForCitizen()) {
-										active = true;
-										break;
-									} else if (business && option.isForBusiness()) {
-										active = true;
-										break;
-									}
+					if ("citizen".equals(applicant.getApplicantIdType())) {
+						citizen = true;
+					} else if ("business".equals(applicant.getApplicantIdType())) {
+						business = true;
+					}
+					for (ServiceConfig sc : lstScs) {
+						ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
+						List<ProcessOption> lstOption = ProcessOptionLocalServiceUtil.getByServiceConfigId(sc.getServiceConfigId());
+						if (lstOption != null && !lstOption.isEmpty()) {
+							for (ProcessOption option : lstOption) {
+								if (citizen && option.isForCitizen()) {
+									active = true;
+									break;
+								} else if (business && option.isForBusiness()) {
+									active = true;
+									break;
 								}
-								if (active) {
-									cf.setGovAgencyCode(sc.getGovAgencyCode());
-									cf.setGovAgencyName(sc.getGovAgencyName());
-									cf.setServiceInstruction(sc.getServiceInstruction());
-									cf.setServiceUr(sc.getServiceUrl());
-									cf.setServiceLevel(sc.getServiceLevel());
-									cf.setServiceConfigId(sc.getServiceConfigId());
+							}
+							if (active) {
+								cf.setGovAgencyCode(sc.getGovAgencyCode());
+								cf.setGovAgencyName(sc.getGovAgencyName());
+								cf.setServiceInstruction(sc.getServiceInstruction());
+								cf.setServiceUr(sc.getServiceUrl());
+								cf.setServiceLevel(sc.getServiceLevel());
+								cf.setServiceConfigId(sc.getServiceConfigId());
 
-									lsServiceConfig.add(cf);
-								}
+								lsServiceConfig.add(cf);
 							}
 						}
 					}
+
 				}else {
 					for (ServiceConfig sc : lstScs) {
 						ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
@@ -154,22 +154,15 @@ public class ServiceInfoUtils {
 						lsServiceConfig.add(cf);
 					}
 				}
-//				for (Document serviceConfig : serviceConfigs) {
-//					ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
-	//
-//					cf.setGovAgencyCode(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_CODE));
-//					cf.setGovAgencyName(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_NAME));
-//					cf.setServiceInstruction(serviceConfig.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
-//					cf.setServiceUr(serviceConfig.get(ServiceConfigTerm.SERVICE_URL));
-//					cf.setServiceLevel(Integer.parseInt(serviceConfig.get(ServiceConfigTerm.SERVICE_LEVEL)));
-//					cf.setServiceConfigId(GetterUtil.getLong(serviceConfig.get(Field.ENTRY_CLASS_PK)));
-//					
-//					lsServiceConfig.add(cf);
-//				}
 				
 				model.getServiceConfigs().addAll(lsServiceConfig);
-				
-				data.add(model);
+				if(filterApplicant && model.getServiceConfigs().size() >0) {
+					data.add(model);
+				}else if(!filterApplicant){
+					data.add(model);
+				}else{
+					data.add(model);
+				}
 			}
 		} catch (Exception e) {
 			_log.error(e);
@@ -246,7 +239,7 @@ public class ServiceInfoUtils {
 		return model;
 	}
 
-	public static ServiceInfoDetailModel mappingToServiceInfoDetailModel(ServiceInfo serviceInfo) {
+	public static ServiceInfoDetailModel mappingToServiceInfoDetailModel(ServiceInfo serviceInfo, long userId) {
 
 		ServiceInfoDetailModel model = new ServiceInfoDetailModel();
 
@@ -285,21 +278,48 @@ public class ServiceInfoUtils {
 				serviceInfo.getServiceInfoId());
 		
 		List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
-		if (configList != null && configList.size() > 0) {
-			ServiceInfoServiceConfig cf = null;
-			for (ServiceConfig serviceConfig : configList) {
-				cf = new ServiceInfoServiceConfig();
+		ApplicantActions actions = new ApplicantActionsImpl();
+		try {
+			Applicant applicant = actions.getApplicantByMappingUserId(userId);
+			if (Validator.isNotNull(applicant)) {
+				boolean citizen = false;
+				boolean business = false;
+				boolean active = false;
+				if ("citizen".equals(applicant.getApplicantIdType())) {
+					citizen = true;
+				} else if ("business".equals(applicant.getApplicantIdType())) {
+					business = true;
+				}
+				for (ServiceConfig sc : configList) {
+					ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
+					List<ProcessOption> lstOption = ProcessOptionLocalServiceUtil.getByServiceConfigId(sc.getServiceConfigId());
+					if (lstOption != null && !lstOption.isEmpty()) {
+						for (ProcessOption option : lstOption) {
+							if (citizen && option.isForCitizen()) {
+								active = true;
+								break;
+							} else if (business && option.isForBusiness()) {
+								active = true;
+								break;
+							}
+						}
+						if (active) {
+							cf.setGovAgencyCode(sc.getGovAgencyCode());
+							cf.setGovAgencyName(sc.getGovAgencyName());
+							cf.setServiceInstruction(sc.getServiceInstruction());
+							cf.setServiceUr(sc.getServiceUrl());
+							cf.setServiceLevel(sc.getServiceLevel());
+							cf.setServiceConfigId(sc.getServiceConfigId());
 
-				cf.setServiceConfigId(serviceConfig.getServiceConfigId());
-				cf.setGovAgencyCode(serviceConfig.getGovAgencyCode());
-				cf.setGovAgencyName(serviceConfig.getGovAgencyName());
-				cf.setServiceInstruction(serviceConfig.getServiceInstruction());
-				cf.setServiceUr(serviceConfig.getServiceUrl());
-				cf.setServiceLevel(serviceConfig.getServiceLevel());
-
-			lsServiceConfig.add(cf);
+							lsServiceConfig.add(cf);
+						}
+					}
+				}
 			}
+		}catch (Exception e){
+			e.getMessage();
 		}
+
 
 		model.getServiceConfigs().addAll(lsServiceConfig);
 		model.getFileTemplates().addAll(mappingToFileTemplates(serviceFileTemplates));
