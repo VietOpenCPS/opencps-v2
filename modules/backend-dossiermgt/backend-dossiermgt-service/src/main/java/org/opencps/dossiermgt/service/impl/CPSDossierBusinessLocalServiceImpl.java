@@ -1443,20 +1443,24 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		DossierFileActions actions = new DossierFileActionsImpl();
 		try {
 			if(proAction.getESignature() && dossierFiles != null && !dossierFiles.isEmpty()) {
-				logLineLevelDoActionInside(27, dossierIDString);
+//				logLineLevelDoActionInside(27, dossierIDString);
 				for (DossierFile item : dossierFiles) {
+					_log.info("DossierFile: " + JSONFactoryUtil.looseSerialize(item));
 					boolean eForm = false;
 					DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId,
 							item.getDossierTemplateNo(), item.getDossierPartNo());
+					_log.info("Pass-----");
 					DeliverableType dlt = DeliverableTypeLocalServiceUtil
 							.getByCode(groupId,
 									dossierPart.getDeliverableType());
 					eForm = Validator.isNotNull(dossierPart.getFormScript());
-
+					_log.info("Efom: " + eForm);
+					_log.info("dossierPart.getESign(): " + dossierPart.getESign());
+					_log.info("item.getEForm(): " + item.getEForm());
 					if (!eForm || !dossierPart.getESign() || !item.getEForm()) {
 						continue;
 					}
-					_log.debug("Pass-----");
+					_log.info("Pass-----");
 
 					JSONObject mappingDataObj = JSONFactoryUtil
 							.createJSONObject(dlt.getMappingData());
