@@ -1,6 +1,7 @@
 package org.opencps.backend.exportmgt.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -67,6 +68,7 @@ public class ExcelParseUtil {
 					int pos = getPos(subPattern);
 
 					if (Validator.isNotNull(name)) {
+						System.out.println("Name: " + name);
 						switch (type.toLowerCase()) {
 						case "text":
 							value = (map != null && map.containsKey(name)) ? ((String) map.get(name))
@@ -215,6 +217,7 @@ public class ExcelParseUtil {
 			data = data.replace(StringPool.OPEN_CURLY_BRACE, StringPool.BLANK)
 					.replace(StringPool.CLOSE_CURLY_BRACE, StringPool.BLANK).replace("indexs:", StringPool.BLANK)
 					.replace(StringPool.DOLLAR, StringPool.BLANK);
+			System.out.println("Data -----: " + JSONFactoryUtil.looseSerialize(data));
 
 			indexs = com.liferay.portal.kernel.util.StringUtil.split(data, 0);
 

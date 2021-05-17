@@ -2,6 +2,7 @@ package org.opencps.backend.statisticmgt.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -32,6 +33,7 @@ public class ActionUtil {
 
 		String result = StringPool.BLANK;
 
+		_log.info("Type: " + type);
 		JSONObject obj = getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode,
 				serviceCode, dossierStatus, day, groupBy, start, end, type, subType);
 		String strFromDate = DatetimeUtil.convertTimestampToStringDatetime(fromDate, DatetimeUtil._DD_MM_YYYY);
@@ -99,9 +101,11 @@ public class ActionUtil {
 		String govAgencyName = StringPool.BLANK;
 		String domainName = StringPool.BLANK;
 
+		_log.info("CreateReport ----------------");
+		String keyVotting = "votting";
 		if (subType.equals(Constants.LIST)) {
 
-			int total = 0;
+			int totalCount = 0;
 
 			List<Object[]> dataList = new ArrayList<Object[]>();
 
@@ -109,40 +113,77 @@ public class ActionUtil {
 				JSONArray data = obj.getJSONArray(Constants.DATA);
 				if (data != null && data.length() > 0) {
 					JSONObject firstRow = data.getJSONObject(0);
-					total = data.length();
+//					JSONObject lastRow = data.getJSONObject(data.length() - 1);
+					totalCount = data.length();
+//					String[] total = new String[11];
+
 					govAgencyName = firstRow.getString("govAgencyName");
 					domainName = firstRow.getString("domainName");
+
+
+
 					dataMap.put("govAgencyName", govAgencyName.toUpperCase());
 					dataMap.put("domainName", domainName);
-					dataMap.put("total", String.valueOf(total));
+					dataMap.put("total", String.valueOf(totalCount));
 
 					Object[] objects = null;
 
 					JSONObject dataRow = null;
-					for (int i = 0; i < data.length(); i++) {
-						objects = new Object[firstRow.length()];
-						dataRow = data.getJSONObject(i);
-						objects[0] = String.valueOf(i + 1);
-						objects[1] = dataRow.getString("dossierNo");
-						objects[2] = dataRow.getString("dossierName");
-						objects[3] = dataRow.getString("applicantName");
-						objects[4] = dataRow.getString("receiveDate");
-						objects[5] = dataRow.getString("dueDate");
-						objects[6] = dataRow.getString("dossierStatusText");
 
-						dataList.add(objects);
+					if("votting".equals(keyVotting)){
+						for (int i = 0; i < data.length(); i++) {
+							objects = new Object[firstRow.length()];
+							dataRow = data.getJSONObject(i);
+							objects[0] = String.valueOf(i + 1);
+							objects[1] = dataRow.getString("dossierNo");
+							objects[2] = dataRow.getString("vote1");
+							objects[3] = dataRow.getString("vote2");
+							objects[4] = dataRow.getString("vote3");
+							objects[5] = dataRow.getString("vote4");
+							objects[6] = dataRow.getString("vote5");
+							objects[7] = dataRow.getString("vote6");
+							objects[8] = dataRow.getString("vote7");
+							objects[9] = dataRow.getString("vote8");
+							objects[10] = dataRow.getString("vote9");
+
+							dataList.add(objects);
+						}
+
+						dataMap.put("data", dataList);
+						try {
+							result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
+									StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_4), dataMap);
+						} catch (Exception e) {
+							_log.error(e);
+						}
+
+					}else {
+						for (int i = 0; i < data.length(); i++) {
+							objects = new Object[firstRow.length()];
+							dataRow = data.getJSONObject(i);
+							objects[0] = String.valueOf(i + 1);
+							objects[1] = dataRow.getString("dossierNo");
+							objects[2] = dataRow.getString("dossierName");
+							objects[3] = dataRow.getString("applicantName");
+							objects[4] = dataRow.getString("receiveDate");
+							objects[5] = dataRow.getString("dueDate");
+							objects[6] = dataRow.getString("dossierStatusText");
+
+							dataList.add(objects);
+						}
+
+						dataMap.put("data", dataList);
+						try {
+							result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
+									StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_1), dataMap);
+						} catch (Exception e) {
+							_log.error(e);
+						}
 					}
-
-					dataMap.put("data", dataList);
 				}
 			}
 
-			try {
-				result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
-						StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_1), dataMap);
-			} catch (Exception e) {
-				_log.error(e);
-			}
+
 
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 
@@ -268,13 +309,15 @@ public class ActionUtil {
 		String strToDate = DatetimeUtil.convertTimestampToStringDatetime(toDate, DatetimeUtil._YYYY_MM_DD);
 
 		String sqlTemplate = QueryUtil.getSQLQueryTemplate(type, subType);
-
+		_log.info("SQL Template : " + sqlTemplate);
 		if (Validator.isNull(sqlTemplate)) {
 			return StatisticUtil.createResponseSchema(groupId, strFromDate, strToDate,
 					ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 					ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 					ParamUtil.getArrayParams(dossierStatus), type, subType);
 		}
+
+		_log.info("TYpe: " + type);
 
 		QueryProcessFactoryImpl factory = new QueryProcessFactoryImpl();
 
@@ -517,6 +560,15 @@ public class ActionUtil {
 					originalities = "2,3";
 				}
 				return factory.getDossierStatistic20(groupId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
+						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
+			}else if (type == 21){
+				// set default
+				if (Validator.isNull(originalities)) {
+					originalities = "2,3";
+				}
+				return factory.getDossierStatistic21(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);

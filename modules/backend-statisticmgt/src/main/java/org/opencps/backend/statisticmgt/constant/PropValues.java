@@ -184,6 +184,15 @@ public class PropValues {
 	public static final String STATISTIC_DOSSIER_DASHBROAD_GROUP_TOTAL_COUNT = PropUtil
 			.getQueryProperty(PropKeys.STATISTIC_DOSSIER_DASHBROAD_GROUP_TOTAL_COUNT);
 
+	// type=21
+	public static final String STATISTIC_DOSSIER_VOTING_TOTAL_COUNT = PropUtil
+			.getQueryProperty(PropKeys.STATISTIC_DOSSIER_VOTING_TOTAL_COUNT);
+
+	public static final String STATISTIC_DOSSIER_VOTING_GROUP_TOTAL_COUNT = PropUtil
+			.getQueryProperty(PropKeys.STATISTIC_DOSSIER_VOTING_GROUP_TOTAL_COUNT);
+
+	public static final String STATISTIC_DOSSIER_VOTING_TOTAL_LIST = PropUtil
+			.getQueryProperty(PropKeys.STATISTIC_DOSSIER_VOTING_TOTAL_LIST);
 	// other
 	public static final int CONFIG_DOSSIER_STATISTIC_SIZE_LIST = GetterUtil
 			.getInteger(PropUtil.getConfigProperty(PropKeys.CONFIG_DOSSIER_STATISTIC_SIZE_LIST));
@@ -195,4 +204,6 @@ public class PropValues {
 	public static final String TEMPLATES_REPORTS_FILENAME_2 = PropUtil.getConfigProperty(PropKeys.TEMPLATES_REPORTS_FILENAME_2);
 	
 	public static final String TEMPLATES_REPORTS_FILENAME_3 = PropUtil.getConfigProperty(PropKeys.TEMPLATES_REPORTS_FILENAME_3);
+
+	public static final String TEMPLATES_REPORTS_FILENAME_4 = PropUtil.getConfigProperty(PropKeys.TEMPLATES_REPORTS_FILENAME_4);
 }

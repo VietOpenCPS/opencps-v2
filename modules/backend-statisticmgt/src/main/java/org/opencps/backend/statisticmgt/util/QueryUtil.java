@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.opencps.backend.statisticmgt.constant.Constants;
+import org.opencps.backend.statisticmgt.constant.PropKeys;
 import org.opencps.backend.statisticmgt.constant.PropValues;
 
 /**
@@ -98,7 +99,9 @@ public class QueryUtil {
 
 		STATISTIC_DOSSIER_PEDING_TOTAL_LIST(19),
 
-		STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT(20);
+		STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT(20),
+
+		STATISTIC_DOSSIER_VOTING_TOTAL_LIST(21);
 
 		private QueryType(int type) {
 			this.type = type;
@@ -269,6 +272,13 @@ public class QueryUtil {
 				this.sqlSearchTemplate = StringPool.BLANK;
 				break;
 
+			case 21:
+				this.sqlCountTemplate = PropValues.STATISTIC_DOSSIER_VOTING_TOTAL_COUNT;
+				this.sqlGroupTemplate = PropValues.STATISTIC_DOSSIER_VOTING_GROUP_TOTAL_COUNT;
+				this.sqlSearchTemplate = PropValues.STATISTIC_DOSSIER_VOTING_TOTAL_LIST;
+				break;
+
+
 			default:
 				this.sqlCountTemplate = StringPool.BLANK;
 				this.sqlGroupTemplate = StringPool.BLANK;
@@ -429,7 +439,6 @@ public class QueryUtil {
 		String group = StringPool.BLANK;
 
 		while (matcher.find()) {
-
 			group = matcher.group();
 
 			String dataType = group.substring(group.lastIndexOf(StringPool.OPEN_BRACKET) + 1,
@@ -457,6 +466,37 @@ public class QueryUtil {
 			} else {
 
 			}
+		}
+		try {
+			if(sqlTemplate.contains(PropKeys.VOTE1)){
+				columns.put(PropKeys.VOTE1, Integer.class);
+			}
+			if(sqlTemplate.contains(PropKeys.VOTE2)){
+				columns.put(PropKeys.VOTE2, Integer.class);
+			}
+			if(sqlTemplate.contains(PropKeys.VOTE3)){
+				columns.put(PropKeys.VOTE3, Integer.class);
+			}
+			if(sqlTemplate.contains(PropKeys.VOTE4)){
+				columns.put(PropKeys.VOTE4, Integer.class);
+			}
+			if(sqlTemplate.contains(PropKeys.VOTE5)){
+				columns.put(PropKeys.VOTE5, Integer.class);
+			}
+			if(sqlTemplate.contains(PropKeys.VOTE6)){
+				columns.put(PropKeys.VOTE6, Integer.class);
+			}
+			if(sqlTemplate.contains(PropKeys.VOTE7)){
+				columns.put(PropKeys.VOTE7, Integer.class);
+			}
+			if(sqlTemplate.contains(PropKeys.VOTE8)){
+				columns.put(PropKeys.VOTE8, Integer.class);
+			}
+			if(sqlTemplate.contains(PropKeys.VOTE9)){
+				columns.put(PropKeys.VOTE9, Integer.class);
+			}
+		}catch (Exception e) {
+			e.getMessage();
 		}
 		return columns;
 	}
