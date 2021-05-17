@@ -2492,11 +2492,11 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 					Iterator<String> keys = tmp.keys();
 					while (keys.hasNext()) {
 						String key = keys.next();
-//						if (key.equalsIgnoreCase("govAgencyCode") || key.equalsIgnoreCase("domainCode")
-//								|| key.equalsIgnoreCase("serviceCode")) {
-//
-//							totalObj.put(key, StringPool.BLANK);
-//						} else {
+						if (key.equalsIgnoreCase("govAgencyCode") || key.equalsIgnoreCase("domainCode")
+								|| key.equalsIgnoreCase("serviceCode")) {
+
+							totalObj.put(key, StringPool.BLANK);
+						} else {
 
 							int value = 0;
 							if (totalObj.has(key)) {
@@ -2505,7 +2505,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 							value += tmp.getInt(key);
 
 							totalObj.put(key, value);
-//						}
+						}
 					}
 
 					total += tmp.getInt(Constants.TOTAL_COUNT);

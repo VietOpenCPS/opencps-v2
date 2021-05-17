@@ -122,40 +122,59 @@ public class ActionUtil {
 
 					dataMap.put("govAgencyName", govAgencyName.toUpperCase());
 					dataMap.put("domainName", domainName);
-					dataMap.put("total", String.valueOf(totalCount));
+//					dataMap.put("total", String.valueOf(totalCount));
 
 					Object[] objects = null;
 
 					JSONObject dataRow = null;
 
-//					if("votting".equals(keyVotting)){
-//						for (int i = 0; i < data.length(); i++) {
-//							objects = new Object[firstRow.length()];
-//							dataRow = data.getJSONObject(i);
-//							objects[0] = String.valueOf(i + 1);
-//							objects[1] = dataRow.getString("dossierNo");
-//							objects[2] = dataRow.getString("vote1");
-//							objects[3] = dataRow.getString("vote2");
-//							objects[4] = dataRow.getString("vote3");
-//							objects[5] = dataRow.getString("vote4");
-//							objects[6] = dataRow.getString("vote5");
-//							objects[7] = dataRow.getString("vote6");
-//							objects[8] = dataRow.getString("vote7");
-//							objects[9] = dataRow.getString("vote8");
-//							objects[10] = dataRow.getString("vote9");
-//
-//							dataList.add(objects);
-//						}
-//
-//						dataMap.put("data", dataList);
-//						try {
-//							result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
-//									StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_4), dataMap);
-//						} catch (Exception e) {
-//							_log.error(e);
-//						}
-//
-//					}else {
+					if("votting".equals(keyVotting)){
+						String[] total = new String[10];
+						JSONObject lastRow = data.getJSONObject(data.length() - 1);
+
+						int total_vote1 = lastRow.getInt("total_vote1");// 5
+						int total_vote2 = lastRow.getInt("total_vote2");// 4
+						int total_vote3 = lastRow.getInt("total_vote3");// 7
+						int total_vote4 = lastRow.getInt("total_vote4");// 8
+						int total_vote5 = lastRow.getInt("total_vote5");// 9
+						int total_vote6 = lastRow.getInt("total_vote6");// 11
+						int total_vote7 = lastRow.getInt("total_vote7");// 12
+
+						total[0] = String.valueOf(total_vote1);// 4+5
+						total[1] = String.valueOf(total_vote2);// 4
+						total[2] = String.valueOf(total_vote3);// 5
+						total[3] = String.valueOf(total_vote4);// 7 +8 +9
+						total[4] = String.valueOf(total_vote5);// 7
+						total[5] = String.valueOf(total_vote6);// 8
+						total[6] = String.valueOf(total_vote7);// 9
+//						total[7] = String.valueOf(undueCount + overdueCount);// 11+12
+//						total[8] = String.valueOf(undueCount);// 11
+//						total[9] = String.valueOf(overdueCount);// 12
+//						total[10] = String.valueOf(overtimeCount);// 9
+						dataMap.put("total", total);
+
+						for (int i = 0; i < data.length(); i++) {
+							objects = new Object[firstRow.length()];
+							dataRow = data.getJSONObject(i);
+							objects[0] = String.valueOf(i + 1);
+							objects[1] = dataRow.getString("dossierNo");
+							objects[2] = dataRow.getString("vote1");
+							objects[3] = dataRow.getString("vote2");
+							objects[4] = dataRow.getString("vote3");
+							objects[5] = dataRow.getString("vote4");
+							objects[6] = dataRow.getString("vote5");
+							objects[7] = dataRow.getString("vote6");
+							objects[8] = dataRow.getString("vote7");
+							objects[9] = dataRow.getString("vote8");
+							objects[10] = dataRow.getString("vote9");
+
+							dataList.add(objects);
+						}
+
+						dataMap.put("data", dataList);
+
+
+					}else {
 					for (int i = 0; i < data.length(); i++) {
 						objects = new Object[firstRow.length()];
 						dataRow = data.getJSONObject(i);
@@ -169,15 +188,21 @@ public class ActionUtil {
 
 						dataList.add(objects);
 					}
+				}
 
 					dataMap.put("data", dataList);
+
 					try {
-						result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
-								StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_1), dataMap);
+						if("votting".equals(keyVotting)) {
+							result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
+									StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_4), dataMap);
+						}else{
+							result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
+									StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_1), dataMap);
+						}
 					} catch (Exception e) {
 						_log.error(e);
 					}
-//					}
 				}
 			}
 

@@ -432,7 +432,7 @@ public class QueryUtil {
 			return columns;
 		}
 
-		pattern = Pattern.compile("([a-z]+|[A-Z]+|[0-9]+)(\\[([a-z]+|[A-Z]+)\\])", Pattern.CASE_INSENSITIVE);
+		pattern = Pattern.compile("([a-z0-9_]+|[A-Z0-9_]+|[0-9]+)(\\[([a-z]+|[A-Z]+)\\])", Pattern.CASE_INSENSITIVE);
 
 		matcher = pattern.matcher(select);
 
