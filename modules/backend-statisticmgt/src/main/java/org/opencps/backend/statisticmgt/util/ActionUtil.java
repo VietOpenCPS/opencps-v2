@@ -101,7 +101,6 @@ public class ActionUtil {
 		String govAgencyName = StringPool.BLANK;
 		String domainName = StringPool.BLANK;
 
-		_log.info("CreateReport ----------------");
 		String keyVotting = "votting";
 		if (subType.equals(Constants.LIST)) {
 
@@ -113,14 +112,13 @@ public class ActionUtil {
 				JSONArray data = obj.getJSONArray(Constants.DATA);
 				if (data != null && data.length() > 0) {
 					JSONObject firstRow = data.getJSONObject(0);
-//					JSONObject lastRow = data.getJSONObject(data.length() - 1);
 					totalCount = data.length();
-//					String[] total = new String[11];
 
 					govAgencyName = firstRow.getString("govAgencyName");
 					domainName = firstRow.getString("domainName");
-
-
+					JSONObject objA = getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode,
+							serviceCode, dossierStatus, day, "serviceCode", start, end, type, Constants.GROUP_COUNT);
+					_log.info("objA: " + JSONFactoryUtil.looseSerialize(objA));
 
 					dataMap.put("govAgencyName", govAgencyName.toUpperCase());
 					dataMap.put("domainName", domainName);
