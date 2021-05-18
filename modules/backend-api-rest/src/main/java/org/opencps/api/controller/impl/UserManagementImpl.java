@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import backend.auth.api.exception.CommonExceptionImpl;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -13,6 +14,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -62,6 +64,8 @@ import org.opencps.api.user.model.UserProfileModel;
 import org.opencps.api.user.model.UserResults;
 import org.opencps.api.user.model.UserRolesResults;
 import org.opencps.api.user.model.UserSitesResults;
+import org.opencps.api.usermgt.model.UserInputModel;
+import org.opencps.api.usermgt.model.UserResultModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -76,6 +80,7 @@ import org.opencps.usermgt.constants.UserRegisterTerm;
 import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.scheduler.utils.RegisterLGSPUtils;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 
@@ -1127,6 +1132,44 @@ public class UserManagementImpl implements UserManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response register(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+							 ServiceContext serviceContext, UserInputModel input) {
+
+		
+		_log.debug("====register====");
+		UserResultModel result = new UserResultModel();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			_log.debug("====register===="+JSONFactoryUtil.looseSerialize(input));
+
+
+			String fullName = HtmlUtil.escape(input.getFullName());
+			String screenName = HtmlUtil.escape(input.getScreenName());
+			String password = HtmlUtil.escape(input.getPassword());
+			String email = HtmlUtil.escape(input.getEmail());
+
+			if(Validator.isNull(password)){
+				password = "Mot80thd";
+			}
+
+			serviceContext.setScopeGroupId(groupId);
+
+			User newUser = ApplicantLocalServiceUtil.addUser(fullName,screenName,email,password,serviceContext);
+
+			result = UserUtils.mappingToUserModel(newUser);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity( JSONFactoryUtil.looseSerialize(result)).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			return CommonExceptionImpl.processException(e);
+		}
+
 	}
 
 }

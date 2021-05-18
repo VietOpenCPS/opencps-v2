@@ -234,7 +234,10 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		String removed, String eForm, Long modifiedDate) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		_log.debug("In dossier file create");
+		_log.debug("---addDossierFileByDossierId---");
+		_log.debug("====dossierTemplateNo:"+dossierTemplateNo+"|dossierPartNo:"+dossierPartNo+"|fileTemplateNo:"+fileTemplateNo);
+		_log.debug("====displayName:"+displayName+"|fileType:"+fileType+"|isSync:"+isSync);
+		_log.debug("====removed:"+removed+"|id:"+id+"|referenceUid:"+referenceUid);
 		try {
 //			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
 //			

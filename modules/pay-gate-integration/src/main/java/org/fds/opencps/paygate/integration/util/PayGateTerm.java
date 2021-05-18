@@ -211,12 +211,12 @@ public class PayGateTerm {
 			String accessKey   = paygovConfig.getString("accessKey");
 			String partnerCode = paygovConfig.getString("partnerCode");
 			String stringBeforeHash = secretKey + accessKey + partnerCode + orderId + requestCode + amount;
-			System.out.println("String before hash: " + stringBeforeHash);
+			_log.debug("String before hash: " + stringBeforeHash);
 			MessageDigest digest = MessageDigest.getInstance("SHA-256");
 			digest.update(stringBeforeHash.getBytes(StandardCharsets.UTF_8));
 			byte[] digest1 = digest.digest();
 			String hex = String.format("%064x", new BigInteger(1, digest1));
-			System.out.println("String after hash: " + hex);
+			_log.debug("String after hash: " + hex);
 			return hex;
 		} catch (Exception e) {
 			throw new Exception("Error when gen checksum for orderId " + orderId + ": " + e.getMessage());
@@ -225,7 +225,9 @@ public class PayGateTerm {
 
 	public enum ListPaygovUnit {
 		DONGTHAP("PAYGOV-DONGTHAP"),
-		HAUGIANG("PAYGOV-HAUGIANG");
+		HAUGIANG("PAYGOV-HAUGIANG"),
+		BGTVT("PAYGOV-BOGTVT");
+
 
 		private final String value;
 

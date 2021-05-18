@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupGroupRoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -1166,9 +1167,9 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			long userId = object.getMappingUserId();
 			if (userId > 0) {
 				try {
-					userPersistence.remove(userId);
+					userLocalService.deleteUser(userId);
 				}
-				catch (NoSuchUserException e) {
+				catch (PortalException e) {
 					_log.error(e);
 				}
 			}

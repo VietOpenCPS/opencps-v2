@@ -46,16 +46,16 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = DossierSyncStatisticScheduler.class)
 public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	protected Log _log = LogFactoryUtil.getLog(DossierSyncStatisticScheduler.class);
-	
+
 	public static final int GROUP_TYPE_SITE = 1;
 	private volatile boolean isRunningStatisticSync = false;
 	// Time engine dossier
 	private static int TIME_STATISTIC_CALCULATOR = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.calculator"))
 			? Integer.valueOf(PropsUtil.get("org.opencps.statistic.calculator")) : 1440;
-	
+
 	private boolean enableJob = Validator.isNotNull(PropsUtil.get("opencps.sync.dossierstatistic.enable"))
 			? GetterUtil.getBoolean(PropsUtil.get("opencps.sync.dossierstatistic.enable")) : true;
-	
+
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		_log.info("Cau hinh sync dossierstatistic running: " + isRunningStatisticSync + ", enable: " + enableJob);
@@ -70,7 +70,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		try {
 			_log.info("START TRACE LOG CALCULATOR TIME: " + nowLog);
 			_log.info("START CALCULATOR TIME: " + (System.currentTimeMillis() - startTime) + " ms");
-			
+
 			List<ServerConfig> configList = ServerConfigLocalServiceUtil.getByServerAndProtocol("SERVER_STATISTIC_DVC", DossierStatisticConstants.STATISTIC_PROTOCOL);
 			ServerConfig config = null;
 			if (configList != null && configList.size() > 0) {
@@ -181,7 +181,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			List<JSONObject> lstDossierDataObjs = statisticEngineUpdate.convertStatisticDataList(mapStatistic);
 //			//
 			engineUpdateAction.updateStatistic(lstDossierDataObjs);
-			
+
 			// Update reporting from 1 to 2
 //			List<OpencpsDossierStatistic> opencpsStatisticList = OpencpsDossierStatisticLocalServiceUtil.getListByReporting(1);
 //			if (opencpsStatisticList != null && opencpsStatisticList.size() > 0) {
@@ -201,8 +201,8 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	}
 
 	private DossierStatisticData processCalStatistic(long groupId, int month, int year, String govAgencyCode, String domainCode,
-			String groupGovAgencyCode, String system, int reporting,
-			List<OpencpsDossierStatistic> dossierStatisticList) {
+													 String groupGovAgencyCode, String system, int reporting,
+													 List<OpencpsDossierStatistic> dossierStatisticList) {
 		DossierStatisticData dossierStatistic = null;
 		int totalCount = 0;
 		int deniedCount = 0;
@@ -243,7 +243,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			dossierStatistic = new DossierStatisticData();
 			for (OpencpsDossierStatistic opencpsDossierStatistic : dossierStatisticList) {
 				//
-				companyId = opencpsDossierStatistic.getCompanyId() > 0 ? opencpsDossierStatistic.getCompanyId() : 0; 
+				companyId = opencpsDossierStatistic.getCompanyId() > 0 ? opencpsDossierStatistic.getCompanyId() : 0;
 				//
 				totalCount += opencpsDossierStatistic.getTotalCount();
 				deniedCount += opencpsDossierStatistic.getDeniedCount();
@@ -337,7 +337,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	/**
 	 * activate: Called whenever the properties for the component change (ala Config
 	 * Admin) or OSGi is activating the component.
-	 * 
+	 *
 	 * @param properties The properties map from Config Admin.
 	 * @throws SchedulerException in case of error.
 	 */
@@ -380,7 +380,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	/**
 	 * getStorageType: Utility method to get the storage type from the scheduler entry wrapper.
 	 * @return StorageType The storage type to use.
-	*/
+	 */
 	protected StorageType getStorageType() {
 		if (_schedulerEntryImpl instanceof StorageTypeAware) {
 			return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
@@ -391,18 +391,18 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 
 	/**
 	 * setModuleServiceLifecycle: So this requires some explanation...
-	 * 
+	 *
 	 * OSGi will start a component once all of it's dependencies are satisfied.
 	 * However, there are times where you want to hold off until the portal is
 	 * completely ready to go.
-	 * 
+	 *
 	 * This reference declaration is waiting for the ModuleServiceLifecycle's
 	 * PORTAL_INITIALIZED component which will not be available until, surprise
 	 * surprise, the portal has finished initializing.
-	 * 
+	 *
 	 * With this reference, this component activation waits until portal
 	 * initialization has completed.
-	 * 
+	 *
 	 * @param moduleServiceLifecycle
 	 */
 	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED, unbind = "-")

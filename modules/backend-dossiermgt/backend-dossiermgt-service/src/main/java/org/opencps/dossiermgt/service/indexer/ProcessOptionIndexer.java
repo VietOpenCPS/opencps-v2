@@ -8,6 +8,7 @@ import javax.portlet.PortletResponse;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -76,6 +77,8 @@ public class ProcessOptionIndexer extends BaseIndexer<ProcessOption> {
 		document.addTextSortable(ProcessOptionTerm.INSTRUCTION_NOTE, object.getInstructionNote());
 		document.addTextSortable(ProcessOptionTerm.SUBMISSION_NOTE, object.getSubmissionNote());
 		document.addTextSortable(ProcessOptionTerm.OPTION_NAME, object.getOptionName());
+		document.addKeywordSortable(ProcessOptionTerm.FOR_CITIZEN, Boolean.toString(object.getForCitizen()));
+		document.addKeywordSortable(ProcessOptionTerm.FOR_BUSINESS, Boolean.toString(object.getForBusiness()));
 
 		document.addKeywordSortable(ProcessOptionTerm.FOR_CITIZEN, Boolean.toString(object.getForCitizen()));
 		document.addKeywordSortable(ProcessOptionTerm.FOR_BUSINESS, Boolean.toString(object.getForBusiness()));

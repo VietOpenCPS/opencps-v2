@@ -148,6 +148,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					Message message = new Message();
 					message.put(DossierDocumentTerm.FORM_REPORT, documentScript);
 					message.put(DossierDocumentTerm.FORM_DATA, jsonData.toJSONString());
+
 					if(Validator.isNotNull(reportType)){
 						message.put(ConstantUtils.API_JSON_REPORT_TYPE, reportType);
 					}
@@ -157,6 +158,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						Date dateStart1 = new Date();
 						String previewResponse = (String) MessageBusUtil
 								.sendSynchronousMessage(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW, message, 10000);
+
 
 						File file = new File(previewResponse);
 

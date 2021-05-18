@@ -78,9 +78,9 @@ public class JWTAuthHeaderAuthVerifier extends BasicAuthHeaderAutoLogin implemen
 					username = body.getString("username");
 				}
 
-				_log.info("===> JWTAuthHeaderAuthVerifier body:" + body);
+				_log.debug("===> JWTAuthHeaderAuthVerifier body:" + body);
 
-				_log.info("===> JWTAuthHeaderAuthVerifier :" + email + "|" + username);
+				_log.debug("===> JWTAuthHeaderAuthVerifier :" + email + "|" + username);
 
 				if (Validator.isNull(email) && Validator.isNull(username)) {
 					return null;
@@ -104,7 +104,7 @@ public class JWTAuthHeaderAuthVerifier extends BasicAuthHeaderAutoLogin implemen
 
 					return credentials;
 				} else {
-					_log.info("===> JWTAuthHeaderAuthVerifier user is not active");
+					_log.debug("===> JWTAuthHeaderAuthVerifier user is not active");
 				}
 			}
 
