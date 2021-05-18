@@ -18,6 +18,7 @@ dependencies {
 	compileOnly project(":modules:backend-communication:backend-communication-api")
 	
 	compileOnly group: 'com.liferay', name: 'com.liferay.portal.upgrade.api', version: '2.0.0'
+	compileOnly project(":modules:backend-auth")
 }
 
 buildService {
