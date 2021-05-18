@@ -143,10 +143,10 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			for (Group group : groups) {
 				if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
 					sites.add(group);
-				}
+				}				
 			}
 			_log.info("SITES : " + JSONFactoryUtil.looseSerialize(sites));
-
+	
 			Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 
 			for (Group site : sites) {
