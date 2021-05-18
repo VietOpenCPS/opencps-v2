@@ -69,7 +69,7 @@ public class ExcelReportUtil {
 			int[] indexs = new int[] { 0, 0, 0, 0 };
 			HashMap<Integer, String> dataListMap = new HashMap<Integer, String>();
 			if (comment != null && Validator.isNotNull(comment.getString())) {
-				_log.info("comment: " + JSONFactoryUtil.looseSerialize(comment.getString().getString()));
+				_log.debug("comment: " + JSONFactoryUtil.looseSerialize(comment.getString().getString()));
 				indexs = ExcelParseUtil.getCellIndexs(comment.getString().getString());
 				dataListMap = ExcelParseUtil.getDataListMap(comment.getString().getString());
 
@@ -83,7 +83,6 @@ public class ExcelReportUtil {
 			int lc = indexs[1];
 			int fr = indexs[2];
 			int lr = indexs[3];
-			_log.info("lr: " + lr);
 
 			if (lc < 0 || lc < fc || lr < 0 || lr < fr) {
 				throw new OutofRangeException("Template range error: " + comment.getString().getString());
@@ -135,7 +134,6 @@ public class ExcelReportUtil {
 										String value = row.getCell(c).getStringCellValue();
 										value = ExcelParseUtil.parse(value, map, dataListCount);
 										newCell.setCellValue(value);
-										_log.info("value: " + value);
 									}
 								} else {
 									// current row
