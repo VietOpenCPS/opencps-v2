@@ -9043,6 +9043,9 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			} else if (Validator.isNull(dossier)) {
 				DeliverableType dlt = DeliverableTypeLocalServiceUtil.getByCode(groupId, input.getTypeCode());
+				if(Validator.isNull(dlt)) {
+					throw new Exception("No deliverable was found");
+				}
 				JSONObject mappingDataObj = JSONFactoryUtil
 						.createJSONObject(dlt.getMappingData());
 				_log.debug("deliverableType: " + JSONFactoryUtil.looseSerialize(dlt.getMappingData()));

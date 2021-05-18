@@ -83,17 +83,6 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 				sql = StringUtil.replace(sql, CONDITION_ANSWER, StringPool.BLANK);
 			}
 
-			_log.debug("groupId: "+groupId);
-			_log.debug("domainCode: "+domainCode);
-			_log.debug("govAgencyCode: "+govAgencyCode);
-			_log.debug("publish: "+publish);
-			_log.debug("questionType: "+questionType);
-			_log.debug("subDomainCode: "+subDomainCode);
-			_log.debug("limit: "+limit);
-			_log.debug("start: "+start);
-
-			_log.debug("====sql search: "+sql);
-
 			SQLQuery q = session.createSQLQuery(sql);
 
 			q.setCacheable(true);

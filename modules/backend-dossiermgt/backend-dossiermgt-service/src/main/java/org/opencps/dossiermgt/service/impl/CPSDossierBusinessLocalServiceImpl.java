@@ -384,20 +384,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								dossier.getApplicantIdNo(), Validator.isNotNull(serviceCode) ? serviceCode : dossier.getServiceCode(), govSync,
 								dossierTemplate.getTemplateNo(), dossier.getDossierId(), serverSync);
 					}else {
-						_log.debug("Not Server Sync");
-						_log.debug("groupId: " + groupId);
-						_log.debug("applicantIdNo: " + dossier.getApplicantIdNo());
-						_log.debug("serviceCode: " + serviceCode);
-						_log.debug(" dossier.getServiceCode(): " +  dossier.getServiceCode());
-						_log.debug("govAgencyCode: " + govAgencyCode);
-						_log.debug("getTemplateNo: " + dossierTemplate.getTemplateNo());
-						_log.debug("getDossierId: " + dossier.getDossierId());
-
 						// Luu y: Sau khi hs goc tao duoc hs trung gian => doActionMapping => 1200 => check hs cos originDossierId = Id hs trung gian
 						// => case nay dang sai
 						//=> Sua neu action la 1200 thi bo dk tim originDossierId hoac bo han dk tim originDossierId
 						oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_ODID(groupId,
-								dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode,
+								dossier.getApplicantIdNo(), Validator.isNotNull(serviceCode) ? serviceCode : dossier.getServiceCode(), govAgencyCode,
 								dossierTemplate.getTemplateNo(), dossier.getDossierId());
 					}
 					Dossier hsltDossier = null;
@@ -760,8 +751,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						|| actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM) {
 
 				payloadObject.put(DossierTerm.CONSTANT_DOSSIER_FILES, dossierFilesArr);
-
-				_log.debug("###proAction:"+JSONFactoryUtil.looseSerialize(proAction));
 
 				if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
 					List<DossierFile> lsDossierFile = lstFiles;
@@ -8951,7 +8940,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return paymentFile;
 	}
 
-	private Dossier getDossier(String id, long groupId){
+	private Dossier getDossier(String id, long groupId) throws PortalException{
 		long dossierId = GetterUtil.getLong(id);
 
 		Dossier dossier = null;
@@ -9033,7 +9022,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		String lockState = input.getLockState();
 		String dossierNo = input.getDossierNo();
 		String dossierCounter = input.getDossierCounter();
-		int systemId = GetterUtil.getInteger(input.getSystemId());
+		int systemId = 0;
+		try {
+			systemId = GetterUtil.getInteger(input.getSystemId());
+		} catch (Exception e) {
+
+		}
 
 		Dossier oldDossier = null;
 		if (Validator.isNotNull(input.getReferenceUid())) {

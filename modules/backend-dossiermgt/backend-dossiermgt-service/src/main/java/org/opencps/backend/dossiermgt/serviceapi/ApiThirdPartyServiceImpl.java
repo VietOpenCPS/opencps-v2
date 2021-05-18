@@ -296,10 +296,8 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             ResponseEntity<String> response = restTemplate.postForEntity( url, entity , String.class);
 
             _log.info("Response api: " + response);
-            _log.info("Response api: " + response.getBody());
 
             JSONObject jsonObject = JSONFactoryUtil.createJSONObject(response.getBody());
-            _log.info("Response api: " + jsonObject);
             return jsonObject;
         } catch (Exception e) {
             _log.error(e);

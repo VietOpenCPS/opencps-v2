@@ -189,38 +189,38 @@ public class ServiceConfigUtils {
 					config = mappingServiceConfig(config, doc);
 					configs.add(config);
 				}
-			} else if(Validator.isNotNull(applicant)){
+			} else if (Validator.isNotNull(applicant)) {
 				boolean citizen = false;
 				boolean business = false;
 				boolean active = false;
-//				if () {
-					if ("citizen".equals(applicant.getApplicantIdType())) {
-						citizen = true;
-					} else if ("business".equals(applicant.getApplicantIdType())) {
-						business = true;
-					}
-					for (Document doc : documents) {
-						ServiceConfig config = new ServiceConfig();
-						long serviceConfigId = Long.parseLong(doc.get(ServiceConfigTerm.SERVICECONFIG_ID));
-						List<org.opencps.dossiermgt.model.ProcessOption> lstOption = ProcessOptionLocalServiceUtil.getByServiceConfigId(serviceConfigId);
-						if (lstOption != null && !lstOption.isEmpty()) {
-							for (org.opencps.dossiermgt.model.ProcessOption option : lstOption) {
-								if (citizen && option.isForCitizen()) {
-									active = true;
-									break;
-								} else if (business && option.isForBusiness()) {
-									active = true;
-									break;
-								}
-							}
-							if (active) {
-								config = mappingServiceConfig(config, doc);
 
-								configs.add(config);
+				if ("citizen".equals(applicant.getApplicantIdType())) {
+					citizen = true;
+				} else if ("business".equals(applicant.getApplicantIdType())) {
+					business = true;
+				}
+				for (Document doc : documents) {
+					ServiceConfig config = new ServiceConfig();
+					long serviceConfigId = Long.parseLong(doc.get(ServiceConfigTerm.SERVICECONFIG_ID));
+					List<org.opencps.dossiermgt.model.ProcessOption> lstOption = ProcessOptionLocalServiceUtil.getByServiceConfigId(serviceConfigId);
+					if (lstOption != null && !lstOption.isEmpty()) {
+						for (org.opencps.dossiermgt.model.ProcessOption option : lstOption) {
+							if (citizen && option.isForCitizen()) {
+								active = true;
+								break;
+							} else if (business && option.isForBusiness()) {
+								active = true;
+								break;
 							}
 						}
+						if (active) {
+							config = mappingServiceConfig(config, doc);
+
+							configs.add(config);
+						}
 					}
-				}else {
+				}
+			} else {
 				for (Document doc : documents) {
 					ServiceConfig config = new ServiceConfig();
 

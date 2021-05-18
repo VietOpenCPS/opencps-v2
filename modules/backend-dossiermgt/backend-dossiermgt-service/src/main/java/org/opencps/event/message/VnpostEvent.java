@@ -124,9 +124,10 @@ public class VnpostEvent implements MessageListener {
 			} else {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, refId);
 			}
-//			if (dossier.getVnpostalStatus() != 1) {
-//				return;
-//			}
+
+			if (dossier.getOriginality() != 2 & dossier.getOriginality() != 3) {
+				return;
+			}
 
 			InvokeREST callRest = new InvokeREST();
 			String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;

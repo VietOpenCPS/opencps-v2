@@ -405,19 +405,7 @@ public class DossierNumberGenerator {
 			dossierNumber = seriNumberPattern;
 		}
 
-
-		boolean isDuplicateDossierNo = DossierLocalServiceUtil.isDuplicateDossierNo(groupId,dossierNumber);
-		_log.debug("++++dossierNumber:"+dossierNumber+"| isDuplicateDossierNo:"+isDuplicateDossierNo+"|dossierId: "+dossierId);
-		if(Validator.isNull(dossierNumber)){
-			return dossierNumber;
-		}
-		if(isDuplicateDossierNo){
-			return generateDossierNumber(groupId,  companyId,  dossierId,  processOtionId,
-					seriNumberPattern,  params,  searchContext);
-		}else {
-
-			return dossierNumber;
-		}
+		return dossierNumber;
 	}
 
 	private static final String CODE = "{code}";

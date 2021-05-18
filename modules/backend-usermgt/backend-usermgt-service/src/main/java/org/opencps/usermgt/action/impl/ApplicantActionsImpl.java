@@ -69,7 +69,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public Applicant register(ServiceContext context, long groupId, String applicantName, String applicantIdType,
-			String applicantIdNo, String applicantIdDate, String contactEmail, String password)
+							  String applicantIdNo, String applicantIdDate, String contactEmail, String password)
 			throws PortalException, SystemException {
 
 		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, 0, applicantName,
@@ -81,9 +81,9 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	}
 
 	public Applicant register(ServiceContext context, long groupId,  String applicantName, String applicantIdType,
-			String applicantIdNo, String applicantIdDate, String contactEmail, String address, String cityCode,
-			String cityName, String districtCode, String districtName, String wardCode, String wardName,
-			String contactName, String contactTelNo, String profile, String password) throws PortalException, SystemException {
+							  String applicantIdNo, String applicantIdDate, String contactEmail, String address, String cityCode,
+							  String cityName, String districtCode, String districtName, String wardCode, String wardName,
+							  String contactName, String contactTelNo, String profile, String password) throws PortalException, SystemException {
 
 		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, 0l, applicantName,
 				applicantIdType, applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode,
@@ -100,7 +100,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public JSONObject getApplicants(ServiceContext context, long userId, long companyId, long groupId,
-			LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end, ServiceContext serviceContext) {
+									LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end, ServiceContext serviceContext) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		Hits hits = null;
@@ -134,11 +134,11 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	public String getApplicantByUserId(ServiceContext serviceContext) throws PortalException {
 		return serviceContext.getUserId() > 0 ? JSONFactoryUtil.looseSerialize(ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId())) : StringPool.BLANK;
 	}
-	
+
 	@Override
 	public Applicant updateApplicant(ServiceContext context,long groupId, long applicantId, String applicantName, String address, String cityCode,
-			String cityName, String districtCode, String districtName, String wardCode, String wardName,
-			String contactName, String contactTelNo, String contactEmail) throws PortalException {
+									 String cityName, String districtCode, String districtName, String wardCode, String wardName,
+									 String contactName, String contactTelNo, String contactEmail) throws PortalException {
 
 		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId,  applicantId, applicantName,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, address, cityCode, cityName, districtCode,
@@ -150,8 +150,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public Applicant updateApplicant(ServiceContext context,long groupId, long applicantId, String applicantName, String address, String cityCode,
-			String cityName, String districtCode, String districtName, String wardCode, String wardName,
-			String contactName, String contactTelNo, String contactEmail, String profile) throws PortalException {
+									 String cityName, String districtCode, String districtName, String wardCode, String wardName,
+									 String contactName, String contactTelNo, String contactEmail, String profile) throws PortalException {
 
 		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId,  applicantId, applicantName,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, address, cityCode, cityName, districtCode,
@@ -160,7 +160,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 		return applicant;
 	}
-	
+
 	@Override
 	public Applicant updateProfile(ServiceContext context, long groupId, long applicantId, String profile) throws PortalException {
 		// TODO Auto-generated method stub
@@ -213,7 +213,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		}
 
 	}
-	
+
 	@Override
 	public Applicant getApplicantByMappingUserId(long userId) throws PortalException {
 		return userId > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(userId) : null;
@@ -223,8 +223,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public void updateApplicantDB(long userId, long groupId, String applicantIdNo, String appliantName,
-			String applicantIdType, Date applicantIdDate, String contactEmail, String contactTelNo,
-			ServiceContext serviceContext) throws PortalException {
+								  String applicantIdType, Date applicantIdDate, String contactEmail, String contactTelNo,
+								  ServiceContext serviceContext) throws PortalException {
 
 		ApplicantLocalServiceUtil.updateApplicationDB(groupId, userId, 0l, applicantIdNo, appliantName, applicantIdType,
 				applicantIdDate, contactEmail, contactTelNo, serviceContext);
@@ -233,9 +233,9 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public Applicant registerApproved(ServiceContext context, long groupId, String applicantName, String applicantIdType,
-			String applicantIdNo, String applicantIdDate, String contactEmail, String address, String cityCode,
-			String cityName, String districtCode, String districtName, String wardCode, String wardName,
-			String contactName, String contactTelNo, String profile, String secrectKey) throws PortalException {
+									  String applicantIdNo, String applicantIdDate, String contactEmail, String address, String cityCode,
+									  String cityName, String districtCode, String districtName, String wardCode, String wardName,
+									  String contactName, String contactTelNo, String profile, String secrectKey) throws PortalException {
 
 		return ApplicantLocalServiceUtil.updateApplicantApproved(groupId, 20139, 0l, applicantIdNo, applicantName,
 				applicantIdType, new Date(), contactEmail, contactTelNo, secrectKey, context);
@@ -244,7 +244,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public JSONObject createApplicantAccount(long userId, long companyId, long groupId, long id, String screenName,
-			String email, boolean exist, ServiceContext context) throws PortalException {
+											 String email, boolean exist, ServiceContext context) throws PortalException {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
 		//validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
@@ -259,16 +259,16 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				NotificationQueue queue = null;
 				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
 				queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-				
+
 				Date now = new Date();
 				Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-				
+
 				queue.setCreateDate(now);
 				queue.setModifiedDate(now);
 				queue.setGroupId(applicant.getGroupId());
 				queue.setCompanyId(applicant.getCompanyId());
-				
+
 				queue.setNotificationType(NotificationType.APPLICANT_02);
 				queue.setClassName(Applicant.class.getName());
 				queue.setClassPK(String.valueOf(applicant.getPrimaryKey()));
@@ -276,7 +276,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				queue.setToUserId(applicant.getUserId());
 				queue.setToEmail(applicant.getContactEmail());
 				queue.setToTelNo(applicant.getContactTelNo());
-				
+
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 				try {
 					payload.put(ApplicantListenerMessageKeys.APPLICANT,
@@ -331,7 +331,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 						ConfigConstants.HEADER_BUSSINESS);
 				String firstName = (applicantTypeCitizen.equals(applicant.getApplicantIdType()) ? headerUser
 						: (applicantTypeBussiness.equals(applicant.getApplicantIdType()) ? headerCompany
-								: headerBussiness));
+						: headerBussiness));
 				String lastName = applicant.getApplicantName();
 
 				UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
@@ -366,7 +366,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 						StringPool.BLANK, LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(),
 						spn.getLastName(), 0, 0, true, month, dayOfMonth, year,
 						ConfigProps.get(ConfigConstants.APPLICANT_JOB_TITLE), groupIds, organizationIds, roleIds,
-							userGroupIds, sendEmail, context);
+						userGroupIds, sendEmail, context);
 				//_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
 				//mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
 				UserLocalServiceUtil.updateStatus(mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED, context);
@@ -376,28 +376,28 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				applicant.setMappingUserId(mappingUser.getUserId());
 				applicant.setActivationCode(StringPool.BLANK);
 				applicant.setTmpPass(password);
-				
+
 				ApplicantLocalServiceUtil.updateApplicant(applicant);
 				//Send mail
 				//_log.info("Applicant Log trigger!");
 				if (applicant.getMappingUserId() > 0) {
 					NotificationQueue queue = null;
-					
+
 					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
-					
+
 					queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-					
+
 					Date now = new Date();
-					
+
 					Calendar cal = Calendar.getInstance();
-					
+
 					cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-					
+
 					queue.setCreateDate(now);
 					queue.setModifiedDate(now);
 					queue.setGroupId(applicant.getGroupId());
 					queue.setCompanyId(applicant.getCompanyId());
-					
+
 					queue.setNotificationType(NotificationType.APPLICANT_02);
 					queue.setClassName(Applicant.class.getName());
 					queue.setClassPK(String.valueOf(applicant.getPrimaryKey()));
@@ -405,21 +405,21 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					queue.setToUserId(applicant.getUserId());
 					queue.setToEmail(applicant.getContactEmail());
 					queue.setToTelNo(applicant.getContactTelNo());
-					
+
 					//JSONObject object = JSONFactoryUtil.createJSONObject();
-					
-		//			String guestBaseUrl = PropValues.PORTAL_DOMAIN + "/web/cong-dich-vu-cong";
+
+					//			String guestBaseUrl = PropValues.PORTAL_DOMAIN + "/web/cong-dich-vu-cong";
 					//String guestBaseUrl = "http://103.21.148.29/web/bo-van-hoa";
-					
+
 					//object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, applicant.getActivationCode());
 					//object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, guestBaseUrl+"/register#/xac-thuc-tai-khoan?active_user_id="+ applicant.getApplicantId());
 					//object.put(ApplicantListenerMessageKeys.USER_NAME, applicant.getApplicantName());
 					//object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
 					//object.put("toName", applicant.getApplicantName());
 					//object.put("toAddress", applicant.getContactEmail());
-		//			
-		//			String payload1 = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, applicant.getGroupId()).toString();
-		//			_log.info("payloadTest1: "+payload1);
+					//
+					//			String payload1 = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, applicant.getGroupId()).toString();
+					//			_log.info("payloadTest1: "+payload1);
 					JSONObject payload = JSONFactoryUtil.createJSONObject();
 					try {
 						// _log.info("START PAYLOAD: ");
@@ -432,7 +432,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					queue.setPayload(payload.toJSONString());
 					queue.setExpireDate(cal.getTime());
 					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
-					
+
 					//binhth add user applicant to siteGroup
 					GroupLocalServiceUtil.addUserGroup(applicant.getMappingUserId(), applicant.getGroupId());
 					//Add applicant to search
@@ -450,7 +450,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					String contactName = applicant.getContactName();
 					String contactTelNo = applicant.getContactTelNo();
 					String contactEmail = applicant.getContactEmail();
-					
+
 					ApplicantLocalServiceUtil.updateApplicant(0l, applicant.getMappingUserId(), companyId, applicantName, applicantIdType, applicantIdNo,
 							applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
 							contactName, contactTelNo, contactEmail);
@@ -463,10 +463,10 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public void importApplicantDB(long userId, long groupId, String applicantIdNo, String applicantName,
-			String applicantIdType, String applicantIdDate, String contactEmail, String contactTelNo, String address,
-			String cityCode, String districtCode, String wardCode, String contactName,
-			String profile, boolean lgsp, ServiceContext serviceContext) throws PortalException {
-		
+								  String applicantIdType, String applicantIdDate, String contactEmail, String contactTelNo, String address,
+								  String cityCode, String districtCode, String wardCode, String contactName,
+								  String profile, boolean lgsp, ServiceContext serviceContext) throws PortalException {
+
 		// Check exits applicantIdNo
 		if (lgsp && (Validator.isNotNull(applicantIdNo) || Validator.isNotNull(contactEmail))) {
 			int flagUser = 0;
@@ -529,7 +529,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					} catch (ParseException e) {
 					}
 				}
-				
+
 				//Process update applicant and user
 				if (flagUser == 0) {
 					//Add applicant and user
@@ -554,7 +554,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					ApplicantLocalServiceUtil.updateApplicant(0l, mappingUserId, serviceContext.getCompanyId(),
 							applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
 							districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail,
-							 profile);
+							profile);
 				} else if (flagUser == 4) {
 					//Add applicant search
 					ApplicantLocalServiceUtil.updateApplicant(0l, userId, serviceContext.getCompanyId(),
@@ -565,14 +565,11 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		} // Import project not using LGSP
 		else {
 			int flagUser = 0;
-			
-			
 			if (Validator.isNotNull(applicantIdNo)) {
 				List<Applicant> appList = ApplicantLocalServiceUtil.findByAppIds(applicantIdNo);
 				if (appList != null && appList.size() > 0) {
 					for (Applicant applicant : appList) {
 						flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
-						
 						if (flagUser == 2) break;
 					}
 				}
@@ -583,7 +580,6 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				if (appList != null && appList.size() > 0) {
 					for (Applicant applicant : appList) {
 						flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
-						
 						if (flagUser == 2) break;
 					}
 				}
@@ -598,25 +594,24 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					mappingUserId = appUser.getUserId();
 				}
 			}
-			
-			DictCollection dc = DictCollectionLocalServiceUtil
-					.fetchByF_dictCollectionCode(ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION), groupId);
-			String cityName = getDictItemName(groupId, dc, cityCode);
-			String districtName = getDictItemName(groupId, dc, districtCode);
-			String wardName = getDictItemName(groupId, dc, wardCode);
-			//
-			Date appDate = null;
-			if (Validator.isNotNull(applicantIdDate)) {
-				SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
-				try {
-					appDate = sdf.parse(applicantIdDate);
-				} catch (ParseException e) {
-				}
-			}
 
 			if (flagUser != 2) {
-				
+				DictCollection dc = DictCollectionLocalServiceUtil
+						.fetchByF_dictCollectionCode(ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION), groupId);
+				String cityName = getDictItemName(groupId, dc, cityCode);
+				String districtName = getDictItemName(groupId, dc, districtCode);
+				String wardName = getDictItemName(groupId, dc, wardCode);
+				//
+				Date appDate = null;
+				if (Validator.isNotNull(applicantIdDate)) {
+					SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
+					try {
+						appDate = sdf.parse(applicantIdDate);
+					} catch (ParseException e) {
+					}
+				}
 
+//				System.out.println("flagUser: "+flagUser);
 				//Process update applicant and user
 				if (flagUser == 0) {
 					//Add applicant and user
@@ -644,7 +639,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 						queue.setToUserId(app.getMappingUserId());
 						queue.setToEmail(contactEmail);
 						queue.setToTelNo(StringPool.BLANK);
-						
+
 						JSONObject payload = JSONFactoryUtil.createJSONObject();
 						try {
 							// _log.info("START PAYLOAD: ");
@@ -655,9 +650,9 @@ public class ApplicantActionsImpl implements ApplicantActions {
 						}
 						//_log.info("payloadTest: "+payload.toJSONString());
 						queue.setPayload(payload.toJSONString());
-						
+
 						queue.setExpireDate(cal.getTime());
-						
+
 						NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 					}
 					//Add applicant search
@@ -690,7 +685,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 						queue.setToUserId(app.getMappingUserId());
 						queue.setToEmail(contactEmail);
 						queue.setToTelNo(StringPool.BLANK);
-						
+
 						JSONObject payload = JSONFactoryUtil.createJSONObject();
 						try {
 							// _log.info("START PAYLOAD: ");
@@ -701,9 +696,9 @@ public class ApplicantActionsImpl implements ApplicantActions {
 						}
 						//_log.info("payloadTest: "+payload.toJSONString());
 						queue.setPayload(payload.toJSONString());
-						
+
 						queue.setExpireDate(cal.getTime());
-						
+
 						NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 					}
 				} else if (flagUser == 3) {
@@ -716,51 +711,6 @@ public class ApplicantActionsImpl implements ApplicantActions {
 							applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
 							districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
 				}
-			}else if(flagUser == 2) {
-				
-				// Update thong tin applicant
-				
-				Applicant app = null;
-				
-				List<Applicant> appList = ApplicantLocalServiceUtil.findByAppIds(applicantIdNo);
-				if (appList != null && appList.size() > 0) {
-					for (Applicant applicant : appList) {
-						flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
-						if (flagUser == 2) {
-							app = applicant;
-							break;	
-						}
-							
-							
-					}
-				}
-				
-				 if(Validator.isNull(app)) {
-					 
-					 appList = ApplicantLocalServiceUtil.findByContactEmailList(contactEmail);
-					if (appList != null && appList.size() > 0) {
-						for (Applicant applicant : appList) {
-							flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
-							if (flagUser == 2){
-								
-								app = applicant;
-								break;
-								
-								}
-						}
-					}
-				 }
-				 
-				
-				 if(Validator.isNotNull(app)) {
-
-					
-					ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, app.getApplicantId(), applicantIdNo, applicantName,
-							applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
-							districtCode, districtName, wardCode, wardName, contactName, profile, serviceContext);
-					
-				 }
-				
 			}
 		}
 	}
@@ -780,7 +730,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public String getSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, Integer width, Integer height) {
+								   User user, ServiceContext serviceContext, Integer width, Integer height) {
 		String data = StringPool.BLANK;
 
 		try {
@@ -812,20 +762,20 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			g.setColor(colors[ovalColorIndex]);
 
 			switch (noiseIndex) {
-			case 1:
-				for (int i = 0; i < size; i += 5) {
-					g.drawOval(i, i, size - i, size - i);
-				}
+				case 1:
+					for (int i = 0; i < size; i += 5) {
+						g.drawOval(i, i, size - i, size - i);
+					}
 
-				break;
-			case 2:
-				for (int i = 0; i < size; i += 10) {
-					g.drawRect(i, i, size - i, size - i);
-				}
+					break;
+				case 2:
+					for (int i = 0; i < size; i += 10) {
+						g.drawRect(i, i, size - i, size - i);
+					}
 
-				break;
-			default:
-				break;
+					break;
+				default:
+					break;
 			}
 
 			g.dispose();
@@ -857,28 +807,28 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public boolean validateSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String value) {
+										 User user, ServiceContext serviceContext, String value) {
 		String captcha;// = StringPool.BLANK;
 		HttpSession session = request.getSession();
-	
+
 		/*Enumeration<String> enumeration = session.getAttributeNames();
-		
+
 		List<String> values = Collections.list(enumeration);
-		
+
 		for (String tmp : values) {
 			System.out.println("========================== > session.getAttributeNames() " + tmp);
 		}*/
 
 		if (Validator.isNull(value)) {
-			
+
 			session.removeAttribute("_SIMPLE_CAPTCHA");
 			return false;
 		}
 
 		if (session.getAttribute("_SIMPLE_CAPTCHA") != null) {
-			
+
 			captcha = (String) session.getAttribute("_SIMPLE_CAPTCHA");
-			
+
 			if (value.equals(captcha)) {
 				session.removeAttribute("_SIMPLE_CAPTCHA");
 				return true;
@@ -886,7 +836,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			session.removeAttribute("_SIMPLE_CAPTCHA");
 			return false;
 		} else {
-			
+
 			session.removeAttribute("_SIMPLE_CAPTCHA");
 			return false;
 		}
@@ -904,18 +854,18 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public JSONObject updateAccountEmail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String oldEmail, String newEmail) {
+										 User user, ServiceContext serviceContext, String oldEmail, String newEmail) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		User updateUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), newEmail);
-		
+
 		if(Validator.isNull(newEmail)) {
 			result.put("message", ApplicantTerm.EMAIL_EMPTY);
 			result.put("user", JSONFactoryUtil.createJSONObject());
 			return result;
 		}
-		
+
 		if(!Validator.isEmailAddress(newEmail)) {
 			result.put("message", ApplicantTerm.EMAIL_FORMAT_INCORRECT);
 			result.put("user", JSONFactoryUtil.createJSONObject());
@@ -939,9 +889,9 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		updateUser.setEmailAddress(newEmail);
 		updateUser.setScreenName(screenName);
 		updateUser = UserLocalServiceUtil.updateUser(updateUser);
-		
+
 		Applicant applicant = updateUser.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(updateUser.getUserId()) : null;
-		
+
 		if(applicant != null) {
 			List<Applicant> applicants = ApplicantLocalServiceUtil.findByAppIds(applicant.getApplicantIdNo());
 			if(applicants != null) {
@@ -956,9 +906,9 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			applicant.setContactEmail(newEmail);
 			applicant = ApplicantLocalServiceUtil.updateApplicant(applicant);
 		}
-		
+
 		result.put("message", ApplicantTerm.EMAIL_UPDATE_SUCCESS);
-		
+
 		JSONObject userObj = JSONFactoryUtil.createJSONObject();
 		userObj.put("userId", updateUser.getUserId());
 		userObj.put("userName", updateUser.getFullName());

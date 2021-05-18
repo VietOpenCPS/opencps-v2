@@ -535,7 +535,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						//Add userActionId
 						//document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, dossierAction.getUserId());
 						List<DossierAction> listDossierActions = DossierActionLocalServiceUtil.findByG_DID(object.getGroupId(), object.getDossierId());
-						_log.debug("listDossierActions : " + JSONFactoryUtil.looseSerialize(listDossierActions));
 						if (listDossierActions != null && listDossierActions.size() > 0) {
 							Set<String> setUserId = new HashSet<String>();
 							for (DossierAction dossierAction2 : listDossierActions) {
