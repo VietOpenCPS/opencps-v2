@@ -275,6 +275,7 @@ public class QueryUtil {
 			case 21:
 				this.sqlCountTemplate = PropValues.STATISTIC_DOSSIER_VOTING_TOTAL_COUNT;
 				this.sqlGroupTemplate = PropValues.STATISTIC_DOSSIER_VOTING_GROUP_TOTAL_COUNT;
+				this.sqlRowTemplate = PropValues.STATISTIC_DOSSIER_VOTING_ROW_TOTAL_COUNT;
 				this.sqlSearchTemplate = PropValues.STATISTIC_DOSSIER_VOTING_TOTAL_LIST;
 				break;
 
@@ -311,6 +312,15 @@ public class QueryUtil {
 			return StringPool.BLANK;
 		}
 
+		public static String getSQLRowTotalQueryTemplate(int type) {
+			for (QueryType e : values()) {
+				if (e.type == type) {
+					return e.sqlRowTemplate;
+				}
+			}
+			return StringPool.BLANK;
+		}
+
 		public static String getSQLGroupQueryTemplate(int type) {
 			for (QueryType e : values()) {
 				if (e.type == type) {
@@ -325,6 +335,8 @@ public class QueryUtil {
 		String sqlSearchTemplate;
 
 		String sqlGroupTemplate;
+
+		String sqlRowTemplate;
 
 		int type;
 	}
@@ -467,37 +479,6 @@ public class QueryUtil {
 
 			}
 		}
-//		try {
-//			if(sqlTemplate.contains(PropKeys.VOTE1)){
-//				columns.put(PropKeys.VOTE1, Integer.class);
-//			}
-//			if(sqlTemplate.contains(PropKeys.VOTE2)){
-//				columns.put(PropKeys.VOTE2, Integer.class);
-//			}
-//			if(sqlTemplate.contains(PropKeys.VOTE3)){
-//				columns.put(PropKeys.VOTE3, Integer.class);
-//			}
-//			if(sqlTemplate.contains(PropKeys.VOTE4)){
-//				columns.put(PropKeys.VOTE4, Integer.class);
-//			}
-//			if(sqlTemplate.contains(PropKeys.VOTE5)){
-//				columns.put(PropKeys.VOTE5, Integer.class);
-//			}
-//			if(sqlTemplate.contains(PropKeys.VOTE6)){
-//				columns.put(PropKeys.VOTE6, Integer.class);
-//			}
-//			if(sqlTemplate.contains(PropKeys.VOTE7)){
-//				columns.put(PropKeys.VOTE7, Integer.class);
-//			}
-//			if(sqlTemplate.contains(PropKeys.VOTE8)){
-//				columns.put(PropKeys.VOTE8, Integer.class);
-//			}
-//			if(sqlTemplate.contains(PropKeys.VOTE9)){
-//				columns.put(PropKeys.VOTE9, Integer.class);
-//			}
-//		}catch (Exception e) {
-//			e.getMessage();
-//		}
 		return columns;
 	}
 
@@ -527,6 +508,8 @@ public class QueryUtil {
 			sqlQueryTemplate = QueryType.getSQLGroupQueryTemplate(type);
 		} else if (subType.equals(Constants.LIST)) {
 			sqlQueryTemplate = QueryType.getSQLSearchQueryTemplate(type);
+		} else if (subType.equals(Constants.ROW_TOTAL)) {
+			sqlQueryTemplate = QueryType.getSQLRowTotalQueryTemplate(type);
 		}
 		//System.out.println("5 " + Thread.currentThread().getId() + "|" + Thread.currentThread().getName());
 		return sqlQueryTemplate;

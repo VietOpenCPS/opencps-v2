@@ -18,6 +18,8 @@ import org.opencps.backend.statisticmgt.constant.Constants;
 import org.opencps.backend.statisticmgt.constant.PropValues;
 import org.opencps.backend.statisticmgt.processimpl.QueryProcessFactoryImpl;
 import org.opencps.bundlemgt.classloader.util.ClassLoaderFactoryUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 /**
  * @author trungnt
@@ -27,14 +29,13 @@ public class ActionUtil {
 
 	private static Log _log = LogFactoryUtil.getLog(ActionUtil.class);
 
-	public static String exportDossierStatistic(long groupId, long fromDate, long toDate, String originalities,
+	public static String exportDossierStatistic(long groupId, long userId, long fromDate, long toDate, String originalities,
 			String domainCode, String govAgencyCode, String serviceCode, String dossierStatus, Integer day,
 			String groupBy, Integer start, Integer end, int type, String subType) {
 
 		String result = StringPool.BLANK;
 
-		_log.info("Type: " + type);
-		JSONObject obj = getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode,
+		JSONObject obj = getDossierStatistic(groupId, userId, fromDate, toDate, originalities, domainCode, govAgencyCode,
 				serviceCode, dossierStatus, day, groupBy, start, end, type, subType);
 		String strFromDate = DatetimeUtil.convertTimestampToStringDatetime(fromDate, DatetimeUtil._DD_MM_YYYY);
 		String strToDate = DatetimeUtil.convertTimestampToStringDatetime(toDate, DatetimeUtil._DD_MM_YYYY);
@@ -101,36 +102,31 @@ public class ActionUtil {
 		String govAgencyName = StringPool.BLANK;
 		String domainName = StringPool.BLANK;
 
-		String keyVotting = "votting";
 		if (subType.equals(Constants.LIST)) {
-
-			int totalCount = 0;
-
 			List<Object[]> dataList = new ArrayList<Object[]>();
 
 			if (obj != null && obj.has(Constants.DATA)) {
 				JSONArray data = obj.getJSONArray(Constants.DATA);
 				if (data != null && data.length() > 0) {
 					JSONObject firstRow = data.getJSONObject(0);
-					totalCount = data.length();
 
 					govAgencyName = firstRow.getString("govAgencyName");
 					domainName = firstRow.getString("domainName");
-					JSONObject objA = getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode,
-							serviceCode, dossierStatus, day, "serviceCode", start, end, type, Constants.GROUP_COUNT);
-					_log.info("objA: " + JSONFactoryUtil.looseSerialize(objA));
+					JSONObject objA = getDossierStatistic(groupId, userId, fromDate, toDate, originalities, domainCode, govAgencyCode,
+							serviceCode, dossierStatus, day, groupBy, start, end, type, Constants.ROW_TOTAL);
+
+					JSONArray dataTotal = objA.getJSONArray(Constants.DATA);
 
 					dataMap.put("govAgencyName", govAgencyName.toUpperCase());
 					dataMap.put("domainName", domainName);
-//					dataMap.put("total", String.valueOf(totalCount));
 
 					Object[] objects = null;
 
 					JSONObject dataRow = null;
 
-					if("votting".equals(keyVotting)){
-						String[] total = new String[10];
-						JSONObject lastRow = data.getJSONObject(data.length() - 1);
+					if (type == 21) {
+						String[] total = new String[9];
+						JSONObject lastRow = dataTotal.getJSONObject(dataTotal.length() - 1);
 
 						int total_vote1 = lastRow.getInt("total_vote1");// 5
 						int total_vote2 = lastRow.getInt("total_vote2");// 4
@@ -139,6 +135,8 @@ public class ActionUtil {
 						int total_vote5 = lastRow.getInt("total_vote5");// 9
 						int total_vote6 = lastRow.getInt("total_vote6");// 11
 						int total_vote7 = lastRow.getInt("total_vote7");// 12
+						int total_vote8 = lastRow.getInt("total_vote8");// 12
+						int total_vote9 = lastRow.getInt("total_vote9");// 12
 
 						total[0] = String.valueOf(total_vote1);// 4+5
 						total[1] = String.valueOf(total_vote2);// 4
@@ -147,10 +145,8 @@ public class ActionUtil {
 						total[4] = String.valueOf(total_vote5);// 7
 						total[5] = String.valueOf(total_vote6);// 8
 						total[6] = String.valueOf(total_vote7);// 9
-//						total[7] = String.valueOf(undueCount + overdueCount);// 11+12
-//						total[8] = String.valueOf(undueCount);// 11
-//						total[9] = String.valueOf(overdueCount);// 12
-//						total[10] = String.valueOf(overtimeCount);// 9
+						total[7] = String.valueOf(total_vote8);// 11+12
+						total[8] = String.valueOf(total_vote9);// 11
 						dataMap.put("total", total);
 
 						for (int i = 0; i < data.length(); i++) {
@@ -170,33 +166,34 @@ public class ActionUtil {
 
 							dataList.add(objects);
 						}
-
 						dataMap.put("data", dataList);
+					} else {
+						int total = 0;
+						total = data.length();
+						dataMap.put("total", String.valueOf(total));
+						for (int i = 0; i < data.length(); i++) {
+							objects = new Object[firstRow.length()];
+							dataRow = data.getJSONObject(i);
+							objects[0] = String.valueOf(i + 1);
+							objects[1] = dataRow.getString("dossierNo");
+							objects[2] = dataRow.getString("dossierName");
+							objects[3] = dataRow.getString("applicantName");
+							objects[4] = dataRow.getString("receiveDate");
+							objects[5] = dataRow.getString("dueDate");
+							objects[6] = dataRow.getString("dossierStatusText");
 
-
-					}else {
-					for (int i = 0; i < data.length(); i++) {
-						objects = new Object[firstRow.length()];
-						dataRow = data.getJSONObject(i);
-						objects[0] = String.valueOf(i + 1);
-						objects[1] = dataRow.getString("dossierNo");
-						objects[2] = dataRow.getString("dossierName");
-						objects[3] = dataRow.getString("applicantName");
-						objects[4] = dataRow.getString("receiveDate");
-						objects[5] = dataRow.getString("dueDate");
-						objects[6] = dataRow.getString("dossierStatusText");
-
-						dataList.add(objects);
+							dataList.add(objects);
+						}
 					}
-				}
 
 					dataMap.put("data", dataList);
-
+					_log.debug("DataMap: " + JSONFactoryUtil.looseSerialize(dataMap.get("total")));
+					_log.debug("DataMap: " + JSONFactoryUtil.looseSerialize(dataMap.get("data")));
 					try {
-						if("votting".equals(keyVotting)) {
+						if (type == 21) {
 							result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
 									StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_4), dataMap);
-						}else{
+						} else {
 							result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
 									StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_1), dataMap);
 						}
@@ -251,7 +248,6 @@ public class ActionUtil {
 					dataMap.put("govAgencyName", govAgencyName.toUpperCase());
 
 					dataMap.put("total", total);
-
 					Object[] objects = null;
 
 					JSONObject dataRow = null;
@@ -314,7 +310,7 @@ public class ActionUtil {
 		return result;
 	}
 
-	public static JSONObject getDossierStatistic(long groupId, long fromDate, long toDate, String originalities,
+	public static JSONObject getDossierStatistic(long groupId, long userId, long fromDate, long toDate, String originalities,
 			String domainCode, String govAgencyCode, String serviceCode, String dossierStatus, Integer day,
 			String groupBy, Integer start, Integer end, int type, String subType) {
 
@@ -331,7 +327,25 @@ public class ActionUtil {
 		String strToDate = DatetimeUtil.convertTimestampToStringDatetime(toDate, DatetimeUtil._YYYY_MM_DD);
 
 		String sqlTemplate = QueryUtil.getSQLQueryTemplate(type, subType);
-		_log.info("SQL Template : " + sqlTemplate);
+
+		if(userId >0) {
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			if (Validator.isNotNull(employee) && Validator.isNotNull(employee.getScope())) {
+				String name = StringPool.BLANK;
+				String[] scope = employee.getScope().split(StringPool.COMMA);
+				for (String key : scope) {
+					if (Validator.isNotNull(name)) {
+						name += "," + key;
+					} else {
+						name = key;
+					}
+				}
+				sqlTemplate = sqlTemplate.replace("{scopeEmpl}", StringPool.APOSTROPHE + name + StringPool.APOSTROPHE);
+			} else {
+				sqlTemplate = sqlTemplate.replace("{scopeEmpl}", "''");
+			}
+		}
+		_log.debug("sql: " + sqlTemplate);
 		if (Validator.isNull(sqlTemplate)) {
 			return StatisticUtil.createResponseSchema(groupId, strFromDate, strToDate,
 					ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
@@ -339,7 +353,6 @@ public class ActionUtil {
 					ParamUtil.getArrayParams(dossierStatus), type, subType);
 		}
 
-		_log.info("TYpe: " + type);
 
 		QueryProcessFactoryImpl factory = new QueryProcessFactoryImpl();
 

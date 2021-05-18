@@ -2468,12 +2468,10 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 											String sqlTemplate, int type, String subType) {
 		JSONObject result = StatisticUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				govAgencyCodes, serviceCodes, dossierStatus, type, subType);
-		_log.info("Result : " + JSONFactoryUtil.looseSerialize(result));
-		QuerySchema schema = getQuerySchema21(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
+		QuerySchema schema = getQuerySchema2(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 				serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, subType);
-//		_log.info("Schema : " + schema.getSql());
-//		_log.info("SubType: " + subType);
-		_log.info("column: " + schema.getColumnMap());
+		_log.debug("schema: " + schema.getSql());
+		_log.debug("subType: " + subType);
 		if (schema == null || Validator.isNull(schema.getSql())) {
 			return result;
 		}
@@ -2482,6 +2480,27 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			int total = QueryUtil.getCount(schema.getSql());
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
+			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
+			long total = 0;
+			if (data != null) {
+				for (int i = 0; i < data.length(); i++) {
+					total += data.getJSONObject(i).getInt(Constants.COUNT);
+				}
+			}
+			result.put(Constants.TOTAL, total);
+			result.put(Constants.DATA, data);
+		} else if (subType.equals(Constants.LIST)) {
+
+			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
+			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
+			schema = getQuerySchema2(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
+					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
+			int total = QueryUtil.getCount(schema.getSql());
+
+			result.put(Constants.TOTAL, total);
+
+			result.put(Constants.DATA, data);
+		} else if (subType.equals(Constants.ROW_TOTAL)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
 
 			long total = 0;
@@ -2515,85 +2534,9 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			}
 			result.put(Constants.TOTAL, total);
 			result.put(Constants.DATA, data);
-		} else if (subType.equals(Constants.LIST)) {
-
-			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
-			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
-			schema = getQuerySchema21(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
-					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
-
-			result.put(Constants.TOTAL, total);
-			_log.info("Total: " + total);
-
-			result.put(Constants.DATA, data);
 		}
 
 		return result;
 	}
 
-	public QuerySchema getQuerySchema21(long groupId, String fromDate, String toDate, int[] originalities,
-										String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
-										String groupBy, int start, int end, String sqlTemplate, int type, String subtype) {
-
-		int[] pageAndSize = QueryUtil.getPageAndSize(start, end);
-
-		start = pageAndSize[0];
-
-		int size = pageAndSize[1];
-
-		String sql = sqlTemplate;
-
-		LinkedHashMap<String, Class<?>> columns = QueryUtil.getDataColumnMap(sql);
-
-		Pattern pattern = Pattern.compile("(\\[([a-z]+|[A-Z]+)\\])", Pattern.CASE_INSENSITIVE);
-
-		Matcher matcher = pattern.matcher(sql);
-
-		String dataType = StringPool.BLANK;
-
-		while (matcher.find()) {
-			dataType = matcher.group();
-			sql = sql.replace(dataType, StringPool.BLANK);
-		}
-		sql = sql.replace("{groupId}", String.valueOf(groupId));
-		sql = sql.replace("{start}", String.valueOf(start));
-		sql = sql.replace("{size}", String.valueOf(size));
-
-		if (Validator.isNotNull(fromDate)) {
-			sql = sql.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
-		} else {
-			sql = sql.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
-		}
-
-		if (Validator.isNotNull(toDate)) {
-			sql = sql.replace("{toDate}", ParamUtil.generalTextParam(toDate));
-		} else {
-			sql = sql.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
-		}
-
-		if (domainCodes != null && domainCodes.length > 0) {
-			String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
-			sql = sql.replace("{domainCode}", paramsDomainCodes);
-		} else {
-			sql = sql.replace("AND t2.domainCode IN ({domainCode})", StringPool.BLANK);
-		}
-
-		if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
-			String params = ParamUtil.generalTextParam(dossierStatus);
-			sql = sql.replace("{dossierStatus}", params);
-		} else {
-			sql = sql.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
-		}
-
-		if (originalities != null && originalities.length > 0) {
-			sql = sql.replace("{originality}", String.valueOf(originalities[0]));
-		} else {
-			sql = sql.replace("AND t1.originality = {originality}", StringPool.BLANK);
-		}
-
-		_log.info("generateQuerySchema21: " + columns);
-
-		return new QuerySchema(sql, sqlTemplate, type, subtype, columns);
-	}
 }

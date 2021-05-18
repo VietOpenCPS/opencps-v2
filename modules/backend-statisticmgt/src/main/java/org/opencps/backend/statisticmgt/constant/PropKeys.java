@@ -137,6 +137,8 @@ public class PropKeys {
 	
 	public static final String STATISTIC_DOSSIER_VOTING_GROUP_TOTAL_COUNT = "statistic.dossier.voting.group.total_count";
 
+	public static final String STATISTIC_DOSSIER_VOTING_ROW_TOTAL_COUNT = "statistic.dossier.voting.row.total_count";
+
 	public static final String STATISTIC_DOSSIER_VOTING_TOTAL_LIST = "statistic.dossier.voting.total_list";
 
 	
@@ -144,18 +146,10 @@ public class PropKeys {
 	//other
 	public static final String CONFIG_DOSSIER_STATISTIC_SIZE_LIST = "config.dossier_statistic.size_list";
 	public static final String TEMPLATES_REPORTS_DIR = "templates.reports.dir";
+	public static final String CONFIGS_DIR = "configs.dir";
 	public static final String TEMPLATES_REPORTS_FILENAME_1 = "templates.reports.filename1";
 	public static final String TEMPLATES_REPORTS_FILENAME_2 = "templates.reports.filename2";
 	public static final String TEMPLATES_REPORTS_FILENAME_3 = "templates.reports.filename3";
 	public static final String TEMPLATES_REPORTS_FILENAME_4 = "templates.reports.filename4";
-	public static final String VOTE1 = "vote1";
-	public static final String VOTE2 = "vote2";
-	public static final String VOTE3 = "vote3";
-	public static final String VOTE4 = "vote4";
-	public static final String VOTE5 = "vote5";
-	public static final String VOTE6 = "vote6";
-	public static final String VOTE7 = "vote7";
-	public static final String VOTE8 = "vote8";
-	public static final String VOTE9 = "vote9";
 
 }
