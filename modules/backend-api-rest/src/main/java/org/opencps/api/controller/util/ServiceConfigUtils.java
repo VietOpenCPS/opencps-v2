@@ -137,6 +137,27 @@ public class ServiceConfigUtils {
 						processes.add(processOption);
 					}
 				}
+			} else {
+				for (Document doc : documents) {
+
+
+					ProcessOption processOption = new ProcessOption();
+					processOption.setProcessOptionId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+					processOption.setSeqOrder(GetterUtil.getInteger(doc.get(ProcessOptionTerm.SEQ_ORDER)));
+					processOption.setAutoSelect(doc.get(ProcessOptionTerm.AUTO_SELECT));
+					processOption.setInstructionNote(doc.get(ProcessOptionTerm.INSTRUCTION_NOTE));
+					processOption.setSubmissionNote(doc.get(ProcessOptionTerm.SUBMISSION_NOTE));
+					processOption.setDossierTemplateId(GetterUtil.getInteger(doc.get(ProcessOptionTerm.DOSSIER_TEMPLATEID)));
+					processOption.setTemplateNo_0020(doc.get(ProcessOptionTerm.TEMPLATE_NO));
+					processOption.setTemplateName(doc.get(ProcessOptionTerm.TEMPLATE_NAME));
+					processOption.setServiceProcessId(GetterUtil.getInteger(doc.get(ProcessOptionTerm.SERVICE_PROCESS_ID)));
+					processOption.setProcessNo(doc.get(ProcessOptionTerm.PROCESS_NO));
+					processOption.setProcessName(doc.get(ProcessOptionTerm.PROCESS_NAME));
+					processOption.setOptionName(doc.get(ProcessOptionTerm.OPTION_NAME));
+					processOption.setServiceConfigId(GetterUtil.getLong(doc.get(ProcessOptionTerm.SERVICE_CONFIG_ID)));
+
+					processes.add(processOption);
+				}
 			}
 
 		}catch (Exception e){

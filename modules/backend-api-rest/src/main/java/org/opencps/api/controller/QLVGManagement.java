@@ -21,10 +21,10 @@ import java.util.Locale;
 @Api(value = "/qlvb", tags = "qlvb")
 public interface QLVGManagement {
     @GET
-    @Path("/{dossierId}/sendDocuments")
+    @Path("/{dossierId}/sendDocuments/{userId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response sendProfile(@PathParam("dossierId") long dossierId, @Context User user);
+    public Response sendProfile(@PathParam("dossierId") long dossierId, @PathParam("userId") long userId);
 
     @PUT
     @Path("")
