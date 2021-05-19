@@ -58,7 +58,9 @@ import javax.xml.bind.annotation.XmlType;
     "processNo",
     "processName",
     "optionName",
-    "serviceConfigId"
+    "serviceConfigId",
+    "sampleCount",
+    "registerBookCode"
 })
 @XmlRootElement(name = "ProcessOption")
 public class ProcessOption {
@@ -76,6 +78,24 @@ public class ProcessOption {
     protected String processNo;
     protected String processName;
     protected Long serviceConfigId;
+    protected Long sampleCount;
+    protected String registerBookCode;
+
+    public Long getSampleCount() {
+        return sampleCount;
+    }
+
+    public void setSampleCount(Long sampleCount) {
+        this.sampleCount = sampleCount;
+    }
+
+    public String getRegisterBookCode() {
+        return registerBookCode;
+    }
+
+    public void setRegisterBookCode(String registerBookCode) {
+        this.registerBookCode = registerBookCode;
+    }
 
     public Long getServiceConfigId() {
 		return serviceConfigId;
