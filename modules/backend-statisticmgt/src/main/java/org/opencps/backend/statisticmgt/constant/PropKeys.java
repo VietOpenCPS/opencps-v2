@@ -146,7 +146,6 @@ public class PropKeys {
 	//other
 	public static final String CONFIG_DOSSIER_STATISTIC_SIZE_LIST = "config.dossier_statistic.size_list";
 	public static final String TEMPLATES_REPORTS_DIR = "templates.reports.dir";
-	public static final String CONFIGS_DIR = "configs.dir";
 	public static final String TEMPLATES_REPORTS_FILENAME_1 = "templates.reports.filename1";
 	public static final String TEMPLATES_REPORTS_FILENAME_2 = "templates.reports.filename2";
 	public static final String TEMPLATES_REPORTS_FILENAME_3 = "templates.reports.filename3";
