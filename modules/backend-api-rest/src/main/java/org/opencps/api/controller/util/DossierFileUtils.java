@@ -5,6 +5,8 @@ import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -21,7 +23,9 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
 public class DossierFileUtils {
@@ -37,6 +41,8 @@ public class DossierFileUtils {
 
             outputs.add(model);
         }
+
+
 
         return outputs;
     }
@@ -106,6 +112,14 @@ public class DossierFileUtils {
         model.setFormData(dossierFile.getFormData());
         model.setDossierFileId(dossierFile.getDossierFileId());
         model.setDossierId(dossierFile.getDossierId());
+        List<DossierMark> lstDossierMark = DossierMarkLocalServiceUtil.getDossierMarks(dossierFile.getGroupId(), dossierFile.getDossierId());
+        if(lstDossierMark !=null){
+            JSONObject objectMark = JSONFactoryUtil.createJSONObject();
+            for(DossierMark dossierMark : lstDossierMark) {
+                objectMark.put(dossierMark.getDossierPartNo(), dossierMark.getFileCheck());
+            }
+            model.setDossierMarks(objectMark.toString());
+        }
         return model;
     }
 

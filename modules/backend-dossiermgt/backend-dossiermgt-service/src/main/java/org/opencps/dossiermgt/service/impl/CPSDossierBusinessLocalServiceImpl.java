@@ -1418,29 +1418,35 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							.getByCode(groupId,
 									dossierPart.getDeliverableType());
 					eForm = Validator.isNotNull(dossierPart.getFormScript());
-
+					_log.debug("Efom: " + eForm);
+					_log.debug("dossierPart.getESign(): " + dossierPart.getESign());
+					_log.debug("item.getEForm(): " + item.getEForm());
 					if (!eForm || !dossierPart.getESign() || !item.getEForm()) {
 						continue;
 					}
 					JSONObject mappingDataObj = JSONFactoryUtil
 							.createJSONObject(dlt.getMappingData());
+					_log.debug("JSON: " + JSONFactoryUtil.looseSerialize(mappingDataObj));
 					if (!mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) continue;
 					String deliverables = mappingDataObj.getString(
 							DeliverableTypesTerm.DELIVERABLES_KEY);
-
+					_log.debug("deliverables: " + deliverables);
 					//Cut lấy value của deliverableKey trong giay phep
 					if(Validator.isNotNull(deliverables)) {
 						String newString = deliverables.substring(1);
 						String[] stringSplit = newString.split(StringPool.AT);
 						String variable = stringSplit[0];
+						_log.debug("variable: " + variable);
 						//Note: key deliverableType được cấu hình trong thành phần tồn tại trong dossierFile sau khi được mapping dữ liệu
 						JSONObject formDataObj = JSONFactoryUtil
 								.createJSONObject(item.getFormData());
+						_log.debug("formDataObj: " + JSONFactoryUtil.looseSerialize(formDataObj));
 						if (formDataObj.has(variable)) {
 							JSONArray deliverablesArr = JSONFactoryUtil
 									.createJSONArray(formDataObj
 											.getString(variable));
 
+							_log.debug("deliverablesArr: " + JSONFactoryUtil.looseSerialize(deliverablesArr));
 							for (int i = 0; i < deliverablesArr
 									.length(); i++) {
 								JSONObject deliverableObj;
@@ -9712,7 +9718,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							"&documentTypeCode=" + proAction.getReturnDossierFiles());
 					files.put(jsonObject);
 				}
-
 				List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil
 						.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
