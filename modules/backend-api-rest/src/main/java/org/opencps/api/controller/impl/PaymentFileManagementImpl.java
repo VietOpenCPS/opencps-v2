@@ -114,7 +114,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 	/**
 	 * Get all PaymentFile of DossierId
-	 * 
+	 *
 	 * @param dossierId
 	 * @return Response
 	 */
@@ -886,9 +886,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					thongTinBienLai.put("maDonViThuHuong", unitCode);
 					thongTinBienLai.put("tenDonViThuHuong", dossier.getGovAgencyName());
 					data.put("thongTinBienLai", thongTinBienLai);
+					data.put("danhSachThanhToan", payments);
 
 					jsonResult.put("data", data);
-					jsonResult.put("danhSachThanhToan", payments);
 					return Response.status(HttpURLConnection.HTTP_OK).entity(jsonResult.toJSONString()).build();
 				}
 
@@ -1028,11 +1028,10 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		        }
 
 		     // TODO: PP continue
-				if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())
-						|| PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
+				if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
 					JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 					JSONObject banksInfo = schema.getJSONObject("BankInfo");
-					JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+					JSONObject bankInfo;
 					if (banksInfo.has(dossier.getServiceCode())) {
 						bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
 					} else {
@@ -1218,11 +1217,10 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				jsonData.put("govAddress", "");
 			}
 			// TODO: PP continue
-			if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())
-					|| PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
+			if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
 				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				JSONObject banksInfo = schema.getJSONObject("BankInfo");
-				JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+				JSONObject bankInfo;
 				if (banksInfo.has(dossier.getServiceCode())) {
 					bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
 				} else {
@@ -1562,9 +1560,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					body.put("otherInfo", base64OtherInfo);
 					body.put("checksum", shs256CheckSum);
 
-					//JSONObject response = serviceApi.callApiAndTrackingWithMapBody(paygovConfig.getString("urlBienLai"),
-					//		null, headers, body);
-
 					JSONObject response = serviceApi.callAPIPaygovPrintInvoice(body,paygovConfig);
 					if(response.length() >0
 							&& response.has("transactionReceipt")
@@ -1583,7 +1578,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -1597,6 +1591,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			System.out.println("String after hash: " + hex);
 			return hex;
 		} catch (Exception e) {
+			_log.error(e);
 			throw new Exception(e.getMessage());
 		}
 	}
@@ -1605,7 +1600,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		long paymentFileId = GetterUtil.getLong(id);
 

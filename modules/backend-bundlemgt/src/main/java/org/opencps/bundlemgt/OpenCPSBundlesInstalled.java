@@ -34,7 +34,7 @@ public class OpenCPSBundlesInstalled {
 
 	public static String getBundleState(String symbolicName) {
 
-		String stateName = "UNINSTALLED";
+		String stateName;
 		
 		if (OpenCPSBundlesInstalled.getBundles().containsKey(symbolicName)) {
 			Bundle bundle = OpenCPSBundlesInstalled.getBundles().get(symbolicName);

@@ -626,7 +626,7 @@ public class DossierUtils {
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 			return employee;
 		}catch (Exception e){
-			_log.info("EXCEPTION" + e.getMessage());
+			_log.error(e);
 			return null;
 		}
 	}
@@ -1299,6 +1299,7 @@ public class DossierUtils {
 			try {
 				return DossierLocalServiceUtil.getDossier(dossierId);
 			} catch (PortalException e) {
+				_log.error(e);
 				return null;
 			}
 		} else {

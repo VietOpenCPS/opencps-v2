@@ -6,6 +6,8 @@ import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -27,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import backend.utils.DLFolderUtil;
 
 public class FileUploadUtil {
+	private static Log _log = LogFactoryUtil.getLog(FileUploadUtil.class);
 
 	public static FileEntry uploadFile(
 		long userId, long companyId, long groupId, InputStream inputStream,
@@ -161,6 +164,7 @@ public class FileUploadUtil {
 			String fileName = "documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle();
 			return fileName;
 		} catch (PortalException e) {
+			_log.error(e);
 		}
 		
 		return StringPool.BLANK;
@@ -173,6 +177,7 @@ public class FileUploadUtil {
 			String fileName = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
 			return fileName;
 		} catch (PortalException e) {
+			_log.error(e);
 		}
 		
 		return StringPool.BLANK;

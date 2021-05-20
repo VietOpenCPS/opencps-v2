@@ -75,7 +75,7 @@ public class VotingManagementImpl implements VotingManagement {
 			integrationAction.syncSummaryVote();
 			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 		}catch (Exception e) {
-			_log.error(e.getMessage());
+			_log.error(e);
 		}
 
 		return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
@@ -114,7 +114,7 @@ public class VotingManagementImpl implements VotingManagement {
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 		}catch (Exception e) {
-			_log.error(e.getMessage());
+			_log.error(e);
 		}
 		return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
 	}

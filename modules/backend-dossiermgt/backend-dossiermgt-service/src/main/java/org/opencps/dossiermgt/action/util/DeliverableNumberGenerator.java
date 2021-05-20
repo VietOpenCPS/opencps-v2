@@ -117,10 +117,15 @@ public class DeliverableNumberGenerator {
 						
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
 						_log.debug("tmp1 : " + tmp);
-						if (number.length() < tmp.length()) {
-							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
-							_log.debug("number1 : " + number);
+
+						if (number != null) {
+							if (number.length() < tmp.length()) {
+								number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+							}
+						} else {
+							number = tmp;
 						}
+
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
 						_log.debug("seriNumberPattern1 : " + seriNumberPattern);
 					} else if (r.toString().equals(datetimePattern)) {
@@ -292,10 +297,13 @@ public class DeliverableNumberGenerator {
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
 						_log.debug("tmp1 : " + tmp);
-						if (number.length() < tmp.length()) {
-							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
-							_log.debug("number1 : " + number);
-						}
+						 if (number != null) {
+							 if (number.length() < tmp.length()) {
+								 number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+							 }
+						 } else {
+							 number = tmp;
+						 }
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
 						_log.debug("seriNumberPattern1 : " + seriNumberPattern);
 					}
@@ -345,8 +353,12 @@ public class DeliverableNumberGenerator {
 					_log.debug(
 							"//////////////////////////////////////////////////////////// " + "|certNumber= " + number);
 					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
-					if (number.length() < tmp.length()) {
-						number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+					if (number != null) {
+						if (number.length() < tmp.length()) {
+							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+						}
+					} else {
+						number = tmp;
 					}
 
 					serialNumberPattern = serialNumberPattern.replace(m.group(0), number);

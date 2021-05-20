@@ -98,7 +98,7 @@ public class PaymentFileFinderImpl extends PaymentFileFinderBaseImpl implements 
 			}
 			catch (SystemException se)
 			{
-				se.printStackTrace();
+				_log.error(se);
 			}
 		}
 		finally

@@ -1,20 +1,16 @@
 package org.opencps.statistic.rest.engine.service;
 
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.awt.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.GetDossierData;
 import org.opencps.statistic.rest.dto.GetPersonData;
@@ -24,7 +20,6 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 
 public class StatisticEngineFetchEntry {
 	private static final int USED_POSTAL = 2;
-//	private static final int NOT_USED_POSTAL = 1;
 	protected Log _log = LogFactoryUtil.getLog(StatisticEngineFetchEntry.class);
 		
 	//Caculate dueDate by day
@@ -46,9 +41,6 @@ public class StatisticEngineFetchEntry {
 		Date dueDate = Validator.isNull(dossierData.getDueDate())
 					? null
 					: StatisticUtils.convertStringToDate(dossierData.getDueDate());
-		Date extendDate = Validator.isNull(dossierData.getExtendDate())
-					? null
-					: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
 		Date releaseDate = Validator.isNull(dossierData.getReleaseDate())
 					? null
 					: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());
@@ -267,9 +259,6 @@ public class StatisticEngineFetchEntry {
 		Date dueDate = Validator.isNull(dossierData.getDueDate())
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getDueDate());
-		Date extendDate = Validator.isNull(dossierData.getExtendDate())
-					? null
-					: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
 		Date releaseDate = Validator.isNull(dossierData.getReleaseDate())
 					? null
 					: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());

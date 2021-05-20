@@ -349,7 +349,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 											dfModel.setFileType(fileEntry.getMimeType());
 											dfModel.setRemoved(df.getRemoved());
 											dfModel.setEForm(df.getEForm());
-											DossierFileModel dfResult = client.postDossierFileInform(file, dossier,
+											client.postDossierFileInform(file, dossier,
 													dossier.getReferenceUid(), dfModel);
 										} catch (PortalException e) {
 											_log.error(e);
