@@ -51,14 +51,11 @@ import org.opencps.api.employee.model.EmployeeJobposResults;
 import org.opencps.api.employee.model.EmployeeModel;
 import org.opencps.api.employee.model.EmployeeResults;
 import org.opencps.api.error.model.ErrorMsg;
-import org.opencps.api.user.model.UserResults;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.usermgt.action.EmployeeInterface;
-import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.EmployeeActions;
-import org.opencps.usermgt.action.impl.UserActions;
 import org.opencps.usermgt.constants.EmployeeJobPosTerm;
 import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Employee;
@@ -108,7 +105,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			params.put(EmployeeTerm.JOB_POS_CODE_SEARCH, jobposCodeSearch);
 
 			String scopes = query.getScope();
-			String scopesSearch = StringPool.BLANK;
+			String scopesSearch;
 			if (Validator.isNotNull(jobposCode)) {
 				scopesSearch = SpecialCharacterUtils.splitSpecial(scopes);
 				params.put(EmployeeTerm.SCOPES_SEARCH, scopesSearch);

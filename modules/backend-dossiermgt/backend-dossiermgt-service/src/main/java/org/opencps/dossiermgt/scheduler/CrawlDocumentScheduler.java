@@ -56,6 +56,7 @@ public class CrawlDocumentScheduler extends BaseMessageListener {
 
             _log.info("End crawl document frequency!!!");
         } catch (Exception e){
+            _log.error(e);
             _log.error("Error crawl document frequency: " + e.getMessage());
         }
         isRunning = false;
@@ -85,6 +86,7 @@ public class CrawlDocumentScheduler extends BaseMessageListener {
             try {
                 _schedulerEngineHelper.unschedule(_schedulerEntryImpl, getStorageType());
             } catch (SchedulerException se) {
+                _log.error(se);
                 if (_log.isWarnEnabled()) {
                     _log.warn("Unable to unschedule trigger", se);
                 }

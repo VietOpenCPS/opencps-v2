@@ -37,7 +37,7 @@ public class POSVCBUtils {
             StringBuilder sb = new StringBuilder();
             _log.debug("SERVER PROXY: " + sc.getConfigs());
             if (sc != null) {
-                String serverUrl = StringPool.BLANK;
+                String serverUrl;
 
                 JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
                 serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
@@ -113,7 +113,7 @@ public class POSVCBUtils {
             StringBuilder sb = new StringBuilder();
             _log.debug("SERVER PROXY: " + sc.getConfigs());
             if (sc != null) {
-                String serverUrl = StringPool.BLANK;
+                String serverUrl;
 
                 JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
                 serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
@@ -192,7 +192,7 @@ public class POSVCBUtils {
             StringBuilder sb = new StringBuilder();
             _log.debug("SERVER PROXY: " + sc.getConfigs());
             if (sc != null) {
-                String serverUrl = StringPool.BLANK;
+                String serverUrl;
 
                 JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
                 serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
@@ -265,7 +265,7 @@ public class POSVCBUtils {
             StringBuilder sb = new StringBuilder();
             _log.debug("SERVER PROXY: " + sc.getConfigs());
             if (sc != null) {
-                String serverUrl = StringPool.BLANK;
+                String serverUrl;
 
                 JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
                 serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);

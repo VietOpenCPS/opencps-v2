@@ -84,6 +84,15 @@ public class DossierPublishModel {
 	protected Integer vnpostalStatus;
 	protected String vnpostalProfile;
 	protected Integer fromViaPostal;
+	protected int systemId;
+
+	public int getSystemId() {
+		return systemId;
+	}
+
+	public void setSystemId(int systemId) {
+		this.systemId = systemId;
+	}
 
 	public String getPostalDistrictName() {
 		return postalDistrictName;

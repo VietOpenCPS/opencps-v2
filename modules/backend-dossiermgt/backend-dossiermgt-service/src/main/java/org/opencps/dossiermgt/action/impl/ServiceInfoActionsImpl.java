@@ -425,7 +425,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		try {
 			List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByServiceInfo(groupId, serviceInfoId);
 			if (configList != null && configList.size() > 0) {
-				long serviceConfigId = 0;
+				long serviceConfigId;
 				for (ServiceConfig config : configList) {
 					serviceConfigId = config.getServiceConfigId();
 					if (serviceConfigId > 0) {
@@ -439,14 +439,6 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 						} else {
 							flag = true;
 						}
-					}
-					if (flag) {
-						if(Validator.isNull(serviceConfigOld)) {
-							ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.deleteServiceConfig(config);
-						}
-//						if (serviceConfig == null) {
-//							flag = false;
-//						}
 					}
 				}
 			} else {

@@ -276,7 +276,8 @@ public class OneMinute extends BaseMessageListener {
 						}
 					}
 					catch (Exception e) {
-//						_log.error("Can't send message from queue " + e);
+						_log.error(e);
+						_log.error("Can't send message from queue " + e);
 					}
 				}
 			}

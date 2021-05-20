@@ -89,8 +89,8 @@ public class DossierNumberGenerator {
 			throws ParseException, SearchException {
 
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		_log.debug("==generateDossierNumber=="+dossier.getDossierId());
 		String dossierNumber = StringPool.BLANK;
-		_log.debug("seriNumberPattern: "+seriNumberPattern);
 		ServiceProcess sp = ServiceProcessLocalServiceUtil.getByG_PNO(groupId, dossier.getProcessNo());
 		
 		if (sp != null && SCOPE_GOV_AGENCY_CODE_PATTERN.contentEquals(sp.getDossierNoPattern())) {
@@ -113,8 +113,6 @@ public class DossierNumberGenerator {
 				}
 			}
 		}
-
-		_log.debug("seriNumberPattern: "+seriNumberPattern);
 		
 		if (dossier != null) {
 			String codePatternGov = CODE_PATTERN_GOV;
@@ -406,6 +404,7 @@ public class DossierNumberGenerator {
 
 			dossierNumber = seriNumberPattern;
 		}
+
 		return dossierNumber;
 	}
 
@@ -588,49 +587,33 @@ public class DossierNumberGenerator {
 	private static final String PERCENT_ZERO = "%0";
 	private static final String NUMBER_FORMAT = "d";
 
-	private static String counterByNumber(String pattern, String tmp) {
+	private synchronized static String counterByNumber(String pattern, String tmp) {
 
-		//long counter = CounterLocalServiceUtil.increment(pattern);
 		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
 		String format = PERCENT_ZERO + lengthPatern + NUMBER_FORMAT;
 
-		long _counterNumber = 0;
-		Counter counter = null;
-		_log.info("pattern" + pattern);
+		long _counterNumber;
+		_log.debug("pattern" + pattern);
 		Counter counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
-		if (Validator.isNotNull(counterDetail)) {
-			// create counter config
-			_counterNumber = counterDetail.getCurrentId() + 1;
-			_log.info("Current counter number1: " + _counterNumber);
-			int count = 0;
-			do {
-				_log.info("count---: " + count);
-				counterDetail.setCurrentId(_counterNumber);
-				try {
-					counter = CounterLocalServiceUtil.updateCounter(counterDetail);
-				} catch (Exception e) {
-					_log.error("Error when create number generator: " + e.getMessage());
-					_counterNumber += 1;
-					_log.debug(e);
-				}
-				count ++;
+		_log.info("Current counter number: " + counterDetail.getCurrentId());
 
-			} while (counter == null);
-			_log.info("Current counter number2: " + _counterNumber);
-		} else {
-			_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
-			counterDetail = CounterLocalServiceUtil.createCounter(pattern);
-			// increment CurrentCounter
+		if (Validator.isNotNull(counterDetail)) {
 			_counterNumber = counterDetail.getCurrentId() + 1;
-			do {
-				counterDetail.setCurrentId(_counterNumber);
-				try {
-					counter = CounterLocalServiceUtil.updateCounter(counterDetail);
-				} catch (Exception e) {
-					_counterNumber += 1;
-					_log.debug(e);
-				}
-			} while (counter == null);
+			counterDetail.setCurrentId(_counterNumber);
+			try {
+				CounterLocalServiceUtil.updateCounter(counterDetail);
+			} catch (Exception e) {
+				_log.error("Error when create number generator: " , e);
+			}
+		} else {
+			counterDetail = CounterLocalServiceUtil.createCounter(pattern);
+			_counterNumber = counterDetail.getCurrentId() + 1;
+			counterDetail.setCurrentId(_counterNumber);
+			try {
+				CounterLocalServiceUtil.updateCounter(counterDetail);
+			} catch (Exception e) {
+				_log.error(e);
+			}
 		}
 
 		return String.format(format, _counterNumber); 

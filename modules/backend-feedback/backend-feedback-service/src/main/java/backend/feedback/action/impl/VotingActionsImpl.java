@@ -122,7 +122,7 @@ public class VotingActionsImpl implements VotingActions {
 			if(isGetFromDB) {
 				List<Voting> listVotingConfig = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, "0");
 				List<Voting> listVotingByClassPk = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
-				List<Voting> votingList = new ArrayList<Voting>();
+				List<Voting> votingList;
 				if (listVotingByClassPk.size() > listVotingConfig.size()) {
 					votingList = listVotingByClassPk.stream()
 								.filter(voting -> listVotingConfig.stream()

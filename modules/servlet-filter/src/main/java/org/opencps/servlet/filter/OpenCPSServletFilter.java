@@ -97,6 +97,7 @@ public class OpenCPSServletFilter extends BaseFilter {
 				}
 
 			} catch (Exception e) {
+				_log.error(e);
 				referenceUid = "";
 			}
 			httpServletRequest.getRequestDispatcher("/o/rest/v2/dossiers/downloadfile/" + referenceUid ).forward(httpServletRequest,

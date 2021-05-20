@@ -62,20 +62,12 @@ public class ConfigCounterNumberGenerator {
 		String dossierNumber = StringPool.BLANK;
 		String codeGovAgency = "\\{(g+|G+)\\}";
 		String codePatternYear = CODE_PATTERN_YEAR;
-		String dayPattern = DAY_PATTERN;
-		String monthPattern = MONTH_PATTERN;
 		String yearPattern = YEAR_PATTERN;
-		String dynamicVariablePattern = DYNAMIC_VARIABLE_PATTERN;
-		String defaultValuePattern = DEFAULT_VALUE_PATTERN;
-		String extractValuePattern = EXTRACT_VALUE_PATTERN;
-		String datetimePattern = DATE_TIME_PATTERN;
 			String[] patterns = new String[] {codeGovAgency, codePatternYear,
 					yearPattern };
 
 			Date now = new Date();
 
-			String day = String.valueOf(DateTimeUtils.getDayFromDate(now));
-			String month = String.valueOf(DateTimeUtils.getMonthFromDate(now) + 1);
 			String year = String.valueOf(DateTimeUtils.getYearFromDate(now));
 
 			String govAgencyCode = "CLS";

@@ -44,7 +44,7 @@ public class VNPostCLSUtils {
             if (sc != null) {
                 JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
                 String apiUrl;
-                String serverUrl = StringPool.BLANK;
+                String serverUrl;
 
                 URL urlVal = null;
                 serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
@@ -82,7 +82,7 @@ public class VNPostCLSUtils {
             StringBuilder sb = new StringBuilder();
 
             if (sc != null) {
-                String serverUrl = StringPool.BLANK;
+                String serverUrl;
                 JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
                 JSONObject jsonObject = JSONFactoryUtil.createJSONObject(configObj.getString(ServerConfigTerm.NHAN_THONG_BAO_KET_QUA));
                 serverUrl = jsonObject.getString(SyncServerTerm.SERVER_URL);

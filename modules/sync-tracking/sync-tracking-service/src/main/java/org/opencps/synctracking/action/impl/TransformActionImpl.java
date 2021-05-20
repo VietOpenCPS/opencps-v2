@@ -1,5 +1,7 @@
 package org.opencps.synctracking.action.impl;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.synctracking.action.TransformAction;
 import org.opencps.synctracking.model.SyncTracking;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransformActionImpl implements TransformAction {
+    private static Log _log = LogFactoryUtil.getLog(TransformActionImpl.class);
     public List<SyncTrackingResponse> transForm(List<SyncTracking> listTracking) throws Exception{
         try {
             List<SyncTrackingResponse> listTrackingTransform = new ArrayList<>();
@@ -40,6 +43,7 @@ public class TransformActionImpl implements TransformAction {
             }
             return listTrackingTransform;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }

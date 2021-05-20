@@ -299,7 +299,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 														object.getGroupId());
 												document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
 											} catch (NumberFormatException e) {
-
+												_log.error(e);
 											}
 										} else if (DossierTerm.DUE_DATE_NOTIFY_TYPE_DAY.contentEquals(type)) {
 											if ((int) durationUnit == DossierTerm.DURATION_UNIT_DAY) {
@@ -310,7 +310,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 															object.getGroupId());
 													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
 												} catch (NumberFormatException e) {
-
+													_log.error(e);
 												}
 											} else if ((int) durationUnit == DossierTerm.DURATION_UNIT_HOUR) {
 												try {
@@ -332,7 +332,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 															object.getGroupId());
 													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
 												} catch (NumberFormatException e) {
-
+													_log.error(e);
 												}
 											} else if ((int) durationUnit == DossierTerm.DURATION_UNIT_HOUR) {
 												try {
@@ -342,7 +342,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 															object.getGroupId());
 													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
 												} catch (NumberFormatException e) {
-
+													_log.error(e);
 												}
 											}
 										}
@@ -538,12 +538,29 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						if (listDossierActions != null && listDossierActions.size() > 0) {
 							Set<String> setUserId = new HashSet<String>();
 							for (DossierAction dossierAction2 : listDossierActions) {
-								if (dossierAction2.getUserId() != dossierAction.getUserId() 
-										&& dossierAction2.getNextActionId() > 0) {
-									setUserId.add(String.valueOf(dossierAction2.getUserId()));									
+								if (dossierAction2.getPreviousActionId() > 0) {
+									if (dossierAction2.getUserId() != dossierAction.getUserId()
+											&& dossierAction2.getNextActionId() > 0) {
+										setUserId.add(String.valueOf(dossierAction2.getUserId()));
+										_log.debug("setUserId1 : " + setUserId);
+									}else if(dossierAction2.getUserId() == dossierAction.getUserId()
+											&& dossierAction2.getNextActionId() == 0) {
+										List<DossierActionUser> lstdossierActionUser = DossierActionUserLocalServiceUtil.getByDID_DAID(dossierAction2.getDossierId(), dossierAction2.getDossierActionId());
+										_log.debug("lstdossierActionUser :" + JSONFactoryUtil.looseSerialize(lstdossierActionUser));
+										if (lstdossierActionUser != null && lstdossierActionUser.size() > 0) {
+											for (DossierActionUser doActionUser : lstdossierActionUser) {
+												if (doActionUser.getUserId() != dossierAction2.getUserId()
+														&& doActionUser.getStepCode().contentEquals(dossierAction2.getStepCode())) {
+													setUserId.add(String.valueOf(dossierAction2.getUserId()));
+													_log.debug("setUserId2 : " + setUserId);
+												}
+											}
+										}
+									}
 								}
 							}
-							String userPeriodActionIds = String.join(",", setUserId);
+							String userPeriodActionIds = String.join(" ", setUserId);
+							_log.info("userPeriodActionIds : " + userPeriodActionIds);
 							document.addTextSortable(DossierTerm.USER_DOSSIER_ACTION_ID, userPeriodActionIds);
 						}
 					} else {
@@ -736,7 +753,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					actionNotes.add(dossierSync.getActionNote());
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				_log.error(e);
 			}
 
 			document.addTextSortable(DossierTerm.ACTION_NOTE, StringUtil.merge(actionNotes, StringPool.SPACE));
@@ -769,6 +786,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				}
 
 			} catch (Exception e) {
+				_log.error(e);
 				_log.warn("Error when indexing: " + e.getMessage());
 				_log.warn("Still running...");
 			}

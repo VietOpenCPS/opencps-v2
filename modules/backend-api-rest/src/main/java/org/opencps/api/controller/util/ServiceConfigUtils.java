@@ -213,10 +213,11 @@ public class ServiceConfigUtils {
 					config = mappingServiceConfig(config, doc);
 					configs.add(config);
 				}
-			} else if(Validator.isNotNull(applicant)) {
+			} else if (Validator.isNotNull(applicant)) {
 				boolean citizen = false;
 				boolean business = false;
 				boolean active = false;
+
 				if ("citizen".equals(applicant.getApplicantIdType())) {
 					citizen = true;
 				} else if ("business".equals(applicant.getApplicantIdType())) {
@@ -243,7 +244,7 @@ public class ServiceConfigUtils {
 						}
 					}
 				}
-			}else{
+			} else {
 				for (Document doc : documents) {
 					ServiceConfig config = new ServiceConfig();
 
