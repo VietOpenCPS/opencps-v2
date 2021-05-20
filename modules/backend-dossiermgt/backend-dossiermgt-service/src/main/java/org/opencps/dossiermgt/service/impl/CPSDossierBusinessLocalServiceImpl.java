@@ -1445,7 +1445,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if(proAction.getESignature() && dossierFiles != null && !dossierFiles.isEmpty()) {
 //				logLineLevelDoActionInside(27, dossierIDString);
 				for (DossierFile item : dossierFiles) {
-					_log.info("DossierFile: " + JSONFactoryUtil.looseSerialize(item));
+//					_log.debug("DossierFile: " + JSONFactoryUtil.looseSerialize(item));
 					boolean eForm = false;
 					DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId,
 							item.getDossierTemplateNo(), item.getDossierPartNo());
@@ -1454,27 +1454,26 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							.getByCode(groupId,
 									dossierPart.getDeliverableType());
 					eForm = Validator.isNotNull(dossierPart.getFormScript());
-					_log.info("Efom: " + eForm);
-					_log.info("dossierPart.getESign(): " + dossierPart.getESign());
-					_log.info("item.getEForm(): " + item.getEForm());
+					_log.debug("Efom: " + eForm);
+					_log.debug("dossierPart.getESign(): " + dossierPart.getESign());
+					_log.debug("item.getEForm(): " + item.getEForm());
 					if (!eForm || !dossierPart.getESign() || !item.getEForm()) {
 						continue;
 					}
-					_log.info("Pass-----");
 
 					JSONObject mappingDataObj = JSONFactoryUtil
 							.createJSONObject(dlt.getMappingData());
-					_log.info("JSON: " + JSONFactoryUtil.looseSerialize(mappingDataObj));
+					_log.debug("JSON: " + JSONFactoryUtil.looseSerialize(mappingDataObj));
 					if (!mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) continue;
 					String deliverables = mappingDataObj.getString(
 							DeliverableTypesTerm.DELIVERABLES_KEY);
-					_log.info("deliverables: " + deliverables);
+					_log.debug("deliverables: " + deliverables);
 					//Cut lấy value của deliverableKey trong giay phep
 					if(Validator.isNotNull(deliverables)) {
 						String newString = deliverables.substring(1);
 						String[] stringSplit = newString.split(StringPool.AT);
 						String variable = stringSplit[0];
-						_log.info("variable: " + variable);
+						_log.debug("variable: " + variable);
 						//Note: key deliverableType được cấu hình trong thành phần tồn tại trong dossierFile sau khi được mapping dữ liệu
 						JSONObject formDataObj = JSONFactoryUtil
 								.createJSONObject(item.getFormData());
