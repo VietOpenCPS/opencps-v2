@@ -308,7 +308,7 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			LOG.error(e);
 			return null;
 		}
 	}

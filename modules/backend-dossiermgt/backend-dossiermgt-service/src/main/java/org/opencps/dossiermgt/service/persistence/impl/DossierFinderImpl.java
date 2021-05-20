@@ -54,7 +54,7 @@ public class DossierFinderImpl extends DossierFinderBaseImpl implements DossierF
 			return (List<Dossier>) QueryUtil.list(query,getDialect(),0,Integer.MAX_VALUE);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		} finally {
 			closeSession(session);
 		}
@@ -96,7 +96,7 @@ public class DossierFinderImpl extends DossierFinderBaseImpl implements DossierF
 
 			return (List<Object[]>) query.list();
 		} catch (Exception e) {
-			_log.error(e.getMessage());
+			_log.error(e);
 		}
 		return null;
 	}
@@ -129,7 +129,7 @@ public class DossierFinderImpl extends DossierFinderBaseImpl implements DossierF
 			try {
 				throw new SystemException(e);
 			} catch (SystemException se) {
-				se.printStackTrace();
+				_log.error(se);
 			}
 		}finally {
 			closeSession(session);

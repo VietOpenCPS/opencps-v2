@@ -2,6 +2,8 @@ package org.opencps.usermgt.service.persistence.impl;
 
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.*;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.usermgt.model.TrackClient;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public class TrackClientFinderImpl extends TrackClientFinderBaseImpl implements TrackClientFinder
 {
+	private static Log _log = LogFactoryUtil.getLog(TrackClientFinderImpl.class);
 	@ServiceReference(type = CustomSQL.class)
 	private CustomSQL _customSQL;
 
@@ -36,7 +39,7 @@ public class TrackClientFinderImpl extends TrackClientFinderBaseImpl implements 
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 
@@ -66,7 +69,7 @@ public class TrackClientFinderImpl extends TrackClientFinderBaseImpl implements 
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 	}
@@ -92,7 +95,7 @@ public class TrackClientFinderImpl extends TrackClientFinderBaseImpl implements 
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 	}
@@ -118,7 +121,7 @@ public class TrackClientFinderImpl extends TrackClientFinderBaseImpl implements 
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 	}
@@ -143,7 +146,7 @@ public class TrackClientFinderImpl extends TrackClientFinderBaseImpl implements 
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 	}

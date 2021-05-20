@@ -91,15 +91,15 @@ public class IOJwtTokenProviderFactory implements IOJwtTokenProvider {
 			Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
 			return true;
 		} catch (SignatureException ex) {
-			_log.error("Invalid JWT signature");
+			_log.error("Invalid JWT signature", ex);
 		} catch (MalformedJwtException ex) {
-			_log.error("Invalid JWT token");
+			_log.error("Invalid JWT token", ex);
 		} catch (ExpiredJwtException ex) {
-			_log.error("Expired JWT token");
+			_log.error("Expired JWT token", ex);
 		} catch (UnsupportedJwtException ex) {
-			_log.error("Unsupported JWT token");
+			_log.error("Unsupported JWT token", ex);
 		} catch (IllegalArgumentException ex) {
-			_log.error("JWT claims string is empty.");
+			_log.error("JWT claims string is empty.", ex);
 		}
 		return false;
 	}

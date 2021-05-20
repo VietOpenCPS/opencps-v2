@@ -62,7 +62,7 @@ public class MICSSOAutoLogin extends BaseAutoLogin {
             }
             return _userLocalService.fetchUser(employee.getMappingUserId());
         } catch (Exception e) {
-            _log.debug("Error when get user in auto login: " + e.getMessage());
+            _log.error(e);
             return null;
         }
     }

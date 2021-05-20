@@ -77,9 +77,9 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 					JSONObject headerNode = JSONFactoryUtil.createJSONObject();
 
-					JSONObject bodyNode = JSONFactoryUtil.createJSONObject();
+					JSONObject bodyNode;
 
-					String endpoint = auth_server + accesstoken_endpoint;
+					String endpoint;
 
 					JSONObject resultObj = getAccessToken(serverConfig);
 
@@ -309,11 +309,11 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		String encryptData = (result != null && result.length() > 0)
 				? Base64.getEncoder().encodeToString(result.toJSONString().getBytes())
 				: StringPool.BLANK;
-		if (result != null)
+		if (result != null) {
 			result.put("encryptData", encryptData);
-
-		result.put("id_token", id_token);
-		result.put("access_token", accessToken);
+			result.put("id_token", id_token);
+			result.put("access_token", accessToken);
+		}
 
 		return result;
 	}
@@ -732,7 +732,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 							Validator.isNotNull(SoCMND) ? SoCMND : SoDinhDanh);
 
 					if (applicant == null) {
-						applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
+						ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
 					}
 				}
 				// doanh nghiep
@@ -743,7 +743,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 					applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId,
 							Validator.isNotNull(MaSoThue) ? MaSoThue : MaSoDoanhNghiep);
 					if (applicant == null) {
-						applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
+						ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
 					}
 				} else {
 					return createErrorMessage("Unknown LoaiTaiKhoan", 404);

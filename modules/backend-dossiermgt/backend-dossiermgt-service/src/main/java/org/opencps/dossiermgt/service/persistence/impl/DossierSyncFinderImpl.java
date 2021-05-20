@@ -155,7 +155,7 @@ public class DossierSyncFinderImpl extends DossierSyncFinderBaseImpl implements 
 				throw new SystemException(e);
 			} catch (SystemException se) {
 //				se.printStackTrace();
-				_log.error(e);
+				_log.error(se);
 			}
 		} finally {
 			closeSession(session);

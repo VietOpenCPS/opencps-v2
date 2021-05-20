@@ -2807,6 +2807,11 @@
 			<finder-column name="status" comparator="=" arrayable-operator="OR"></finder-column>
 			<finder-column name="serverNo" comparator="!="></finder-column>
 		</finder>
+		
+		<finder return-type="Collection" name="DID_SN_NOT">
+			<finder-column name="dossierId" />
+			<finder-column name="serverNo" comparator="!="/>
+		</finder>
 
 		<finder name="STS_SN" return-type="Collection">
 			<finder-column name="status" comparator="=" arrayable-operator="OR"></finder-column>

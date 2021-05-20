@@ -169,6 +169,7 @@ public class PaymentFileUtils {
 	 */
 	public static PaymentFileModel mappingToPaymentFileModel(PaymentFile paymentFile) {
 
+
 		if (paymentFile == null) {
 			return null;
 		}
@@ -232,6 +233,7 @@ public class PaymentFileUtils {
 
 	private static String removeUnnecessaryFieldFromPaymentFile(String paymentProfile) {
 		try {
+
 			JSONObject paymentProfileJson = JSONFactoryUtil.createJSONObject(paymentProfile);
 
 			if(paymentProfileJson.has("PP_DVCGQ_CONFIG")) {
@@ -242,12 +244,13 @@ public class PaymentFileUtils {
 				paymentProfileJson.remove("PAYGOV_CONFIG");
 				paymentProfileJson.put("isPaygov", true);
 			}
-			
+
 			if (paymentProfileJson.has("KEYPAY_LATE_CONFIG")) {
 				paymentProfileJson.remove("KEYPAY_LATE_CONFIG");
 			}
 			return paymentProfileJson.toString();
 		} catch (Exception e) {
+			_log.error(e);
 			return paymentProfile;
 		}
 	}

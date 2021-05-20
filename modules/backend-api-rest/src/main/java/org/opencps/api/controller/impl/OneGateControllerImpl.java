@@ -115,7 +115,6 @@ public class OneGateControllerImpl implements OneGateController {
 
 			Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
 			List<ServiceInfo> lstServiceInfos = null;
-			ServiceInfoActions actions = new ServiceInfoActionsImpl();
 			//Search lucene
 			SearchContext searchContext = new SearchContext();
 			searchContext.setCompanyId(serviceContext.getCompanyId());

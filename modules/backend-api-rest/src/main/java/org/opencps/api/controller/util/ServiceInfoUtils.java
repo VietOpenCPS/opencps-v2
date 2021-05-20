@@ -50,7 +50,6 @@ public class ServiceInfoUtils {
 			groupId, long userId, boolean filterApplicant,
 			ServiceContext serviceContext) {
 		List<ServiceInfoModel> data = new ArrayList<ServiceInfoModel>();
-
 		try {
 			for (Document doc : documents) {
 				ServiceInfoModel model = new ServiceInfoModel();

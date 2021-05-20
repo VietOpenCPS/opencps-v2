@@ -98,7 +98,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 					try {
 						jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
 					} catch (JSONException e1) {
-						e1.printStackTrace();
+						_log.error(e1);
 					}
 					if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
 							&& jsonToken.has("expiryDate")) {
@@ -190,6 +190,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 		MBMessageEntry messageEntry, String portletId,
 		ServiceContext... serviceContexts) {
 
+		_log.debug("---send---");
 		if (messageEntry != null && messageEntry.isSendEmail() && messageEntry.getToAddress().length > 0) {
 //			_log.debug("===SEND_MAIL_TO_ADD=======" + messageEntry.getToAddress()[0].getAddress());
 			boolean needSendEmail = false;
@@ -199,7 +200,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 					break;
 				}
 			}
-			_log.info("Send email: " + needSendEmail + ", " + messageEntry.getToAddress());
+			_log.debug("Send email: " + needSendEmail );
 
 			if (needSendEmail) {
 
@@ -208,17 +209,28 @@ public class MBEmailSenderImpl implements MBEmailSender {
 				mailMessage.setTo(messageEntry.getToAddress());
 				mailMessage.setBody(messageEntry.getEmailBody());
 				mailMessage.setHTMLFormat(true);
-//					_log.debug("messageEntry FROM1: " + messageEntry.getFrom().getAddress());
-//					_log.debug("mailMessage FROM1: " + mailMessage.getFrom().getAddress());
+
 				String smtpUser = PrefsPropsUtil.getString(PropsKeys.MAIL_SESSION_MAIL_SMTP_USER, StringPool.BLANK);
-				_log.debug("Send from email: " + smtpUser);
+				String adminEmailFromName =PrefsPropsUtil.getString(PropsKeys.ADMIN_EMAIL_FROM_NAME, StringPool.BLANK);  
+				_log.debug("smtpUser: " + smtpUser);
+				_log.debug("adminEmailFromName: " + adminEmailFromName);
 				if (Validator.isNotNull(smtpUser)) {
 					messageEntry.getFrom().setAddress(smtpUser);
+					
+//					if(Validator.isNotNull(adminEmailFromName)) {
+//						messageEntry.setFromName(adminEmailFromName);
+//					}
+					
 					mailMessage.setFrom(messageEntry.getFrom());
-//						_log.debug("SEND EMAIL FROM2: " + messageEntry.getFrom());
-					// mailMessage.addFileAttachment(file);
+
 				}
-				MailServiceUtil.sendEmail(mailMessage);
+				
+
+				try {
+					MailServiceUtil.sendEmail(mailMessage);
+				}catch(Exception e){
+					_log.error(e);
+				}
 			}
 		}
 

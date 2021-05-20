@@ -641,6 +641,7 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		jsonData.put(DossierTerm.COUNTER, dossier.getCounter());
 		jsonData.put(DossierTerm.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
+		jsonData.put(DossierTerm.REGISTER_BOOK_NAME, dossier.getRegisterBookName());
 		jsonData.put(DossierTerm.SECRET, dossier.getPassword());
 		jsonData.put(DossierTerm.BRIEF_NOTE, dossier.getBriefNote());
 		jsonData.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
@@ -803,6 +804,7 @@ public class DossierDocumentUtils {
 			try {
 				jsonData.put(DossierTerm.META_DATA, JSONFactoryUtil.createJSONObject(dossier.getMetaData()));
 			} catch (JSONException e) {
+				_log.error(e);
 				jsonData.put(DossierTerm.META_DATA, StringPool.BLANK);
 			}
 		} else {

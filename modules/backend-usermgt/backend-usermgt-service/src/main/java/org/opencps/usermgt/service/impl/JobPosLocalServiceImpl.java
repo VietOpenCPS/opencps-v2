@@ -470,7 +470,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 				_log.info("Update job pos global role name: " + globalRoleName);
 				role = RoleLocalServiceUtil.fetchRole(serviceContext.getCompanyId(), globalRoleName);
 				if (role == null) {
-					role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
+					RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
 							globalRoleName, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);
 				}
 			}

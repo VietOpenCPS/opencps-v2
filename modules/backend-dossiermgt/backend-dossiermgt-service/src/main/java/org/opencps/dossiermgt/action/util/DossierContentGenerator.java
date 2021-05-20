@@ -201,6 +201,7 @@ public class DossierContentGenerator {
 			try {
 				 jsonObject = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(dossier));
 			}catch (Exception e){
+				_log.error(e);
 				return e.getMessage();
 			}
 			for (Map.Entry<String, String> entry : patternContentMaps.entrySet()) {

@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.liferay.portal.kernel.util.*;
 import org.opencps.communication.constants.MailVariables;
 import org.opencps.communication.constants.SendSMSTerm;
 import org.opencps.communication.model.NotificationQueue;
@@ -35,9 +36,6 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.HttpMethods;
-import com.liferay.portal.kernel.util.Base64;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author trungnt
@@ -230,9 +228,23 @@ public class NotificationUtil {
 					// _log.info("guestUrl: "+guestUrl);
 				}
 
+				String fromUserName = StringPool.BLANK;
+
+				String adminEmailFromName = PrefsPropsUtil.getString(PropsKeys.ADMIN_EMAIL_FROM_NAME, StringPool.BLANK);
+
+				if(Validator.isNotNull(adminEmailFromName)){
+					fromUserName = adminEmailFromName;
+				}else{
+					fromUserName = queue.getFromUsername();
+				}
+
+				_log.debug("+++fromUserName:"+fromUserName);
+
 				messageEntry = new MBMessageEntry(
-					queue.getFromUsername(), queue.getToUserId(),
+						fromUserName, queue.getToUserId(),
 					queue.getToEmail(), queue.getToUsername(), serviceContext);
+
+				_log.debug("++++messageEntry.getFromName(1):"+messageEntry.getFromName());
 
 				messageEntry.setCreateDate(queue.getCreateDate());
 				messageEntry.setEmailBody(emailBody);
@@ -246,56 +258,11 @@ public class NotificationUtil {
 				messageEntry.setData(queue.getPayload());
 				messageEntry.setDossierNo(Validator.isNotNull(dossierNo) ? dossierNo : StringPool.BLANK);
 
-				// _log.info(emailBody);
-
-				// _log.info(userUrl);
-
-				// messageEntry.setFromEmail();
-
 				boolean sendEmail = true;
 				boolean sendNotify = true;
 				boolean sendSMS = false;
 				boolean sendMesZalo = false;
 
-//				if (queue.getToUserId() > 0) {
-					// Preferences preferences =
-					// PreferencesLocalServiceUtil.fetchByF_userId(
-					// serviceContext.getScopeGroupId(),
-					// queue.getToUserId());
-					// if (preferences != null &&
-					// Validator.isNotNull(preferences.getPreferences())) {
-					// try {
-					// JSONObject pref = JSONFactoryUtil.createJSONObject(
-					// preferences.getPreferences());
-					// if (pref.has(queue.getNotificationType())) {
-					// JSONObject object = pref.getJSONObject(
-					// queue.getNotificationType());
-					// if (object != null &&
-					// object.has(queue.getClassName())) {
-					// JSONObject conf = object.getJSONObject(
-					// queue.getClassName());
-					// sendEmail = conf.getBoolean("email");
-					// sendNotify = conf.getBoolean("notify");
-					// sendSMS = conf.getBoolean("sms");
-					// }
-					// }
-					// }
-					// catch (Exception e) {
-					// _log.debug(e);
-					// //_log.error(e);
-					// }
-					// }
-//					if (template != null) {
-//						// sendEmail = template.getSendEmail();
-//						sendNotify = template.getSendNotification();
-//						// sendSMS = template.getSendSMS();
-//						sendMesZalo = template.getSendNotification();
-//					}
-//				}
-//				else {
-//					sendNotify = false;
-//					sendMesZalo = false;
-//				}
 
 				if (template != null) {
 					sendEmail = template.getSendEmail();
@@ -328,7 +295,7 @@ public class NotificationUtil {
 					messageEntry.setSendZalo(sendMesZalo);
 				}
 
-				// _log.info("create mail message: " + messageEntry);
+				_log.debug("++++messageEntry.getFromName(2):"+messageEntry.getFromName());
 
 			}
 			catch (Exception e) {

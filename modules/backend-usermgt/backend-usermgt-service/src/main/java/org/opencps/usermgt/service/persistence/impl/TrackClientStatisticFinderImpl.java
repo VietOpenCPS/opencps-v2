@@ -5,12 +5,16 @@ import java.util.List;
 
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.*;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.usermgt.model.impl.TrackClientStatisticImpl;
 import org.opencps.usermgt.service.persistence.TrackClientStatisticFinder;
 
 public class TrackClientStatisticFinderImpl extends TrackClientStatisticFinderBaseImpl implements TrackClientStatisticFinder
 {
+
+	private static Log _log = LogFactoryUtil.getLog(TrackClientStatisticFinderImpl.class);
 	@Override
 	public List<org.opencps.usermgt.model.TrackClientStatistic> findPeriod(String startDay, String endDay)
 	{
@@ -31,7 +35,7 @@ public class TrackClientStatisticFinderImpl extends TrackClientStatisticFinderBa
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 
@@ -54,7 +58,7 @@ public class TrackClientStatisticFinderImpl extends TrackClientStatisticFinderBa
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 
@@ -76,7 +80,7 @@ public class TrackClientStatisticFinderImpl extends TrackClientStatisticFinderBa
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 
@@ -99,7 +103,7 @@ public class TrackClientStatisticFinderImpl extends TrackClientStatisticFinderBa
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 
@@ -125,7 +129,7 @@ public class TrackClientStatisticFinderImpl extends TrackClientStatisticFinderBa
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 
@@ -149,7 +153,7 @@ public class TrackClientStatisticFinderImpl extends TrackClientStatisticFinderBa
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 
@@ -177,7 +181,7 @@ public class TrackClientStatisticFinderImpl extends TrackClientStatisticFinderBa
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 

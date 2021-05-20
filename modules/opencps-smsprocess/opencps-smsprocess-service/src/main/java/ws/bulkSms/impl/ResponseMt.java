@@ -90,7 +90,6 @@ public class ResponseMt  implements java.io.Serializable {
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof ResponseMt)) return false;
         ResponseMt other = (ResponseMt) obj;
-        if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
             return (__equalsCalc == obj);

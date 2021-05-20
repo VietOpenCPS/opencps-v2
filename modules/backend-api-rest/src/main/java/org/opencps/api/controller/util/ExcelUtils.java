@@ -86,7 +86,7 @@ public class ExcelUtils {
             return resultXml.toString();
 
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 

@@ -134,7 +134,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 							String epay = paymentConfig.getEpaymentConfig();
 							JSONObject jsonObject = JSONFactoryUtil.createJSONObject(epay);
 							String paymentReturnUrl = StringPool.BLANK;
-							String paymentMerchantSecureKey = StringPool.BLANK;
+							String paymentMerchantSecureKey ;
 							if (jsonObject.has("paymentReturnUrl"))
 								paymentReturnUrl = jsonObject.getString("paymentReturnUrl");
 							if (jsonObject.has("paymentMerchantSecureKey"));
@@ -148,6 +148,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					Message message = new Message();
 					message.put(DossierDocumentTerm.FORM_REPORT, documentScript);
 					message.put(DossierDocumentTerm.FORM_DATA, jsonData.toJSONString());
+
 					if(Validator.isNotNull(reportType)){
 						message.put(ConstantUtils.API_JSON_REPORT_TYPE, reportType);
 					}
@@ -157,6 +158,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						Date dateStart1 = new Date();
 						String previewResponse = (String) MessageBusUtil
 								.sendSynchronousMessage(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW, message, 10000);
+
 
 						File file = new File(previewResponse);
 
@@ -528,7 +530,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 	private static JSONArray getProcessSequencesDoneJSON(String[] sequenceArr, List<ProcessSequence> sequenceList, DossierAction dAction, Dossier dosssier) {
 		try {
 			JSONArray jsonSequenceArrDone = JSONFactoryUtil.createJSONArray();
-			List<DossierAction> lstDoAction = new ArrayList<>();
+			List<DossierAction> lstDoAction;
 
 			lstDoAction = DossierActionLocalServiceUtil.getDossierActionById(dosssier.getDossierId());
 			if (lstDoAction != null && lstDoAction.size() > 0) {
@@ -568,7 +570,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			}
 			return jsonSequenceArrDone;
 		}catch (Exception e) {
-			e.getMessage();
+			_log.error(e);
 			return null;
 		}
 	}
@@ -622,7 +624,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				}
 			}
 		}catch (Exception e){
-			e.getMessage();
+			_log.error(e);
 		}
 
 		return jsonSequenceArr;

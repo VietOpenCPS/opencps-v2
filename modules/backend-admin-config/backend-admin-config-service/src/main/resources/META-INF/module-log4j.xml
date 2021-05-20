@@ -6,5 +6,5 @@
     </category>
     <category name="org.opencps.admin.config">
         <priority value="INFO" />
-    </category>    
+    </category>
 </log4j:configuration>

@@ -48,7 +48,7 @@ public class KeypayDVCQGUtils {
 		JSONObject philephiJ = JSONFactoryUtil.createJSONObject();
 		// moi dich vu cong co 1 thong tin ngan hang thu huong khac nhau
 		JSONObject banksInfo = epaymentProfileDVCQG.getJSONObject(PayGateTerm.BANKINFO);
-		JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+		JSONObject bankInfo;
 		if (banksInfo.has(dossier.getServiceCode())) {
 			bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
 		} else {
