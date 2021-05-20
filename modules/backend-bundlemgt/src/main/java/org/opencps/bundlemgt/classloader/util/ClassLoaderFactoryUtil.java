@@ -76,6 +76,7 @@ public class ClassLoaderFactoryUtil {
 			}
 			return null;
 		} catch (Exception e) {
+			_log.error(e);
 			return null;
 		}
 	}

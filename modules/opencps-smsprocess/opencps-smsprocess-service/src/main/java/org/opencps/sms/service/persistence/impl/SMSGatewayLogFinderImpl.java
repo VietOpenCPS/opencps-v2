@@ -7,6 +7,8 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -21,6 +23,7 @@ import org.opencps.sms.service.persistence.SMSGatewayLogFinder;
 public class SMSGatewayLogFinderImpl extends SMSGatewayLogFinderBaseImpl implements SMSGatewayLogFinder {
 
     private static final String SQL_SEARCH_SMSLOG = SMSGatewayLogFinder.class.getName() + ".search";
+    private static Log _log = LogFactoryUtil.getLog(SMSGatewayLogFinderImpl.class);
 
     @ServiceReference(type = CustomSQL.class)
     private CustomSQL _customSQL;
@@ -104,7 +107,7 @@ public class SMSGatewayLogFinderImpl extends SMSGatewayLogFinderBaseImpl impleme
                 throw new SystemException(e);
             }
             catch (SystemException se) {
-                se.printStackTrace();
+                _log.error(se);
             }
         }
         finally {

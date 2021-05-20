@@ -22,6 +22,9 @@ public class PropUtil {
 		try {
 
 			is = PropUtil.class.getClassLoader().getResourceAsStream("query.properties");
+			if(is == null){
+				is = PropUtil.class.getClassLoader().getResourceAsStream("query.properties");
+			}
 			_queryProperties = System.getProperties();
 			_queryProperties.load(is);
 

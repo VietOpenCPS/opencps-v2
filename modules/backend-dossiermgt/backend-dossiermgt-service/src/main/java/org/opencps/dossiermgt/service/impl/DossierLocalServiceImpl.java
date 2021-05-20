@@ -1478,8 +1478,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		// set receivedDate
 		dossier.setReceiveDate(now);
 
-		dossier.setDossierNote(option.getInstructionNote());
-		dossier.setSubmissionNote(option.getSubmissionNote());
+		if (option != null) {
+			dossier.setDossierNote(option.getInstructionNote());
+			dossier.setSubmissionNote(option.getSubmissionNote());
+		}
+
 		dossier.setApplicantNote(applicantNote);
 		dossier.setBriefNote(briefNote);
 		// dossier.setDossierNo(dossierNo);
@@ -6419,6 +6422,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		try {
 			return dossierPersistence.findByG_DN(groupId, dossierNo);
 		} catch (NoSuchDossierException e) {
+			_log.error(e);
 			return null;
 		}
 	}
@@ -6429,7 +6433,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			return true;
 		} catch (NoSuchDossierException e) {
-
+			_log.error(e);
 			return false;
 		}
 	}

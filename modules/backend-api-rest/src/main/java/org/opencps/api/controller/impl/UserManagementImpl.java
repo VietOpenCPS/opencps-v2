@@ -538,7 +538,6 @@ public class UserManagementImpl implements UserManagement {
 					}
 					// }
 				} catch (Exception e) {
-					_log.error(e);
 					_log.debug("Something went wrong while reading/writing in stream!!");
 					return BusinessExceptionImpl.processException(e);
 				}
@@ -867,7 +866,7 @@ public class UserManagementImpl implements UserManagement {
 						}
 						_log.debug("RESULT PROXY: " + sbChange.toString());
 					} catch (Exception e) {
-						// TODO: handle exception
+						_log.error(e);
 					}
 				}
 			}
@@ -1063,6 +1062,7 @@ public class UserManagementImpl implements UserManagement {
 				sc.init(null, trustAllCerts, new SecureRandom());
 				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 			} catch (Exception e) {
+				_log.error(e);
 			}
 			
 			//
@@ -1166,7 +1166,6 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(HttpURLConnection.HTTP_OK).entity( JSONFactoryUtil.looseSerialize(result)).build();
 
 		} catch (Exception e) {
-			_log.error(e);
 			return CommonExceptionImpl.processException(e);
 		}
 

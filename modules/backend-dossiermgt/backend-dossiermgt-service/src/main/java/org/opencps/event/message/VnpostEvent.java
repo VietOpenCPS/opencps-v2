@@ -37,8 +37,6 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class VnpostEvent implements MessageListener {
 
-	private static final String VNPOST_BASE_PATH = "postal/vnpost";
-
 	@Override
 	public void receive(Message message) throws MessageListenerException {
 		try {
@@ -63,6 +61,7 @@ public class VnpostEvent implements MessageListener {
 			_log.debug("-----DONE CREATE BILL LOGISTIC...");
 
 		} catch (Exception e) {
+			_log.error(e);
 			_log.error("Unable to process message " + message, e);
 		}
 	}
@@ -90,7 +89,7 @@ public class VnpostEvent implements MessageListener {
 
 			return Integer.valueOf(typeLogisticString);
 		} catch(Exception e) {
-			_log.error(e.getMessage());
+			_log.error(e);
 			return LogisticConstants.DEFAULT;
 		}
 	}
@@ -104,6 +103,7 @@ public class VnpostEvent implements MessageListener {
 			viettelPostManagement.postBill(token, orderService, dossierObj);
 			_log.debug("-----Done create bill viettel");
 		} catch (Exception e) {
+			_log.error(e);
 			_log.error("-----ERROR Create bill viettel post" + e.getMessage());
 		}
 	}
@@ -124,15 +124,15 @@ public class VnpostEvent implements MessageListener {
 			} else {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, refId);
 			}
-//			if (dossier.getVnpostalStatus() != 1) {
-//				return;
-//			}
+
+			if (dossier.getOriginality() != 2 & dossier.getOriginality() != 3) {
+				return;
+			}
 
 			InvokeREST callRest = new InvokeREST();
 			String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 			HashMap<String, String> properties = new HashMap<String, String>();
 			Map<String, Object> params = new HashMap<>();
-			String senderDesc = "Chuyển phát hồ sơ khách hàng: ";
 			_log.debug("SONDT VNPOST EVENT dossierObj ========= "+ dossierObj);
 			params.put(VnpostCollectionTerm.GOV_AGENCY_CODE, dossierObj.getString(DossierTerm.GOV_AGENCY_CODE));
 			params.put(VnpostCollectionTerm.GOV_AGENCY_NAME, dossierObj.getString(DossierTerm.GOV_AGENCY_NAME));
@@ -185,7 +185,7 @@ public class VnpostEvent implements MessageListener {
 			}
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 		senderName  += "||Tên dịch vụ: " + serviceType + "||CMND: " + dossier.getApplicantIdNo();
 		return senderName;

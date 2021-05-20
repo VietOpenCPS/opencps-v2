@@ -90,6 +90,7 @@ public class FieldPickActionsImpl implements FieldPickActions
 		}
 		catch (PortalException e)
 		{
+			_log.error(e);
 			return null;
 		}
 	}

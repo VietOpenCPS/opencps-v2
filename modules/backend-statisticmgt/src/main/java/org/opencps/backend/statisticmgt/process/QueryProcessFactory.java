@@ -79,4 +79,11 @@ public interface QueryProcessFactory {
 	public JSONObject getDossierStatistic20(long groupId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType);
+
+	public JSONObject getDossierStatistic21(long groupId, String fromDate, String toDate, int[] originalities,
+			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
+			String groupBy, int start, int end, String sqlTemplate, int type, String subType);
+
+
+
 }

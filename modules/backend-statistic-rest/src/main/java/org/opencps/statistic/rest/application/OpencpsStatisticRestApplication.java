@@ -224,7 +224,6 @@ public class OpencpsStatisticRestApplication extends Application {
 		}
 		String fromStatisticDate = query.getFromStatisticDate();
 		String toStatisticDate = query.getToStatisticDate();
-		//boolean reporting = query.getReporting();
 		Integer reCalculate = query.getReCalculate();
 		if (reCalculate == null) {
 			reCalculate = 0;
@@ -473,9 +472,6 @@ public class OpencpsStatisticRestApplication extends Application {
 						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 						engineFetch.fetchSumStatisticData(groupId, statisticData, dossierDataList, fromCalDate, toCalDate,
 								0, isGetReportServiceCode);
-						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-						//statisticEngineUpdate.updateStatisticData(statisticData);
-						//
 						statisticData.forEach((k, v) ->
 						statisticDataList.add(v));
 					}
@@ -791,7 +787,6 @@ public class OpencpsStatisticRestApplication extends Application {
 		String govAgencyCode = query.getAgency();
 		String domain = query.getDomain();
 		String votingCode = query.getVotingCode();
-		//boolean reCalculate = query.isReCalculate();
 		String fromStatisticDate = query.getFromStatisticDate();
 		String toStatisticDate = query.getToStatisticDate();
 
@@ -957,7 +952,6 @@ public class OpencpsStatisticRestApplication extends Application {
 		String votingCode = query.getVotingCode();
 		String fromStatisticDate = query.getFromStatisticDate();
 		String toStatisticDate = query.getToStatisticDate();
-		//boolean reCalculate = query.isReCalculate();
 
 		if (start == 0)
 			start = QueryUtil.ALL_POS;
@@ -1176,12 +1170,11 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 			}
 		}
-		ServiceDomainResponse serviceDomainResponse = null;
 		if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
-			serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
+			callServiceDomainService.callRestService(sdPayload);
 		}
 		else {
-			serviceDomainResponse = StatisticDataUtil.getLocalServiceDomain(sdPayload);
+			StatisticDataUtil.getLocalServiceDomain(sdPayload);
 		}
 		// Get dossier to groupId
 		GetDossierRequest payload = new GetDossierRequest();
@@ -1767,11 +1760,6 @@ public class OpencpsStatisticRestApplication extends Application {
 				PaymentFileActions actions = new PaymentFileActionsImpl();
 				JSONObject jsonData = actions.getPaymentFiles(-1, companyId, groupId, params, sorts, query.getStart(), query.getEnd(), new ServiceContext());
 				List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
-				//List<GetDossierData> dossierData = new ArrayList<>();
-				int total = jsonData.getInt(ConstantUtils.TOTAL);
-				Map<String, Map<String, List<Document>>> mapResults = new HashMap<String, Map<String,List<Document>>>();
-				Map<String, String> domains = new HashMap<String, String>();
-				Map<String, String> services = new HashMap<String, String>();
 
 				for (Document doc : datas) {
 					JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
@@ -1785,7 +1773,6 @@ public class OpencpsStatisticRestApplication extends Application {
 					if (Validator.isNotNull(metaData) && metaData.has("dossierFilePayment")) {
 						JSONArray dossierFilePayments = metaData.getJSONArray("dossierFilePayment");
 						_log.info("err mutiplie dossierFilePayments[] " );
-						//StringBuilder chitietDonGia = new StringBuilder();
 						StringBuilder sbDonGia = new StringBuilder();
 						StringBuilder sbRecordCount = new StringBuilder();
 						JSONObject jsonMoney = JSONFactoryUtil.createJSONObject();
@@ -1858,8 +1845,6 @@ public class OpencpsStatisticRestApplication extends Application {
 				DossierActions actions = new DossierActionsImpl();
 				JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, query.getStart(), query.getEnd(), new ServiceContext());
 				List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
-				List<GetDossierData> dossierData = new ArrayList<>();
-				int total = jsonData.getInt(ConstantUtils.TOTAL);
 				Map<String, Map<String, List<Document>>> mapResults = new HashMap<String, Map<String,List<Document>>>();
 				Map<String, String> domains = new HashMap<String, String>();
 				Map<String, String> services = new HashMap<String, String>();
@@ -1924,15 +1909,8 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 
 				for (String domainCode : mapResults.keySet()) {
-//				JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
-//				groupDomainObj.put("domain", domains.get(domainCode));
-//				JSONArray serviceArr = JSONFactoryUtil.createJSONArray();
-//				JSONArray groupDomainArr = JSONFactoryUtil.createJSONArray();
 
 					for (String serviceCode : mapResults.get(domainCode).keySet()) {
-//					JSONObject serviceObj = JSONFactoryUtil.createJSONObject();
-//					serviceObj.put("service", services.get(serviceCode));
-//					JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
 						int count = 1;
 						for (Document doc : mapResults.get(domainCode).get(serviceCode)) {
 							String dossierId = doc.get(DossierTerm.DOSSIER_ID);
@@ -2009,7 +1987,6 @@ public class OpencpsStatisticRestApplication extends Application {
 								dossierObj.put("serviceAmount", pf.getServiceAmount());
 								dossierObj.put("paymentAmount", pf.getPaymentAmount());
 								dossierObj.put("totalAmount",  pf.getPaymentAmount());
-//							dossierArr.put(dossierObj);
 								dossierObj.put("domainCode", domainCode);
 								dossierObj.put("domainName", domains.get(domainCode));
 								dossierObj.put("serviceCode", serviceCode);
@@ -2078,8 +2055,6 @@ public class OpencpsStatisticRestApplication extends Application {
 
 			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, startOff, endOff, new ServiceContext());
 			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
-			List<GetDossierData> dossierData = new ArrayList<>();
-			int total = jsonData.getInt(ConstantUtils.TOTAL);
 			Map<String, Map<String, List<Document>>> mapResults = new HashMap<String, Map<String,List<Document>>>();
 			Map<String, String> domains = new HashMap<String, String>();
 			Map<String, String> services = new HashMap<String, String>();
@@ -2099,7 +2074,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 				if (mapResults.get(domainCode) != null) {
 					Map<String, List<Document>> mapDomains = mapResults.get(domainCode);
-					List<Document> lstDossiers = null;
+					List<Document> lstDossiers;
 					if (mapDomains.containsKey(serviceCode)) {
 						lstDossiers = mapDomains.get(serviceCode);
 					}
@@ -2144,13 +2119,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 			if (Validator.isNotNull(type) && "service".contentEquals(type)) {
 				for (String domainCode : mapResults.keySet()) {
-//					JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
-//					groupDomainObj.put("domain", domains.get(domainCode));
-//					JSONArray serviceArr = JSONFactoryUtil.createJSONArray();
-
 					for (String serviceCode : mapResults.get(domainCode).keySet()) {
-//						JSONObject serviceObj = JSONFactoryUtil.createJSONObject();
-//						serviceObj.put("service", serviceCode + " - " + services.get(serviceCode));
 						int count = 0;
 						long totalFee = 0;
 						long totalPaymentAmount = 0;
@@ -2165,7 +2134,6 @@ public class OpencpsStatisticRestApplication extends Application {
 							}
 						}
 						if (count > 0) {
-//							JSONArray paymentArr = JSONFactoryUtil.createJSONArray();
 							JSONObject paymentObj = JSONFactoryUtil.createJSONObject();
 							paymentObj.put("no", 1);
 							paymentObj.put("serviceName", serviceCode + " - " + services.get(serviceCode));
@@ -2173,9 +2141,6 @@ public class OpencpsStatisticRestApplication extends Application {
 							paymentObj.put("totalFeeAmount", totalFee);
 							paymentObj.put("totalPaymentAmount", totalPaymentAmount);
 							paymentObj.put("totalAmount", totalFee + totalPaymentAmount);
-//							paymentArr.put(paymentObj);
-//							serviceObj.put("data", paymentArr);
-//							serviceArr.put(serviceObj);
 							paymentObj.put("domainCode", domainCode);
 							paymentObj.put("domainName", domains.get(domainCode));
 							paymentObj.put("serviceCode", serviceCode);
@@ -2184,10 +2149,6 @@ public class OpencpsStatisticRestApplication extends Application {
 							results.put(paymentObj);
 						}
 					}
-//					if (serviceArr.length() > 0) {
-//						groupDomainObj.put("data", serviceArr);
-//						results.put(groupDomainObj);
-//					}
 				}
 			}
 			else {
@@ -2274,8 +2235,6 @@ public class OpencpsStatisticRestApplication extends Application {
 
 			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, startOff, endOff, new ServiceContext());
 			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
-			List<GetDossierData> dossierData = new ArrayList<>();
-			int total = jsonData.getInt(ConstantUtils.TOTAL);
 			Map<String, Map<String, List<Document>>> mapResults = new HashMap<String, Map<String,List<Document>>>();
 			Map<String, String> govs = new HashMap<String, String>();
 			Map<String, String> services = new HashMap<String, String>();
@@ -2295,7 +2254,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 				if (mapResults.get(agency) != null) {
 					Map<String, List<Document>> mapGovs = mapResults.get(agency);
-					List<Document> lstDossiers = null;
+					List<Document> lstDossiers;
 					if (mapGovs.containsKey(serviceCode)) {
 						lstDossiers = mapGovs.get(serviceCode);
 					}
@@ -2319,15 +2278,10 @@ public class OpencpsStatisticRestApplication extends Application {
 				for (String agency : mapResults.keySet()) {
 					JSONObject obj = JSONFactoryUtil.createJSONObject();
 
-//					JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
-//					groupDomainObj.put("domain", domains.get(domainCode));
-//					JSONArray serviceArr = JSONFactoryUtil.createJSONArray();
 					obj.put("govAgencyCode", agency);
 					obj.put("govAgencyName", govs.get(agency));
 
 					for (String serviceCode : mapResults.get(agency).keySet()) {
-//						JSONObject serviceObj = JSONFactoryUtil.createJSONObject();
-//						serviceObj.put("service", serviceCode + " - " + services.get(serviceCode));
 						RealtimeData data = new RealtimeData();
 						data.setServiceCode(serviceCode);
 						data.setServiceName(services.get(serviceCode));
@@ -2347,10 +2301,6 @@ public class OpencpsStatisticRestApplication extends Application {
 						obj.put("doneViaPostalCount", data.getDoneViaPostalCount());
 					}
 					results.put(obj);
-//					if (serviceArr.length() > 0) {
-//						groupDomainObj.put("data", serviceArr);
-//						results.put(groupDomainObj);
-//					}
 				}
 			ResponseBuilder builder = Response.ok(results.toJSONString());
 			return builder.build();
@@ -2413,8 +2363,6 @@ public class OpencpsStatisticRestApplication extends Application {
 
 			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, startOff, endOff, new ServiceContext());
 			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
-			List<GetDossierData> dossierData = new ArrayList<>();
-			int total = jsonData.getInt(ConstantUtils.TOTAL);
 			Map<String, Map<String, List<Document>>> mapResults = new HashMap<String, Map<String,List<Document>>>();
 			Map<String, String> govs = new HashMap<String, String>();
 			Map<String, String> services = new HashMap<String, String>();
@@ -2434,7 +2382,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 				if (mapResults.get(agency) != null) {
 					Map<String, List<Document>> mapGovs = mapResults.get(agency);
-					List<Document> lstDossiers = null;
+					List<Document> lstDossiers;
 					if (mapGovs.containsKey(serviceCode)) {
 						lstDossiers = mapGovs.get(serviceCode);
 					}
@@ -2651,17 +2599,12 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	public void updateDossierStatisticData(RealtimeData statisticData, List<Document> dossiers,
 			Date fromStatisticDate, Date toStatisticDate) {
-//		int month = LocalDate.now().getMonthValue();
-		//int year = LocalDate.now().getYear();
 		Calendar dateStatistic = Calendar.getInstance();
 		dateStatistic.setTime(fromStatisticDate);
 		for (Document dossierData : dossiers) {
 			Date dueDate = Validator.isNull(dossierData.get(DossierTerm.DUE_DATE))
 					? null
 					: APIDateTimeUtils.convertStringToDate(dossierData.get(DossierTerm.CREATE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
-			Date extendDate = Validator.isNull(dossierData.get(DossierTerm.EXTEND_DATE))
-					? null
-					: APIDateTimeUtils.convertStringToDate(dossierData.get(DossierTerm.EXTEND_DATE), APIDateTimeUtils._NORMAL_DATE_TIME);
 			Date releaseDate = Validator.isNull(dossierData.get(DossierTerm.RELEASE_DATE))
 					? null
 					: APIDateTimeUtils.convertStringToDate(dossierData.get(DossierTerm.RELEASE_DATE), APIDateTimeUtils._NORMAL_DATE_TIME);
@@ -2672,8 +2615,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					? null
 					: APIDateTimeUtils.convertStringToDate(dossierData.get(DossierTerm.FINISH_DATE), APIDateTimeUtils._NORMAL_DATE_TIME);
 			int viaPostal = GetterUtil.getInteger(dossierData.get(DossierTerm.VIA_POSTAL));
-//			if (viaPostal != 0)
-//				_log.info("VIA POSTAL STATISTIC: " + viaPostal);
+
 			if (viaPostal == USED_POSTAL) {
 				statisticData.setViaPostalCount(statisticData.getViaPostalCount() + 1);
 			}

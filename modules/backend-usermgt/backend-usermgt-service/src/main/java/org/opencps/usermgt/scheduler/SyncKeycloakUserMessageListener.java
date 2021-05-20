@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, property = { "cron.expression=0 0/5 * * * ?" }, service = SyncKeycloakUserMessageListener.class)
+//@Component(immediate = true, property = { "cron.expression=0 0/5 * * * ?" }, service = SyncKeycloakUserMessageListener.class)
 public class SyncKeycloakUserMessageListener extends BaseMessageListener {
 
 	/**

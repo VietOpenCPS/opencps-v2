@@ -59,23 +59,23 @@ public class DeliverableNumberGenerator {
 		if (deliverableType != null) {
 			try {
 				if(Validator.isNotNull(govAgencyCode)){
-					_log.info("Vao 11111111: " + deliverableType.getDeliverableTypeId());
+					_log.debug("Vao 11111111: " + deliverableType.getDeliverableTypeId());
 					JSONObject mappingPattern = JSONFactoryUtil.createJSONObject(deliverableType.getCodePattern());
-					_log.info("Vao 222222222222 : " + JSONFactoryUtil.looseSerialize(deliverableType.getCodePattern()));
+					_log.debug("Vao 222222222222 : " + JSONFactoryUtil.looseSerialize(deliverableType.getCodePattern()));
 					if (mappingPattern
 							.has(govAgencyCode)) {
-						_log.info("Vao 333333 : " + JSONFactoryUtil.looseSerialize(mappingPattern));
+						_log.debug("Vao 333333 : " + JSONFactoryUtil.looseSerialize(mappingPattern));
 						JSONObject patternGov = mappingPattern.getJSONObject(
 								govAgencyCode);
-						_log.info("Vao 4444444 : " + JSONFactoryUtil.looseSerialize(patternGov));
+						_log.debug("Vao 4444444 : " + JSONFactoryUtil.looseSerialize(patternGov));
 						code = patternGov.getString(
 								DeliverableTypesTerm.CODEPATTERN);
-						_log.info("Vao 55555555 : " + code);
+						_log.debug("Vao 55555555 : " + code);
 						seriNumberPattern = code;
 
 					}
 				}else{
-					_log.info("ERRRRRRRRR");
+					_log.debug("ERRRRRRRRR");
 					seriNumberPattern = deliverableType.getCodePattern();
 				}
 			}catch (Exception e) {
@@ -106,27 +106,32 @@ public class DeliverableNumberGenerator {
 
 				while (m.find()) {
 					String tmp = m.group(1);
-					_log.info("tmp : " + tmp);
+					_log.debug("tmp : " + tmp);
 					String tmpCode = m.group(0);
 					_log.debug("tmpCode : " + tmpCode);
 					if (r.toString().equals(codePattern)) {
-						_log.info("CODEPattern : " + codePattern);
+						_log.debug("CODEPattern : " + codePattern);
 
 						String number = countByInit(pattern, tmp, deliverableType.getCounter(),govAgencyCode,tmpCode);
-						_log.info("Number : " + number);
+						_log.debug("Number : " + number);
 						
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
-						_log.info("tmp1 : " + tmp);
-						if (number.length() < tmp.length()) {
-							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
-							_log.info("number1 : " + number);
+						_log.debug("tmp1 : " + tmp);
+
+						if (number != null) {
+							if (number.length() < tmp.length()) {
+								number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+							}
+						} else {
+							number = tmp;
 						}
+
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
-						_log.info("seriNumberPattern1 : " + seriNumberPattern);
+						_log.debug("seriNumberPattern1 : " + seriNumberPattern);
 					} else if (r.toString().equals(datetimePattern)) {
 
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), "OK");
-						_log.info("seriNumberPattern2 : " + seriNumberPattern);
+						_log.debug("seriNumberPattern2 : " + seriNumberPattern);
 						
 					} else if (r.toString().equals(dayPattern)) {
 
@@ -164,12 +169,12 @@ public class DeliverableNumberGenerator {
 
 					}
 					m = r.matcher(seriNumberPattern);
-					_log.info("seriNumberPattern6 : " + seriNumberPattern);
+					_log.debug("seriNumberPattern6 : " + seriNumberPattern);
 				}
 			}
 
 			deliverableNumber = seriNumberPattern;
-			_log.info("deliverableNumber : " + deliverableNumber);
+			_log.debug("deliverableNumber : " + deliverableNumber);
 		}
 		return deliverableNumber;
 	}
@@ -187,18 +192,18 @@ public class DeliverableNumberGenerator {
 		if (deliverableType != null) {
 			try {
 				if(Validator.isNotNull(govAgencyCode)){
-					_log.info("Vao 11111111: " + deliverableType.getDeliverableTypeId());
+					_log.debug("Vao 11111111: " + deliverableType.getDeliverableTypeId());
 					JSONObject mappingPattern = JSONFactoryUtil.createJSONObject(deliverableType.getCodePattern());
-					_log.info("Vao 222222222222 : " + JSONFactoryUtil.looseSerialize(deliverableType.getCodePattern()));
+					_log.debug("Vao 222222222222 : " + JSONFactoryUtil.looseSerialize(deliverableType.getCodePattern()));
 					if (mappingPattern
 							.has(govAgencyCode)) {
-						_log.info("Vao 333333 : " + JSONFactoryUtil.looseSerialize(mappingPattern));
+						_log.debug("Vao 333333 : " + JSONFactoryUtil.looseSerialize(mappingPattern));
 						JSONObject patternGov = mappingPattern.getJSONObject(
 								govAgencyCode);
-						_log.info("Vao 4444444 : " + JSONFactoryUtil.looseSerialize(patternGov));
+						_log.debug("Vao 4444444 : " + JSONFactoryUtil.looseSerialize(patternGov));
 						code = patternGov.getString(
 								DeliverableTypesTerm.CODEPATTERN);
-						_log.info("Vao 55555555 : " + code);
+						_log.debug("Vao 55555555 : " + code);
 						seriNumberPattern = code;
 
 					}
@@ -239,8 +244,8 @@ public class DeliverableNumberGenerator {
 
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), "OK");
 						 codeNumberPattern = seriNumberPattern.replace(m.group(0), "OK");
-						_log.info("seriNumberPattern2 : " + seriNumberPattern);
-						_log.info("codeNumberPattern : " + codeNumberPattern);
+						_log.debug("seriNumberPattern2 : " + seriNumberPattern);
+						_log.debug("codeNumberPattern : " + codeNumberPattern);
 
 					} else if (r.toString().equals(dayPattern)) {
 
@@ -254,7 +259,7 @@ public class DeliverableNumberGenerator {
 
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), day);
 						 codeNumberPattern = seriNumberPattern.replace(m.group(0), day);
-						 _log.info("codeNumberPattern : " + codeNumberPattern);
+						 _log.debug("codeNumberPattern : " + codeNumberPattern);
 
 					} else if (r.toString().equals(monthPattern)) {
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
@@ -267,7 +272,7 @@ public class DeliverableNumberGenerator {
 
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), month);
 						 codeNumberPattern = seriNumberPattern.replace(m.group(0), month);
-						 _log.info("codeNumberPattern : " + codeNumberPattern);
+						 _log.debug("codeNumberPattern : " + codeNumberPattern);
 
 					} else if (r.toString().equals(yearPattern)) {
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
@@ -280,32 +285,35 @@ public class DeliverableNumberGenerator {
 
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), year);
 						codeNumberPattern = seriNumberPattern.replace(m.group(0), year);
-						 _log.info("codeNumberPattern : " + codeNumberPattern);
+						 _log.debug("codeNumberPattern : " + codeNumberPattern);
 
 					}else if (r.toString().equals(codePattern)) {
-						_log.info("CODEPattern : " + codePattern);
+						_log.debug("CODEPattern : " + codePattern);
 
 						 String tmpCode = seriNumberPattern.replaceAll("\\{\\w+}", "");
-						 _log.info("tmp : " + tmp);
+						 _log.debug("tmp : " + tmp);
 						String number = countByInit(pattern, tmp, deliverableType.getCounter(),govAgencyCode, tmpCode);
-						_log.info("Number : " + number);
+						_log.debug("Number : " + number);
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
-						_log.info("tmp1 : " + tmp);
-						if (number.length() < tmp.length()) {
-							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
-							_log.info("number1 : " + number);
-						}
+						_log.debug("tmp1 : " + tmp);
+						 if (number != null) {
+							 if (number.length() < tmp.length()) {
+								 number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+							 }
+						 } else {
+							 number = tmp;
+						 }
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
-						_log.info("seriNumberPattern1 : " + seriNumberPattern);
+						_log.debug("seriNumberPattern1 : " + seriNumberPattern);
 					}
 					m = r.matcher(seriNumberPattern);
-					_log.info("seriNumberPattern6 : " + seriNumberPattern);
+					_log.debug("seriNumberPattern6 : " + seriNumberPattern);
 				}
 			}
 
 			deliverableNumber = seriNumberPattern;
-			_log.info("deliverableNumber : " + deliverableNumber);
+			_log.debug("deliverableNumber : " + deliverableNumber);
 		}
 		return deliverableNumber;
 	}
@@ -345,8 +353,12 @@ public class DeliverableNumberGenerator {
 					_log.debug(
 							"//////////////////////////////////////////////////////////// " + "|certNumber= " + number);
 					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
-					if (number.length() < tmp.length()) {
-						number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+					if (number != null) {
+						if (number.length() < tmp.length()) {
+							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+						}
+					} else {
+						number = tmp;
 					}
 
 					serialNumberPattern = serialNumberPattern.replace(m.group(0), number);
@@ -423,7 +435,7 @@ public class DeliverableNumberGenerator {
 				} while (counter == null);
 
 			} else {
-				_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+				_log.debug("COUTER_CURR_CONFIG_IS_NOT_NULL");
 				counterDetail = CounterLocalServiceUtil.createCounter(pattern);
 				// increment CurrentCounter
 				_counterNumber = counterDetail.getCurrentId() + 1;
@@ -468,7 +480,7 @@ public class DeliverableNumberGenerator {
 
 			Counter counter = null;
 			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigId);
-			_log.info("counterConfig: " + JSONFactoryUtil.looseSerialize(counterConfig));
+			_log.debug("counterConfig: " + JSONFactoryUtil.looseSerialize(counterConfig));
 			
 			if (Validator.isNotNull(counterConfig)) {
 				// create counter config
@@ -484,7 +496,7 @@ public class DeliverableNumberGenerator {
 				} while (counter == null);
 
 			} else {
-				_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+				_log.debug("COUTER_CURR_CONFIG_IS_NOT_NULL");
 				counterConfig = CounterLocalServiceUtil.createCounter(certConfigId);
 				// increment CurrentCounter
 				_counterNumber = counterConfig.getCurrentId() + 1;

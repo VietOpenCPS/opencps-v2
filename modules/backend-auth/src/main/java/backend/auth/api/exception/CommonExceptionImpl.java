@@ -14,7 +14,7 @@ public class CommonExceptionImpl {
 	private static Log _log = LogFactoryUtil.getLog(CommonExceptionImpl.class);
 
 	public static Response processException(Exception e) {
-		_log.debug(e);
+		_log.error(e);
 		try {
 			ErrorMsgModel error = new ErrorMsgModel();
 

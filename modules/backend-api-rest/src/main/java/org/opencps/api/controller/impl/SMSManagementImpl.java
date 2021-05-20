@@ -261,7 +261,7 @@ public class SMSManagementImpl implements SMSManagement {
 
 		try {
 
-			String dueDate = StringPool.BLANK;
+			String dueDate;
 			Date startDateS =
 				new SimpleDateFormat(VN_FORMAT_H).parse(startDate);
 			if (Validator.isNotNull(endDate)) {

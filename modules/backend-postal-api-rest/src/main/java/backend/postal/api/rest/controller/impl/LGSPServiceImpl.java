@@ -49,6 +49,7 @@ public class LGSPServiceImpl implements LGSPService {
 			_log.info("Response: " + jsonObject);
 			return jsonObject;
 		} catch (Exception e) {
+			_log.error(e);
 			throw new Exception(e.getMessage());
 		}
 	}
@@ -192,7 +193,7 @@ public class LGSPServiceImpl implements LGSPService {
 					
 					price = result.getJSONObject("content").getString("price");
 				}catch(JSONException e) {
-					
+					_log.error(e);
 				}
 				
 				_log.info("+price:"+price);
@@ -227,6 +228,7 @@ public class LGSPServiceImpl implements LGSPService {
             _log.info("Response: " + jsonObject);
             return jsonObject;
         } catch (Exception e) {
+			_log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -247,6 +249,7 @@ public class LGSPServiceImpl implements LGSPService {
 
             return JSONFactoryUtil.createJSONObject(response.getBody());
         } catch (Exception e) {
+			_log.error(e);
             throw new Exception(e.getMessage());
         }
     }

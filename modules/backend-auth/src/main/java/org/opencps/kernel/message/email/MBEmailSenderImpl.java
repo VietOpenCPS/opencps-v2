@@ -98,7 +98,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 					try {
 						jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
 					} catch (JSONException e1) {
-						e1.printStackTrace();
+						_log.error(e1);
 					}
 					if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
 							&& jsonToken.has("expiryDate")) {

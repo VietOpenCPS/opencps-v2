@@ -32,7 +32,7 @@ public class OCPSUserUtils {
 
 		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 
-		if (Validator.isNotNull(applicant)) {
+		if (applicant != null) {
 			types.add(applicant.getApplicantIdType());
 		}
 

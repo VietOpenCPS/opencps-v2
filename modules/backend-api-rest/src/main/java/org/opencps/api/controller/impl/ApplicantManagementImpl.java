@@ -256,9 +256,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new Exception("Notification template not found");
 			}
 
-			ApplicantActions actions = new ApplicantActionsImpl();
 			Applicant applicant = null;
-			String payloadString;
 			String contactEmail;
 
 			//Case resend email confirm account
@@ -1394,7 +1392,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			if (syncUserLGSP) {
 
-				String strProfile = StringPool.BLANK;
+				String strProfile;
 				//String strToken = ApplicantUtils.getTokenNewLGSP();
 				//if (Validator.isNotNull(strToken)) {
 					JSONObject jsonToken = LGSPRestfulUtils.createTokenLGSP("Bearer");
@@ -1433,11 +1431,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 												applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address,
 												cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
 												contactTelNo, StringPool.BLANK, input.getPassword());
-
-										result = ApplicantUtils.mappingToApplicantModel(applicant);
 									}
 									catch (Exception e) {
-										_log.error("Error duplicate lgsp: " + e.getMessage());
+										_log.error(e);
 									}
 									ErrorMsgModel error = new ErrorMsgModel();
 									error.setMessage("Active error");
@@ -1676,7 +1672,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -2035,7 +2030,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactName = HtmlUtil.escape(input.getContactName());
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
-			String applicantIdDate = input.getApplicantIdDate();
 
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
@@ -2064,6 +2058,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				sc.init(null, trustAllCerts, new SecureRandom());
 				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 			} catch (Exception e) {
+				_log.error(e);
 			}
 			
 			
@@ -2183,6 +2178,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				sc.init(null, trustAllCerts, new SecureRandom());
 				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 			} catch (Exception e) {
+				_log.error(e);
 			}
 	
 			try {
@@ -2289,7 +2285,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						}
 						ApplicantLocalServiceUtil.adminProcessData(objectData);
 					} catch (Exception e) {
-						e.printStackTrace();
+						_log.error(e);
 						resultt--;
 					}
 					

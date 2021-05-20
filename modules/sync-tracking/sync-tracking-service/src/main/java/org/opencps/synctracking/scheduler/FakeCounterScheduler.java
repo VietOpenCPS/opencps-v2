@@ -1,5 +1,7 @@
-package org.opencps.dossiermgt.scheduler;
+package org.opencps.synctracking.scheduler;
 
+import com.liferay.counter.kernel.model.Counter;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -7,58 +9,28 @@ import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.scheduler.*;
-import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.Validator;
-import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.dossiermgt.action.QLVBIntegrationAction;
-import org.opencps.dossiermgt.action.impl.QLVBIntegrationActionImpl;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
-@Component(immediate = true, service = CrawlDocumentScheduler.class)
-public class CrawlDocumentScheduler extends BaseMessageListener {
-    private volatile boolean isRunning = false;
-    private static final Boolean ENABLE_JOB = Validator.isNotNull(PropsUtil.get("org.opencps.frequency.enable"))
-            ? Boolean.valueOf(PropsUtil.get("org.opencps.frequency.enable")) : false;
-    private static final String API_SYNC_QLVB = "API_SYNC_QLVB";
+//@Component(immediate = true, service = FakeCounterScheduler.class)
+public class FakeCounterScheduler extends BaseMessageListener {
+    private static volatile boolean isRunning;
+    private static final Integer timeRunScheduler = 1;
     @Override
     protected void doReceive(Message message) throws Exception {
-        if (!isRunning && ENABLE_JOB) {
-            isRunning = true;
-        }
-        else {
+        if(isRunning) {
             return;
         }
-        _log.info("-----Start job crawl document frequency---");
+        Counter currentCounter = CounterLocalServiceUtil.fetchCounter("opencps.dossier#100349#1082020");
+        _log.info("======Scheduler-Current Id in Scheduler: "  + currentCounter.getCurrentId());
+        long _counterNumber = currentCounter.getCurrentId() + 1;
+        currentCounter.setCurrentId(_counterNumber);
+        Counter newCounter = CounterLocalServiceUtil.updateCounter(currentCounter);
 
-        try {
-            _log.info("Crawl document frequency at : " + APIDateTimeUtils.convertDateToString(new Date()));
-            List<ServerConfig> listConfig = ServerConfigLocalServiceUtil
-                    .getByServerAndProtocol(API_SYNC_QLVB, API_SYNC_QLVB);
-
-            if(Validator.isNull(listConfig) || listConfig.isEmpty()) {
-                throw new Exception("No server config");
-            }
-
-            ServerConfig serverConfig = listConfig.get(0);
-            if(Validator.isNull(serverConfig)) {
-                throw new Exception("No server config");
-            }
-
-            QLVBIntegrationAction docAction = new QLVBIntegrationActionImpl(serverConfig);
-            docAction.getDocEOfficeTTTT();
-
-            _log.info("End crawl document frequency!!!");
-        } catch (Exception e){
-            _log.error(e);
-            _log.error("Error crawl document frequency: " + e.getMessage());
-        }
+        _log.info("======Scheduler-Current Id in Schedulerafter Tang: "  + newCounter.getCurrentId());
         isRunning = false;
     }
 
@@ -67,10 +39,12 @@ public class CrawlDocumentScheduler extends BaseMessageListener {
     @Modified
     protected void activate(Map<String,Object> properties) throws SchedulerException {
         String listenerClass = getClass().getName();
-        Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 6, TimeUnit.MINUTE);
+        Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, timeRunScheduler, TimeUnit.SECOND);
 
         _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
         _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
+
+//		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
         if (_initialized) {
             deactivate();
@@ -86,7 +60,6 @@ public class CrawlDocumentScheduler extends BaseMessageListener {
             try {
                 _schedulerEngineHelper.unschedule(_schedulerEntryImpl, getStorageType());
             } catch (SchedulerException se) {
-                _log.error(se);
                 if (_log.isWarnEnabled()) {
                     _log.warn("Unable to unschedule trigger", se);
                 }
@@ -98,6 +71,10 @@ public class CrawlDocumentScheduler extends BaseMessageListener {
         isRunning = false;
     }
 
+    /**
+     * getStorageType: Utility method to get the storage type from the scheduler entry wrapper.
+     * @return StorageType The storage type to use.
+     */
     protected StorageType getStorageType() {
         if (_schedulerEntryImpl instanceof StorageTypeAware) {
             return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
@@ -106,6 +83,19 @@ public class CrawlDocumentScheduler extends BaseMessageListener {
         return StorageType.PERSISTED;
     }
 
+    /**
+     * setModuleServiceLifecycle: So this requires some explanation...
+     *
+     * OSGi will start a component once all of it's dependencies are satisfied.  However, there
+     * are times where you want to hold off until the portal is completely ready to go.
+     *
+     * This reference declaration is waiting for the ModuleServiceLifecycle's PORTAL_INITIALIZED
+     * component which will not be available until, surprise surprise, the portal has finished
+     * initializing.
+     *
+     * With this reference, this component activation waits until portal initialization has completed.
+     * @param moduleServiceLifecycle
+     */
     @Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED, unbind = "-")
     protected void setModuleServiceLifecycle(ModuleServiceLifecycle moduleServiceLifecycle) {
     }
@@ -125,6 +115,5 @@ public class CrawlDocumentScheduler extends BaseMessageListener {
     private volatile boolean _initialized;
     private SchedulerEntryImpl _schedulerEntryImpl = null;
 
-    private Log _log = LogFactoryUtil.getLog(CrawlDocumentScheduler.class);
-
+    private Log _log = LogFactoryUtil.getLog(FakeCounterScheduler.class);
 }

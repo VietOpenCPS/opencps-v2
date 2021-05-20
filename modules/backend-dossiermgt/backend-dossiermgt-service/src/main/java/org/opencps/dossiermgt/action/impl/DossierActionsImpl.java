@@ -939,10 +939,6 @@ public class DossierActionsImpl implements DossierActions {
 
 				List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
 					dossierTemplate.getTemplateNo());
-				
-				_log.debug("+++partList.size():"+partList.size());
-				_log.debug("+++createDossierFiles:"+createDossierFiles);
-				_log.debug("+++returnDossierFiles:"+returnDossierFiles);
 
 				if (returnFileTempNoList != null && !returnFileTempNoList.isEmpty()) {
 					List<DossierFile> returnFiles = new ArrayList<>();
@@ -977,14 +973,6 @@ public class DossierActionsImpl implements DossierActions {
 							String fileTemplateNo = dossierPart.getFileTemplateNo();
 							eForm = dossierPart.getEForm();
 							multiple = dossierPart.getMultiple();
-							
-							_log.debug("");
-							_log.debug("");
-							_log.debug("");
-							_log.debug("");
-							_log.debug("===dossierPart:"+dossierPart.getDossierPartId()+"|dossierPartName:"+dossierPart.getPartName()+"|dossierPart.getPartNo()"+dossierPart.getPartNo()+"|fileTemplateNo:"+fileTemplateNo);
-							_log.debug("++createFileTempNoList.contains(fileTemplateNo):"+createFileTempNoList.contains(fileTemplateNo));
-
 
 							if (createFileTempNoList.contains(fileTemplateNo)) {
 								JSONObject createFile = JSONFactoryUtil.createJSONObject();
@@ -1022,7 +1010,6 @@ public class DossierActionsImpl implements DossierActions {
 								JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formDataDeliverables);
 
 								// End add generate deliverable if has deliverable type
-								_log.debug("strDeliverableType: "+strDeliverableType);
 								if (Validator.isNull(strDeliverableType)) {
 									List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 										.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT }, false,
@@ -1064,9 +1051,7 @@ public class DossierActionsImpl implements DossierActions {
 											String deliverables = mappingDataObj
 												.getString(DeliverableTypesTerm.DELIVERABLES_KEY);
 
-											_log.debug("---------deliverables--------" + deliverables);
 											if (Validator.isNull(deliverables)) {
-		
 												// Add one deliverable
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 													.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT },
@@ -1177,8 +1162,6 @@ public class DossierActionsImpl implements DossierActions {
 														new DossierFileComparator(false, Field.CREATE_DATE,
 															Date.class));
 												
-												_log.debug("====dossierFilesResult.size():"+dossierFilesResult.size());
-
 												if (dossierFilesResult != null && !dossierFilesResult.isEmpty()) {
 													createFile = JSONFactoryUtil.createJSONObject();
 													createFile = processFileResult(dossierFilesResult, createFile,
@@ -1202,10 +1185,7 @@ public class DossierActionsImpl implements DossierActions {
 														dossierPart.getSampleData(), dossierId, serviceContext);
 													formScript = dossierPart.getFormScript();
 													
-													_log.debug("====eForm:"+eForm);
-													
 													if (eForm && !dossierPart.getESign()) {
-														
 														DossierFileActions actions = new DossierFileActionsImpl();
 
 														DossierFile dossierFile = null;
@@ -1355,11 +1335,8 @@ public class DossierActionsImpl implements DossierActions {
 													createFile.put(DossierFileTerm.COUNTER, counter);
 													createFile.put(DossierFileTerm.FILE_ENTRY_ID, fileEntryId);
 													createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
-													
 													createFiles.put(createFile);
 												}
-												
-												
 											}
 										}
 									}
@@ -1736,14 +1713,6 @@ public class DossierActionsImpl implements DossierActions {
 								}
 							}
 
-						}
-
-						if (lstUser != null && lstUser.size() > 0) {
-							for (User user1: lstUser) {
-								Map<String, Object> moderator = user1.getModelAttributes();
-								//Map<String, Object> moderator = user1.getModelAttributes();
-//								_log.debug("moderator: "+moderator);
-							}
 						}
 
 						result.put(ProcessActionTerm.PENDING, pending);
@@ -3490,12 +3459,6 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		}
 
-		if (lstUser != null && lstUser.size() > 0) {
-			for (User user1: lstUser) {
-				Map<String, Object> moderator = user1.getModelAttributes();
-				//Map<String, Object> moderator = user1.getModelAttributes();
-			}
-		}
 		return lstUser;
 	}
 
@@ -3572,19 +3535,13 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}
 		}
-		if (lstUser != null && lstUser.size() > 0) {
-			for (User user1: lstUser) {
-				Map<String, Object> moderator = user1.getModelAttributes();
-				//Map<String, Object> moderator = user1.getModelAttributes();
-//				_log.debug("moderator: "+moderator);
-			}
-		}
+
 		return lstUser;
 	}
 
 	private List<User> processRoleAsStepDonedListUser(Dossier dossier, String stepCode, long serviceProcessId, ProcessStep processStep,
 		List<ProcessStepRole> processStepRoleList) {
-		List<User> lstUser = null;
+		List<User> lstUser;
 		// Check roles
 		List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), stepCode);
 
@@ -3615,13 +3572,7 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}
 		}
-		if (lstUser != null && lstUser.size() > 0) {
-			for (User user1: lstUser) {
-				Map<String, Object> moderator = user1.getModelAttributes();
-				//Map<String, Object> moderator = user1.getModelAttributes();
-//				_log.debug("moderator: "+moderator);
-			}
-		}
+
 		return lstUser;
 	}
 
@@ -4325,9 +4276,9 @@ public class DossierActionsImpl implements DossierActions {
 	{
 		String[] receiptCodeSplit = ma_bien_nhan.split(StringPool.DASH);
 		String checkKey = receiptCodeSplit[0];
-		String securityCode = StringPool.BLANK;
+		String securityCode;
 		long dossierId ;
-		String dossierCounter = StringPool.BLANK;
+		String dossierCounter;
 		if (Validator.isNotNull(ma_bien_nhan) && receiptCodeSplit.length == 4 && checkKey.equals("D"))
 		{
 			securityCode = receiptCodeSplit[1];
@@ -4410,7 +4361,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			catch (JSONException e)
 			{
-				e.printStackTrace();
+				_log.error(e);
 			}
 		}
 		return DossierLocalServiceUtil.updateDossier(dossier);

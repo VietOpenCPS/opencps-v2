@@ -60,7 +60,6 @@ import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.rest.utils.LGSPRestClient;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
-import org.opencps.dossiermgt.scheduler.PublishEventHSKMScheduler.Counter;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
@@ -77,7 +76,7 @@ import org.osgi.service.component.annotations.Reference;
 public class PublishEventScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	
-	static class Counter {
+	static class CounterPublishEvent {
 		private volatile static int count = 0;
 		public static int getCount(){
 			return count;
@@ -112,37 +111,36 @@ public class PublishEventScheduler extends BaseMessageListener {
 
 	private static volatile ThreadPoolExecutor threadPoolExecutor;
 
-	private int corePoolSize    = 15;
-	private int maximumPoolSize = 60;
+	private int corePoolSize    = 5;
+	private int maximumPoolSize = 20;
 	private int queueCapacity   = 10;
 	private int keepAliveTime   = 10;
 
-
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		
-		_log.debug("====PublishEventScheduler doReceive====");
-		_log.debug("====isRunning ===="+isRunning);
-		
+		_log.info("====PublishEventScheduler isRunning: " + isRunning + ", counting: " + CounterPublishEvent.getCount());
 		if (isRunning) {
-			
-			_log.debug("return");
+			_log.info("Job publish event is running");
 			return;
 		}
-		else {
-			
-			isRunning = true;
+
+		if(CounterPublishEvent.getCount() > 0) {
+			_log.info("Job publish event before still has count :" + CounterPublishEvent.getCount());
+			return;
 		}
+
+		isRunning = true;
+
 		try {
 
-			_log.debug("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
+			_log.debug("OpenCPS PUBLISH EVENT IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatusesAndNotServerNo(new int[] {
 							PublishQueueTerm.STATE_WAITING_SYNC,
 							PublishQueueTerm.STATE_ALREADY_SENT},
-					ServerConfigTerm.DVCQG_INTEGRATION, 0, 180);
+					ServerConfigTerm.DVCQG_INTEGRATION, 0, 60);
 
-			_log.debug("lstPqs  : " + lstPqs.size());
+			_log.info("LstPqs queue in publish event : " + lstPqs.size());
 
 			if(Validator.isNull(lstPqs) || lstPqs.size() == 0) {
 				_log.debug("No queue found with status " + PublishQueueTerm.STATE_WAITING_SYNC);
@@ -156,11 +154,11 @@ public class PublishEventScheduler extends BaseMessageListener {
 				listDossierId.add(queue.getDossierId());
 			}
 			int sizeDossierId = listDossierId.size();
-			Counter.setCount(sizeDossierId);
+			CounterPublishEvent.setCount(sizeDossierId);
 			//Core function
 			for(Long dossierId : listDossierId) {
 				threadPoolExecutor.execute(() -> mainProcess(dossierId, sizeDossierId));
-				_log.debug("Number thread active: " + threadPoolExecutor.getActiveCount());
+				_log.debug("Number thread active publishEvent: " + threadPoolExecutor.getActiveCount());
 			}
 
 		}
@@ -172,9 +170,9 @@ public class PublishEventScheduler extends BaseMessageListener {
 	
 	private void mainProcess(long dossierId, int sizeDossierId) {
 		
-		_log.debug(startLine1 + "Start thread for dossierId " + dossierId);
-		if(Counter.getCount() == sizeDossierId) {
-			_log.debug("Time start: " + APIDateTimeUtils.convertDateToString(new Date()));
+		_log.debug(startLine1 + "Start thread publish event for dossierId " + dossierId);
+		if(CounterPublishEvent.getCount() == sizeDossierId) {
+			_log.debug("Publish Event time start: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 		
 		List<PublishQueue> listQueueByDossierId = PublishQueueLocalServiceUtil.getByDossierIdAndNotServerNo(
@@ -182,7 +180,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 				new PublishQueueComparator(true, Field.CREATE_DATE, Date.class));
 
 		if(Validator.isNull(listQueueByDossierId) || listQueueByDossierId.size() == 0) {
-			_log.warn(startLine2 + "Not found publish queue with dossierId " + dossierId + ", still running...");
+			_log.info(startLine2 + "Not found publish queue with dossierId " + dossierId + ", still running...");
 			return;
 		}
 		
@@ -231,21 +229,18 @@ public class PublishEventScheduler extends BaseMessageListener {
 					
 					oneQueue.setModifiedDate(new Date());
 					PublishQueueLocalServiceUtil.updatePublishQueue(oneQueue);
-					_log.debug("Done for dossier: " + dossierId);
+					_log.info("Publish event done for dossier: " + dossierId);
 				}
 			} catch (Exception e) {
-				
-				_log.warn("==================Error when submit queue: " + queueIdCurrent + ", status: " + queueStatus);
+				_log.warn("================== Publish event Error when submit queue: " + queueIdCurrent + ", status: " + queueStatus);
 				_log.warn(e);
-				_log.warn("==================Still running...");
-				
-				
+				_log.warn("================== Publish event Still running...");
 			}
 		}
-		
-		Counter.decreaseCount();
-		_log.debug("============Counting remain: " + Counter.getCount());
-		if(Counter.getCount() == 0) {
+
+		CounterPublishEvent.decreaseCount();
+		_log.info("============Publish event counting remain: " + CounterPublishEvent.getCount());
+		if(CounterPublishEvent.getCount() == 0) {
 			_log.debug("Time end: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 		
@@ -354,25 +349,8 @@ public class PublishEventScheduler extends BaseMessageListener {
 											dfModel.setFileType(fileEntry.getMimeType());
 											dfModel.setRemoved(df.getRemoved());
 											dfModel.setEForm(df.getEForm());
-											DossierFileModel dfResult = client.postDossierFileInform(file, dossier,
+											client.postDossierFileInform(file, dossier,
 													dossier.getReferenceUid(), dfModel);
-//											messageText.append("POST /dossierfiles");
-//											messageText.append("\n");
-//											messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-//											messageText.append("\n");
-//											if (dfResult != null) {
-//												acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-//												acknowlegement.append("\n");
-//											}
-//											if (dfResult == null) {
-//												if (client.isWriteLog()) {
-//													pq.setMessageText(messageText.toString());
-//													pq.setAcknowlegement(acknowlegement.toString());
-//													PublishQueueLocalServiceUtil.updatePublishQueue(pq);
-//												}
-//												return false;
-//											}
-//														
 										} catch (PortalException e) {
 											_log.error(e);
 										}
@@ -462,31 +440,6 @@ public class PublishEventScheduler extends BaseMessageListener {
 				_log.error(e);
 			}
 		}
-		// add by TrungNt change to Giao HSKM
-//		else if (ServerConfigTerm.DVCQG_INTEGRATION.equals(sc.getProtocol())) {
-//
-//			try {
-//				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
-//
-//				JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier, null);
-//
-//				if (Validator.isNull(result)) {
-//					return false;
-//				}
-//
-//				_log.info("result DVCQG: " + result);
-//				if (result.has("error_code") && "0".equals(result.getString("error_code"))) {
-//					PublishQueueLocalServiceUtil.updatePublishQueue(sc.getGroupId(), pq.getPublishQueueId(), 2,
-//							dossier.getDossierId(), sc.getServerNo(), StringPool.BLANK,
-//							PublishQueueTerm.STATE_RECEIVED_ACK, 0, String.valueOf(dossier.getDossierNo()),
-//							result.toJSONString(), new ServiceContext());
-//					return true;
-//				}
-//			} catch (Exception e) {
-//				_log.error(e);
-//			}
-//			return false;
-//		}
 		else if (ServerConfigTerm.TTTT_INTEGRATION.equals(sc.getProtocol())) {
 			_log.info("Integrating dossier to TTTT...");
 			try {
@@ -512,7 +465,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
 		  
-		  _schedulerEntryImpl.setTrigger(jobTrigger);
+//		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
 		if (_initialized) {
 			deactivate();

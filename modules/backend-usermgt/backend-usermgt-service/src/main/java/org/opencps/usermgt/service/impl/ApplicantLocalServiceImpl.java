@@ -1542,9 +1542,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			
 			if (Validator.isNotNull(profile))
 				applicant.setProfile(profile);
-			
-			userLocalService.updateGroups(applicant.getMappingUserId(), new long[] {groupId}, context);
-			
+
 		}
 
 		return applicantPersistence.update(applicant);
