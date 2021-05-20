@@ -2461,4 +2461,82 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		return result;
 	}
 
+	@Override
+	public JSONObject getDossierStatistic21(long groupId, String fromDate, String toDate, int[] originalities,
+											String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes,
+											String[] dossierStatus, String groupBy, int start, int end,
+											String sqlTemplate, int type, String subType) {
+		JSONObject result = StatisticUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				govAgencyCodes, serviceCodes, dossierStatus, type, subType);
+		QuerySchema schema = getQuerySchema2(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
+				serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, subType);
+		_log.debug("schema: " + schema.getSql());
+		_log.debug("subType: " + subType);
+		if (schema == null || Validator.isNull(schema.getSql())) {
+			return result;
+		}
+
+		if (subType.equals(Constants.COUNT)) {
+			int total = QueryUtil.getCount(schema.getSql());
+			result.put(Constants.TOTAL, total);
+		} else if (subType.equals(Constants.GROUP_COUNT)) {
+			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
+			long total = 0;
+			if (data != null) {
+				for (int i = 0; i < data.length(); i++) {
+					total += data.getJSONObject(i).getInt(Constants.COUNT);
+				}
+			}
+			result.put(Constants.TOTAL, total);
+			result.put(Constants.DATA, data);
+		} else if (subType.equals(Constants.LIST)) {
+
+			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
+			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
+			schema = getQuerySchema2(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
+					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
+			int total = QueryUtil.getCount(schema.getSql());
+
+			result.put(Constants.TOTAL, total);
+
+			result.put(Constants.DATA, data);
+		} else if (subType.equals(Constants.ROW_TOTAL)) {
+			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
+
+			long total = 0;
+			if (data != null) {
+				JSONObject totalObj = JSONFactoryUtil.createJSONObject();
+				for (int i = 0; i < data.length(); i++) {
+					JSONObject tmp = data.getJSONObject(i);
+					Iterator<String> keys = tmp.keys();
+					while (keys.hasNext()) {
+						String key = keys.next();
+						if (key.equalsIgnoreCase("govAgencyCode") || key.equalsIgnoreCase("domainCode")
+								|| key.equalsIgnoreCase("serviceCode")) {
+
+							totalObj.put(key, StringPool.BLANK);
+						} else {
+
+							int value = 0;
+							if (totalObj.has(key)) {
+								value = totalObj.getInt(key);
+							}
+							value += tmp.getInt(key);
+
+							totalObj.put(key, value);
+						}
+					}
+
+					total += tmp.getInt(Constants.TOTAL_COUNT);
+				}
+				data.put(totalObj);
+
+			}
+			result.put(Constants.TOTAL, total);
+			result.put(Constants.DATA, data);
+		}
+
+		return result;
+	}
+
 }

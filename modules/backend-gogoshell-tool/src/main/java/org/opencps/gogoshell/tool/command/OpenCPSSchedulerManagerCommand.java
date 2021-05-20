@@ -4,6 +4,8 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.StorageType;
@@ -45,6 +47,7 @@ import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 )
 @Descriptor("Lệnh gogoshell để quản lý các tác vụ chạy ngầm trong OpenCPS")
 public class OpenCPSSchedulerManagerCommand {
+	private static Log _log = LogFactoryUtil.getLog(OpenCPSSchedulerManagerCommand.class);
 	/**
 	 * In danh sách tất cả các tác vụ đang chạy của OpenCPS theo trạng thái (mặc định ALL - tất cả)
 	 *
@@ -219,7 +222,7 @@ public class OpenCPSSchedulerManagerCommand {
 				SchedulerEngineHelperUtil.pause(
 						schedulerResponse.getJobName(), schedulerResponse.getGroupName(), schedulerResponse.getStorageType());
 			} catch (SchedulerException e) {
-				
+				_log.error(e);
 			}
 		});		
 	}
@@ -246,7 +249,7 @@ public class OpenCPSSchedulerManagerCommand {
 				SchedulerEngineHelperUtil.resume(
 						schedulerResponse.getJobName(), schedulerResponse.getGroupName(), schedulerResponse.getStorageType());
 			} catch (SchedulerException e) {
-				
+				_log.error(e);
 			}
 		});		
 	}

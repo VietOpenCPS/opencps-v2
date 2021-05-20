@@ -26,6 +26,7 @@ public class Constants {
 	public static final String DAY = "day";
 	public static final String COUNT = "count";
 	public static final String LIST = "list";
+	public static final String ROW_TOTAL = "row";
 	public static final String GROUP_COUNT = "groupCount";
 	public static final String TOTAL_COUNT = "totalCount";
 }

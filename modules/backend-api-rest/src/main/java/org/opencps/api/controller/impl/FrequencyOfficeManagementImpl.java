@@ -1,39 +1,19 @@
 package org.opencps.api.controller.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.FrequencyOfficeManagement;
 import org.opencps.dossiermgt.action.FrequencyIntegrationAction;
 import org.opencps.dossiermgt.action.impl.FrequencyIntegrationActionImpl;
-import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
 import org.opencps.dossiermgt.input.model.*;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.kernel.context.MBServiceContextFactoryUtil;
+
 
 import javax.ws.rs.core.Response;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.util.Base64;
 import java.util.List;
 
 public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement {
@@ -54,7 +34,6 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             String token = integrationAction.getToken();
 
             List<ProfileReceiver> listDossiers = integrationAction.getDossiers(token);
-            boolean result;
 
             for(ProfileReceiver oneDossier : listDossiers) {
                 _log.info("Handling profile: " + oneDossier.getProfileId());
@@ -73,7 +52,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
         } catch (Exception e) {
-            _log.error("Error message when call api send file: " + e.getMessage());
+           _log.error(e);
            return null;
         }
     }
@@ -82,29 +61,9 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
     public Response sendOneProfile(String profileId) {
         //API test crawl one profile
         try{
-            //validator
-            List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
-
-            ServerConfig serverConfig = listConfig.get(0);
-            FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
-            String token = integrationAction.getToken();
-
-            boolean result;
-
-//            ProfileInModel profile = integrationAction.getDetailDossier(token, Integer.valueOf(profileId));
-//            if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
-//                integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_SUCCESS);
-//                boolean resultCrawl = integrationAction.crawlDossierLGSP(profile, token);
-//                if(resultCrawl) {
-//                    integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_SUCCESS);
-//                } else {
-//                    integrationAction.updateStatusReceiver(token, Integer.valueOf(profileId), FrequencyOfficeConstants.STATUS_FAIL);
-//                }
-//            }
-
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
         } catch (Exception e) {
-            _log.error("Error message when call api send one file: " + e.getMessage());
+            _log.error(e);
             return null;
         }
     }
@@ -131,7 +90,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             Object responseObj = objectMapper.readValue(response, Object.class);
             return Response.status(HttpURLConnection.HTTP_OK).entity(objectMapper.writeValueAsString(responseObj)).build();
         } catch (Exception e) {
-            _log.error(e.getMessage());
+            _log.error(e);
             return null;
         }
     }
@@ -231,7 +190,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             Object responseObj = objectMapper.readValue(response, Object.class);
             return Response.status(HttpURLConnection.HTTP_OK).entity(objectMapper.writeValueAsString(responseObj)).build();
         } catch (Exception e) {
-            _log.error(e.getMessage());
+            _log.error(e);
             return null;
         }
     }
@@ -244,7 +203,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 
         } catch (Exception e) {
-            _log.error("error when sync with mess: " + e.getMessage());
+            _log.error(e);
             return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
         }
     }
@@ -264,7 +223,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 
         } catch (Exception e) {
-            _log.error("Error when send status profile: " + e.getMessage());
+            _log.error(e);
             return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
         }
     }
@@ -272,16 +231,11 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
     @Override
     public Response sendStatusProfileToDVCBo(long dossierId) {
         try {
-            List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
-            ServerConfig serverConfig = listConfig.get(0);
-            FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
-            String token = integrationAction.getToken();
-//            integrationAction.sendStatusProfileToDVCBo(token, dossierId);
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 
         } catch (Exception e) {
-            _log.error("Error when send status profile: " + e.getMessage());
+            _log.error(e);
             return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
         }
     }
@@ -302,7 +256,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
         } catch (Exception e) {
-            _log.error("Error when sync dossier: " + e.getMessage());
+            _log.error(e);
             return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
         }
     }
@@ -313,13 +267,12 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
             ServerConfig serverConfig = listConfig.get(0);
             FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
-            String token = integrationAction.getToken();
 
 //            integrationAction.syncDossierToDVCBoManual(token, dossierId);
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
         } catch (Exception e) {
-            _log.error("Error when sync dossier: " + e.getMessage());
+            _log.error(e);
             return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
         }
     }

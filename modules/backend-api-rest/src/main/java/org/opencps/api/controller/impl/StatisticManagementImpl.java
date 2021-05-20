@@ -1007,7 +1007,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 									valueString = "";
 								}
 							}catch (Exception e) {
-								valueString = "";
+								_log.error(e);
 							}
 
 							run.setText(valueString);
@@ -1057,6 +1057,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 						try {
 							listText = columnArr.getJSONObject(indexArrColumn).getJSONArray(StatisticManagementConstants.TEXT);
 						} catch (Exception e) {
+							_log.error(e);
 							listText = null;
 						}
 
@@ -1079,6 +1080,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 							continue;
 						}
 
+						if(listText == null) {
+							continue;
+						}
+
 						for (int indexArrText = 0; indexArrText < listText.length(); indexArrText++) {
 							run.setText(listText.getJSONObject(indexArrText).getString(StatisticManagementConstants.TEXT));
 							run.addBreak();
@@ -1093,7 +1098,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			}
 			return document;
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 	}

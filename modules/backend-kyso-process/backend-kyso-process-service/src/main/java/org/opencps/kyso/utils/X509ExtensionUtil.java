@@ -413,8 +413,10 @@ public class X509ExtensionUtil {
         for (Map.Entry<String, X509Certificate> entry : allStrustCertCA.entrySet()) {
             X509Certificate certCA = entry.getValue();
             String subjectCN = X509ExtensionUtil.getCN(certCA);
-            if (issuerCN.equals(subjectCN)) {
-                chainList.add(certCA);
+            if(issuerCN != null) {
+                if (issuerCN.equals(subjectCN)) {
+                    chainList.add(certCA);
+                }
             }
         }
         X509Certificate[] chain = new X509Certificate[chainList.size() + 1];

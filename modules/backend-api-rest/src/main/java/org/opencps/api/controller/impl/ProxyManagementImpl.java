@@ -79,102 +79,99 @@ public class ProxyManagementImpl implements ProxyManagement {
 			
 			ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverCodeFind);
 			_log.debug("SERVER PROXY: " + sc.getConfigs());
-			if (sc != null) {
-				JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
-				String serverUrl = StringPool.BLANK;
-		        String authStrEnc = StringPool.BLANK;
-				
-	
-			    String apiUrl;
-			    
-			    StringBuilder sb = new StringBuilder();
-			    try
-			    {
-			        URL urlVal = null;
-			        String groupIdRequest = StringPool.BLANK;
-			        StringBuilder postData = new StringBuilder();
-					JSONObject dataObj = JSONFactoryUtil.createJSONObject(data);
-					Iterator<?> keys = dataObj.keys();
-					while(keys.hasNext() ) {
-					    String key = (String)keys.next();
-					    if (!StringPool.BLANK.equals(postData.toString())) {
-					    	postData.append(StringPool.AMPERSAND);
-					    }
-					    postData.append(key);
-					    postData.append(StringPool.EQUAL);
-					    postData.append(dataObj.get(key));
-					}
-			        
-					if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
-							&& configObj.has(SyncServerTerm.SERVER_SECRET)
-							&& configObj.has(SyncServerTerm.SERVER_URL)
-							&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
-						authStrEnc = Base64.getEncoder().encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME) + ":" + configObj.getString(SyncServerTerm.SERVER_SECRET)).getBytes());
-						
-						serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
-				        groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
-					}
-			        
-					
-					if (ConstantUtils.PROXY_STATISTICS_ENDPOINT.equalsIgnoreCase(url) && serverUrl.contains(ConstantUtils.PROXY_V2_ENDPOINT)) {
-						apiUrl = serverUrl.replace(ConstantUtils.PROXY_V2_ENDPOINT, url);
-					} else {
-						apiUrl = serverUrl + url;
-					}
-			        if (ConstantUtils.METHOD_GET.equals(method)) {
-						urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());			        	
-			        }
-			        else {
-			        	urlVal = new URL(apiUrl);
-			        }
-			        _log.debug("API URL: " + apiUrl);
-					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
-			        conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
-			        conn.setRequestMethod(method);
-			        conn.setRequestProperty(HttpHeaders.ACCEPT, ConstantUtils.CONTENT_TYPE_JSON);
-			        conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
-			        
-			        String authorization = String.format(MessageUtil.getMessage(ConstantUtils.HTTP_HEADER_BASICAUTH), authStrEnc);
-			        conn.setRequestProperty(HttpHeaders.AUTHORIZATION, authorization);
-			        _log.debug("BASIC AUTHEN: " + authStrEnc);
-			        if (ConstantUtils.METHOD_POST.equals(method) || ConstantUtils.METHOD_PUT.equals(method)) {
-				        conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, ConstantUtils.CONTENT_TYPE_XXX_FORM_URLENCODED);
-						conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
+			JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
+			String serverUrl = StringPool.BLANK;
+			String authStrEnc = StringPool.BLANK;
 
-						conn.setUseCaches(false);
-						conn.setDoInput(true);
-						conn.setDoOutput(true);
-						_log.debug("POST DATA: " + postData.toString());
-						OutputStream os = conn.getOutputStream();
-						os.write( postData.toString().getBytes() );    
-						os.close();			        	
-			        }
-			        if (dataType != null && "binary".contentEquals(dataType)) {
-					    byte[] bytes = readAllBytes(conn.getInputStream());
-					   _log.debug("byte result:" + bytes != null);
-						return Response.status(HttpURLConnection.HTTP_OK).entity(bytes).
-								header(HttpHeaders.CONTENT_TYPE, conn.getContentType())
-								.build();			        			        	
-			        }
-			        else {
-				        BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-    			        
-				        int cp;
-					    while ((cp = brf.read()) != -1) {
-					      sb.append((char) cp);
-					    }
-					    _log.debug("sb.tostring : "+ sb.toString());
-						return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).
-								build();			        			        	
-			        }
-			    }
-				catch (IOException e) {
-					_log.error("err ",e);
-					_log.debug("Something went wrong while reading/writing in stream!!");
+
+			String apiUrl;
+
+			StringBuilder sb = new StringBuilder();
+			try
+			{
+				URL urlVal;
+				String groupIdRequest = StringPool.BLANK;
+				StringBuilder postData = new StringBuilder();
+				JSONObject dataObj = JSONFactoryUtil.createJSONObject(data);
+				Iterator<?> keys = dataObj.keys();
+				while(keys.hasNext() ) {
+					String key = (String)keys.next();
+					if (!StringPool.BLANK.equals(postData.toString())) {
+						postData.append(StringPool.AMPERSAND);
+					}
+					postData.append(key);
+					postData.append(StringPool.EQUAL);
+					postData.append(dataObj.get(key));
 				}
-			    //return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
+
+				if (configObj.has(SyncServerTerm.SERVER_USERNAME)
+						&& configObj.has(SyncServerTerm.SERVER_SECRET)
+						&& configObj.has(SyncServerTerm.SERVER_URL)
+						&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+					authStrEnc = Base64.getEncoder().encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME) + ":" + configObj.getString(SyncServerTerm.SERVER_SECRET)).getBytes());
+
+					serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+					groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
+				}
+
+
+				if (ConstantUtils.PROXY_STATISTICS_ENDPOINT.equalsIgnoreCase(url) && serverUrl.contains(ConstantUtils.PROXY_V2_ENDPOINT)) {
+					apiUrl = serverUrl.replace(ConstantUtils.PROXY_V2_ENDPOINT, url);
+				} else {
+					apiUrl = serverUrl + url;
+				}
+				if (ConstantUtils.METHOD_GET.equals(method)) {
+					urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
+				}
+				else {
+					urlVal = new URL(apiUrl);
+				}
+				_log.debug("API URL: " + apiUrl);
+				java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
+				conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
+				conn.setRequestMethod(method);
+				conn.setRequestProperty(HttpHeaders.ACCEPT, ConstantUtils.CONTENT_TYPE_JSON);
+				conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
+
+				String authorization = String.format(MessageUtil.getMessage(ConstantUtils.HTTP_HEADER_BASICAUTH), authStrEnc);
+				conn.setRequestProperty(HttpHeaders.AUTHORIZATION, authorization);
+				_log.debug("BASIC AUTHEN: " + authStrEnc);
+				if (ConstantUtils.METHOD_POST.equals(method) || ConstantUtils.METHOD_PUT.equals(method)) {
+					conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, ConstantUtils.CONTENT_TYPE_XXX_FORM_URLENCODED);
+					conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
+
+					conn.setUseCaches(false);
+					conn.setDoInput(true);
+					conn.setDoOutput(true);
+					_log.debug("POST DATA: " + postData.toString());
+					OutputStream os = conn.getOutputStream();
+					os.write( postData.toString().getBytes() );
+					os.close();
+				}
+				if (dataType != null && "binary".contentEquals(dataType)) {
+					byte[] bytes = readAllBytes(conn.getInputStream());
+				   _log.debug("byte result:" + bytes != null);
+					return Response.status(HttpURLConnection.HTTP_OK).entity(bytes).
+							header(HttpHeaders.CONTENT_TYPE, conn.getContentType())
+							.build();
+				}
+				else {
+					BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+					int cp;
+					while ((cp = brf.read()) != -1) {
+					  sb.append((char) cp);
+					}
+					_log.debug("sb.tostring : "+ sb.toString());
+					return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).
+							build();
+				}
 			}
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(StringPool.BLANK).build();
+			catch (IOException e) {
+				_log.error("err ",e);
+				_log.debug("Something went wrong while reading/writing in stream!!");
+			}
+			return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(StringPool.BLANK).build();
 		}
 		catch (Exception e) {
 			_log.debug(e);

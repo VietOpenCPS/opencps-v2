@@ -489,7 +489,6 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			ServiceContext serviceContext, String registerBookCode,
 			String govAgencyCode) {
 
-		BackendAuth auth = new BackendAuthImpl();
 
 		try {
 //			if (!auth.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
@@ -521,7 +520,6 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			ServiceContext serviceContext,
 			String registerBookCode, String govAgencyCode,
 			 int countNum) {
-		BackendAuth auth = new BackendAuthImpl();
 
 		try {
 //			if (!auth.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {

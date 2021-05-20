@@ -219,6 +219,7 @@ public class PayGateTerm {
 			_log.debug("String after hash: " + hex);
 			return hex;
 		} catch (Exception e) {
+			_log.error(e);
 			throw new Exception("Error when gen checksum for orderId " + orderId + ": " + e.getMessage());
 		}
 	}

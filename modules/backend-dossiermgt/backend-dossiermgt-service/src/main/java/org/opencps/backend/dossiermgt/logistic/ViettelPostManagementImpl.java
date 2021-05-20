@@ -79,7 +79,8 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             }
             return token;
         }catch (Exception e) {
-            throw new Exception(e.getMessage());
+            _log.error(e);
+            throw new Exception(e);
         }
     }
 
@@ -128,6 +129,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
                 receiveProvinceInt = Validator.isNotNull(receiveProvince) ? Integer.parseInt(receiveProvince) : 0;
 
             } catch (Exception e) {
+                _log.error(e);
                 _log.error("Parse string to int fail");
             }
 
@@ -209,6 +211,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
                     PublishQueueTerm.STATE_NOT_SYNC, 0
             );
         }catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -237,6 +240,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
                 receiveProvinceInt = Validator.isNotNull(receiveProvince) ? Integer.parseInt(receiveProvince) : 0;
 
             } catch (Exception e) {
+                _log.error(e);
                 _log.error("GET ORDER SERVICE|Parse string to int fail");
             }
 
@@ -262,7 +266,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
 
             JSONObject orderService = Validator.isNotNull(response.get(0)) ? (JSONObject) response.get(0) : null;
 
-            if(Validator.isNull(orderService)) {
+            if(orderService == null) {
                 throw new Exception("Response get(0) price all null");
             }
 
@@ -273,6 +277,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
 
             return orderService.getString(ViettelPostTerm.MA_DV_CHINH);
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -288,6 +293,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             }
             return true;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }

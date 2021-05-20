@@ -64,7 +64,7 @@ public class QLVGManagementImpl implements QLVGManagement {
             boolean result = qlvbAction.sendVBHG(token, dossierId);
             _log.info("=====Result send VBHG: " + result);
         } catch (Exception e) {
-            _log.error("Error when running thread send to HG: " + e.getMessage());
+            _log.error(e);
         }
     }
 
@@ -121,7 +121,7 @@ public class QLVGManagementImpl implements QLVGManagement {
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
         } catch (Exception e) {
-            _log.error("Error when sync dossier: " + e.getMessage());
+            _log.error(e);
             return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
         }
     }
@@ -214,7 +214,7 @@ public class QLVGManagementImpl implements QLVGManagement {
         } catch (Exception e) {
             jsonObject.put("message", "Server internal error");
             jsonObject.put("code", "05");
-            _log.error("Error when update profile from Eoffice with id " + id + ": " + e.getMessage());
+            _log.error(e);
             return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(jsonObject.toJSONString()).build();
         }
     }
@@ -236,7 +236,7 @@ public class QLVGManagementImpl implements QLVGManagement {
         } catch (Exception e) {
             jsonObject.put("message", "Server internal error");
             jsonObject.put("code", "05");
-            _log.error("Error when update profile from Eoffice with id " + dossierId + ": " + e.getMessage());
+            _log.error(e);
             return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(jsonObject.toJSONString()).build();
         }
     }
@@ -259,7 +259,7 @@ public class QLVGManagementImpl implements QLVGManagement {
         } catch (Exception e) {
             jsonObject.put("message", "Server internal error");
             jsonObject.put("code", "05");
-            _log.error("Error when update profile from Eoffice with id " + dossierId + ": " + e.getMessage());
+            _log.error(e);
             return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(jsonObject.toJSONString()).build();
         }
     }
@@ -280,27 +280,8 @@ public class QLVGManagementImpl implements QLVGManagement {
                     return false;
             }
         } catch (Exception e) {
-            _log.error("Error when check mime type is valid " + e.getMessage());
+            _log.error(e);
             return false;
-        }
-    }
-
-    private Dossier getDossierById( long groupId, String id) throws Exception{
-        try {
-            long dossierId = GetterUtil.getLong(id);
-            if (dossierId == 0) {
-                //get dossier by referenceId
-                Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, id);
-                if(Validator.isNotNull(dossier)) {
-                    return dossier;
-                }
-
-                return DossierLocalServiceUtil.getByDossierNo(groupId, id);
-            }
-
-            return DossierLocalServiceUtil.getDossier(dossierId);
-        }catch (Exception e) {
-            throw new Exception(e.getMessage());
         }
     }
 
@@ -308,7 +289,8 @@ public class QLVGManagementImpl implements QLVGManagement {
         try {
             return DossierLocalServiceUtil.fetchByDO_NO(id);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            _log.error(e);
+            return null;
         }
     }
 }

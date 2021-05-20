@@ -131,14 +131,25 @@ public class PropKeys {
 	
 	//type=20
 	public static final String STATISTIC_DOSSIER_DASHBROAD_GROUP_TOTAL_COUNT = "statistic.dossier.dashbroad.group.total_count";
+
+	//type=21
+	public static final String STATISTIC_DOSSIER_VOTING_TOTAL_COUNT = "statistic.dossier.voting.total_count";
 	
+	public static final String STATISTIC_DOSSIER_VOTING_GROUP_TOTAL_COUNT = "statistic.dossier.voting.group.total_count";
+
+	public static final String STATISTIC_DOSSIER_VOTING_ROW_TOTAL_COUNT = "statistic.dossier.voting.row.total_count";
+
+	public static final String STATISTIC_DOSSIER_VOTING_TOTAL_LIST = "statistic.dossier.voting.total_list";
+
 	
 
 	//other
 	public static final String CONFIG_DOSSIER_STATISTIC_SIZE_LIST = "config.dossier_statistic.size_list";
 	public static final String TEMPLATES_REPORTS_DIR = "templates.reports.dir";
+	public static final String CONFIGS_DIR = "configs.dir";
 	public static final String TEMPLATES_REPORTS_FILENAME_1 = "templates.reports.filename1";
 	public static final String TEMPLATES_REPORTS_FILENAME_2 = "templates.reports.filename2";
 	public static final String TEMPLATES_REPORTS_FILENAME_3 = "templates.reports.filename3";
-	
+	public static final String TEMPLATES_REPORTS_FILENAME_4 = "templates.reports.filename4";
+
 }

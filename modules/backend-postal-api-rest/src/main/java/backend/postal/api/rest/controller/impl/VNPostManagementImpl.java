@@ -520,7 +520,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 			return lgspService.getToken(urlGetToken, keyToken);
 
 		} catch (Exception e) {
-			_log.error("Error when get token LGSP: " + e.getMessage());
+			_log.error(e);
 			return null;
 		}
 	}
@@ -553,7 +553,6 @@ public class VNPostManagementImpl implements VNPostManagement {
 
 			return token;
 		} catch (Exception e) {
-			_log.error(e.getMessage());
 			_log.error(e);
 			return null;
 		}
@@ -784,7 +783,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 				result = JSONFactoryUtil.createJSONObject(sb.toString());
 
 			} catch (JSONException e) {
-
+				_log.error(e);
 			}
 
 			return result;

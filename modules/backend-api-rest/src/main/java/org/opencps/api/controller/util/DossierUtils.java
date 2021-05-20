@@ -630,7 +630,7 @@ public class DossierUtils {
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 			return employee;
 		}catch (Exception e){
-			_log.info("EXCEPTION" + e.getMessage());
+			_log.error(e);
 			return null;
 		}
 	}
@@ -1310,6 +1310,7 @@ public class DossierUtils {
 			try {
 				return DossierLocalServiceUtil.getDossier(dossierId);
 			} catch (PortalException e) {
+				_log.error(e);
 				return null;
 			}
 		} else {
@@ -1593,6 +1594,8 @@ public class DossierUtils {
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
 			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
 			model.setDossierSubStatusText(doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
+			model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
+			model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
 
 			ouputs.add(model);
 		}

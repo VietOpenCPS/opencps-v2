@@ -36,6 +36,7 @@ public class VnpostCollectionEvent implements MessageListener {
 		try {
 			_doReceiveRequest(message);
 		} catch (Exception e) {
+			_log.error(e);
 			_log.error("Unable to process message " + message, e);
 		}
 	}
@@ -44,7 +45,7 @@ public class VnpostCollectionEvent implements MessageListener {
 		try {
 			JSONObject dossierObj = (JSONObject) message.get(DossierTerm.CONSTANT_DOSSIER);
 			long groupId = dossierObj.getLong(Field.GROUP_ID);
-			Dossier dossier = null;
+			Dossier dossier;
 
 			long dossierId = dossierObj.getLong(DossierTerm.DOSSIER_ID);
 			String refId = dossierObj.getString(DossierTerm.REFERENCE_UID);
@@ -202,11 +203,13 @@ public class VnpostCollectionEvent implements MessageListener {
 						}
 
 					} catch (Exception e) {
+						_log.error(e);
 						_log.warn("Error when parse date in vnpost collect: " + e.getMessage());
 						_log.warn("Still running...");
 					}
 
 				}catch (Exception e) {
+					_log.error(e);
 					_log.warn("Error when addition some field dossier: " + e.getMessage());
 					_log.warn("Still running...");
 				}
@@ -214,6 +217,7 @@ public class VnpostCollectionEvent implements MessageListener {
 				DossierLocalServiceUtil.updateDossier(dossier);
 			}
 		} catch (Exception e) {
+			_log.error(e);
 			throw new Exception(e.getMessage());
 		}
 
@@ -239,8 +243,7 @@ public class VnpostCollectionEvent implements MessageListener {
 				}
 			}
 		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 		senderName  += "||Tên dịch vụ: " + serviceType + "||CMND: " + dossier.getApplicantIdNo();
 		return senderName;
