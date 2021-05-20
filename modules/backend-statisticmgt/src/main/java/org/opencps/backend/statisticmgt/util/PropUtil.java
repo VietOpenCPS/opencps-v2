@@ -76,6 +76,8 @@ public class PropUtil {
 					_queryProperties = System.getProperties();
 					loadQueryProperties();
 				} else {
+					_queryProperties = new Properties();
+//					_queryProperties = System.getProperties();
 					_queryProperties.load(new FileInputStream(dir));
 				}
 			}
