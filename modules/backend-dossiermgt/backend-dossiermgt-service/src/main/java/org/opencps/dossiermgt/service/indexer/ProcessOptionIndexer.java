@@ -82,6 +82,8 @@ public class ProcessOptionIndexer extends BaseIndexer<ProcessOption> {
 
 		document.addKeywordSortable(ProcessOptionTerm.FOR_CITIZEN, Boolean.toString(object.getForCitizen()));
 		document.addKeywordSortable(ProcessOptionTerm.FOR_BUSINESS, Boolean.toString(object.getForBusiness()));
+		document.addNumber(ProcessOptionTerm.SAMPLE_COUNT, object.getSampleCount());
+		document.addTextSortable(ProcessOptionTerm.REGISTER_BOOKCODE, object.getRegisterBookCode());
 		// add extend fields
 		JSONObject extContent = getExtentData(object.getDossierTemplateId(), object.getServiceProcessId(),
 				object.getServiceConfigId());

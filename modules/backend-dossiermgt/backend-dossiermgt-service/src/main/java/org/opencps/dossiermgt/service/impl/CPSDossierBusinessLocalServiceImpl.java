@@ -642,80 +642,78 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//Create DossierSync
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
-
+		logLineDoActionPublishQueue(1, dossier.getDossierId(), syncType);
 		if (syncType > 0) {
 			int state = DossierActionUtils.getSyncState(syncType, dossier);
 			// Imposition state == 0 không thêm vào DossierSync
-			if(state >0 ) {
-				//If state = 1 set pending dossier
-				if (state == DossierSyncTerm.STATE_WAITING_SYNC) {
-					if (dossierAction != null) {
-						dossierAction.setPending(true);
-						dossierActionLocalService.updateDossierAction(dossierAction);
+			//If state = 1 set pending dossier
+			if (state == DossierSyncTerm.STATE_WAITING_SYNC) {
+				if (dossierAction != null) {
+					dossierAction.setPending(true);
+					dossierActionLocalService.updateDossierAction(dossierAction);
+				}
+			} else {
+				if (dossierAction != null) {
+					dossierAction.setPending(false);
+					dossierActionLocalService.updateDossierAction(dossierAction);
+				}
+			}
+			//Update payload
+
+			JSONArray dossierFilesArr = JSONFactoryUtil.createJSONArray();
+			List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossier.getDossierId());
+			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST) {
+				if (dossier.getOriginDossierId() == 0) {
+					if (lstFiles.size() > 0) {
+						for (DossierFile df : lstFiles) {
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
+							dossierFilesArr.put(dossierFileObj);
+						}
 					}
 				} else {
-					if (dossierAction != null) {
-						dossierAction.setPending(false);
-						dossierActionLocalService.updateDossierAction(dossierAction);
-					}
-				}
+					ProcessOption processOption = option;
 
-				//Update payload
+					DossierTemplate dossierTemplate = dossierTemplateLocalService
+							.fetchDossierTemplate(processOption.getDossierTemplateId());
+					List<DossierPart> lstParts = dossierPartLocalService.getByTemplateNo(groupId,
+							dossierTemplate.getTemplateNo());
 
-				JSONArray dossierFilesArr = JSONFactoryUtil.createJSONArray();
-				List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossier.getDossierId());
-				if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST) {
-					if (dossier.getOriginDossierId() == 0) {
-						if (lstFiles.size() > 0) {
-							for (DossierFile df : lstFiles) {
+					List<DossierFile> lstOriginFiles = dossierFileLocalService.findByDID(dossier.getOriginDossierId());
+					if (lstOriginFiles.size() > 0) {
+						List<String> lstCheckParts = new ArrayList<String>();
+
+						if (payloadObject.has(DossierSyncTerm.PAYLOAD_SYNC_DOSSIER_PARTS)) {
+							try {
+								JSONArray partArrs = payloadObject
+										.getJSONArray(DossierSyncTerm.PAYLOAD_SYNC_DOSSIER_PARTS);
+								if (partArrs != null && partArrs.length() > 0) {
+									for (int tempI = 0; tempI <= partArrs.length(); tempI++) {
+										JSONObject partObj = partArrs.getJSONObject(tempI);
+										lstCheckParts.add(partObj.getString(DossierPartTerm.PART_NO));
+									}
+								}
+							} catch (Exception e) {
+								_log.debug(e);
+							}
+						}
+
+						for (DossierFile df : lstOriginFiles) {
+							boolean flagHslt = false;
+							for (DossierPart dp : lstParts) {
+								if (dp.getPartNo().equals(df.getDossierPartNo()) && (lstCheckParts.size() == 0
+										|| (lstCheckParts.size() > 0 && lstCheckParts.contains(dp.getPartNo())))) {
+									flagHslt = true;
+									break;
+								}
+							}
+							if (flagHslt) {
 								JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
 								dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
 								dossierFilesArr.put(dossierFileObj);
 							}
 						}
-					} else {
-						ProcessOption processOption = option;
-
-						DossierTemplate dossierTemplate = dossierTemplateLocalService
-								.fetchDossierTemplate(processOption.getDossierTemplateId());
-						List<DossierPart> lstParts = dossierPartLocalService.getByTemplateNo(groupId,
-								dossierTemplate.getTemplateNo());
-
-						List<DossierFile> lstOriginFiles = dossierFileLocalService.findByDID(dossier.getOriginDossierId());
-						if (lstOriginFiles.size() > 0) {
-							List<String> lstCheckParts = new ArrayList<String>();
-
-							if (payloadObject.has(DossierSyncTerm.PAYLOAD_SYNC_DOSSIER_PARTS)) {
-								try {
-									JSONArray partArrs = payloadObject
-											.getJSONArray(DossierSyncTerm.PAYLOAD_SYNC_DOSSIER_PARTS);
-									if (partArrs != null && partArrs.length() > 0) {
-										for (int tempI = 0; tempI <= partArrs.length(); tempI++) {
-											JSONObject partObj = partArrs.getJSONObject(tempI);
-											lstCheckParts.add(partObj.getString(DossierPartTerm.PART_NO));
-										}
-									}
-								} catch (Exception e) {
-									_log.debug(e);
-								}
-							}
-
-							for (DossierFile df : lstOriginFiles) {
-								boolean flagHslt = false;
-								for (DossierPart dp : lstParts) {
-									if (dp.getPartNo().equals(df.getDossierPartNo()) && (lstCheckParts.size() == 0
-											|| (lstCheckParts.size() > 0 && lstCheckParts.contains(dp.getPartNo())))) {
-										flagHslt = true;
-										break;
-									}
-								}
-								if (flagHslt) {
-									JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
-									dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
-									dossierFilesArr.put(dossierFileObj);
-								}
-							}
-						}
+					}
 				}
 			} else {
 				//Sync result files
@@ -725,16 +723,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if (Validator.isNotNull(dossier.getDossierCounter())) {
 					payloadObject.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
 				}
-			}
-
 				if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST
 						|| actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM) {
 
-				payloadObject.put(DossierTerm.CONSTANT_DOSSIER_FILES, dossierFilesArr);
+					payloadObject.put(DossierTerm.CONSTANT_DOSSIER_FILES, dossierFilesArr);
 
-				if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
-					List<DossierFile> lsDossierFile = lstFiles;
-					dossierFilesArr = JSONFactoryUtil.createJSONArray();
+					if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
+						List<DossierFile> lsDossierFile = lstFiles;
+						dossierFilesArr = JSONFactoryUtil.createJSONArray();
 
 						// check return file
 						List<String> returnDossierFileTemplateNos = ListUtil
@@ -788,31 +784,35 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							payloadObject.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate().getTime());
 						}
 					}
-					if (Validator.isNotNull(dossier.getServerNo())
-							&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
-						String serverNo;
-						if (syncType == 1) {
-							serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
+					if (state > 0) {
+						if (Validator.isNotNull(dossier.getServerNo())
+								&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
+							String serverNo;
+							if (syncType == 1) {
+								serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
+							} else {
+								serverNo = dossier.getServerNo().split(StringPool.COMMA)[1].split(StringPool.AT)[0];
+							}
+							//String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
+							if (Validator.isNotNull(serverNo)) {
+								dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid,
+										syncRefUid, dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(),
+										actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
+										serverNo, state);
+							}
 						} else {
-							serverNo = dossier.getServerNo().split(StringPool.COMMA)[1].split(StringPool.AT)[0];
-						}
-						//String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
-						if (Validator.isNotNull(serverNo)) {
 							dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid,
 									syncRefUid, dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(),
 									actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
-									serverNo, state);
+									dossier.getServerNo(), state);
 						}
-					} else {
-						dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid,
-								syncRefUid, dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(),
-								actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
-								dossier.getServerNo(), state);
 					}
 					//Gửi thông tin hồ sơ để tra cứu
+					logLineDoActionPublishQueue(4, dossier.getDossierId(), actionConfig.getSyncType());
 					if (state == DossierSyncTerm.STATE_NOT_SYNC && actionConfig != null
 							&& actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
 							&& OpenCPSConfigUtil.isPublishEventEnable()) {
+						logLineDoActionPublishQueue(5, dossier.getDossierId(), actionConfig.getSyncType());
 						publishEvent(dossier, context, dossierAction.getDossierActionId());
 					}
 				} else if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM_DOSSIER) {
@@ -841,31 +841,34 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 					payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
-					if (Validator.isNotNull(dossier.getServerNo())
-							&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
-						String serverNo;
-						if (syncType == 1) {
-							serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
+					if (state > 0) {
+						if (Validator.isNotNull(dossier.getServerNo())
+								&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
+							String serverNo;
+							if (syncType == 1) {
+								serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
+							} else {
+								serverNo = dossier.getServerNo().split(StringPool.COMMA)[1].split(StringPool.AT)[0];
+							}
+							//String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
+							if (Validator.isNotNull(serverNo)) {
+								dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(),
+										dossierRefUid, syncRefUid, dossierAction.getPrimaryKey(), actionCode,
+										proAction.getActionName(), actionUser, actionNote, syncType, actionConfig.getInfoType(),
+										payloadObject.toJSONString(), serverNo, state);
+							}
 						} else {
-							serverNo = dossier.getServerNo().split(StringPool.COMMA)[1].split(StringPool.AT)[0];
+							dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid,
+									syncRefUid, dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(),
+									actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
+									dossier.getServerNo(), state);
 						}
-						//String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
-						if (Validator.isNotNull(serverNo)) {
-							dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(),
-									dossierRefUid, syncRefUid, dossierAction.getPrimaryKey(), actionCode,
-									proAction.getActionName(), actionUser, actionNote, syncType, actionConfig.getInfoType(),
-									payloadObject.toJSONString(), serverNo, state);
-						}
-					} else {
-						dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid,
-								syncRefUid, dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(),
-								actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
-								dossier.getServerNo(), state);
 					}
 				}
 			}
-		} else if (actionConfig != null && (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT || actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT_FILE)
+		}else if (actionConfig != null && (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT || actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT_FILE)
 				&& OpenCPSConfigUtil.isPublishEventEnable()) {
+			logLineDoActionPublishQueue(2, dossier.getDossierId(), actionConfig.getSyncType());
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
 	}
@@ -1753,6 +1756,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 	private void logLineLevelType(String type, int number, String dossierId) {
 		_log.info(type + "_"+ number + "_" + dossierId + "_log_action");
+	}
+
+	private void logLineDoActionPublishQueue(int number, long dossierId , int syncType) {
+		_log.info("doActionPublishQueue" + number + "_" + dossierId + "_" + syncType +  "_log_action");
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
@@ -4115,7 +4122,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		//Check if dossier is done
 		if (DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
-			
+
 			_log.debug("+++dossier.getDossierId():"+dossier.getDossierId());
 			List<DossierFile> lstFiles = dossierFileLocalService.getAllDossierFile(dossier.getDossierId());
 			_log.debug("+lstFiles.size():"+lstFiles.size());

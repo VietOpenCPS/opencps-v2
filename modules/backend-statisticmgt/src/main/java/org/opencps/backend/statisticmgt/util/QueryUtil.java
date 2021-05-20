@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 import org.opencps.backend.statisticmgt.constant.Constants;
 import org.opencps.backend.statisticmgt.constant.PropKeys;
 import org.opencps.backend.statisticmgt.constant.PropValues;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 /**
  * @author trungnt
@@ -341,9 +343,27 @@ public class QueryUtil {
 		int type;
 	}
 
-	public static int getCount(String sql) {
+	public static int getCount(String sql, long userId, long groupId) {
 
 		int count = 0;
+		_log.debug("sqlTemplate: " + sql);
+		if (userId > 0) {
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			if (Validator.isNotNull(employee) && Validator.isNotNull(employee.getScope())) {
+				String name = StringPool.BLANK;
+				String[] scope = employee.getScope().split(StringPool.COMMA);
+				for (String key : scope) {
+					if (Validator.isNotNull(name)) {
+						name += "," + key;
+					} else {
+						name = key;
+					}
+				}
+				sql = sql.replace("{scopeEmpl}", StringPool.APOSTROPHE + name + StringPool.APOSTROPHE);
+			} else {
+				sql = sql.replace("{scopeEmpl}", "''");
+			}
+		}
 
 		try (PreparedStatement pst = ConnectionUtil._getConnection().prepareStatement(sql)) {
 

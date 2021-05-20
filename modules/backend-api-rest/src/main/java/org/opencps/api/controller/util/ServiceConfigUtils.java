@@ -133,7 +133,8 @@ public class ServiceConfigUtils {
 						processOption.setProcessName(doc.get(ProcessOptionTerm.PROCESS_NAME));
 						processOption.setOptionName(doc.get(ProcessOptionTerm.OPTION_NAME));
 						processOption.setServiceConfigId(GetterUtil.getLong(doc.get(ProcessOptionTerm.SERVICE_CONFIG_ID)));
-
+						processOption.setSampleCount(GetterUtil.getLong(doc.get(ProcessOptionTerm.SAMPLE_COUNT)));
+						processOption.setRegisterBookCode(doc.get(ProcessOptionTerm.REGISTER_BOOKCODE));
 						processes.add(processOption);
 					}
 				}
@@ -155,6 +156,8 @@ public class ServiceConfigUtils {
 					processOption.setProcessName(doc.get(ProcessOptionTerm.PROCESS_NAME));
 					processOption.setOptionName(doc.get(ProcessOptionTerm.OPTION_NAME));
 					processOption.setServiceConfigId(GetterUtil.getLong(doc.get(ProcessOptionTerm.SERVICE_CONFIG_ID)));
+					processOption.setSampleCount(GetterUtil.getLong(doc.get(ProcessOptionTerm.SAMPLE_COUNT)));
+					processOption.setRegisterBookCode(doc.get(ProcessOptionTerm.REGISTER_BOOKCODE));
 
 					processes.add(processOption);
 				}
