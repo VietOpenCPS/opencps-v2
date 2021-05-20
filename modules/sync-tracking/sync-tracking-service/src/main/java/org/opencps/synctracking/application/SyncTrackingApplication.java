@@ -67,7 +67,7 @@ public class SyncTrackingApplication extends Application{
             response = syncTrackingAction.get(query);
             return Response.status(200).entity(objectMapper.writeValueAsString(response)).build();
         } catch (Exception e) {
-            _log.error("Error when get log report: " + e.getMessage());
+            _log.error(e);
             return Response.status(500).entity("Error").build();
         }
     }
@@ -83,7 +83,7 @@ public class SyncTrackingApplication extends Application{
             syncTrackingAction.create(query);
             return Response.status(200).entity("Saved").build();
         } catch (Exception e) {
-            _log.error("Error when save log report: " + e.getMessage());
+            _log.error(e);
             return Response.status(500).entity("Error").build();
         }
     }
@@ -104,7 +104,7 @@ public class SyncTrackingApplication extends Application{
             syncTrackingAction.resend(query, configJson);
             return Response.status(200).entity("Resent!!!").build();
         } catch (Exception e) {
-            _log.error("Error when resend api: " + e.getMessage());
+            _log.error(e);
             return Response.status(500).entity("Error").build();
         }
     }
@@ -147,6 +147,7 @@ public class SyncTrackingApplication extends Application{
 
             return "ok";
         } catch (Exception e) {
+            _log.error(e);
             return "error";
         }
     }
@@ -163,7 +164,7 @@ public class SyncTrackingApplication extends Application{
             Counter newCounter = CounterLocalServiceUtil.updateCounter(currentCounter);
             _log.info("======Current Id after Tang: "  + newCounter.getCurrentId());
         } catch (Exception e) {
-            e.printStackTrace();
+            _log.error(e);
         }
     }
 

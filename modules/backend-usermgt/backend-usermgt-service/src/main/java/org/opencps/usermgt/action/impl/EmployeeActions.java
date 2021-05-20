@@ -991,7 +991,7 @@ public class EmployeeActions implements EmployeeInterface {
 		if (Validator.isNotNull(roles)) {
 			String[] roleArr = StringUtil.split(roles);
 			if (roleArr != null && roleArr.length > 0) {
-				long employeeId = employee.getEmployeeId();
+				long employeeId = employee != null ? employee.getEmployeeId() : 0;
 				if (isNew) {
 					processUpdateEmpJobPos(userId, groupId, roleArr, employee, null, serviceContext);
 				} else {
@@ -1009,11 +1009,13 @@ public class EmployeeActions implements EmployeeInterface {
 		}
 
 		try {
-			if (employee.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_RETIRED) {
-				UserLocalServiceUtil.deleteGroupUser(employee.getGroupId(), employee.getMappingUserId());
-			}
-			else if (employee.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_WORKED) {
-				UserLocalServiceUtil.addGroupUser(employee.getGroupId(), employee.getMappingUserId());
+			if(employee != null) {
+				if (employee.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_RETIRED) {
+					UserLocalServiceUtil.deleteGroupUser(employee.getGroupId(), employee.getMappingUserId());
+				}
+				else if (employee.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_WORKED) {
+					UserLocalServiceUtil.addGroupUser(employee.getGroupId(), employee.getMappingUserId());
+				}
 			}
 		}
 		catch (Exception e) {

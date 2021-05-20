@@ -103,7 +103,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 									LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end, ServiceContext serviceContext) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		Hits hits = null;
+		Hits hits;
 		SearchContext searchContext = new SearchContext();
 		searchContext.setCompanyId(companyId);
 
@@ -898,7 +898,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				for(Applicant applicant2 : applicants) {
 					if(applicant2.getGroupId() == 0) {
 						applicant2.setContactEmail(newEmail);
-						applicant2 = ApplicantLocalServiceUtil.updateApplicant(applicant2);
+						ApplicantLocalServiceUtil.updateApplicant(applicant2);
 						break;
 					}
 				}

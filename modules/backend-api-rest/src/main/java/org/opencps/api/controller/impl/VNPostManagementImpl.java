@@ -84,7 +84,7 @@ public class VNPostManagementImpl implements VNPostManagement
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 		}catch (Exception e) {
-			_log.error(e.getMessage());
+			_log.error(e);
 			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
@@ -116,7 +116,6 @@ public class VNPostManagementImpl implements VNPostManagement
 			Company company;
 
 			for(PostConnect postConnect : listPostConnect) {
-				updateStatus = false;
 				dossierId  = postConnect.getDossierId();
 				groupId    = postConnect.getGroupId();
 				//todo change this code
@@ -174,7 +173,7 @@ public class VNPostManagementImpl implements VNPostManagement
 							actionCode = jsonData.getJSONObject(i).getString(ProcessActionTerm.ACTION_CODE);
 							//call do action
 							if(Validator.isNotNull(actionCode)){
-								updateStatus = doAction(actionCode, groupId, dossier, user, null, serviceContext);
+								doAction(actionCode, groupId, dossier, user, null, serviceContext);
 								break;
 							}
 						}
@@ -190,7 +189,7 @@ public class VNPostManagementImpl implements VNPostManagement
 			}
 			_log.info("End Viettel post schedule!!!");
 		} catch (Exception e){
-			_log.error("Error Viettel post schedule: " + e.getMessage());
+			_log.error(e);
 		}
 		return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 	}
@@ -311,7 +310,7 @@ public class VNPostManagementImpl implements VNPostManagement
 			_log.info("----VIETTEL POST: End do action for dossier " + dossier.getDossierId());
 			return Validator.isNotNull(dossierResult);
 		} catch (Exception e) {
-			_log.error("Error doAction Viettel post schedule: " + e.getMessage());
+			_log.error(e);
 			return false;
 		}
 	}
@@ -379,7 +378,7 @@ public class VNPostManagementImpl implements VNPostManagement
 
 			return action;
 		} catch (Exception e) {
-			_log.error("Error doAction Viettel post schedule: " + e.getMessage());
+			_log.error(e);
 			return null;
 		}
 	}
@@ -432,13 +431,13 @@ public class VNPostManagementImpl implements VNPostManagement
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(objectMapper.writeValueAsString(response)).build();
 		} catch (Exception e) {
-			_log.error("Update viettle post bill error with info " + updateInfo.toString());
-			_log.error(e.getMessage());
+			_log.error(e);
 			response = new ViettlePostResponse(ViettelPostTerm.SYSTEM_ERROR,
 					true, MESS_SYSTEM_ERROR, null);
 			try {
 				return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(objectMapper.writeValueAsString(response)).build();
 			} catch (JsonProcessingException jsonProcessingException) {
+				_log.error(e);
 				return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
 			}
 		}
@@ -449,10 +448,9 @@ public class VNPostManagementImpl implements VNPostManagement
 	{
 		String [] receiptCodeSplit = receiptCode.split(StringPool.DASH);
 		String checkKey = receiptCodeSplit[0];
-		String securityCode = StringPool.BLANK;
+		String securityCode;
 		long dossierId ;
 		long dossierCounter ;
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		if (Validator.isNotNull(receiptCode) && receiptCodeSplit.length==4 && checkKey.equals("D"))
 		{
 			securityCode = receiptCodeSplit[1];

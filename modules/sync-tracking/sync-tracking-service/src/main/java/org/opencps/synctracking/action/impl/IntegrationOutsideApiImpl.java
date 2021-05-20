@@ -65,6 +65,7 @@ public class IntegrationOutsideApiImpl implements IntegrationOutsideApi {
             }
             return token;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -83,6 +84,7 @@ public class IntegrationOutsideApiImpl implements IntegrationOutsideApi {
             System.out.println("Response api: " + jsonObject);
             return jsonObject;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }

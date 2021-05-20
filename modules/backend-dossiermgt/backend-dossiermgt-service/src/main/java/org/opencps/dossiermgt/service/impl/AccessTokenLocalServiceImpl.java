@@ -109,6 +109,7 @@ public class AccessTokenLocalServiceImpl extends AccessTokenLocalServiceBaseImpl
 				}
 			}
 		} catch (Exception e) {
+			_log.error(e);
 			// TODO: handle exception
 		}
 	}

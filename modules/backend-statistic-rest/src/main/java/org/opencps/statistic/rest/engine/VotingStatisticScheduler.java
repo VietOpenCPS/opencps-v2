@@ -262,6 +262,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 			ResponseEntity<String> response = restTemplate.postForEntity(urlSync, request , String.class );
 			System.out.print("Status sync data vote to DVC: " + response.getStatusCodeValue());
 		} catch (Exception e) {
+			_log.error(e);
 			throw new Exception(e.getMessage());
 		}
 	}

@@ -1715,14 +1715,6 @@ public class DossierActionsImpl implements DossierActions {
 
 						}
 
-						if (lstUser != null && lstUser.size() > 0) {
-							for (User user1: lstUser) {
-								Map<String, Object> moderator = user1.getModelAttributes();
-								//Map<String, Object> moderator = user1.getModelAttributes();
-//								_log.debug("moderator: "+moderator);
-							}
-						}
-
 						result.put(ProcessActionTerm.PENDING, pending);
 						result.put(ProcessActionTerm.STR_PROCESS_ACTION, processAction);
 						result.put(ProcessActionTerm.LIST_USER, lstUser);
@@ -3467,12 +3459,6 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		}
 
-		if (lstUser != null && lstUser.size() > 0) {
-			for (User user1: lstUser) {
-				Map<String, Object> moderator = user1.getModelAttributes();
-				//Map<String, Object> moderator = user1.getModelAttributes();
-			}
-		}
 		return lstUser;
 	}
 
@@ -3549,19 +3535,13 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}
 		}
-		if (lstUser != null && lstUser.size() > 0) {
-			for (User user1: lstUser) {
-				Map<String, Object> moderator = user1.getModelAttributes();
-				//Map<String, Object> moderator = user1.getModelAttributes();
-//				_log.debug("moderator: "+moderator);
-			}
-		}
+
 		return lstUser;
 	}
 
 	private List<User> processRoleAsStepDonedListUser(Dossier dossier, String stepCode, long serviceProcessId, ProcessStep processStep,
 		List<ProcessStepRole> processStepRoleList) {
-		List<User> lstUser = null;
+		List<User> lstUser;
 		// Check roles
 		List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), stepCode);
 
@@ -3592,13 +3572,7 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}
 		}
-		if (lstUser != null && lstUser.size() > 0) {
-			for (User user1: lstUser) {
-				Map<String, Object> moderator = user1.getModelAttributes();
-				//Map<String, Object> moderator = user1.getModelAttributes();
-//				_log.debug("moderator: "+moderator);
-			}
-		}
+
 		return lstUser;
 	}
 
@@ -4302,9 +4276,9 @@ public class DossierActionsImpl implements DossierActions {
 	{
 		String[] receiptCodeSplit = ma_bien_nhan.split(StringPool.DASH);
 		String checkKey = receiptCodeSplit[0];
-		String securityCode = StringPool.BLANK;
+		String securityCode;
 		long dossierId ;
-		String dossierCounter = StringPool.BLANK;
+		String dossierCounter;
 		if (Validator.isNotNull(ma_bien_nhan) && receiptCodeSplit.length == 4 && checkKey.equals("D"))
 		{
 			securityCode = receiptCodeSplit[1];
@@ -4387,7 +4361,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			catch (JSONException e)
 			{
-				e.printStackTrace();
+				_log.error(e);
 			}
 		}
 		return DossierLocalServiceUtil.updateDossier(dossier);

@@ -83,7 +83,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
 
             throw new Exception("Token is empty with paygov config: " + paygovConfig);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
@@ -117,7 +117,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
 
             return urlRedirect;
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
@@ -210,9 +210,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             }
 
         } catch ( Exception e) {
-
-            _log.error(e);
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
         return urlRedirect;
     }
@@ -238,7 +236,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
                 return true;
             }
         } catch (Exception e) {
-            _log.error("Error when check sum: " + e.getMessage());
+            _log.error(e);
         }
         return false;
     }
@@ -282,7 +280,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             _log.info("Response api saving tracking: " + response);
             _log.info("Saved tracking!!!");
         }catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
@@ -332,15 +330,16 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
 
                     callApiSaveTracking(syncTrackingInfo);
                 } catch (Exception e) {
-                    _log.error("Save tracking error with message: " + e.getMessage());
+                    _log.error("Save tracking error with message");
                     _log.warn("Still running...");
+                    _log.error(e);
                 }
             }
 
             JSONObject jsonObject = JSONFactoryUtil.createJSONObject(response.getBody());
             return jsonObject;
         } catch (Exception e) {
-            _log.error(e.getMessage());
+            _log.error(e);
             return null;
         }
     }
@@ -443,6 +442,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
 
                     callApiSaveTracking(syncTrackingInfo);
                 } catch (Exception e) {
+                    _log.error(e);
                     _log.error("Save tracking error with message: " + e.getMessage());
                     _log.warn("Still running...");
                 }
@@ -451,7 +451,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             JSONObject jsonObject = JSONFactoryUtil.createJSONObject(response.getBody());
             return jsonObject;
         } catch (Exception e) {
-            _log.error(e.getMessage());
+            _log.error(e);
             return null;
         }
     }
@@ -465,7 +465,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             _log.info("Response: " + response.getBody());
             return JSONFactoryUtil.createJSONObject(response.getBody());
         }catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
@@ -482,7 +482,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             System.out.println(jsonArray);
             return jsonArray;
         } catch (Exception e) {
-            _log.error(e.getMessage());
+            _log.error(e);
             return null;
         }
     }
@@ -520,6 +520,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
 
                     callApiSaveTracking(syncTrackingInfo);
                 } catch (Exception e) {
+                    _log.error(e);
                     _log.error("Save tracking error with message: " + e.getMessage());
                     _log.warn("Still running...");
                 }
@@ -530,7 +531,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             }
             return JSONFactoryUtil.createJSONObject(response.getBody());
         } catch (Exception e) {
-            _log.error(e.getMessage());
+            _log.error(e);
             return null;
         }
     }
@@ -571,7 +572,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             JSONObject result = JSONFactoryUtil.createJSONObject(sb.toString());
             return result;
         } catch (Exception e) {
-            _log.error(e.getMessage());
+            _log.error(e);
         } finally {
             if (conn != null) {
                 conn.disconnect();

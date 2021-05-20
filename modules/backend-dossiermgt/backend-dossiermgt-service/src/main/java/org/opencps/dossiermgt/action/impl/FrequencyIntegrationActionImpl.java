@@ -240,6 +240,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
             //Lay from unit code cua dossier
             JSONObject metaDataJson = null;
+            if(dossier == null) {
+                throw new Exception("No dossier was found");
+            }
+
             if (Validator.isNotNull(dossier.getMetaData()) && !dossier.getMetaData().isEmpty()) {
                 metaDataJson = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
             }
@@ -341,6 +345,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             return false;
         } catch (Exception e) {
             _log.error("Error when crawlDossierLGSP for refCode " + profile.getRef_code() + " | Error: " + e.getMessage());
+            _log.error(e);
             return false;
         }
     }
@@ -367,6 +372,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
 
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -506,7 +512,8 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
             return "";
         } catch (Exception e) {
-            _log.info("Error when process post action: " + e.getMessage());
+            _log.error(e);
+            _log.error("Error when process post action: " + e.getMessage());
             return "";
         }
     }
@@ -549,6 +556,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 }
             }
         }catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -577,7 +585,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
             return token;
         }catch (Exception e) {
-            e.printStackTrace();
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -607,6 +615,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             objectMapper = new ObjectMapper();
             return Arrays.asList(objectMapper.readValue(profileReceivers, ProfileReceiver[].class));
         }catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -646,6 +655,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             objectMapper = new ObjectMapper();
             return objectMapper.readValue(profileDetail, ProfileInModel.class);
         }catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -671,6 +681,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             _log.info("Response update status Receiver: " + statusUpdate);
 
         }catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -713,6 +724,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             _log.info("Result sync dossier: " + response);
             _log.info("Sync dossier " + dossier.getReferenceUid() + " to PMNV done!!!");
         } catch (Exception e) {
+            _log.error(e);
             _log.warn("Sync dossier to PMNV error: " + e.getMessage());
             _log.warn("Still running...");
         }
@@ -751,6 +763,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             syncTrackingInfo.toUnit   = Validator.isNotNull(listToUnitCode) ? listToUnitCode: new String[]{};
             return syncTrackingInfo;
         } catch (Exception e) {
+            _log.error(e);
             _log.warn("Error when transform data to sync tracking: " + e.getMessage());
             _log.warn("Still running...");
             return null;
@@ -810,6 +823,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             _log.info("---Transformed dossier " + dossier.getDossierNo() + "!");
             return profile;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception( "Create profile PMNV error: " + e.getMessage());
         }
     }
@@ -943,6 +957,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             _log.info("Result sync dossier manual: " + response);
             _log.info("Done call 3.3, 3.5, 3.6, 3.7");
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception("SyncDossierToLGSPManual error with message: " + e.getMessage());
         }
     }
@@ -993,6 +1008,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             JSONObject response = apiService.callApiAndTracking(urlSyncDossier, syncTrackingInfo, headers, profile);
             _log.info("Result api 3.12 sync dossier DVC Bo manual: " + response);
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -1011,6 +1027,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             listDocFees.add(docFee);
             return listDocFees;
         } catch (Exception e) {
+            _log.error(e);
             _log.warn("Warning when get profile doc fee fail: " + e.getMessage());
             return null;
         }
@@ -1034,6 +1051,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
             return "";
         } catch (Exception e) {
+            _log.error(e);
             _log.warn("Warning when get procedures code from service code " + serviceCode + " fail: " + e.getMessage());
             return "";
         }
@@ -1154,6 +1172,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             _log.info("Result send dossier status: " + response);
             _log.info("Done 3.11!!!!");
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -1209,6 +1228,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             _log.info("Result send dossier status: " + response);
             _log.info("Done call 3.13 sent status profile to DVC BO");
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -1227,6 +1247,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
             return 0;
         } catch (Exception e) {
+            _log.error(e);
             _log.error("Error when mapping dossier status: " + e.getMessage());
             return 0;
         }
@@ -1319,6 +1340,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
             return listAttachments;
         } catch (Exception e) {
+            _log.error(e);
             _log.warn("Warning when get list attachments fail: " + e.getMessage());
             _log.warn("Still running...");
             return null;
@@ -1330,6 +1352,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             SimpleDateFormat formatter = new SimpleDateFormat(format);
             return formatter.format(date);
         } catch (Exception e) {
+            _log.error(e);
             _log.warn("Warning when get format date: " + e.getMessage());
             return "";
         }
@@ -1342,6 +1365,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             String reformattedStr = formatNew.format(formatCurrent.parse(strDate));
             return reformattedStr;
         } catch (Exception e) {
+            _log.error(e);
             _log.error("Error when parse string date: " + e.getMessage());
             return "";
         }

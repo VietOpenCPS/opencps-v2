@@ -540,7 +540,6 @@ public class OAIMethodUtils {
 		try {
 
 			long companyIdValid = GetterUtil.getLong(companyId, 20099);
-			long pageValid = GetterUtil.getInteger(page, 0);
 			List<DeliverableType> deliverableTypes = DeliverableTypeLocalServiceUtil
 					.getAllDeliverableTypes(companyIdValid);
 			OMDeliverableType oMDeliverableType = null;

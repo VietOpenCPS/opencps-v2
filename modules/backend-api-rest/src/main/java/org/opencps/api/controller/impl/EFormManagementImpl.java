@@ -706,6 +706,8 @@ public class EFormManagementImpl implements EFormManagement{
 
 			if (bytes != null) {
 				System.out.println("bytes " + bytes.length);
+			} else {
+				throw new Exception("bytes null");
 			}
 
 			InputStream inputStream = new ByteArrayInputStream(bytes);

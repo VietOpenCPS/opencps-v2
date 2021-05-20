@@ -299,7 +299,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 														object.getGroupId());
 												document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
 											} catch (NumberFormatException e) {
-
+												_log.error(e);
 											}
 										} else if (DossierTerm.DUE_DATE_NOTIFY_TYPE_DAY.contentEquals(type)) {
 											if ((int) durationUnit == DossierTerm.DURATION_UNIT_DAY) {
@@ -310,7 +310,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 															object.getGroupId());
 													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
 												} catch (NumberFormatException e) {
-
+													_log.error(e);
 												}
 											} else if ((int) durationUnit == DossierTerm.DURATION_UNIT_HOUR) {
 												try {
@@ -332,7 +332,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 															object.getGroupId());
 													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
 												} catch (NumberFormatException e) {
-
+													_log.error(e);
 												}
 											} else if ((int) durationUnit == DossierTerm.DURATION_UNIT_HOUR) {
 												try {
@@ -342,7 +342,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 															object.getGroupId());
 													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
 												} catch (NumberFormatException e) {
-
+													_log.error(e);
 												}
 											}
 										}
@@ -753,7 +753,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					actionNotes.add(dossierSync.getActionNote());
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				_log.error(e);
 			}
 
 			document.addTextSortable(DossierTerm.ACTION_NOTE, StringUtil.merge(actionNotes, StringPool.SPACE));
@@ -786,6 +786,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				}
 
 			} catch (Exception e) {
+				_log.error(e);
 				_log.warn("Error when indexing: " + e.getMessage());
 				_log.warn("Still running...");
 			}

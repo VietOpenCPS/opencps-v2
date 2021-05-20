@@ -48,6 +48,7 @@ public class DossierFileUtils {
 			byte[] bytes = Base64.getEncoder().encode(Files.readAllBytes(file.toPath()));
 			return new String(bytes);
 		} catch (Exception e) {
+			_log.error(e);
 			throw new Exception(e.getMessage());
 		}
 	}
@@ -58,6 +59,7 @@ public class DossierFileUtils {
 			inputStream = new URL(url).openStream();
 			return FileUtil.createTempFile(inputStream);
 		} catch (Exception e) {
+			_log.error(e);
 			throw new Exception(e.getMessage());
 		} finally {
 			if (inputStream != null) {

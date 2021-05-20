@@ -95,7 +95,7 @@ public class KeyPayV3Utils {
 			result = formatter.toString();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		} finally {
 			formatter.close();
 		}
@@ -120,7 +120,7 @@ public class KeyPayV3Utils {
 			byte[] hash = sha256HMAC.doFinal(message.getBytes());
 			return toHexString(hash);
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 			return null;
 		}
 	}

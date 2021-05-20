@@ -804,6 +804,7 @@ public class DossierDocumentUtils {
 			try {
 				jsonData.put(DossierTerm.META_DATA, JSONFactoryUtil.createJSONObject(dossier.getMetaData()));
 			} catch (JSONException e) {
+				_log.error(e);
 				jsonData.put(DossierTerm.META_DATA, StringPool.BLANK);
 			}
 		} else {
