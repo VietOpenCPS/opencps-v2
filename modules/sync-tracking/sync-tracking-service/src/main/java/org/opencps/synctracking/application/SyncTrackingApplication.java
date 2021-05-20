@@ -42,6 +42,21 @@ public class SyncTrackingApplication extends Application{
 
     private final static Log _log = LogFactoryUtil.getLog(SyncTrackingApplication.class);
 
+    static class CounterSyncTracking {
+        private volatile static long count = 0;
+        public static long getCount(){
+            return count;
+        }
+        public static synchronized void decreaseCount(){
+            count--;
+        }
+
+        public static synchronized void setCount(long countNew){
+            count = countNew;
+        }
+    }
+
+
     public SyncTrackingApplication() {
         TransformAction transformAction = new TransformActionImpl();
         IntegrationOutsideApi integrationApi = new IntegrationOutsideApiImpl();
@@ -138,9 +153,9 @@ public class SyncTrackingApplication extends Application{
             JSONObject bodyJson = JSONFactoryUtil.createJSONObject(body);
             String pattern = bodyJson.getString("pattern");
             int quantity  = bodyJson.getInt("quantity");
-
+            _log.info("start calling sync function");
             for(int i = 0; i< quantity; i++) {
-                threadPoolExecutor.execute(() -> increaseCounter(pattern));
+                threadPoolExecutor.execute(() -> StaticCounter.increaseCounter(pattern));
                 _log.info("Number thread active: " + threadPoolExecutor.getActiveCount());
             }
 
@@ -152,20 +167,6 @@ public class SyncTrackingApplication extends Application{
         }
     }
 
-    private void increaseCounter(String pattern) {
-        try {
-            Counter currentCounter = CounterLocalServiceUtil.getCounter(pattern);
-            _log.info("======Current Id: "  + currentCounter.getCurrentId());
-            long _counterNumber = currentCounter.getCurrentId() + 1;
-            currentCounter.setCurrentId(_counterNumber);
-            _log.info("Sleeping 9.5");
-//            Thread.sleep(9500);
-            _log.info("Done sleep");
-            Counter newCounter = CounterLocalServiceUtil.updateCounter(currentCounter);
-            _log.info("======Current Id after Tang: "  + newCounter.getCurrentId());
-        } catch (Exception e) {
-            _log.error(e);
-        }
-    }
+
 
 }
