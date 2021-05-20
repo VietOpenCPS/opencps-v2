@@ -201,8 +201,6 @@ public class PropValues {
 			.getInteger(PropUtil.getConfigProperty(PropKeys.CONFIG_DOSSIER_STATISTIC_SIZE_LIST));
 
 	public static final String TEMPLATES_REPORTS_DIR = PropUtil.getConfigProperty(PropKeys.TEMPLATES_REPORTS_DIR);
-
-	public static final String CONFIGS_DIR = PropUtil.getConfigProperty(PropKeys.CONFIGS_DIR);
 	
 	public static final String TEMPLATES_REPORTS_FILENAME_1 = PropUtil.getConfigProperty(PropKeys.TEMPLATES_REPORTS_FILENAME_1);
 	

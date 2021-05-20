@@ -662,11 +662,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//Create DossierSync
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
-
+		logLineDoActionPublishQueue(1, dossier.getDossierId(), syncType);
 		if (syncType > 0) {
 			int state = DossierActionUtils.getSyncState(syncType, dossier);
 			// Imposition state == 0 không thêm vào DossierSync
-			if(state >0 ) {
 				//If state = 1 set pending dossier
 				if (state == DossierSyncTerm.STATE_WAITING_SYNC) {
 					if (dossierAction != null) {
@@ -679,7 +678,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						dossierActionLocalService.updateDossierAction(dossierAction);
 					}
 				}
-
 				//Update payload
 
 				JSONArray dossierFilesArr = JSONFactoryUtil.createJSONArray();
@@ -752,7 +750,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 					}
 				}
-
 				if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST
 						|| actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM) {
 
@@ -816,6 +813,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							payloadObject.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate().getTime());
 						}
 					}
+					if(state >0 ) {
 					if (Validator.isNotNull(dossier.getServerNo())
 							&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
 						String serverNo = null;
@@ -837,10 +835,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
 								dossier.getServerNo(), state);
 					}
+					}
 					//Gửi thông tin hồ sơ để tra cứu
+					logLineDoActionPublishQueue(4, dossier.getDossierId(), actionConfig.getSyncType());
 					if (state == DossierSyncTerm.STATE_NOT_SYNC && actionConfig != null
 							&& actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
 							&& OpenCPSConfigUtil.isPublishEventEnable()) {
+						logLineDoActionPublishQueue(5, dossier.getDossierId(), actionConfig.getSyncType());
 						publishEvent(dossier, context, dossierAction.getDossierActionId());
 					}
 				} else if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM_DOSSIER) {
@@ -869,6 +870,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 					payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
+					if(state >0 ) {
 					if (Validator.isNotNull(dossier.getServerNo())
 							&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
 						String serverNo = null;
@@ -890,10 +892,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
 								dossier.getServerNo(), state);
 					}
+					}
 				}
-			}
 		} else if (actionConfig != null && (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT || actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT_FILE)
 				&& OpenCPSConfigUtil.isPublishEventEnable()) {
+			logLineDoActionPublishQueue(2, dossier.getDossierId(), actionConfig.getSyncType());
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
 	}
@@ -1776,6 +1779,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 	private void logLineLevelType(String type, int number, String dossierId) {
 		_log.info(type + "_"+ number + "_" + dossierId + "_log_action");
+	}
+
+	private void logLineDoActionPublishQueue(int number, long dossierId , int syncType) {
+		_log.info("doActionPublishQueue" + number + "_" + dossierId + "_" + syncType +  "_log_action");
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
