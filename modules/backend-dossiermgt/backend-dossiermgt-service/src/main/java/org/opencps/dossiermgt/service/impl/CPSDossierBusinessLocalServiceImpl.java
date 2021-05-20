@@ -1477,13 +1477,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						//Note: key deliverableType được cấu hình trong thành phần tồn tại trong dossierFile sau khi được mapping dữ liệu
 						JSONObject formDataObj = JSONFactoryUtil
 								.createJSONObject(item.getFormData());
-						_log.info("formDataObj: " + JSONFactoryUtil.looseSerialize(formDataObj));
+						_log.debug("formDataObj: " + JSONFactoryUtil.looseSerialize(formDataObj));
 						if (formDataObj.has(variable)) {
 							JSONArray deliverablesArr = JSONFactoryUtil
 									.createJSONArray(formDataObj
 											.getString(variable));
 
-							_log.info("deliverablesArr: " + JSONFactoryUtil.looseSerialize(deliverablesArr));
+							_log.debug("deliverablesArr: " + JSONFactoryUtil.looseSerialize(deliverablesArr));
 							for (int i = 0; i < deliverablesArr
 									.length(); i++) {
 								JSONObject deliverableObj = null;
