@@ -595,24 +595,27 @@ public class DossierNumberGenerator {
 		long _counterNumber;
 		_log.debug("pattern" + pattern);
 		Counter counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
-		_log.info("Current counter number: " + counterDetail.getCurrentId());
 
 		if (Validator.isNotNull(counterDetail)) {
-			_counterNumber = counterDetail.getCurrentId() + 1;
-			counterDetail.setCurrentId(_counterNumber);
 			try {
+				_log.info("case update pattern: " + pattern);
+				_counterNumber = counterDetail.getCurrentId() + 1;
+				counterDetail.setCurrentId(_counterNumber);
 				CounterLocalServiceUtil.updateCounter(counterDetail);
 			} catch (Exception e) {
-				_log.error("Error when create number generator: " , e);
+				_log.error("Error when update counter: " , e);
+				return null;
 			}
 		} else {
-			counterDetail = CounterLocalServiceUtil.createCounter(pattern);
-			_counterNumber = counterDetail.getCurrentId() + 1;
-			counterDetail.setCurrentId(_counterNumber);
 			try {
+				_log.info("case create pattern: " + pattern);
+				counterDetail = CounterLocalServiceUtil.createCounter(pattern);
+				_counterNumber = counterDetail.getCurrentId() + 1;
+				counterDetail.setCurrentId(_counterNumber);
 				CounterLocalServiceUtil.updateCounter(counterDetail);
 			} catch (Exception e) {
-				_log.error(e);
+				_log.error("Error when create counter: " , e);
+				return null;
 			}
 		}
 
