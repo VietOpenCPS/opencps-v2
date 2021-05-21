@@ -2469,7 +2469,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 											String sqlTemplate, int type, String subType) {
 		JSONObject result = StatisticUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
 				govAgencyCodes, serviceCodes, dossierStatus, type, subType);
-		QuerySchema schema = getQuerySchema2(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
+		QuerySchema schema = getQuerySchema21(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 				serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, subType);
 		_log.debug("schema: " + schema.getSql());
 		_log.debug("subType: " + subType);
@@ -2494,7 +2494,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
-			schema = getQuerySchema2(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
+			schema = getQuerySchema21(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
 			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
@@ -2538,6 +2538,97 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		return result;
+	}
+
+	public QuerySchema getQuerySchema21(long groupId, String fromDate, String toDate, int[] originalities,
+									   String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
+									   String groupBy, int start, int end, String sqlTemplate, int type, String subtype) {
+
+		int[] pageAndSize = QueryUtil.getPageAndSize(start, end);
+
+		start = pageAndSize[0];
+
+		int size = pageAndSize[1];
+
+		String sql = sqlTemplate;
+
+		if (Validator.isNotNull(groupBy)) {
+
+			if (groupBy.equalsIgnoreCase("govAgencyCode")) {
+				sql = sql.replace("{groupBy}", "t1.govAgencyCode");
+				sql = sql.replace("t2.domainName[String]", "t1.govAgencyName[String]");
+				sql = sql.replace("t2.domainCode[String]", "t1.govAgencyCode[String]");
+			} else if (groupBy.equalsIgnoreCase("serviceCode")) {
+				sql = sql.replace("{groupBy}", "t1.serviceCode");
+				sql = sql.replace("t2.domainName[String]", "t2.serviceName[String]");
+				sql = sql.replace("t2.domainCode[String]", "t2.serviceCode[String]");
+			} else {
+				sql = sql.replace("{groupBy}", "t2.domainCode");
+			}
+
+		} else {
+			sql = sql.replace("{groupBy}", "t2.domainCode");
+		}
+
+		LinkedHashMap<String, Class<?>> columns = QueryUtil.getDataColumnMap(sql);
+
+		Pattern pattern = Pattern.compile("(\\[([a-z]+|[A-Z]+)\\])", Pattern.CASE_INSENSITIVE);
+
+		Matcher matcher = pattern.matcher(sql);
+
+		String dataType = StringPool.BLANK;
+
+		while (matcher.find()) {
+			dataType = matcher.group();
+			sql = sql.replace(dataType, StringPool.BLANK);
+		}
+		sql = sql.replace("{groupId}", String.valueOf(groupId));
+		sql = sql.replace("{start}", String.valueOf(start));
+		sql = sql.replace("{size}", String.valueOf(size));
+
+		if (domainCodes != null && domainCodes.length > 0) {
+			String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+			sql = sql.replace("{domainCode}", paramsDomainCodes);
+		} else {
+			sql = sql.replace("AND t2.domainCode IN ({domainCode})", StringPool.BLANK);
+		}
+		if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+			String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes);
+			sql = sql.replace("{govAgencyCode}", paramsGovAgencyCodes);
+		} else {
+			sql = sql.replace("AND t1.govAgencyCode IN ({govAgencyCode})", StringPool.BLANK);
+		}
+		if (serviceCodes != null && serviceCodes.length > 0) {
+			String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes);
+			sql = sql.replace("{serviceCode}", paramsServiceCodes);
+		} else {
+			sql = sql.replace("AND t1.serviceCode IN ({serviceCode})", StringPool.BLANK);
+		}
+		if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+			String params = ParamUtil.generalTextParam(dossierStatus);
+			sql = sql.replace("{dossierStatus}", params);
+		} else {
+			sql = sql.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+		}
+		if (Validator.isNotNull(fromDate)) {
+			sql = sql.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+		} else {
+			sql = sql.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+		}
+		if (Validator.isNotNull(toDate)) {
+			sql = sql.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+		} else {
+			sql = sql.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+		}
+		if (originalities != null && originalities.length > 0) {
+			String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+			sql = sql.replace("{originality}", paramsOriginalities);
+		} else {
+			sql = sql.replace("AND t1.originality = {originality}", StringPool.BLANK);
+		}
+		_log.debug("generateQuerySchema2: " + sql);
+
+		return new QuerySchema(sql, sqlTemplate, type, subtype, columns);
 	}
 
 }
