@@ -723,6 +723,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if (Validator.isNotNull(dossier.getDossierCounter())) {
 					payloadObject.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
 				}
+			}
 				if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST
 						|| actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM) {
 
@@ -865,7 +866,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						}
 					}
 				}
-			}
 		}else if (actionConfig != null && (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT || actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT_FILE)
 				&& OpenCPSConfigUtil.isPublishEventEnable()) {
 			logLineDoActionPublishQueue(2, dossier.getDossierId(), actionConfig.getSyncType());
