@@ -1,12 +1,6 @@
 package org.opencps.dossiermgt.action.impl;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -4306,6 +4300,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						syncTrackingQuery.userId = user.getUserId();
 						syncTrackingQuery.referenceUid = dossier.getReferenceUid();
 						SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
+					}else{
+						createResponseMessage(result, 0,  msHS+"| không tồn tại trên hệ thống");
 					}
 				}
 			}
