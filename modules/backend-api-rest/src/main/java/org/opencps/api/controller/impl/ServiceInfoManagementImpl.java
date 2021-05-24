@@ -205,11 +205,10 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					jsonData.put(ConstantUtils.DATA, lstDocs.subList(query.getStart(), lstDocs.size()));					
 				}
 			}
-
 			results.getData()
 					.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get(ConstantUtils.DATA), groupId, userId, query.isFilterApplicant(), serviceContext));
 			if(query.isFilterApplicant()){
-				results.setTotal(results.getData().size());
+				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			}else {
 				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			}
