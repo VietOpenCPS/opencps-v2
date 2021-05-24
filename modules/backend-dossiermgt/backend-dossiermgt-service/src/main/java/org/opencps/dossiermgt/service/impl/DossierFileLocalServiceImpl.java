@@ -394,7 +394,7 @@ public class DossierFileLocalServiceImpl
 
 			return dossierFilePersistence.update(object);
 		}catch (Exception e){
-			 e.getMessage();
+			 _log.error(e);
 		}
 		return null;
 	}

@@ -412,12 +412,14 @@ public class ProcessOptionLocalServiceWrapper
 		long serviceConfigId, Integer seqOrder, String autoSelect,
 		String instructionNote, String submissionNote, String templateNo,
 		String templateName, String processNo, String processName,
-		String registerBookCode, Integer sampleCount,
+		String registerBookCode, Integer sampleCount, boolean forCitizen,
+		boolean forBusiness,
 		com.liferay.portal.kernel.service.ServiceContext context) {
 		return _processOptionLocalService.updateOptionDB(userId, groupId,
 			optionCode, optionName, serviceConfigId, seqOrder, autoSelect,
 			instructionNote, submissionNote, templateNo, templateName,
-			processNo, processName, registerBookCode, sampleCount, context);
+			processNo, processName, registerBookCode, sampleCount, forCitizen,
+			forBusiness, context);
 	}
 
 	@Override

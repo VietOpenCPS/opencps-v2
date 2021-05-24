@@ -903,12 +903,20 @@ public class ProcessUpdateDBUtils {
 				}
 				// Add serviceConfig
 				Configs configs = service.getConfigs();
-				if (configs != null && serviceInfoId > 0 || Validator.isNotNull(serviceInfo)) {
+				if ((configs != null && serviceInfoId > 0) || Validator.isNotNull(serviceInfo)) {
 					if (Validator.isNotNull(keyImport)) {
-						flagService = processServiceConfigNoDelAll(userId, groupId, serviceInfoId > 0 ? serviceInfoId : serviceInfo.getServiceInfoId(), configs, actionService, keyImport, serviceContext);
+						if(serviceInfo == null) {
+							flagService = processServiceConfigNoDelAll(userId, groupId, serviceInfoId, configs, actionService, keyImport, serviceContext);
+						} else {
+							flagService = processServiceConfigNoDelAll(userId, groupId, serviceInfo.getServiceInfoId(), configs, actionService, keyImport, serviceContext);
+						}
 
 					} else {
-						flagService = processServiceConfig(userId, groupId, serviceInfoId > 0 ? serviceInfoId : serviceInfo.getServiceInfoId(), configs, actionService, serviceContext);
+						if(serviceInfo == null) {
+							flagService = processServiceConfig(userId, groupId, serviceInfoId, configs, actionService, serviceContext);
+						} else {
+							flagService = processServiceConfig(userId, groupId, serviceInfo.getServiceInfoId(), configs, actionService, serviceContext);
+						}
 					}
 				}
 			}
@@ -1110,7 +1118,7 @@ public class ProcessUpdateDBUtils {
 			//Import mới ko xóa dữ liệu cũ.check tồn tại ServiceConfig ==> Update ngược lại thì thêm mới
 			// Add list file serviceFileTemplate
 			List<ServiceConfig> configList = configs.getServiceConfig();
-			if (configList == null && configList.size() == 0) {
+			if (configList == null || configList.size() == 0) {
 				flagService = false;
 				return flagService;
 			}
@@ -1240,6 +1248,8 @@ public class ProcessUpdateDBUtils {
 				String processName;
 				String registerBookCode;
 				Integer sampleCount = 0;
+				boolean forCitizen = true;
+				boolean forBusiness = true;
 				for (ProcessOption option : optionList) {
 					optionCode = option.getOptionCode();
 					optionName = option.getOptionName();
@@ -1253,10 +1263,12 @@ public class ProcessUpdateDBUtils {
 					processName = option.getProcessName();
 					registerBookCode = option.getRegisterBookCode();
 					sampleCount = option.getSampleCount();
+					forCitizen = option.isForCitizen();
+					forBusiness = option.isForBusiness();
 					//
 					actionConfig.updateOptionDB(userId, groupId, optionCode, optionName, serviceConfigId, seqOrder,
 							autoSelect, instructionNote, submissionNote, templateNo, templateName, processNo, processName,
-							registerBookCode, sampleCount, serviceContext);
+							registerBookCode, sampleCount, forCitizen, forBusiness, serviceContext);
 				}
 			}
 		} catch (Exception e) {

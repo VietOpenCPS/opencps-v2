@@ -120,6 +120,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			long userId = user.getUserId();
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -151,6 +152,8 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			params.put(ServiceInfoTerm.PUBLIC_, query.getActive());
 			params.put(ServiceInfoTerm.MAPPING, query.getMapping());
 			params.put(ServiceInfoTerm.SYNCED, query.getSynced());
+			params.put(ServiceInfoTerm.TAGCODE, query.getTagCode());
+			params.put(ServiceInfoTerm.TAGNAME, query.getTagName());
 
 			Sort[] sorts = null;
 //			_log.info("sorts: "+query.getSort());
@@ -202,11 +205,13 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					jsonData.put(ConstantUtils.DATA, lstDocs.subList(query.getStart(), lstDocs.size()));					
 				}
 			}
-			
-			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			results.getData()
-				.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get(ConstantUtils.DATA), groupId, serviceContext));
-			
+					.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get(ConstantUtils.DATA), groupId, userId, query.isFilterApplicant(), serviceContext));
+			if(query.isFilterApplicant()){
+				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			}else {
+				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			}
 //			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
 //		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 //		    
@@ -277,13 +282,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			String administrationCode = HtmlUtil.escape(input.getAdministrationCode());
 			String domainCode = HtmlUtil.escape(input.getDomainCode());
 			String active = HtmlUtil.escape(input.getActive());
-			
+			String tagCode = HtmlUtil.escape(input.getTagCode());
+			String tagName = HtmlUtil.escape(input.getTagName());
+
 			ServiceInfo serviceInfo = actions.updateServiceInfo(userId, groupId, input.getServiceInfoId(),
 					serviceCode, serviceName, processText, methodText,
 					dossierText, conditionText, durationText, applicantText,
 					resultText, regularText, feeText, administrationCode,
 					domainCode, input.getMaxLevel(), GetterUtil.getBoolean(active),
-					input.getGovAgencyText(), serviceContext);
+					input.getGovAgencyText(), tagCode, tagName, serviceContext);
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
 
@@ -305,6 +312,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			long userId = user.getUserId();
 
 			ServiceInfo serviceInfo = null;
 
@@ -317,7 +325,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			if (Validator.isNull(serviceInfo)) {
 				throw new Exception();
 			} else {
-				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo);
+				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo, userId);
 			}
                         /*
 			EntityTag etag = new EntityTag(String.valueOf((groupId + StringPool.UNDERLINE + id).hashCode()));
@@ -377,13 +385,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			String administrationCode = HtmlUtil.escape(input.getAdministrationCode());
 			String domainCode = HtmlUtil.escape(input.getDomainCode());
 			String active = HtmlUtil.escape(input.getActive());
+			String tagCode = HtmlUtil.escape(input.getTagCode());
+			String tagName = HtmlUtil.escape(input.getTagName());
 
 			ServiceInfo serviceInfo = actions.updateServiceInfo(user.getUserId(), groupId, GetterUtil.getLong(id),
 					serviceCode, serviceName, processText, methodText,
 					dossierText, conditionText, durationText, applicantText,
 					resultText, regularText, feeText, administrationCode,
 					domainCode, input.getMaxLevel(), GetterUtil.getBoolean(active),
-					input.getGovAgencyText(), serviceContext);
+					input.getGovAgencyText(),tagCode, tagName, serviceContext);
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
 

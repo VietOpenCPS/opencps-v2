@@ -50,6 +50,11 @@
 			<finder-column name="dossierNo"></finder-column>
 		</finder>
 
+		<finder name="F_GID_API" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="api"></finder-column>
+		</finder>
+
 		<finder name="F_GID_Protocol" return-type="Collection">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="protocol"></finder-column>

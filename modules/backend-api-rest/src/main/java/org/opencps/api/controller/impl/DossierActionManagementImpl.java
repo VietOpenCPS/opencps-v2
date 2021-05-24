@@ -484,6 +484,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			JSONObject jsonData = actions.getDetailNextActions(
 				user.getUserId(), company.getCompanyId(), groupId, params,
 				sorts, query.getStart(), query.getEnd(), serviceContext);
+			
 
 			DossierDetailNextActionModel result =
 				DossierActionUtils.mappingToDetailNextActions(groupId, jsonData);
@@ -501,18 +502,17 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				if (dau != null && dau.getDelegacy() == 1 &&
 					(pa.getAllowAssignUser() > 2)) {
 					result.setAllowAssignUser(2);
-				}
-
+				}				
+				
 				// danh sach thanh phan cua ho so lien thong
 				List<DossierTemplatePartDataModel> dossierParts =
 					DossierActionUtils.getDossierPartCrossDossier(
 						groupId, (ProcessAction) jsonData.get(ConstantUtils.DOSSIERACTION_PROCESS_ACTION),
 						dossier);
-				_log.debug(dossierParts.size());
 
 				result.setDossierParts(dossierParts);
 			}
-			_log.debug(result);
+			
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}

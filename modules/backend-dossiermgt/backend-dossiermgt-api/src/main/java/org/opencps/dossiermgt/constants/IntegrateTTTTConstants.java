@@ -6,6 +6,7 @@ public class IntegrateTTTTConstants {
     public static final int STATUS_RECEIVED = 1;
     public static final int STATUS_PROCESSING = 2;
     public static final int STATUS_DONE = 3;
+    public static final int STATUS_ASSIGNED = 4;
     public static final int FormsReceptionDirect = 2;
     public static final int FormsReceptionOnline = 1;
     public static final int FormsPaymentDirect = 2;

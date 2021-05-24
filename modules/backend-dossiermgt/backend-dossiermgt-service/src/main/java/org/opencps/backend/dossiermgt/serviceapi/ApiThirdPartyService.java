@@ -17,8 +17,11 @@ public interface ApiThirdPartyService {
     public JSONObject callApi(String url, HttpHeaders headers, Map<String, Object> body);
     public JSONObject callApiAndTrackingWithMapBody(String url, SyncTrackingInfo syncTrackingInfo,
                                                     HttpHeaders headers, Map<String, Object> body);
+
+    public JSONObject callAPIPaygovPrintInvoice(Map<String, Object> body, JSONObject paygovConfig) throws Exception;
+
     public JSONObject callApiAndTracking(String url, SyncTrackingInfo syncTrackingInfo,
-                                                    HttpHeaders headers, Object body);
+                                         HttpHeaders headers, Object body);
     public JSONObject callApiEncode(String url, HttpHeaders headers, MultiValueMap<String, String> body) throws Exception;
     public JSONArray callApiWithResponseArray(String url, HttpHeaders headers, Map<String, Object> body);
     public JSONObject get(String url, HttpHeaders headers, SyncTrackingInfo syncTrackingInfo);

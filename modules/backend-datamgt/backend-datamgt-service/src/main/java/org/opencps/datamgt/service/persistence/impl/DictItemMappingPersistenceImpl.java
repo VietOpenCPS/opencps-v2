@@ -381,6 +381,245 @@ public class DictItemMappingPersistenceImpl extends BasePersistenceImpl<DictItem
 	private static final String _FINDER_COLUMN_F_GID_IC_CID_ITEMCODE_2 = "dictItemMapping.itemCode = ? AND ";
 	private static final String _FINDER_COLUMN_F_GID_IC_CID_ITEMCODE_3 = "(dictItemMapping.itemCode IS NULL OR dictItemMapping.itemCode = '') AND ";
 	private static final String _FINDER_COLUMN_F_GID_IC_CID_COLLECTIONID_2 = "dictItemMapping.collectionId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_IC = new FinderPath(DictItemMappingModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemMappingModelImpl.FINDER_CACHE_ENABLED,
+			DictItemMappingImpl.class, FINDER_CLASS_NAME_ENTITY, "fetchByF_IC",
+			new String[] { String.class.getName() },
+			DictItemMappingModelImpl.ITEMCODE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_IC = new FinderPath(DictItemMappingModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemMappingModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_IC",
+			new String[] { String.class.getName() });
+
+	/**
+	 * Returns the dict item mapping where itemCode = &#63; or throws a {@link NoSuchDictItemMappingException} if it could not be found.
+	 *
+	 * @param itemCode the item code
+	 * @return the matching dict item mapping
+	 * @throws NoSuchDictItemMappingException if a matching dict item mapping could not be found
+	 */
+	@Override
+	public DictItemMapping findByF_IC(String itemCode)
+		throws NoSuchDictItemMappingException {
+		DictItemMapping dictItemMapping = fetchByF_IC(itemCode);
+
+		if (dictItemMapping == null) {
+			StringBundler msg = new StringBundler(4);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("itemCode=");
+			msg.append(itemCode);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDictItemMappingException(msg.toString());
+		}
+
+		return dictItemMapping;
+	}
+
+	/**
+	 * Returns the dict item mapping where itemCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param itemCode the item code
+	 * @return the matching dict item mapping, or <code>null</code> if a matching dict item mapping could not be found
+	 */
+	@Override
+	public DictItemMapping fetchByF_IC(String itemCode) {
+		return fetchByF_IC(itemCode, true);
+	}
+
+	/**
+	 * Returns the dict item mapping where itemCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param itemCode the item code
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dict item mapping, or <code>null</code> if a matching dict item mapping could not be found
+	 */
+	@Override
+	public DictItemMapping fetchByF_IC(String itemCode,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { itemCode };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_IC,
+					finderArgs, this);
+		}
+
+		if (result instanceof DictItemMapping) {
+			DictItemMapping dictItemMapping = (DictItemMapping)result;
+
+			if (!Objects.equals(itemCode, dictItemMapping.getItemCode())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_SELECT_DICTITEMMAPPING_WHERE);
+
+			boolean bindItemCode = false;
+
+			if (itemCode == null) {
+				query.append(_FINDER_COLUMN_F_IC_ITEMCODE_1);
+			}
+			else if (itemCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_IC_ITEMCODE_3);
+			}
+			else {
+				bindItemCode = true;
+
+				query.append(_FINDER_COLUMN_F_IC_ITEMCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindItemCode) {
+					qPos.add(itemCode);
+				}
+
+				List<DictItemMapping> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_IC,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DictItemMappingPersistenceImpl.fetchByF_IC(String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					DictItemMapping dictItemMapping = list.get(0);
+
+					result = dictItemMapping;
+
+					cacheResult(dictItemMapping);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_IC, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (DictItemMapping)result;
+		}
+	}
+
+	/**
+	 * Removes the dict item mapping where itemCode = &#63; from the database.
+	 *
+	 * @param itemCode the item code
+	 * @return the dict item mapping that was removed
+	 */
+	@Override
+	public DictItemMapping removeByF_IC(String itemCode)
+		throws NoSuchDictItemMappingException {
+		DictItemMapping dictItemMapping = findByF_IC(itemCode);
+
+		return remove(dictItemMapping);
+	}
+
+	/**
+	 * Returns the number of dict item mappings where itemCode = &#63;.
+	 *
+	 * @param itemCode the item code
+	 * @return the number of matching dict item mappings
+	 */
+	@Override
+	public int countByF_IC(String itemCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_IC;
+
+		Object[] finderArgs = new Object[] { itemCode };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_DICTITEMMAPPING_WHERE);
+
+			boolean bindItemCode = false;
+
+			if (itemCode == null) {
+				query.append(_FINDER_COLUMN_F_IC_ITEMCODE_1);
+			}
+			else if (itemCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_IC_ITEMCODE_3);
+			}
+			else {
+				bindItemCode = true;
+
+				query.append(_FINDER_COLUMN_F_IC_ITEMCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindItemCode) {
+					qPos.add(itemCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_IC_ITEMCODE_1 = "dictItemMapping.itemCode IS NULL";
+	private static final String _FINDER_COLUMN_F_IC_ITEMCODE_2 = "dictItemMapping.itemCode = ?";
+	private static final String _FINDER_COLUMN_F_IC_ITEMCODE_3 = "(dictItemMapping.itemCode IS NULL OR dictItemMapping.itemCode = '')";
 	public static final FinderPath FINDER_PATH_FETCH_BY_F_GID_ICDVCQG_CID = new FinderPath(DictItemMappingModelImpl.ENTITY_CACHE_ENABLED,
 			DictItemMappingModelImpl.FINDER_CACHE_ENABLED,
 			DictItemMappingImpl.class, FINDER_CLASS_NAME_ENTITY,
@@ -1248,6 +1487,9 @@ public class DictItemMappingPersistenceImpl extends BasePersistenceImpl<DictItem
 				dictItemMapping.getCollectionId()
 			}, dictItemMapping);
 
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_IC,
+			new Object[] { dictItemMapping.getItemCode() }, dictItemMapping);
+
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_ICDVCQG_CID,
 			new Object[] {
 				dictItemMapping.getGroupId(), dictItemMapping.getItemCodeDVCQG(),
@@ -1338,6 +1580,13 @@ public class DictItemMappingPersistenceImpl extends BasePersistenceImpl<DictItem
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_IC_CID, args,
 			dictItemMappingModelImpl, false);
 
+		args = new Object[] { dictItemMappingModelImpl.getItemCode() };
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_IC, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_IC, args,
+			dictItemMappingModelImpl, false);
+
 		args = new Object[] {
 				dictItemMappingModelImpl.getGroupId(),
 				dictItemMappingModelImpl.getItemCodeDVCQG(),
@@ -1373,6 +1622,23 @@ public class DictItemMappingPersistenceImpl extends BasePersistenceImpl<DictItem
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_IC_CID, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_IC_CID, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] { dictItemMappingModelImpl.getItemCode() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_IC, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_IC, args);
+		}
+
+		if ((dictItemMappingModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_IC.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dictItemMappingModelImpl.getOriginalItemCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_IC, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_IC, args);
 		}
 
 		if (clearCurrent) {

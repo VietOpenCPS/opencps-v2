@@ -1,0 +1,1 @@
+create unique index IX_D3EB120E on opencps_systemlog (uuid_[$COLUMN_LENGTH:75$], groupId);

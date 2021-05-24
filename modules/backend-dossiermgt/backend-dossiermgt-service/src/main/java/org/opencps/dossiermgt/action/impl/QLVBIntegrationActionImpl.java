@@ -78,6 +78,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
                     + "\",\"PartnerCodeCus\":\"" + this.configJson.getString(QLVBConstants.CONFIG_PARTNER_CODE_CUS) + "\"}";
             this.base64LgspToken = Base64.getEncoder().encodeToString(lgspAccessToken.getBytes());
         } catch (Exception e) {
+            _log.error(e);
             this.base64LgspToken = "";
         }
 
@@ -88,7 +89,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
         try {
             String urlGetToken = this.configJson.getString(QLVBConstants.CONFIG_URL)
                     + this.configJson.getString(QLVBConstants.CONFIG_GET_TOKEN)
-                    + userId;
+                    + userId + "/";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -103,6 +104,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
 
             throw new Exception("No token found");
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
 
@@ -142,6 +144,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
                     fileVBHG.fileByte = Validator.isNotNull(fileBase64) ? fileBase64 : "";
                     listFileSend.add(fileVBHG);
                 } catch (Exception e) {
+                    _log.error(e);
                     _log.warn("Error when create file base 64 with dossierFile "
                             + dossierFile.getDossierFileId() + ": " + e.getMessage());
                     _log.warn("Still running...");
@@ -150,6 +153,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
 
             return listFileSend;
         } catch (Exception e) {
+            _log.error(e);
             _log.warn("Get list VBHG error with message: " + e.getMessage());
             _log.warn("Still running...");
         }
@@ -185,6 +189,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
             this.apiService.callApiAndTracking(urlSendVB, null, headers, qlvbhgModel);
             return true;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -221,6 +226,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
             this.apiService.callApiAndTracking(urlSendDoc, null, headers, docTTTT);
             return true;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -246,6 +252,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
             }
             throw new Exception("No token found");
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -274,7 +281,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
             try {
                  resultGetListDocument = knobstickService.getReceivedEdocList(this.createHeaderJson("eDoc", "status"));
             } catch (Exception e) {
-                e.printStackTrace();
+                _log.error(e);
             }
 
             if(Validator.isNull(resultGetListDocument)) {
@@ -375,12 +382,13 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
                         }
                     }
                 }catch(Exception ex){
-                    ex.printStackTrace();
+                    _log.error(ex);
                     _log.warn("Error when save itemId: " + item.getId());
                     _log.warn("Still running...");
                 }
             }
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -393,19 +401,15 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
             String secret = "A7ZVWDPOyaVmf7ayG24g88wsGlX1Uu/zP33w1NaxUDnE";
             String fileSave = "D:/fileXml/send";
             String edXMLFileLocation = "D:/fileXml/send/dossier_send.edxml";
-            String time = Calendar.getInstance().getTime().getTime() + "";
-//            String storePathDir = httpString + InetAddress.getLocalHost().getHostAddress() + "/imported";
-//            String logError = httpString + InetAddress.getLocalHost().getHostAddress() + "/imported";
             String storePathDir = fileSave;
             String logError = fileSave;
 
             int maxConnection = 10, retry = 3;
             VnptProperties vnptProperties = new VnptProperties(endpoint, systemId , secret, storePathDir, maxConnection,
                     retry, logError, 1);
-            AgencyServiceImp agencyService = new AgencyServiceImp(vnptProperties);
             KnobstickServiceImp knobstickService = new KnobstickServiceImp(vnptProperties);
             ServiceTest serviceTest = new ServiceTest();
-            SendEdocResult sendEdocResult = null;
+            SendEdocResult sendEdocResult;
             try {
                 sendEdocResult = knobstickService.sendEdoc(serviceTest.getJsonHeader(), edXMLFileLocation);
 
@@ -415,12 +419,13 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
                     _log.info("DocID:" + sendEdocResult.getDocID());
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                _log.error(e);
             }
 
 
             return false;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -445,6 +450,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
             }
             _log.info("No process action with action code: " + actionCode);
         } catch (Exception e) {
+            _log.error(e);
             _log.warn("Error when do action with dossierNo: "+ dossier.getDossierNo()
                     + "|error message: "+ e.getMessage());
             _log.warn("Still running...");
@@ -613,6 +619,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
             }
             return "";
         } catch (Exception e) {
+            _log.error(e);
             _log.info("Error when process post action: " + e.getMessage());
             return "";
         }

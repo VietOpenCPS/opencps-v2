@@ -66,13 +66,13 @@ public class BookingActionsImpl implements BookingActions {
 	public Booking updateBooking(long userId, long groupId, long bookingId, String className, long classPK,
 			String serviceCode, String codeNumber, String bookingName, String gateNumber, Integer state,
 			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode, Boolean online,
-			String bookingInTime, String telNo, ServiceContext serviceContext) {
+			String bookingInTime, String telNo,String govAgencyCode, ServiceContext serviceContext) {
 
 		try {
 
 			return BookingLocalServiceUtil.updateBooking(userId, groupId, bookingId, className, classPK, serviceCode,
 					codeNumber, bookingName, gateNumber, state, checkinDate, bookingDate, speaking, serviceGroupCode,
-					online, bookingInTime, telNo, serviceContext);
+					online, bookingInTime, telNo,govAgencyCode, serviceContext);
 		} catch (Exception e) {
 			_log.debug(e);
 		}

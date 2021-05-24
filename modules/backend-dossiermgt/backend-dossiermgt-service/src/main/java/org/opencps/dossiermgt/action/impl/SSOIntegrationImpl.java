@@ -71,6 +71,7 @@ public class SSOIntegrationImpl implements SSOIntegration {
                     + state;
             return urlSSO;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -97,6 +98,7 @@ public class SSOIntegrationImpl implements SSOIntegration {
 
             return this.apiService.callApiEncode(urlGetToken, headers, body);
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -174,6 +176,7 @@ public class SSOIntegrationImpl implements SSOIntegration {
 
             return result;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }

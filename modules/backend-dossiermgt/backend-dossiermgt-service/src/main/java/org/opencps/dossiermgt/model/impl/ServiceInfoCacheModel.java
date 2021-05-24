@@ -65,7 +65,7 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(61);
+		StringBundler sb = new StringBundler(65);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -127,6 +127,10 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 		sb.append(isNotarization);
 		sb.append(", serviceNameTitle=");
 		sb.append(serviceNameTitle);
+		sb.append(", tagCode=");
+		sb.append(tagCode);
+		sb.append(", tagName=");
+		sb.append(tagName);
 		sb.append("}");
 
 		return sb.toString();
@@ -307,6 +311,20 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 			serviceInfoImpl.setServiceNameTitle(serviceNameTitle);
 		}
 
+		if (tagCode == null) {
+			serviceInfoImpl.setTagCode("");
+		}
+		else {
+			serviceInfoImpl.setTagCode(tagCode);
+		}
+
+		if (tagName == null) {
+			serviceInfoImpl.setTagName("");
+		}
+		else {
+			serviceInfoImpl.setTagName(tagName);
+		}
+
 		serviceInfoImpl.resetOriginalValues();
 
 		return serviceInfoImpl;
@@ -351,6 +369,8 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 
 		isNotarization = objectInput.readBoolean();
 		serviceNameTitle = objectInput.readUTF();
+		tagCode = objectInput.readUTF();
+		tagName = objectInput.readUTF();
 	}
 
 	@Override
@@ -519,6 +539,20 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 		else {
 			objectOutput.writeUTF(serviceNameTitle);
 		}
+
+		if (tagCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(tagCode);
+		}
+
+		if (tagName == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(tagName);
+		}
 	}
 
 	public String uuid;
@@ -551,4 +585,6 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 	public String govAgencyText;
 	public boolean isNotarization;
 	public String serviceNameTitle;
+	public String tagCode;
+	public String tagName;
 }

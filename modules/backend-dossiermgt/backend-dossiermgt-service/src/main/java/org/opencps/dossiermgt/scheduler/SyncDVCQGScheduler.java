@@ -53,7 +53,8 @@ public class SyncDVCQGScheduler extends BaseMessageListener {
 	@Modified
 	protected void activate(Map<String, Object> properties) throws SchedulerException {
 		String listenerClass = getClass().getName();
-		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 1,
+		//change to 30days because lam gi co thang nao ranh ma hoi dap
+		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 30,
 				TimeUnit.DAY);
 
 		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);

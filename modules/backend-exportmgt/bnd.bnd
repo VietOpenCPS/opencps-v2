@@ -1,0 +1,7 @@
+Bundle-Name: backend-exportmgt
+Bundle-SymbolicName: org.opencps.backend.exportmgt
+Bundle-Version: 1.0.0
+Import-Package:\
+-includeresource: lib:=true
+Import-Package: *;resolution:=optional
+Export-Package: org.opencps.backend.exportmgt.util

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.backend.systemlogmgt.model.SystemLog">
+		<field name="uuid" type="String" />
+		<field name="logId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="moduleName" type="String" />
+		<field name="preLine" type="int" />
+		<field name="preMethod" type="String" />
+		<field name="line" type="int" />
+		<field name="method" type="String" />
+		<field name="message" type="String" />
+		<field name="type" type="String" />
+		<field name="threadId" type="String" />
+		<field name="param" type="String" />
+	</model>
+</model-hints>

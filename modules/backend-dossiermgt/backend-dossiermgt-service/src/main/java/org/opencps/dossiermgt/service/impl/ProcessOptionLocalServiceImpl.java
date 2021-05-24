@@ -389,7 +389,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 	public ProcessOption updateOptionDB(long userId, long groupId, String optionCode, String optionName,
 			long serviceConfigId, Integer seqOrder, String autoSelect, String instructionNote, String submissionNote,
 			String templateNo, String templateName, String processNo, String processName, String registerBookCode,
-			Integer sampleCount, ServiceContext context) {
+			Integer sampleCount, boolean forCitizen, boolean forBusiness, ServiceContext context) {
 
 		Date now = new Date();
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
@@ -425,6 +425,8 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		processOption.setOptionName(optionName);
 		processOption.setSampleCount(sampleCount);
 		processOption.setRegisterBookCode(registerBookCode);
+		processOption.setForCitizen(forCitizen);
+		processOption.setForBusiness(forBusiness);
 
 		return processOptionPersistence.update(processOption);
 	}
@@ -488,7 +490,9 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		object.setSubmissionNote(objectData.getString(ProcessOptionTerm.SUBMISSION_NOTE));
 		object.setSampleCount(objectData.getLong(DossierTerm.SAMPLE_COUNT));
 		object.setRegisterBookCode(objectData.getString(DossierTerm.REGISTER_BOOK_CODE));
-		
+		object.setForCitizen(objectData.getBoolean(DossierTerm.FOR_CITIZEN));
+		object.setForBusiness(objectData.getBoolean(DossierTerm.FOR_BUSINESS));
+
 		processOptionPersistence.update(object);
 
 		return object;

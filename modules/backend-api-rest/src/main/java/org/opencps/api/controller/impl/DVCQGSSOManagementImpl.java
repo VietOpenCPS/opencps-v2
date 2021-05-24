@@ -29,7 +29,6 @@ import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.SSOIntegration;
 import org.opencps.dossiermgt.action.impl.SSOIntegrationImpl;
 import org.opencps.usermgt.action.impl.DVCQGSSOActionImpl;
-
 public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	private static final Log _log = LogFactoryUtil.getLog(DVCQGSSOManagementImpl.class);
 	private static final String MIC_SSO_KEY_CONFIG = "MIC-OPENID";
@@ -112,7 +111,7 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 			String urlSSO = ssoIntegration.getUrlSSo(state, redirectURL);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(urlSSO).build();
 		} catch (Exception e) {
-			_log.error("Error when url sso MIC: " + e.getMessage());
+			_log.error(e);
 			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity("").build();
 		}
 	}
@@ -129,7 +128,7 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
-			_log.error("Exception when do authenticate through Mic sso: " + e.getMessage());
+			_log.error(e);
 			result.put("statusCode", 3);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result.toJSONString()).build();
 		}

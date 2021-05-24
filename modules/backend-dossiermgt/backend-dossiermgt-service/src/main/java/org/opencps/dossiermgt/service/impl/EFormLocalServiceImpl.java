@@ -241,7 +241,7 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 	@Indexable(type=IndexableType.REINDEX)
 	public EForm updateEForm(long userId, long groupId, long eFormId, String eFormNo, String serviceCode,
 			String fileTemplateNo, String eFormName, long formScriptFileId, long formReportFileId, String eFormData,
-			String email, String secret, ServiceContext serviceContext) {
+			String email, String secret,String govAgencyCode, ServiceContext serviceContext) {
 
 		Date now = new Date();
 
@@ -268,6 +268,8 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 				eform.setEmail(email);
 			if (Validator.isNotNull(secret))
 				eform.setSecret(secret);
+			if (Validator.isNotNull(govAgencyCode))
+				eform.setGovAgencyCode(govAgencyCode);
 //			if (Validator.isNotNull(checkinDate))
 //				eform.setCheckinDate(checkinDate);
 //			if (Validator.isNotNull(gateNumber))
@@ -295,6 +297,7 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 			eform.setEFormData(eFormData);
 			eform.setEmail(email);
 			eform.setSecret(secret);
+			eform.setGovAgencyCode(govAgencyCode);
 //			eform.setCheckinDate(checkinDate);
 //			eform.setGateNumber(gateNumber);
 //			eform.setState(state);
