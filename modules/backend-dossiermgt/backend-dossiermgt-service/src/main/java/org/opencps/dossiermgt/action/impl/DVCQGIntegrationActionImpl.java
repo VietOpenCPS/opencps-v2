@@ -4243,14 +4243,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				_log.info("HSCTTD result: " + "TrangThaiThanhToan empty");
 				return createResponseMessage(result, -1, "TrangThaiThanhToan empty");
 			}
-//			List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
-//			ServerConfig serverConfig = listConfig.get(0);
-//			JSONObject configJson;
-//
-//			configJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-//
-//			String urlSyncDossier = configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
-//					configJson.get(FrequencyOfficeConstants.CONFIG_SEND_STATUS_RECEIVER);
 			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(MaHoSo);
 			if(Validator.isNotNull(dossier)) {
 				SyncTrackingQuery syncTrackingQuery = new SyncTrackingQuery();
@@ -4261,14 +4253,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				syncTrackingQuery.referenceUid = dossier.getReferenceUid();
 				SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
 			}
-
-//			HttpHeaders headers = new HttpHeaders();
-//			headers.set("Accept", "*");
-//			headers.add("groupId", String.valueOf(syncTrackingInfo.groupId));
-//			HttpEntity<SyncTrackingInfo> entity = new HttpEntity<>(syncTrackingInfo, headers);
-//			ResponseEntity<String> response = restTemplate.postForEntity(syncTrackingInfo.urlSaveTracking, entity , String.class);
-//			_log.info("Response api saving tracking: " + response);
-//			_log.info("Saved tracking!!!");
 			return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
 		} catch (Exception e) {
 			e.getMessage();
@@ -4300,7 +4284,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 				NodeList childs = xml.getElementsByTagName("MA_HSO");
 				Node child;
-				HashMap<String, String> values = new HashMap<String, String>();
 
 				for (int i = 0; i < childs.getLength(); i++) {
 					child = childs.item(i);
@@ -4320,7 +4303,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					}
 				}
 			}
-			return createResponseMessage(result, 0,  "| create dossier success");
+			return createResponseMessage(result, 0,  msHS+"| create dossier success");
 		}catch (Exception e){
 			e.getMessage();
 			_log.error(e);

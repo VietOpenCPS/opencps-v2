@@ -414,10 +414,8 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 
 			boolean isUpdating = bodyFull.getBoolean("isUpdating");
 			String service = bodyFull.getString("service");
-			_log.info("Vaooooooo11111111");
 			if(Validator.isNotNull(service) && "NhanThongBaoThueDat".equals(service)){
 				//API nhận chứng từ thanh toán thuế đất cho hồ sơ từ Cổng DVCQG
-				_log.info("Vaooooooo2222222");
 				result = actionImpl.doCrUpDossierThongBaoThueDatDVCQG(company,user, groupId, serviceContext, data, isUpdating);
 			}
 			return Response.status(200).entity(result.toJSONString()).build();
