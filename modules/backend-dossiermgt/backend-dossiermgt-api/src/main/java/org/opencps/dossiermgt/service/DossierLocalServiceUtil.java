@@ -14,7 +14,7 @@
 
 package org.opencps.dossiermgt.service;
 
-import com.liferay.portal.kernel.exception.PortalException;
+import aQute.bnd.annotation.ProviderType;
 
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
@@ -23,9 +23,8 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.util.tracker.ServiceTracker;
 
-import aQute.bnd.annotation.ProviderType;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Provides the local service utility for Dossier. This utility wraps
@@ -449,6 +448,11 @@ public class DossierLocalServiceUtil {
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByVnpostalStatus(
 		long groupId, int vnpostalStatus) {
 		return getService().findByVnpostalStatus(groupId, vnpostalStatus);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierBeforeDateAndDossierStatusisNull(
+		java.util.Date date) {
+		return getService().findDossierBeforeDateAndDossierStatusisNull(date);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(

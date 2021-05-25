@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, service = GarbageCollectorScheduler.class)
+//@Component(immediate = true, service = GarbageCollectorScheduler.class)
 public class GarbageCollectorScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	@Override
