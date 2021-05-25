@@ -51,11 +51,11 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 	private static String cronExpression = Validator
 			.isNotNull(PropsUtil.get("org.opencps.schedule.remove.publish.queue.cron.expression"))
 					? String.valueOf(PropsUtil.get("org.opencps.schedule.remove.publish.queue.cron.expression"))
-					: "0 18 15 1/1 * ? *";
+					: "0 0 2 1/1 * ? *";
 
 	public static String pathTemp = Validator.isNotNull(PropsUtil.get("org.opencps.path.temp"))
 			? String.valueOf(PropsUtil.get("org.opencps.path.temp"))
-			: "/opt/mcdt_hg/tomcat-9.0.17/temp";
+			: null;
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
