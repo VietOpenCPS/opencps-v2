@@ -108,20 +108,25 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 
 			_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 		} catch (Exception e) {
-			_log.debug(e);
+			_log.info(e);
 		}
 		isRunning = false;
 	}
 	private void mainProcess(DossierSync dossierSync, int sizeDossierSync) {
 		_log.info(startLine1 + "Start thread DossierSync " + dossierSync.getDossierId());
+
 		if (CounterSync.getCount() == sizeDossierSync) {
 			_log.info("Time start: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 
-		IMessageProcessor processor = MessageProcessor.getProcessor(dossierSync);
+		try {
+			IMessageProcessor processor = MessageProcessor.getProcessor(dossierSync);
 
-		if (processor != null) {
-			processor.process();
+			if (processor != null) {
+				processor.process();
+			}
+		} catch (Exception e) {
+			_log.error("Error when running dossierSync: " + dossierSync.getDossierSyncId(), e);
 		}
 
 		CounterSync.decreaseCount();
