@@ -444,6 +444,11 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 			domainCode, groupAgencyCode, system);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByMonthYearREPO_ARR(
+		int[] months, int[] years, int[] reportings) {
+		return getService().findByMonthYearREPO_ARR(months, years, reportings);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByNOT_GROUPID(
 		long groupId) {
 		return getService().findByNOT_GROUPID(groupId);
