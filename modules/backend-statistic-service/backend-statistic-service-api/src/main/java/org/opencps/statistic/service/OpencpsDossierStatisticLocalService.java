@@ -319,6 +319,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int year, String govAgencyCode, String domainCode,
 		String groupAgencyCode, String system);
 
+	public List<OpencpsDossierStatistic> findByMonthYearREPO_ARR(int[] months,
+		int[] years, int[] reportings);
+
 	public List<OpencpsDossierStatistic> findByNOT_GROUPID(long groupId);
 
 	public List<OpencpsDossierStatistic> findByREPO_ARR(int[] reporting);
