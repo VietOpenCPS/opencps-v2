@@ -163,11 +163,17 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 		
 		if(Validator.isNotNull(pathTemp)) {
 			
-			deleteDirectoryJava7(pathTemp);
-			Files.createDirectories(Paths.get(pathTemp));
+			if(pathTemp.contains("/tomcat") && pathTemp.contains("/temp") ) {
+				deleteDirectoryJava7(pathTemp);
+				Files.createDirectories(Paths.get(pathTemp));
+			}
+			else {
+				_log.info("Path " + pathTemp + " is Not Avaible!");
+			}
+			
 			
 		} else {
-			_log.info("path file Temp is Null! Please configurate attribute (org.opencps.path.temp) in properties");
+			_log.info("Path file Temp is Null! Please configurate attribute (org.opencps.path.temp) in properties");
 		}
 
 		_log.info("OpenCPS REMOVE FILE TEMP HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
