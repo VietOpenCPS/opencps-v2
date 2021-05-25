@@ -47,11 +47,11 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 	private static String cronExpression = Validator
 			.isNotNull(PropsUtil.get("org.opencps.schedule.remove.publish.queue.cron.expression"))
 					? String.valueOf(PropsUtil.get("org.opencps.schedule.remove.publish.queue.cron.expression"))
-					: "0 3 11 1/1 * ? *";
+					: "0 0 2 1/1 * ? *";
 
 	public static String pathTemp = Validator.isNotNull(PropsUtil.get("org.opencps.path.temp"))
 			? String.valueOf(PropsUtil.get("org.opencps.path.temp"))
-			: "/opt/mcdt_hg/tomcat-9.0.17/temp";
+			: null;
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
@@ -92,10 +92,10 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 
 				for (Dossier dossier : lstDossier) {
 					try {
+						
 						DossierLocalServiceUtil.removeDossier(dossier.getGroupId(), dossier.getDossierId(),
 								dossier.getReferenceUid());
-//                      	DossierLocalServiceUtil.deleteDossier(lstDossier.get(i).getDossierId());
-//						_log.info("Dossier deleted : " + dossier.getDossierId());
+						
 					} catch (Exception pe) {
 						_log.error(pe);
 					}
@@ -109,50 +109,42 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 
 //			Action 4. 4. opencps_publish_queue (Xóa những bản ghi có serverNo = 'DVCQG' từ cách 30 ngày về trước và status =3 (10000), còn những trường hợp còn lại thì xóa hết những bản ghi status = 3 (10000))
 
-			_log.info(
-					"OpenCPS REMOVE PUBLISH QUEUE SCHEDULER IS : " + APIDateTimeUtils.convertDateToString(new Date()));
+			_log.info("OpenCPS REMOVE PUBLISH QUEUE SCHEDULER IS : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 			List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByStatusesAndServerNo(
-					new int[] { PublishQueueTerm.STATE_RECEIVED_ACK }, ServerConfigTerm.DVCQG_INTEGRATION, 0, 10, null);
+					new int[] { PublishQueueTerm.STATE_RECEIVED_ACK }, ServerConfigTerm.DVCQG_INTEGRATION, 0, 10000, null);
 
 			if (Validator.isNull(lstQueues) || lstQueues.size() == 0) {
+				
 				_log.info("list PublishQueue (serverNo = 'DVCQG' and Status = 3  return list: null");
+				
 			} else {
+				
 				_log.info("OpenCPS REMOVE PUBLISH WITH SERVERNO QUEUE COUNT: " + lstQueues.size());
-				int i = 0;
+				
 				for (PublishQueue publishQueue : lstQueues) {
-					if (thirtyDayAgo.compareTo(publishQueue.getCreateDate()) > 0) { // Kiểm tra mốc thời gian với ngày
-																					// tạo
-						_log.info("publicQueue : id = " + publishQueue.getPublishQueueId() + " - "
-								+ publishQueue.getCreateDate());
+					if (thirtyDayAgo.compareTo(publishQueue.getCreateDate()) > 0) {
+						
 						PublishQueueLocalServiceUtil.removePublishQueue(publishQueue.getPublishQueueId());
-						i++;
+						
 					}
-					if (i > 10000) {
-						break;
-					}
+					
 				}
 			}
 
 			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatusesAndNotServerNo(
-					new int[] { PublishQueueTerm.STATE_RECEIVED_ACK }, ServerConfigTerm.DVCQG_INTEGRATION, 0, 10);
+					new int[] { PublishQueueTerm.STATE_RECEIVED_ACK }, ServerConfigTerm.DVCQG_INTEGRATION, 0, 10000);
 
 			if (Validator.isNull(lstPqs) || lstPqs.size() == 0) {
-				_log.info("lstQueues.size() : null");
+				_log.info("OpenCPS REMOVE PUBLISH WITH NOT SERVERNO QUEUE COUNT : null");
 			} else {
+				
 				_log.info("OpenCPS REMOVE PUBLISH WITH NOT SERVERNO QUEUE COUNT: " + lstPqs.size());
-				int i = 0;
+				
 				for (PublishQueue publishQueue : lstPqs) {
-					if (thirtyDayAgo.compareTo(publishQueue.getCreateDate()) > 0) { // Kiểm tra mốc thời gian với ngày
-																					// tạo
-						_log.info("publicQueue : id = " + publishQueue.getPublishQueueId() + " - "
-								+ publishQueue.getCreateDate());
-						PublishQueueLocalServiceUtil.removePublishQueue(publishQueue.getPublishQueueId());
-						i++;
-					}
-					if (i > 10000) {
-						break;
-					}
+			
+					PublishQueueLocalServiceUtil.removePublishQueue(publishQueue.getPublishQueueId());
+					
 				}
 			}
 
@@ -163,17 +155,26 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 		} catch (Exception e) {
 			_log.error(e);
 		}
-		isRunning = false;
-		_log.info("OpenCPS REMOVE SCHEDULER HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 //		Action 6. 6. File Temp (In tomcat, xóa hết)
 
 		_log.info("OpenCPS REMOVE FILE TEMP : " + APIDateTimeUtils.convertDateToString(new Date()));
-
-		deleteDirectoryJava7(pathTemp);
-		Files.createDirectories(Paths.get(pathTemp));
+		
+		
+		if(Validator.isNotNull(pathTemp)) {
+			
+			deleteDirectoryJava7(pathTemp);
+			Files.createDirectories(Paths.get(pathTemp));
+			
+		} else {
+			_log.info("path file Temp is Null! Please configurate attribute (org.opencps.path.temp) in properties");
+		}
 
 		_log.info("OpenCPS REMOVE FILE TEMP HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
+		
+		isRunning = false;
+		
+		_log.info("OpenCPS REMOVE SCHEDULER HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 	}
 
