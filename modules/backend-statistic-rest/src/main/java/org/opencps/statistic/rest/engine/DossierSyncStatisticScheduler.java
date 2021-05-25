@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,14 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	private boolean enableJob = Validator.isNotNull(PropsUtil.get("opencps.sync.dossierstatistic.enable"))
 			? GetterUtil.getBoolean(PropsUtil.get("opencps.sync.dossierstatistic.enable")) : true;
 
+	//Start time config
+	private static int HOUR_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.hour"))
+			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.hour")) :-1;
+	private static int MINUTE_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.minute"))
+			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.minute")) :-1;
+	private static int SECOND_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.second"))
+			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.second")) :-1;
+	
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		_log.info("Cau hinh sync dossierstatistic running: " + isRunningStatisticSync + ", enable: " + enableJob);
@@ -353,7 +362,20 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	@Modified
 	protected void activate(Map<String, Object> properties) throws SchedulerException {
 		String listenerClass = getClass().getName();
-		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null,
+		// Create startDate
+		Calendar cal = Calendar.getInstance();
+		LocalDate now = LocalDate.now();
+		int year =  now.getYear();
+		int month = now.getMonthValue();
+		int day = now.getDayOfMonth();
+		if (HOUR_STATISTIC != -1 && MINUTE_STATISTIC != -1 && SECOND_STATISTIC != -1) {
+			cal.set(year, month-1, day, HOUR_STATISTIC, MINUTE_STATISTIC, SECOND_STATISTIC);
+		}else {
+			cal.set(year, month-1, day);
+		}
+		Date startDate = cal.getTime();
+		
+		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, startDate, null,
 				TIME_STATISTIC_CALCULATOR, TimeUnit.MINUTE);
 
 		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
