@@ -7897,7 +7897,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	
 	public List<Dossier> findDossierBeforeDateAndDossierStatusisNull(Date date) {
 		DynamicQuery dynamicQuery = dossierLocalService.dynamicQuery();
-		dynamicQuery.add(RestrictionsFactoryUtil.le("createDate", date));
+		dynamicQuery.add(RestrictionsFactoryUtil.lt("createDate", date));
 		dynamicQuery.add(RestrictionsFactoryUtil.isNull("dossierStatus"));
 		List<Dossier> result = dossierPersistence.findWithDynamicQuery(dynamicQuery);
 		return result;

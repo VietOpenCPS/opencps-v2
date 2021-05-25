@@ -14,7 +14,7 @@
 
 package org.opencps.dossiermgt.service;
 
-import aQute.bnd.annotation.ProviderType;
+import com.liferay.portal.kernel.exception.PortalException;
 
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
@@ -23,8 +23,9 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
-
 import org.osgi.util.tracker.ServiceTracker;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * Provides the local service utility for Dossier. This utility wraps

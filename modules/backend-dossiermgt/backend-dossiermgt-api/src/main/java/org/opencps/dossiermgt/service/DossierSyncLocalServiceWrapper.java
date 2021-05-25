@@ -316,6 +316,13 @@ public class DossierSyncLocalServiceWrapper implements DossierSyncLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierSync> getDossierSyncBeforeDateAndState(
+		java.util.Date createDate, int state_, int start, int end) {
+		return _dossierSyncLocalService.getDossierSyncBeforeDateAndState(createDate,
+			state_, start, end);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.DossierSync> getDossierSyncByIdList(
 		Long dossierId, Integer model, int actionCodeNo, Integer start,
 		Integer limit) {

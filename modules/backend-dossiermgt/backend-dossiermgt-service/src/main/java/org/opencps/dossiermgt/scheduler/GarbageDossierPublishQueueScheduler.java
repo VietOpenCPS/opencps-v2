@@ -17,14 +17,18 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
+
+import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.service.AccessTokenLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.*;
@@ -47,11 +51,11 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 	private static String cronExpression = Validator
 			.isNotNull(PropsUtil.get("org.opencps.schedule.remove.publish.queue.cron.expression"))
 					? String.valueOf(PropsUtil.get("org.opencps.schedule.remove.publish.queue.cron.expression"))
-					: "0 0 2 1/1 * ? *";
+					: "0 18 15 1/1 * ? *";
 
 	public static String pathTemp = Validator.isNotNull(PropsUtil.get("org.opencps.path.temp"))
 			? String.valueOf(PropsUtil.get("org.opencps.path.temp"))
-			: null;
+			: "/opt/mcdt_hg/tomcat-9.0.17/temp";
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
@@ -92,7 +96,6 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 
 				for (Dossier dossier : lstDossier) {
 					try {
-						
 						DossierLocalServiceUtil.removeDossier(dossier.getGroupId(), dossier.getDossierId(),
 								dossier.getReferenceUid());
 						
@@ -152,32 +155,52 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 					+ APIDateTimeUtils.convertDateToString(new Date()));
 
 			AccessTokenLocalServiceUtil.garbageToken();
+			
+//			Action 6. 6. File Temp (In tomcat, xóa hết)
+
+			_log.info("OpenCPS REMOVE FILE TEMP IS: " + APIDateTimeUtils.convertDateToString(new Date()));
+			
+			
+			if(Validator.isNotNull(pathTemp)) {
+				
+				if(pathTemp.contains("/tomcat") && pathTemp.contains("/temp") ) {
+					deleteDirectoryJava7(pathTemp);
+					Files.createDirectories(Paths.get(pathTemp));
+				}
+				else {
+					_log.info("Path " + pathTemp + " is Not Avaible!");
+				}
+				
+				
+			} else {
+				_log.info("Path file Temp is Null! Please configurate attribute (org.opencps.path.temp) in properties");
+			}
+
+			_log.info("OpenCPS REMOVE FILE TEMP HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
+			
+//			Action 7. opencps_dossiersync (Xóa những bản ghi có state_ = 3 cách 30 ngày về trước)
+			
+			_log.info("OpenCPS REMOVE DOSSIER SYNC IS : " + APIDateTimeUtils.convertDateToString(new Date()));
+			
+			List<DossierSync> lstDossierSync = DossierSyncLocalServiceUtil.getDossierSyncBeforeDateAndState(thirtyDayAgo, DossierSyncTerm.STATE_RECEIVED_ACK, 0, 10000);
+			
+			if (Validator.isNull(lstDossierSync) || lstDossierSync.size() == 0) {
+				_log.info("OpenCPS REMOVE DOSSIER SYNC COUNT : null");
+			} else {
+				_log.info("OpenCPS REMOVE DOSSIER SYNC COUNT: " + lstDossierSync.size());
+				
+				for (DossierSync dossierSync : lstDossierSync) {
+					DossierSyncLocalServiceUtil.removeByDossierId(dossierSync.getGroupId(), dossierSync.getDossierId());
+				}
+				
+			}
+			
+			_log.info("OpenCPS REMOVE DOSSIER SYNC HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
+		
 		} catch (Exception e) {
 			_log.error(e);
 		}
 
-//		Action 6. 6. File Temp (In tomcat, xóa hết)
-
-		_log.info("OpenCPS REMOVE FILE TEMP : " + APIDateTimeUtils.convertDateToString(new Date()));
-		
-		
-		if(Validator.isNotNull(pathTemp)) {
-			
-			if(pathTemp.contains("/tomcat") && pathTemp.contains("/temp") ) {
-				deleteDirectoryJava7(pathTemp);
-				Files.createDirectories(Paths.get(pathTemp));
-			}
-			else {
-				_log.info("Path " + pathTemp + " is Not Avaible!");
-			}
-			
-			
-		} else {
-			_log.info("Path file Temp is Null! Please configurate attribute (org.opencps.path.temp) in properties");
-		}
-
-		_log.info("OpenCPS REMOVE FILE TEMP HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
-		
 		isRunning = false;
 		
 		_log.info("OpenCPS REMOVE SCHEDULER HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
