@@ -152,6 +152,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             response.data  = syncTrackingResponse;
             return response;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -191,6 +192,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
 
             return true;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -231,6 +233,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             integrationOutsideApi.postWithString(url, headers, bodyRequest);
             return true;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }

@@ -202,6 +202,14 @@ public class PublishQueueLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByDossierIdAndNotServerNo(
+		long dossierId, String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.PublishQueue> orderByComparator) {
+		return getService()
+				   .getByDossierIdAndNotServerNo(dossierId, serverNo, start,
+			end, orderByComparator);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByDossierIdAndServerNo(
 		long dossierId, String serverNo, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.PublishQueue> orderByComparator) {

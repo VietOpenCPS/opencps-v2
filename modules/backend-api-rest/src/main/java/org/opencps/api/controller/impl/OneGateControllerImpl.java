@@ -115,7 +115,6 @@ public class OneGateControllerImpl implements OneGateController {
 
 			Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
 			List<ServiceInfo> lstServiceInfos = null;
-			ServiceInfoActions actions = new ServiceInfoActionsImpl();
 			//Search lucene
 			SearchContext searchContext = new SearchContext();
 			searchContext.setCompanyId(serviceContext.getCompanyId());
@@ -201,7 +200,7 @@ public class OneGateControllerImpl implements OneGateController {
 			}
 
 			/*******/
-			_log.info("processList: " + processList != null ? processList.size() : 0);
+			_log.debug("processList: " + processList != null ? processList.size() : 0);
 			String serviceCodeOld = "";
 			if (serviceConfigs != null) {
 				for (ServiceConfig serviceConfig : serviceConfigs) {
@@ -337,9 +336,9 @@ public class OneGateControllerImpl implements OneGateController {
 
 		DossierActions actions = new DossierActionsImpl();
 
-		_log.info("__INPUT_ONEGATE");
-		_log.info(JSONFactoryUtil.looseSerialize(input));
-		_log.info("__XXXXXXXXXXXXX");
+		_log.debug("__INPUT_ONEGATE");
+		_log.debug(JSONFactoryUtil.looseSerialize(input));
+		_log.debug("__XXXXXXXXXXXXX");
 
 		try {
 			
@@ -393,9 +392,9 @@ public class OneGateControllerImpl implements OneGateController {
 		long dActionId = GetterUtil.getLong(input.getDossierActionId());
 
 
-		_log.info("__INPUT_ONEGATE_UPDATE");
-		_log.info(JSONFactoryUtil.looseSerialize(input));
-		_log.info("__XXXXXXXXXXXXX_UPDATE");
+		_log.debug("__INPUT_ONEGATE_UPDATE");
+		_log.debug(JSONFactoryUtil.looseSerialize(input));
+		_log.debug("__XXXXXXXXXXXXX_UPDATE");
 
 		try {
 
@@ -576,18 +575,18 @@ public class OneGateControllerImpl implements OneGateController {
 //			
 //			String token = (String) request.getSession().getAttribute(CSRF_TOKEN_FOR_SESSION_NAME);
 //			
-//			_log.info("CHECK::TOKEN:::::" + token);
+//			_log.debug("CHECK::TOKEN:::::" + token);
 //			
 //			if (Validator.isNull(token)) {
 //				token = PortalUUIDUtil.generate();
 //				
-//				_log.info("GENERATE_TOKEN:::::" + token);
+//				_log.debug("GENERATE_TOKEN:::::" + token);
 //
 //				request.getSession().setAttribute(CSRF_TOKEN_FOR_SESSION_NAME, token);
 //			}
 //			return Response.status(HttpURLConnection.HTTP_OK).entity(token).build();
 //		} catch (Exception e) {
-//			_log.info(e);
+//			_log.debug(e);
 //			return _processException(e);
 //		}
 //

@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.PersonStatisticData;
@@ -17,6 +19,7 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 import org.opencps.statistic.rest.util.DossierStatisticUtils;
 
 public class StatisticEngineUpdate {
+	private static Log _log = LogFactoryUtil.getLog(StatisticEngineUpdate.class);
 	public void updateStatisticData(Map<String, DossierStatisticData> statisticData, List<OpencpsDossierStatistic> datas) {
 
 		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
@@ -51,7 +54,7 @@ public class StatisticEngineUpdate {
 				lstDossierDataObjs.add(dossierDataObj);
 			}
 			catch (Exception e) {
-				
+				_log.error(e);
 			}
 		}
 		return lstDossierDataObjs;
@@ -66,7 +69,7 @@ public class StatisticEngineUpdate {
 				jsonArr.put(dossierDataObj);
 			}
 			catch (Exception e) {
-				
+				_log.error(e);
 			}
 		}
 		return jsonArr;
@@ -83,7 +86,7 @@ public class StatisticEngineUpdate {
 				jsonArr.put(dossierDataObj);
 			}
 			catch (Exception e) {
-				
+				_log.error(e);
 			}
 		}
 		return jsonArr;
@@ -102,7 +105,7 @@ public class StatisticEngineUpdate {
 				lstDossierDataObjs.add(dossierDataObj);
 			}
 			catch (Exception e) {
-				
+				_log.error(e);
 			}
 //			engineUpdateAction.updateStatistic(payload);
 		}

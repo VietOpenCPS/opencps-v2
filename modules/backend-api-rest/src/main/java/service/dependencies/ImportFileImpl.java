@@ -20,7 +20,7 @@ public class ImportFileImpl implements ImportFile {
             _log.info("Import file excel succeed!");
 
         } catch (Exception e) {
-            _log.error(e.getMessage());
+            _log.error(e);
         }
     }
 }

@@ -19,11 +19,13 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.liferay.counter.kernel.model.Counter;
 import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.usermgt.action.impl.UserActions;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.exception.DuplicateApplicantIdException;
 import org.opencps.usermgt.exception.DuplicateContactEmailException;
@@ -34,10 +36,6 @@ import org.opencps.usermgt.exception.NoApplicantNameException;
 import org.opencps.usermgt.exception.NoSuchApplicantException;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
-import org.opencps.usermgt.service.util.DateTimeUtils;
-import org.opencps.usermgt.service.util.MessageUtil;
-import org.opencps.usermgt.service.util.ServiceProps;
-import org.opencps.usermgt.service.util.UserMgtUtils;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -77,6 +75,10 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
+import org.opencps.usermgt.service.util.DateTimeUtils;
+import org.opencps.usermgt.service.util.MessageUtil;
+import org.opencps.usermgt.service.util.ServiceProps;
+import org.opencps.usermgt.service.util.UserMgtUtils;
 
 /**
  * The implementation of the applicant local service.
@@ -179,6 +181,16 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
 
 			validateApplicantDuplicate(groupId, context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
+
+			try {
+				Counter counterDetail = CounterLocalServiceUtil.fetchCounter("org.opencps.usermgt.model.Applicant");
+				if(counterDetail != null) {
+					_log.info("Applicant current counter: " + counterDetail.getCurrentId());
+				}
+
+			} catch (Exception e) {
+				_log.error("Error when get applicant counter");
+			}
 
 			applicantId = counterLocalService.increment(Applicant.class.getName());
 
@@ -1530,7 +1542,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			
 			if (Validator.isNotNull(profile))
 				applicant.setProfile(profile);
-			
+
 		}
 
 		return applicantPersistence.update(applicant);
@@ -1825,6 +1837,15 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 	public Applicant fetchByF_GID_CTEM(long groupId, String email) {
 		return applicantPersistence.fetchByF_GID_CTEM(groupId, email);
+	}
+
+	public User addUser(String fullName, String screenName, String email, String password,
+							ServiceContext serviceContext) throws PortalException {
+
+		UserActions userUtil = new UserActions();
+		User user = userUtil.checkUser(fullName,screenName,email,password,
+				 serviceContext);
+		return user;
 	}
 	// private Log _log =
 	// LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);

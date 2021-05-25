@@ -83,7 +83,7 @@ public class PublishEventHSKMScheduler extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		_log.info("TASK SEND HSKM to DVCQG: " + APIDateTimeUtils.convertDateToString(new Date()));
+		_log.info("TASK SEND HSKM to DVCQG: " + timeSyncDossierDVCQG);
 		_log.info("isRunning: " + isRunning + ", jobEnable: " + ENABLE_JOB + ", counting: " + Counter.getCount());
 
 		if(isRunning) {

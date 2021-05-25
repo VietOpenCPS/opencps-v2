@@ -2,6 +2,7 @@ package org.opencps.backend.statisticmgt.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -17,6 +18,8 @@ import org.opencps.backend.statisticmgt.constant.Constants;
 import org.opencps.backend.statisticmgt.constant.PropValues;
 import org.opencps.backend.statisticmgt.processimpl.QueryProcessFactoryImpl;
 import org.opencps.bundlemgt.classloader.util.ClassLoaderFactoryUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 /**
  * @author trungnt
@@ -26,13 +29,13 @@ public class ActionUtil {
 
 	private static Log _log = LogFactoryUtil.getLog(ActionUtil.class);
 
-	public static String exportDossierStatistic(long groupId, long fromDate, long toDate, String originalities,
+	public static String exportDossierStatistic(long groupId, long userId, long fromDate, long toDate, String originalities,
 			String domainCode, String govAgencyCode, String serviceCode, String dossierStatus, Integer day,
 			String groupBy, Integer start, Integer end, int type, String subType) {
 
 		String result = StringPool.BLANK;
 
-		JSONObject obj = getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode, govAgencyCode,
+		JSONObject obj = getDossierStatistic(groupId, userId, fromDate, toDate, originalities, domainCode, govAgencyCode,
 				serviceCode, dossierStatus, day, groupBy, start, end, type, subType);
 		String strFromDate = DatetimeUtil.convertTimestampToStringDatetime(fromDate, DatetimeUtil._DD_MM_YYYY);
 		String strToDate = DatetimeUtil.convertTimestampToStringDatetime(toDate, DatetimeUtil._DD_MM_YYYY);
@@ -100,49 +103,107 @@ public class ActionUtil {
 		String domainName = StringPool.BLANK;
 
 		if (subType.equals(Constants.LIST)) {
-
-			int total = 0;
-
 			List<Object[]> dataList = new ArrayList<Object[]>();
 
 			if (obj != null && obj.has(Constants.DATA)) {
 				JSONArray data = obj.getJSONArray(Constants.DATA);
 				if (data != null && data.length() > 0) {
 					JSONObject firstRow = data.getJSONObject(0);
-					total = data.length();
+
 					govAgencyName = firstRow.getString("govAgencyName");
 					domainName = firstRow.getString("domainName");
+
+
 					dataMap.put("govAgencyName", govAgencyName.toUpperCase());
 					dataMap.put("domainName", domainName);
-					dataMap.put("total", String.valueOf(total));
 
 					Object[] objects = null;
 
 					JSONObject dataRow = null;
-					for (int i = 0; i < data.length(); i++) {
-						objects = new Object[firstRow.length()];
-						dataRow = data.getJSONObject(i);
-						objects[0] = String.valueOf(i + 1);
-						objects[1] = dataRow.getString("dossierNo");
-						objects[2] = dataRow.getString("dossierName");
-						objects[3] = dataRow.getString("applicantName");
-						objects[4] = dataRow.getString("receiveDate");
-						objects[5] = dataRow.getString("dueDate");
-						objects[6] = dataRow.getString("dossierStatusText");
 
-						dataList.add(objects);
+					if (type == 21) {
+						JSONObject objA = getDossierStatistic(groupId, userId, fromDate, toDate, originalities, domainCode, govAgencyCode,
+								serviceCode, dossierStatus, day, groupBy, start, end, type, Constants.ROW_TOTAL);
+
+						JSONArray dataTotal = objA.getJSONArray(Constants.DATA);
+						String[] total = new String[9];
+						JSONObject lastRow = dataTotal.getJSONObject(dataTotal.length() - 1);
+
+						int total_vote1 = lastRow.getInt("total_vote1");// 5
+						int total_vote2 = lastRow.getInt("total_vote2");// 4
+						int total_vote3 = lastRow.getInt("total_vote3");// 7
+						int total_vote4 = lastRow.getInt("total_vote4");// 8
+						int total_vote5 = lastRow.getInt("total_vote5");// 9
+						int total_vote6 = lastRow.getInt("total_vote6");// 11
+						int total_vote7 = lastRow.getInt("total_vote7");// 12
+						int total_vote8 = lastRow.getInt("total_vote8");// 12
+						int total_vote9 = lastRow.getInt("total_vote9");// 12
+
+						total[0] = String.valueOf(total_vote1);// 4+5
+						total[1] = String.valueOf(total_vote2);// 4
+						total[2] = String.valueOf(total_vote3);// 5
+						total[3] = String.valueOf(total_vote4);// 7 +8 +9
+						total[4] = String.valueOf(total_vote5);// 7
+						total[5] = String.valueOf(total_vote6);// 8
+						total[6] = String.valueOf(total_vote7);// 9
+						total[7] = String.valueOf(total_vote8);// 11+12
+						total[8] = String.valueOf(total_vote9);// 11
+						dataMap.put("total", total);
+
+						for (int i = 0; i < data.length(); i++) {
+							objects = new Object[firstRow.length()];
+							dataRow = data.getJSONObject(i);
+							objects[0] = String.valueOf(i + 1);
+							objects[1] = dataRow.getString("dossierNo");
+							objects[2] = dataRow.getString("vote1");
+							objects[3] = dataRow.getString("vote2");
+							objects[4] = dataRow.getString("vote3");
+							objects[5] = dataRow.getString("vote4");
+							objects[6] = dataRow.getString("vote5");
+							objects[7] = dataRow.getString("vote6");
+							objects[8] = dataRow.getString("vote7");
+							objects[9] = dataRow.getString("vote8");
+							objects[10] = dataRow.getString("vote9");
+
+							dataList.add(objects);
+						}
+						dataMap.put("data", dataList);
+					} else {
+						int total = 0;
+						total = data.length();
+						dataMap.put("total", String.valueOf(total));
+						for (int i = 0; i < data.length(); i++) {
+							objects = new Object[firstRow.length()];
+							dataRow = data.getJSONObject(i);
+							objects[0] = String.valueOf(i + 1);
+							objects[1] = dataRow.getString("dossierNo");
+							objects[2] = dataRow.getString("dossierName");
+							objects[3] = dataRow.getString("applicantName");
+							objects[4] = dataRow.getString("receiveDate");
+							objects[5] = dataRow.getString("dueDate");
+							objects[6] = dataRow.getString("dossierStatusText");
+
+							dataList.add(objects);
+						}
 					}
 
 					dataMap.put("data", dataList);
+					_log.debug("DataMap: " + JSONFactoryUtil.looseSerialize(dataMap.get("total")));
+					_log.debug("DataMap: " + JSONFactoryUtil.looseSerialize(dataMap.get("data")));
+					try {
+						if (type == 21) {
+							result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
+									StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_4), dataMap);
+						} else {
+							result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
+									StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_1), dataMap);
+						}
+					} catch (Exception e) {
+						_log.error(e);
+					}
 				}
 			}
 
-			try {
-				result = ClassLoaderFactoryUtil.exportFileByExcelTemplate(
-						StatisticUtil.getTemplateFilePath(PropValues.TEMPLATES_REPORTS_FILENAME_1), dataMap);
-			} catch (Exception e) {
-				_log.error(e);
-			}
 
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 
@@ -188,7 +249,6 @@ public class ActionUtil {
 					dataMap.put("govAgencyName", govAgencyName.toUpperCase());
 
 					dataMap.put("total", total);
-
 					Object[] objects = null;
 
 					JSONObject dataRow = null;
@@ -251,7 +311,7 @@ public class ActionUtil {
 		return result;
 	}
 
-	public static JSONObject getDossierStatistic(long groupId, long fromDate, long toDate, String originalities,
+	public static JSONObject getDossierStatistic(long groupId, long userId, long fromDate, long toDate, String originalities,
 			String domainCode, String govAgencyCode, String serviceCode, String dossierStatus, Integer day,
 			String groupBy, Integer start, Integer end, int type, String subType) {
 
@@ -268,13 +328,32 @@ public class ActionUtil {
 		String strToDate = DatetimeUtil.convertTimestampToStringDatetime(toDate, DatetimeUtil._YYYY_MM_DD);
 
 		String sqlTemplate = QueryUtil.getSQLQueryTemplate(type, subType);
+		_log.info("sqlTemplate: " + sqlTemplate);
+		if(userId >0) {
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			if (Validator.isNotNull(employee) && Validator.isNotNull(employee.getScope())) {
+				String name = StringPool.BLANK;
+				String[] scope = employee.getScope().split(StringPool.COMMA);
+				for (String key : scope) {
+					if (Validator.isNotNull(name)) {
+						name += "," + key;
+					} else {
+						name = key;
+					}
+				}
 
+				sqlTemplate = sqlTemplate.replace("{scopeEmpl}", StringPool.APOSTROPHE + name + StringPool.APOSTROPHE);
+			} else {
+				sqlTemplate = sqlTemplate.replace("{scopeEmpl}", "''");
+			}
+		}
 		if (Validator.isNull(sqlTemplate)) {
 			return StatisticUtil.createResponseSchema(groupId, strFromDate, strToDate,
 					ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 					ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 					ParamUtil.getArrayParams(dossierStatus), type, subType);
 		}
+
 
 		QueryProcessFactoryImpl factory = new QueryProcessFactoryImpl();
 
@@ -295,7 +374,7 @@ public class ActionUtil {
 				 * if (Validator.isNull(dossierStatus)) { dossierStatus =
 				 * "processing, planning"; }
 				 */
-				return factory.getDossierStatistic2(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic2(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -313,7 +392,7 @@ public class ActionUtil {
 				 * if (Validator.isNull(dossierStatus)) { dossierStatus =
 				 * "processing, planning"; }
 				 */
-				return factory.getDossierStatistic4(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic4(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -325,7 +404,7 @@ public class ActionUtil {
 				/*
 				 * if (Validator.isNull(dossierStatus)) { dossierStatus = "done"; }
 				 */
-				return factory.getDossierStatistic5(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic5(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -337,7 +416,7 @@ public class ActionUtil {
 				/*
 				 * if (Validator.isNull(dossierStatus)) { dossierStatus = "done"; }
 				 */
-				return factory.getDossierStatistic6(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic6(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -349,7 +428,7 @@ public class ActionUtil {
 				/*
 				 * if (Validator.isNull(dossierStatus)) { dossierStatus = "done"; }
 				 */
-				return factory.getDossierStatistic7(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic7(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -361,7 +440,7 @@ public class ActionUtil {
 				/*
 				 * if (Validator.isNull(dossierStatus)) { dossierStatus = "done"; }
 				 */
-				return factory.getDossierStatistic8(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic8(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -374,7 +453,7 @@ public class ActionUtil {
 				if (Validator.isNull(dossierStatus)) {
 					dossierStatus = "releasing,posting,done";
 				}
-				return factory.getDossierStatistic9(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic9(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -387,7 +466,7 @@ public class ActionUtil {
 				if (Validator.isNull(dossierStatus)) {
 					dossierStatus = "releasing,posting,done";
 				}
-				return factory.getDossierStatistic10(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic10(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -400,7 +479,7 @@ public class ActionUtil {
 				if (Validator.isNull(dossierStatus)) {
 					dossierStatus = "releasing,posting,done";
 				}
-				return factory.getDossierStatistic11(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic11(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -413,7 +492,7 @@ public class ActionUtil {
 				if (Validator.isNull(dossierStatus)) {
 					dossierStatus = "releasing,posting,done";
 				}
-				return factory.getDossierStatistic12(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic12(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -427,7 +506,7 @@ public class ActionUtil {
 					dossierStatus = "processing,interoperating,planning";
 				}
 
-				return factory.getDossierStatistic13(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic13(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -440,7 +519,7 @@ public class ActionUtil {
 				if (Validator.isNull(dossierStatus)) {
 					dossierStatus = "processing,interoperating,planning";
 				}
-				return factory.getDossierStatistic14(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic14(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -454,7 +533,7 @@ public class ActionUtil {
 				if (Validator.isNull(dossierStatus)) {
 					dossierStatus = "processing,interoperating,planning";
 				}
-				return factory.getDossierStatistic15(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic15(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), day, groupBy, start, end, sqlTemplate, type, subType);
@@ -467,7 +546,7 @@ public class ActionUtil {
 				if (Validator.isNull(dossierStatus)) {
 					dossierStatus = "processing,interoperating,planning";
 				}
-				return factory.getDossierStatistic16(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic16(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -480,7 +559,7 @@ public class ActionUtil {
 				if (Validator.isNull(dossierStatus)) {
 					dossierStatus = "unresolved";
 				}
-				return factory.getDossierStatistic17(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic17(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -493,7 +572,7 @@ public class ActionUtil {
 				if (Validator.isNull(dossierStatus)) {
 					dossierStatus = "cancelled";
 				}
-				return factory.getDossierStatistic18(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic18(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -507,7 +586,7 @@ public class ActionUtil {
 					dossierStatus = "waiting,receiving";
 				}
 
-				return factory.getDossierStatistic19(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic19(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
@@ -516,7 +595,16 @@ public class ActionUtil {
 				if (Validator.isNull(originalities)) {
 					originalities = "2,3";
 				}
-				return factory.getDossierStatistic20(groupId, strFromDate, strToDate,
+				return factory.getDossierStatistic20(groupId, userId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
+						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
+			}else if (type == 21){
+				// set default
+				if (Validator.isNull(originalities)) {
+					originalities = "2,3";
+				}
+				return factory.getDossierStatistic21(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);

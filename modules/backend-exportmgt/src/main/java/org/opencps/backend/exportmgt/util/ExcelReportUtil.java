@@ -1,6 +1,8 @@
 package org.opencps.backend.exportmgt.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSON;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -67,6 +69,7 @@ public class ExcelReportUtil {
 			int[] indexs = new int[] { 0, 0, 0, 0 };
 			HashMap<Integer, String> dataListMap = new HashMap<Integer, String>();
 			if (comment != null && Validator.isNotNull(comment.getString())) {
+				_log.debug("comment: " + JSONFactoryUtil.looseSerialize(comment.getString().getString()));
 				indexs = ExcelParseUtil.getCellIndexs(comment.getString().getString());
 				dataListMap = ExcelParseUtil.getDataListMap(comment.getString().getString());
 

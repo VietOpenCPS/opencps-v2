@@ -37,7 +37,7 @@ public class PayGateUtil {
 			result = formatter.toString();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		} finally {
 			formatter.close();
 		}
@@ -81,9 +81,13 @@ public class PayGateUtil {
 		try {
 			digest = MessageDigest.getInstance("SHA-256");
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
+
+		if(digest == null) {
+			return "";
+		}
+
 		final byte[] hashbytes = digest.digest(
 		  originalString.getBytes(StandardCharsets.UTF_8));
 		String sha3_256hex = bytesToHex(hashbytes);
@@ -196,7 +200,7 @@ public class PayGateUtil {
 		try {
 			 convertDate = f.format(date);
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		}		
 		return convertDate;
 	}

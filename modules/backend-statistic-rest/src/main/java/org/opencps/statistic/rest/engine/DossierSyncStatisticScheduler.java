@@ -18,9 +18,11 @@ import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -45,17 +47,20 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = DossierSyncStatisticScheduler.class)
 public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	protected Log _log = LogFactoryUtil.getLog(DossierSyncStatisticScheduler.class);
-	
+
 	public static final int GROUP_TYPE_SITE = 1;
 	private volatile boolean isRunningStatisticSync = false;
 	// Time engine dossier
 	private static int TIME_STATISTIC_CALCULATOR = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.calculator"))
-			? Integer.valueOf(PropsUtil.get("org.opencps.statistic.calculator")) : 30;
+			? Integer.valueOf(PropsUtil.get("org.opencps.statistic.calculator")) : 1440;
+
+	private boolean enableJob = Validator.isNotNull(PropsUtil.get("opencps.sync.dossierstatistic.enable"))
+			? GetterUtil.getBoolean(PropsUtil.get("opencps.sync.dossierstatistic.enable")) : true;
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		System.out.println("START STATISTIC DOSSIER STATISTIC: " + isRunningStatisticSync);
-		if (!isRunningStatisticSync) {
+		_log.info("Cau hinh sync dossierstatistic running: " + isRunningStatisticSync + ", enable: " + enableJob);
+		if (!isRunningStatisticSync && enableJob) {
 			isRunningStatisticSync = true;
 		}
 		else {
@@ -64,9 +69,9 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		long startTime = System.currentTimeMillis();
 		Date nowLog = new Date();
 		try {
-			System.out.println("START TRACE LOG CALCULATOR TIME: " + nowLog);
-			System.out.println("START CALCULATOR TIME: " + (System.currentTimeMillis() - startTime) + " ms");
-			
+			_log.info("START TRACE LOG CALCULATOR TIME: " + nowLog);
+			_log.info("START CALCULATOR TIME: " + (System.currentTimeMillis() - startTime) + " ms");
+
 			List<ServerConfig> configList = ServerConfigLocalServiceUtil.getByServerAndProtocol("SERVER_STATISTIC_DVC", DossierStatisticConstants.STATISTIC_PROTOCOL);
 			ServerConfig config = null;
 			if (configList != null && configList.size() > 0) {
@@ -75,7 +80,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 					return;
 				}
 			} else {
-				System.out.println("RETURN CALCULATOR END: " + (System.currentTimeMillis() - startTime) + " ms");
+				_log.info("RETURN CALCULATOR END: " + (System.currentTimeMillis() - startTime) + " ms");
 				return ;
 			}
 
@@ -89,10 +94,15 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
 
 			int[] reportArr = {0, 1};
-			List<OpencpsDossierStatistic> statisticList = OpencpsDossierStatisticLocalServiceUtil.findByREPO_ARR(reportArr);
+			int[] yearArr = {0, LocalDate.now().getYear()};
+			int[] monthArr = {0, LocalDate.now().getMonthValue()};
+			List<OpencpsDossierStatistic> statisticList = OpencpsDossierStatisticLocalServiceUtil.findByMonthYearREPO_ARR(monthArr, yearArr, reportArr);
+
+			//List<OpencpsDossierStatistic> statisticList = OpencpsDossierStatisticLocalServiceUtil.findByREPO_ARR(reportArr);
 			Map<String, DossierStatisticKey> mapKey = null;
 			DossierStatisticKey statisticKey = null;
 			if (statisticList != null && statisticList.size() > 0) {
+				_log.info("SIZE :" + statisticList.size());
 				mapKey = new HashMap<String, DossierStatisticKey>();
 				for (OpencpsDossierStatistic opencpsDossierStatistic : statisticList) {
 					StringBuilder sb = new StringBuilder();
@@ -156,7 +166,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 
 			Map<String, DossierStatisticData> mapStatistic = new HashMap<>();
 			for (Map.Entry<String, DossierStatisticKey> entry : mapKey.entrySet()) {
-				DossierStatisticKey objectKey = entry.getValue();
+				DossierStatisticKey objectKey = entry.getValue();				
 				List<OpencpsDossierStatistic> dossierStatisticList = OpencpsDossierStatisticLocalServiceUtil
 						.getByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, objectKey.getMonth(), objectKey.getYear(),
 								objectKey.getGovAgencyCode(), objectKey.getDomainCode(), objectKey.getGroupAgencyCode(),
@@ -172,12 +182,14 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 					mapStatistic.put(entry.getKey(), dossierStatistic);
 				}
 			}
+			_log.info("mapStatistic : " + mapStatistic.size());
 			// Convert Map to List jsonObject
 			StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 			List<JSONObject> lstDossierDataObjs = statisticEngineUpdate.convertStatisticDataList(mapStatistic);
 //			//
+			_log.info("lstDossierDataObjs.size : " + lstDossierDataObjs.size());
 			engineUpdateAction.updateStatistic(lstDossierDataObjs);
-			
+
 			// Update reporting from 1 to 2
 //			List<OpencpsDossierStatistic> opencpsStatisticList = OpencpsDossierStatisticLocalServiceUtil.getListByReporting(1);
 //			if (opencpsStatisticList != null && opencpsStatisticList.size() > 0) {
@@ -190,15 +202,15 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 		catch (Exception e) {
 			_log.error(e);
 		}
-		System.out.println("END TRACE LOG CALCULATOR TIME: " + nowLog);
-		System.out.println("CALCULATOR END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
+		_log.info("END TRACE LOG CALCULATOR TIME: " + nowLog);
+		_log.info("CALCULATOR END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 
 		isRunningStatisticSync = false;
 	}
 
 	private DossierStatisticData processCalStatistic(long groupId, int month, int year, String govAgencyCode, String domainCode,
-			String groupGovAgencyCode, String system, int reporting,
-			List<OpencpsDossierStatistic> dossierStatisticList) {
+													 String groupGovAgencyCode, String system, int reporting,
+													 List<OpencpsDossierStatistic> dossierStatisticList) {
 		DossierStatisticData dossierStatistic = null;
 		int totalCount = 0;
 		int deniedCount = 0;
@@ -239,7 +251,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			dossierStatistic = new DossierStatisticData();
 			for (OpencpsDossierStatistic opencpsDossierStatistic : dossierStatisticList) {
 				//
-				companyId = opencpsDossierStatistic.getCompanyId() > 0 ? opencpsDossierStatistic.getCompanyId() : 0; 
+				companyId = opencpsDossierStatistic.getCompanyId() > 0 ? opencpsDossierStatistic.getCompanyId() : 0;
 				//
 				totalCount += opencpsDossierStatistic.getTotalCount();
 				deniedCount += opencpsDossierStatistic.getDeniedCount();
@@ -333,7 +345,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	/**
 	 * activate: Called whenever the properties for the component change (ala Config
 	 * Admin) or OSGi is activating the component.
-	 * 
+	 *
 	 * @param properties The properties map from Config Admin.
 	 * @throws SchedulerException in case of error.
 	 */
@@ -376,7 +388,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	/**
 	 * getStorageType: Utility method to get the storage type from the scheduler entry wrapper.
 	 * @return StorageType The storage type to use.
-	*/
+	 */
 	protected StorageType getStorageType() {
 		if (_schedulerEntryImpl instanceof StorageTypeAware) {
 			return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
@@ -387,18 +399,18 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 
 	/**
 	 * setModuleServiceLifecycle: So this requires some explanation...
-	 * 
+	 *
 	 * OSGi will start a component once all of it's dependencies are satisfied.
 	 * However, there are times where you want to hold off until the portal is
 	 * completely ready to go.
-	 * 
+	 *
 	 * This reference declaration is waiting for the ModuleServiceLifecycle's
 	 * PORTAL_INITIALIZED component which will not be available until, surprise
 	 * surprise, the portal has finished initializing.
-	 * 
+	 *
 	 * With this reference, this component activation waits until portal
 	 * initialization has completed.
-	 * 
+	 *
 	 * @param moduleServiceLifecycle
 	 */
 	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED, unbind = "-")

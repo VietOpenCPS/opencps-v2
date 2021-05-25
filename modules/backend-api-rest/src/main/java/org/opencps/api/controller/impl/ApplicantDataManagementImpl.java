@@ -64,6 +64,11 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 		
 		try {
 			int statusInt = Validator.isNotNull(status) ? Integer.parseInt(status) : 0;
+
+			if(Validator.isNull(dataHandler)) {
+				throw new Exception("obj null");
+			}
+
 			if(dataHandler.getInputStream() != null) {
 				applicantData = ApplicantDataLocalServiceUtil.createApplicantData(groupId, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
 				ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
@@ -163,6 +168,9 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 		
 		try {
 			int statusInt = Validator.isNotNull(status) ? Integer.parseInt(status) : 0;
+			if(Validator.isNull(dataHandler)) {
+				throw new Exception("obj null");
+			}
 			if(Validator.isNotNull(dataHandler.getInputStream()) && dataHandler.getName() !=null){
 				_log.debug("dataHandler: " + dataHandler.getName());
 				applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt,

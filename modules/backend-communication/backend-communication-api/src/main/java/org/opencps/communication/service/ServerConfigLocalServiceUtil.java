@@ -230,6 +230,13 @@ public class ServerConfigLocalServiceUtil {
 		return getService().getByServerNoAndProtocol(groupId, serverNo, protocol);
 	}
 
+	public static org.opencps.communication.model.ServerConfig getByServerNoAndProtocol(
+		long groupId, String govAgencyCode, String serverNo, String protocol) {
+		return getService()
+				   .getByServerNoAndProtocol(groupId, govAgencyCode, serverNo,
+			protocol);
+	}
+
 	public static java.util.List<org.opencps.communication.model.ServerConfig> getGroupId(
 		long groupId) {
 		return getService().getGroupId(groupId);

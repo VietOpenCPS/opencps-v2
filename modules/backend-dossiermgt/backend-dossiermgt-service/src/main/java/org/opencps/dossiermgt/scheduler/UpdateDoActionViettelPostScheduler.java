@@ -36,7 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component(immediate = true, service = UpdateDoActionViettelPostScheduler.class)
+//@Component(immediate = true, service = UpdateDoActionViettelPostScheduler.class)
 public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
     private volatile boolean isRunning = false;
 
@@ -160,6 +160,7 @@ public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
             }
             _log.info("End Viettel post schedule!!!");
         } catch (Exception e){
+            _log.error(e);
             _log.error("Error Viettel post schedule: " + e.getMessage());
         }
         isRunning = false;
@@ -281,6 +282,7 @@ public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
             _log.info("----VIETTEL POST: End do action for dossier " + dossier.getDossierId());
             return Validator.isNotNull(dossierResult);
         } catch (Exception e) {
+            _log.error(e);
             _log.error("Error doAction Viettel post schedule: " + e.getMessage());
             return false;
         }
@@ -349,6 +351,7 @@ public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
 
             return action;
         } catch (Exception e) {
+            _log.error(e);
             _log.error("Error doAction Viettel post schedule: " + e.getMessage());
             return null;
         }

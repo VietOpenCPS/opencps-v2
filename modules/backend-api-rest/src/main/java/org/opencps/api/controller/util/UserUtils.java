@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -19,6 +20,10 @@ import org.opencps.api.user.model.UserModel;
 import org.opencps.api.user.model.UserProfileModel;
 import org.opencps.api.user.model.UserRolesModel;
 import org.opencps.api.user.model.UserSitesModel;
+import org.opencps.api.usermgt.model.ApplicantModel;
+import org.opencps.api.usermgt.model.MappingUser;
+import org.opencps.api.usermgt.model.UserResultModel;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
@@ -239,6 +244,18 @@ public class UserUtils {
 		}
 
 		return results;
+	}
+
+	public static UserResultModel mappingToUserModel(User user) {
+
+		UserResultModel model = new UserResultModel();
+
+		model.setFullName(user.getFullName());
+		model.setScreenName(user.getScreenName());
+		model.setEmail(user.getEmailAddress());
+		model.setPassword(user.getPassword());
+
+		return model;
 	}
 	
 	public static final Locale locale = new Locale("vi", "VN");

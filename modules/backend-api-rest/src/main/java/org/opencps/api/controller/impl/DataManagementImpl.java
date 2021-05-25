@@ -1553,7 +1553,6 @@ public class DataManagementImpl implements DataManagement {
 
 	private static HashMap<String, String> _domainDictItemDVCQGMap = null;
 	private static HashMap<String, String> _govAgencyDictItemDVCQGMap = null;
-	public static String _service = StringPool.BLANK;
 
 	@Override
 	public Response doMappingDictItemDVCQG(HttpServletRequest request, HttpHeaders header, Company company,
@@ -1565,26 +1564,26 @@ public class DataManagementImpl implements DataManagement {
 
 			DictCollection collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
 
-			if (collection == null) {
-				result = false;
+			if(collection == null) {
+				throw new Exception("obj null");
 			}
 
-				DictItemMapping dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_IC_CID(groupId, itemCode,
-						collection.getDictCollectionId());
+			DictItemMapping dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_IC_CID(groupId, itemCode,
+					collection.getDictCollectionId());
 
-				if (dictItemMapping != null) {
-					DictItemMappingLocalServiceUtil.deleteDictItemMapping(dictItemMapping);
-				}
+			if (dictItemMapping != null) {
+				DictItemMappingLocalServiceUtil.deleteDictItemMapping(dictItemMapping);
+			}
 
-				dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_ICDVCQG_CID(groupId, itemCodeDVCQG,
-						collection.getDictCollectionId());
+			dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_ICDVCQG_CID(groupId, itemCodeDVCQG,
+					collection.getDictCollectionId());
 
-				if (dictItemMapping != null) {
-					DictItemMappingLocalServiceUtil.deleteDictItemMapping(dictItemMapping);
-				}
+			if (dictItemMapping != null) {
+				DictItemMappingLocalServiceUtil.deleteDictItemMapping(dictItemMapping);
+			}
 
-				DictItemMappingLocalServiceUtil.createDictItemMapping(serviceContext.getCompanyId(), groupId,
-					user.getUserId(), itemCode, itemCodeDVCQG, collection.getDictCollectionId());
+			DictItemMappingLocalServiceUtil.createDictItemMapping(serviceContext.getCompanyId(), groupId,
+				user.getUserId(), itemCode, itemCodeDVCQG, collection.getDictCollectionId());
 
 			result = true;
 
@@ -1599,7 +1598,7 @@ public class DataManagementImpl implements DataManagement {
 	@Override
 	public Response doRemoveMappingDictItemDVCQG(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, long mappingId) {
-		boolean result = false;
+		boolean result;
 
 		try {
 

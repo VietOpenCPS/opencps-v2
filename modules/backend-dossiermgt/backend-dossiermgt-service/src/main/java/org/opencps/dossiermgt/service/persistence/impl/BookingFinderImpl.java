@@ -105,7 +105,7 @@ public class BookingFinderImpl extends BookingFinderBaseImpl
 			try {
 				throw new SystemException(e);
 			} catch (SystemException se) {
-				se.printStackTrace();
+				_log.error(se);
 			}
 		} finally {
 			closeSession(session);

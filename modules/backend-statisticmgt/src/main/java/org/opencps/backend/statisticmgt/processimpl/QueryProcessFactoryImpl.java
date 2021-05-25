@@ -119,7 +119,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic2(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic2(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 		JSONObject result = StatisticUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
@@ -132,7 +132,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -149,7 +149,8 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema2(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -250,7 +251,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic4(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic4(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 		JSONObject result = StatisticUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
@@ -263,7 +264,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -280,7 +281,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema4(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -382,7 +383,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic5(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic5(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -396,7 +397,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -413,7 +414,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema5(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -515,7 +516,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic6(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic6(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -529,7 +530,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -547,7 +548,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema6(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -649,7 +650,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic7(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic7(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -663,7 +664,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -681,7 +682,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema7(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -784,7 +785,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic8(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic8(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -798,7 +799,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -816,7 +817,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema8(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -919,7 +920,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic9(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic9(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -933,7 +934,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -951,7 +952,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema9(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -1053,7 +1054,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic10(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic10(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -1067,7 +1068,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -1085,7 +1086,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema10(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -1188,7 +1189,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic11(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic11(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -1202,7 +1203,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -1220,7 +1221,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema11(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -1323,7 +1324,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic12(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic12(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -1337,7 +1338,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -1355,7 +1356,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema12(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -1460,7 +1461,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic13(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic13(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -1474,7 +1475,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -1492,7 +1493,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema13(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -1585,7 +1586,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic14(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic14(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -1599,7 +1600,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -1617,7 +1618,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema14(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -1728,7 +1729,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic15(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic15(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus, Integer day,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -1742,7 +1743,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -1760,7 +1761,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema15(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, day, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -1852,7 +1853,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic16(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic16(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -1866,7 +1867,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -1884,7 +1885,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema16(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -1988,7 +1989,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic17(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic17(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -2002,7 +2003,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -2020,7 +2021,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema17(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -2124,7 +2125,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic18(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic18(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -2138,7 +2139,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -2156,7 +2157,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema18(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -2248,7 +2249,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic19(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic19(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -2262,7 +2263,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -2280,7 +2281,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema19(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -2395,7 +2396,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 	}
 
 	@Override
-	public JSONObject getDossierStatistic20(long groupId, String fromDate, String toDate, int[] originalities,
+	public JSONObject getDossierStatistic20(long groupId, long userId, String fromDate, String toDate, int[] originalities,
 			String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
 			String groupBy, int start, int end, String sqlTemplate, int type, String subType) {
 
@@ -2409,7 +2410,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		if (subType.equals(Constants.COUNT)) {
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 			result.put(Constants.TOTAL, total);
 		} else if (subType.equals(Constants.GROUP_COUNT)) {
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
@@ -2451,7 +2452,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
 			schema = getQuerySchema20(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
 					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
-			int total = QueryUtil.getCount(schema.getSql());
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
 
 			result.put(Constants.TOTAL, total);
 
@@ -2459,6 +2460,175 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		}
 
 		return result;
+	}
+
+	@Override
+	public JSONObject getDossierStatistic21(long groupId, long userId, String fromDate, String toDate, int[] originalities,
+											String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes,
+											String[] dossierStatus, String groupBy, int start, int end,
+											String sqlTemplate, int type, String subType) {
+		JSONObject result = StatisticUtil.createResponseSchema(groupId, fromDate, toDate, originalities, domainCodes,
+				govAgencyCodes, serviceCodes, dossierStatus, type, subType);
+		QuerySchema schema = getQuerySchema21(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
+				serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, subType);
+		_log.debug("schema: " + schema.getSql());
+		_log.debug("subType: " + subType);
+		if (schema == null || Validator.isNull(schema.getSql())) {
+			return result;
+		}
+
+		if (subType.equals(Constants.COUNT)) {
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
+			result.put(Constants.TOTAL, total);
+		} else if (subType.equals(Constants.GROUP_COUNT)) {
+			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
+			long total = 0;
+			if (data != null) {
+				for (int i = 0; i < data.length(); i++) {
+					total += data.getJSONObject(i).getInt(Constants.COUNT);
+				}
+			}
+			result.put(Constants.TOTAL, total);
+			result.put(Constants.DATA, data);
+		} else if (subType.equals(Constants.LIST)) {
+
+			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
+			sqlTemplate = QueryUtil.getSQLQueryTemplate(type, Constants.COUNT);
+			schema = getQuerySchema21(groupId, fromDate, toDate, originalities, domainCodes, govAgencyCodes,
+					serviceCodes, dossierStatus, groupBy, start, end, sqlTemplate, type, Constants.COUNT);
+			int total = QueryUtil.getCount(schema.getSql(), userId, groupId);
+
+			result.put(Constants.TOTAL, total);
+
+			result.put(Constants.DATA, data);
+		} else if (subType.equals(Constants.ROW_TOTAL)) {
+			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
+
+			long total = 0;
+			if (data != null) {
+				JSONObject totalObj = JSONFactoryUtil.createJSONObject();
+				for (int i = 0; i < data.length(); i++) {
+					JSONObject tmp = data.getJSONObject(i);
+					Iterator<String> keys = tmp.keys();
+					while (keys.hasNext()) {
+						String key = keys.next();
+						if (key.equalsIgnoreCase("govAgencyCode") || key.equalsIgnoreCase("domainCode")
+								|| key.equalsIgnoreCase("serviceCode")) {
+
+							totalObj.put(key, StringPool.BLANK);
+						} else {
+
+							int value = 0;
+							if (totalObj.has(key)) {
+								value = totalObj.getInt(key);
+							}
+							value += tmp.getInt(key);
+
+							totalObj.put(key, value);
+						}
+					}
+
+					total += tmp.getInt(Constants.TOTAL_COUNT);
+				}
+				data.put(totalObj);
+
+			}
+			result.put(Constants.TOTAL, total);
+			result.put(Constants.DATA, data);
+		}
+
+		return result;
+	}
+
+	public QuerySchema getQuerySchema21(long groupId, String fromDate, String toDate, int[] originalities,
+									   String[] domainCodes, String[] govAgencyCodes, String[] serviceCodes, String[] dossierStatus,
+									   String groupBy, int start, int end, String sqlTemplate, int type, String subtype) {
+
+		int[] pageAndSize = QueryUtil.getPageAndSize(start, end);
+
+		start = pageAndSize[0];
+
+		int size = pageAndSize[1];
+
+		String sql = sqlTemplate;
+
+		if (Validator.isNotNull(groupBy)) {
+
+			if (groupBy.equalsIgnoreCase("govAgencyCode")) {
+				sql = sql.replace("{groupBy}", "t1.govAgencyCode");
+				sql = sql.replace("t2.domainName[String]", "t1.govAgencyName[String]");
+				sql = sql.replace("t2.domainCode[String]", "t1.govAgencyCode[String]");
+			} else if (groupBy.equalsIgnoreCase("serviceCode")) {
+				sql = sql.replace("{groupBy}", "t1.serviceCode");
+				sql = sql.replace("t2.domainName[String]", "t2.serviceName[String]");
+				sql = sql.replace("t2.domainCode[String]", "t2.serviceCode[String]");
+			} else {
+				sql = sql.replace("{groupBy}", "t2.domainCode");
+			}
+
+		} else {
+			sql = sql.replace("{groupBy}", "t2.domainCode");
+		}
+
+		LinkedHashMap<String, Class<?>> columns = QueryUtil.getDataColumnMap(sql);
+
+		Pattern pattern = Pattern.compile("(\\[([a-z]+|[A-Z]+)\\])", Pattern.CASE_INSENSITIVE);
+
+		Matcher matcher = pattern.matcher(sql);
+
+		String dataType = StringPool.BLANK;
+
+		while (matcher.find()) {
+			dataType = matcher.group();
+			sql = sql.replace(dataType, StringPool.BLANK);
+		}
+		sql = sql.replace("{groupId}", String.valueOf(groupId));
+		sql = sql.replace("{start}", String.valueOf(start));
+		sql = sql.replace("{size}", String.valueOf(size));
+
+		if (domainCodes != null && domainCodes.length > 0) {
+			String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
+			sql = sql.replace("{domainCode}", paramsDomainCodes);
+		} else {
+			sql = sql.replace("AND t2.domainCode IN ({domainCode})", StringPool.BLANK);
+		}
+		if (govAgencyCodes != null && govAgencyCodes.length > 0) {
+			String paramsGovAgencyCodes = ParamUtil.generalTextParam(govAgencyCodes);
+			sql = sql.replace("{govAgencyCode}", paramsGovAgencyCodes);
+		} else {
+			sql = sql.replace("AND t1.govAgencyCode IN ({govAgencyCode})", StringPool.BLANK);
+		}
+		if (serviceCodes != null && serviceCodes.length > 0) {
+			String paramsServiceCodes = ParamUtil.generalTextParam(serviceCodes);
+			sql = sql.replace("{serviceCode}", paramsServiceCodes);
+		} else {
+			sql = sql.replace("AND t1.serviceCode IN ({serviceCode})", StringPool.BLANK);
+		}
+		if (Validator.isNotNull(dossierStatus) && dossierStatus.length > 0) {
+			String params = ParamUtil.generalTextParam(dossierStatus);
+			sql = sql.replace("{dossierStatus}", params);
+		} else {
+			sql = sql.replace("AND t1.dossierStatus IN ({dossierStatus})", StringPool.BLANK);
+		}
+		if (Validator.isNotNull(fromDate)) {
+			sql = sql.replace("{fromDate}", ParamUtil.generalTextParam(fromDate));
+		} else {
+			sql = sql.replace("AND t1.receiveDate >= {fromDate}", StringPool.BLANK);
+		}
+		if (Validator.isNotNull(toDate)) {
+			sql = sql.replace("{toDate}", ParamUtil.generalTextParam(toDate));
+		} else {
+			sql = sql.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
+		}
+		if (originalities != null && originalities.length > 0) {
+			String paramsOriginalities = ParamUtil.generalTextParam(originalities);
+			sql = sql.replace("{originality}", paramsOriginalities);
+		} else {
+			sql = sql.replace("AND t1.originality = {originality}", StringPool.BLANK);
+		}
+		_log.debug("generateQuerySchema2: " + sql);
+
+		return new QuerySchema(sql, sqlTemplate, type, subtype, columns);
 	}
 
 }
