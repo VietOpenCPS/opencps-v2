@@ -72,6 +72,7 @@ public class SystemLogApplication extends Application {
 			@Context ServiceContext serviceContext, @PathParam(value = "threadId") String threadId) throws JSONException {
 		JSONObject result = ActionUtil.execDiagram(threadId, null);
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
+		
 	}
 	
 	

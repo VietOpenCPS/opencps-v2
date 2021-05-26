@@ -52,9 +52,9 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 			.isNotNull(PropsUtil.get("org.opencps.schedule.remove.publish.queue.cron.expression"))
 					? String.valueOf(PropsUtil.get("org.opencps.schedule.remove.publish.queue.cron.expression"))
 					: "0 0 2 1/1 * ? *";
-
-	public static String pathTemp = Validator.isNotNull(PropsUtil.get("org.opencps.path.temp"))
-			? String.valueOf(PropsUtil.get("org.opencps.path.temp"))
+					
+	public static String pathTemp = Validator.isNotNull(System.getProperty("java.io.tmpdir"))
+			? String.valueOf(System.getProperty("java.io.tmpdir"))
 			: null;
 
 	@Override
@@ -166,6 +166,7 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 				if(pathTemp.contains("/tomcat") && pathTemp.contains("/temp") ) {
 					deleteDirectoryJava7(pathTemp);
 					Files.createDirectories(Paths.get(pathTemp));
+//					_log.info(pathTemp);
 				}
 				else {
 					_log.info("Path " + pathTemp + " is Not Avaible!");
