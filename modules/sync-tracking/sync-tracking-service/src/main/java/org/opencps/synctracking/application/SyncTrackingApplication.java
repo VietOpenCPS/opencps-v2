@@ -104,6 +104,23 @@ public class SyncTrackingApplication extends Application{
     }
 
     @POST
+    @Path("/dvcqg")
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response createSynTrackingByDVCQG(@HeaderParam("groupId") long groupId, SyncTrackingQuery query) {
+        try {
+            if(groupId != 0) {
+                query.groupId = groupId;
+            }
+            syncTrackingAction.create(query);
+            return Response.status(200).entity("Saved").build();
+        } catch (Exception e) {
+            _log.error(e);
+            return Response.status(500).entity("Error").build();
+        }
+    }
+
+    @POST
     @Path("/resend")
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_JSON })
