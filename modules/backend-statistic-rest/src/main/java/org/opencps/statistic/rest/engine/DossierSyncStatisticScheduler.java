@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +58,14 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	private boolean enableJob = Validator.isNotNull(PropsUtil.get("opencps.sync.dossierstatistic.enable"))
 			? GetterUtil.getBoolean(PropsUtil.get("opencps.sync.dossierstatistic.enable")) : true;
 
+	//Start time config
+	private static int HOUR_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.hour"))
+			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.hour")) :-1;
+	private static int MINUTE_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.minute"))
+			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.minute")) :-1;
+	private static int SECOND_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.second"))
+			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.second")) :-1;
+	
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		_log.info("Cau hinh sync dossierstatistic running: " + isRunningStatisticSync + ", enable: " + enableJob);
@@ -93,10 +103,15 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
 
 			int[] reportArr = {0, 1};
-			List<OpencpsDossierStatistic> statisticList = OpencpsDossierStatisticLocalServiceUtil.findByREPO_ARR(reportArr);
+			int[] yearArr = {0, LocalDate.now().getYear()};
+			int[] monthArr = {0, LocalDate.now().getMonthValue()};
+			List<OpencpsDossierStatistic> statisticList = OpencpsDossierStatisticLocalServiceUtil.findByMonthYearREPO_ARR(monthArr, yearArr, reportArr);
+
+			//List<OpencpsDossierStatistic> statisticList = OpencpsDossierStatisticLocalServiceUtil.findByREPO_ARR(reportArr);
 			Map<String, DossierStatisticKey> mapKey = null;
 			DossierStatisticKey statisticKey = null;
 			if (statisticList != null && statisticList.size() > 0) {
+				_log.info("SIZE :" + statisticList.size());
 				mapKey = new HashMap<String, DossierStatisticKey>();
 				for (OpencpsDossierStatistic opencpsDossierStatistic : statisticList) {
 					StringBuilder sb = new StringBuilder();
@@ -160,7 +175,7 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 
 			Map<String, DossierStatisticData> mapStatistic = new HashMap<>();
 			for (Map.Entry<String, DossierStatisticKey> entry : mapKey.entrySet()) {
-				DossierStatisticKey objectKey = entry.getValue();
+				DossierStatisticKey objectKey = entry.getValue();				
 				List<OpencpsDossierStatistic> dossierStatisticList = OpencpsDossierStatisticLocalServiceUtil
 						.getByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, objectKey.getMonth(), objectKey.getYear(),
 								objectKey.getGovAgencyCode(), objectKey.getDomainCode(), objectKey.getGroupAgencyCode(),
@@ -176,10 +191,12 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 					mapStatistic.put(entry.getKey(), dossierStatistic);
 				}
 			}
+			_log.info("mapStatistic : " + mapStatistic.size());
 			// Convert Map to List jsonObject
 			StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 			List<JSONObject> lstDossierDataObjs = statisticEngineUpdate.convertStatisticDataList(mapStatistic);
 //			//
+			_log.info("lstDossierDataObjs.size : " + lstDossierDataObjs.size());
 			engineUpdateAction.updateStatistic(lstDossierDataObjs);
 
 			// Update reporting from 1 to 2
@@ -345,7 +362,20 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 	@Modified
 	protected void activate(Map<String, Object> properties) throws SchedulerException {
 		String listenerClass = getClass().getName();
-		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null,
+		// Create startDate
+		Calendar cal = Calendar.getInstance();
+		LocalDate now = LocalDate.now();
+		int year =  now.getYear();
+		int month = now.getMonthValue();
+		int day = now.getDayOfMonth();
+		if (HOUR_STATISTIC != -1 && MINUTE_STATISTIC != -1 && SECOND_STATISTIC != -1) {
+			cal.set(year, month-1, day, HOUR_STATISTIC, MINUTE_STATISTIC, SECOND_STATISTIC);
+		}else {
+			cal.set(year, month-1, day);
+		}
+		Date startDate = cal.getTime();
+		
+		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, startDate, null,
 				TIME_STATISTIC_CALCULATOR, TimeUnit.MINUTE);
 
 		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
