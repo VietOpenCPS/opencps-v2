@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -49,8 +50,6 @@ import org.opencps.dossiermgt.model.impl.ServiceInfoImpl;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
-import org.opencps.synctracking.model.SyncTrackingQuery;
-import org.opencps.synctracking.service.SyncTrackingLocalServiceUtil;
 import org.opencps.usermgt.model.Answer;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Question;
@@ -85,8 +84,10 @@ import com.liferay.portal.kernel.util.WebKeys;
 import backend.auth.api.exception.ErrorMsgModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -114,9 +115,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private static final String LUCENE_DATE_FORMAT = "yyyyMMddHHmmss";
 	private static final String HCM_TIMEZONE = "Asia/Ho_Chi_Minh";
 	private static final String DVCQG_INTEGRATION = "DVCQG_INTEGRATION";
-	public static final String CONFIG_URL_LOCAL = "http://127.0.0.1:8080/o/log-report/dvcqg";
+	private static final Integer timeout = 10000 ;
 
 	private static final Integer TIMEOUT_DVCQG = 6;
+
+	public DVCQGIntegrationActionImpl(){
+		this.restTemplate = new RestTemplate(setConfigRestTemplate(timeout));
+		this.restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+	}
 
 	private String convertDate2String(Date date) {
 
@@ -4164,13 +4170,15 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 
 	}
-//	private static final String DOSSIER_BTTTT = "DOSSIER_BTTTT";
+
 	@Override
 	public JSONObject doCreateUpdateDossierFromDVCQG(Company company, User user, long groupId, ServiceContext serviceContext, JSONObject data, boolean isUpdating) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", "*");
-		String urlCall = CONFIG_URL_LOCAL;
+		JSONObject configJson = getServerConfigByServerNo();
+		String urlCall = configJson.getString(FrequencyOfficeConstants.CONFIG_URL_LOCAL)
+				+ configJson.getString(FrequencyOfficeConstants.CONFIG_SAVE_SYNC_TRACKING);
 		try {
 			if (data == null) {
 				_log.error("HSKMBS result: " + "Data empty");
@@ -4260,15 +4268,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				body.groupId = groupId;
 				body.bodyRequest = data.toString();
 				body.dossierNo = MaHoSo;
-//				body.userId = user.getUserId();
 				body.referenceUid = dossier.getReferenceUid();
-//				SyncTrackingLocalServiceUtil.createSyncTrackingManual(body);
-
 				headers.add("groupId", String.valueOf(body.groupId));
 				HttpEntity<SyncTrackingInfo> entity = new HttpEntity<>(body, headers);
 				ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity , String.class);
 				_log.info("Response api saving tracking: " + response);
 				_log.info("Saved tracking!!!");
+			}else{
+				return createResponseMessage(result, 0,  MaHoSo+"| không tồn tại trên hệ thống");
 			}
 			return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
 		} catch (Exception e) {
@@ -4283,10 +4290,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	public JSONObject doCrUpDossierThongBaoThueDatDVCQG(Company company, User user, long groupId,
 														ServiceContext serviceContext, JSONObject data, boolean isUpdating) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", "*");
-		String urlCall = CONFIG_URL_LOCAL;
+
+		JSONObject configJson = getServerConfigByServerNo();
+		String urlCall = configJson.getString(FrequencyOfficeConstants.CONFIG_URL_LOCAL)
+				+ configJson.getString(FrequencyOfficeConstants.CONFIG_SAVE_SYNC_TRACKING);
 		String msHS = StringPool.BLANK;
 		try {
 			if (data == null) {
@@ -4310,18 +4319,15 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				for (int i = 0; i < childs.getLength(); i++) {
 					child = childs.item(i);
 					child.getFirstChild();
-					System.out.println(child.getNodeName());
 					_log.info("MA_HS: " + child.getTextContent());
 					Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(child.getTextContent());
+					msHS += child.getTextContent() + ",";
 					if(Validator.isNotNull(dossier)) {
-						msHS += child.getTextContent() + ",";
 						SyncTrackingInfo body = new SyncTrackingInfo();
 						body.groupId = groupId;
 						body.bodyRequest = xmlFileThongBaoThue;
 						body.dossierNo = child.getTextContent();
-//						syncTrackingQuery.userId = user.getUserId();
 						body.referenceUid = dossier.getReferenceUid();
-//						SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
 						headers.add("groupId", String.valueOf(body.groupId));
 						HttpEntity<SyncTrackingInfo> entity = new HttpEntity<>(body, headers);
 						ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity , String.class);
@@ -4370,6 +4376,35 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	private ClientHttpRequestFactory setConfigRestTemplate(Integer timeout) {
+		HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
+				= new HttpComponentsClientHttpRequestFactory();
+		clientHttpRequestFactory.setConnectTimeout(timeout);
+		return clientHttpRequestFactory;
+	}
+
+	private static final String SERVER_CONFIG_NULL = "There is no server config frequency";
+	private static final String PARSE_CONFIG_JSON_FAIL= "Create object json from config error";
+	public JSONObject getServerConfigByServerNo() {
+		// Get ServerConfig
+		List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByProtocol("API_SYNC_TRACKING");
+		JSONObject configJson = JSONFactoryUtil.createJSONObject();
+		try {
+			ServerConfig serverConfig = listConfig.get(0);
+			if (Validator.isNull(serverConfig.getConfigs())
+					|| serverConfig.getConfigs().isEmpty()) {
+				throw new Exception(SERVER_CONFIG_NULL);
+			}
+			configJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+
+			if (Validator.isNull(configJson)) {
+				throw new Exception(PARSE_CONFIG_JSON_FAIL);
+			}
+		} catch (Exception e) {
+			e.getMessage();
+		}
+		return configJson;
 	}
 
 	private String _DEFAULT_CLASS_NAME = "dvcqg";
