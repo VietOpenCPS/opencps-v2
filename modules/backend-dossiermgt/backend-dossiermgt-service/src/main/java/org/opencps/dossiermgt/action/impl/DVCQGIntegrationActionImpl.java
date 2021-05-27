@@ -44,8 +44,6 @@ import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
-import org.opencps.dossiermgt.input.model.LandTaxInput;
-import org.opencps.dossiermgt.input.model.SyncTrackingInfo;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.impl.ServiceInfoImpl;
 import org.opencps.dossiermgt.service.*;
