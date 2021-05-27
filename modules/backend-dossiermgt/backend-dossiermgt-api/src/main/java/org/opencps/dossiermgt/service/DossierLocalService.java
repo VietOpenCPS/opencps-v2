@@ -331,7 +331,7 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findDossierByGroup(long groupId);
 
-	public DossierDocument findDossierDocumentByDossierId(
+	public org.opencps.dossiermgt.model.DossierDocument findDossierDocumentByDossierId(
 		long dossierDocumentId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
