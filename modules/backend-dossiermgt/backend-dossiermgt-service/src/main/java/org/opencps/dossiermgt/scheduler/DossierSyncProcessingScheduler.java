@@ -97,7 +97,8 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 		try {
 			_log.info("OpenCPS SYNC DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 
-			List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByStates(new int[]{DossierSyncTerm.STATE_WAITING_SYNC, DossierSyncTerm.STATE_ALREADY_SENT}, 0, QUANTITY_JOB);
+			List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByStates(new int[]{
+					DossierSyncTerm.STATE_WAITING_SYNC}, 0, QUANTITY_JOB);
 			int sizeDossierSync = lstSyncs.size();
 			CounterSync.setCount(sizeDossierSync);
 
@@ -126,7 +127,8 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 				processor.process();
 			}
 		} catch (Exception e) {
-			_log.error("Error when running dossierSync: " + dossierSync.getDossierSyncId(), e);
+			_log.error("Error when running dossierSync: " + dossierSync.getDossierSyncId()
+					+ ", dossierId: " + dossierSync.getDossierId(), e);
 		}
 
 		CounterSync.decreaseCount();

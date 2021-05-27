@@ -25,9 +25,9 @@ public class StaticCounter {
             long counterNumber = currentCounterInDb + 1;
 
             currentCounter.setCurrentId(counterNumber);
-            Counter newCounter = CounterLocalServiceUtil.updateCounter(currentCounter);
-            SyncTrackingApplication.CounterSyncTracking.setCount(counterNumber);
-            _log.info("Current in db after update:" + newCounter.getCurrentId());
+//            Counter newCounter = CounterLocalServiceUtil.updateCounter(currentCounter);
+//            SyncTrackingApplication.CounterSyncTracking.setCount(counterNumber);
+//            _log.info("Current in db after update:" + newCounter.getCurrentId());
         } catch (Exception e) {
             _log.error(e);
         }
