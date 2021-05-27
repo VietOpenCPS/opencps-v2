@@ -4316,7 +4316,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(child.getTextContent());
 					msHS += child.getTextContent() + ",";
 					if(Validator.isNotNull(dossier)) {
-						ReportLandTaxLocalServiceUtil.addReportLandTax(groupId, child.getTextContent(), data.toString(), "", serviceContext);
+						ReportLandTaxLocalServiceUtil.addReportLandTax(groupId, child.getTextContent(), xmlFileThongBaoThue, "", serviceContext);
 						_log.info("Saved tracking!!!");
 					}else{
 						createResponseMessage(result, 0,  msHS+"| không tồn tại trên hệ thống");
