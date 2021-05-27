@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlType;
     "total",
     "data"
 })
-@XmlRootElement(name = "DtoResponse")
+@XmlRootElement(name = "data")
 public class DtoResponse {
 	protected Integer total;
     protected List<SyncTrackingResponse> data;

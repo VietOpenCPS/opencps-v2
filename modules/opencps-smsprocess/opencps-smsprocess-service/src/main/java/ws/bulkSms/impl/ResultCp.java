@@ -79,7 +79,6 @@ public class ResultCp  extends ws.bulkSms.impl.Result  implements java.io.Serial
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof ResultCp)) return false;
         ResultCp other = (ResultCp) obj;
-        if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
             return (__equalsCalc == obj);

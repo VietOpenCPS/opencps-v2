@@ -10,6 +10,8 @@ dependencies {
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 	compileOnly group: 'commons-io', name: 'commons-io', version: '2.6'
 	compileOnly group: "com.liferay", name: "com.liferay.portal.dao.orm.custom.sql.api", version: "1.0.0"
+	 // https://mvnrepository.com/artifact/com.liferay/com.liferay.portal.upgrade.api
+	compileOnly group: 'com.liferay', name: 'com.liferay.portal.upgrade.api', version: '2.0.0'
 	
 	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
@@ -30,6 +32,9 @@ dependencies {
 
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-api")
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-service")
+
+	compileOnly project(":modules:sync-tracking:sync-tracking-api")
+	compileOnly project(":modules:sync-tracking:sync-tracking-service")
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-text
 	compileOnly group: 'org.apache.commons', name: 'commons-text', version: '1.8'
 	

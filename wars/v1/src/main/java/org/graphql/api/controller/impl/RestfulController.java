@@ -46,11 +46,14 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -128,6 +131,7 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.util.LGSPRestfulUtils;
 import org.opencps.usermgt.service.util.SendMailLGSPUtils;
 import org.opencps.usermgt.service.util.ServiceProps;
+import org.osgi.service.component.annotations.Reference;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -287,6 +291,26 @@ public class RestfulController {
 
 		return dataUser.toJSONString();
 	}
+	
+	
+	@RequestMapping(value = "/is-enabled-sso-login", method = RequestMethod.GET, produces = "text/plain; charset=utf-8")
+	public String isEnabledSSOLogin(HttpServletRequest request, HttpServletResponse response) {
+		
+		String isEnabledOpenIdConnect = "/c/opencps/login/openidconnectrequest";
+		
+		long companyId = PortalUtil.getCompanyId(request);
+		
+		OpenIdConnectUtils openIdConnectUtils = new OpenIdConnectUtils();
+		
+		boolean isEnabled =  openIdConnectUtils.isEnabled(companyId);
+		
+		if(isEnabled) {
+			return isEnabledOpenIdConnect;
+		}
+		
+		return null;
+	}
+	
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
 	public String doLogin(HttpServletRequest request, HttpServletResponse response) {
@@ -294,13 +318,12 @@ public class RestfulController {
 		String emailAddress = StringPool.BLANK;
 		String loginMax = PropsUtil.get("opencps.user.login.max");
 		String secretKey = PropsUtil.get("opencps.jwt.secret");
-		String SECRET = Validator.isNotNull(secretKey) ? secretKey : "secret";
 		//Custom login
 		boolean syncUserLGSP = Validator.isNotNull(PropsUtil.get("opencps.register.lgsp"))
 				? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
 
 		try {
-
+			
 			String jCaptchaResponse = request.getParameter("j_captcha_response");
 			_log.info("jCaptchaResponse: "+jCaptchaResponse);
 			if (Validator.isNotNull(jCaptchaResponse)) {
@@ -448,11 +471,12 @@ public class RestfulController {
 								boolean isRequireChangePassword = jsonLogin.getBoolean("isRequireChangePassword");
 
 								if (isRequireChangePassword) {
-									long userId = 0;
+									long userId;
 									try {
 										userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
 												CompanyConstants.AUTH_TYPE_EA);
 									} catch (PortalException e) {
+										_log.error(e);
 										userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
 												CompanyConstants.AUTH_TYPE_EA);
 										//Update applicant
@@ -479,13 +503,6 @@ public class RestfulController {
 										AuthenticatedSessionManagerUtil.login(request, response, email, passKey, false,
 												CompanyConstants.AUTH_TYPE_EA);
 
-										User user = UserLocalServiceUtil.fetchUser(userId);
-//											Algorithm algorithm = Algorithm.HMAC256(SECRET);
-//											String token = JWT.create()
-//													.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
-//													.sign(algorithm);
-//											response.setHeader("jwt-token", token);
-										
 										if (userId != 20139) {
 											_log.info("changeSecrect: OK");
 											response.setStatus(HttpServletResponse.SC_OK);
@@ -557,6 +574,7 @@ public class RestfulController {
 										userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
 												CompanyConstants.AUTH_TYPE_EA);
 									} catch (PortalException e) {
+										_log.error(e);
 										userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
 												CompanyConstants.AUTH_TYPE_EA);
 									}
@@ -1473,60 +1491,6 @@ public class RestfulController {
 			if (Validator.isNull(userData)) {
 				throw new OpenCPSNotFoundException(User.class.getName());
 			}
-//			List<Dossier> dossiers = DossierLocalServiceUtil.findByG_U_DO(groupId,userId);
-//			try {
-//				if (dossiers != null) {
-//					Applicant checkApplicant = null;
-//					boolean checkDone = false;
-//					boolean checkReceiving = false;
-//					int countDossier = 0;
-//					for (Dossier dossier : dossiers) {
-//						checkApplicant = dossier.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId()) : null;
-//						if (checkApplicant != null) {
-//							if (DossierTerm.DOSSIER_STATUS_DONE.contentEquals(dossier.getDossierStatus())
-//									&& dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
-//								checkDone = true;
-//								break;
-//							} else if (DossierTerm.DOSSIER_STATUS_RECEIVING.contentEquals(dossier.getDossierStatus())
-//									&& dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
-//								countDossier = DossierLocalServiceUtil.countByG_UID_DS(dossier.getGroupId(), dossier.getUserId(),
-//										DossierTerm.DOSSIER_STATUS_RECEIVING);
-//								checkReceiving = true;
-//							}
-//						}
-//					}
-//					if (Validator.isNotNull(checkApplicant)) {
-//						if (checkReceiving && !checkDone) {
-//							_log.debug("DOSSIER_STATUS_RECEIVING ");
-//							_log.debug("APPLICANT NUMBER OF CREATE DOSSIER: " + countDossier);
-//							ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.COUNTER_VERIFY_CREATEDOSSIER);
-//							if (Validator.isNotNull(serverConfig)) {
-//								JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-//								int counter = Integer.valueOf(configObj.getString(DossierTerm.COUNTER));
-//								_log.debug("CONFIG COUNTER " + counter);
-//								if (Validator.isNotNull(counter)) {
-//									if (countDossier >= counter) {
-//											checkApplicant.setVerification(ApplicantTerm.LOCKED_DOSSIER);
-//											ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
-//									} else if (countDossier < counter) {
-//										checkApplicant.setVerification(ApplicantTerm.UNLOCKED);
-//										ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
-//									}
-//								}
-//							}
-//						} else if (checkDone) {
-//							_log.debug(" DOSSIER_STATUS_DONE");
-//							if (checkApplicant.getVerification() == ApplicantTerm.LOCKED
-//									|| checkApplicant.getVerification() == ApplicantTerm.LOCKED_DOSSIER) {
-//								checkApplicant.setVerification(ApplicantTerm.UNLOCKED);
-//								ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
-//							}
-//						}
-//					}
-//				}
-//			}catch (Exception e){
-//				e.getMessage();
-//			}
 
 			String token = GraphQLUtils.buildTokenLogin(userData, groupId);
 			response.setHeader("jwt-token", token);
@@ -1543,7 +1507,7 @@ public class RestfulController {
 	public @ResponseBody String getTextFromFileEntryId(HttpServletResponse response,
 			@ApiParam(value = "id của user", required = true) @PathVariable("id") Long id) {
 
-		String result = StringPool.BLANK;
+		String result;
 		response.setContentType("text/plain");
 		response.setCharacterEncoding("UTF-8");
 
@@ -1870,7 +1834,7 @@ public class RestfulController {
 					}
 				}
 			}catch (Exception e){
-				e.printStackTrace();
+				_log.error(e);
 			}
 			if (jsonObject != null) {
 				result.put(ConstantUtils.DATA,jsonObject);
@@ -2017,7 +1981,7 @@ public class RestfulController {
 			return null;
 		}
 		
-	}	
+	}
 
 	public static final Log _log = LogFactoryUtil.getLog(RestfulController.class);
 }

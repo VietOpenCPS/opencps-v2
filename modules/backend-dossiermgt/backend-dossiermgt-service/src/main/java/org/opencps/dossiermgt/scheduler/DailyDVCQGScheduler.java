@@ -39,7 +39,7 @@ public class DailyDVCQGScheduler extends BaseMessageListener {
             DVCQGIntegrationAction action = new DVCQGIntegrationActionImpl();
             action.syncSummaryVote();
         } catch (Exception e){
-            _log.error(e.getMessage());
+            _log.error(e);
         }
         isRunning = false;
     }

@@ -70,7 +70,10 @@ import org.opencps.api.adminconfig.model.ApiRoleInputModel;
 import org.opencps.api.adminconfig.model.ApiRoleModel;
 import org.opencps.api.adminconfig.model.ApiRoleResultsModel;
 import org.opencps.api.adminconfig.model.DtoResponse;
+import org.opencps.api.adminconfig.model.LogReportResultResponse;
+import org.opencps.api.adminconfig.model.LogReportStatisticData;
 import org.opencps.api.adminconfig.model.SyncTrackingQuery;
+import org.opencps.api.adminconfig.model.SyncTrackingResponse;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.constants.StatisticManagementConstants;
 import org.opencps.api.controller.AdminConfigManagement;
@@ -1122,16 +1125,65 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 			_log.info("22222");
 			response = new OpenCPSUtils().getLogReports(input);
 			_log.info("Response :" + JSONFactoryUtil.looseSerialize(response));
-			ResponseBuilder builder = Response.status(HttpURLConnection.HTTP_OK).entity(response);
-			buildCrossOriginHeader(builder, request, METHOD_GET);
 			
-			return builder.build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(response).build();
 
 		} catch (Exception e) {
-			 _log.error("Error when get log report: " + e.getMessage());
-	            return Response.status(500).entity("Error").build();
+			return BusinessExceptionImpl.processException(e);
 		}
 
+	}
+
+	@Override
+	public Response getStatisticLogReport(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, SyncTrackingQuery input) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		LogReportResultResponse response = new LogReportResultResponse();
+		
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			List<LogReportStatisticData> liStatisticDatas = new ArrayList<>();
+			DtoResponse dtoResponse = new OpenCPSUtils().getLogReports(input);
+			_log.info("11112222: " + JSONFactoryUtil.looseSerialize(dtoResponse));
+			if (dtoResponse != null) {
+				List<SyncTrackingResponse> syList = dtoResponse.getData();
+				if (Validator.isNotNull(syList) && syList.size() > 0) {
+					for (SyncTrackingResponse reTrackingResponse : syList) {
+						_log.info("reTrackingResponse :" + JSONFactoryUtil.looseSerialize(reTrackingResponse));
+						LogReportStatisticData data = new LogReportStatisticData();
+						data.setGroupId(reTrackingResponse.groupId);
+						data.setApiCode(reTrackingResponse.api);
+						updateLogReportStaticData(data, reTrackingResponse);
+						_log.info("-----------------");
+						_log.info("data: " + JSONFactoryUtil.looseSerialize(data));
+						liStatisticDatas.add(data);
+					}
+				}
+			}
+			_log.info("liStatisticDatas :" + JSONFactoryUtil.looseSerialize(liStatisticDatas));
+			response.getData().addAll(liStatisticDatas);
+			response.setTotal(liStatisticDatas.size());
+			_log.info("response :" + JSONFactoryUtil.looseSerialize(response.getData()));
+			
+			return Response.status(HttpURLConnection.HTTP_OK).entity(response).build();
+			
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}		
+	}
+	
+	private void updateLogReportStaticData(LogReportStatisticData logData, SyncTrackingResponse response) {
+		
+		if (response.getStateSync() == 0) {
+			logData.setTotalAccessFal(logData.getTotalAccessFal() + 1);
+		}else {
+			logData.setTotalAccessSuc(logData.getTotalAccessSuc() + 1);
+		}
+		logData.setTotalAccess(logData.getTotalAccess() + 1);
 	}
 
 }

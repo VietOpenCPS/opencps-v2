@@ -76,6 +76,7 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
                     }
                     _log.info("Done crawl one profile id: " + oneDossier.getProfileId());
                 } catch (Exception e) {
+                    _log.error(e);
                     _log.warn("Error when crawl profile id: " + oneDossier.getProfileId());
                     _log.warn("Still running...");
                 }
@@ -83,7 +84,7 @@ public class CrawlDossierFrequencyScheduler extends BaseMessageListener {
 
             _log.info("End crawl dossier frequency!!!");
         } catch (Exception e){
-            e.printStackTrace();
+            _log.error(e);
             _log.error("Error crawl dossier frequency: " + e.getMessage());
         }
         isRunning = false;

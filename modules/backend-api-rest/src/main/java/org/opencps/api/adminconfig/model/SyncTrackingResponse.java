@@ -15,7 +15,8 @@ import javax.xml.bind.annotation.XmlType;
     "bodyRequest",
     "bodyResponse",
     "api",
-    "trackingId"
+    "trackingId",
+    "groupId"
 })
 public class SyncTrackingResponse {
     public String dossierNo;
@@ -28,6 +29,7 @@ public class SyncTrackingResponse {
     public String bodyResponse;
     public String api;
     public Long trackingId;
+    public Long groupId;
 	public String getDossierNo() {
 		return dossierNo;
 	}
@@ -88,6 +90,11 @@ public class SyncTrackingResponse {
 	public void setTrackingId(Long trackingId) {
 		this.trackingId = trackingId;
 	}
-    
+	public Long getGroupId() {
+		return groupId;
+	}
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
     
 }

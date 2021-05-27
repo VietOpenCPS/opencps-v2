@@ -53,7 +53,7 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 		try {
 			session = openSession();
 
-			//_log.info("SEARCH_QUESTION: "+SEARCH_QUESTION);
+			_log.debug("=====findQuestionSearch=====: ");
 			String sql = _customSQL.get(getClass(), SEARCH_QUESTION);
 
 			if (Validator.isNull(domainCode)) {
@@ -68,6 +68,9 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			if (Validator.isNull(subDomainCode)) {
 				sql = StringUtil.replace(sql, CONDITION_SUB_DOMAIN_CODE, StringPool.BLANK);
 		}
+			if (Validator.isNull(questionType)) {
+				sql = StringUtil.replace(sql, CONDITION_QUESTION_TYPE, StringPool.BLANK);
+		}
 
 		if (answer != null) {
 			if (answer) {
@@ -79,8 +82,6 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			} else {
 				sql = StringUtil.replace(sql, CONDITION_ANSWER, StringPool.BLANK);
 			}
-
-			//_log.info("sql search: "+sql);
 
 			SQLQuery q = session.createSQLQuery(sql);
 
@@ -105,12 +106,15 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 		}
 		
 			/* add questionType parameter */
+
+			if(Validator.isNotNull(questionType)) {
 				qPos.add(questionType);
+			}
 			
 			/* add publish parameter */
 			if (Validator.isNotNull(subDomainCode)) {
 				qPos.add(subDomainCode);
-		}
+			}
 			//
 			/* add publish parameter */
 			qPos.add(limit - start);

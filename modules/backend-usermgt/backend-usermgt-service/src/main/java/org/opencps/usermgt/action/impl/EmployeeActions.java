@@ -926,11 +926,16 @@ public class EmployeeActions implements EmployeeInterface {
 
 		//Update or create Employee
 		if (employee == null) {
-			employee = EmployeeLocalServiceUtil.addEmployee(
-					userId, groupId, fullName, employeeNo, GetterUtil.get(gender, 0),
-					birthDay, telNo, null, email, GetterUtil.get(workingStatus, 0),
-					0l, title, scope, jobTitle, false, null, null, serviceContext);
-			isNew = true;
+			
+			try {
+				employee = EmployeeLocalServiceUtil.addEmployee(
+						userId, groupId, fullName, employeeNo, GetterUtil.get(gender, 0),
+						birthDay, telNo, null, email, GetterUtil.get(workingStatus, 0),
+						0l, title, scope, jobTitle, false, null, null, serviceContext);
+				isNew = true;
+			}catch(Exception e) {
+				_log.error(e);
+			}
 		} else {
 			if (Validator.isNotNull(fullName)) {
 				employee.setFullName(fullName);
@@ -969,12 +974,14 @@ public class EmployeeActions implements EmployeeInterface {
 				employee.getMappingUserId(), employee.getTitle(), employee.getScope(),
 				employee.getRecruitDate(), employee.getLeaveDate(), serviceContext);
 			//Add jobTitle in user
+
 		}
 		//_log.info("Employee Create: "+employee);
 
 		//Check exits account and create new account
 		if (isNew) {
 			employee = createNewEmployeeAccount_QA(userId, groupId, employee, StringPool.BLANK, email, jobTitle, serviceContext);
+
 		} else if (employee != null && Validator.isNotNull(jobTitle)) {
 			UserLocalServiceUtil.updateJobTitle(employee.getMappingUserId(), jobTitle);
 		}
@@ -984,7 +991,7 @@ public class EmployeeActions implements EmployeeInterface {
 		if (Validator.isNotNull(roles)) {
 			String[] roleArr = StringUtil.split(roles);
 			if (roleArr != null && roleArr.length > 0) {
-				long employeeId = employee.getEmployeeId();
+				long employeeId = employee != null ? employee.getEmployeeId() : 0;
 				if (isNew) {
 					processUpdateEmpJobPos(userId, groupId, roleArr, employee, null, serviceContext);
 				} else {
@@ -1002,11 +1009,13 @@ public class EmployeeActions implements EmployeeInterface {
 		}
 
 		try {
-			if (employee.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_RETIRED) {
-				UserLocalServiceUtil.deleteGroupUser(employee.getGroupId(), employee.getMappingUserId());
-			}
-			else if (employee.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_WORKED) {
-				UserLocalServiceUtil.addGroupUser(employee.getGroupId(), employee.getMappingUserId());
+			if(employee != null) {
+				if (employee.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_RETIRED) {
+					UserLocalServiceUtil.deleteGroupUser(employee.getGroupId(), employee.getMappingUserId());
+				}
+				else if (employee.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_WORKED) {
+					UserLocalServiceUtil.addGroupUser(employee.getGroupId(), employee.getMappingUserId());
+				}
 			}
 		}
 		catch (Exception e) {
@@ -1019,12 +1028,14 @@ public class EmployeeActions implements EmployeeInterface {
 			String email, String jobTitle, ServiceContext serviceContext) throws PortalException {
 
 		try {
+
 			if (Validator.isNull(screenName)) {
 				screenName = email.substring(0, email.indexOf(StringPool.AT));
 			}
-			//_log.info("companyId: " + serviceContext.getCompanyId());
+
 			long companyId = serviceContext.getCompanyId();
 			User user = UserLocalServiceUtil.fetchUserByEmailAddress(companyId, email);
+
 			if (user != null) {
 				employee.setMappingUserId(user.getUserId());
 
@@ -1074,6 +1085,7 @@ public class EmployeeActions implements EmployeeInterface {
 						screenName.toLowerCase(), email, 0, StringPool.BLANK, serviceContext.getLocale(), fml[0],
 						fml[1], fml[2], 0, 0, true, Calendar.JANUARY, 1, 1979, jobTitle, groupIds,
 						organizationIds, resultRoles, userGroupIds, false, serviceContext);
+
 				if (newUser != null) {
 					newUser.setPasswordReset(false);
 					UserLocalServiceUtil.updateUser(newUser);
@@ -1114,7 +1126,7 @@ public class EmployeeActions implements EmployeeInterface {
 			// jsonObject.put("duplicate", Boolean.FALSE.toString());
 
 		} catch (Exception e) {
-			_log.debug(e);
+			_log.error(e);
 			//_log.error(e);
 			// jsonObject.put("screenName", StringPool.BLANK);
 			// jsonObject.put("email", StringPool.BLANK);

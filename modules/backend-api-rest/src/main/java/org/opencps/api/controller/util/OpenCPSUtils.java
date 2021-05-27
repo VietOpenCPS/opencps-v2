@@ -214,8 +214,9 @@ public class OpenCPSUtils {
                 return response;
             }
 
+            _log.info("syncTrackingPaginate :" + JSONFactoryUtil.looseSerialize(syncTrackingPaginate));
             List<SyncTrackingResponse> syncTrackingResponse = this.transForm(syncTrackingPaginate);
-
+            _log.info("syncTrackingResponse :" + JSONFactoryUtil.looseSerialize(syncTrackingResponse));
             response.setTotal(syncTrackingList.size());
             response.getData().addAll(syncTrackingResponse);
             return response;
@@ -261,6 +262,8 @@ public class OpenCPSUtils {
                         ? syncTracking.getStateSync() : OpenCPSUtils.STATE_ERROR;
                 oneTrackingTransform.trackingId = Validator.isNotNull(syncTracking.getTrackingId())
                         ? syncTracking.getTrackingId() : 0;
+                oneTrackingTransform.groupId = Validator.isNotNull(syncTracking.getGroupId())
+                		? syncTracking.getGroupId() : 0;
                 listTrackingTransform.add(oneTrackingTransform);
             }
             return listTrackingTransform;

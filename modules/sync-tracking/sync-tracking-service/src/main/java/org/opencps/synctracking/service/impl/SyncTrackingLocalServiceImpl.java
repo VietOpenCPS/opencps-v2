@@ -14,6 +14,8 @@
 
 package org.opencps.synctracking.service.impl;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.synctracking.exception.NoSuchSyncTrackingException;
 import org.opencps.synctracking.model.SyncTracking;
@@ -44,6 +46,8 @@ public class SyncTrackingLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.synctracking.service.SyncTrackingLocalServiceUtil} to access the sync tracking local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(SyncTrackingLocalServiceImpl.class);
 	public List<SyncTracking> getByGroupId(long groupId, int start, int end) {
 		return syncTrackingPersistence.findByGroupId(groupId, start, end);
 	}
@@ -85,6 +89,7 @@ public class SyncTrackingLocalServiceImpl
 		try {
 			return syncTrackingPersistence.findByF_GID_DossierNo(groupId, dossierNo);
 		} catch (NoSuchSyncTrackingException e) {
+			_log.error(e);
 			return null;
 		}
 	}
@@ -93,6 +98,7 @@ public class SyncTrackingLocalServiceImpl
 		try {
 			return syncTrackingPersistence.findByF_GID_ReferenceUid(groupId, referenceUid);
 		} catch (NoSuchSyncTrackingException e) {
+			_log.error(e);
 			return null;
 		}
 	}

@@ -52,6 +52,7 @@ import org.osgi.service.component.annotations.Component;
 		"url-pattern=/web/guest/XrdAdapter/RestService/forward/*",
 		"url-pattern=/web/guest/VXPAdapter/RestService/forward/*",
 		"url-pattern=/web/guest/nhanhsdvcqg",
+		"url-pattern=/web/guest/nhantbthuedvcqg",
 		"url-pattern=/web/guest/addtthcKhuyenMai",
 		"url-pattern=/web/guest/search/call",
 		"url-pattern=/web/guest/downloadfile/*"
@@ -81,6 +82,11 @@ public class OpenCPSServletFilter extends BaseFilter {
 			httpServletRequest.getRequestDispatcher("/o/rest/v2/nps/nhanhsdvcqg").forward(httpServletRequest,
 					httpServletResponse);
 		}
+		if (Validator.isNotNull(requestURI)
+				&& (requestURI.contains("/XrdAdapter/RestService/forward/nhantbthuedvcqg") || requestURI.contains("/VXPAdapter/RestService/forward/nhantbthuedvcqg") || requestURI.contains("nhantbthuedvcqg"))) {
+			httpServletRequest.getRequestDispatcher("/o/rest/v2/nps/nhantbthuedvcqg").forward(httpServletRequest,
+					httpServletResponse);
+		}
 
 		if(Validator.isNotNull(requestURI) && (requestURI.contains("search/call"))) {
 			httpServletRequest.getRequestDispatcher("/o/rest/v2/dossiers/direct").forward(httpServletRequest,
@@ -97,6 +103,7 @@ public class OpenCPSServletFilter extends BaseFilter {
 				}
 
 			} catch (Exception e) {
+				_log.error(e);
 				referenceUid = "";
 			}
 			httpServletRequest.getRequestDispatcher("/o/rest/v2/dossiers/downloadfile/" + referenceUid ).forward(httpServletRequest,

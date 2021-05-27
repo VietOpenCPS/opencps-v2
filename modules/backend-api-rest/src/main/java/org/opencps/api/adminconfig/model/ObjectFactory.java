@@ -112,5 +112,13 @@ public class ObjectFactory {
     public SyncTrackingResponse createSyncTrackingResponse() {
     	return new SyncTrackingResponse();
     }
+    
+    public LogReportResultResponse createLogReportResultResponse() {
+    	return new LogReportResultResponse();
+    }
+    
+    public LogReportStatisticData createLogReportStatisticData() {
+    	return new LogReportStatisticData();
+    }
 
 }

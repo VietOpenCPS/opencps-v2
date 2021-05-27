@@ -1,6 +1,5 @@
 package org.opencps.dossiermgt.scheduler;
 
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -39,7 +38,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = DossierSyncProcessingScheduler.class)
 public class DossierSyncProcessingScheduler extends BaseMessageListener {
-	static class Counter {
+	static class CounterSync {
 		private volatile static int count = 0;
 		public static int getCount(){
 			return count;
@@ -82,17 +81,25 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 	}
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		if (!isRunning) {
-			isRunning = true;
-		} else {
+		_log.info("====DossierSyncProcessingScheduler isRunning: " + isRunning + ", counting: " + CounterSync.getCount());
+		if (isRunning) {
+			_log.info("Job publish event is running");
 			return;
 		}
+
+		if(CounterSync.getCount() > 0) {
+			_log.info("Job DossierSync before still has count :" + CounterSync.getCount());
+			return;
+		}
+
+		isRunning = true;
+
 		try {
 			_log.info("OpenCPS SYNC DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 			List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByStates(new int[]{DossierSyncTerm.STATE_WAITING_SYNC, DossierSyncTerm.STATE_ALREADY_SENT}, 0, QUANTITY_JOB);
 			int sizeDossierSync = lstSyncs.size();
-			Counter.setCount(sizeDossierSync);
+			CounterSync.setCount(sizeDossierSync);
 
 			for (DossierSync ds : lstSyncs) {
 				threadPoolExecutor.execute(() -> mainProcess(ds, sizeDossierSync));
@@ -101,63 +108,68 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 
 			_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 		} catch (Exception e) {
-			_log.debug(e);
+			_log.info(e);
 		}
 		isRunning = false;
 	}
 	private void mainProcess(DossierSync dossierSync, int sizeDossierSync) {
 		_log.info(startLine1 + "Start thread DossierSync " + dossierSync.getDossierId());
-		if (Counter.getCount() == sizeDossierSync) {
+
+		if (CounterSync.getCount() == sizeDossierSync) {
 			_log.info("Time start: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 
-		IMessageProcessor processor = MessageProcessor.getProcessor(dossierSync);
+		try {
+			IMessageProcessor processor = MessageProcessor.getProcessor(dossierSync);
 
-		if (processor != null) {
-			processor.process();
+			if (processor != null) {
+				processor.process();
+			}
+		} catch (Exception e) {
+			_log.error("Error when running dossierSync: " + dossierSync.getDossierSyncId(), e);
 		}
 
-		Counter.decreaseCount();
-		_log.info(startLine1 + "Counting remain: " + Counter.getCount());
-		if (Counter.getCount() == 0) {
+		CounterSync.decreaseCount();
+		_log.info(startLine1 + "Counting remain: " + CounterSync.getCount());
+		if (CounterSync.getCount() == 0) {
 			_log.info("Time end: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 
 	}
 
-	
-	  @Activate
-	  @Modified
-	  protected void activate(Map<String,Object> properties) throws SchedulerException {
-		  String listenerClass = getClass().getName();
-		//Time engine dossier
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, timeSyncDossier, TimeUnit.SECOND);
 
-		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
-		  
+	@Activate
+	@Modified
+	protected void activate(Map<String,Object> properties) throws SchedulerException {
+		String listenerClass = getClass().getName();
+		//Time engine dossier
+		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, timeSyncDossier, TimeUnit.SECOND);
+
+		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
+		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
+
 //		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
-		  if (_initialized) {
-			  deactivate();
-		  }
+		if (_initialized) {
+			deactivate();
+		}
 
-	    _schedulerEngineHelper.register(this, _schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
-	    _initialized = true;
-	  }
-	  
+		_schedulerEngineHelper.register(this, _schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
+		_initialized = true;
+	}
+
 	@Deactivate
 	protected void deactivate() {
 		if (_initialized) {
 			try {
 				_schedulerEngineHelper.unschedule(_schedulerEntryImpl, getStorageType());
-		    } catch (SchedulerException se) {
-		        if (_log.isWarnEnabled()) {
-		        	_log.warn("Unable to unschedule trigger", se);
-		        }
-		    }
+			} catch (SchedulerException se) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Unable to unschedule trigger", se);
+				}
+			}
 
-		      _schedulerEngineHelper.unregister(this);
+			_schedulerEngineHelper.unregister(this);
 		}
 		_initialized = false;
 		isRunning = false;
@@ -166,32 +178,32 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 	/**
 	 * getStorageType: Utility method to get the storage type from the scheduler entry wrapper.
 	 * @return StorageType The storage type to use.
-	*/
+	 */
 	protected StorageType getStorageType() {
-	    if (_schedulerEntryImpl instanceof StorageTypeAware) {
-	    	return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
-	    }
-	    
-	    return StorageType.PERSISTED;
+		if (_schedulerEntryImpl instanceof StorageTypeAware) {
+			return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
+		}
+
+		return StorageType.PERSISTED;
 	}
-	  
+
 	/**
-	   * setModuleServiceLifecycle: So this requires some explanation...
-	   * 
-	   * OSGi will start a component once all of it's dependencies are satisfied.  However, there
-	   * are times where you want to hold off until the portal is completely ready to go.
-	   * 
-	   * This reference declaration is waiting for the ModuleServiceLifecycle's PORTAL_INITIALIZED
-	   * component which will not be available until, surprise surprise, the portal has finished
-	   * initializing.
-	   * 
-	   * With this reference, this component activation waits until portal initialization has completed.
-	   * @param moduleServiceLifecycle
-	   */
+	 * setModuleServiceLifecycle: So this requires some explanation...
+	 *
+	 * OSGi will start a component once all of it's dependencies are satisfied.  However, there
+	 * are times where you want to hold off until the portal is completely ready to go.
+	 *
+	 * This reference declaration is waiting for the ModuleServiceLifecycle's PORTAL_INITIALIZED
+	 * component which will not be available until, surprise surprise, the portal has finished
+	 * initializing.
+	 *
+	 * With this reference, this component activation waits until portal initialization has completed.
+	 * @param moduleServiceLifecycle
+	 */
 	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED, unbind = "-")
 	protected void setModuleServiceLifecycle(ModuleServiceLifecycle moduleServiceLifecycle) {
 	}
-	  
+
 	@Reference(unbind = "-")
 	protected void setTriggerFactory(TriggerFactory triggerFactory) {
 		_triggerFactory = triggerFactory;
@@ -201,12 +213,12 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 	protected void setSchedulerEngineHelper(SchedulerEngineHelper schedulerEngineHelper) {
 		_schedulerEngineHelper = schedulerEngineHelper;
 	}
-	
+
 	private SchedulerEngineHelper _schedulerEngineHelper;
 	private TriggerFactory _triggerFactory;
 	private volatile boolean _initialized;
 	private SchedulerEntryImpl _schedulerEntryImpl = null;
-	  	
+
 	private Log _log = LogFactoryUtil.getLog(DossierSyncProcessingScheduler.class);
-	
+
 }

@@ -199,8 +199,6 @@ public class BuildEdXMLUtils {
 		    Code code = new Code("000.00.14.H20-200703-0002", "Hồ sơ liên thông");
 		    PromulgationInfo promulgationInfo = new PromulgationInfo("Tỉnh Đồng Tháp", DateUtils.parse("2020/06/01"));
 		    DocumentType docType = new DocumentType(1, "Cong van");
-		    SignerInfo signerInfo = new SignerInfo("TL. Chủ tịch", "Chánh văn phòng UBND thành phố", "Nguyen Thanh");
-		    
 		    MessageHeader header = new MessageHeader(
 		      from, toes, code, promulgationInfo, docType,
 		           "STTTT_XBI05/NGUYỄN THỊ DIỄM MI/000.00.14.H20-200703-0002", "Cấp giấy phép xuất bản tài liệu không kinh doanh",

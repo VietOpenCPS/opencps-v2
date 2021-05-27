@@ -65,7 +65,7 @@ public class KeypayV3Event implements MessageListener {
 			_log.info("Call post API SEND keypayv3 result: " + resultObj.toJSONString());
 			_log.info(params);
 		} catch (Exception e) {
-			e.getMessage();
+			_log.error(e);
 		}
 	}
 

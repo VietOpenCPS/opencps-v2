@@ -133,9 +133,33 @@ public class ServiceConfigUtils {
 						processOption.setProcessName(doc.get(ProcessOptionTerm.PROCESS_NAME));
 						processOption.setOptionName(doc.get(ProcessOptionTerm.OPTION_NAME));
 						processOption.setServiceConfigId(GetterUtil.getLong(doc.get(ProcessOptionTerm.SERVICE_CONFIG_ID)));
-
+						processOption.setSampleCount(GetterUtil.getLong(doc.get(ProcessOptionTerm.SAMPLE_COUNT)));
+						processOption.setRegisterBookCode(doc.get(ProcessOptionTerm.REGISTER_BOOKCODE));
 						processes.add(processOption);
 					}
+				}
+			} else {
+				for (Document doc : documents) {
+
+
+					ProcessOption processOption = new ProcessOption();
+					processOption.setProcessOptionId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+					processOption.setSeqOrder(GetterUtil.getInteger(doc.get(ProcessOptionTerm.SEQ_ORDER)));
+					processOption.setAutoSelect(doc.get(ProcessOptionTerm.AUTO_SELECT));
+					processOption.setInstructionNote(doc.get(ProcessOptionTerm.INSTRUCTION_NOTE));
+					processOption.setSubmissionNote(doc.get(ProcessOptionTerm.SUBMISSION_NOTE));
+					processOption.setDossierTemplateId(GetterUtil.getInteger(doc.get(ProcessOptionTerm.DOSSIER_TEMPLATEID)));
+					processOption.setTemplateNo_0020(doc.get(ProcessOptionTerm.TEMPLATE_NO));
+					processOption.setTemplateName(doc.get(ProcessOptionTerm.TEMPLATE_NAME));
+					processOption.setServiceProcessId(GetterUtil.getInteger(doc.get(ProcessOptionTerm.SERVICE_PROCESS_ID)));
+					processOption.setProcessNo(doc.get(ProcessOptionTerm.PROCESS_NO));
+					processOption.setProcessName(doc.get(ProcessOptionTerm.PROCESS_NAME));
+					processOption.setOptionName(doc.get(ProcessOptionTerm.OPTION_NAME));
+					processOption.setServiceConfigId(GetterUtil.getLong(doc.get(ProcessOptionTerm.SERVICE_CONFIG_ID)));
+					processOption.setSampleCount(GetterUtil.getLong(doc.get(ProcessOptionTerm.SAMPLE_COUNT)));
+					processOption.setRegisterBookCode(doc.get(ProcessOptionTerm.REGISTER_BOOKCODE));
+
+					processes.add(processOption);
 				}
 			}
 
@@ -189,10 +213,11 @@ public class ServiceConfigUtils {
 					config = mappingServiceConfig(config, doc);
 					configs.add(config);
 				}
-			} else if(Validator.isNotNull(applicant)) {
+			} else if (Validator.isNotNull(applicant)) {
 				boolean citizen = false;
 				boolean business = false;
 				boolean active = false;
+
 				if ("citizen".equals(applicant.getApplicantIdType())) {
 					citizen = true;
 				} else if ("business".equals(applicant.getApplicantIdType())) {
@@ -219,7 +244,7 @@ public class ServiceConfigUtils {
 						}
 					}
 				}
-			}else{
+			} else {
 				for (Document doc : documents) {
 					ServiceConfig config = new ServiceConfig();
 
