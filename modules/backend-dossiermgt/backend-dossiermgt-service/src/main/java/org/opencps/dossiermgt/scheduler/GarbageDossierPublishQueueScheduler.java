@@ -164,9 +164,9 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 			if(Validator.isNotNull(pathTemp)) {
 				
 				if(pathTemp.contains("/tomcat") && pathTemp.contains("/temp") ) {
+					_log.info(pathTemp);
 					deleteDirectoryJava7(pathTemp);
 					Files.createDirectories(Paths.get(pathTemp));
-//					_log.info(pathTemp);
 				}
 				else {
 					_log.info("Path " + pathTemp + " is Not Avaible!");

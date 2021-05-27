@@ -113,12 +113,16 @@ public class TemplateProcessor {
 				out = new StringWriter();
 				Map<String, Object> root = new HashMap<String, Object>();
 				root.put(ModelNameKeys.TEMPLATE_PROCESSOR_MODEL_KEY, dataModel);
-				getTemplate().process(root, out);
+				try {
+					getTemplate().process(root, out);
+				} catch (Exception e) {
+					_log.error("Error while get Template!");
+				}
 				result = out.getBuffer().toString();
 			}
 			catch (Exception e) {
 				_log.error(e);
-			}
+			}	
 			finally {
 				if (out != null) {
 					out.flush();
