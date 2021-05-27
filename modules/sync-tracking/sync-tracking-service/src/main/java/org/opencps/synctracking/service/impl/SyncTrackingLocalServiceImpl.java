@@ -14,6 +14,7 @@
 
 package org.opencps.synctracking.service.impl;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -104,6 +105,7 @@ public class SyncTrackingLocalServiceImpl
 	}
 
 	public SyncTracking createSyncTrackingManual(SyncTrackingQuery syncTrackingQuery) {
+		System.out.println("SyncTrackingQuery: " + JSONFactoryUtil.looseSerialize(syncTrackingQuery));
 		long syncTrackingId = counterLocalService.increment(SyncTracking.class.getName());
 		Date now = new Date();
 

@@ -85,6 +85,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import backend.auth.api.exception.ErrorMsgModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
@@ -113,6 +114,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private static final String LUCENE_DATE_FORMAT = "yyyyMMddHHmmss";
 	private static final String HCM_TIMEZONE = "Asia/Ho_Chi_Minh";
 	private static final String DVCQG_INTEGRATION = "DVCQG_INTEGRATION";
+	public static final String CONFIG_URL_LOCAL = "http://127.0.0.1:8080/o/log-report/dvcqg";
 
 	private static final Integer TIMEOUT_DVCQG = 6;
 
@@ -4166,6 +4168,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	@Override
 	public JSONObject doCreateUpdateDossierFromDVCQG(Company company, User user, long groupId, ServiceContext serviceContext, JSONObject data, boolean isUpdating) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", "*");
+		String urlCall = CONFIG_URL_LOCAL;
 		try {
 			if (data == null) {
 				_log.error("HSKMBS result: " + "Data empty");
@@ -4251,13 +4256,19 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			}
 			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(MaHoSo);
 			if(Validator.isNotNull(dossier)) {
-				SyncTrackingQuery syncTrackingQuery = new SyncTrackingQuery();
-				syncTrackingQuery.groupId = groupId;
-				syncTrackingQuery.bodyRequest = data.toString();
-				syncTrackingQuery.dossierNo = MaHoSo;
-				syncTrackingQuery.userId = user.getUserId();
-				syncTrackingQuery.referenceUid = dossier.getReferenceUid();
-				SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
+				SyncTrackingInfo body = new SyncTrackingInfo();
+				body.groupId = groupId;
+				body.bodyRequest = data.toString();
+				body.dossierNo = MaHoSo;
+//				body.userId = user.getUserId();
+				body.referenceUid = dossier.getReferenceUid();
+//				SyncTrackingLocalServiceUtil.createSyncTrackingManual(body);
+
+				headers.add("groupId", String.valueOf(body.groupId));
+				HttpEntity<SyncTrackingInfo> entity = new HttpEntity<>(body, headers);
+				ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity , String.class);
+				_log.info("Response api saving tracking: " + response);
+				_log.info("Saved tracking!!!");
 			}
 			return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
 		} catch (Exception e) {
@@ -4267,10 +4278,15 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return result;
 	}
 
+
 	@Override
 	public JSONObject doCrUpDossierThongBaoThueDatDVCQG(Company company, User user, long groupId,
 														ServiceContext serviceContext, JSONObject data, boolean isUpdating) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", "*");
+		String urlCall = CONFIG_URL_LOCAL;
 		String msHS = StringPool.BLANK;
 		try {
 			if (data == null) {
@@ -4299,13 +4315,20 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(child.getTextContent());
 					if(Validator.isNotNull(dossier)) {
 						msHS += child.getTextContent() + ",";
-						SyncTrackingQuery syncTrackingQuery = new SyncTrackingQuery();
-						syncTrackingQuery.groupId = groupId;
-						syncTrackingQuery.bodyRequest = xmlFileThongBaoThue;
-						syncTrackingQuery.dossierNo = child.getTextContent();
-						syncTrackingQuery.userId = user.getUserId();
-						syncTrackingQuery.referenceUid = dossier.getReferenceUid();
-						SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
+						SyncTrackingInfo body = new SyncTrackingInfo();
+						body.groupId = groupId;
+						body.bodyRequest = xmlFileThongBaoThue;
+						body.dossierNo = child.getTextContent();
+//						syncTrackingQuery.userId = user.getUserId();
+						body.referenceUid = dossier.getReferenceUid();
+//						SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
+						headers.add("groupId", String.valueOf(body.groupId));
+						HttpEntity<SyncTrackingInfo> entity = new HttpEntity<>(body, headers);
+						ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity , String.class);
+						_log.info("Response api saving tracking: " + response);
+						_log.info("Saved tracking!!!");
+					}else{
+						createResponseMessage(result, 0,  msHS+"| không tồn tại trên hệ thống");
 					}
 				}
 			}
