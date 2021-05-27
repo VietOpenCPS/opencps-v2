@@ -112,7 +112,7 @@ public class SyncTrackingApplication extends Application{
             if(groupId != 0) {
                 query.groupId = groupId;
             }
-            syncTrackingAction.create(query);
+            syncTrackingAction.createSynTrackingDVCQG(query);
             return Response.status(200).entity("Saved").build();
         } catch (Exception e) {
             _log.error(e);
