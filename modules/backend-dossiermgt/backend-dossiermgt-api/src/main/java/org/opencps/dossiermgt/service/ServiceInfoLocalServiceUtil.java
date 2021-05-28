@@ -48,7 +48,8 @@ public class ServiceInfoLocalServiceUtil {
 		String conditionText, String durationText, String applicantText,
 		String resultText, String regularText, String feeText,
 		String administrationCode, String domainCode, int maxLevel,
-		boolean activeStatus, String govAgencyText, String tagCode, String tagName,
+		boolean activeStatus, String govAgencyText, String tagCode,
+		String tagName,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -399,7 +400,8 @@ public class ServiceInfoLocalServiceUtil {
 		String dossierText, String conditionText, String durationText,
 		String applicantText, String resultText, String regularText,
 		String feeText, String administrationCode, String domainCode,
-		int maxLevel, boolean activeStatus, String govAgencyText, String tagCode, String tagName,
+		int maxLevel, boolean activeStatus, String govAgencyText,
+		String tagCode, String tagName,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()

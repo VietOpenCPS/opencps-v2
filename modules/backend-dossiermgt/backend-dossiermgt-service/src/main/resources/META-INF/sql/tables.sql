@@ -1004,6 +1004,20 @@ create table opencps_registrationtemplate (
 	sampleData TEXT null
 );
 
+create table opencps_reportlandtax (
+	uuid_ VARCHAR(75) null,
+	reportId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	dossierNo VARCHAR(75) null,
+	bodyRequest VARCHAR(75) null,
+	response VARCHAR(75) null
+);
+
 create table opencps_serviceconfig (
 	uuid_ VARCHAR(75) null,
 	serviceConfigId LONG not null primary key,
