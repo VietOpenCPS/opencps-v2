@@ -299,6 +299,9 @@ create index IX_D7DDCD42 on opencps_registrationtemplate (groupId, govAgencyCode
 create index IX_B9CBE330 on opencps_registrationtemplate (groupId, registrationTemplateId);
 create unique index IX_22CC0D32 on opencps_registrationtemplate (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_F6685C03 on opencps_reportlandtax (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_CB4E0745 on opencps_reportlandtax (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_29DADB16 on opencps_serviceconfig (govAgencyCode[$COLUMN_LENGTH:128$]);
 create index IX_E713E0A0 on opencps_serviceconfig (groupId, govAgencyCode[$COLUMN_LENGTH:128$]);
 create index IX_5ED8CC55 on opencps_serviceconfig (groupId, serviceInfoId, govAgencyCode[$COLUMN_LENGTH:128$], serviceLevel);
