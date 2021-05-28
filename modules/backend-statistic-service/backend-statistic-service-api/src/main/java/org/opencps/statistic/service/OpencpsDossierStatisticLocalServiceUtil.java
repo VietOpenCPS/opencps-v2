@@ -459,6 +459,11 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().findByREPO_ARR(reporting);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByYearREPO_ARR(
+		int[] years, int[] reportings) {
+		return getService().findByYearREPO_ARR(years, reportings);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

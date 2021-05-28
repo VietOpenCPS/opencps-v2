@@ -326,6 +326,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 
 	public List<OpencpsDossierStatistic> findByREPO_ARR(int[] reporting);
 
+	public List<OpencpsDossierStatistic> findByYearREPO_ARR(int[] years,
+		int[] reportings);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
