@@ -6424,7 +6424,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		try {
 			return dossierPersistence.findByG_DN(groupId, dossierNo);
 		} catch (NoSuchDossierException e) {
-			_log.error(e);
+			_log.error("No Dossier exists with the key {groupId="+groupId+", dossierNo="+dossierNo+"}");
+			_log.debug(e);
 			return null;
 		}
 	}

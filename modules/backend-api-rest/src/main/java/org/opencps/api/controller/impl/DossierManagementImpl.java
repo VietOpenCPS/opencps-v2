@@ -8817,8 +8817,10 @@ public class DossierManagementImpl implements DossierManagement {
 					getInterDossierFromOriginDossier(newDossier, listDossier);
 				}
 			}
-		} catch (Exception e) {
-			_log.error(e);
+		} 
+		catch (Exception e) {
+			_log.error("Error while getInterDossierFromOriginDossier! Configurate Log Debug in org.opencps.api.controller.impl.DossierManagementImpl for more details ");
+			_log.debug(e);
 		}
 
 	}

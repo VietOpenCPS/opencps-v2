@@ -113,15 +113,12 @@ public class TemplateProcessor {
 				out = new StringWriter();
 				Map<String, Object> root = new HashMap<String, Object>();
 				root.put(ModelNameKeys.TEMPLATE_PROCESSOR_MODEL_KEY, dataModel);
-				try {
-					getTemplate().process(root, out);
-				} catch (Exception e) {
-					_log.error("Error while get Template!");
-				}
+				getTemplate().process(root, out);
 				result = out.getBuffer().toString();
 			}
 			catch (Exception e) {
-				_log.error(e);
+				_log.error("Error executing FreeMarker template! Configurate Log Debug in org.opencps.kernel.template.freemarker.TemplateProcessor for more details");
+				_log.debug(e);
 			}	
 			finally {
 				if (out != null) {

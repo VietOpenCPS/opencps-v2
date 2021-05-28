@@ -603,7 +603,8 @@ public class DossierNumberGenerator {
 				counterDetail.setCurrentId(_counterNumber);
 				CounterLocalServiceUtil.updateCounter(counterDetail);
 			} catch (Exception e) {
-				_log.error("Error when update counter: " , e);
+				_log.error("Error when update counter! Configurate Debug Log org.opencps.dossiermgt.action.util.DossierNumberGenerator for more details!" );
+				_log.debug(e);
 				return null;
 			}
 		} else {
