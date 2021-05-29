@@ -477,6 +477,13 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByYearREPO_ARR(
+		int[] years, int[] reportings) {
+		return _opencpsDossierStatisticLocalService.findByYearREPO_ARR(years,
+			reportings);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _opencpsDossierStatisticLocalService.getActionableDynamicQuery();
 	}
