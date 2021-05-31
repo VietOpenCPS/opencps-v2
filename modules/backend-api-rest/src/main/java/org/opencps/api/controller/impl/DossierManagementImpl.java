@@ -264,7 +264,7 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierResultsModel results = null;
 		BackendAuth auth = new BackendAuthImpl();
 		try {
-			
+
 			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			Date now = APIDateTimeUtils.convertStringToDate(dateFormat.format(new Date()), DATE_FORMAT);
 			String authenkeyServer = DossierUtils.getmd5(secretkey + now.getTime());
@@ -289,7 +289,7 @@ public class DossierManagementImpl implements DossierManagement {
 				query.setEnd(10);
 			}
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			params.put(Field.GROUP_ID, String.valueOf(groupId));
+
 
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -764,20 +764,28 @@ public class DossierManagementImpl implements DossierManagement {
 				if (fromViaPostal != null) {
 					params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
 				}
-				String roleViewAll = StringPool.BLANK;
-				String roleViewGroup = StringPool.BLANK;
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 				// Tạo role theo dõi tất cả hồ sơ GLOBAL_VIEW_ALL, GLOBAL_VIEW_GROUP
-				List<Role> userRoles = user.getRoles();
-				boolean globalViewAll = false;
-				boolean globalViewGroup = false;
+				//Truong hop 1 employee cùng ở 2 site. Lấy role ở site đó và param groupId sẽ search theo Employee
+				List<Role> userRoles =  user.getRoles();
 				for (Role r : userRoles) {
+					_log.info("GetName: " + r.getName());
 					if (r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_ALL)) {
-						globalViewAll = true;
+						query.setGlobalViewAll(true);
 						break;
 					}else if(r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_GROUP)){
-						globalViewGroup = true;
+						query.setGlobalViewGroup(true);
 						break;
+					}
+				}
+
+				if(query.isGlobalViewAll()){
+					params.put(Field.GROUP_ID, String.valueOf(employee.getGroupId()));
+				}else{
+					params.put(Field.GROUP_ID, String.valueOf(groupId));
+					_log.info("Scope: " + employee.getScope());
+					if(Validator.isNotNull(employee.getScope())){
+						params.put(DossierTerm.GOV_AGENCY_CODE, employee.getScope());
 					}
 				}
 				// Nếu donvigui == _scope ==> Get Employee lấy được _scope gán giá trị cho param

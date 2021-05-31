@@ -2953,6 +2953,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 		String unstep =
 				GetterUtil.getString(params.get(DossierTerm.UNSTEP));
+		String govAgencyCode =
+				GetterUtil.getString(params.get(DossierTerm.GOV_AGENCY_CODE));
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2996,7 +2998,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
 				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel,createDateStart,createDateEnd,
-				unstep);
+				unstep, govAgencyCode);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 		
@@ -3161,6 +3163,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 		String unstep =
 				GetterUtil.getString(params.get(DossierTerm.UNSTEP));
+		String govAgencyCode = GetterUtil.getString(params.get(DossierTerm.GOV_AGENCY_CODE));
+
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -3201,7 +3205,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
 				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel,createDateStart,createDateEnd,
-				unstep);
+				unstep, govAgencyCode);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3334,8 +3338,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
 			String delegate, String vnpostalStatus, Integer fromViaPostal,
 			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai, String serviceLevel,
-			String createDateStart, String createDateEnd, String unstep)
+			String createDateStart, String createDateEnd, String unstep, String govAgencyCode)
 			throws ParseException {
+
+		if (Validator.isNotNull(govAgencyCode)) {
+			String[] govAgencyCodeArr = govAgencyCode.split(StringPool.COMMA);
+			BooleanQuery subQuery = new BooleanQueryImpl();
+			for (String key : govAgencyCodeArr) {
+				MultiMatchQuery query = new MultiMatchQuery(key);
+				query.addField(DossierTerm.GOV_AGENCY_CODE);
+				subQuery.add(query, BooleanClauseOccur.SHOULD);
+			}
+			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+		}
 
 		String createDateStartFilter =
 				createDateStart + ConstantsTerm.HOUR_START;

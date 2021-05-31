@@ -1146,6 +1146,13 @@ public class OpenCPSConverter {
 		if (Validator.isNotNull(dossier.getFromViaPostal())) {
 			model.setFromViaPostal(dossier.getFromViaPostal());
 		}
+		if (Validator.isNotNull(dossier.getMetaData())) {
+			model.setMetaData(dossier.getMetaData());
+		}
+
+		if (Validator.isNotNull(dossier.getBriefNote())) {
+			model.setBriefNote(dossier.getBriefNote());
+		}
 
 		return model;
 	}
