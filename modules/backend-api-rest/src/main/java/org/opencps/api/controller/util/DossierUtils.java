@@ -430,11 +430,13 @@ public class DossierUtils {
 			model.setSubmitting(doc.get(DossierTerm.SUBMITTING));
 //			model.setPermission(getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			String strPermission = GetterUtil.getString(doc.get(DossierTerm.MAPPING_PERMISSION));
+			_log.info("StrPermission: " +strPermission);
 			if (Validator.isNotNull(strPermission)) {
 				String[] permissionArr = strPermission.split(StringPool.SPACE);
 				if (permissionArr != null) {
 					for (String permission: permissionArr) {
-						if (Validator.isNotNull(permission) && permission.contains(String.valueOf(userId))) {
+//						if (Validator.isNotNull(permission) && permission.contains(String.valueOf(userId))) {
+						if (Validator.isNotNull(permission)) {
 							model.setPermission(permission);
 							break;
 						} else {

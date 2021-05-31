@@ -3272,6 +3272,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
 			else {
+				_log.info("Tìm kiếm theo Action Mapping UserIddff");
 				MultiMatchQuery query =
 						new MultiMatchQuery(String.valueOf(userId));
 				query.addField(DossierTerm.ACTION_MAPPING_USERID);

@@ -764,8 +764,23 @@ public class DossierManagementImpl implements DossierManagement {
 				if (fromViaPostal != null) {
 					params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
 				}
-				// Nếu donvigui == _scope ==> Get Employee lấy được _scope gán giá trị cho param
+				String roleViewAll = StringPool.BLANK;
+				String roleViewGroup = StringPool.BLANK;
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				// Tạo role theo dõi tất cả hồ sơ GLOBAL_VIEW_ALL, GLOBAL_VIEW_GROUP
+				List<Role> userRoles = user.getRoles();
+				boolean globalViewAll = false;
+				boolean globalViewGroup = false;
+				for (Role r : userRoles) {
+					if (r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_ALL)) {
+						globalViewAll = true;
+						break;
+					}else if(r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_GROUP)){
+						globalViewGroup = true;
+						break;
+					}
+				}
+				// Nếu donvigui == _scope ==> Get Employee lấy được _scope gán giá trị cho param
 				String donvigui = query.getDonvigui();
 				if (Validator.isNotNull(donvigui)) {
 					String[] donviguiArr = donvigui.split(StringPool.COMMA);
