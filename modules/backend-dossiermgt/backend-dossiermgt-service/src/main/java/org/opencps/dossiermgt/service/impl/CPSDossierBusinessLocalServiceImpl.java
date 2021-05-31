@@ -1490,7 +1490,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			logLineLevelDoActionInside(29, dossierIDString);
 		}catch (Exception e){
 			logLineLevelDoActionInside(30, dossierIDString);
-			_log.error(e);
+			_log.error("Error while doActionInsideProcess! Configurate Debug Log org.opencps.dossiermgt.service.impl.CPSDossierBusinessLocalServiceImpl for more details! ");
+			_log.debug(e);
 		}
 		logLineLevelDoActionInside(31, dossierIDString);
 		//Update dossier

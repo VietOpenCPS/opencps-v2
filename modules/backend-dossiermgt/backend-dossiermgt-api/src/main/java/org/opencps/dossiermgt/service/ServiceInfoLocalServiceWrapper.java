@@ -40,7 +40,8 @@ public class ServiceInfoLocalServiceWrapper implements ServiceInfoLocalService,
 		String conditionText, String durationText, String applicantText,
 		String resultText, String regularText, String feeText,
 		String administrationCode, String domainCode, int maxLevel,
-		boolean activeStatus, String govAgencyText, String tagCode, String tagName,
+		boolean activeStatus, String govAgencyText, String tagCode,
+		String tagName,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _serviceInfoLocalService.addServiceInfo(userId, groupId,
@@ -431,14 +432,16 @@ public class ServiceInfoLocalServiceWrapper implements ServiceInfoLocalService,
 		String dossierText, String conditionText, String durationText,
 		String applicantText, String resultText, String regularText,
 		String feeText, String administrationCode, String domainCode,
-		int maxLevel, boolean activeStatus, String govAgencyText, String tagCode, String tagName,
+		int maxLevel, boolean activeStatus, String govAgencyText,
+		String tagCode, String tagName,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _serviceInfoLocalService.updateServiceInfo(groupId,
 			serviceInfoId, serviceCode, serviceName, processText, methodText,
 			dossierText, conditionText, durationText, applicantText,
 			resultText, regularText, feeText, administrationCode, domainCode,
-			maxLevel, activeStatus, govAgencyText, tagCode, tagName, serviceContext);
+			maxLevel, activeStatus, govAgencyText, tagCode, tagName,
+			serviceContext);
 	}
 
 	/**

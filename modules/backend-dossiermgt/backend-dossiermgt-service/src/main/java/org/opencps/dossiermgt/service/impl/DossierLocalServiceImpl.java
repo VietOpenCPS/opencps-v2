@@ -16,7 +16,9 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -6422,7 +6424,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		try {
 			return dossierPersistence.findByG_DN(groupId, dossierNo);
 		} catch (NoSuchDossierException e) {
-			_log.error(e);
+			_log.error("No Dossier exists with the key {groupId="+groupId+", dossierNo="+dossierNo+"}");
+			_log.debug(e);
 			return null;
 		}
 	}
@@ -7892,4 +7895,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public List<Dossier> fetchByNEW_DO_NO(String dossierNo) {
 		return dossierPersistence.findByNEW_DO_NO(dossierNo, 0, 10);
 	}
+	
+	public List<Dossier> findDossierBeforeDateAndDossierStatusisNull(Date date) {
+		DynamicQuery dynamicQuery = dossierLocalService.dynamicQuery();
+		dynamicQuery.add(RestrictionsFactoryUtil.lt("createDate", date));
+		dynamicQuery.add(RestrictionsFactoryUtil.isNull("dossierStatus"));
+		List<Dossier> result = dossierPersistence.findWithDynamicQuery(dynamicQuery);
+		return result;
+	}
+	
 }
