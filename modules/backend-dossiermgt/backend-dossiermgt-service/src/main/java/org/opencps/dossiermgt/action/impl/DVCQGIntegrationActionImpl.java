@@ -6,9 +6,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -16,6 +18,9 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import com.liferay.portal.kernel.json.*;
 import org.apache.commons.text.similarity.CosineSimilarity;
@@ -35,6 +40,7 @@ import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierFileUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
@@ -75,6 +81,17 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import backend.auth.api.exception.ErrorMsgModel;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  * @author trungnt
@@ -91,13 +108,20 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private static HashMap<String, JSONObject> _dictItemMapItems = new HashMap<String, JSONObject>();
 
 	private static JSONArray _serviceInfoDVCQG = JSONFactoryUtil.createJSONArray();
+	private RestTemplate restTemplate;
 
 	private Log _log = LogFactoryUtil.getLog(DVCQGIntegrationActionImpl.class);
 	private static final String LUCENE_DATE_FORMAT = "yyyyMMddHHmmss";
 	private static final String HCM_TIMEZONE = "Asia/Ho_Chi_Minh";
 	private static final String DVCQG_INTEGRATION = "DVCQG_INTEGRATION";
+	private static final Integer timeout = 10000 ;
 
 	private static final Integer TIMEOUT_DVCQG = 6;
+
+	public DVCQGIntegrationActionImpl(){
+		this.restTemplate = new RestTemplate(setConfigRestTemplate(timeout));
+		this.restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+	}
 
 	private String convertDate2String(Date date) {
 
@@ -4146,11 +4170,224 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	}
 
+	@Override
+	public JSONObject doCreateUpdateDossierFromDVCQG(Company company, User user, long groupId, ServiceContext serviceContext, JSONObject data, boolean isUpdating) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.set("Accept", "*");
+//		JSONObject configJson = getServerConfigByServerNo();
+//		String urlCall = configJson.getString(FrequencyOfficeConstants.CONFIG_URL_LOCAL)
+//				+ configJson.getString(FrequencyOfficeConstants.CONFIG_SAVE_SYNC_TRACKING);
+		try {
+			if (data == null) {
+				_log.error("HSKMBS result: " + "Data empty");
+				return createResponseMessage(result, -1, "Data empty");
+			}
+			_log.info("------------ Hồ Sơ Chứng Từ Thuế Đất -------------");
+			String MaHoSo = data.getString("MaHoSo");
+			if (Validator.isNull(MaHoSo)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "MaHoSo empty");
+				return createResponseMessage(result, -1, "MaHoSo empty");
+			}
+
+			String HoTenNguoiNopTien = data.getString("HoTenNguoiNopTien");
+			if (Validator.isNull(HoTenNguoiNopTien)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "HoTenNguoiNopTien empty");
+				return createResponseMessage(result, -1, "HoTenNguoiNopTien empty");
+			}
+
+
+			String MaSoThue = data.getString("MaSoThue");
+			if (Validator.isNull(MaSoThue)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "MaSoThue empty");
+				return createResponseMessage(result, -1, "MaSoThue empty");
+			}
+
+			String ThongTinThanhToan = data.getString("ThongTinThanhToan");
+			if (Validator.isNull(ThongTinThanhToan)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "ThongTinThanhToan empty");
+				return createResponseMessage(result, -1, "ThongTinThanhToan empty");
+			}
+
+			String UrlFileChungTu = data.getString("UrlFileChungTu");
+			if (Validator.isNull(UrlFileChungTu)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "UrlFileChungTu empty");
+				return createResponseMessage(result, -1, "UrlFileChungTu empty");
+			}
+			// Thông tin thanh toán
+			JSONObject TtttChitiet = data.getJSONObject("ThongTinThanhToan");
+			if (Validator.isNull(TtttChitiet)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "TtttChitiet empty");
+				return createResponseMessage(result, -1, "Thong tin thanh toán chi tiết empty");
+			}
+
+			String MaThongBaoThue = TtttChitiet.getString("MaThongBaoThue");
+			if (Validator.isNull(MaThongBaoThue)) {
+				_log.info("HSCTTD data: " + TtttChitiet.toJSONString());
+				_log.info("HSCTTD result: " + "MaThongBaoThue empty");
+				return createResponseMessage(result, -1, "MaThongBaoThue empty");
+			}
+
+			String ThoiGianThanhToan = TtttChitiet.getString("ThoiGianThanhToan");
+			if (Validator.isNull(ThoiGianThanhToan)) {
+				_log.info("HSCTTD data: " + TtttChitiet.toJSONString());
+				_log.info("HSCTTD result: " + "UrlFileChungTu empty");
+				return createResponseMessage(result, -1, "ThoiGianThanhToan empty");
+			}
+
+			String SoTien = TtttChitiet.getString("SoTien");
+			if (Validator.isNull(SoTien)) {
+				_log.info("HSCTTD data: " + TtttChitiet.toJSONString());
+				_log.info("HSCTTD result: " + "SoTien empty");
+				return createResponseMessage(result, -1, "SoTien empty");
+			}
+
+			String NoiDungThanhToan = TtttChitiet.getString("NoiDungThanhToan");
+			if (Validator.isNull(NoiDungThanhToan)) {
+				_log.info("HSCTTD data: " + TtttChitiet.toJSONString());
+				_log.info("HSCTTD result: " + "NoiDungThanhToan empty");
+				return createResponseMessage(result, -1, "NoiDungThanhToan empty");
+			}
+
+			int TrangThaiThanhToan = TtttChitiet.getInt("TrangThaiThanhToan");
+			if (Validator.isNull(TrangThaiThanhToan)) {
+				_log.info("HSCTTD data: " + TtttChitiet.toJSONString());
+				_log.info("HSCTTD result: " + "TrangThaiThanhToan empty");
+				return createResponseMessage(result, -1, "TrangThaiThanhToan empty");
+			}
+			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(MaHoSo);
+			if(Validator.isNotNull(dossier)) {
+				ReportLandTaxLocalServiceUtil.addReportLandTax(groupId, MaHoSo, data.toString(), "", serviceContext);
+				_log.info("Saved tracking!!!");
+			}else{
+				return createResponseMessage(result, 0,  MaHoSo+"| không tồn tại trên hệ thống");
+			}
+			return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
+		} catch (Exception e) {
+			e.getMessage();
+			_log.error(e);
+		}
+		return result;
+	}
+
+
+	@Override
+	public JSONObject doCrUpDossierThongBaoThueDatDVCQG(Company company, User user, long groupId,
+														ServiceContext serviceContext, JSONObject data, boolean isUpdating) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.set("Accept", "*");
+//
+//		JSONObject configJson = getServerConfigByServerNo();
+//		String urlCall = configJson.getString(FrequencyOfficeConstants.CONFIG_URL_LOCAL)
+//				+ configJson.getString(FrequencyOfficeConstants.CONFIG_SAVE_SYNC_TRACKING);
+		String msHS = StringPool.BLANK;
+		try {
+			if (data == null) {
+				_log.error("HSKMBS result: " + "Data empty");
+				return createResponseMessage(result, -1, "Data empty");
+			}
+			_log.info("------------ Hồ Sơ nhận thông báo Thuế Đất -------------");
+			String FileThongBaoThue = data.getString("FileThongBaoThue");
+			if (Validator.isNull(FileThongBaoThue)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "FileThongBaoThue empty");
+				return createResponseMessage(result, -1, "FileThongBaoThue empty");
+			}else{
+				byte[] decodedBytes = Base64.getDecoder().decode(FileThongBaoThue);
+				String xmlFileThongBaoThue = new String(decodedBytes);
+				Document xml = convertStringToXMLDocument(xmlFileThongBaoThue);
+
+				NodeList childs = xml.getElementsByTagName("MA_HSO");
+				Node child;
+
+				for (int i = 0; i < childs.getLength(); i++) {
+					child = childs.item(i);
+					child.getFirstChild();
+					_log.info("MA_HS: " + child.getTextContent());
+					Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(child.getTextContent());
+					msHS += child.getTextContent() + ",";
+					if(Validator.isNotNull(dossier)) {
+						ReportLandTaxLocalServiceUtil.addReportLandTax(groupId, child.getTextContent(), xmlFileThongBaoThue, "", serviceContext);
+						_log.info("Saved tracking!!!");
+					}else{
+						createResponseMessage(result, 0,  msHS+"| không tồn tại trên hệ thống");
+					}
+				}
+			}
+			return createResponseMessage(result, 0,  msHS+"| create dossier success");
+		}catch (Exception e){
+			e.getMessage();
+			_log.error(e);
+		}
+
+		return result;
+	}
+
 	private JSONObject createResponseMessage(JSONObject object, int status, String message, String desc) {
 		object.put("status", status);
 		object.put("message", message);
 		object.put("description", desc);
 		return object;
+	}
+
+	private static Document convertStringToXMLDocument(String xmlString) throws ParserConfigurationException {
+		//Parser that produces DOM object trees from XML content
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+		//API to obtain DOM Document instance
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		try
+		{
+			//Create DocumentBuilder with default configuration
+			builder = factory.newDocumentBuilder();
+
+			//Parse the content to Document object
+			InputSource is = new InputSource(new StringReader(xmlString));
+
+			Document doc = builder.parse(is);
+			return doc;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	private ClientHttpRequestFactory setConfigRestTemplate(Integer timeout) {
+		HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
+				= new HttpComponentsClientHttpRequestFactory();
+		clientHttpRequestFactory.setConnectTimeout(timeout);
+		return clientHttpRequestFactory;
+	}
+
+	private static final String SERVER_CONFIG_NULL = "There is no server config frequency";
+	private static final String PARSE_CONFIG_JSON_FAIL= "Create object json from config error";
+	public JSONObject getServerConfigByServerNo() {
+		// Get ServerConfig
+		List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByProtocol("API_SYNC_TRACKING");
+		JSONObject configJson = JSONFactoryUtil.createJSONObject();
+		try {
+			ServerConfig serverConfig = listConfig.get(0);
+			if (Validator.isNull(serverConfig.getConfigs())
+					|| serverConfig.getConfigs().isEmpty()) {
+				throw new Exception(SERVER_CONFIG_NULL);
+			}
+			configJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+
+			if (Validator.isNull(configJson)) {
+				throw new Exception(PARSE_CONFIG_JSON_FAIL);
+			}
+		} catch (Exception e) {
+			e.getMessage();
+		}
+		return configJson;
 	}
 
 	private String _DEFAULT_CLASS_NAME = "dvcqg";

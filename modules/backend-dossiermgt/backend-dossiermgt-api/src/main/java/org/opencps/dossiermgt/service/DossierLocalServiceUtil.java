@@ -17,7 +17,6 @@ package org.opencps.dossiermgt.service;
 import com.liferay.portal.kernel.exception.PortalException;
 
 import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
@@ -471,7 +470,7 @@ public class DossierLocalServiceUtil {
 		return getService().findDossierByGroup(groupId);
 	}
 
-	public static DossierDocument findDossierDocumentByDossierId(
+	public static org.opencps.dossiermgt.model.DossierDocument findDossierDocumentByDossierId(
 		long dossierDocumentId) {
 		return getService().findDossierDocumentByDossierId(dossierDocumentId);
 	}

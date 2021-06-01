@@ -32,6 +32,10 @@ public class SyncTrackingQuery {
     public Integer start;
     @QueryParam(value = "end")
     public Integer end;
+    @QueryParam(value = "userId")
+    public long userId;
+    @QueryParam(value = "userName")
+    public String userName;
     public String bodyRequest;
     public String bodyResponse;
     public String toUnitSingle;

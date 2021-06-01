@@ -647,14 +647,14 @@ public class DossierNumberGenerator {
 				counterConfig.setCurrentId(_counterNumber);
 				CounterLocalServiceUtil.updateCounter(counterConfig);
 					
-				} else {
-					_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
-					counterConfig = CounterLocalServiceUtil.createCounter(certConfigName);
-					//increment CurrentCounter 
-					counterConfig.setCurrentId(1);
-					_counterNumber = 1;
-					CounterLocalServiceUtil.updateCounter(counterConfig);
-				}
+			} else {
+				_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+				counterConfig = CounterLocalServiceUtil.createCounter(certConfigName);
+				//increment CurrentCounter
+				counterConfig.setCurrentId(1);
+				_counterNumber = 1;
+				CounterLocalServiceUtil.updateCounter(counterConfig);
+			}
 		} catch (Exception e) {
 			_log.debug(e);
 		}

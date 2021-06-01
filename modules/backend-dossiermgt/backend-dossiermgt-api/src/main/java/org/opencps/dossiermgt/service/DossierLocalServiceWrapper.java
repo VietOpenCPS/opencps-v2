@@ -18,12 +18,13 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceWrapper;
 
 import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 
 import aQute.bnd.annotation.ProviderType;
+
+import com.liferay.portal.kernel.service.ServiceWrapper;
 
 /**
  * Provides a wrapper for {@link DossierLocalService}.
@@ -503,7 +504,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
-	public DossierDocument findDossierDocumentByDossierId(
+	public org.opencps.dossiermgt.model.DossierDocument findDossierDocumentByDossierId(
 		long dossierDocumentId) {
 		return _dossierLocalService.findDossierDocumentByDossierId(dossierDocumentId);
 	}

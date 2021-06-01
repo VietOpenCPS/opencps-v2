@@ -198,6 +198,29 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
     }
 
     @Override
+    public boolean createSynTrackingDVCQG(SyncTrackingQuery syncTrackingQuery) throws Exception {
+        try {
+            if (Validator.isNull(syncTrackingQuery)) {
+                throw new Exception("No body param was found");
+            }
+
+            if (Validator.isNull(syncTrackingQuery.groupId) || syncTrackingQuery.groupId == 0) {
+                throw new Exception("No groupId was found");
+            }
+
+            if (Validator.isNull(syncTrackingQuery.bodyRequest) || syncTrackingQuery.bodyRequest.isEmpty()) {
+                throw new Exception("No from unit code was found");
+            }
+
+            SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
+            return true;
+        } catch (Exception e) {
+            _log.error(e);
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
     public boolean resend(SyncTrackingQuery syncTrackingQuery, JSONObject config) throws Exception {
         try {
             if(Validator.isNull(syncTrackingQuery.trackingId) || syncTrackingQuery.trackingId == 0) {

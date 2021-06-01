@@ -458,6 +458,13 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByMonthYearREPO_ARR(
+		int[] months, int[] years, int[] reportings) {
+		return _opencpsDossierStatisticLocalService.findByMonthYearREPO_ARR(months,
+			years, reportings);
+	}
+
+	@Override
 	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByNOT_GROUPID(
 		long groupId) {
 		return _opencpsDossierStatisticLocalService.findByNOT_GROUPID(groupId);
