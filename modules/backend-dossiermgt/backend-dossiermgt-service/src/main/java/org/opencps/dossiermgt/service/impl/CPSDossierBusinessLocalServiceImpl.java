@@ -15,16 +15,12 @@
 package org.opencps.dossiermgt.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import backend.auth.api.exception.BusinessExceptionImpl;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.EntityCache;
-import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -45,7 +41,6 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -57,15 +52,18 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
-import java.io.*;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.sql.Timestamp;
-import java.text.*;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -73,18 +71,14 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.adminconfig.model.DynamicReport;
 import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
@@ -115,37 +109,57 @@ import org.opencps.dossiermgt.action.DossierUserActions;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
-import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.util.AccentUtils;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.ConfigCounterNumberGenerator;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
-import org.opencps.dossiermgt.action.util.KeyPay;
 import org.opencps.dossiermgt.action.util.NotificationUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.VNPostCLSUtils;
-import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
-import org.opencps.dossiermgt.constants.*;
+import org.opencps.dossiermgt.constants.ActionConfigTerm;
+import org.opencps.dossiermgt.constants.CInvoiceTerm;
+import org.opencps.dossiermgt.constants.CacheTerm;
+import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierActionUserTerm;
+import org.opencps.dossiermgt.constants.DossierDocumentTerm;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.constants.DossierSyncTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
+import org.opencps.dossiermgt.constants.NotarizationTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.constants.ServiceProcessTerm;
+import org.opencps.dossiermgt.constants.StepConfigTerm;
+import org.opencps.dossiermgt.constants.VTPayTerm;
+import org.opencps.dossiermgt.constants.VnpostCollectionTerm;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
-import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
+import org.opencps.dossiermgt.input.model.FrequencyDoAction;
 import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.input.model.ProfileInModel;
-import org.opencps.dossiermgt.input.model.FrequencyDoAction;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.ConfigCounter;
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -170,14 +184,31 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
-import org.opencps.dossiermgt.model.DeliverableType;
-import org.opencps.dossiermgt.model.impl.DossierImpl;
-import org.opencps.dossiermgt.model.impl.DossierModelImpl;
-import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
-import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
-import org.opencps.dossiermgt.service.*;
+import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ConfigCounterLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.NotarizationLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.CPSDossierBusinessLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
@@ -226,7 +257,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	private static final String BN_EMAIL = "BN_email";
 
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
-	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
+//	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
 
 	public static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
 	public static final String PAYLOAD_KEY_COMPLEMENT_DATE = "complementDate";
@@ -576,8 +607,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 		}
 	}
-	private static final int MAX_TRY_COUNT = 10;
-	private static final String QRCODE_PAY = "qrcode_pay";
 	private boolean createDossierDocumentPostAction(long groupId, long userId, Dossier dossier,
 			DossierAction dossierAction, JSONObject payloadObject, Employee employee, User user,
 			String documentTypeList, ServiceContext context)
@@ -875,7 +904,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 	private void doMappingAction(long groupId, long userId, Employee employee, Dossier dossier,
 								 ActionConfig actionConfig, String actionUser, String actionNote, String payload, String assignUsers,
-								 String payment, long dossierIdHSLL, ServiceContext context) throws PortalException, Exception {
+								 String payment, long dossierIdHSLL, ServiceContext context) throws Exception {
 		ActionConfig mappingConfig = actionConfigLocalService.getByCode(groupId, actionConfig.getMappingAction());
 		_log.debug("Mapping ACTION: " + mappingConfig.getActionCode());
 		if (dossier.getOriginDossierId() != 0) {
@@ -2823,7 +2852,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
-				_log.debug(333333);
 				_log.debug("==========Payment before add paygov111: " + epaymentConfigJSON);
 				if (epaymentConfigJSON.has(KeyPayTerm.PAYGOV_CONFIG)) {
 					try {
@@ -3161,195 +3189,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return lsDesc;
 	}
 
-	private long _genetatorTransactionId() {
-
-		long transactionId = 0;
-		try {
-			transactionId = counterLocalService.increment(PaymentFile.class.getName() + ".genetatorTransactionId");
-		} catch (SystemException e) {
-			_log.error(e);
-		}
-		return transactionId;
-	}
-
-	private String generatorPayURL(long groupId, long paymentFileId, String pattern, Dossier dossier)
-			throws IOException {
-		String result = StringPool.BLANK;
-		try {
-			PaymentFile paymentFile = paymentFileLocalService.getPaymentFile(paymentFileId);
-			PaymentConfig paymentConfig = paymentConfigLocalService.getPaymentConfigByGovAgencyCode(groupId,
-					dossier.getGovAgencyCode());
-
-			if (Validator.isNotNull(paymentConfig)) {
-				List<String> lsMessages = _putPaymentMessage(pattern);
-
-				long merchant_trans_id = _genetatorTransactionId();
-
-				JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
-
-				String merchant_code = epaymentConfigJSON.getString("paymentMerchantCode");
-
-				String good_code = generatorGoodCode(10);
-
-				String net_cost = String.valueOf(paymentFile.getPaymentAmount());
-
-				String ship_fee = String.valueOf(0);
-				String tax = String.valueOf(0);
-
-				String bank_code = StringPool.BLANK;
-
-				String service_code = epaymentConfigJSON.getString("paymentServiceCode");
-				String version = epaymentConfigJSON.getString("paymentVersion");
-				String command = epaymentConfigJSON.getString("paymentCommand");
-				String currency_code = epaymentConfigJSON.getString("paymentCurrencyCode");
-
-				String desc_1 = StringPool.BLANK;
-				String desc_2 = StringPool.BLANK;
-				String desc_3 = StringPool.BLANK;
-				String desc_4 = StringPool.BLANK;
-				String desc_5 = StringPool.BLANK;
-
-				if (lsMessages.size() > 0) {
-					desc_1 = lsMessages.get(0);
-					desc_2 = lsMessages.get(1);
-					desc_3 = lsMessages.get(2);
-					desc_4 = lsMessages.get(3);
-					desc_5 = lsMessages.get(4);
-
-					if (desc_1.length() >= 20) {
-						desc_1 = desc_1.substring(0, 19);
-					}
-					if (desc_2.length() >= 30) {
-						desc_2 = desc_2.substring(0, 29);
-					}
-					if (desc_3.length() >= 40) {
-						desc_3 = desc_3.substring(0, 39);
-					}
-					if (desc_4.length() >= 100) {
-						desc_4 = desc_4.substring(0, 89);
-					}
-					if (desc_5.length() > 15) {
-						desc_5 = desc_5.substring(0, 15);
-
-						if (!Validator.isDigit(desc_5)) {
-							desc_5 = StringPool.BLANK;
-						}
-					}
-				}
-
-				String xml_description = StringPool.BLANK;
-				String current_locale = epaymentConfigJSON.getString("paymentCurrentLocale");
-				String country_code = epaymentConfigJSON.getString("paymentCountryCode");
-				String internal_bank = epaymentConfigJSON.getString("paymentInternalBank");
-
-				String merchant_secure_key = epaymentConfigJSON.getString("paymentMerchantSecureKey");
-				String algorithm = KeyPayTerm.VALUE_MD5;
-				if (epaymentConfigJSON.has("paymentHashAlgorithm")) {
-					algorithm = epaymentConfigJSON.getString("paymentHashAlgorithm");
-				}
-				// dossier = _getDossier(dossierId);
-
-				// TODO : update returnURL keyPay
-
-				String return_url;
-				_log.debug("SONDT GENURL paymentReturnUrl ====================== "
-						+ JSONFactoryUtil.looseSerialize(epaymentConfigJSON));
-				//				return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "/" + dossier.getReferenceUid() + "/" + paymentFile.getReferenceUid();
-				return_url = epaymentConfigJSON.getString("paymentReturnUrl") + "&dossierId=" + dossier.getDossierId()
-						+ "&goodCode=" + good_code + "&transId=" + merchant_trans_id + "&referenceUid="
-						+ dossier.getReferenceUid();
-				_log.debug("SONDT GENURL paymentReturnUrl ====================== " + return_url);
-				// http://119.17.200.66:2681/web/bo-van-hoa/dich-vu-cong/#/thanh-toan-thanh-cong?paymentPortal=KEYPAY&dossierId=77603&goodCode=123&transId=555
-				KeyPay keypay = new KeyPay(String.valueOf(merchant_trans_id), merchant_code, good_code, net_cost,
-						ship_fee, tax, bank_code, service_code, version, command, currency_code, desc_1, desc_2, desc_3,
-						desc_4, desc_5, xml_description, current_locale, country_code, return_url, internal_bank,
-						merchant_secure_key, algorithm);
-
-				// keypay.setKeypay_url(paymentConfig.getKeypayDomain());
-
-				StringBuffer param = new StringBuffer();
-				param.append(KeyPayTerm.MERCHANT_CODE_EQ)
-						.append(URLEncoder.encode(keypay.getMerchant_code(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				//				param.append(KeyPayTerm.MERCHANT_SECURE_KEY_EQ).append(URLEncoder.encode(keypay.getMerchant_secure_key(), StandardCharsets.UTF_8.name()))
-				//						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.BANK_CODE_EQ)
-						.append(URLEncoder.encode(keypay.getBank_code(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.INTERNAL_BANK_EQ)
-						.append(URLEncoder.encode(keypay.getInternal_bank(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.MERCHANT_TRANS_ID_EQ)
-						.append(URLEncoder.encode(keypay.getMerchant_trans_id(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.GOOD_CODE_EQ)
-						.append(URLEncoder.encode(keypay.getGood_code(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.NET_COST_EQ)
-						.append(URLEncoder.encode(keypay.getNet_cost(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.SHIP_FEE_EQ)
-						.append(URLEncoder.encode(keypay.getShip_fee(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.TAX_EQ)
-						.append(URLEncoder.encode(keypay.getTax(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.RETURN_URL_EQ)
-						.append(URLEncoder.encode(keypay.getReturn_url(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.VERSION_EQ)
-						.append(URLEncoder.encode(keypay.getVersion(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.COMMAND_EQ)
-						.append(URLEncoder.encode(keypay.getCommand(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.CURRENT_LOCALE_EQ)
-						.append(URLEncoder.encode(keypay.getCurrent_locale(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.CURRENCY_CODE_EQ)
-						.append(URLEncoder.encode(keypay.getCurrency_code(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.SERVICE_CODE_EQ)
-						.append(URLEncoder.encode(keypay.getService_code(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.COUNTRY_CODE_EQ)
-						.append(URLEncoder.encode(keypay.getCountry_code(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-
-				param.append(KeyPayTerm.DESC_1_EQ)
-						.append(URLEncoder.encode(keypay.getDesc_1(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.DESC_2_EQ)
-						.append(URLEncoder.encode(keypay.getDesc_2(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.DESC_3_EQ)
-						.append(URLEncoder.encode(keypay.getDesc_3(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.DESC_4_EQ)
-						.append(URLEncoder.encode(keypay.getDesc_4(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.DESC_5_EQ)
-						.append(URLEncoder.encode(keypay.getDesc_5(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.XML_DESCRIPTION_EQ)
-						.append(URLEncoder.encode(keypay.getXml_description(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.SECURE_HASH_EQ).append(keypay.getSecure_hash());
-
-				result = epaymentConfigJSON.getString(KeyPayTerm.PAYMENTKEYPAYDOMAIN) + StringPool.QUESTION
-						+ param.toString();
-
-			}
-
-		} catch (NoSuchPaymentFileException e) {
-			_log.debug(e);
-		} catch (Exception e) {
-			_log.debug(e);
-		}
-
-		return result;
-	}
-
 	private Map<String, Object> createParamsInvoice(PaymentFile oldPaymentFile, Dossier dossier, int intpaymentMethod) {
 		Map<String, Object> params = new HashMap<>();
 
@@ -3430,19 +3269,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 		}
 		return paymentMethod;
-	}
-
-	private String checkPaymentMethod(int mt) {
-		String pmMethod = StringPool.BLANK;
-		if (mt == 1) {
-			pmMethod = KeyPayTerm.PM_METHOD_1; //KeyPay
-		} else if (mt == 2) {
-			pmMethod = KeyPayTerm.PM_METHOD_2;
-		} else if (mt == 3) {
-			pmMethod = KeyPayTerm.PM_METHOD_3;
-		}
-
-		return pmMethod;
 	}
 
 	private JSONObject getStatusText(long groupId, String collectionCode, String curStatus, String curSubStatus) {
@@ -4771,121 +4597,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return jsonSequenceArr;
 	}
 
-	private void vnpostHN_CLS(long groupId, Dossier dossier) {
-		try {
-
-			ServerConfig config = ServerConfigLocalServiceUtil.getByCode(groupId, ServerConfigTerm.SERVER_VNPOST_HN);
-			_log.debug("SERVER PROXY: " + config.getConfigs());
-			if (config != null) {
-				JSONObject configObj = JSONFactoryUtil.createJSONObject(config.getConfigs());
-				String authStrEnc = StringPool.BLANK;
-				String serverUrl = StringPool.BLANK;
-
-				StringBuilder sb = new StringBuilder();
-				try
-				{
-					StringBuilder postData = new StringBuilder();
-					//
-					postData.append(DossierTerm.DOSSIER_ID);
-					postData.append(StringPool.EQUAL);
-					postData.append(dossier.getDossierId());
-					//
-					postData.append(StringPool.AMPERSAND);
-					postData.append("MaThuTuc");
-					postData.append(StringPool.EQUAL);
-					postData.append(dossier.getServiceCode());
-					//
-					postData.append(StringPool.AMPERSAND);
-					postData.append("TenThuTuc");
-					postData.append(StringPool.EQUAL);
-					postData.append(dossier.getServiceName());
-					//
-					postData.append(StringPool.AMPERSAND);
-					postData.append("MaHoSo");
-					postData.append(StringPool.EQUAL);
-					postData.append(dossier.getDossierNo());
-					//
-					postData.append(StringPool.AMPERSAND);
-					postData.append("LePhi");
-					postData.append(StringPool.EQUAL);
-					postData.append("");
-					//
-					postData.append(StringPool.AMPERSAND);
-					postData.append("ChuHoSo");
-					postData.append(StringPool.EQUAL);
-					postData.append(dossier.getApplicantName());
-					//
-					postData.append(StringPool.AMPERSAND);
-					postData.append("NguoiNop");
-					postData.append(StringPool.EQUAL);
-					postData.append(dossier.getDelegateName());
-					//
-					postData.append(StringPool.AMPERSAND);
-					postData.append("CMT");
-					postData.append(StringPool.EQUAL);
-					postData.append(dossier.getApplicantIdNo());
-					//
-					postData.append(StringPool.AMPERSAND);
-					postData.append("DiaChi");
-					postData.append(StringPool.EQUAL);
-					postData.append(dossier.getAddress());
-					//
-					postData.append(StringPool.AMPERSAND);
-					postData.append("NgayTiepNhan");
-					postData.append(StringPool.EQUAL);
-					postData.append(dossier.getReceiveDate());
-					//
-					postData.append(StringPool.AMPERSAND);
-					postData.append("DiaChiBC");
-					postData.append(StringPool.EQUAL);
-					postData.append(dossier.getPostalAddress());
-
-					if (configObj.has(SyncServerTerm.SERVER_USERNAME)
-							&& configObj.has(SyncServerTerm.SERVER_SECRET)
-							&& configObj.has(SyncServerTerm.SERVER_URL)) {
-						authStrEnc = Base64.getEncoder().encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME) + ":" + configObj.getString(SyncServerTerm.SERVER_SECRET)).getBytes());
-						serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
-					}
-
-					URL urlVal = new URL(serverUrl);
-					_log.debug("API URL: " + serverUrl);
-
-					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
-					conn.setRequestMethod(HttpMethod.POST);
-					conn.setRequestProperty(HttpHeaders.ACCEPT, "application/json");
-					conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
-
-					String authorization = "Basic " + authStrEnc;
-					conn.setRequestProperty(HttpHeaders.AUTHORIZATION, authorization);
-					_log.debug("BASIC AUTHEN: " + authStrEnc);
-					conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
-					conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
-
-					conn.setUseCaches(false);
-					conn.setDoInput(true);
-					conn.setDoOutput(true);
-					_log.debug("POST DATA: " + postData.toString());
-					OutputStream os = conn.getOutputStream();
-					os.write( postData.toString().getBytes() );
-					os.close();
-
-					BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-					int cp;
-					while ((cp = brf.read()) != -1) {
-						sb.append((char) cp);
-					}
-					_log.debug("sb.tostring : "+ sb.toString());
-				}
-				catch (IOException e) {
-					_log.error(e);
-				}
-			}
-		}
-		catch (Exception e) {
-			_log.debug(e);
-		}
-	}
-
 	private void vnpostEvent(Dossier dossier, long dossierActionId) {
 		Message message = new Message();
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
@@ -5170,44 +4881,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		return dossier;
-	}
-
-	private String generatorGoodCode(int length) {
-
-		String tempGoodCode = _generatorUniqueString(length);
-
-		String goodCode;
-
-		while (_checkContainsGoodCode(tempGoodCode)) {
-			tempGoodCode = _generatorUniqueString(length);
-		}
-
-		/*
-		 * while(_testCheck(tempGoodCode)) { tempGoodCode =
-		 * _generatorUniqueString(length); }
-		 */
-		goodCode = tempGoodCode;
-
-		return goodCode;
-	}
-
-	private boolean _checkContainsGoodCode(String keypayGoodCode) {
-
-		boolean isContains = false;
-
-		try {
-			PaymentFile paymentFile = null;//PaymentFileLocalServiceUtil.getByGoodCode(keypayGoodCode);
-
-			if (Validator.isNotNull(paymentFile)) {
-				isContains = true;
-			}
-		} catch (Exception e) {
-			_log.error(e);
-			isContains = true;
-		}
-
-		return isContains;
-
 	}
 
 	private DossierAction doActionOutsideProcess(long groupId, long userId, Dossier dossier, ActionConfig actionConfig,
@@ -5613,27 +5286,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 		}
-
-	}
-
-	/**
-	 * @param lenght
-	 * @return
-	 */
-	private String _generatorUniqueString(int lenght) {
-
-		char[] chars = KeyPayTerm.ZERO_TO_NINE.toCharArray();
-
-		StringBuilder sb = new StringBuilder();
-
-		Random random = new Random();
-
-		for (int i = 0; i < lenght; i++) {
-			char c = chars[random.nextInt(chars.length)];
-			sb.append(c);
-		}
-
-		return sb.toString();
 
 	}
 
@@ -8463,7 +8115,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 												 ServiceContext serviceContext, Attachment file, String id, String referenceUid, String dossierTemplateNo,
 												 String dossierPartNo, String fileTemplateNo, String displayName, String fileType, String isSync,
 												 String formData, String removed, String eForm, Long modifiedDate)
-			throws UnauthenticationException, PortalException, Exception {
+			throws Exception {
 		BackendAuth auth = new BackendAuthImpl();
 
 		if (!auth.isAuth(serviceContext)) {
@@ -8723,7 +8375,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
 			Exception.class })
 	public DossierFile updateDossierFile(long groupId, Company company, ServiceContext serviceContext, long id,
-										 String referenceUid, Attachment file) throws UnauthenticationException, PortalException, Exception {
+										 String referenceUid, Attachment file) throws Exception {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -8750,7 +8402,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
 			Exception.class })
 	public DossierFile updateDossierFileFormData(long groupId, Company company, ServiceContext serviceContext, long id,
-												 String referenceUid, String formdata) throws UnauthenticationException, PortalException, Exception {
+												 String referenceUid, String formdata) throws Exception {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -8775,7 +8427,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Exception.class })
 	public DossierFile resetformdataDossierFileFormData(long groupId, Company company, ServiceContext serviceContext,
 														long id, String referenceUid, String formdata)
-			throws UnauthenticationException, PortalException, Exception {
+			throws Exception {
 		BackendAuth auth = new BackendAuthImpl();
 
 		if (!auth.isAuth(serviceContext)) {
@@ -8821,7 +8473,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
 			Exception.class })
 	public PaymentFile createPaymentFileByDossierId(long groupId, ServiceContext serviceContext, String id,
-													PaymentFileInputModel input) throws UnauthenticationException, PortalException, Exception {
+													PaymentFileInputModel input) throws Exception {
 		long userId = serviceContext.getUserId();
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -8934,7 +8586,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Exception.class })
 	public Dossier addDossierPublish(long groupId, Company company, User user, ServiceContext serviceContext,
 									 org.opencps.dossiermgt.input.model.DossierPublishModel input)
-			throws UnauthenticationException, PortalException, Exception {
+			throws Exception {
 
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
@@ -9401,7 +9053,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				double durationCount = 0;
 				int durationUnit = 0;
-				if (serviceProcess != null) {
+
+				if (Validator.isNotNull(serviceProcess)) {
 					durationCount = serviceProcess.getDurationCount();
 					durationUnit = serviceProcess.getDurationUnit();
 					dossier.setDurationCount(durationCount);
@@ -9418,7 +9071,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setOnline(online);
 				if (Validator.isNotNull(input.getDossierName()))
 					dossier.setDossierName(input.getDossierName());
-				if (serviceProcess != null) {
+				if (Validator.isNotNull(serviceProcess)) {
 					dossier.setProcessNo(serviceProcess.getProcessNo());
 				}
 
@@ -9467,8 +9120,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setSampleCount(sampleCount);
 
 				updateDelegateApplicant(dossier, input);
-
-				if (process != null) {
+				if (Validator.isNotNull(process)) {
 					dossier.setProcessNo(process.getProcessNo());
 				}
 				//					dossier = DossierLocalServiceUtil.updateDossier(dossier);
@@ -9550,7 +9202,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			//				DossierLocalServiceUtil.updateDossier(dossier);
 
-			if (dossier != null) {
+			if (Validator.isNotNull(dossier)) {
+//			if (dossier != null) {
 				//
 				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
 
@@ -9610,13 +9263,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	public static final String ADMINISTRATIVE_REGION = ReadFilePropertiesUtils
 			.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION);
 	public static final String VNPOST_CITY_CODE = ReadFilePropertiesUtils.get(ConstantUtils.VNPOST_CITY_CODE);
-	public static final String REGISTER_BOOK = ReadFilePropertiesUtils.get(ConstantUtils.REGISTER_BOOK);
+//	public static final String REGISTER_BOOK = ReadFilePropertiesUtils.get(ConstantUtils.REGISTER_BOOK);
 
 	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
 	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
 
 	private static ProcessAction getProcessAction(long userId, long groupId, Dossier dossier, String actionCode,
-												  long serviceProcessId) throws PortalException {
+												  long serviceProcessId) {
 
 		//_log.debug("GET PROCESS ACTION____");
 		ProcessAction action = null;
@@ -9757,7 +9410,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Exception.class })
 	public Dossier eparPublish(long groupId, Company company, User user, ServiceContext serviceContext, long id,
 							   org.opencps.dossiermgt.input.model.DossierPublishModel input)
-			throws UnauthenticationException, PortalException, Exception {
+			throws Exception {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -10027,5 +9680,5 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return result;
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);
+	private static final Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);
 }
