@@ -16,12 +16,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-
 import org.opencps.backend.systemlogmgt.service.SystemLogLocalServiceUtil;
-import org.opencps.backend.systemlogmgt.service.SystemLogServiceTest;
 import org.opencps.backend.systemlogmgt.service.SystemLogServiceTestUtil;
 import org.opencps.backend.systemlogmgt.constant.Constants;
 import org.opencps.backend.systemlogmgt.model.SystemLog;
+
 
 /**
  * @author trungnt
