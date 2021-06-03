@@ -173,4 +173,12 @@ public interface DVCQGIManagement {
 	public Response doSyncServiceConfig(@Context HttpServletRequest request,
 			@Context HttpServletResponse response, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext, String body);
+
+	@POST
+	@Path("/nhantbthuedvcqg")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response doCreateDossierNhanTBThue(@Context HttpServletRequest request,
+														 @Context HttpServletResponse response, @Context HttpHeaders header, @Context Company company,
+														 @Context Locale locale, @Context User user, @Context ServiceContext serviceContext, String body);
 }

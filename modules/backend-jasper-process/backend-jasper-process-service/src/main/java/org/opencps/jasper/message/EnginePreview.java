@@ -48,7 +48,6 @@ public class EnginePreview implements MessageListener {
                 	return true;
                 }
             } catch (JSONException e) {
-				_log.error(e);
                 return false;
             }
         }

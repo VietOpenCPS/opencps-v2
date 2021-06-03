@@ -444,6 +444,11 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 			domainCode, groupAgencyCode, system);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByMonthYearREPO_ARR(
+		int[] months, int[] years, int[] reportings) {
+		return getService().findByMonthYearREPO_ARR(months, years, reportings);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByNOT_GROUPID(
 		long groupId) {
 		return getService().findByNOT_GROUPID(groupId);
@@ -452,6 +457,11 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByREPO_ARR(
 		int[] reporting) {
 		return getService().findByREPO_ARR(reporting);
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByYearREPO_ARR(
+		int[] years, int[] reportings) {
+		return getService().findByYearREPO_ARR(years, reportings);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {

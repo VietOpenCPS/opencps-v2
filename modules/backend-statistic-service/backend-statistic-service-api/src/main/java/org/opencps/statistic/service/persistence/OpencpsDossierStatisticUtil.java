@@ -4932,6 +4932,571 @@ public class OpencpsDossierStatisticUtil {
 	}
 
 	/**
+	* Returns all the opencps dossier statistics where month = &#63; and year = &#63; and reporting = &#63;.
+	*
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @return the matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_M_Y_REPO(int month,
+		int year, int reporting) {
+		return getPersistence().findByF_M_Y_REPO(month, year, reporting);
+	}
+
+	/**
+	* Returns a range of all the opencps dossier statistics where month = &#63; and year = &#63; and reporting = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @return the range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_M_Y_REPO(int month,
+		int year, int reporting, int start, int end) {
+		return getPersistence()
+				   .findByF_M_Y_REPO(month, year, reporting, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where month = &#63; and year = &#63; and reporting = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_M_Y_REPO(int month,
+		int year, int reporting, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByF_M_Y_REPO(month, year, reporting, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where month = &#63; and year = &#63; and reporting = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_M_Y_REPO(int month,
+		int year, int reporting, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_M_Y_REPO(month, year, reporting, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and reporting = &#63;.
+	*
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByF_M_Y_REPO_First(int month,
+		int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByF_M_Y_REPO_First(month, year, reporting,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and reporting = &#63;.
+	*
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByF_M_Y_REPO_First(int month,
+		int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_M_Y_REPO_First(month, year, reporting,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and reporting = &#63;.
+	*
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByF_M_Y_REPO_Last(int month,
+		int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByF_M_Y_REPO_Last(month, year, reporting,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and reporting = &#63;.
+	*
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByF_M_Y_REPO_Last(int month,
+		int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_M_Y_REPO_Last(month, year, reporting,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and reporting = &#63;.
+	*
+	* @param dossierStatisticId the primary key of the current opencps dossier statistic
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	*/
+	public static OpencpsDossierStatistic[] findByF_M_Y_REPO_PrevAndNext(
+		long dossierStatisticId, int month, int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByF_M_Y_REPO_PrevAndNext(dossierStatisticId, month,
+			year, reporting, orderByComparator);
+	}
+
+	/**
+	* Returns all the opencps dossier statistics where month = any &#63; and year = any &#63; and reporting = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param months the months
+	* @param years the years
+	* @param reportings the reportings
+	* @return the matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_M_Y_REPO(int[] months,
+		int[] years, int[] reportings) {
+		return getPersistence().findByF_M_Y_REPO(months, years, reportings);
+	}
+
+	/**
+	* Returns a range of all the opencps dossier statistics where month = any &#63; and year = any &#63; and reporting = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param months the months
+	* @param years the years
+	* @param reportings the reportings
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @return the range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_M_Y_REPO(int[] months,
+		int[] years, int[] reportings, int start, int end) {
+		return getPersistence()
+				   .findByF_M_Y_REPO(months, years, reportings, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where month = any &#63; and year = any &#63; and reporting = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param months the months
+	* @param years the years
+	* @param reportings the reportings
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_M_Y_REPO(int[] months,
+		int[] years, int[] reportings, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByF_M_Y_REPO(months, years, reportings, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where month = &#63; and year = &#63; and reporting = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_M_Y_REPO(int[] months,
+		int[] years, int[] reportings, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_M_Y_REPO(months, years, reportings, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Removes all the opencps dossier statistics where month = &#63; and year = &#63; and reporting = &#63; from the database.
+	*
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	*/
+	public static void removeByF_M_Y_REPO(int month, int year, int reporting) {
+		getPersistence().removeByF_M_Y_REPO(month, year, reporting);
+	}
+
+	/**
+	* Returns the number of opencps dossier statistics where month = &#63; and year = &#63; and reporting = &#63;.
+	*
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @return the number of matching opencps dossier statistics
+	*/
+	public static int countByF_M_Y_REPO(int month, int year, int reporting) {
+		return getPersistence().countByF_M_Y_REPO(month, year, reporting);
+	}
+
+	/**
+	* Returns the number of opencps dossier statistics where month = any &#63; and year = any &#63; and reporting = any &#63;.
+	*
+	* @param months the months
+	* @param years the years
+	* @param reportings the reportings
+	* @return the number of matching opencps dossier statistics
+	*/
+	public static int countByF_M_Y_REPO(int[] months, int[] years,
+		int[] reportings) {
+		return getPersistence().countByF_M_Y_REPO(months, years, reportings);
+	}
+
+	/**
+	* Returns all the opencps dossier statistics where year = &#63; and reporting = &#63;.
+	*
+	* @param year the year
+	* @param reporting the reporting
+	* @return the matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_Y_REPO(int year,
+		int reporting) {
+		return getPersistence().findByF_Y_REPO(year, reporting);
+	}
+
+	/**
+	* Returns a range of all the opencps dossier statistics where year = &#63; and reporting = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param year the year
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @return the range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_Y_REPO(int year,
+		int reporting, int start, int end) {
+		return getPersistence().findByF_Y_REPO(year, reporting, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where year = &#63; and reporting = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param year the year
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_Y_REPO(int year,
+		int reporting, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByF_Y_REPO(year, reporting, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where year = &#63; and reporting = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param year the year
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_Y_REPO(int year,
+		int reporting, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_Y_REPO(year, reporting, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where year = &#63; and reporting = &#63;.
+	*
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByF_Y_REPO_First(int year,
+		int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByF_Y_REPO_First(year, reporting, orderByComparator);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where year = &#63; and reporting = &#63;.
+	*
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByF_Y_REPO_First(int year,
+		int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_Y_REPO_First(year, reporting, orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where year = &#63; and reporting = &#63;.
+	*
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByF_Y_REPO_Last(int year,
+		int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByF_Y_REPO_Last(year, reporting, orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where year = &#63; and reporting = &#63;.
+	*
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByF_Y_REPO_Last(int year,
+		int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_Y_REPO_Last(year, reporting, orderByComparator);
+	}
+
+	/**
+	* Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where year = &#63; and reporting = &#63;.
+	*
+	* @param dossierStatisticId the primary key of the current opencps dossier statistic
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	*/
+	public static OpencpsDossierStatistic[] findByF_Y_REPO_PrevAndNext(
+		long dossierStatisticId, int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByF_Y_REPO_PrevAndNext(dossierStatisticId, year,
+			reporting, orderByComparator);
+	}
+
+	/**
+	* Returns all the opencps dossier statistics where year = any &#63; and reporting = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param years the years
+	* @param reportings the reportings
+	* @return the matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_Y_REPO(int[] years,
+		int[] reportings) {
+		return getPersistence().findByF_Y_REPO(years, reportings);
+	}
+
+	/**
+	* Returns a range of all the opencps dossier statistics where year = any &#63; and reporting = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param years the years
+	* @param reportings the reportings
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @return the range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_Y_REPO(int[] years,
+		int[] reportings, int start, int end) {
+		return getPersistence().findByF_Y_REPO(years, reportings, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where year = any &#63; and reporting = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param years the years
+	* @param reportings the reportings
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_Y_REPO(int[] years,
+		int[] reportings, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByF_Y_REPO(years, reportings, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where year = &#63; and reporting = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param year the year
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_Y_REPO(int[] years,
+		int[] reportings, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_Y_REPO(years, reportings, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Removes all the opencps dossier statistics where year = &#63; and reporting = &#63; from the database.
+	*
+	* @param year the year
+	* @param reporting the reporting
+	*/
+	public static void removeByF_Y_REPO(int year, int reporting) {
+		getPersistence().removeByF_Y_REPO(year, reporting);
+	}
+
+	/**
+	* Returns the number of opencps dossier statistics where year = &#63; and reporting = &#63;.
+	*
+	* @param year the year
+	* @param reporting the reporting
+	* @return the number of matching opencps dossier statistics
+	*/
+	public static int countByF_Y_REPO(int year, int reporting) {
+		return getPersistence().countByF_Y_REPO(year, reporting);
+	}
+
+	/**
+	* Returns the number of opencps dossier statistics where year = any &#63; and reporting = any &#63;.
+	*
+	* @param years the years
+	* @param reportings the reportings
+	* @return the number of matching opencps dossier statistics
+	*/
+	public static int countByF_Y_REPO(int[] years, int[] reportings) {
+		return getPersistence().countByF_Y_REPO(years, reportings);
+	}
+
+	/**
 	* Caches the opencps dossier statistic in the entity cache if it is enabled.
 	*
 	* @param opencpsDossierStatistic the opencps dossier statistic

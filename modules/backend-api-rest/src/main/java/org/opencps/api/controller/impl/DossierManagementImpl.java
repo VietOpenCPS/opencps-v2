@@ -268,9 +268,9 @@ public class DossierManagementImpl implements DossierManagement {
 			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			Date now = APIDateTimeUtils.convertStringToDate(dateFormat.format(new Date()), DATE_FORMAT);
 			String authenkeyServer = DossierUtils.getmd5(secretkey + now.getTime());
-			_log.info("now.getTime() :" + now.getTime());
-			_log.info("authenkeyServer :" + authenkeyServer);
-			_log.info("authenkeyClient :" + authenkeyClient);
+			_log.debug("now.getTime() :" + now.getTime());
+			_log.debug("authenkeyServer :" + authenkeyServer);
+			_log.debug("authenkeyClient :" + authenkeyClient);
 			if (!StringUtils.isEmpty(authenkeyClient)) {
 				if (!authenkeyClient.contentEquals(authenkeyServer)) {
 					throw new UnauthenticationException();

@@ -1709,6 +1709,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			String orderId = data.getString(PayGateTerm.PAYGOV_ORDER_ID);
 			String errorCode = data.getString(PayGateTerm.PAYGOV_ERROR_CODE);
 			String dossierNo = orderId.substring(0, orderId.length()- 3); //remove -01
+			dossierNo = dossierNo.substring(14);
+
 //			Integer amount = data.getInt(PayGateTerm.PAYGOV_AMOUNT);
 //			String orderInfo = data.getString(PayGateTerm.PAYGOV_ORDER_INFO);
 //			String requestCode = data.getString(PayGateTerm.PAYGOV_REQUEST_CODE);
@@ -1803,9 +1805,9 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				body.put("accessKey", paygovConfig.getString("accessKey"));
 				body.put("serviceCode", paygovConfig.getString("serviceCode"));
 			}
-
+			_log.info("body: " + body);
 			String token = apiService.getTokenLGSP(paygovConfig);
-
+			_log.info("token: " + token);
 			return apiService.getUrlRedirectToPaygov(token, body, paygovConfig);
 		} catch (Exception e){
 			_log.error(e);

@@ -133,11 +133,10 @@ public class PublishEventScheduler extends BaseMessageListener {
 
 		try {
 
-			_log.debug("OpenCPS PUBLISH EVENT IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
+			_log.info("OpenCPS PUBLISH EVENT IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 
 			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatusesAndNotServerNo(new int[] {
-							PublishQueueTerm.STATE_WAITING_SYNC,
-							PublishQueueTerm.STATE_ALREADY_SENT},
+							PublishQueueTerm.STATE_WAITING_SYNC},
 					ServerConfigTerm.DVCQG_INTEGRATION, 0, 60);
 
 			_log.info("LstPqs queue in publish event : " + lstPqs.size());
@@ -187,23 +186,29 @@ public class PublishEventScheduler extends BaseMessageListener {
 		int queueStatus;
 		long queueIdError = 0;
 		long queueIdCurrent;
-		
+		String serverNo;
+		boolean easySend;
+
 		for (PublishQueue oneQueue : listQueueByDossierId) {
-			
 			queueIdCurrent = oneQueue.getPublishQueueId();
 			queueStatus    = oneQueue.getStatus();
-			
+			serverNo       = oneQueue.getServerNo();
+			easySend       = serverNo.equals("SERVER_PUBLISH");
+
 			try {
 				if(queueStatus == PublishQueueTerm.STATE_RECEIVED_ACK) {
 					continue;
 				}
 
 				if(queueStatus == PublishQueueTerm.STATE_ACK_ERROR) {
-					queueIdError = queueIdCurrent;
+					if(!easySend) {
+						queueIdError = queueIdCurrent;
+					}
 					continue;
 				}
 
 				if (queueIdError != 0) {
+					_log.info("easySend: " + easySend);
 					oneQueue.setStatus(PublishQueueTerm.STATE_ACK_ERROR);
 					PublishQueueLocalServiceUtil.updatePublishQueue(oneQueue);
 					continue;
@@ -270,10 +275,11 @@ public class PublishEventScheduler extends BaseMessageListener {
 							DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())));
 
 					PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-					if (result.getDossierId() != null && paymentFile != null && (paymentFile.getPaymentStatus() == 2 || paymentFile.getPaymentStatus() == 1)) { // ||
-																															// paymentFile.getPaymentStatus()
-																															// ==
-																															// 5
+					if (result.getDossierId() != null && paymentFile != null && (paymentFile.getPaymentStatus() == 2
+							|| paymentFile.getPaymentStatus() == 1)) { // ||
+																	// paymentFile.getPaymentStatus()
+																	// ==
+																	// 5
 
 						PaymentFileInputModel pfiModel = new PaymentFileInputModel();
 						pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
@@ -362,14 +368,14 @@ public class PublishEventScheduler extends BaseMessageListener {
 						}
 					}
 
-					if (client.isWriteLog()) {
-						String messageText = DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())
-								.toJSONString();
-						String acknowlegement = JSONFactoryUtil.looseSerialize(result);
-						pq.setMessageText(messageText);
-						pq.setAcknowlegement(acknowlegement);
-						PublishQueueLocalServiceUtil.updatePublishQueue(pq);
-					}
+//					if (client.isWriteLog()) {
+//						String messageText = DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())
+//								.toJSONString();
+//						String acknowlegement = JSONFactoryUtil.looseSerialize(result);
+//						pq.setMessageText(messageText);
+//						pq.setAcknowlegement(acknowlegement);
+//						PublishQueueLocalServiceUtil.updatePublishQueue(pq);
+//					}
 					if (result.getDossierId() != null) {
 						return true;
 					} else {
