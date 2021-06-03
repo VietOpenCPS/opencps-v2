@@ -1146,6 +1146,10 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			if (Validator.isNull(input.end) || input.end== 0) {
+				input.start = 0;
+				input.end = 999;
+			}
 			List<LogReportStatisticData> liStatisticDatas = new ArrayList<>();
 			DtoResponse dtoResponse = new OpenCPSUtils().getLogReports(input);
 			_log.info("11112222: " + JSONFactoryUtil.looseSerialize(dtoResponse));
