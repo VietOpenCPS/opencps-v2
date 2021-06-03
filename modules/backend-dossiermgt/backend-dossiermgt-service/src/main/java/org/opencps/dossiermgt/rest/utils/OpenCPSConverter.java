@@ -161,9 +161,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getFromViaPostal())) {
 	    	params.put(DossierTerm.FROM_VIA_POSTAL, model.getFromViaPostal());
 	    }
-//		if (Validator.isNotNull(model.getServiceLevel()) && model.getServiceLevel() >0) {
-//			params.put(ServiceConfigTerm.SERVICE_LEVEL, model.getServiceLevel());
-//		}
+		if (Validator.isNotNull(model.getServiceLevel()) && model.getServiceLevel() >0) {
+			params.put(ServiceConfigTerm.SERVICE_LEVEL, model.getServiceLevel());
+		}
 	    return params;
 	}
 	
