@@ -430,7 +430,7 @@ public class DossierUtils {
 			model.setSubmitting(doc.get(DossierTerm.SUBMITTING));
 //			model.setPermission(getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			String strPermission = GetterUtil.getString(doc.get(DossierTerm.MAPPING_PERMISSION));
-			_log.info("StrPermission: " +strPermission);
+			_log.debug("StrPermission: " +strPermission);
 //			_log.info("globalGroup: " + query.isGlobalViewGroup());
 //			_log.info("isGlobalViewAll: " + query.isGlobalViewAll());
 			if (Validator.isNotNull(strPermission)) {

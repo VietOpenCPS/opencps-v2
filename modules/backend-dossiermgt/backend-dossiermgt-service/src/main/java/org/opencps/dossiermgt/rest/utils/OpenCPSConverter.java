@@ -27,14 +27,7 @@ import java.util.Map;
 
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
-import org.opencps.dossiermgt.constants.ConverterTerm;
-import org.opencps.dossiermgt.constants.DossierActionTerm;
-import org.opencps.dossiermgt.constants.DossierDocumentTerm;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.constants.DossierMarkTerm;
-import org.opencps.dossiermgt.constants.DossierPartTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.lgsp.model.MSyncDocument;
 import org.opencps.dossiermgt.lgsp.model.Mtoken;
 import org.opencps.dossiermgt.model.Dossier;
@@ -168,6 +161,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getFromViaPostal())) {
 	    	params.put(DossierTerm.FROM_VIA_POSTAL, model.getFromViaPostal());
 	    }
+//		if (Validator.isNotNull(model.getServiceLevel()) && model.getServiceLevel() >0) {
+//			params.put(ServiceConfigTerm.SERVICE_LEVEL, model.getServiceLevel());
+//		}
 	    return params;
 	}
 	
@@ -1037,6 +1033,9 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.FROM_VIA_POSTAL)) {
 			model.setFromViaPostal(jsonObj.getInt(DossierTerm.FROM_VIA_POSTAL));
 		}
+		if (jsonObj.has(ServiceConfigTerm.SERVICE_LEVEL)) {
+			model.setServiceLevel(jsonObj.getInt(ServiceConfigTerm.SERVICE_LEVEL));
+		}
 
 		return model;
 	}	
@@ -1152,6 +1151,10 @@ public class OpenCPSConverter {
 
 		if (Validator.isNotNull(dossier.getBriefNote())) {
 			model.setBriefNote(dossier.getBriefNote());
+		}
+
+		if (Validator.isNotNull(dossier.getServiceLevel()) && dossier.getServiceLevel() > 0) {
+			model.setServiceLevel(dossier.getServiceLevel());
 		}
 
 		return model;

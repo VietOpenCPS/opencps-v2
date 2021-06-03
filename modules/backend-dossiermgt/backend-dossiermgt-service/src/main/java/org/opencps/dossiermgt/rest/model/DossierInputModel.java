@@ -134,7 +134,8 @@ import javax.xml.bind.annotation.XmlType;
     "postalCodeSend",
     "postalCodeReceived",
     "metaData",
-    "briefNote"
+    "briefNote",
+    "serviceLevel"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -194,6 +195,15 @@ public class DossierInputModel {
     protected String postalCodeReceived;
     protected String metaData;
     protected String briefNote;
+    protected int serviceLevel;
+
+    public int getServiceLevel() {
+        return serviceLevel;
+    }
+
+    public void setServiceLevel(int serviceLevel) {
+        this.serviceLevel = serviceLevel;
+    }
 
     public String getMetaData() {
         return metaData;

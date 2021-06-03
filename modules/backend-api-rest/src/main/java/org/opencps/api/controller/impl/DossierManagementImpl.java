@@ -783,8 +783,8 @@ public class DossierManagementImpl implements DossierManagement {
 					params.put(Field.GROUP_ID, String.valueOf(employee.getGroupId()));
 				}else{
 					params.put(Field.GROUP_ID, String.valueOf(groupId));
-					_log.info("Scope: " + employee.getScope());
 					if(Validator.isNotNull(employee.getScope())){
+						_log.info("Scope: " + employee.getScope());
 						params.put(DossierTerm.GOV_AGENCY_CODE, employee.getScope());
 					}
 				}

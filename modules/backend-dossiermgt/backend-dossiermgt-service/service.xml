@@ -643,7 +643,7 @@
 		<column name="postalCodeReceived" type="String" />
 		<column name="lastReceiveDate" type="Date" />
 		<column name="lastSendDate" type="Date" />
-		
+		<column name="serviceLevel" type="int"/>
 		<!-- Order -->
 		
 		<!-- Finder methods -->

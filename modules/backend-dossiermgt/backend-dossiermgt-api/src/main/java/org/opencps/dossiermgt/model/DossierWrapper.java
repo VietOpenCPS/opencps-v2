@@ -165,6 +165,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("postalCodeReceived", getPostalCodeReceived());
 		attributes.put("lastReceiveDate", getLastReceiveDate());
 		attributes.put("lastSendDate", getLastSendDate());
+		attributes.put("serviceLevel", getServiceLevel());
 
 		return attributes;
 	}
@@ -809,6 +810,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 
 		if (lastSendDate != null) {
 			setLastSendDate(lastSendDate);
+		}
+
+		Integer serviceLevel = (Integer)attributes.get("serviceLevel");
+
+		if (serviceLevel != null) {
+			setServiceLevel(serviceLevel);
 		}
 	}
 
@@ -1770,6 +1777,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public String getServiceCode() {
 		return _dossier.getServiceCode();
+	}
+
+	/**
+	* Returns the service level of this dossier.
+	*
+	* @return the service level of this dossier
+	*/
+	@Override
+	public int getServiceLevel() {
+		return _dossier.getServiceLevel();
 	}
 
 	/**
@@ -2946,6 +2963,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setServiceCode(String serviceCode) {
 		_dossier.setServiceCode(serviceCode);
+	}
+
+	/**
+	* Sets the service level of this dossier.
+	*
+	* @param serviceLevel the service level of this dossier
+	*/
+	@Override
+	public void setServiceLevel(int serviceLevel) {
+		_dossier.setServiceLevel(serviceLevel);
 	}
 
 	/**

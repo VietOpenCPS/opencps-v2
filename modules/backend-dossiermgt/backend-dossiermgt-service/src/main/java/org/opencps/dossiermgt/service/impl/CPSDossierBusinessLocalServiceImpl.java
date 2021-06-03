@@ -6172,6 +6172,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		BackendAuth auth = new BackendAuthImpl();
 
 		long start = System.currentTimeMillis();
+		_log.info("serviceContext: " + JSONFactoryUtil.looseSerialize(serviceContext));
+		_log.info("Auth: " + !auth.isAuth(serviceContext));
 
 		if (!auth.isAuth(serviceContext)) {
 			throw new UnauthenticationException();
@@ -6313,6 +6315,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		// Process group dossier
+		_log.info("ServiceLevel: " + config.getServiceLevel());
+		_log.info("ServiceLevel Input: " + input.getServiceLevel());
 		if (originality == 9) {
 
 			_log.debug("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
@@ -6336,6 +6340,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					input.getPostalDistrictCode(), postalDistrictName, input.getPostalTelNo(), online,
 					process.getDirectNotification(), input.getApplicantNote(), Integer.valueOf(input.getOriginality()),
 					service, process, option, serviceContext);
+			if(Validator.isNotNull(input.getServiceLevel()) && input.getServiceLevel() > 0){
+				dossier.setServiceLevel(input.getServiceLevel());
+			}else{
+				if(config.getServiceLevel() >0){
+					dossier.setServiceLevel(config.getServiceLevel());
+				}
+			}
 
 			if (Validator.isNotNull(input.getDossierName())) {
 				dossier.setDossierName(input.getDossierName());
@@ -6839,6 +6850,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getReceiveDate())) {
 				dossier.setReceiveDate(APIDateTimeUtils
 						.convertStringToDate(input.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
+			if(Validator.isNotNull(input.getServiceLevel()) && input.getServiceLevel() > 0){
+				dossier.setServiceLevel(input.getServiceLevel());
+			}else{
+				if(config.getServiceLevel() >0){
+					dossier.setServiceLevel(config.getServiceLevel());
+				}
 			}
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			dossierLocalService.updateDossier(dossier);
