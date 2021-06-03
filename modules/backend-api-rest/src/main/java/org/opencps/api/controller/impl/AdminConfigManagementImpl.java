@@ -1152,26 +1152,26 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 			}
 			List<LogReportStatisticData> liStatisticDatas = new ArrayList<>();
 			DtoResponse dtoResponse = new OpenCPSUtils().getLogReports(input);
-			_log.info("11112222: " + JSONFactoryUtil.looseSerialize(dtoResponse));
+			_log.debug("11112222: " + JSONFactoryUtil.looseSerialize(dtoResponse));
 			if (dtoResponse != null) {
 				List<SyncTrackingResponse> syList = dtoResponse.getData();
 				if (Validator.isNotNull(syList) && syList.size() > 0) {
 					for (SyncTrackingResponse reTrackingResponse : syList) {
-						_log.info("reTrackingResponse :" + JSONFactoryUtil.looseSerialize(reTrackingResponse));
+						_log.debug("reTrackingResponse :" + JSONFactoryUtil.looseSerialize(reTrackingResponse));
 						LogReportStatisticData data = new LogReportStatisticData();
 						data.setGroupId(reTrackingResponse.groupId);
 						data.setApiCode(reTrackingResponse.api);
 						updateLogReportStaticData(data, reTrackingResponse);
-						_log.info("-----------------");
-						_log.info("data: " + JSONFactoryUtil.looseSerialize(data));
+						_log.debug("-----------------");
+						_log.debug("data: " + JSONFactoryUtil.looseSerialize(data));
 						liStatisticDatas.add(data);
 					}
 				}
 			}
-			_log.info("liStatisticDatas :" + JSONFactoryUtil.looseSerialize(liStatisticDatas));
+			_log.debug("liStatisticDatas :" + JSONFactoryUtil.looseSerialize(liStatisticDatas));
 			response.getData().addAll(liStatisticDatas);
 			response.setTotal(liStatisticDatas.size());
-			_log.info("response :" + JSONFactoryUtil.looseSerialize(response.getData()));
+			_log.debug("response :" + JSONFactoryUtil.looseSerialize(response.getData()));
 			
 			return Response.status(HttpURLConnection.HTTP_OK).entity(response).build();
 			
