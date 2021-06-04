@@ -1118,13 +1118,11 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 		DtoResponse response = new DtoResponse();
 		
 		try {
-			_log.info("11111");
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			_log.info("22222");
 			response = new OpenCPSUtils().getLogReports(input);
-			_log.info("Response :" + JSONFactoryUtil.looseSerialize(response));
+			_log.debug("Response :" + JSONFactoryUtil.looseSerialize(response));
 			
 			return Response.status(HttpURLConnection.HTTP_OK).entity(response).build();
 
@@ -1152,12 +1150,10 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 			}
 			List<LogReportStatisticData> liStatisticDatas = new ArrayList<>();
 			DtoResponse dtoResponse = new OpenCPSUtils().getLogReports(input);
-			_log.debug("11112222: " + JSONFactoryUtil.looseSerialize(dtoResponse));
 			if (dtoResponse != null) {
 				List<SyncTrackingResponse> syList = dtoResponse.getData();
 				if (Validator.isNotNull(syList) && syList.size() > 0) {
 					for (SyncTrackingResponse reTrackingResponse : syList) {
-						_log.debug("reTrackingResponse :" + JSONFactoryUtil.looseSerialize(reTrackingResponse));
 						LogReportStatisticData data = new LogReportStatisticData();
 						data.setGroupId(reTrackingResponse.groupId);
 						data.setApiCode(reTrackingResponse.api);
@@ -1168,11 +1164,8 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 					}
 				}
 			}
-			_log.debug("liStatisticDatas :" + JSONFactoryUtil.looseSerialize(liStatisticDatas));
 			response.getData().addAll(liStatisticDatas);
-			response.setTotal(liStatisticDatas.size());
-			_log.debug("response :" + JSONFactoryUtil.looseSerialize(response.getData()));
-			
+			response.setTotal(liStatisticDatas.size());			
 			return Response.status(HttpURLConnection.HTTP_OK).entity(response).build();
 			
 		} catch (Exception e) {

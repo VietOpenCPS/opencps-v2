@@ -214,9 +214,7 @@ public class OpenCPSUtils {
                 return response;
             }
 
-            _log.info("syncTrackingPaginate :" + JSONFactoryUtil.looseSerialize(syncTrackingPaginate));
             List<SyncTrackingResponse> syncTrackingResponse = this.transForm(syncTrackingPaginate);
-            _log.info("syncTrackingResponse :" + JSONFactoryUtil.looseSerialize(syncTrackingResponse));
             response.setTotal(syncTrackingList.size());
             response.getData().addAll(syncTrackingResponse);
             return response;
@@ -244,6 +242,10 @@ public class OpenCPSUtils {
             for(SyncTracking syncTracking : listTracking) {
                 oneTrackingTransform = new SyncTrackingResponse();
                 oneTrackingTransform.api = syncTracking.getApi();
+                ApiManager apiManager = ApiManagerLocalServiceUtil.findByApiCode(syncTracking.getApi());
+                if (Validator.isNotNull(apiManager)) {
+                	oneTrackingTransform.api = apiManager.getApiName();
+                }
                 oneTrackingTransform.bodyRequest = Validator.isNotNull(syncTracking.getBodyRequest())
                         ? syncTracking.getBodyRequest() : "";
                 oneTrackingTransform.bodyResponse = Validator.isNotNull(syncTracking.getResponse())
