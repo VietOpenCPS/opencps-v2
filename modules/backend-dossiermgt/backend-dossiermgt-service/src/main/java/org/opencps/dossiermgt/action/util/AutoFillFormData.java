@@ -1,4 +1,4 @@
-package org.opencps.dossiermgt.action.util;
+	package org.opencps.dossiermgt.action.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -444,7 +444,8 @@ public class AutoFillFormData {
 				}
 			}
 		} catch (JSONException e) {
-			_log.error(e);
+			_log.error("Error While FillFormData! Configurate Debug Log: org.opencps.dossiermgt.action.util.AutoFillFormData for more details!");
+			_log.debug(e);
 //			e.printStackTrace();
 		}
 

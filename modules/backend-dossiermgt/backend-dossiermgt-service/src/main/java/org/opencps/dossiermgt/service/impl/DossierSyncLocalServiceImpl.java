@@ -14,12 +14,16 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+
 import java.util.Date;
 import java.util.List;
 
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.model.DossierSync;
+import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierSyncLocalServiceBaseImpl;
 
 /**
@@ -156,5 +160,12 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 	
 	public List<DossierSync> findByStates(int[] states, Integer start, Integer end) {
 		return dossierSyncPersistence.findBySTS(states, start, end);
-	}	
+	}
+	public List<DossierSync> getDossierSyncBeforeDateAndState(Date createDate, int state_, int start, int end){
+		DynamicQuery dynamicQuery = DossierSyncLocalServiceUtil.dynamicQuery();
+		dynamicQuery.add(RestrictionsFactoryUtil.lt("createDate", createDate));
+		dynamicQuery.add(RestrictionsFactoryUtil.eq("state", state_));
+		return dossierSyncPersistence.findWithDynamicQuery(dynamicQuery, start, end);
+		
+	}
 }
