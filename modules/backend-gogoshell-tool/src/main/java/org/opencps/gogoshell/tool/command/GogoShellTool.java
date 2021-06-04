@@ -1,8 +1,10 @@
 package org.opencps.gogoshell.tool.command;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -23,19 +25,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.liferay.portal.kernel.util.Validator;
 import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.apache.felix.service.command.Descriptor;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierSync;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.service.DossierLocalService;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierSyncLocalService;
-import org.opencps.dossiermgt.service.ProcessOptionLocalService;
-import org.opencps.dossiermgt.service.ServiceConfigLocalService;
-import org.opencps.dossiermgt.service.ServiceInfoLocalService;
+import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.gogoshell.tool.command.util.Console;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalService;
@@ -132,6 +127,19 @@ public class GogoShellTool {
 						reindex(i);
 					}
 					
+				}
+				break;
+			case "update_range":
+				long startId = Long.valueOf(params[0]);
+				long endId = Long.valueOf(params[1]);
+//				long groupId = Long.valueOf(params[2]);
+				for(long i = startId; i <= endId; i++) {
+					Dossier dossier = DossierLocalServiceUtil.fetchDossier(i);
+					if(dossier != null) {
+						_log.info("update_range: " + i);
+						updateDossier(i);
+					}
+
 				}
 				break;
 			default:
@@ -367,6 +375,41 @@ public class GogoShellTool {
 		}
 		else {
 			System.out.println("Cấu hình dịch vụ có vẻ ổn trên đơn vị " + g.getName() + "!");			
+		}
+	}
+
+	private ServiceConfig getServiceConfig(String serviceInfoCode, String govAgencyCode,
+										   long groupId) {
+		try {
+			ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceInfoCode, govAgencyCode);
+			_log.debug("++++config:" + config);
+			return config;
+		}catch (Exception e){
+			e.getMessage();
+		}
+		return null;
+	}
+
+	private void updateDossier(long dossierId) {
+		Dossier dossier = _dossierLocalService.fetchDossier(dossierId);
+		_log.debug("Originality: " + dossier.getOriginality());
+		_log.debug("Online: " + dossier.getOnline());
+		_log.debug("serviceLevel: " + dossier.getServiceLevel());
+		if (dossier != null && dossier.getOriginality() == 2L && dossier.getOnline() &&  dossier.getServiceLevel() == 0L){
+			try {
+				ServiceConfig config =  getServiceConfig(dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getGroupId());
+				if (config != null) {
+					dossier.setServiceLevel(config.getServiceLevel());
+					DossierLocalServiceUtil.updateDossier(dossier);
+					System.out.println("Update serviceLevel cho hồ sơ thành công");
+				}
+
+			} catch (Exception e) {
+				_log.debug(e);
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Không tìm thấy hồ sơ với ID hồ sơ " + dossierId);
 		}
 	}
 	

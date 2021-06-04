@@ -328,7 +328,7 @@ public class ActionUtil {
 		String strToDate = DatetimeUtil.convertTimestampToStringDatetime(toDate, DatetimeUtil._YYYY_MM_DD);
 
 		String sqlTemplate = QueryUtil.getSQLQueryTemplate(type, subType);
-		_log.debug("sqlTemplate: " + sqlTemplate);
+		_log.info("sqlTemplate: " + sqlTemplate);
 		if(userId >0) {
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 			if (Validator.isNotNull(employee) && Validator.isNotNull(employee.getScope())) {

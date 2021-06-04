@@ -710,6 +710,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 						}
 					}
+					// Trường hợp ko có dossierUser đang ko trả về mapping_permission => không có quyền thao tác hồ sơ
+					// Edit: Cho phép xem chi tiết
+				}else {
+					sbPermission.append(object.getUserId());
+					sbPermission.append(StringPool.UNDERLINE);
+					sbPermission.append(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_READ));
 				}
 			}
 

@@ -21,16 +21,12 @@ import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import org.opencps.backend.systemlogmgt.model.SystemLog;
-import org.opencps.backend.systemlogmgt.service.SystemLogLocalService;
 import org.opencps.backend.systemlogmgt.service.SystemLogLocalServiceUtil;
 import org.opencps.backend.systemlogmgt.service.base.SystemLogLocalServiceBaseImpl;
-import org.opencps.backend.systemlogmgt.service.persistence.SystemLogPersistence;
-import org.opencps.backend.systemlogmgt.service.persistence.impl.SystemLogPersistenceImpl;
 
 /**
  * The implementation of the system log local service.

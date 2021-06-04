@@ -16,7 +16,9 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -2953,6 +2955,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 		String unstep =
 				GetterUtil.getString(params.get(DossierTerm.UNSTEP));
+		String govAgencyCode =
+				GetterUtil.getString(params.get(DossierTerm.GOV_AGENCY_CODE));
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2996,7 +3000,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
 				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel,createDateStart,createDateEnd,
-				unstep);
+				unstep, govAgencyCode);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 		
@@ -3161,6 +3165,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 		String unstep =
 				GetterUtil.getString(params.get(DossierTerm.UNSTEP));
+		String govAgencyCode = GetterUtil.getString(params.get(DossierTerm.GOV_AGENCY_CODE));
+
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -3201,7 +3207,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
 				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,serviceLevel,createDateStart,createDateEnd,
-				unstep);
+				unstep, govAgencyCode);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3272,6 +3278,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
 			else {
+				_log.info("Tìm kiếm theo Action Mapping UserIddff");
 				MultiMatchQuery query =
 						new MultiMatchQuery(String.valueOf(userId));
 				query.addField(DossierTerm.ACTION_MAPPING_USERID);
@@ -3333,8 +3340,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
 			String delegate, String vnpostalStatus, Integer fromViaPostal,
 			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai, String serviceLevel,
-			String createDateStart, String createDateEnd, String unstep)
+			String createDateStart, String createDateEnd, String unstep, String govAgencyCode)
 			throws ParseException {
+
+		if (Validator.isNotNull(govAgencyCode)) {
+			String[] govAgencyCodeArr = govAgencyCode.split(StringPool.COMMA);
+			BooleanQuery subQuery = new BooleanQueryImpl();
+			for (String key : govAgencyCodeArr) {
+				MultiMatchQuery query = new MultiMatchQuery(key);
+				query.addField(DossierTerm.GOV_AGENCY_CODE);
+				subQuery.add(query, BooleanClauseOccur.SHOULD);
+			}
+			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+		}
 
 		String createDateStartFilter =
 				createDateStart + ConstantsTerm.HOUR_START;
@@ -6422,7 +6440,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		try {
 			return dossierPersistence.findByG_DN(groupId, dossierNo);
 		} catch (NoSuchDossierException e) {
-			_log.error(e);
+			_log.error("No Dossier exists with the key {groupId="+groupId+", dossierNo="+dossierNo+"}");
+			_log.debug(e);
 			return null;
 		}
 	}
@@ -7892,4 +7911,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public List<Dossier> fetchByNEW_DO_NO(String dossierNo) {
 		return dossierPersistence.findByNEW_DO_NO(dossierNo, 0, 10);
 	}
+	
+	public List<Dossier> findDossierBeforeDateAndDossierStatusisNull(Date date) {
+		DynamicQuery dynamicQuery = dossierLocalService.dynamicQuery();
+		dynamicQuery.add(RestrictionsFactoryUtil.lt("createDate", date));
+		dynamicQuery.add(RestrictionsFactoryUtil.isNull("dossierStatus"));
+		List<Dossier> result = dossierPersistence.findWithDynamicQuery(dynamicQuery);
+		return result;
+	}
+	
 }
