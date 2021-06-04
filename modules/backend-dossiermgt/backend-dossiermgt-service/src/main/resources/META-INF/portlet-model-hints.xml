@@ -539,6 +539,7 @@
 		<field name="postalCodeReceived" type="String" />
 		<field name="lastReceiveDate" type="Date" />
 		<field name="lastSendDate" type="Date" />
+		<field name="serviceLevel" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />

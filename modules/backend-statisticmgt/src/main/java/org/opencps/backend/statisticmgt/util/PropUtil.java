@@ -72,12 +72,11 @@ public class PropUtil {
 			String dir = PropsUtil.get(PropsKeys.LIFERAY_HOME) + CONFIGS_DIR + QUERY_NAME;
 			if (_queryProperties == null) {
 				File file = new File(dir);
+				_queryProperties = new Properties();
 				if (!file.exists()) {
 					_queryProperties = System.getProperties();
 					loadQueryProperties();
 				} else {
-					_queryProperties = new Properties();
-//					_queryProperties = System.getProperties();
 					_queryProperties.load(new FileInputStream(dir));
 				}
 			}

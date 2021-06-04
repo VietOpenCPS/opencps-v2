@@ -71,6 +71,7 @@ public class OpenCPSServletFilter extends BaseFilter {
 		httpServletRequest.setAttribute("USER_ID", PORTAL_DEFAULT_USERID);
 		_log.info("===> httpServletRequest UserId " + httpServletRequest.getAttribute("USER_ID"));
 		String requestURI = httpServletRequest.getRequestURI();
+		_log.info("===> Request server FDS by url: " + requestURI);
 		if (Validator.isNotNull(requestURI)
 				&& (requestURI.contains("/XrdAdapter/RestService/forward/addtthcKhuyenMai") || requestURI.contains("/VXPAdapter/RestService/forward/addtthcKhuyenMai") || requestURI.contains("addtthcKhuyenMai"))) {
 			httpServletRequest.getRequestDispatcher("/o/rest/v2/nps/createdossierfromdvcqg").forward(httpServletRequest,

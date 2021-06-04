@@ -104,9 +104,10 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 
 			int[] reportArr = {0, 1};
 			int[] yearArr = {0, LocalDate.now().getYear()};
-			int[] monthArr = {0, LocalDate.now().getMonthValue()};
-			List<OpencpsDossierStatistic> statisticList = OpencpsDossierStatisticLocalServiceUtil.findByMonthYearREPO_ARR(monthArr, yearArr, reportArr);
-
+			//int[] monthArr = {0, LocalDate.now().getMonthValue()};
+			
+			List<OpencpsDossierStatistic> statisticList = OpencpsDossierStatisticLocalServiceUtil.findByYearREPO_ARR(yearArr, reportArr);
+			//List<OpencpsDossierStatistic> statisticList = OpencpsDossierStatisticLocalServiceUtil.findByMonthYearREPO_ARR(monthArr, yearArr, reportArr);
 			//List<OpencpsDossierStatistic> statisticList = OpencpsDossierStatisticLocalServiceUtil.findByREPO_ARR(reportArr);
 			Map<String, DossierStatisticKey> mapKey = null;
 			DossierStatisticKey statisticKey = null;

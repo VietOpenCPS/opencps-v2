@@ -237,6 +237,10 @@
         	<finder-column name="year" arrayable-operator="OR"/>
         	<finder-column name="reporting" arrayable-operator="OR"/>
         </finder>
+        <finder name="F_Y_REPO" return-type="Collection">
+        	<finder-column name="year" arrayable-operator="OR"/>
+        	<finder-column name="reporting" arrayable-operator="OR"/>
+        </finder>
 	</entity>
 
 	<entity local-service="true" name="OpencpsVotingStatistic"
