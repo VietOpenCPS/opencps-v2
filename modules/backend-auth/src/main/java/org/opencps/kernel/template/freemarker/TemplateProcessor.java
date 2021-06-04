@@ -117,8 +117,9 @@ public class TemplateProcessor {
 				result = out.getBuffer().toString();
 			}
 			catch (Exception e) {
-				_log.error(e);
-			}
+				_log.error("Error executing FreeMarker template! Configurate Log Debug in org.opencps.kernel.template.freemarker.TemplateProcessor for more details");
+				_log.debug(e);
+			}	
 			finally {
 				if (out != null) {
 					out.flush();

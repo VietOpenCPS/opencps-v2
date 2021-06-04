@@ -437,10 +437,12 @@ public class QueryUtil {
 					data.put(dataRow);
 				}
 			} catch (SQLException sqle) {
-				_log.error(sqle.getMessage(), sqle);
+				_log.error(sqle.getMessage() + "! - Configurate Debug log org.opencps.backend.statisticmgt.util.QueryUtil for more details!");
+				_log.debug(sqle);
 			}
 		} catch (SQLException sqle) {
-			_log.error(sqle.getMessage(), sqle);
+			_log.error(sqle.getMessage() + "! - Configurate Debug log org.opencps.backend.statisticmgt.util.QueryUtil for more details!");
+			_log.debug(sqle);
 			ConnectionUtil._getConnection();
 		}
 

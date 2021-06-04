@@ -1394,7 +1394,8 @@ public class DossierActionsImpl implements DossierActions {
 				//				_log.debug("NEXT ACTION CREATE FILES: " + result.toString());
 			}
 		} catch (Exception e) {
-			_log.error(e);
+			_log.error("Error In Method : getDetailNextActions! Configurate Debug log org.opencps.dossiermgt.action.impl.DossierActionsImpl for more details!");
+			_log.debug(e);
 		}
 
 		return result;
