@@ -1382,6 +1382,32 @@ public class DossierManagementImpl implements DossierManagement {
 			if (fromViaPostal != null) {
 				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
 			}
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			// Tạo role theo dõi tất cả hồ sơ GLOBAL_VIEW_ALL, GLOBAL_VIEW_GROUP
+			//Truong hop 1 employee cùng ở 2 site. Lấy role ở site đó và param groupId sẽ search theo Employee
+			List<Role> userRoles =  user.getRoles();
+			for (Role r : userRoles) {
+				_log.info("GetName: " + r.getName());
+				if (r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_ALL)) {
+					query.setGlobalViewAll(true);
+					break;
+				}else if(r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_GROUP)){
+					query.setGlobalViewGroup(true);
+					break;
+				}
+			}
+
+			if(query.isGlobalViewAll()){
+				params.put(Field.GROUP_ID, String.valueOf(employee.getGroupId()));
+			}else{
+				params.put(Field.GROUP_ID, String.valueOf(groupId));
+				if(Validator.isNotNull(employee)) {
+					if (Validator.isNotNull(employee.getScope())) {
+						_log.info("Scope: " + employee.getScope());
+						params.put(DossierTerm.GOV_AGENCY_CODE, employee.getScope());
+					}
+				}
+			}
 
 			//Unstep
 			String unstep = query.getUnstep();
