@@ -378,7 +378,7 @@ public class GogoShellTool {
 		}
 	}
 
-	private ServiceConfig getServiceConfig(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
+	private ServiceConfig getServiceConfig(String serviceInfoCode, String govAgencyCode,
 										   long groupId) {
 		try {
 			ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceInfoCode, govAgencyCode);
@@ -397,8 +397,7 @@ public class GogoShellTool {
 		_log.debug("serviceLevel: " + dossier.getServiceLevel());
 		if (dossier != null && dossier.getOriginality() == 2L && dossier.getOnline() &&  dossier.getServiceLevel() == 0L){
 			try {
-				ServiceConfig config =  getServiceConfig(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-						dossier.getDossierTemplateNo(), dossier.getGroupId());
+				ServiceConfig config =  getServiceConfig(dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getGroupId());
 				if (config != null) {
 					dossier.setServiceLevel(config.getServiceLevel());
 					DossierLocalServiceUtil.updateDossier(dossier);
