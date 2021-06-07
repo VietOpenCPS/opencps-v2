@@ -6,6 +6,10 @@ public class DossierStatisticMgtData {
 	private int doneCount = 0;
 	private String govAgencyCode;
 	private String govAgencyName;
+	private String domainCode;
+	private String domainName;
+	private String serviceCode;
+	private String serviceName;
 	private int onegateCount = 0;
 	private int onlineCount = 0;
 	private int ontimeCount = 0;

@@ -1,5 +1,6 @@
 package org.opencps.backend.statisticmgt.engine;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -70,6 +71,7 @@ public class DossierStatisticDataEngine extends BaseMessageListener{
 					QueryUtil.ALL_POS);
 			
 			List<Group> sites = new ArrayList<Group>();
+			Map<Integer, Map<Integer, Map<String, DossierStatisticMgtData>>> calculateDatas = new HashMap<>();
 
 			for (Group group : groups) {
 				if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
@@ -89,7 +91,7 @@ public class DossierStatisticDataEngine extends BaseMessageListener{
 					if (month <= monthCurrent) {
 						if (flagStatistic) {
 							try {
-								updateData(groupId, userId, monthCurrent, year, originalities, 
+								updateData(site.getGroupId(), userId, monthCurrent, yearCurrent, originalities, 
 										domainCode, govAgencyCode, serviceCode, dossierStatus, day, 
 										groupBy, start, end, type, subType);
 								calculateDatas.put(yearCurrent, calculateData);
@@ -105,7 +107,7 @@ public class DossierStatisticDataEngine extends BaseMessageListener{
 				int lastYear = LocalDate.now().getYear() - 1;
 				boolean flagLastYear = false;
 				Map<Integer, Boolean> mapFlagPrev = new HashMap<>();
-				Map<Integer, Map<String, DossierStatisticData>> calculateLastData = new HashMap<>();
+				Map<Integer, Map<String, DossierStatisticMgtData>> calculateLastData = new HashMap<>();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 					if (RECACULATOR_STATISTIC_LAST_YEAR) {
 						flagLastYear = true;
@@ -123,7 +125,6 @@ public class DossierStatisticDataEngine extends BaseMessageListener{
 					mapFlagCurrent.put(month, flagStatistic);
 				}
 				
-				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 				List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
 				for (int month = 1; month <= monthCurrent; month ++) {
 					if (mapFlagCurrent.get(month)) {
@@ -131,7 +132,7 @@ public class DossierStatisticDataEngine extends BaseMessageListener{
 								&& calculateDatas.get(yearCurrent).get(month) != null) {
 
 							lstDossierDataObjs
-									.addAll(statisticEngineUpdate.convertStatisticDataList(calculateData.get(month)));
+									.addAll(convertStatisticDataList(calculateData.get(month)));
 						}
 					}
 				}
@@ -140,11 +141,13 @@ public class DossierStatisticDataEngine extends BaseMessageListener{
 					if (mapFlagPrev.get(lastMonth)) {
 						if (calculateDatas.get(lastYear) != null &&
 								calculateDatas.get(lastYear).get(lastMonth) != null) {
-							lstDossierDataObjs.addAll(statisticEngineUpdate.convertStatisticDataList(calculateDatas.get(lastYear).get(lastMonth)));
+							lstDossierDataObjs.addAll(convertStatisticDataList(calculateDatas.get(lastYear).get(lastMonth)));
 						}
 					}
 				}
-				engineUpdateAction.updateStatistic(lstDossierDataObjs);
+				
+				// update vao db
+				//engineUpdateAction.updateStatistic(lstDossierDataObjs);
 				
 				// tinh ban ghi nam
 			}
@@ -194,6 +197,23 @@ public class DossierStatisticDataEngine extends BaseMessageListener{
 		cal.set(Calendar.MINUTE, cal.getActualMaximum(Calendar.MINUTE));
 		cal.set(Calendar.SECOND, cal.getActualMaximum(Calendar.SECOND));
 		return cal.getTime();
+	}
+	
+	private List<JSONObject> convertStatisticDataList(Map<String, DossierStatisticMgtData> statisticData) {
+		List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
+		for (Map.Entry<String, DossierStatisticMgtData> me : statisticData.entrySet()) {
+
+			DossierStatisticMgtData payload = (DossierStatisticMgtData) me.getValue();
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				JSONObject dossierDataObj = JSONFactoryUtil.createJSONObject(mapper.writeValueAsString(payload));
+				lstDossierDataObjs.add(dossierDataObj);
+			}
+			catch (Exception e) {
+				_log.error(e);
+			}
+		}
+		return lstDossierDataObjs;
 	}
 	
 }
