@@ -27,7 +27,6 @@ public class DossierStatisticMgtData {
 	private int waitingCount = 0;
 	private int processCount = 0;
 	private int ontimePercentage = 0;
-	
 	public int getBetimesCount() {
 		return betimesCount;
 	}
@@ -51,6 +50,30 @@ public class DossierStatisticMgtData {
 	}
 	public void setGovAgencyName(String govAgencyName) {
 		this.govAgencyName = govAgencyName;
+	}
+	public String getDomainCode() {
+		return domainCode;
+	}
+	public void setDomainCode(String domainCode) {
+		this.domainCode = domainCode;
+	}
+	public String getDomainName() {
+		return domainName;
+	}
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
+	}
+	public String getServiceCode() {
+		return serviceCode;
+	}
+	public void setServiceCode(String serviceCode) {
+		this.serviceCode = serviceCode;
+	}
+	public String getServiceName() {
+		return serviceName;
+	}
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
 	}
 	public int getOnegateCount() {
 		return onegateCount;
@@ -154,6 +177,7 @@ public class DossierStatisticMgtData {
 	public void setOntimePercentage(int ontimePercentage) {
 		this.ontimePercentage = ontimePercentage;
 	}
-		
-
+	
+	
+	
 }
