@@ -8,11 +8,13 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -30,7 +32,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.opencps.backend.statisticmgt.constant.Constants;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtData;
 import org.opencps.backend.statisticmgt.util.ActionUtil;
+import org.opencps.statistic.rest.dto.DossierStatisticData;
+import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
 import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.osgi.service.component.annotations.Component;
 
@@ -38,7 +43,11 @@ import org.osgi.service.component.annotations.Component;
 public class DossierStatisticDataEngine extends BaseMessageListener{
 
 	private volatile boolean isRunningDossier = false;
-
+	private static boolean RECACULATOR_STATISTIC_LAST_YEAR = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.recaculator"))
+			? Boolean.valueOf(PropsUtil.get("org.opencps.statistic.recaculator")) : false;
+			
+	private static int GROUP_TYPE_SITE = 1; 
+			
 	protected Log _log = LogFactoryUtil.getLog(DossierStatisticDataEngine.class);
 
 	@Override
@@ -54,15 +63,54 @@ public class DossierStatisticDataEngine extends BaseMessageListener{
 		long startTime = System.currentTimeMillis();
 		Date nowLog = new Date();
 		try {
-		
-			int monthCurrent = LocalDate.now().getMonthValue();
-			int yearCurrent = LocalDate.now().getYear();
-			Map<Integer, Boolean> mapFlagCurrent = new HashMap<>();
-			for (int month = 1; month <= monthCurrent; month ++) {
-				boolean flagStatistic = true;
-				if (month <= monthCurrent) {
-					_log.info("STATISTICS CALCULATE ONE MONTH SITE: " + month + ", " + site.getGroupId() + ", " + site.getName(Locale.getDefault()) + " " + (System.currentTimeMillis() - startTime) + " ms");
-					if (flagStatistic) {
+			
+			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+
+			List<Group> groups = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+			
+			List<Group> sites = new ArrayList<Group>();
+
+			for (Group group : groups) {
+				if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
+					sites.add(group);
+				}				
+			}
+			Map<Integer, Map<String, DossierStatisticMgtData>> calculateData = new HashMap<>();
+
+			
+			for (Group site : sites) {
+				
+				int monthCurrent = LocalDate.now().getMonthValue();
+				int yearCurrent = LocalDate.now().getYear();
+				Map<Integer, Boolean> mapFlagCurrent = new HashMap<>();
+				for (int month = 1; month <= monthCurrent; month ++) {
+					boolean flagStatistic = true;
+					if (month <= monthCurrent) {
+						if (flagStatistic) {
+							try {
+								updateData(groupId, userId, monthCurrent, year, originalities, 
+										domainCode, govAgencyCode, serviceCode, dossierStatus, day, 
+										groupBy, start, end, type, subType);
+								calculateDatas.put(yearCurrent, calculateData);
+							} catch (Exception e) {
+								_log.debug(e);
+							}						
+						}
+						mapFlagCurrent.put(month, flagStatistic);
+					}
+				}
+				
+				
+				int lastYear = LocalDate.now().getYear() - 1;
+				boolean flagLastYear = false;
+				Map<Integer, Boolean> mapFlagPrev = new HashMap<>();
+				Map<Integer, Map<String, DossierStatisticData>> calculateLastData = new HashMap<>();
+				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+					if (RECACULATOR_STATISTIC_LAST_YEAR) {
+						flagLastYear = true;
+					}
+					if (flagLastYear) {
 						try {
 							updateData(groupId, userId, monthCurrent, year, originalities, 
 									domainCode, govAgencyCode, serviceCode, dossierStatus, day, 
@@ -74,7 +122,33 @@ public class DossierStatisticDataEngine extends BaseMessageListener{
 					}
 					mapFlagCurrent.put(month, flagStatistic);
 				}
+				
+				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+				List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
+				for (int month = 1; month <= monthCurrent; month ++) {
+					if (mapFlagCurrent.get(month)) {
+						if (calculateDatas.get(yearCurrent) != null
+								&& calculateDatas.get(yearCurrent).get(month) != null) {
+
+							lstDossierDataObjs
+									.addAll(statisticEngineUpdate.convertStatisticDataList(calculateData.get(month)));
+						}
+					}
+				}
+
+				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+					if (mapFlagPrev.get(lastMonth)) {
+						if (calculateDatas.get(lastYear) != null &&
+								calculateDatas.get(lastYear).get(lastMonth) != null) {
+							lstDossierDataObjs.addAll(statisticEngineUpdate.convertStatisticDataList(calculateDatas.get(lastYear).get(lastMonth)));
+						}
+					}
+				}
+				engineUpdateAction.updateStatistic(lstDossierDataObjs);
+				
+				// tinh ban ghi nam
 			}
+		
 			
 			
 			
