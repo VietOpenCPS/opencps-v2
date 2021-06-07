@@ -906,7 +906,7 @@ public class DossierActionsImpl implements DossierActions {
 							// Lấy ngày và giờ hiện tại check với cấu hình startHour
 							Calendar calendarHour = Calendar.getInstance();
 							calendarHour.setTime(new Date());
-							DueDateUtils dueDateUtils = null;
+							DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, serviceProcess.getDurationUnit(), groupId);;
 							if (jsonDueDate != null) {
 								_log.debug("Tính dueDate theo cấu hình");
 								JSONObject afterHours = jsonDueDate.getJSONObject(DossierDocumentTerm.AFTER_HOUR);
@@ -920,10 +920,8 @@ public class DossierActionsImpl implements DossierActions {
 										dueDateUtils = new DueDateUtils(calendarHour.getTime(), durationCount, serviceProcess.getDurationUnit(), groupId);
 									}
 								}
-							}else {
-								dueDateUtils = new DueDateUtils(new Date(), durationCount, serviceProcess.getDurationUnit(), groupId);
 							}
-							dueDate = dueDateUtils.getDueDate();
+							dueDate = dueDateUtils != null ? dueDateUtils.getDueDate() : null;
 							if (dueDate != null && dueHour != null && dueHour.size() == 2) {
 								Calendar dueCalendar = Calendar.getInstance();
 								dueCalendar.setTime(dueDate);
