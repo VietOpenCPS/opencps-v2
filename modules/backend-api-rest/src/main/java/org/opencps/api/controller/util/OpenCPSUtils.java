@@ -49,7 +49,7 @@ public class OpenCPSUtils {
 		}
 	}
 	
-	public DtoResponse getLogReports(SyncTrackingQuery syncTrackingQuery) throws Exception {
+	public DtoResponse getLogReports(SyncTrackingQuery syncTrackingQuery, boolean isReport) throws Exception {
 		try {
             DtoResponse response = new DtoResponse();
             if(Validator.isNull(syncTrackingQuery)) {
@@ -214,7 +214,7 @@ public class OpenCPSUtils {
                 return response;
             }
 
-            List<SyncTrackingResponse> syncTrackingResponse = this.transForm(syncTrackingPaginate);
+            List<SyncTrackingResponse> syncTrackingResponse = this.transForm(syncTrackingPaginate,isReport);
             response.setTotal(syncTrackingList.size());
             response.getData().addAll(syncTrackingResponse);
             return response;
@@ -235,17 +235,23 @@ public class OpenCPSUtils {
         }
     }
 	
-	private List<SyncTrackingResponse> transForm(List<SyncTracking> listTracking) throws Exception{
+	private List<SyncTrackingResponse> transForm(List<SyncTracking> listTracking, boolean isReport) throws Exception{
         try {
             List<SyncTrackingResponse> listTrackingTransform = new ArrayList<>();
             SyncTrackingResponse oneTrackingTransform;
             for(SyncTracking syncTracking : listTracking) {
-                oneTrackingTransform = new SyncTrackingResponse();
-                oneTrackingTransform.api = syncTracking.getApi();
+                oneTrackingTransform = new SyncTrackingResponse();              
                 ApiManager apiManager = ApiManagerLocalServiceUtil.findByApiCode(syncTracking.getApi());
-                if (Validator.isNotNull(apiManager)) {
-                	oneTrackingTransform.api = apiManager.getApiName();
+                if (!isReport) {
+                	if (Validator.isNotNull(apiManager)) {
+                    	oneTrackingTransform.api = apiManager.getApiName();
+                    }else {
+                    	oneTrackingTransform.api = syncTracking.getApi();
+                    }
+                }else {
+                	oneTrackingTransform.api = syncTracking.getApi();
                 }
+                
                 oneTrackingTransform.bodyRequest = Validator.isNotNull(syncTracking.getBodyRequest())
                         ? syncTracking.getBodyRequest() : "";
                 oneTrackingTransform.bodyResponse = Validator.isNotNull(syncTracking.getResponse())

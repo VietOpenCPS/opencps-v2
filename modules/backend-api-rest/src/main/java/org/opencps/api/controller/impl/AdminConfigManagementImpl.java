@@ -1121,7 +1121,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			response = new OpenCPSUtils().getLogReports(input);
+			response = new OpenCPSUtils().getLogReports(input,false);
 			_log.debug("Response :" + JSONFactoryUtil.looseSerialize(response));
 			
 			return Response.status(HttpURLConnection.HTTP_OK).entity(response).build();
@@ -1149,14 +1149,19 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 				input.end = 999;
 			}
 			List<LogReportStatisticData> liStatisticDatas = new ArrayList<>();
-			DtoResponse dtoResponse = new OpenCPSUtils().getLogReports(input);
+			DtoResponse dtoResponse = new OpenCPSUtils().getLogReports(input,true);
 			if (dtoResponse != null) {
 				List<SyncTrackingResponse> syList = dtoResponse.getData();
 				if (Validator.isNotNull(syList) && syList.size() > 0) {
 					for (SyncTrackingResponse reTrackingResponse : syList) {
 						LogReportStatisticData data = new LogReportStatisticData();
-						data.setGroupId(reTrackingResponse.groupId);
-						data.setApiCode(reTrackingResponse.api);
+						data.setGroupId(reTrackingResponse.groupId);						
+						ApiManager apiManager = ApiManagerLocalServiceUtil.findByApiCode(reTrackingResponse.api);
+		                if (Validator.isNotNull(apiManager)) {
+		                	data.setApiCode(apiManager.getApiCode());
+		                	data.setApiDescription(apiManager.getApiDescription());
+		                	data.setApiName(apiManager.getApiName());
+		                }
 						updateLogReportStaticData(data, reTrackingResponse);
 						_log.debug("-----------------");
 						_log.debug("data: " + JSONFactoryUtil.looseSerialize(data));

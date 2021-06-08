@@ -4,6 +4,7 @@ public class LogReportStatisticData {
 
 	private String apiCode;
 	private String apiName;
+	private String apiDescription;
 	private long groupId;
 	private int totalAccess = 0;
 	private int totalAccessSuc = 0;
@@ -43,6 +44,12 @@ public class LogReportStatisticData {
 	}
 	public void setTotalAccessFal(int totalAccessFal) {
 		this.totalAccessFal = totalAccessFal;
+	}
+	public String getApiDescription() {
+		return apiDescription;
+	}
+	public void setApiDescription(String apiDescription) {
+		this.apiDescription = apiDescription;
 	}
 	
 	
