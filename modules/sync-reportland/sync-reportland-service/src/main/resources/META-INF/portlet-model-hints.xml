@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.reportland.model.ReportLandTax">
+		<field name="uuid" type="String" />
+		<field name="reportId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dossierNo" type="String" />
+		<field name="bodyRequest" type="String" />
+		<field name="response" type="String" />
+	</model>
+</model-hints>
