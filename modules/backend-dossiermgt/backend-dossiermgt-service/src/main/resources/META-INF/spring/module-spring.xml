@@ -105,8 +105,6 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.RegistrationLogPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.RegistrationLogPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.RegistrationTemplatesLocalServiceImpl" id="org.opencps.dossiermgt.service.RegistrationTemplatesLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.RegistrationTemplatesPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.RegistrationTemplatesPersistence" parent="basePersistence" />
-	<bean class="org.opencps.dossiermgt.service.impl.ReportLandTaxLocalServiceImpl" id="org.opencps.dossiermgt.service.ReportLandTaxLocalService" />
-	<bean class="org.opencps.dossiermgt.service.persistence.impl.ReportLandTaxPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ReportLandTaxPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.ServiceConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.ServiceConfigLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.ServiceConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ServiceConfigPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.ServiceConfigMappingLocalServiceImpl" id="org.opencps.dossiermgt.service.ServiceConfigMappingLocalService" />

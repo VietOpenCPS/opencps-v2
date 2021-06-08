@@ -1,6 +1,0 @@
-Bundle-Name: sync-reportland-service
-Bundle-SymbolicName: org.opencps.reportland.service
-Bundle-Version: 1.0.0
-Liferay-Require-SchemaVersion: 1.0.0
-Liferay-Service: true
--dsannotations-options: inherit
