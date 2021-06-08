@@ -89,37 +89,6 @@
 
 	</entity>
 
-	<entity name="ReportLandTax" table="opencps_reportlandtax"
-			local-service="true" remote-service="false" uuid="true" >
-
-		<!-- PK fields -->
-
-		<column name="reportId" primary="true" type="long" />
-		<!-- Group instance -->
-
-		<column name="groupId" type="long" />
-
-		<!-- Audit fields -->
-
-		<column name="companyId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-
-		<column name="dossierNo" type="String" />
-		<column name="bodyRequest" type="String" />
-		<column name="response" type="String" />
-
-		<!-- Order -->
-
-		<!-- Finder methods -->
-		<!-- References -->
-
-	</entity>
-
 	<entity name="ServiceFileTemplate" table="opencps_services_filetemplates"
 		local-service="true" remote-service="false"  uuid="true">
 
