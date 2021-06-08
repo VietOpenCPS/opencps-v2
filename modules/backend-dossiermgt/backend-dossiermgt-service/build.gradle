@@ -35,6 +35,9 @@ dependencies {
 
 	compileOnly project(":modules:sync-tracking:sync-tracking-api")
 	compileOnly project(":modules:sync-tracking:sync-tracking-service")
+	
+	compileOnly project(":modules:sync-reportland:sync-reportland-api")
+	compileOnly project(":modules:sync-reportland:sync-reportland-service")
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-text
 	compileOnly group: 'org.apache.commons', name: 'commons-text', version: '1.8'
 	

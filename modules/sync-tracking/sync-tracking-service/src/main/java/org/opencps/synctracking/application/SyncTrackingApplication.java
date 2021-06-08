@@ -28,6 +28,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -66,7 +67,11 @@ public class SyncTrackingApplication extends Application{
 
     @Override
     public Set<Object> getSingletons() {
-        return Collections.<Object>singleton(this);
+        Set<Object> singletons = new HashSet<Object>();
+        // add REST endpoints (resources)
+//		singletons.add(new DigitalSignatureManagementImpl());
+        singletons.add(this);
+        return singletons;
     }
 
     @GET
