@@ -2,6 +2,7 @@ package org.opencps.backend.statisticmgt.dto;
 
 public class DossierStatisticMgtData {
 	
+	private long groupId;
 	private int betimesCount = 0;
 	private int doneCount = 0;
 	private String govAgencyCode;
@@ -27,6 +28,7 @@ public class DossierStatisticMgtData {
 	private int waitingCount = 0;
 	private int processCount = 0;
 	private int ontimePercentage = 0;
+	private int groupBy;
 	public int getBetimesCount() {
 		return betimesCount;
 	}
@@ -177,7 +179,18 @@ public class DossierStatisticMgtData {
 	public void setOntimePercentage(int ontimePercentage) {
 		this.ontimePercentage = ontimePercentage;
 	}
-	
+	public long getGroupId() {
+		return groupId;
+	}
+	public void setGroupId(long groupId) {
+		this.groupId = groupId;
+	}
+	public int getGroupBy() {
+		return groupBy;
+	}
+	public void setGroupBy(int groupBy) {
+		this.groupBy = groupBy;
+	}	
 	
 	
 }

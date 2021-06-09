@@ -155,5 +155,32 @@
 				(opencps_statistic.year = ?)
 		]]>
 	</sql>
+	<sql id="org.opencps.statistic.service.persistence.OpencpsDossierStatisticMgtFinder.searchStatisicMgt">
+		<![CDATA[
+			SELECT opencps_statistic_mgt.* 
+			FROM opencps_statistic_mgt 
+			WHERE 
+				(opencps_statistic_mgt.month = ?) AND
+				(opencps_statistic_mgt.year = ?) AND
+				(opencps_statistic_mgt.domainCode = ?) AND
+				(opencps_statistic_mgt.govAgencyCode = ?) AND 
+				(opencps_statistic_mgt.groupId = ?)
+			ORDER BY month DESC
+		]]>
+	</sql>
+	<sql id="org.opencps.statistic.service.persistence.OpencpsDossierStatisticMgtFinder.searchStatisicMgtGroupBy">
+		<![CDATA[
+			SELECT opencps_statistic_mgt.* 
+			FROM opencps_statistic_mgt 
+			WHERE 
+				(opencps_statistic_mgt.month = ?) AND
+				(opencps_statistic_mgt.year = ?) AND
+				(opencps_statistic_mgt.domainCode = ?) AND
+				(opencps_statistic_mgt.govAgencyCode = ?) AND 
+				(opencps_statistic_mgt.groupId = ?) AND
+				(opencps_statistic_mgt.groupBy = ?)
+			ORDER BY month DESC
+		]]>
+	</sql>
 
 </custom-sql>

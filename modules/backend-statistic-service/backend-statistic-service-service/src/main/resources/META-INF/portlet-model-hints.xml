@@ -133,6 +133,41 @@
 		<field name="releaseDossierSatCount" type="int" />
 		<field name="fromViaPostalCount" type="int" />
 	</model>
+	<model name="org.opencps.statistic.model.OpencpsDossierStatisticMgt">
+		<field name="uuid" type="String" />
+		<field name="dossierStatisticMgtId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="month" type="int" />
+		<field name="year" type="int" />
+		<field name="totalCount" type="int" />
+		<field name="processCount" type="int" />
+		<field name="remainingCount" type="int" />
+		<field name="receivedCount" type="int" />
+		<field name="onlineCount" type="int" />
+		<field name="onegateCount" type="int" />
+		<field name="releaseCount" type="int" />
+		<field name="betimesCount" type="int" />
+		<field name="ontimeCount" type="int" />
+		<field name="overtimeCount" type="int" />
+		<field name="doneCount" type="int" />
+		<field name="releasingCount" type="int" />
+		<field name="processingCount" type="int" />
+		<field name="undueCount" type="int" />
+		<field name="overdueCount" type="int" />
+		<field name="ontimePercentage" type="int" />
+		<field name="waitingCount" type="int" />
+		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyName" type="String" />
+		<field name="domainCode" type="String" />
+		<field name="domainName" type="String" />
+		<field name="serviceCode" type="String" />
+		<field name="serviceName" type="String" />
+		<field name="groupBy" type="int" />
+	</model>
 	<model name="org.opencps.statistic.model.OpencpsPersonStatistic">
 		<field name="uuid" type="String" />
 		<field name="personStatisticId" type="long" />
