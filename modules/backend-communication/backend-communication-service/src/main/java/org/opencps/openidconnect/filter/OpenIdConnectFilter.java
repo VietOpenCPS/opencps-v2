@@ -92,6 +92,8 @@ public class OpenIdConnectFilter extends BaseFilter {
 			if (openIdConnectSession == null) {
 				return;
 			}
+			_log.info("AccessToken: " + openIdConnectSession.getAccessTokenValue());
+			_log.info("RefreshToken: " + openIdConnectSession.getRefreshTokenValue());
 
 			OpenIdConnectFlowState openIdConnectFlowState =
 				openIdConnectSession.getOpenIdConnectFlowState();
