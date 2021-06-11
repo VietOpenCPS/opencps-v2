@@ -546,6 +546,34 @@ public interface OpencpsDossierStatisticMgtModel extends BaseModel<OpencpsDossie
 	 */
 	public void setGroupBy(int groupBy);
 
+	/**
+	 * Returns the cancelled count of this opencps dossier statistic mgt.
+	 *
+	 * @return the cancelled count of this opencps dossier statistic mgt
+	 */
+	public int getCancelledCount();
+
+	/**
+	 * Sets the cancelled count of this opencps dossier statistic mgt.
+	 *
+	 * @param cancelledCount the cancelled count of this opencps dossier statistic mgt
+	 */
+	public void setCancelledCount(int cancelledCount);
+
+	/**
+	 * Returns the unresolved count of this opencps dossier statistic mgt.
+	 *
+	 * @return the unresolved count of this opencps dossier statistic mgt
+	 */
+	public int getUnresolvedCount();
+
+	/**
+	 * Sets the unresolved count of this opencps dossier statistic mgt.
+	 *
+	 * @param unresolvedCount the unresolved count of this opencps dossier statistic mgt
+	 */
+	public void setUnresolvedCount(int unresolvedCount);
+
 	@Override
 	public boolean isNew();
 

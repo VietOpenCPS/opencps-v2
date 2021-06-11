@@ -563,6 +563,8 @@
 		<column name="serviceCode" type="String" />
 		<column name="serviceName" type="String" />
 		<column name="groupBy" type="int" />
+		<column name="cancelledCount" type="int" />
+		<column name="unresolvedCount" type="int" />
 		
 		<!-- Order -->
 

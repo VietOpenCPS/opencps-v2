@@ -29,4 +29,8 @@ public interface OpencpsDossierStatisticMgtFinder {
 	public org.opencps.statistic.model.OpencpsDossierStatisticMgt checkContainsGroupBy(
 		long groupId, int month, int year, String govAgencyCode,
 		String domainCode, int groupBy);
+
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatisticMgt> searchByDomainAgencyGroupBy(
+		long groupId, int month, int year, String domainCode,
+		String govAgencyCode, int groupBy, int start, int end);
 }

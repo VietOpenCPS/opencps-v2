@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -25,7 +26,7 @@ import org.opencps.statistic.service.persistence.OpencpsDossierStatisticMgtFinde
 public class OpencpsDossierStatisticMgtFinderImpl extends OpencpsDossierStatisticMgtFinderBaseImpl
 	implements OpencpsDossierStatisticMgtFinder{
 
-	private final static Log LOG = LogFactoryUtil.getLog(OpencpsDossierStatisticMgtFinderImpl.class);
+	private static Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticMgtFinderImpl.class);
 
 	private static final String SEARCH_DOSSIER_STATISTIC_MGT = OpencpsDossierStatisticMgtFinder.class.getName()
 			+ ".searchStatisicMgt";
@@ -101,11 +102,11 @@ public class OpencpsDossierStatisticMgtFinderImpl extends OpencpsDossierStatisti
 
 			
 		} catch (Exception e) {
-			LOG.error(e);
+			_log.error(e.getMessage());
 			try {
 				throw new SystemException(e);
 			} catch (SystemException se) {
-				LOG.error(se);
+				_log.error(e.getMessage());
 			}
 		} finally {
 			closeSession(session);
@@ -173,16 +174,99 @@ public class OpencpsDossierStatisticMgtFinderImpl extends OpencpsDossierStatisti
 
 			
 		} catch (Exception e) {
-			LOG.error(e);
+			_log.error(e.getMessage());
 			try {
 				throw new SystemException(e);
 			} catch (SystemException se) {
-				LOG.error(se);
+				_log.error(e.getMessage());
 			}
 		} finally {
 			closeSession(session);
 		}
 		
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<OpencpsDossierStatisticMgt> searchByDomainAgencyGroupBy(long groupId, int month, int year, String domainCode,
+			String govAgencyCode, int groupBy, int start, int end) {
+		Session session = null;
+
+		try {
+			session = openSession();
+			String sql = _customSQL.get(getClass(), SEARCH_DOSSIER_STATISTIC_MGT_GB);
+
+			// LOG.info(sql);
+
+			if (month == ALL_MONTH) {
+				sql = StringUtil.replace(sql, CONDITION_MONTH, StringPool.BLANK);
+			}
+
+			/* remove year */
+			if (year == ALL_MONTH) {
+				sql = StringUtil.replace(sql, CONDITION_YEAR, StringPool.BLANK);
+			}
+
+			if (Validator.isNull(domainCode)) {
+				sql = StringUtil.replace(sql, CONDITION_DOMAIN, StringPool.BLANK);
+			} else if (domainCode.contentEquals(TOTAL)){
+				sql = StringUtil.replace(sql, CONDITION_DOMAIN, CONDITION_DOMAIN_REPLACE);
+			}
+			
+			if (Validator.isNull(govAgencyCode)) {
+				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY, StringPool.BLANK);
+			} else if (govAgencyCode.contentEquals(TOTAL)){
+				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
+			}
+			
+
+			SQLQuery q = session.createSQLQuery(sql);
+
+			_log.debug(q);
+			q.setCacheable(true);
+			q.addEntity("OpencpsDossierStatisticMgt", OpencpsDossierStatisticMgtImpl.class);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			/* add month parameter */
+
+			if (month != ALL_MONTH) {
+				qPos.add(month);
+			}
+
+			/* add year parameter */
+			if (year != ALL_MONTH) {
+				qPos.add(year);
+			}
+
+			/* add domain parameter */
+			if (Validator.isNotNull(domainCode) && !domainCode.contentEquals(TOTAL)) {
+				qPos.add(domainCode);
+			}
+
+			/* add govAgency parameter */
+			if (Validator.isNotNull(govAgencyCode) && !govAgencyCode.contentEquals(TOTAL)) {
+				qPos.add(govAgencyCode);
+			}
+
+			/* add groupId */
+			qPos.add(groupId);
+			
+			/* add groupBy */
+			qPos.add(groupBy);
+			
+			return (List<OpencpsDossierStatisticMgt>) QueryUtil.list(q, getDialect(), start, end);
+		} catch (Exception e) {
+			_log.error(e.getMessage());
+			try {
+				throw new SystemException(e);
+			} catch (SystemException se) {
+				_log.error(e.getMessage());
+			}
+		} finally {
+			closeSession(session);
+		}
+
 		return null;
 	}
 		

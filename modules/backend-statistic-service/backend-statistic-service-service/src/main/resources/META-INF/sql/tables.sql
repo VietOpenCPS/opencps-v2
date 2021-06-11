@@ -167,7 +167,9 @@ create table opencps_statistic_mgt (
 	domainName VARCHAR(75) null,
 	serviceCode VARCHAR(75) null,
 	serviceName VARCHAR(75) null,
-	groupBy INTEGER
+	groupBy INTEGER,
+	cancelledCount INTEGER,
+	unresolvedCount INTEGER
 );
 
 create table opencps_voting_statistic (

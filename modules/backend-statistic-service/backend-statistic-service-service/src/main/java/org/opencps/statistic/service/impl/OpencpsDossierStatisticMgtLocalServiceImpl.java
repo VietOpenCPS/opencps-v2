@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.model.OpencpsDossierStatisticMgt;
 import org.opencps.statistic.service.OpencpsDossierStatisticMgtLocalServiceUtil;
 import org.opencps.statistic.service.base.OpencpsDossierStatisticMgtLocalServiceBaseImpl;
@@ -86,6 +87,8 @@ public class OpencpsDossierStatisticMgtLocalServiceImpl
 			String serviceName = dossierObj.has("serrviceName") ? dossierObj.getString("serrviceName") : StringPool.BLANK;
 			int onegateCount = dossierObj.has("onegateCount") ? dossierObj.getInt("onegateCount") : 0;
 			int groupBy = dossierObj.has("groupBy") ? dossierObj.getInt("groupBy") : 0;
+			int cancelledCount = dossierObj.has("cancelledCount") ? dossierObj.getInt("cancelledCount") : 0;
+			int unresolvedCount = dossierObj.has("unresolvedCount") ? dossierObj.getInt("unresolvedCount") : 0;
 			//Check record exit
 			OpencpsDossierStatisticMgt dossierStatisticMgt = OpencpsDossierStatisticMgtLocalServiceUtil.checkContainGroupBy(groupId, month, year, govAgencyCode, domainCode, groupBy);
 			Date now = new Date();
@@ -123,6 +126,8 @@ public class OpencpsDossierStatisticMgtLocalServiceImpl
 				dossierStatisticMgt.setServiceCode(serviceCode);
 				dossierStatisticMgt.setServiceName(serviceName);
 				dossierStatisticMgt.setGroupBy(groupBy);
+				dossierStatisticMgt.setUnresolvedCount(unresolvedCount);
+				dossierStatisticMgt.setCancelledCount(cancelledCount);
 			} else {
 				dossierStatisticMgt.setModifiedDate(now);
 				dossierStatisticMgt.setMonth(month);
@@ -151,6 +156,8 @@ public class OpencpsDossierStatisticMgtLocalServiceImpl
 				dossierStatisticMgt.setServiceCode(serviceCode);
 				dossierStatisticMgt.setServiceName(serviceName);
 				dossierStatisticMgt.setGroupBy(groupBy);
+				dossierStatisticMgt.setUnresolvedCount(unresolvedCount);
+				dossierStatisticMgt.setCancelledCount(cancelledCount);
 			}
 
 			int ontimePercent = 100;
@@ -186,6 +193,16 @@ public class OpencpsDossierStatisticMgtLocalServiceImpl
 		return opencpsDossierStatisticMgtPersistence.findByG_NM_Y_G_D_GB(groupId, month, year, govAgencyCode, domainCode, groupBy);
 	}
 
+	public List<OpencpsDossierStatisticMgt> searchDossierStatistic(long groupId, int month, int year, String domainCode,
+			String govAgencyCode, int groupBy, int start, int end){
+		try {
+			return opencpsDossierStatisticMgtFinder.searchByDomainAgencyGroupBy(groupId, month, year, domainCode, govAgencyCode, groupBy, start, end);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	private Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticMgtLocalServiceImpl.class);
 
 

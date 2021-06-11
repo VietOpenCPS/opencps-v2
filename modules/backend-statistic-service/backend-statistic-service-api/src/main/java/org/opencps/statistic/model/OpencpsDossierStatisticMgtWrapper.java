@@ -93,6 +93,8 @@ public class OpencpsDossierStatisticMgtWrapper
 		attributes.put("serviceCode", getServiceCode());
 		attributes.put("serviceName", getServiceName());
 		attributes.put("groupBy", getGroupBy());
+		attributes.put("cancelledCount", getCancelledCount());
+		attributes.put("unresolvedCount", getUnresolvedCount());
 
 		return attributes;
 	}
@@ -297,6 +299,18 @@ public class OpencpsDossierStatisticMgtWrapper
 		if (groupBy != null) {
 			setGroupBy(groupBy);
 		}
+
+		Integer cancelledCount = (Integer)attributes.get("cancelledCount");
+
+		if (cancelledCount != null) {
+			setCancelledCount(cancelledCount);
+		}
+
+		Integer unresolvedCount = (Integer)attributes.get("unresolvedCount");
+
+		if (unresolvedCount != null) {
+			setUnresolvedCount(unresolvedCount);
+		}
 	}
 
 	@Override
@@ -317,6 +331,16 @@ public class OpencpsDossierStatisticMgtWrapper
 	@Override
 	public int getBetimesCount() {
 		return _opencpsDossierStatisticMgt.getBetimesCount();
+	}
+
+	/**
+	* Returns the cancelled count of this opencps dossier statistic mgt.
+	*
+	* @return the cancelled count of this opencps dossier statistic mgt
+	*/
+	@Override
+	public int getCancelledCount() {
+		return _opencpsDossierStatisticMgt.getCancelledCount();
 	}
 
 	/**
@@ -610,6 +634,16 @@ public class OpencpsDossierStatisticMgtWrapper
 	}
 
 	/**
+	* Returns the unresolved count of this opencps dossier statistic mgt.
+	*
+	* @return the unresolved count of this opencps dossier statistic mgt
+	*/
+	@Override
+	public int getUnresolvedCount() {
+		return _opencpsDossierStatisticMgt.getUnresolvedCount();
+	}
+
+	/**
 	* Returns the user ID of this opencps dossier statistic mgt.
 	*
 	* @return the user ID of this opencps dossier statistic mgt
@@ -707,6 +741,16 @@ public class OpencpsDossierStatisticMgtWrapper
 	@Override
 	public void setCachedModel(boolean cachedModel) {
 		_opencpsDossierStatisticMgt.setCachedModel(cachedModel);
+	}
+
+	/**
+	* Sets the cancelled count of this opencps dossier statistic mgt.
+	*
+	* @param cancelledCount the cancelled count of this opencps dossier statistic mgt
+	*/
+	@Override
+	public void setCancelledCount(int cancelledCount) {
+		_opencpsDossierStatisticMgt.setCancelledCount(cancelledCount);
 	}
 
 	/**
@@ -1013,6 +1057,16 @@ public class OpencpsDossierStatisticMgtWrapper
 	@Override
 	public void setUndueCount(int undueCount) {
 		_opencpsDossierStatisticMgt.setUndueCount(undueCount);
+	}
+
+	/**
+	* Sets the unresolved count of this opencps dossier statistic mgt.
+	*
+	* @param unresolvedCount the unresolved count of this opencps dossier statistic mgt
+	*/
+	@Override
+	public void setUnresolvedCount(int unresolvedCount) {
+		_opencpsDossierStatisticMgt.setUnresolvedCount(unresolvedCount);
 	}
 
 	/**

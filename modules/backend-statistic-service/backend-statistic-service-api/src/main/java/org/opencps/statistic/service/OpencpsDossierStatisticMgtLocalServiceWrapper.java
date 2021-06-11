@@ -338,6 +338,14 @@ public class OpencpsDossierStatisticMgtLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatisticMgt> searchDossierStatistic(
+		long groupId, int month, int year, String domainCode,
+		String govAgencyCode, int groupBy, int start, int end) {
+		return _opencpsDossierStatisticMgtLocalService.searchDossierStatistic(groupId,
+			month, year, domainCode, govAgencyCode, groupBy, start, end);
+	}
+
+	@Override
 	public void updateBatchStatisticMgt(
 		java.util.List<com.liferay.portal.kernel.json.JSONObject> dossierDataObjs)
 		throws com.liferay.portal.kernel.exception.PortalException,

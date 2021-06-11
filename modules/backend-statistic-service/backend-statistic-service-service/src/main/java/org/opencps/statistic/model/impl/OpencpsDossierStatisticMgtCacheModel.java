@@ -66,7 +66,7 @@ public class OpencpsDossierStatisticMgtCacheModel implements CacheModel<OpencpsD
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(67);
+		StringBundler sb = new StringBundler(71);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -134,6 +134,10 @@ public class OpencpsDossierStatisticMgtCacheModel implements CacheModel<OpencpsD
 		sb.append(serviceName);
 		sb.append(", groupBy=");
 		sb.append(groupBy);
+		sb.append(", cancelledCount=");
+		sb.append(cancelledCount);
+		sb.append(", unresolvedCount=");
+		sb.append(unresolvedCount);
 		sb.append("}");
 
 		return sb.toString();
@@ -239,6 +243,8 @@ public class OpencpsDossierStatisticMgtCacheModel implements CacheModel<OpencpsD
 		}
 
 		opencpsDossierStatisticMgtImpl.setGroupBy(groupBy);
+		opencpsDossierStatisticMgtImpl.setCancelledCount(cancelledCount);
+		opencpsDossierStatisticMgtImpl.setUnresolvedCount(unresolvedCount);
 
 		opencpsDossierStatisticMgtImpl.resetOriginalValues();
 
@@ -303,6 +309,10 @@ public class OpencpsDossierStatisticMgtCacheModel implements CacheModel<OpencpsD
 		serviceName = objectInput.readUTF();
 
 		groupBy = objectInput.readInt();
+
+		cancelledCount = objectInput.readInt();
+
+		unresolvedCount = objectInput.readInt();
 	}
 
 	@Override
@@ -412,6 +422,10 @@ public class OpencpsDossierStatisticMgtCacheModel implements CacheModel<OpencpsD
 		}
 
 		objectOutput.writeInt(groupBy);
+
+		objectOutput.writeInt(cancelledCount);
+
+		objectOutput.writeInt(unresolvedCount);
 	}
 
 	public String uuid;
@@ -447,4 +461,6 @@ public class OpencpsDossierStatisticMgtCacheModel implements CacheModel<OpencpsD
 	public String serviceCode;
 	public String serviceName;
 	public int groupBy;
+	public int cancelledCount;
+	public int unresolvedCount;
 }

@@ -271,6 +271,11 @@ public interface OpencpsDossierStatisticMgtLocalService extends BaseLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatisticMgt> searchDossierStatistic(
+		long groupId, int month, int year, String domainCode,
+		String govAgencyCode, int groupBy, int start, int end);
+
 	public void updateBatchStatisticMgt(List<JSONObject> dossierDataObjs)
 		throws PortalException, SystemException;
 

@@ -167,6 +167,8 @@
 		<field name="serviceCode" type="String" />
 		<field name="serviceName" type="String" />
 		<field name="groupBy" type="int" />
+		<field name="cancelledCount" type="int" />
+		<field name="unresolvedCount" type="int" />
 	</model>
 	<model name="org.opencps.statistic.model.OpencpsPersonStatistic">
 		<field name="uuid" type="String" />

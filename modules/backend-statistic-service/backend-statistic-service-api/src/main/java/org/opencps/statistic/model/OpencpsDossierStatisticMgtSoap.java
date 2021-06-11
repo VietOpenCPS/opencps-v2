@@ -67,6 +67,8 @@ public class OpencpsDossierStatisticMgtSoap implements Serializable {
 		soapModel.setServiceCode(model.getServiceCode());
 		soapModel.setServiceName(model.getServiceName());
 		soapModel.setGroupBy(model.getGroupBy());
+		soapModel.setCancelledCount(model.getCancelledCount());
+		soapModel.setUnresolvedCount(model.getUnresolvedCount());
 
 		return soapModel;
 	}
@@ -386,6 +388,22 @@ public class OpencpsDossierStatisticMgtSoap implements Serializable {
 		_groupBy = groupBy;
 	}
 
+	public int getCancelledCount() {
+		return _cancelledCount;
+	}
+
+	public void setCancelledCount(int cancelledCount) {
+		_cancelledCount = cancelledCount;
+	}
+
+	public int getUnresolvedCount() {
+		return _unresolvedCount;
+	}
+
+	public void setUnresolvedCount(int unresolvedCount) {
+		_unresolvedCount = unresolvedCount;
+	}
+
 	private String _uuid;
 	private long _dossierStatisticMgtId;
 	private long _groupId;
@@ -419,4 +437,6 @@ public class OpencpsDossierStatisticMgtSoap implements Serializable {
 	private String _serviceCode;
 	private String _serviceName;
 	private int _groupBy;
+	private int _cancelledCount;
+	private int _unresolvedCount;
 }

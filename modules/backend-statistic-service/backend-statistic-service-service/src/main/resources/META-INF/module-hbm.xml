@@ -155,6 +155,8 @@
 		<property name="serviceCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="serviceName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="groupBy" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="cancelledCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="unresolvedCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.statistic.model.impl.OpencpsPersonStatisticImpl" table="opencps_person_statistic">
 		<id name="personStatisticId" type="long">

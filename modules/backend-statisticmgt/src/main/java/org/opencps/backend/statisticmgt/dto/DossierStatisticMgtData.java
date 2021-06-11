@@ -29,6 +29,8 @@ public class DossierStatisticMgtData {
 	private int processCount = 0;
 	private int ontimePercentage = 0;
 	private int groupBy;
+	private int cancelledCount = 0;
+	private int unresolvedCount = 0;
 	public int getBetimesCount() {
 		return betimesCount;
 	}
@@ -190,6 +192,18 @@ public class DossierStatisticMgtData {
 	}
 	public void setGroupBy(int groupBy) {
 		this.groupBy = groupBy;
+	}
+	public int getCancelledCount() {
+		return cancelledCount;
+	}
+	public void setCancelledCount(int cancelledCount) {
+		this.cancelledCount = cancelledCount;
+	}
+	public int getUnresolvedCount() {
+		return unresolvedCount;
+	}
+	public void setUnresolvedCount(int unresolvedCount) {
+		this.unresolvedCount = unresolvedCount;
 	}	
 	
 	

@@ -320,6 +320,14 @@ public class OpencpsDossierStatisticMgtLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatisticMgt> searchDossierStatistic(
+		long groupId, int month, int year, String domainCode,
+		String govAgencyCode, int groupBy, int start, int end) {
+		return getService()
+				   .searchDossierStatistic(groupId, month, year, domainCode,
+			govAgencyCode, groupBy, start, end);
+	}
+
 	public static void updateBatchStatisticMgt(
 		java.util.List<com.liferay.portal.kernel.json.JSONObject> dossierDataObjs)
 		throws com.liferay.portal.kernel.exception.PortalException,

@@ -97,7 +97,9 @@ public class OpencpsDossierStatisticMgtModelImpl extends BaseModelImpl<OpencpsDo
 			{ "domainName", Types.VARCHAR },
 			{ "serviceCode", Types.VARCHAR },
 			{ "serviceName", Types.VARCHAR },
-			{ "groupBy", Types.INTEGER }
+			{ "groupBy", Types.INTEGER },
+			{ "cancelledCount", Types.INTEGER },
+			{ "unresolvedCount", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -135,9 +137,11 @@ public class OpencpsDossierStatisticMgtModelImpl extends BaseModelImpl<OpencpsDo
 		TABLE_COLUMNS_MAP.put("serviceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("serviceName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("groupBy", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("cancelledCount", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("unresolvedCount", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_statistic_mgt (uuid_ VARCHAR(75) null,dossierStatisticMgtId LONG not null primary key,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,totalCount INTEGER,processCount INTEGER,remainingCount INTEGER,receivedCount INTEGER,onlineCount INTEGER,onegateCount INTEGER,releaseCount INTEGER,betimesCount INTEGER,ontimeCount INTEGER,overtimeCount INTEGER,doneCount INTEGER,releasingCount INTEGER,processingCount INTEGER,undueCount INTEGER,overdueCount INTEGER,ontimePercentage INTEGER,waitingCount INTEGER,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,domainCode VARCHAR(75) null,domainName VARCHAR(75) null,serviceCode VARCHAR(75) null,serviceName VARCHAR(75) null,groupBy INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_statistic_mgt (uuid_ VARCHAR(75) null,dossierStatisticMgtId LONG not null primary key,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,totalCount INTEGER,processCount INTEGER,remainingCount INTEGER,receivedCount INTEGER,onlineCount INTEGER,onegateCount INTEGER,releaseCount INTEGER,betimesCount INTEGER,ontimeCount INTEGER,overtimeCount INTEGER,doneCount INTEGER,releasingCount INTEGER,processingCount INTEGER,undueCount INTEGER,overdueCount INTEGER,ontimePercentage INTEGER,waitingCount INTEGER,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,domainCode VARCHAR(75) null,domainName VARCHAR(75) null,serviceCode VARCHAR(75) null,serviceName VARCHAR(75) null,groupBy INTEGER,cancelledCount INTEGER,unresolvedCount INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_statistic_mgt";
 	public static final String ORDER_BY_JPQL = " ORDER BY opencpsDossierStatisticMgt.dossierStatisticMgtId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_statistic_mgt.dossierStatisticMgtId ASC";
@@ -235,6 +239,8 @@ public class OpencpsDossierStatisticMgtModelImpl extends BaseModelImpl<OpencpsDo
 		attributes.put("serviceCode", getServiceCode());
 		attributes.put("serviceName", getServiceName());
 		attributes.put("groupBy", getGroupBy());
+		attributes.put("cancelledCount", getCancelledCount());
+		attributes.put("unresolvedCount", getUnresolvedCount());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -441,6 +447,18 @@ public class OpencpsDossierStatisticMgtModelImpl extends BaseModelImpl<OpencpsDo
 
 		if (groupBy != null) {
 			setGroupBy(groupBy);
+		}
+
+		Integer cancelledCount = (Integer)attributes.get("cancelledCount");
+
+		if (cancelledCount != null) {
+			setCancelledCount(cancelledCount);
+		}
+
+		Integer unresolvedCount = (Integer)attributes.get("unresolvedCount");
+
+		if (unresolvedCount != null) {
+			setUnresolvedCount(unresolvedCount);
 		}
 	}
 
@@ -924,6 +942,26 @@ public class OpencpsDossierStatisticMgtModelImpl extends BaseModelImpl<OpencpsDo
 		return _originalGroupBy;
 	}
 
+	@Override
+	public int getCancelledCount() {
+		return _cancelledCount;
+	}
+
+	@Override
+	public void setCancelledCount(int cancelledCount) {
+		_cancelledCount = cancelledCount;
+	}
+
+	@Override
+	public int getUnresolvedCount() {
+		return _unresolvedCount;
+	}
+
+	@Override
+	public void setUnresolvedCount(int unresolvedCount) {
+		_unresolvedCount = unresolvedCount;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -988,6 +1026,8 @@ public class OpencpsDossierStatisticMgtModelImpl extends BaseModelImpl<OpencpsDo
 		opencpsDossierStatisticMgtImpl.setServiceCode(getServiceCode());
 		opencpsDossierStatisticMgtImpl.setServiceName(getServiceName());
 		opencpsDossierStatisticMgtImpl.setGroupBy(getGroupBy());
+		opencpsDossierStatisticMgtImpl.setCancelledCount(getCancelledCount());
+		opencpsDossierStatisticMgtImpl.setUnresolvedCount(getUnresolvedCount());
 
 		opencpsDossierStatisticMgtImpl.resetOriginalValues();
 
@@ -1214,12 +1254,16 @@ public class OpencpsDossierStatisticMgtModelImpl extends BaseModelImpl<OpencpsDo
 
 		opencpsDossierStatisticMgtCacheModel.groupBy = getGroupBy();
 
+		opencpsDossierStatisticMgtCacheModel.cancelledCount = getCancelledCount();
+
+		opencpsDossierStatisticMgtCacheModel.unresolvedCount = getUnresolvedCount();
+
 		return opencpsDossierStatisticMgtCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(67);
+		StringBundler sb = new StringBundler(71);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1287,6 +1331,10 @@ public class OpencpsDossierStatisticMgtModelImpl extends BaseModelImpl<OpencpsDo
 		sb.append(getServiceName());
 		sb.append(", groupBy=");
 		sb.append(getGroupBy());
+		sb.append(", cancelledCount=");
+		sb.append(getCancelledCount());
+		sb.append(", unresolvedCount=");
+		sb.append(getUnresolvedCount());
 		sb.append("}");
 
 		return sb.toString();
@@ -1294,7 +1342,7 @@ public class OpencpsDossierStatisticMgtModelImpl extends BaseModelImpl<OpencpsDo
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(103);
+		StringBundler sb = new StringBundler(109);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.statistic.model.OpencpsDossierStatisticMgt");
@@ -1432,6 +1480,14 @@ public class OpencpsDossierStatisticMgtModelImpl extends BaseModelImpl<OpencpsDo
 			"<column><column-name>groupBy</column-name><column-value><![CDATA[");
 		sb.append(getGroupBy());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>cancelledCount</column-name><column-value><![CDATA[");
+		sb.append(getCancelledCount());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>unresolvedCount</column-name><column-value><![CDATA[");
+		sb.append(getUnresolvedCount());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1489,6 +1545,8 @@ public class OpencpsDossierStatisticMgtModelImpl extends BaseModelImpl<OpencpsDo
 	private int _groupBy;
 	private int _originalGroupBy;
 	private boolean _setOriginalGroupBy;
+	private int _cancelledCount;
+	private int _unresolvedCount;
 	private long _columnBitmask;
 	private OpencpsDossierStatisticMgt _escapedModel;
 }

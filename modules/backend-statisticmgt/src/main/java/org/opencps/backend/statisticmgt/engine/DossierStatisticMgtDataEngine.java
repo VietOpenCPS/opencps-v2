@@ -40,10 +40,8 @@ import java.util.Map;
 
 import org.opencps.backend.statisticmgt.constant.Constants;
 import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtData;
-import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtkey;
 import org.opencps.backend.statisticmgt.util.ActionUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
-import org.opencps.statistic.model.OpencpsDossierStatisticMgt;
 import org.opencps.statistic.service.OpencpsDossierStatisticMgtLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -51,8 +49,8 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, service = DossierStatisticDataEngine.class)
-public class DossierStatisticDataEngine extends BaseMessageListener {
+@Component(immediate = true, service = DossierStatisticMgtDataEngine.class)
+public class DossierStatisticMgtDataEngine extends BaseMessageListener {
 
 	private volatile boolean isRunningDossier = false;
 	private static boolean RECACULATOR_STATISTIC_LAST_YEAR = Validator
@@ -73,16 +71,18 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.minute")) :-1;
 	private static int SECOND_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.second"))
 			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.second")) :-1;
-			
+	
+	private static long GROUPID_DVC = Validator.isNotNull(PropsUtil.get("opencps.statistic.groupId.dvc"))
+			? Integer.valueOf(PropsUtil.get("opencps.statistic.groupId.dvc")) :-1;
 	private static int GROUP_TYPE_SITE = 1;
 
-	protected Log _log = LogFactoryUtil.getLog(DossierStatisticDataEngine.class);
+	protected Log _log = LogFactoryUtil.getLog(DossierStatisticMgtDataEngine.class);
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
 
 		_log.debug("START STATISTIC MGT DOSSIER: " + isRunningDossier);
-		if (!isRunningDossier && CALCULATE_DOSSIER_STATISTIC_ENABLE) {
+		if (!isRunningDossier && CALCULATE_DOSSIER_STATISTIC_ENABLE && GROUPID_DVC != -1) {
 			isRunningDossier = true;
 		} else {
 			return;
@@ -97,34 +97,43 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 					QueryUtil.ALL_POS);
 
 			List<Group> sites = new ArrayList<Group>();
-			Map<Integer, Map<Integer, Map<String, DossierStatisticMgtData>>> calculateDatas = new HashMap<>();
+			
+			// Danh sách du lieu thong ke theo cac thang
+			Map<Integer, Map<Integer, Map<String, DossierStatisticMgtData>>> calculateDataDomainsByMonth = new HashMap<>();
+			Map<Integer, Map<Integer, Map<String, DossierStatisticMgtData>>> calculateDataGovsByMonth = new HashMap<>();
+
+			// Danh sach du lieu thong ke theo nam
+			Map<Integer, Map<Integer, Map<String, DossierStatisticMgtData>>> calculateDataDomainsByYear = new HashMap<>();
+			Map<Integer, Map<Integer, Map<String, DossierStatisticMgtData>>> calculateDataGovsByYear = new HashMap<>();
 
 			for (Group group : groups) {
-				if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
+				if (group.getType() == GROUP_TYPE_SITE && group.isSite() && group.getGroupId() != GROUPID_DVC) {
 					sites.add(group);
 				}
 			}
-			_log.info("SITE TEST : " + JSONFactoryUtil.looseSerialize(sites));
-			Map<Integer, Map<String, DossierStatisticMgtData>> calculateData = new HashMap<>();
+			_log.debug("List size: " + JSONFactoryUtil.looseSerialize(sites));
+			
 
 			for (Group site : sites) {
 
 				int monthCurrent = LocalDate.now().getMonthValue();
 				int yearCurrent = LocalDate.now().getYear();
 				Map<Integer, Boolean> mapFlagCurrent = new HashMap<>();
+				
+				/** START : Tổng hợp thống kê dữ liệu theo tháng và update vào db **/
+				// Du lieu thong ke theo thang : linh vuc, don vi nam hien tai
+				Map<Integer, Map<String, DossierStatisticMgtData>> calculateDataDomainByMonth = new HashMap<>();
+				Map<Integer, Map<String, DossierStatisticMgtData>> calculateDataGovByMonth = new HashMap<>();
+				
 				for (int month = 1; month <= monthCurrent; month++) {
 					boolean flagStatistic = true;
 					if (month <= monthCurrent) {
 						if (flagStatistic) {
-							try {
-								processDossierDataByMonth(site.getGroupId(), month, yearCurrent, calculateData);
-								_log.info("1111 :" + site.getGroupId() + "|" + month + "|" + yearCurrent);
-								_log.info("1111 :" + JSONFactoryUtil.looseSerialize(calculateData));
-								_log.info("-------------");
-								calculateDatas.put(yearCurrent, calculateData);
-								_log.info("2222 :" + yearCurrent);
-								_log.info("2222 :" + JSONFactoryUtil.looseSerialize(calculateDatas));
-								
+							try {								
+								// thong ke ho so thang 
+								processDossierDataByMonth(site.getGroupId(), month, yearCurrent, calculateDataDomainByMonth, calculateDataGovByMonth);								
+								calculateDataDomainsByMonth.put(yearCurrent, calculateDataDomainByMonth);
+								calculateDataGovsByMonth.put(yearCurrent, calculateDataGovByMonth);
 							} catch (Exception e) {
 								_log.debug(e);
 							}
@@ -136,20 +145,20 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 				int lastYear = LocalDate.now().getYear() - 1;
 				boolean flagLastYear = false;
 				Map<Integer, Boolean> mapFlagPrev = new HashMap<>();
-				Map<Integer, Map<String, DossierStatisticMgtData>> calculateLastData = new HashMap<>();
+				
+				// Du lieu thong ke theo thang: nam truoc
+				Map<Integer, Map<String, DossierStatisticMgtData>> calculateLastDataDomainByMonth = new HashMap<>();
+				Map<Integer, Map<String, DossierStatisticMgtData>> calculateLastDataGovByMonth = new HashMap<>();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 					if (RECACULATOR_STATISTIC_LAST_YEAR) {
 						flagLastYear = true;
 					}
 					if (flagLastYear) {
 						try {
-							processDossierDataByMonth(site.getGroupId(), lastMonth, lastYear, calculateLastData);
-							_log.info("3333 :" + site.getGroupId() + "|" + lastMonth + "|" + lastYear);
-							_log.info("3333 :" + JSONFactoryUtil.looseSerialize(calculateLastData));
-							_log.info("-------------");
-							calculateDatas.put(lastYear, calculateLastData);
-							_log.info("4444 :" + lastYear);
-							_log.info("4444 :" + JSONFactoryUtil.looseSerialize(calculateDatas));
+							// Du lieu tong hop theo thang
+							processDossierDataByMonth(site.getGroupId(), lastMonth, lastYear, calculateLastDataDomainByMonth, calculateLastDataGovByMonth);
+							calculateDataDomainsByMonth.put(lastYear, calculateLastDataDomainByMonth);
+							calculateDataGovsByMonth.put(lastYear, calculateLastDataGovByMonth);							
 						} catch (Exception e) {
 							_log.debug(e);
 						}
@@ -157,33 +166,107 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 					mapFlagPrev.put(lastMonth, flagLastYear);
 				}
 
+				// Tong hop cho nam hien tai
 				List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
 				for (int month = 1; month <= monthCurrent; month++) {
 					if (mapFlagCurrent.get(month)) {
-						if (calculateDatas.get(yearCurrent) != null
-								&& calculateDatas.get(yearCurrent).get(month) != null) {
-
-							lstDossierDataObjs.addAll(convertStatisticDataList(calculateData.get(month)));
+						if (calculateDataDomainsByMonth.get(yearCurrent) != null
+								&& calculateDataDomainsByMonth.get(yearCurrent).get(month) != null) {
+							lstDossierDataObjs.addAll(convertStatisticDataList(calculateDataDomainByMonth.get(month)));
 						}
 					}
 				}
-
-				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
-					if (mapFlagPrev.get(lastMonth)) {
-						if (calculateDatas.get(lastYear) != null
-								&& calculateDatas.get(lastYear).get(lastMonth) != null) {
-							lstDossierDataObjs
-									.addAll(convertStatisticDataList(calculateDatas.get(lastYear).get(lastMonth)));
+				for (int month = 1; month <= monthCurrent; month++) {
+					if (mapFlagCurrent.get(month)) {
+						if (calculateDataGovsByMonth.get(yearCurrent) != null
+								&& calculateDataGovsByMonth.get(yearCurrent).get(month) != null) {
+							lstDossierDataObjs.addAll(convertStatisticDataList(calculateDataGovByMonth.get(month)));
+						}
+					}
+				}				
+				
+				// Tong hop cho nam cu
+				if(RECACULATOR_STATISTIC_LAST_YEAR) {
+					for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+						if (mapFlagPrev.get(lastMonth)) {
+							if (calculateDataDomainsByMonth.get(lastYear) != null
+									&& calculateDataDomainsByMonth.get(lastYear).get(lastMonth) != null) {
+								lstDossierDataObjs
+										.addAll(convertStatisticDataList(calculateDataDomainsByMonth.get(lastYear).get(lastMonth)));
+							}
+						}
+					}
+					for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+						if (mapFlagPrev.get(lastMonth)) {
+							if (calculateDataGovsByMonth.get(lastYear) != null
+									&& calculateDataGovsByMonth.get(lastYear).get(lastMonth) != null) {
+								lstDossierDataObjs
+										.addAll(convertStatisticDataList(calculateDataGovsByMonth.get(lastYear).get(lastMonth)));
+							}
 						}
 					}
 				}
-
-				// update vao db
-				_log.info("5555 :" + JSONFactoryUtil.looseSerialize(lstDossierDataObjs));
-				updateStatistic(lstDossierDataObjs);
+				
+				// update du lieu cac thang vao db
+				if(Validator.isNotNull(lstDossierDataObjs) && lstDossierDataObjs.size() > 0) {
+					_log.debug("Statistic data month :" + JSONFactoryUtil.looseSerialize(lstDossierDataObjs));
+					updateStatistic(lstDossierDataObjs);
+				}
+				
+				/** END : Tổng hợp thống kê dữ liệu theo tháng và update vào db **/
+				
+				/*****************************************************************/
+				
+				/** START : Tổng hợp dữ liệu thống kê theo nam va update vào db **/	
+				
+				Map<Integer, Map<String, DossierStatisticMgtData>> calculateDataDomainByYear = new HashMap<>();
+				Map<Integer, Map<String, DossierStatisticMgtData>> calculateDataGovByYear = new HashMap<>();
+				Map<Integer, Map<String, DossierStatisticMgtData>> calculateLastDataDomainByYear = new HashMap<>();
+				Map<Integer, Map<String, DossierStatisticMgtData>> calculateLastDataGovByYear = new HashMap<>();
+				
+				// tong hop du lieu ho so nam
+				
+				// Du lieu nam hien tai
+				processDossierDataByYear(site.getGroupId(), yearCurrent, calculateDataDomainByYear, calculateDataGovByYear);								
+				calculateDataDomainsByYear.put(yearCurrent, calculateDataDomainByYear);
+				calculateDataGovsByYear.put(yearCurrent, calculateDataGovByYear);
+				
+				// Du lieu nam truoc
+				processDossierDataByYear(site.getGroupId(), lastYear, calculateLastDataDomainByYear, calculateLastDataGovByYear);
+				calculateDataDomainsByYear.put(lastYear, calculateLastDataDomainByYear);
+				calculateDataGovsByYear.put(lastYear, calculateLastDataGovByYear);		
+				
+				List<JSONObject> lstDossierDataObjYears = new ArrayList<JSONObject>();
+				
+				// Tong hop cho nam hien tai				
+				if (calculateDataDomainsByYear.get(yearCurrent) != null
+						&& calculateDataDomainsByYear.get(yearCurrent).get(0) != null) {
+					lstDossierDataObjYears.addAll(convertStatisticDataList(calculateDataDomainsByYear.get(yearCurrent).get(0)));
+				}
+				
+				if (calculateDataGovsByYear.get(yearCurrent) != null
+						&& calculateDataGovsByYear.get(yearCurrent).get(0) != null) {
+					lstDossierDataObjYears.addAll(convertStatisticDataList(calculateDataGovsByYear.get(yearCurrent).get(0)));
+				}
+				
+				// Tong hop cho nam cu				
+				if (calculateDataDomainsByYear.get(lastYear) != null
+						&& calculateDataDomainsByYear.get(lastYear).get(0) != null) {
+					lstDossierDataObjYears.addAll(convertStatisticDataList(calculateDataDomainsByYear.get(lastYear).get(0)));
+				}
+				
+				if (calculateDataGovsByYear.get(lastYear) != null
+						&& calculateDataGovsByYear.get(lastYear).get(0) != null) {
+					lstDossierDataObjYears.addAll(convertStatisticDataList(calculateDataGovsByYear.get(lastYear).get(0)));
+				}
 
 				// tinh ban ghi nam
-				updateStatistic(calDossierStatisticYearData(site.getGroupId()));
+				if(Validator.isNotNull(lstDossierDataObjYears) && lstDossierDataObjYears.size() > 0) {
+					_log.debug("Statistic Data year :" + JSONFactoryUtil.looseSerialize(lstDossierDataObjYears));
+					updateStatistic(lstDossierDataObjYears);
+				}
+				
+				/** END : Tổng hợp dữ liệu thống kê theo nam va update vào db **/	
 			}
 
 		} catch (Exception e) {
@@ -197,7 +280,8 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 	}
 
 	private void processDossierDataByMonth(long groupId, int month, int year,
-			Map<Integer, Map<String, DossierStatisticMgtData>> calculateData) {
+			Map<Integer, Map<String, DossierStatisticMgtData>> calculateDataDomain,
+			Map<Integer, Map<String, DossierStatisticMgtData>> calculateDataGov) {
 
 		Date firstDay = getFirstDay(month, year);
 		Date lastDay = getLastDay(month, year);
@@ -208,16 +292,47 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 
 		JSONObject jsonDataByDomainCode = ActionUtil.getDossierStatistic(groupId, -1, fromDate, toDate, null, null, null,
 				null, null, null, "domainCode", null, null, 20, Constants.GROUP_COUNT);
+		_log.debug("Du lieu thong ke thang theo linh vuc :" + JSONFactoryUtil.looseSerialize(jsonDataByDomainCode));
 		if (jsonDataByDomainCode != null && jsonDataByDomainCode.getInt(Constants.TOTAL) > 0) {
 			fetchStatisticData(groupId, statisticDataByDomainCode, jsonDataByDomainCode, month, year, false);
-			calculateData.put(month, statisticDataByDomainCode);
+			calculateDataDomain.put(month, statisticDataByDomainCode);
 		}
 
 		JSONObject jsonDataByGovAgencyCode = ActionUtil.getDossierStatistic(groupId, -1, fromDate, toDate, null, null, null,
 				null, null, null, "govAgencyCode", null, null, 20, Constants.GROUP_COUNT);
+		_log.debug("Du lieu thong ke thang theo don vi :" + JSONFactoryUtil.looseSerialize(jsonDataByGovAgencyCode));
 		if (jsonDataByGovAgencyCode != null && jsonDataByGovAgencyCode.getInt(Constants.TOTAL) > 0) {
 			fetchStatisticData(groupId, statisticDataByGovAgencyCode, jsonDataByGovAgencyCode, month, year, true);
-			calculateData.put(month, statisticDataByGovAgencyCode);
+			calculateDataGov.put(month, statisticDataByGovAgencyCode);
+		}
+
+	}
+	
+	private void processDossierDataByYear(long groupId, int year,
+			Map<Integer, Map<String, DossierStatisticMgtData>> calculateDataDomain,
+			Map<Integer, Map<String, DossierStatisticMgtData>> calculateDataGov) {
+
+		Date firstDay = getFirstDay(1, year);
+		Date lastDay = getLastDay(12, year);
+		long fromDate = firstDay.getTime();
+		long toDate = lastDay.getTime();
+		Map<String, DossierStatisticMgtData> statisticDataByDomainCode = new HashMap<String, DossierStatisticMgtData>();
+		Map<String, DossierStatisticMgtData> statisticDataByGovAgencyCode = new HashMap<String, DossierStatisticMgtData>();
+
+		JSONObject jsonDataByDomainCode = ActionUtil.getDossierStatistic(groupId, -1, fromDate, toDate, null, null, null,
+				null, null, null, "domainCode", null, null, 20, Constants.GROUP_COUNT);
+		_log.debug("Du lieu thong ke nam theo linh vuc :" + JSONFactoryUtil.looseSerialize(jsonDataByDomainCode));
+		if (jsonDataByDomainCode != null && jsonDataByDomainCode.getInt(Constants.TOTAL) > 0) {
+			fetchStatisticData(groupId, statisticDataByDomainCode, jsonDataByDomainCode, 0, year, false);
+			calculateDataDomain.put(0, statisticDataByDomainCode);
+		}
+
+		JSONObject jsonDataByGovAgencyCode = ActionUtil.getDossierStatistic(groupId, -1, fromDate, toDate, null, null, null,
+				null, null, null, "govAgencyCode", null, null, 20, Constants.GROUP_COUNT);
+		_log.debug("Du lieu thong ke nam theo don vi :" + JSONFactoryUtil.looseSerialize(jsonDataByGovAgencyCode));
+		if (jsonDataByGovAgencyCode != null && jsonDataByGovAgencyCode.getInt(Constants.TOTAL) > 0) {
+			fetchStatisticData(groupId, statisticDataByGovAgencyCode, jsonDataByGovAgencyCode, 0, year, true);
+			calculateDataGov.put(0, statisticDataByGovAgencyCode);
 		}
 
 	}
@@ -270,7 +385,8 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 					int ontimePercentage = jsonObject.getInt("ontimePercentage");
 					int overdueCount = jsonObject.getInt("overdueCount");
 					int overtimeCount = jsonObject.getInt("overtimeCount");
-					int processCount = jsonObject.getInt("processCount");
+					// DuanTV: process (tong xu ly) = total
+					int processCount = jsonObject.getInt("totalCount");
 					int processingCount = jsonObject.getInt("processingCount");
 					int receivedCount = jsonObject.getInt("receivedCount");
 					int releaseCount = jsonObject.getInt("releaseCount");
@@ -279,6 +395,10 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 					int totalCount = jsonObject.getInt("totalCount");
 					int undueCount = jsonObject.getInt("undueCount");
 					int waitingCount = jsonObject.getInt("waitingCount");
+					
+					// DuanTV :Thêm vào trước, hiện để mặc định là 0, khi nào cần thì xử lý lại
+					int unresolvedCount = 0;
+					int cancelledCount = 0;
 
 					String type1 = groupId + "@all";
 					DossierStatisticMgtData dataType1 = new DossierStatisticMgtData();
@@ -323,6 +443,8 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 						dataType1.setUndueCount(undueCount);
 						dataType1.setWaitingCount(waitingCount);
 						dataType1.setGroupBy(1);
+						dataType1.setUnresolvedCount(unresolvedCount);
+						dataType1.setCancelledCount(cancelledCount);
 
 						statisticData.put(type1, dataType1);
 					} else {
@@ -354,6 +476,8 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 						dataType2.setUndueCount(undueCount);
 						dataType2.setWaitingCount(waitingCount);
 						dataType2.setGroupBy(1);
+						dataType2.setUnresolvedCount(unresolvedCount);
+						dataType2.setCancelledCount(cancelledCount);
 
 						statisticData.put(type2, dataType2);
 					}
@@ -382,7 +506,10 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 					int ontimePercentage = jsonObject.getInt("ontimePercentage");
 					int overdueCount = jsonObject.getInt("overdueCount");
 					int overtimeCount = jsonObject.getInt("overtimeCount");
+					
+					//process = total
 					int processCount = jsonObject.getInt("processCount");
+					
 					int processingCount = jsonObject.getInt("processingCount");
 					int receivedCount = jsonObject.getInt("receivedCount");
 					int releaseCount = jsonObject.getInt("releaseCount");
@@ -391,6 +518,10 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 					int totalCount = jsonObject.getInt("totalCount");
 					int undueCount = jsonObject.getInt("undueCount");
 					int waitingCount = jsonObject.getInt("waitingCount");
+					
+					// DuanTV :Thêm vào trước, hiện để mặc định là 0, khi nào cần thì xử lý lại
+					int unresolvedCount = 0;
+					int cancelledCount = 0;
 
 					String type3 = "all@" + groupId;
 					DossierStatisticMgtData dataType3 = new DossierStatisticMgtData();
@@ -434,7 +565,9 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 						dataType3.setTotalCount(totalCount);
 						dataType3.setUndueCount(undueCount);
 						dataType3.setWaitingCount(waitingCount);
-						dataType3.setGroupBy(2);
+						dataType3.setGroupBy(2);						
+						dataType3.setUnresolvedCount(unresolvedCount);
+						dataType3.setCancelledCount(cancelledCount);						
 
 						statisticData.put(type3, dataType3);
 					} else {
@@ -466,6 +599,8 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 						dataType4.setUndueCount(undueCount);
 						dataType4.setWaitingCount(waitingCount);
 						dataType4.setGroupBy(2);
+						dataType4.setCancelledCount(cancelledCount);
+						dataType4.setUnresolvedCount(unresolvedCount);
 
 						statisticData.put(type4, dataType4);
 					}
@@ -503,151 +638,7 @@ public class DossierStatisticDataEngine extends BaseMessageListener {
 		}
 	}
 	
-	private List<JSONObject> calDossierStatisticYearData(long groupId) {
-		
-		int currentYear = LocalDate.now().getYear();
-		int lastYear = LocalDate.now().getYear() -1;
-		int[] yearArr = {0, currentYear, lastYear};
 
-		List<OpencpsDossierStatisticMgt> listDossierStatisticMgts = OpencpsDossierStatisticMgtLocalServiceUtil.findByG_Y_ARR(groupId, yearArr);
-		_log.info("6666 :" + JSONFactoryUtil.looseSerialize(listDossierStatisticMgts));
-		Map<String, DossierStatisticMgtkey> mapKey = null;
-		DossierStatisticMgtkey dossierStatisticMgtkey = null;
-		if (listDossierStatisticMgts != null && listDossierStatisticMgts.size() >0) {
-			mapKey = new HashMap<String, DossierStatisticMgtkey>();
-			for (OpencpsDossierStatisticMgt opStatisticMgt : listDossierStatisticMgts) {
-				StringBuilder sb = new StringBuilder();
-				
-				if(Validator.isNotNull(opStatisticMgt.getGovAgencyCode())) {
-					sb.append(opStatisticMgt.getGovAgencyCode());
-					sb.append("@all@1");
-				}else {
-					sb.append("all@all@1");
-				}
-				
-				if(Validator.isNotNull(opStatisticMgt.getDomainCode())) {
-					sb.append(opStatisticMgt.getDomainCode());
-					sb.append("@all@2");
-				}else {
-					sb.append("all@all@2");
-				}
-				sb.append(StringPool.AT);
-				sb.append(opStatisticMgt.getYear());
-				
-				if (mapKey.isEmpty() || !mapKey.containsKey(sb.toString())){
-					
-					dossierStatisticMgtkey = new DossierStatisticMgtkey();
-
-					if (Validator.isNotNull(opStatisticMgt.getGovAgencyCode())) {
-						dossierStatisticMgtkey.setGovAgencyCode(opStatisticMgt.getGovAgencyCode());
-					}
-					if (Validator.isNotNull(opStatisticMgt.getDomainCode())) {
-						dossierStatisticMgtkey.setDomainCode(opStatisticMgt.getDomainCode());
-					}
-					dossierStatisticMgtkey.setYear(opStatisticMgt.getYear());
-					dossierStatisticMgtkey.setGroupBy(opStatisticMgt.getGroupBy());
-					
-					mapKey.put(sb.toString(), dossierStatisticMgtkey);
-				}
-				
-			}
-		}
-		Map<String, DossierStatisticMgtData> mapStatisticData = new HashMap<>();
-		for(Map.Entry<String, DossierStatisticMgtkey> entry : mapKey.entrySet()) {
-			DossierStatisticMgtkey objectKey = entry.getValue();
-			_log.info("7777 :" + JSONFactoryUtil.looseSerialize(objectKey));
-			List<OpencpsDossierStatisticMgt> dossierStatisticMgts = OpencpsDossierStatisticMgtLocalServiceUtil.findByG_NM_Y_G_D_GB(groupId, 0, 
-					objectKey.getYear(), objectKey.getGovAgencyCode(), objectKey.getDomainCode(), objectKey.getGroupBy());
-			_log.info("8888 :" + JSONFactoryUtil.looseSerialize(dossierStatisticMgts));
-			DossierStatisticMgtData dossierStatisticMgtData = proCalStatistic(groupId, 0, objectKey.getYear(), 
-					objectKey.getGovAgencyCode(), objectKey.getDomainCode(), dossierStatisticMgts);
-			_log.info("9999 :" + JSONFactoryUtil.looseSerialize(dossierStatisticMgtData));
-			
-			if (dossierStatisticMgtData != null) {
-				mapStatisticData.put(entry.getKey(), dossierStatisticMgtData);
-			}
-		}
-		List<JSONObject> lstDossierDataMgt = convertStatisticDataList(mapStatisticData);
-		_log.info("10000 :" + JSONFactoryUtil.looseSerialize(lstDossierDataMgt));
-		return lstDossierDataMgt;
-	}
-	
-	private DossierStatisticMgtData proCalStatistic(long groupId, int month, int year, String govAgencyCode, String domainCode, List<OpencpsDossierStatisticMgt> listDossierStatisticMgts) {
-		
-		DossierStatisticMgtData dossierStatisticMgtData = null;
-		int totalCount = 0;
-		int processCount = 0;
-		int remainingCount = 0;
-		int receivedCount = 0;
-		int onlineCount = 0;
-		int releaseCount = 0;
-		int betimesCount = 0;
-		int ontimeCount = 0;
-		int overtimeCount = 0;
-		int doneCount = 0;
-		int releasingCount = 0;
-		int processingCount = 0;
-		int undueCount = 0;
-		int overdueCount = 0;
-		int ontimePercentage = 100;
-		int waitingCount = 0;
-		int onegateCount = 0;
-		if(listDossierStatisticMgts != null && listDossierStatisticMgts.size() > 0) {
-			dossierStatisticMgtData = new DossierStatisticMgtData();
-			for (OpencpsDossierStatisticMgt opencpsDossierStatisticMgt : listDossierStatisticMgts) {
-				totalCount += opencpsDossierStatisticMgt.getTotalCount();
-				processCount += opencpsDossierStatisticMgt.getProcessCount();
-				remainingCount += opencpsDossierStatisticMgt.getRemainingCount();
-				receivedCount += opencpsDossierStatisticMgt.getReceivedCount();
-				onlineCount += opencpsDossierStatisticMgt.getOnlineCount();
-				releaseCount += opencpsDossierStatisticMgt.getReleaseCount();
-				betimesCount += opencpsDossierStatisticMgt.getBetimesCount();
-				ontimeCount += opencpsDossierStatisticMgt.getOntimeCount();
-				overtimeCount += opencpsDossierStatisticMgt.getOvertimeCount();
-				doneCount += opencpsDossierStatisticMgt.getDoneCount();
-				releasingCount += opencpsDossierStatisticMgt.getReleasingCount();
-				processingCount += opencpsDossierStatisticMgt.getProcessingCount();
-				undueCount += opencpsDossierStatisticMgt.getUndueCount();
-				overdueCount += opencpsDossierStatisticMgt.getOverdueCount();
-				waitingCount += opencpsDossierStatisticMgt.getWaitingCount();
-				onegateCount += opencpsDossierStatisticMgt.getOnegateCount();
-			}
-			
-			if (releaseCount > 0) {
-				ontimePercentage = (betimesCount + ontimeCount) * 100 / releaseCount;
-			}
-			
-			dossierStatisticMgtData.setGroupId(groupId);
-			dossierStatisticMgtData.setMonth(month);
-			dossierStatisticMgtData.setYear(year);
-			dossierStatisticMgtData.setTotalCount(totalCount);
-			dossierStatisticMgtData.setProcessCount(processCount);
-			dossierStatisticMgtData.setRemainingCount(remainingCount);
-			dossierStatisticMgtData.setReceivedCount(receivedCount);
-			dossierStatisticMgtData.setOnlineCount(onlineCount);
-			dossierStatisticMgtData.setReleaseCount(releaseCount);
-			dossierStatisticMgtData.setBetimesCount(betimesCount);
-			dossierStatisticMgtData.setOntimeCount(ontimeCount);
-			dossierStatisticMgtData.setOvertimeCount(overtimeCount);
-			dossierStatisticMgtData.setDoneCount(doneCount);
-			dossierStatisticMgtData.setReleasingCount(releasingCount);
-			dossierStatisticMgtData.setProcessingCount(processingCount);
-			dossierStatisticMgtData.setUndueCount(undueCount);
-			dossierStatisticMgtData.setOverdueCount(overdueCount);
-			dossierStatisticMgtData.setOntimePercentage(ontimePercentage);
-			dossierStatisticMgtData.setWaitingCount(waitingCount);
-			dossierStatisticMgtData.setGovAgencyCode(govAgencyCode);
-			dossierStatisticMgtData.setGovAgencyName(listDossierStatisticMgts.get(0).getGovAgencyName());
-			dossierStatisticMgtData.setDomainCode(domainCode);
-			dossierStatisticMgtData.setDomainName(listDossierStatisticMgts.get(0).getDomainName());
-			dossierStatisticMgtData.setServiceCode(listDossierStatisticMgts.get(0).getServiceCode());
-			dossierStatisticMgtData.setServiceName(listDossierStatisticMgts.get(0).getServiceName());
-			dossierStatisticMgtData.setOnegateCount(onegateCount);
-			dossierStatisticMgtData.setGroupBy(listDossierStatisticMgts.get(0).getGroupBy());
-		}
-		
-		return dossierStatisticMgtData;
-	}
 	
 	@Activate
 	@Modified
