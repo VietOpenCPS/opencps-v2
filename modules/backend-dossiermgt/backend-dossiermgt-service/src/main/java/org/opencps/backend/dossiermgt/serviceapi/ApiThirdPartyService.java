@@ -12,6 +12,7 @@ import java.util.Map;
 public interface ApiThirdPartyService {
     public String getTokenLGSP(JSONObject paygovConfig) throws Exception;
     public String getUrlRedirectToPaygov(String token, Map<String, Object> body, JSONObject paygovConfig) throws Exception;
+    public String getUrlRedirectToPaygovBackup(String token, Map<String, Object> body, JSONObject paygovConfig) throws Exception;
     public boolean checkSum(String token, Map<String, Object> body);
     public void callApiSaveTracking(SyncTrackingInfo body) throws Exception;
     public JSONObject callApi(String url, HttpHeaders headers, Map<String, Object> body);

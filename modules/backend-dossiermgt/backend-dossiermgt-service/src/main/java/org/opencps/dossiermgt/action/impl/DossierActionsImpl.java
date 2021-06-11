@@ -820,24 +820,31 @@ public class DossierActionsImpl implements DossierActions {
 							_log.debug(e);
 						}
 						List<Integer> dueHour = null;
+						int hourStart = 0;
+						int minuteStart = 0;
 						if (jsonDueDate != null) {
 							JSONObject afterHours = jsonDueDate.getJSONObject(DossierDocumentTerm.AFTER_HOUR);
-								if (afterHours != null && afterHours.has(DossierDocumentTerm.START_HOUR) && afterHours.has(DossierDocumentTerm.DUE_HOUR)) {
-								//_log.debug("STRART check new: ");
+							if (afterHours != null && afterHours.has(DossierDocumentTerm.START_HOUR) && afterHours.has(DossierDocumentTerm.DUE_HOUR)) {
+								_log.info("STRART check new: ");
 								Calendar receiveCalendar = Calendar.getInstance();
 								receiveCalendar.setTime(receiveDate);
 								//
 								String receiveHour = afterHours.getString(DossierDocumentTerm.START_HOUR);
-								//_log.debug("receiveHour: " + receiveHour);
+								_log.debug("receiveHour: " + receiveHour);
 
 								if (Validator.isNotNull(receiveHour)) {
 									String[] splitHour = StringUtil.split(receiveHour, StringPool.COLON);
 									if (splitHour != null) {
-										int hourStart = GetterUtil.getInteger(splitHour[0]);
-										int minuteStart = GetterUtil.getInteger(splitHour[1]);
+										hourStart = GetterUtil.getInteger(splitHour[0]);
+										minuteStart = GetterUtil.getInteger(splitHour[1]);
+										_log.debug("hourStart: " + hourStart);
+										_log.debug("minuteStart: " + minuteStart);
+
+										_log.debug("HOUR_OF_DAY: " + receiveCalendar.get(Calendar.HOUR_OF_DAY));
+										_log.debug("MINUTE: " + receiveCalendar.get(Calendar.MINUTE));
 										if (receiveCalendar.get(Calendar.HOUR_OF_DAY) > hourStart
 												|| (receiveCalendar.get(Calendar.HOUR_OF_DAY) == hourStart
-														&& receiveCalendar.get(Calendar.MINUTE) > minuteStart)) {
+												&& receiveCalendar.get(Calendar.MINUTE) > minuteStart)) {
 											dueHour = new ArrayList<>();
 											String[] splitdueHour = StringUtil.split(afterHours.getString(DossierDocumentTerm.DUE_HOUR),
 													StringPool.COLON);
@@ -845,11 +852,14 @@ public class DossierActionsImpl implements DossierActions {
 												dueHour.add(0, GetterUtil.getInteger(splitdueHour[0]));
 												dueHour.add(1, GetterUtil.getInteger(splitdueHour[1]));
 											}
+										} else {
+											_log.info("Không tính dueDate");
 										}
 									}
 								}
 							}
 						}
+
 
 						String strDateOption = StringPool.BLANK;
 						JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(processAction.getPostAction());
@@ -893,17 +903,35 @@ public class DossierActionsImpl implements DossierActions {
 							dueDate = null;
 						} else if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
 							//dueDate = HolidayUtils.getDueDate(new Date(), serviceProcess.getDurationCount(), serviceProcess.getDurationUnit(), groupId);
-							
-							DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, serviceProcess.getDurationUnit(), groupId);
-							dueDate = dueDateUtils.getDueDate();
+							// Lấy ngày và giờ hiện tại check với cấu hình startHour
+							Calendar calendarHour = Calendar.getInstance();
+							calendarHour.setTime(new Date());
+							DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, serviceProcess.getDurationUnit(), groupId);;
+							if (jsonDueDate != null) {
+								_log.debug("Tính dueDate theo cấu hình");
+								JSONObject afterHours = jsonDueDate.getJSONObject(DossierDocumentTerm.AFTER_HOUR);
+								if (afterHours != null && afterHours.has(DossierDocumentTerm.START_HOUR) && afterHours.has(DossierDocumentTerm.DUE_HOUR)) {
+									if (calendarHour.get(Calendar.HOUR_OF_DAY) > hourStart || (calendarHour.get(Calendar.HOUR_OF_DAY) == hourStart
+											&& calendarHour.get(Calendar.MINUTE) > minuteStart)) {
+										// Set lại ngày giờ mặc đinh + date và giờ là 8:00 ngày hôm sau để tính ngày hẹn trả
+										calendarHour.add(Calendar.DATE, 1);
+										calendarHour.set(Calendar.HOUR_OF_DAY, 8);
+										calendarHour.set(Calendar.MINUTE, 0);
+										dueDateUtils = new DueDateUtils(calendarHour.getTime(), durationCount, serviceProcess.getDurationUnit(), groupId);
+									}
+								}
+							}
+							dueDate = dueDateUtils != null ? dueDateUtils.getDueDate() : null;
 							if (dueDate != null && dueHour != null && dueHour.size() == 2) {
 								Calendar dueCalendar = Calendar.getInstance();
 								dueCalendar.setTime(dueDate);
-								//
+								_log.debug("-------- Set DueDate ------- " + dueCalendar.getTime());
+
 								dueCalendar.set(Calendar.HOUR_OF_DAY, dueHour.get(0));
 								dueCalendar.set(Calendar.MINUTE, dueHour.get(1));
-								//
+
 								dossier.setDueDate(dueCalendar.getTime());
+								dueDate = dueCalendar.getTime();
 							} else {
 								dossier.setDueDate(dueDate);
 							}
@@ -1364,7 +1392,8 @@ public class DossierActionsImpl implements DossierActions {
 				//				_log.debug("NEXT ACTION CREATE FILES: " + result.toString());
 			}
 		} catch (Exception e) {
-			_log.error(e);
+			_log.error("Error In Method : getDetailNextActions! Configurate Debug log org.opencps.dossiermgt.action.impl.DossierActionsImpl for more details!");
+			_log.debug(e);
 		}
 
 		return result;

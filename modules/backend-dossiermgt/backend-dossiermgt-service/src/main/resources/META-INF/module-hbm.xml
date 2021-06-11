@@ -374,6 +374,7 @@
 		<property name="postalCodeReceived" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="lastReceiveDate" type="org.hibernate.type.TimestampType" />
 		<property name="lastSendDate" type="org.hibernate.type.TimestampType" />
+		<property name="serviceLevel" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierActionImpl" table="opencps_dossieraction">
 		<id name="dossierActionId" type="long">

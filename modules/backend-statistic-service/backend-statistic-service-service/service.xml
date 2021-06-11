@@ -232,6 +232,15 @@
 			<finder-column name="groupAgencyCode"/>
 			<finder-column name="system"/>
         </finder>
+        <finder name="F_M_Y_REPO" return-type="Collection">
+        	<finder-column name="month" arrayable-operator="OR"/>
+        	<finder-column name="year" arrayable-operator="OR"/>
+        	<finder-column name="reporting" arrayable-operator="OR"/>
+        </finder>
+        <finder name="F_Y_REPO" return-type="Collection">
+        	<finder-column name="year" arrayable-operator="OR"/>
+        	<finder-column name="reporting" arrayable-operator="OR"/>
+        </finder>
 	</entity>
 
 	<entity local-service="true" name="OpencpsVotingStatistic"
@@ -515,4 +524,105 @@
 			<finder-column name="year"></finder-column>
 		</finder>			
 	</entity>
+	
+	<entity local-service="true" name="OpencpsDossierStatisticMgt"
+		remote-service="false" table="opencps_statistic_mgt" uuid="true">
+
+		<column name="dossierStatisticMgtId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="month" type="int" />
+		<column name="year" type="int" />
+		<column name="totalCount" type="int" />
+		<column name="processCount" type="int" />
+		<column name="remainingCount" type="int" />
+		<column name="receivedCount" type="int" />
+		<column name="onlineCount" type="int" />
+		<column name="onegateCount" type="int" />
+		<column name="releaseCount" type="int" />
+		<column name="betimesCount" type="int" />
+		<column name="ontimeCount" type="int" />
+		<column name="overtimeCount" type="int" />
+		<column name="doneCount" type="int" />
+		<column name="releasingCount" type="int" />
+		<column name="processingCount" type="int" />
+		<column name="undueCount" type="int" />
+		<column name="overdueCount" type="int" />
+		<column name="ontimePercentage" type="int" />
+		<column name="waitingCount" type="int"/>
+		<column name="govAgencyCode" type="String" />
+		<column name="govAgencyName" type="String" />		
+		<column name="domainCode" type="String" />
+		<column name="domainName" type="String" />		
+		<column name="serviceCode" type="String" />
+		<column name="serviceName" type="String" />
+		<column name="groupBy" type="int" />
+		<column name="cancelledCount" type="int" />
+		<column name="unresolvedCount" type="int" />
+		
+		<!-- Order -->
+
+		<!-- Filter -->
+		<finder return-type="Collection" name="G_UID_Y">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="year"></finder-column>
+		</finder>
+		<finder return-type="OpencpsDossierStatisticMgt" name="G_M_Y_G_D">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+		</finder>
+		<finder return-type="Collection" name="G_NM_Y">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="month" comparator="!="></finder-column>
+			<finder-column name="year"></finder-column>
+		</finder>
+		<finder return-type="Collection" name="G_Y_REPO">
+			<finder-column name="groupId"></finder-column>
+        	<finder-column name="year" arrayable-operator="OR"/>
+		</finder>
+		<finder return-type="Collection" name="G_UID_Y_GB">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="year"></finder-column>
+			<finder-column name="groupBy"></finder-column>
+		</finder>
+		<finder return-type="OpencpsDossierStatisticMgt" name="G_M_Y_G_D_GB">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="groupBy"/>
+		</finder>
+		<finder return-type="Collection" name="G_NM_Y_GB">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="month" comparator="!="></finder-column>
+			<finder-column name="year"></finder-column>
+			<finder-column name="groupBy"></finder-column>
+		</finder>
+		<finder return-type="Collection" name="G_Y_REPO_GB">
+			<finder-column name="groupId"></finder-column>
+        	<finder-column name="year" arrayable-operator="OR"/>
+        	<finder-column name="groupBy"></finder-column>
+		</finder>
+		<finder return-type="Collection" name="G_NM_Y_G_D_GB">
+			<finder-column name="groupId"/>
+			<finder-column name="month" comparator="!="/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="groupBy"/>
+		</finder>
+	</entity>
+
 </service-builder>

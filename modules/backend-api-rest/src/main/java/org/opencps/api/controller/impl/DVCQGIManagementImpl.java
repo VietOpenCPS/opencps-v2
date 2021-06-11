@@ -339,6 +339,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		_log.debug("doCreateDossierFromDVCQG API " + body);
 
 		try {
+			JSONObject result;
 			JSONObject bodyFull = JSONFactoryUtil.createJSONObject(body);
 			if(Validator.isNull(bodyFull)) {
 				throw new Exception("Body is empty");
@@ -350,8 +351,14 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 			}
 
 			boolean isUpdating = bodyFull.getBoolean("isUpdating");
-			JSONObject result = actionImpl.doCreateDossierSuaDoiBoSungFromDVCQG(company, user, groupId, serviceContext, data, isUpdating);
-
+			String service = bodyFull.getString("service");
+			if(Validator.isNotNull(service) && "NhanChungTuThueDat".equals(service)) {
+				boolean isSync = bodyFull.getBoolean("isSync");
+				//API nhận chứng từ thanh toán thuế đất cho hồ sơ từ Cổng DVCQG
+				result = actionImpl.doCreateUpdateDossierFromDVCQG(company, user, groupId, serviceContext, data, isUpdating, isSync);
+			}else {
+				result = actionImpl.doCreateDossierSuaDoiBoSungFromDVCQG(company, user, groupId, serviceContext, data, isUpdating);
+			}
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
@@ -380,5 +387,43 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 			_log.error(e);
 			return Response.status(500).entity("request body incorrect").build();
 		}
+	}
+
+	@Override
+	public Response doCreateDossierNhanTBThue(HttpServletRequest request, HttpServletResponse response, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		serviceContext.setScopeGroupId(groupId);
+
+		serviceContext.setCompanyId(company.getCompanyId());
+
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+
+		_log.debug("doCreateDossierFromDVCQG API " + body);
+		try {
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			JSONObject bodyFull = JSONFactoryUtil.createJSONObject(body);
+			if(Validator.isNull(bodyFull)) {
+				throw new Exception("Body is empty");
+			}
+
+			JSONObject data = bodyFull.getJSONObject("data");
+			if(Validator.isNull(data)) {
+				throw new Exception("Data is empty");
+			}
+
+			boolean isUpdating = bodyFull.getBoolean("isUpdating");
+			String service = bodyFull.getString("service");
+			if(Validator.isNotNull(service) && "NhanThongBaoThueDat".equals(service)){
+				//API nhận chứng từ thanh toán thuế đất cho hồ sơ từ Cổng DVCQG
+				result = actionImpl.doCrUpDossierThongBaoThueDatDVCQG(company,user, groupId, serviceContext, data, isUpdating);
+			}
+			return Response.status(200).entity(result.toJSONString()).build();
+		}catch (Exception e){
+			_log.error(e);
+			return Response.status(500).entity("request body incorrect").build();
+		}
+
 	}
 }

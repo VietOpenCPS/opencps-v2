@@ -325,13 +325,15 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findByVnpostalStatus(long groupId, int vnpostalStatus);
 
+	public List<Dossier> findDossierBeforeDateAndDossierStatusisNull(Date date);
+
 	public List<Dossier> findDossierByDay(String date);
 
 	public Dossier findDossierByDeclarationCode(String code, long groupId);
 
 	public List<Dossier> findDossierByGroup(long groupId);
 
-	public DossierDocument findDossierDocumentByDossierId(
+	public org.opencps.dossiermgt.model.DossierDocument findDossierDocumentByDossierId(
 		long dossierDocumentId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

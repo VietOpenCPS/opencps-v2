@@ -188,6 +188,8 @@ public class QLVGManagementImpl implements QLVGManagement {
 
             ServerConfig serverConfig = listConfig.get(0);
             JSONObject configJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+
+            actionCode = configJson.has("actionCode") ? configJson.getString("actionCode") : actionCode;
             Dossier dossier = this.getDossierByDossierNo(id);
             if(Validator.isNull(dossier)) {
                 throw new Exception("No dossier was found with id: " + id);

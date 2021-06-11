@@ -303,7 +303,8 @@ create table opencps_dossier (
 	postalCodeSend VARCHAR(75) null,
 	postalCodeReceived VARCHAR(75) null,
 	lastReceiveDate DATE null,
-	lastSendDate DATE null
+	lastSendDate DATE null,
+	serviceLevel INTEGER
 );
 
 create table opencps_dossieraction (
@@ -1002,6 +1003,20 @@ create table opencps_registrationtemplate (
 	formScript TEXT null,
 	formReport TEXT null,
 	sampleData TEXT null
+);
+
+create table opencps_reportlandtax (
+	uuid_ VARCHAR(75) null,
+	reportId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	dossierNo VARCHAR(75) null,
+	bodyRequest VARCHAR(75) null,
+	response VARCHAR(75) null
 );
 
 create table opencps_serviceconfig (

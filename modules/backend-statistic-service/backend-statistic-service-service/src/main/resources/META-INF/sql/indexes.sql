@@ -17,10 +17,13 @@ create index IX_CF87F234 on opencps_statistic (groupId, month, year, reporting);
 create index IX_89A15952 on opencps_statistic (groupId, month, year, system[$COLUMN_LENGTH:75$], domainCode[$COLUMN_LENGTH:255$]);
 create index IX_EF7CF302 on opencps_statistic (groupId, userId, year);
 create index IX_1BF001B7 on opencps_statistic (groupId, year, govAgencyCode[$COLUMN_LENGTH:255$], domainCode[$COLUMN_LENGTH:255$], groupAgencyCode[$COLUMN_LENGTH:4096$], system[$COLUMN_LENGTH:75$]);
+create index IX_7EF308E1 on opencps_statistic (month, reporting);
 create index IX_EFB499FD on opencps_statistic (month, year, govAgencyCode[$COLUMN_LENGTH:255$], domainCode[$COLUMN_LENGTH:255$], groupAgencyCode[$COLUMN_LENGTH:4096$], system[$COLUMN_LENGTH:75$]);
+create index IX_31FFD110 on opencps_statistic (month, year, reporting);
 create index IX_9F4B280B on opencps_statistic (reporting);
 create index IX_80F6A7A7 on opencps_statistic (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_8F82EBE9 on opencps_statistic (uuid_[$COLUMN_LENGTH:75$], groupId);
+create index IX_3F4A68BA on opencps_statistic (year, reporting);
 
 create index IX_70BC7181 on opencps_statistic_manual (companyId, groupId, month, year);
 create index IX_C2FC5C70 on opencps_statistic_manual (groupId, domainCode[$COLUMN_LENGTH:255$], month, year);
@@ -30,6 +33,12 @@ create index IX_C9C8F1E9 on opencps_statistic_manual (groupId, month, year, repo
 create index IX_92F320F7 on opencps_statistic_manual (groupId, userId, year);
 create index IX_20BED492 on opencps_statistic_manual (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_2AB75794 on opencps_statistic_manual (uuid_[$COLUMN_LENGTH:75$], groupId);
+
+create index IX_51229356 on opencps_statistic_mgt (groupId, month, year, govAgencyCode[$COLUMN_LENGTH:75$], domainCode[$COLUMN_LENGTH:75$], groupBy);
+create index IX_D6AC5AC1 on opencps_statistic_mgt (groupId, month, year, groupBy);
+create index IX_4F81843F on opencps_statistic_mgt (groupId, userId, year, groupBy);
+create index IX_75D67BB9 on opencps_statistic_mgt (groupId, year, groupBy);
+create unique index IX_3CCC2204 on opencps_statistic_mgt (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_728E9BFE on opencps_voting_statistic (companyId, groupId, month, year);
 create index IX_FB6F8193 on opencps_voting_statistic (groupId, domainCode[$COLUMN_LENGTH:255$], month, year);

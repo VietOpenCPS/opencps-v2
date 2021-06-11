@@ -28,9 +28,9 @@ public class FakeCounterScheduler extends BaseMessageListener {
         _log.info("======Scheduler-Current Id in Scheduler: "  + currentCounter.getCurrentId());
         long _counterNumber = currentCounter.getCurrentId() + 1;
         currentCounter.setCurrentId(_counterNumber);
-        Counter newCounter = CounterLocalServiceUtil.updateCounter(currentCounter);
+//        Counter newCounter = CounterLocalServiceUtil.updateCounter(currentCounter);
 
-        _log.info("======Scheduler-Current Id in Schedulerafter Tang: "  + newCounter.getCurrentId());
+//        _log.info("======Scheduler-Current Id in Schedulerafter Tang: "  + newCounter.getCurrentId());
         isRunning = false;
     }
 

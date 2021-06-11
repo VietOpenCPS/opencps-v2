@@ -1573,7 +1573,17 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		
 		return listStatisticLog;
 	}
-
+	
+	public List<OpencpsDossierStatistic> findByMonthYearREPO_ARR(int[] months, int[] years, int[] reportings) {
+		return opencpsDossierStatisticPersistence.findByF_M_Y_REPO(months, years, reportings);
+	}
+	
+	public List<OpencpsDossierStatistic> findByYearREPO_ARR(int[] years, int[] reportings) {
+		return opencpsDossierStatisticPersistence.findByF_Y_REPO(years, reportings);
+	}
+	
 	private Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticLocalServiceImpl.class);
+
+
 
 }

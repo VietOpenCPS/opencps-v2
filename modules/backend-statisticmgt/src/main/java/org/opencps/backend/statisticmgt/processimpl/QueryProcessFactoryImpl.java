@@ -1840,7 +1840,6 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		} else {
 			sql = sql.replace("AND t1.receiveDate < {toDate}", StringPool.BLANK);
 		}
-		
 		if (domainCodes != null && domainCodes.length > 0) {
 			String paramsDomainCodes = ParamUtil.generalTextParam(domainCodes);
 			sql = sql.replace("{domainCode}", paramsDomainCodes);
@@ -1871,7 +1870,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 		} else {
 			sql = sql.replace("AND t1.originality IN ({originality})", StringPool.BLANK);
 		}
-		_log.debug("generateQuerySchema16: " + sql);
+		_log.info("generateQuerySchema16: " + sql);
 
 		return new QuerySchema(sql, sqlTemplate, type, subtype, columns);
 	}
@@ -2526,6 +2525,7 @@ public class QueryProcessFactoryImpl implements QueryProcessFactory {
 
 			result.put(Constants.DATA, data);
 		} else if (subType.equals(Constants.ROW_TOTAL)) {
+			_log.info("schema.getColumnMap(): " + schema.getColumnMap());
 			JSONArray data = QueryUtil.getData(schema.getSql(), schema.getColumnMap());
 
 			long total = 0;

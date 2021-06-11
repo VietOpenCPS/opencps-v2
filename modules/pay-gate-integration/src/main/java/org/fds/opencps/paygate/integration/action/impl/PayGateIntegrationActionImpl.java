@@ -1709,6 +1709,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			String orderId = data.getString(PayGateTerm.PAYGOV_ORDER_ID);
 			String errorCode = data.getString(PayGateTerm.PAYGOV_ERROR_CODE);
 			String dossierNo = orderId.substring(0, orderId.length()- 3); //remove -01
+			dossierNo = dossierNo.substring(14);
+
 //			Integer amount = data.getInt(PayGateTerm.PAYGOV_AMOUNT);
 //			String orderInfo = data.getString(PayGateTerm.PAYGOV_ORDER_INFO);
 //			String requestCode = data.getString(PayGateTerm.PAYGOV_REQUEST_CODE);
@@ -1787,7 +1789,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			body.put("partnerCode", paygovConfig.getString("partnerCode"));
 			body.put("returnUrl", paygovConfig.getString("urlDomain"));
 			body.put("orderId", orderId);
-			body.put("amount",  String.valueOf(amount));
+			body.put("amount",  amount);
 			body.put("orderInfo", StringUtils.stripAccents(dossier.getDossierName()));
 			body.put("requestCode", requestCode);
 			body.put("ipAddress", ipAddress);
@@ -1797,15 +1799,20 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				body.put("accessKey", paygovConfig.getString("accessKey"));
 				body.put("serviceCode", paygovConfig.getString("serviceCode"));
 			} else if (paygovConfig.getString("partnerCode").equals(PayGateTerm.ListPaygovUnit.DONGTHAP.getValue())) {
-
+				_log.info("Paygov dong thap");
+				body.put("beneficiaryCode", "");
+				body.put("accountPay", "tinhdt");
+				_log.info("body: " + body);
+				String token = apiService.getTokenLGSP(paygovConfig);
+				return apiService.getUrlRedirectToPaygovBackup(token, body, paygovConfig);
 			} else {
 				body.put("checksum", PayGateTerm.genChecksum(paygovConfig, orderId, amount, requestCode));
 				body.put("accessKey", paygovConfig.getString("accessKey"));
 				body.put("serviceCode", paygovConfig.getString("serviceCode"));
 			}
-
+			_log.debug("body: " + body);
 			String token = apiService.getTokenLGSP(paygovConfig);
-
+			_log.debug("token: " + token);
 			return apiService.getUrlRedirectToPaygov(token, body, paygovConfig);
 		} catch (Exception e){
 			_log.error(e);
@@ -1877,6 +1884,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					}
 				}
 				_log.info("params============" + params);
+				_log.info("endPoint============" + endPoint);
+				_log.info("username: " + username + ", pwd: " + pwd);
 				JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
 						properties, params, username, pwd);
 				_log.info("=====resPostDossier=========" + resPostDossier);

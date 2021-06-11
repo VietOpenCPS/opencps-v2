@@ -131,7 +131,8 @@ import javax.xml.bind.annotation.XmlType;
 	"dossierIds",
 	"dossierId",
 	"formdata",
-	"typeCode"
+	"typeCode",
+	"serviceLevel"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -286,6 +287,16 @@ public class DossierInputModel {
 	protected String formdata;
 	@FormParam(value = "typeCode")
 	protected String typeCode;
+	@FormParam(value = "serviceLevel")
+	protected int serviceLevel;
+
+	public int getServiceLevel() {
+		return serviceLevel;
+	}
+
+	public void setServiceLevel(int serviceLevel) {
+		this.serviceLevel = serviceLevel;
+	}
 
 	public String getFormdata() {
 		return formdata;
