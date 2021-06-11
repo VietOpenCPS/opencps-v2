@@ -133,7 +133,9 @@ import javax.xml.bind.annotation.XmlType;
 	"isGetVotingData",
 	"createDateStart",
 	"createDateEnd",
-	"level"
+	"level",
+	"globalViewAll",
+	"globalViewGroup"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -318,6 +320,27 @@ public class DossierSearchModel {
 	protected String level;
 	@QueryParam(value = "un_step")
 	protected String unstep;
+	@DefaultValue("false")
+	protected boolean globalViewAll;
+	@DefaultValue("false")
+	protected boolean globalViewGroup;
+
+
+	public boolean isGlobalViewAll() {
+		return globalViewAll;
+	}
+
+	public void setGlobalViewAll(boolean globalViewAll) {
+		this.globalViewAll = globalViewAll;
+	}
+
+	public boolean isGlobalViewGroup() {
+		return globalViewGroup;
+	}
+
+	public void setGlobalViewGroup(boolean globalViewGroup) {
+		this.globalViewGroup = globalViewGroup;
+	}
 
 	public String getUnstep() {
 		return unstep;

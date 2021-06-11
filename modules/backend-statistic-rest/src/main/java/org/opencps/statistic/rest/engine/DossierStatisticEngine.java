@@ -145,7 +145,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					sites.add(group);
 				}				
 			}
-			_log.info("SITES : " + JSONFactoryUtil.looseSerialize(sites));
+			_log.debug("SITES : " + JSONFactoryUtil.looseSerialize(sites));
 	
 			Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 

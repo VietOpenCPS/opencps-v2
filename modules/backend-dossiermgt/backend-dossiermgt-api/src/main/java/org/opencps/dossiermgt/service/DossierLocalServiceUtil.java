@@ -450,6 +450,11 @@ public class DossierLocalServiceUtil {
 		return getService().findByVnpostalStatus(groupId, vnpostalStatus);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierBeforeDateAndDossierStatusisNull(
+		java.util.Date date) {
+		return getService().findDossierBeforeDateAndDossierStatusisNull(date);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(
 		String date) {
 		return getService().findDossierByDay(date);

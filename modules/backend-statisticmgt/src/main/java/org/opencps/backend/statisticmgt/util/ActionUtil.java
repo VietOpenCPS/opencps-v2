@@ -341,7 +341,7 @@ public class ActionUtil {
 		String strToDate = DatetimeUtil.convertTimestampToStringDatetime(toDate, DatetimeUtil._YYYY_MM_DD);
 
 		String sqlTemplate = QueryUtil.getSQLQueryTemplate(type, subType);
-		_log.debug("sqlTemplate: " + sqlTemplate);
+		_log.info("sqlTemplate: " + sqlTemplate);
 		if(userId >0) {
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 			if (Validator.isNotNull(employee) && Validator.isNotNull(employee.getScope())) {
@@ -385,10 +385,6 @@ public class ActionUtil {
 					originalities = String.valueOf(3);
 				}
 
-				/*
-				 * if (Validator.isNull(dossierStatus)) { dossierStatus =
-				 * "processing, planning"; }
-				 */
 				return factory.getDossierStatistic2(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -403,10 +399,7 @@ public class ActionUtil {
 				if (Validator.isNull(originalities)) {
 					originalities = String.valueOf(2);
 				}
-				/*
-				 * if (Validator.isNull(dossierStatus)) { dossierStatus =
-				 * "processing, planning"; }
-				 */
+
 				return factory.getDossierStatistic4(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -416,9 +409,7 @@ public class ActionUtil {
 				if (Validator.isNull(originalities)) {
 					originalities = "2,3";
 				}
-				/*
-				 * if (Validator.isNull(dossierStatus)) { dossierStatus = "done"; }
-				 */
+
 				return factory.getDossierStatistic5(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -428,9 +419,7 @@ public class ActionUtil {
 				if (Validator.isNull(originalities)) {
 					originalities = "2,3";
 				}
-				/*
-				 * if (Validator.isNull(dossierStatus)) { dossierStatus = "done"; }
-				 */
+
 				return factory.getDossierStatistic6(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -440,9 +429,7 @@ public class ActionUtil {
 				if (Validator.isNull(originalities)) {
 					originalities = "2,3";
 				}
-				/*
-				 * if (Validator.isNull(dossierStatus)) { dossierStatus = "done"; }
-				 */
+
 				return factory.getDossierStatistic7(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -452,9 +439,7 @@ public class ActionUtil {
 				if (Validator.isNull(originalities)) {
 					originalities = "2,3";
 				}
-				/*
-				 * if (Validator.isNull(dossierStatus)) { dossierStatus = "done"; }
-				 */
+
 				return factory.getDossierStatistic8(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -465,9 +450,6 @@ public class ActionUtil {
 					originalities = "2,3";
 				}
 
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "releasing,posting,done";
-				}
 				return factory.getDossierStatistic9(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -478,9 +460,6 @@ public class ActionUtil {
 					originalities = "2,3";
 				}
 
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "releasing,posting,done";
-				}
 				return factory.getDossierStatistic10(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -491,9 +470,6 @@ public class ActionUtil {
 					originalities = "2,3";
 				}
 
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "releasing,posting,done";
-				}
 				return factory.getDossierStatistic11(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -504,9 +480,6 @@ public class ActionUtil {
 					originalities = "2,3";
 				}
 
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "releasing,posting,done";
-				}
 				return factory.getDossierStatistic12(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -515,10 +488,6 @@ public class ActionUtil {
 				// set default
 				if (Validator.isNull(originalities)) {
 					originalities = "2,3";
-				}
-
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "processing,interoperating,planning";
 				}
 
 				return factory.getDossierStatistic13(groupId, userId, strFromDate, strToDate,
@@ -531,9 +500,6 @@ public class ActionUtil {
 					originalities = "2,3";
 				}
 
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "processing,interoperating,planning";
-				}
 				return factory.getDossierStatistic14(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -545,9 +511,6 @@ public class ActionUtil {
 					originalities = "2,3";
 				}
 
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "processing,interoperating,planning";
-				}
 				return factory.getDossierStatistic15(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -558,9 +521,6 @@ public class ActionUtil {
 					originalities = "2,3";
 				}
 
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "processing,interoperating,planning";
-				}
 				return factory.getDossierStatistic16(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -571,9 +531,6 @@ public class ActionUtil {
 					originalities = "2,3";
 				}
 
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "unresolved";
-				}
 				return factory.getDossierStatistic17(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -584,9 +541,6 @@ public class ActionUtil {
 					originalities = "2,3";
 				}
 
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "cancelled";
-				}
 				return factory.getDossierStatistic18(groupId, userId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
@@ -595,10 +549,6 @@ public class ActionUtil {
 				// set default
 				if (Validator.isNull(originalities)) {
 					originalities = "2,3";
-				}
-
-				if (Validator.isNull(dossierStatus)) {
-					dossierStatus = "waiting,receiving";
 				}
 
 				return factory.getDossierStatistic19(groupId, userId, strFromDate, strToDate,

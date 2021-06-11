@@ -3,14 +3,12 @@ package org.opencps.backend.systemlogmgt.util;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.opencps.backend.systemlogmgt.service.SystemLogServiceTestUtil;
 
 /**
  * @author trungnt

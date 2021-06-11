@@ -83,8 +83,7 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 		String referenceUid, String dossierTemplateNo, String dossierPartNo,
 		String fileTemplateNo, String displayName, String fileType,
 		String isSync, String formData, String removed, String eForm,
-		Long modifiedDate)
-		throws UnauthenticationException, PortalException, Exception;
+		Long modifiedDate) throws Exception;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}
@@ -101,7 +100,7 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	public Dossier addDossierPublish(long groupId, Company company, User user,
 		ServiceContext serviceContext,
 		org.opencps.dossiermgt.input.model.DossierPublishModel input)
-		throws UnauthenticationException, PortalException, Exception;
+		throws Exception;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}
@@ -136,7 +135,7 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	)
 	public PaymentFile createPaymentFileByDossierId(long groupId,
 		ServiceContext serviceContext, String id, PaymentFileInputModel input)
-		throws UnauthenticationException, PortalException, Exception;
+		throws Exception;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}
@@ -153,7 +152,7 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	public Dossier eparPublish(long groupId, Company company, User user,
 		ServiceContext serviceContext, long id,
 		org.opencps.dossiermgt.input.model.DossierPublishModel input)
-		throws UnauthenticationException, PortalException, Exception;
+		throws Exception;
 
 	/**
 	* Returns the OSGi service identifier.
@@ -176,24 +175,21 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	)
 	public DossierFile resetformdataDossierFileFormData(long groupId,
 		Company company, ServiceContext serviceContext, long id,
-		String referenceUid, String formdata)
-		throws UnauthenticationException, PortalException, Exception;
+		String referenceUid, String formdata) throws Exception;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}
 	)
 	public DossierFile updateDossierFile(long groupId, Company company,
 		ServiceContext serviceContext, long id, String referenceUid,
-		Attachment file)
-		throws UnauthenticationException, PortalException, Exception;
+		Attachment file) throws Exception;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}
 	)
 	public DossierFile updateDossierFileFormData(long groupId, Company company,
 		ServiceContext serviceContext, long id, String referenceUid,
-		String formdata)
-		throws UnauthenticationException, PortalException, Exception;
+		String formdata) throws Exception;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}

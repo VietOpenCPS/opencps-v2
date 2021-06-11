@@ -132,7 +132,10 @@ import javax.xml.bind.annotation.XmlType;
     "vnpostalProfile",
     "fromViaPostal",
     "postalCodeSend",
-    "postalCodeReceived"
+    "postalCodeReceived",
+    "metaData",
+    "briefNote",
+    "serviceLevel"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -190,6 +193,33 @@ public class DossierInputModel {
     protected Integer fromViaPostal;
     protected String postalCodeSend;
     protected String postalCodeReceived;
+    protected String metaData;
+    protected String briefNote;
+    protected int serviceLevel;
+
+    public int getServiceLevel() {
+        return serviceLevel;
+    }
+
+    public void setServiceLevel(int serviceLevel) {
+        this.serviceLevel = serviceLevel;
+    }
+
+    public String getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(String metaData) {
+        this.metaData = metaData;
+    }
+
+    public String getBriefNote() {
+        return briefNote;
+    }
+
+    public void setBriefNote(String briefNote) {
+        this.briefNote = briefNote;
+    }
 
     public String getPostalCodeSend() {
         return postalCodeSend;
