@@ -325,6 +325,8 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findByVnpostalStatus(long groupId, int vnpostalStatus);
 
+	public List<Dossier> findDossierBeforeDateAndDossierStatusisNull(Date date);
+
 	public List<Dossier> findDossierByDay(String date);
 
 	public Dossier findDossierByDeclarationCode(String code, long groupId);

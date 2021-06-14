@@ -145,7 +145,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					sites.add(group);
 				}				
 			}
-			_log.info("SITES : " + JSONFactoryUtil.looseSerialize(sites));
+			_log.debug("SITES : " + JSONFactoryUtil.looseSerialize(sites));
 	
 			Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 
@@ -277,7 +277,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 								processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 										engineUpdateAction, serviceDomainResponse, calculateData);
 								try {
-									_log.info("2 :" + site.getGroupId() + " || " + month + " || " + yearCurrent + " || " + JSONFactoryUtil.looseSerialize(calculateData.get(1)));
+//									_log.debug("2 :" + site.getGroupId() + " || " + month + " || " + yearCurrent + " || " + JSONFactoryUtil.looseSerialize(calculateData.get(1)));
 								} catch (Exception e) {
 									_log.error(e.getMessage());
 								}
@@ -678,7 +678,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 				calculateData.put(month, statisticData);
 				try {
-					_log.info("1 :" + groupId + " || " + month + " || " + year + " || " + JSONFactoryUtil.looseSerialize(calculateData.get(1)));
+					_log.debug("1 :" + groupId + " || " + month + " || " + year + " || " + JSONFactoryUtil.looseSerialize(calculateData.get(1)));
 				} catch (Exception e) {
 					_log.error(e.getMessage());
 				}

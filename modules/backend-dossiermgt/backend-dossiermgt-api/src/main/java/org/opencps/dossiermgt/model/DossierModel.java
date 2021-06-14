@@ -1677,6 +1677,20 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setLastSendDate(Date lastSendDate);
 
+	/**
+	 * Returns the service level of this dossier.
+	 *
+	 * @return the service level of this dossier
+	 */
+	public int getServiceLevel();
+
+	/**
+	 * Sets the service level of this dossier.
+	 *
+	 * @param serviceLevel the service level of this dossier
+	 */
+	public void setServiceLevel(int serviceLevel);
+
 	@Override
 	public boolean isNew();
 

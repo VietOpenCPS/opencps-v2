@@ -264,7 +264,7 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierResultsModel results = null;
 		BackendAuth auth = new BackendAuthImpl();
 		try {
-			
+
 			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			Date now = APIDateTimeUtils.convertStringToDate(dateFormat.format(new Date()), DATE_FORMAT);
 			String authenkeyServer = DossierUtils.getmd5(secretkey + now.getTime());
@@ -289,7 +289,7 @@ public class DossierManagementImpl implements DossierManagement {
 				query.setEnd(10);
 			}
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			params.put(Field.GROUP_ID, String.valueOf(groupId));
+
 
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -764,8 +764,33 @@ public class DossierManagementImpl implements DossierManagement {
 				if (fromViaPostal != null) {
 					params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
 				}
-				// Nếu donvigui == _scope ==> Get Employee lấy được _scope gán giá trị cho param
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				// Tạo role theo dõi tất cả hồ sơ GLOBAL_VIEW_ALL, GLOBAL_VIEW_GROUP
+				//Truong hop 1 employee cùng ở 2 site. Lấy role ở site đó và param groupId sẽ search theo Employee
+				List<Role> userRoles =  user.getRoles();
+				for (Role r : userRoles) {
+					_log.info("GetName: " + r.getName());
+					if (r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_ALL)) {
+						query.setGlobalViewAll(true);
+						break;
+					}else if(r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_GROUP)){
+						query.setGlobalViewGroup(true);
+						break;
+					}
+				}
+
+				if(query.isGlobalViewAll()){
+					params.put(Field.GROUP_ID, String.valueOf(employee.getGroupId()));
+				}else{
+					params.put(Field.GROUP_ID, String.valueOf(groupId));
+					if(Validator.isNotNull(employee)) {
+						if (Validator.isNotNull(employee.getScope())) {
+							_log.info("Scope: " + employee.getScope());
+							params.put(DossierTerm.GOV_AGENCY_CODE, employee.getScope());
+						}
+					}
+				}
+				// Nếu donvigui == _scope ==> Get Employee lấy được _scope gán giá trị cho param
 				String donvigui = query.getDonvigui();
 				if (Validator.isNotNull(donvigui)) {
 					String[] donviguiArr = donvigui.split(StringPool.COMMA);
@@ -1356,6 +1381,32 @@ public class DossierManagementImpl implements DossierManagement {
 			Integer fromViaPostal = query.getFromViaPostal();
 			if (fromViaPostal != null) {
 				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
+			}
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			// Tạo role theo dõi tất cả hồ sơ GLOBAL_VIEW_ALL, GLOBAL_VIEW_GROUP
+			//Truong hop 1 employee cùng ở 2 site. Lấy role ở site đó và param groupId sẽ search theo Employee
+			List<Role> userRoles =  user.getRoles();
+			for (Role r : userRoles) {
+				_log.info("GetName: " + r.getName());
+				if (r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_ALL)) {
+					query.setGlobalViewAll(true);
+					break;
+				}else if(r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_GROUP)){
+					query.setGlobalViewGroup(true);
+					break;
+				}
+			}
+
+			if(query.isGlobalViewAll()){
+				params.put(Field.GROUP_ID, String.valueOf(employee.getGroupId()));
+			}else{
+				params.put(Field.GROUP_ID, String.valueOf(groupId));
+				if(Validator.isNotNull(employee)) {
+					if (Validator.isNotNull(employee.getScope())) {
+						_log.info("Scope: " + employee.getScope());
+						params.put(DossierTerm.GOV_AGENCY_CODE, employee.getScope());
+					}
+				}
 			}
 
 			//Unstep
@@ -8817,8 +8868,10 @@ public class DossierManagementImpl implements DossierManagement {
 					getInterDossierFromOriginDossier(newDossier, listDossier);
 				}
 			}
-		} catch (Exception e) {
-			_log.error(e);
+		} 
+		catch (Exception e) {
+			_log.error("Error while getInterDossierFromOriginDossier! Configurate Log Debug in org.opencps.api.controller.impl.DossierManagementImpl for more details ");
+			_log.debug(e);
 		}
 
 	}

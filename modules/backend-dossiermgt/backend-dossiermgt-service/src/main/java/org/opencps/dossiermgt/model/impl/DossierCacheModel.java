@@ -64,7 +64,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(213);
+		StringBundler sb = new StringBundler(215);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -278,6 +278,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		sb.append(lastReceiveDate);
 		sb.append(", lastSendDate=");
 		sb.append(lastSendDate);
+		sb.append(", serviceLevel=");
+		sb.append(serviceLevel);
 		sb.append("}");
 
 		return sb.toString();
@@ -913,6 +915,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 			dossierImpl.setLastSendDate(new Date(lastSendDate));
 		}
 
+		dossierImpl.setServiceLevel(serviceLevel);
+
 		dossierImpl.resetOriginalValues();
 
 		return dossierImpl;
@@ -1047,6 +1051,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		postalCodeReceived = objectInput.readUTF();
 		lastReceiveDate = objectInput.readLong();
 		lastSendDate = objectInput.readLong();
+
+		serviceLevel = objectInput.readInt();
 	}
 
 	@Override
@@ -1597,6 +1603,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 		objectOutput.writeLong(lastReceiveDate);
 		objectOutput.writeLong(lastSendDate);
+
+		objectOutput.writeInt(serviceLevel);
 	}
 
 	public String uuid;
@@ -1705,4 +1713,5 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 	public String postalCodeReceived;
 	public long lastReceiveDate;
 	public long lastSendDate;
+	public int serviceLevel;
 }

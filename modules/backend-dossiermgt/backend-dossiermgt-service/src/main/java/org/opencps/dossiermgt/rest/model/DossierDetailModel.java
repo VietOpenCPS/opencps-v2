@@ -176,7 +176,8 @@ import javax.xml.bind.annotation.XmlType;
     "vnpostalProfile",
     "fromViaPostal",
     "postalCodeSend",
-    "postalCodeReceived"
+    "postalCodeReceived",
+    "serviceLevel"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -257,6 +258,15 @@ public class DossierDetailModel {
     protected Integer fromViaPostal;
     protected String postalCodeSend;
     protected String postalCodeReceived;
+    protected int serviceLevel;
+
+    public int getServiceLevel() {
+        return serviceLevel;
+    }
+
+    public void setServiceLevel(int serviceLevel) {
+        this.serviceLevel = serviceLevel;
+    }
 
     public String getPostalCodeSend() {
         return postalCodeSend;

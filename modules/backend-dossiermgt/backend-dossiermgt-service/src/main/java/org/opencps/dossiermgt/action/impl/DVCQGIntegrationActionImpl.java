@@ -44,11 +44,14 @@ import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
+import org.opencps.dossiermgt.input.model.SyncTrackingInfo;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.impl.ServiceInfoImpl;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
+import org.opencps.synctracking.model.SyncTrackingQuery;
+import org.opencps.synctracking.service.SyncTrackingLocalServiceUtil;
 import org.opencps.usermgt.model.Answer;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Question;
@@ -4171,13 +4174,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	@Override
-	public JSONObject doCreateUpdateDossierFromDVCQG(Company company, User user, long groupId, ServiceContext serviceContext, JSONObject data, boolean isUpdating) {
+	public JSONObject doCreateUpdateDossierFromDVCQG(Company company, User user, long groupId, ServiceContext serviceContext, JSONObject data, boolean isUpdating, boolean isSync) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.set("Accept", "*");
-//		JSONObject configJson = getServerConfigByServerNo();
-//		String urlCall = configJson.getString(FrequencyOfficeConstants.CONFIG_URL_LOCAL)
-//				+ configJson.getString(FrequencyOfficeConstants.CONFIG_SAVE_SYNC_TRACKING);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", "*");
+		JSONObject configJson = getServerConfigByServerNo();
+		String urlCall = configJson.getString(FrequencyOfficeConstants.CONFIG_URL_LOCAL)
+				+ configJson.getString(FrequencyOfficeConstants.CONFIG_SAVE_SYNC_TRACKING);
+		_log.info("Url: " + urlCall);
 		try {
 			if (data == null) {
 				_log.error("HSKMBS result: " + "Data empty");
@@ -4263,8 +4267,25 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			}
 			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(MaHoSo);
 			if(Validator.isNotNull(dossier)) {
-				ReportLandTaxLocalServiceUtil.addReportLandTax(groupId, MaHoSo, data.toString(), "", serviceContext);
-				_log.info("Saved tracking!!!");
+				if(isSync) {
+					SyncTrackingInfo body = new SyncTrackingInfo();
+					body.groupId = groupId;
+					body.bodyRequest = data.toString();
+					body.dossierNo = MaHoSo;
+					body.referenceUid = dossier.getReferenceUid();
+					headers.add("groupId", String.valueOf(body.groupId));
+					HttpEntity<SyncTrackingInfo> entity = new HttpEntity<>(body, headers);
+					ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
+					_log.info("Response api saving tracking: " + response);
+					_log.info("Saved tracking!!!");
+				}else {
+					SyncTrackingQuery query = new SyncTrackingQuery();
+					query.dossierNo = MaHoSo;
+					query.groupId = groupId;
+					query.bodyRequest = data.toString();
+					SyncTrackingLocalServiceUtil.createSyncTrackingManual(query);
+					_log.info("Saved tracking!!!");
+				}
 			}else{
 				return createResponseMessage(result, 0,  MaHoSo+"| không tồn tại trên hệ thống");
 			}
@@ -4314,7 +4335,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(child.getTextContent());
 					msHS += child.getTextContent() + ",";
 					if(Validator.isNotNull(dossier)) {
-						ReportLandTaxLocalServiceUtil.addReportLandTax(groupId, child.getTextContent(), xmlFileThongBaoThue, "", serviceContext);
+//						org.opencps.reportland.service.ReportLandTaxLocalServiceUtil.addReportLandTax(groupId, child.getTextContent(), xmlFileThongBaoThue, "", serviceContext);
+						SyncTrackingQuery query = new SyncTrackingQuery();
+						query.dossierNo = child.getTextContent();
+						query.groupId = groupId;
+						query.bodyRequest = xmlFileThongBaoThue;
+						SyncTrackingLocalServiceUtil.createSyncTrackingManual(query);
 						_log.info("Saved tracking!!!");
 					}else{
 						createResponseMessage(result, 0,  msHS+"| không tồn tại trên hệ thống");
