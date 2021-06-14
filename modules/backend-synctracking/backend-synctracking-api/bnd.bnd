@@ -1,0 +1,10 @@
+Bundle-Name: backend-synctracking-api
+Bundle-SymbolicName: org.opencps.backend.synctracking.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	org.opencps.synctracking.exception,\
+	org.opencps.synctracking.model,\
+	org.opencps.synctracking.service,\
+	org.opencps.synctracking.service.persistence
+-check: EXPORTS
+-includeresource: META-INF/service.xml=../backend-synctracking-service/service.xml

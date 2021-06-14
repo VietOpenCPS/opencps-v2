@@ -96,7 +96,6 @@ import org.opencps.dossiermgt.service.persistence.RegistrationFormPersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationLogPersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationPersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationTemplatesPersistence;
-import org.opencps.dossiermgt.service.persistence.ReportLandTaxPersistence;
 import org.opencps.dossiermgt.service.persistence.ServiceConfigMappingPersistence;
 import org.opencps.dossiermgt.service.persistence.ServiceConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePersistence;
@@ -2259,44 +2258,6 @@ public abstract class DossierDocumentLocalServiceBaseImpl
 	}
 
 	/**
-	 * Returns the report land tax local service.
-	 *
-	 * @return the report land tax local service
-	 */
-	public org.opencps.dossiermgt.service.ReportLandTaxLocalService getReportLandTaxLocalService() {
-		return reportLandTaxLocalService;
-	}
-
-	/**
-	 * Sets the report land tax local service.
-	 *
-	 * @param reportLandTaxLocalService the report land tax local service
-	 */
-	public void setReportLandTaxLocalService(
-		org.opencps.dossiermgt.service.ReportLandTaxLocalService reportLandTaxLocalService) {
-		this.reportLandTaxLocalService = reportLandTaxLocalService;
-	}
-
-	/**
-	 * Returns the report land tax persistence.
-	 *
-	 * @return the report land tax persistence
-	 */
-	public ReportLandTaxPersistence getReportLandTaxPersistence() {
-		return reportLandTaxPersistence;
-	}
-
-	/**
-	 * Sets the report land tax persistence.
-	 *
-	 * @param reportLandTaxPersistence the report land tax persistence
-	 */
-	public void setReportLandTaxPersistence(
-		ReportLandTaxPersistence reportLandTaxPersistence) {
-		this.reportLandTaxPersistence = reportLandTaxPersistence;
-	}
-
-	/**
 	 * Returns the service config local service.
 	 *
 	 * @return the service config local service
@@ -3017,10 +2978,6 @@ public abstract class DossierDocumentLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.RegistrationTemplatesLocalService registrationTemplatesLocalService;
 	@BeanReference(type = RegistrationTemplatesPersistence.class)
 	protected RegistrationTemplatesPersistence registrationTemplatesPersistence;
-	@BeanReference(type = org.opencps.dossiermgt.service.ReportLandTaxLocalService.class)
-	protected org.opencps.dossiermgt.service.ReportLandTaxLocalService reportLandTaxLocalService;
-	@BeanReference(type = ReportLandTaxPersistence.class)
-	protected ReportLandTaxPersistence reportLandTaxPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.ServiceConfigLocalService.class)
 	protected org.opencps.dossiermgt.service.ServiceConfigLocalService serviceConfigLocalService;
 	@BeanReference(type = ServiceConfigPersistence.class)
