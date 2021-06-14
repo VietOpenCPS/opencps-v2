@@ -17,6 +17,7 @@ package org.opencps.synctracking.service.impl;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -109,9 +110,13 @@ public class SyncTrackingLocalServiceImpl
 		// TODO Auto-generated method stub
 		return syncTrackingPersistence.findByF_GID_REFERENCE_UID_CREATED_BETWEEN(groupId, referenceUid, fromDate, toDate, start, end);
 	}
-	
+
+	@Override
+	public SyncTracking getByDossierNoAndProtocol(long groupId, String dossierNo, String protocol) {
+		return syncTrackingPersistence.fetchByF_GID_DossierNo_Protocol(groupId,dossierNo, protocol);
+	}
+
 	public SyncTracking createSyncTrackingManual(SyncTrackingQuery syncTrackingQuery) {
-		System.out.println("SyncTrackingQuery: " + JSONFactoryUtil.looseSerialize(syncTrackingQuery));
 		long syncTrackingId = counterLocalService.increment(SyncTracking.class.getName());
 		Date now = new Date();
 
@@ -137,6 +142,14 @@ public class SyncTrackingLocalServiceImpl
 
 		if(Validator.isNotNull(syncTrackingQuery.api)) {
 			syncTracking.setApi(syncTrackingQuery.api);
+		}
+
+		if(Validator.isNotNull(syncTrackingQuery.protocol)) {
+			syncTracking.setProtocol(syncTrackingQuery.protocol);
+		}
+
+		if(Validator.isNotNull(syncTrackingQuery.serverNo)) {
+			syncTracking.setServerNo(syncTrackingQuery.serverNo);
 		}
 
 		if(Validator.isNotNull(syncTrackingQuery.fromUnit)) {

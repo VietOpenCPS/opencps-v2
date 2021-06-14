@@ -21,6 +21,8 @@ import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 
+import com.liferay.portal.kernel.util.StringBundler;
+
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
@@ -34,7 +36,6 @@ import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 
 import org.opencps.synctracking.model.SyncTracking;
 import org.opencps.synctracking.model.SyncTrackingModel;
@@ -127,13 +128,13 @@ public class SyncTrackingModelImpl extends BaseModelImpl<SyncTracking>
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
-	public static final boolean ENTITY_CACHE_ENABLED = GetterUtil.getBoolean(org.opencps.synctracking.service.util.ServiceProps.get(
+	public static final boolean ENTITY_CACHE_ENABLED = GetterUtil.getBoolean(org.opencps.synctracking.org.opencps.backend.synctracking.service.util.ServiceProps.get(
 				"value.object.entity.cache.enabled.org.opencps.synctracking.model.SyncTracking"),
 			true);
-	public static final boolean FINDER_CACHE_ENABLED = GetterUtil.getBoolean(org.opencps.synctracking.service.util.ServiceProps.get(
+	public static final boolean FINDER_CACHE_ENABLED = GetterUtil.getBoolean(org.opencps.synctracking.org.opencps.backend.synctracking.service.util.ServiceProps.get(
 				"value.object.finder.cache.enabled.org.opencps.synctracking.model.SyncTracking"),
 			true);
-	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.synctracking.service.util.ServiceProps.get(
+	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.synctracking.org.opencps.backend.synctracking.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.synctracking.model.SyncTracking"),
 			true);
 	public static final long API_COLUMN_BITMASK = 1L;
@@ -204,7 +205,7 @@ public class SyncTrackingModelImpl extends BaseModelImpl<SyncTracking>
 		return models;
 	}
 
-	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.synctracking.service.util.ServiceProps.get(
+	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.synctracking.org.opencps.backend.synctracking.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.synctracking.model.SyncTracking"));
 
 	public SyncTrackingModelImpl() {

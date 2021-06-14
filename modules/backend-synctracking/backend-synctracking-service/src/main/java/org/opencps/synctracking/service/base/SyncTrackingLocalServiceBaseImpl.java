@@ -51,6 +51,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import org.opencps.synctracking.model.SyncTracking;
 import org.opencps.synctracking.service.SyncTrackingLocalService;
+import org.opencps.synctracking.service.persistence.DossierTaxPersistence;
 import org.opencps.synctracking.service.persistence.SyncTrackingPersistence;
 
 import java.io.Serializable;
@@ -432,6 +433,44 @@ public abstract class SyncTrackingLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the dossier tax local service.
+	 *
+	 * @return the dossier tax local service
+	 */
+	public org.opencps.synctracking.service.DossierTaxLocalService getDossierTaxLocalService() {
+		return dossierTaxLocalService;
+	}
+
+	/**
+	 * Sets the dossier tax local service.
+	 *
+	 * @param dossierTaxLocalService the dossier tax local service
+	 */
+	public void setDossierTaxLocalService(
+		org.opencps.synctracking.service.DossierTaxLocalService dossierTaxLocalService) {
+		this.dossierTaxLocalService = dossierTaxLocalService;
+	}
+
+	/**
+	 * Returns the dossier tax persistence.
+	 *
+	 * @return the dossier tax persistence
+	 */
+	public DossierTaxPersistence getDossierTaxPersistence() {
+		return dossierTaxPersistence;
+	}
+
+	/**
+	 * Sets the dossier tax persistence.
+	 *
+	 * @param dossierTaxPersistence the dossier tax persistence
+	 */
+	public void setDossierTaxPersistence(
+		DossierTaxPersistence dossierTaxPersistence) {
+		this.dossierTaxPersistence = dossierTaxPersistence;
+	}
+
+	/**
 	 * Returns the sync tracking local service.
 	 *
 	 * @return the sync tracking local service
@@ -634,6 +673,10 @@ public abstract class SyncTrackingLocalServiceBaseImpl
 		}
 	}
 
+	@BeanReference(type = org.opencps.synctracking.service.DossierTaxLocalService.class)
+	protected org.opencps.synctracking.service.DossierTaxLocalService dossierTaxLocalService;
+	@BeanReference(type = DossierTaxPersistence.class)
+	protected DossierTaxPersistence dossierTaxPersistence;
 	@BeanReference(type = SyncTrackingLocalService.class)
 	protected SyncTrackingLocalService syncTrackingLocalService;
 	@BeanReference(type = SyncTrackingPersistence.class)

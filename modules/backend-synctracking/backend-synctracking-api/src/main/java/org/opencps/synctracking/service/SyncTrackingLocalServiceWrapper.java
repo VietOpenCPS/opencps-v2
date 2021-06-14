@@ -18,12 +18,6 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
 
-import java.util.Date;
-import java.util.List;
-
-import org.opencps.synctracking.model.SyncTracking;
-import org.opencps.synctracking.model.SyncTrackingQuery;
-
 /**
  * Provides a wrapper for {@link SyncTrackingLocalService}.
  *
@@ -61,6 +55,12 @@ public class SyncTrackingLocalServiceWrapper implements SyncTrackingLocalService
 	public org.opencps.synctracking.model.SyncTracking createSyncTracking(
 		long trackingId) {
 		return _syncTrackingLocalService.createSyncTracking(trackingId);
+	}
+
+	@Override
+	public org.opencps.synctracking.model.SyncTracking createSyncTrackingManual(
+		org.opencps.synctracking.model.SyncTrackingQuery syncTrackingQuery) {
+		return _syncTrackingLocalService.createSyncTrackingManual(syncTrackingQuery);
 	}
 
 	/**
@@ -210,6 +210,78 @@ public class SyncTrackingLocalServiceWrapper implements SyncTrackingLocalService
 	}
 
 	@Override
+	public org.opencps.synctracking.model.SyncTracking getByDossierNo(
+		long groupId, String dossierNo) {
+		return _syncTrackingLocalService.getByDossierNo(groupId, dossierNo);
+	}
+
+	@Override
+	public org.opencps.synctracking.model.SyncTracking getByDossierNoAndProtocol(
+		long groupId, String dossierNo, String protocol) {
+		return _syncTrackingLocalService.getByDossierNoAndProtocol(groupId,
+			dossierNo, protocol);
+	}
+
+	@Override
+	public java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupId(
+		long groupId, int start, int end) {
+		return _syncTrackingLocalService.getByGroupId(groupId, start, end);
+	}
+
+	@Override
+	public java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndApi(
+		long groupId, String api, int start, int end) {
+		return _syncTrackingLocalService.getByGroupIdAndApi(groupId, api,
+			start, end);
+	}
+
+	@Override
+	public java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDate(
+		long groupId, java.util.Date fromDate, java.util.Date toDate,
+		int start, int end) {
+		return _syncTrackingLocalService.getByGroupIdAndDate(groupId, fromDate,
+			toDate, start, end);
+	}
+
+	@Override
+	public java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDossierNoAndDate(
+		long groupId, String dossierNo, java.util.Date fromDate,
+		java.util.Date toDate, int start, int end) {
+		return _syncTrackingLocalService.getByGroupIdAndDossierNoAndDate(groupId,
+			dossierNo, fromDate, toDate, start, end);
+	}
+
+	@Override
+	public java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDossierNoAndServiceCodeAndDate(
+		long groupId, String dossierNo, String serviceCode,
+		java.util.Date fromDate, java.util.Date toDate, int start, int end) {
+		return _syncTrackingLocalService.getByGroupIdAndDossierNoAndServiceCodeAndDate(groupId,
+			dossierNo, serviceCode, fromDate, toDate, start, end);
+	}
+
+	@Override
+	public java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndServiceCodeAndDate(
+		long groupId, String serviceCode, java.util.Date fromDate,
+		java.util.Date toDate, int start, int end) {
+		return _syncTrackingLocalService.getByGroupIdAndServiceCodeAndDate(groupId,
+			serviceCode, fromDate, toDate, start, end);
+	}
+
+	@Override
+	public org.opencps.synctracking.model.SyncTracking getByReferenceUid(
+		long groupId, String referenceUid) {
+		return _syncTrackingLocalService.getByReferenceUid(groupId, referenceUid);
+	}
+
+	@Override
+	public java.util.List<org.opencps.synctracking.model.SyncTracking> getByReferenceUidAndDate(
+		long groupId, String referenceUid, java.util.Date fromDate,
+		java.util.Date toDate, int start, int end) {
+		return _syncTrackingLocalService.getByReferenceUidAndDate(groupId,
+			referenceUid, fromDate, toDate, start, end);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
 		return _syncTrackingLocalService.getExportActionableDynamicQuery(portletDataContext);
@@ -350,68 +422,4 @@ public class SyncTrackingLocalServiceWrapper implements SyncTrackingLocalService
 	}
 
 	private SyncTrackingLocalService _syncTrackingLocalService;
-
-	@Override
-	public SyncTracking getByDossierNo(long groupId, String dossierNo) {
-		// TODO Auto-generated method stub
-		return _syncTrackingLocalService.getByDossierNo(groupId, dossierNo);
-	}
-
-	@Override
-	public List<SyncTracking> getByGroupId(long groupId, int start, int end) {
-		// TODO Auto-generated method stub
-		return _syncTrackingLocalService.getByGroupId(groupId, start, end);
-	}
-
-	@Override
-	public List<SyncTracking> getByGroupIdAndApi(long groupId, String api, int start, int end) {
-		// TODO Auto-generated method stub
-		return _syncTrackingLocalService.getByGroupIdAndApi(groupId, api, start, end);
-	}
-
-	@Override
-	public List<SyncTracking> getByGroupIdAndDate(long groupId, Date fromDate, Date toDate, int start, int end) {
-		// TODO Auto-generated method stub
-		return _syncTrackingLocalService.getByGroupIdAndDate(groupId, fromDate, toDate, start, end);
-	}
-
-	@Override
-	public List<SyncTracking> getByGroupIdAndDossierNoAndDate(long groupId, String dossierNo, Date fromDate,
-			Date toDate, int start, int end) {
-		// TODO Auto-generated method stub
-		return _syncTrackingLocalService.getByGroupIdAndDossierNoAndDate(groupId, dossierNo, fromDate, toDate, start, end);
-	}
-
-	@Override
-	public List<SyncTracking> getByGroupIdAndDossierNoAndServiceCodeAndDate(long groupId, String dossierNo,
-			String serviceCode, Date fromDate, Date toDate, int start, int end) {
-		// TODO Auto-generated method stub
-		return _syncTrackingLocalService.getByGroupIdAndDossierNoAndServiceCodeAndDate(groupId, dossierNo, serviceCode, fromDate, toDate, start, end);
-	}
-
-	@Override
-	public List<SyncTracking> getByGroupIdAndServiceCodeAndDate(long groupId, String serviceCode, Date fromDate,
-			Date toDate, int start, int end) {
-		// TODO Auto-generated method stub
-		return _syncTrackingLocalService.getByGroupIdAndServiceCodeAndDate(groupId, serviceCode, fromDate, toDate, start, end);
-	}
-
-	@Override
-	public SyncTracking getByReferenceUid(long groupId, String referenceUid) {
-		// TODO Auto-generated method stub
-		return _syncTrackingLocalService.getByReferenceUid(groupId, referenceUid);
-	}
-
-	@Override
-	public List<SyncTracking> getByReferenceUidAndDate(long groupId, String referenceUid, Date fromDate, Date toDate,
-			int start, int end) {
-		// TODO Auto-generated method stub
-		return _syncTrackingLocalService.getByReferenceUidAndDate(groupId, referenceUid, fromDate, toDate, start, end);
-	}
-
-	@Override
-	public SyncTracking createSyncTrackingManual(SyncTrackingQuery syncTrackingQuery) {
-		// TODO Auto-generated method stub
-		return _syncTrackingLocalService.createSyncTrackingManual(syncTrackingQuery);
-	}
 }

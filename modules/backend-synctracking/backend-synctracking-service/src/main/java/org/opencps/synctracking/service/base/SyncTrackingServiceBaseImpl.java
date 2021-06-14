@@ -29,6 +29,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import org.opencps.synctracking.model.SyncTracking;
 import org.opencps.synctracking.service.SyncTrackingService;
+import org.opencps.synctracking.service.persistence.DossierTaxPersistence;
 import org.opencps.synctracking.service.persistence.SyncTrackingPersistence;
 
 import javax.sql.DataSource;
@@ -52,6 +53,63 @@ public abstract class SyncTrackingServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * Never modify or reference this class directly. Always use {@link org.opencps.synctracking.service.SyncTrackingServiceUtil} to access the sync tracking remote service.
 	 */
+
+	/**
+	 * Returns the dossier tax local service.
+	 *
+	 * @return the dossier tax local service
+	 */
+	public org.opencps.synctracking.service.DossierTaxLocalService getDossierTaxLocalService() {
+		return dossierTaxLocalService;
+	}
+
+	/**
+	 * Sets the dossier tax local service.
+	 *
+	 * @param dossierTaxLocalService the dossier tax local service
+	 */
+	public void setDossierTaxLocalService(
+		org.opencps.synctracking.service.DossierTaxLocalService dossierTaxLocalService) {
+		this.dossierTaxLocalService = dossierTaxLocalService;
+	}
+
+	/**
+	 * Returns the dossier tax remote service.
+	 *
+	 * @return the dossier tax remote service
+	 */
+	public org.opencps.synctracking.service.DossierTaxService getDossierTaxService() {
+		return dossierTaxService;
+	}
+
+	/**
+	 * Sets the dossier tax remote service.
+	 *
+	 * @param dossierTaxService the dossier tax remote service
+	 */
+	public void setDossierTaxService(
+		org.opencps.synctracking.service.DossierTaxService dossierTaxService) {
+		this.dossierTaxService = dossierTaxService;
+	}
+
+	/**
+	 * Returns the dossier tax persistence.
+	 *
+	 * @return the dossier tax persistence
+	 */
+	public DossierTaxPersistence getDossierTaxPersistence() {
+		return dossierTaxPersistence;
+	}
+
+	/**
+	 * Sets the dossier tax persistence.
+	 *
+	 * @param dossierTaxPersistence the dossier tax persistence
+	 */
+	public void setDossierTaxPersistence(
+		DossierTaxPersistence dossierTaxPersistence) {
+		this.dossierTaxPersistence = dossierTaxPersistence;
+	}
 
 	/**
 	 * Returns the sync tracking local service.
@@ -308,6 +366,12 @@ public abstract class SyncTrackingServiceBaseImpl extends BaseServiceImpl
 		}
 	}
 
+	@BeanReference(type = org.opencps.synctracking.service.DossierTaxLocalService.class)
+	protected org.opencps.synctracking.service.DossierTaxLocalService dossierTaxLocalService;
+	@BeanReference(type = org.opencps.synctracking.service.DossierTaxService.class)
+	protected org.opencps.synctracking.service.DossierTaxService dossierTaxService;
+	@BeanReference(type = DossierTaxPersistence.class)
+	protected DossierTaxPersistence dossierTaxPersistence;
 	@BeanReference(type = org.opencps.synctracking.service.SyncTrackingLocalService.class)
 	protected org.opencps.synctracking.service.SyncTrackingLocalService syncTrackingLocalService;
 	@BeanReference(type = SyncTrackingService.class)

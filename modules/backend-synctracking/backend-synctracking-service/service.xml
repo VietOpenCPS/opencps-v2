@@ -2,7 +2,7 @@
 <!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.2.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_2_0.dtd">
 
 <service-builder dependency-injector="ds" package-path="org.opencps.synctracking">
-	<namespace>FOO</namespace>
+	<namespace>syncTracking</namespace>
 	<entity local-service="true" name="SyncTracking" remote-service="true" uuid="true" table="opencps_synctracking">
 
 		<!-- PK fields -->
@@ -46,6 +46,12 @@
 		<finder name="F_GID_DossierNo" return-type="SyncTracking">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="dossierNo"></finder-column>
+		</finder>
+
+		<finder name="F_GID_DossierNo_Protocol" return-type="SyncTracking">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="dossierNo"></finder-column>
+			<finder-column name="protocol"></finder-column>
 		</finder>
 
 		<finder name="F_GID_API" return-type="Collection">
@@ -104,6 +110,56 @@
 			<finder-column name="createDate" comparator="&gt;="/>
 			<finder-column name="modifiedDate" comparator="&lt;="/>
 		</finder>
+
+	</entity>
+	
+	<entity local-service="true" name="DossierTax" remote-service="true" uuid="true" table="opencps_dossier_tax">
+
+		<!-- PK fields -->
+		<column name="taxId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="dossierId" type="long" />
+		<column name="dossierNo" type="String" />
+		<column name="maSoThue" type="String" />
+		<column name="soQuyetDinh" type="String" />
+		<column name="ngayQuyetDinh" type="Date" />
+		<column name="tenTieuMuc" type="String" />
+		<column name="soTien" type="int" />
+		<column name="hoTenNguoiNopTien" type="String" />
+		<column name="soCmtNguoiNopTien" type="int" />
+		<column name="diaChiNguoiNopTien" type="String" />
+		<column name="tinhNguoiNopTien" type="String" />
+		<column name="huyenNguoiNopTien" type="String" />
+		<column name="xaNguoiNopTien" type="String" />
+		<column name="thoiGianThanhToan" type="Date" />
+		<column name="soTienNop" type="int" />
+		<column name="noiDungThanhToan" type="String" />
+		<column name="trangThaiThanhToan" type="int" />
+		<column name="fileChungTu" type="String" />
+		<column name="ngayThueTraThongBao" type="Date" />
+		<column name="ngayTraThongBao" type="Date" />
+		<column name="ngayNhanBienLai" type="Date" />
+
+		<!-- Order -->
+		<order>
+			<order-column name="createDate" order-by="desc" />
+		</order>
+
+		<finder return-type="DossierTax" name="F_DMS">
+			<finder-column name="dossierNo" />
+			<finder-column name="maSoThue" />
+			<finder-column name="soQuyetDinh" />
+		</finder>
+		
 
 	</entity>
 </service-builder>

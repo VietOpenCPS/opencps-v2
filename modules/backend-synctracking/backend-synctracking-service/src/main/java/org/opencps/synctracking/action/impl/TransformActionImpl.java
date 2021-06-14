@@ -46,4 +46,35 @@ public class TransformActionImpl implements TransformAction {
             throw new Exception(e.getMessage());
         }
     }
+
+    @Override
+    public SyncTrackingResponse transForm(SyncTracking syncTracking) throws Exception {
+        try {
+            SyncTrackingResponse oneTrackingTransform = new SyncTrackingResponse();
+
+                oneTrackingTransform.api = syncTracking.getApi();
+                oneTrackingTransform.bodyRequest = Validator.isNotNull(syncTracking.getBodyRequest())
+                        ? syncTracking.getBodyRequest() : "";
+                oneTrackingTransform.bodyResponse = Validator.isNotNull(syncTracking.getResponse())
+                        ? syncTracking.getResponse() : "";
+                oneTrackingTransform.createDate = Validator.isNotNull(syncTracking.getCreateDate())
+                        ? syncTracking.getCreateDate().getTime() : 0;
+                oneTrackingTransform.dossierNo = Validator.isNotNull(syncTracking.getDossierNo())
+                        ? syncTracking.getDossierNo(): "";
+                oneTrackingTransform.serviceCode = Validator.isNotNull(syncTracking.getServiceCode())
+                        ? syncTracking.getServiceCode(): "";
+                oneTrackingTransform.fromUnit = Validator.isNotNull(syncTracking.getFromUnit())
+                        ? syncTracking.getFromUnit() : "";
+                oneTrackingTransform.toUnit = Validator.isNotNull(syncTracking.getToUnit())
+                        ? syncTracking.getToUnit() : "";
+                oneTrackingTransform.stateSync = Validator.isNotNull(syncTracking.getStateSync())
+                        ? syncTracking.getStateSync() : CommonConstant.STATE_ERROR;
+                oneTrackingTransform.trackingId = Validator.isNotNull(syncTracking.getTrackingId())
+                        ? syncTracking.getTrackingId() : 0;
+            return oneTrackingTransform;
+        } catch (Exception e) {
+            _log.error(e);
+            throw new Exception(e.getMessage());
+        }
+    }
 }

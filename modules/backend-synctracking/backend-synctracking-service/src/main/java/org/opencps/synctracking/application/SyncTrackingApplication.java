@@ -1,6 +1,7 @@
 package org.opencps.synctracking.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -14,9 +15,7 @@ import org.opencps.synctracking.action.TransformAction;
 import org.opencps.synctracking.action.impl.IntegrationOutsideApiImpl;
 import org.opencps.synctracking.action.impl.SyncTrackingActionImpl;
 import org.opencps.synctracking.action.impl.TransformActionImpl;
-import org.opencps.synctracking.model.DtoResponse;
-import org.opencps.synctracking.model.SyncTrackingQuery;
-import org.opencps.synctracking.model.SyncTrackingResponse;
+import org.opencps.synctracking.model.*;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
@@ -115,6 +114,62 @@ public class SyncTrackingApplication extends Application{
             }
             syncTrackingAction.createSynTrackingDVCQG(query);
             return Response.status(200).entity("Saved").build();
+        } catch (Exception e) {
+            _log.error(e);
+            return Response.status(500).entity("Error").build();
+        }
+    }
+
+    @POST
+    @Path("/dossierTax")
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response createDossierTax(@HeaderParam("groupId") long groupId, DossierTaxInput input) {
+        try {
+            if(groupId != 0) {
+                input.groupId = groupId;
+            }
+            syncTrackingAction.createDossierTax(input);
+            return Response.status(200).entity("Saved").build();
+        } catch (Exception e) {
+            _log.error(e);
+            return Response.status(500).entity("Error").build();
+        }
+    }
+
+    @POST
+    @Path("/update/dossierTax")
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response updateDossierTax(@HeaderParam("groupId") long groupId, DossierTaxInput input) {
+        try {
+            if(groupId != 0) {
+                input.groupId = groupId;
+            }
+            syncTrackingAction.updateDossierTax(input);
+            return Response.status(200).entity("Saved").build();
+        } catch (Exception e) {
+            _log.error(e);
+            return Response.status(500).entity("Error").build();
+        }
+    }
+
+    @POST
+    @Path("/getSyncTracking")
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response getSynTracking(@HeaderParam("groupId") long groupId, SyncTrackingQuery input) {
+        try {
+            SyncTrackingResponse response = new SyncTrackingResponse();
+            if(groupId != 0) {
+                input.groupId = groupId;
+            }
+            response = syncTrackingAction.getSyncTracking(input);
+            if(Validator.isNotNull(response.dossierNo)) {
+                return Response.status(200).entity(objectMapper.writeValueAsString(response)).build();
+            }else {
+                return Response.status(200).entity(StringPool.BLANK).build();
+            }
         } catch (Exception e) {
             _log.error(e);
             return Response.status(500).entity("Error").build();

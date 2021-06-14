@@ -16,7 +16,6 @@ package org.opencps.synctracking.service;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
