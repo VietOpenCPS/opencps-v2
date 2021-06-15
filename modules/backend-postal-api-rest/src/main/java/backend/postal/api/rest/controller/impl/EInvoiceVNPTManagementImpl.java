@@ -216,21 +216,35 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 		default:
 			// download bien lai
 			Response saveResponse = uploadEInvoicePDF(paymentFile, downloadInvPDFFkeyNoPayResult, groupId, serviceContext, user, request);
-			if(saveResponse.getStatus() == 200) {
-				if(paymentFile.getInvoiceFileEntryId() > 0) {
-					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
-
-					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
-							true);
-					
-					ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-					responseBuilder.header("Content-Disposition",
-							"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-					responseBuilder.header("Content-Type", fileEntry.getMimeType());
-
-					return responseBuilder.build();
+			_log.info("3333 :" + saveResponse.getStatus());
+			_log.info("4444 :" + JSONFactoryUtil.looseSerialize(paymentFile));
+			int tryCount = 0;
+			long invoiceFileEntryId = paymentFile.getInvoiceFileEntryId();
+			while (Validator.isNull(invoiceFileEntryId) || invoiceFileEntryId == 0) {
+				try {
+					Thread.sleep(2000);
+					uploadEInvoicePDF(paymentFile, downloadInvPDFFkeyNoPayResult, groupId, serviceContext, user, request);
+					tryCount++;
+					if (tryCount == 5 ) break;
+					if (paymentFile.getInvoiceFileEntryId() > 0 ) break;
+				} catch (Exception e) {
+					e.getMessage();
 				}
+			}
+			if(saveResponse.getStatus() == 200 && paymentFile.getInvoiceFileEntryId() > 0) {
+				
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
+
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+						true);
+				
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+
+				return responseBuilder.build();
 			}
 		}
 		return null;

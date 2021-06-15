@@ -1196,10 +1196,17 @@ public class DossierMgtUtils {
 		boolean result = false;
 		PaymentFileActions actions = new PaymentFileActionsImpl();
 		PaymentFile paymentFile = actions.getPaymentFiles(dossier.getGroupId(), dossier.getDossierId());
-		if (paymentFile != null && Validator.isNull(paymentFile.getInvoicePayload())) {			
-			paymentFile.setInvoicePayload("VNPT");
-			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
-			result = true;
+		if (paymentFile != null) {			
+			if (Validator.isNull(paymentFile.getInvoicePayload())) {
+				paymentFile.setInvoicePayload("VNPT");
+				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+				result = true;
+			}else if(paymentFile.getInvoicePayload().contentEquals("VNPT")){
+				result = true;
+			}else {
+				result = false;
+			}
+			
 		}
 		return result;
 	}
