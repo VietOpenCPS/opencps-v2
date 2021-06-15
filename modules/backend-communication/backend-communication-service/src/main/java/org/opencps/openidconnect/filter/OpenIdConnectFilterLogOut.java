@@ -14,6 +14,7 @@
 
 package org.opencps.openidconnect.filter;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -40,9 +41,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.liferay.portal.security.sso.openid.connect.OpenIdConnectSession;
+import com.liferay.portal.security.sso.openid.connect.*;
 import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys;
 
+import com.liferay.portal.security.sso.openid.connect.internal.OpenIdConnectProviderImpl;
+import com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -111,7 +114,7 @@ public class OpenIdConnectFilterLogOut extends BaseFilter {
 
         String pathInfo = httpServletRequest.getPathInfo();
 
-
+        
         if (Validator.isNotNull(pathInfo) &&
                 pathInfo.contains("/portal/logout")) {
 
@@ -120,6 +123,10 @@ public class OpenIdConnectFilterLogOut extends BaseFilter {
                             OpenIdConnectWebKeys.OPEN_ID_CONNECT_SESSION);
 
             if(Validator.isNotNull(openIdConnectSession)) {
+                String openIDConnectProviderName = openIdConnectSession.getOpenIdProviderName();
+
+//                _log.info("openIDConnectProviderName : " + openIDConnectProviderName);
+                OpenIdConnectProvider openIdConnectProvider = _openIdConnectProviderRegistry.getOpenIdConnectProvider(openIDConnectProviderName);
 
                 String accessToken = openIdConnectSession.getAccessTokenValue();
 
@@ -131,13 +138,13 @@ public class OpenIdConnectFilterLogOut extends BaseFilter {
 
                 String client_id = valuesAccessToken[1];
 
-                String client_secret = Validator.isNotNull(PropsUtil.get("org.opencps.keycloak.client-secret"))
-                        ? String.valueOf(PropsUtil.get("org.opencps.keycloak.client-secret"))
-                        : null;
+                String client_secret = openIdConnectProvider.getClientSecret();
+
+//                _log.info("client_secret : " + client_secret);
                 if(Validator.isNotNull(client_secret)){
                     Boolean statusLogout = postAPILogOutKeyCloak(apiLogout, client_id, client_secret,refreshToken, accessToken);
 
-                    _log.info("statusLogout Keycloak: " + statusLogout);
+                    _log.debug("statusLogout Keycloak: " + statusLogout);
                 } else {
                     _log.error("client_secret is : Null! Please Configure client_secret on portal-setup-wizard.properties");
                 }
@@ -163,9 +170,9 @@ public class OpenIdConnectFilterLogOut extends BaseFilter {
     private Boolean postAPILogOutKeyCloak(String url,String client_id, String client_secret, String refresh_token, String access_token) throws Exception  {
 
         StringBuilder paramsBody = new StringBuilder();
-        paramsBody.append("client_id").append("=").append(client_id).append("&");
-        paramsBody.append("client_secret").append("=").append(client_secret).append("&");
-        paramsBody.append("refresh_token").append("=").append(refresh_token);
+        paramsBody.append("client_id").append(StringPool.EQUAL).append(client_id).append(StringPool.AMPERSAND);
+        paramsBody.append("client_secret").append(StringPool.EQUAL).append(client_secret).append(StringPool.AMPERSAND);
+        paramsBody.append("refresh_token").append(StringPool.EQUAL).append(refresh_token);
 
         String body = paramsBody.toString();
         byte[] postDataBytes = body.toString().getBytes("UTF-8");
@@ -219,5 +226,8 @@ public class OpenIdConnectFilterLogOut extends BaseFilter {
 
     @Reference
     private Portal _portal;
+
+    @Reference
+    private OpenIdConnectProviderRegistry _openIdConnectProviderRegistry;
 
 }
