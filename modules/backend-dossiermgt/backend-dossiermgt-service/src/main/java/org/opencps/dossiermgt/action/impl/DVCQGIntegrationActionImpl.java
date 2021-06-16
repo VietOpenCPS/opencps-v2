@@ -50,6 +50,8 @@ import org.opencps.dossiermgt.model.impl.ServiceInfoImpl;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
+import org.opencps.synctracking.model.SyncTrackingQuery;
+import org.opencps.synctracking.service.SyncTrackingLocalServiceUtil;
 import org.opencps.usermgt.model.Answer;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Question;
@@ -4277,7 +4279,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					_log.info("Response api saving tracking: " + response);
 					_log.info("Saved tracking!!!");
 				}else {
-					org.opencps.reportland.service.ReportLandTaxLocalServiceUtil.addReportLandTax(groupId, MaHoSo, data.toString(), "", serviceContext);
+					SyncTrackingQuery query = new SyncTrackingQuery();
+					query.dossierNo = MaHoSo;
+					query.groupId = groupId;
+					query.bodyRequest = data.toString();
+					SyncTrackingLocalServiceUtil.createSyncTrackingManual(query);
 					_log.info("Saved tracking!!!");
 				}
 			}else{
@@ -4329,7 +4335,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(child.getTextContent());
 					msHS += child.getTextContent() + ",";
 					if(Validator.isNotNull(dossier)) {
-						org.opencps.reportland.service.ReportLandTaxLocalServiceUtil.addReportLandTax(groupId, child.getTextContent(), xmlFileThongBaoThue, "", serviceContext);
+//						org.opencps.reportland.service.ReportLandTaxLocalServiceUtil.addReportLandTax(groupId, child.getTextContent(), xmlFileThongBaoThue, "", serviceContext);
+						SyncTrackingQuery query = new SyncTrackingQuery();
+						query.dossierNo = child.getTextContent();
+						query.groupId = groupId;
+						query.bodyRequest = xmlFileThongBaoThue;
+						SyncTrackingLocalServiceUtil.createSyncTrackingManual(query);
 						_log.info("Saved tracking!!!");
 					}else{
 						createResponseMessage(result, 0,  msHS+"| không tồn tại trên hệ thống");
