@@ -4,6 +4,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.synctracking.action.TransformAction;
+import org.opencps.synctracking.model.DossierTax;
+import org.opencps.synctracking.model.DossierTaxResponse;
 import org.opencps.synctracking.model.SyncTracking;
 import org.opencps.synctracking.model.SyncTrackingResponse;
 import org.opencps.synctracking.service.util.CommonConstant;
@@ -72,6 +74,25 @@ public class TransformActionImpl implements TransformAction {
                 oneTrackingTransform.trackingId = Validator.isNotNull(syncTracking.getTrackingId())
                         ? syncTracking.getTrackingId() : 0;
             return oneTrackingTransform;
+        } catch (Exception e) {
+            _log.error(e);
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public DossierTaxResponse transFormDossierTax(DossierTax dossierTax) throws Exception {
+        try {
+            DossierTaxResponse oneDossierTaxTransform = new DossierTaxResponse();
+
+            oneDossierTaxTransform.dossierId = dossierTax.getDossierId();
+            oneDossierTaxTransform.dossierNo = Validator.isNotNull(dossierTax.getDossierNo())
+                    ? dossierTax.getDossierNo() : "";
+            oneDossierTaxTransform.maSoThue = Validator.isNotNull(dossierTax.getMaSoThue())
+                    ? dossierTax.getMaSoThue() : "";
+            oneDossierTaxTransform.soQuyetDinh = Validator.isNotNull(dossierTax.getSoQuyetDinh())
+                    ? dossierTax.getMaSoThue() : "";
+            return oneDossierTaxTransform;
         } catch (Exception e) {
             _log.error(e);
             throw new Exception(e.getMessage());

@@ -325,6 +325,38 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
     }
 
     @Override
+    public DossierTaxResponse getDetailDossierTax(DossierTaxInput input) throws Exception {
+        try {
+            DossierTaxResponse response = new DossierTaxResponse();
+            if (Validator.isNull(input)) {
+                throw new Exception("No body param was found");
+            }
+
+            if (Validator.isNull(input.dossierNo) || input.dossierNo.isEmpty()) {
+                throw new Exception("No from dossierNo was found");
+            }
+
+            if (Validator.isNull(input.maSoThue) || input.maSoThue.isEmpty()) {
+                throw new Exception("No from Ma So Thue was found");
+            }
+            if (Validator.isNull(input.soQuyetDinh) || input.soQuyetDinh.isEmpty()) {
+                throw new Exception("No from So Quyet Dinh was found");
+            }
+            DossierTax dossierTax = DossierTaxLocalServiceUtil.fetchDossierTaxByDMS(input.dossierNo, input.maSoThue, input.soQuyetDinh);
+            if (Validator.isNotNull(dossierTax)) {
+                _log.debug("SyncTracking: " + JSONFactoryUtil.looseSerialize(dossierTax));
+                response = transformAction.transFormDossierTax(dossierTax);
+            }
+
+            return response;
+
+        }catch (Exception e){
+            e.getMessage();
+        }
+        return null;
+    }
+
+    @Override
     public boolean resend(SyncTrackingQuery syncTrackingQuery, JSONObject config) throws Exception {
         try {
             if(Validator.isNull(syncTrackingQuery.trackingId) || syncTrackingQuery.trackingId == 0) {

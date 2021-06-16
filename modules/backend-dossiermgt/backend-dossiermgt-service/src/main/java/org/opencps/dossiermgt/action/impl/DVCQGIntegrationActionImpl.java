@@ -106,6 +106,19 @@ import org.xml.sax.InputSource;
  *
  */
 public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
+	static class Counter {
+		private volatile static int count = 0;
+		public static int getCount(){
+			return count;
+		}
+		public static synchronized void decreaseCount(){
+			count--;
+		}
+
+		public static synchronized void setCount(int countNew){
+			count += countNew;
+		}
+	}
 
 	private static HashMap<String, Map<CharSequence, Integer>> _serviceInfoMapChars = new HashMap<String, Map<CharSequence, Integer>>();;
 
@@ -118,8 +131,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private static JSONArray _serviceInfoDVCQG = JSONFactoryUtil.createJSONArray();
 	private RestTemplate restTemplate;
 	private static volatile ThreadPoolExecutor threadPoolExecutor;
-	private int corePoolSize    = 2;
-	private int maximumPoolSize = 5;
+	private int corePoolSize    = 5;
+	private int maximumPoolSize = 10;
 	private int queueCapacity   = 6;
 	private int keepAliveTime   = 10;
 
@@ -4184,6 +4197,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 
 	}
+	public static final String MA_SO_THUE = "MA_SO_THUE";
+	public static final String SO_QUYET_DINH = "SO_QUYET_DINH";
+	public static final String NGAY_QUYET_DINH = "NGAY_QUYET_DINH";
+	public static final String SO_TIEN = "SO_TIEN";
+	public static final String TEN_TIEU_MUC = "TEN_TIEU_MUC";
 
 	@Override
 	public JSONObject doCreateUpdateDossierFromDVCQG(Company company, User user, long groupId, ServiceContext serviceContext, JSONObject data, boolean isUpdating) {
@@ -4302,22 +4320,29 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(MaHoSo);
 			if(Validator.isNotNull(dossier)) {
-				String syncTrackingDetail = getSyncTracking(groupId, MaHoSo, DVCQG_NHAN_CHUNG_TU_THUE);
-				_log.info("responseSync: " + syncTrackingDetail);
-				if(Validator.isNull(syncTrackingDetail)) {
+				String dossierTax = getDetailDossierTax(MaHoSo, MaSoThue, MaThongBaoThue);
+				_log.info("dossierTax: " + dossierTax);
+				if(Validator.isNotNull(dossierTax)) {
 					// doAction
-					JSONObject reponse = doActionPP(dossier, true, serviceContext);
-					// Ghi log SyncTracking
-					callPostAPISyncTracking(groupId, MaHoSo, dossier, data.toString(), reponse.toString(), DVCQG_NHAN_CHUNG_TU_THUE);
+					JSONObject reponse = doAction(dossier, true, serviceContext);
+					if(Validator.isNotNull(reponse) && Validator.isNotNull(reponse.getString("dossierActionId"))) {
+						//Lưu thông tin thuế
+						callUpdateAPIDossierTax(MaHoSo, HoTenNguoiNopTien, MaSoThue, UrlFileChungTu, MaThongBaoThue, ThoiGianThanhToan, SoTien, NoiDungThanhToan, TrangThaiThanhToan,
+								dossier.getGroupId(), soCMTNguoiNopTien, diaChiNguoiNopTien, tinhNguoiNopTien, huyenNguoiNopTien, xaNguoiNopTien);
 
-					callUpdateAPIDossierTax(MaHoSo, HoTenNguoiNopTien, MaSoThue, UrlFileChungTu, MaThongBaoThue, ThoiGianThanhToan, SoTien, NoiDungThanhToan, TrangThaiThanhToan,
-							dossier.getGroupId(), soCMTNguoiNopTien, diaChiNguoiNopTien, tinhNguoiNopTien, huyenNguoiNopTien, xaNguoiNopTien);
+						_log.info("Cập nhật thông tin thành công: "  + MaHoSo);
 
-					_log.info("Cập nhật thông tin thành công: "  + MaHoSo);
-					return createResponseMessage(result, 0, "Cập nhật thông tin thành công : " + MaHoSo);
+						// Ghi log SyncTracking
+						callPostAPISyncTracking(groupId, MaHoSo, dossier, data.toString(), reponse.toString(), DVCQG_NHAN_CHUNG_TU_THUE);
+						return createResponseMessage(result, 0, "Gửi dữ liệu thành công : " + MaHoSo);
+					}else{
+						// Ghi log SyncTracking
+						callPostAPISyncTracking(groupId, MaHoSo, dossier, data.toString(), reponse.toString(), DVCQG_NHAN_CHUNG_TU_THUE);
+						return createResponseMessage(result, -1, "Hồ sơ: " + MaHoSo + "thực hiện không thành công ");
+					}
 				}else{
-					_log.info("Hồ sơ đã tồn tại trên hệ thống: "  + MaHoSo);
-					return createResponseMessage(result, 1, "Hồ sơ đã tồn tại trên hệ thống: " + MaHoSo);
+					_log.info("Hồ sơ chưa tồn tại trên hệ thống: "  + MaHoSo);
+					return createResponseMessage(result, 1, "Hồ sơ chưa tồn tại trên hệ thống: " + MaHoSo);
 				}
 			}else{
 				_log.info(MaHoSo+" không tồn tại trên hệ thống");
@@ -4334,11 +4359,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	public JSONArray doCrUpDossierThongBaoThueDatDVCQG(Company company, User user, long groupId,
 														ServiceContext serviceContext, JSONObject data, boolean isUpdating) {
 		JSONObject validateResult = JSONFactoryUtil.createJSONObject();
-		JSONArray resultJSON = JSONFactoryUtil.createJSONArray();
+		JSONArray resultArray = JSONFactoryUtil.createJSONArray();
+
 
 		try {
 			_log.debug("Constructor doCrUpDossierThongBaoThueDatDVCQG");
-			if(Validator.isNull(threadPoolExecutor)) {
+			if (Validator.isNull(threadPoolExecutor)) {
 				_log.debug("Creating threadPoolExecutor first time...");
 				threadPoolExecutor = new ThreadPoolExecutor(
 						corePoolSize, // Số thread mặc định được cấp để xử lý request
@@ -4352,8 +4378,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			if (data == null) {
 				_log.error("HSKMBS result: " + "Data empty");
-				resultJSON.put(createResponseMessage(validateResult, -1, "Data empty"));
-				return resultJSON;
+				resultArray.put(createResponseMessage(validateResult, -1, "Data empty"));
+				return resultArray;
 			}
 
 			_log.info("------------ Hồ Sơ Nhận Thông Báo Thuế Đất -------------");
@@ -4362,114 +4388,133 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			if (Validator.isNull(FileThongBaoThue)) {
 				_log.info("HSCTTD data: " + data.toJSONString());
 				_log.info("HSCTTD result: " + "FileThongBaoThue empty");
-				resultJSON.put(createResponseMessage(validateResult, -1, "FileThongBaoThue empty"));
-				return resultJSON;
-			}else{
-				byte[] decodedBytes = Base64.getDecoder().decode(FileThongBaoThue);
-				String xmlFileThongBaoThue = new String(decodedBytes);
-				Document xml = convertStringToXMLDocument(xmlFileThongBaoThue);
+				resultArray.put(createResponseMessage(validateResult, -1, "FileThongBaoThue empty"));
+				return resultArray;
+			} else {
+				if (Counter.getCount() == 0) {
+					byte[] decodedBytes = Base64.getDecoder().decode(FileThongBaoThue);
+					String xmlFileThongBaoThue = new String(decodedBytes);
+					Document xml = convertStringToXMLDocument(xmlFileThongBaoThue);
 
-				NodeList docs = xml.getElementsByTagName("ROW_LIST");
-				Node child;
+					NodeList docs = xml.getElementsByTagName("ROW_LIST");
+					Node child;
 
-				for (int i = 0; i < docs.getLength(); i++) {
-					JSONObject result = JSONFactoryUtil.createJSONObject();
-					JSONArray dossierTaxArr = JSONFactoryUtil.createJSONArray();
-					child = docs.item(i);
-					Element eElement = (Element) child;
-					NodeList subList = eElement.getElementsByTagName("LIST");
-					String dossierNo = eElement.getElementsByTagName("MA_HSO").item(0).getTextContent();
+					for (int i = 0; i < docs.getLength(); i++) {
+						JSONObject result = JSONFactoryUtil.createJSONObject();
+						JSONArray dossierTaxArr = JSONFactoryUtil.createJSONArray();
+						child = docs.item(i);
+						Element eElement = (Element) child;
+						NodeList subList = eElement.getElementsByTagName("LIST");
+						String dossierNo = eElement.getElementsByTagName("MA_HSO").item(0).getTextContent();
 
 
-					for(int j = 0; j <subList.getLength(); j++){
-						JSONObject subObject = JSONFactoryUtil.createJSONObject();
-						subObject.put("MA_HSO", dossierNo);
-						Node subChild = subList.item(j);
-						Element subElement = (Element) subChild;
-						if(Validator.isNotNull(subElement.getElementsByTagName("MA_SO_THUE").item(0).getTextContent())){
-							String maSoThue = subElement.getElementsByTagName("MA_SO_THUE").item(0).getTextContent();
-							subObject.put("MA_SO_THUE", maSoThue);
-						}
-						if(Validator.isNotNull(subElement.getElementsByTagName("SO_QUYET_DINH").item(0).getTextContent())){
-							String soQD = subElement.getElementsByTagName("SO_QUYET_DINH").item(0).getTextContent();
-							subObject.put("SO_QUYET_DINH", soQD);
-						}
-						if(Validator.isNotNull(subElement.getElementsByTagName("NGAY_QUYET_DINH").item(0).getTextContent())){
-							String ngayQD = subElement.getElementsByTagName("NGAY_QUYET_DINH").item(0).getTextContent();
-							subObject.put("NGAY_QUYET_DINH", ngayQD);
-						}
-						if(Validator.isNotNull(subElement.getElementsByTagName("SO_TIEN").item(0))){
-							String soTien = subElement.getElementsByTagName("SO_TIEN").item(0).getTextContent();
-							subObject.put("SO_TIEN", soTien);
-						}
-						if(Validator.isNotNull(subElement.getElementsByTagName("TEN_TIEU_MUC").item(0))){
-							String tenTieuMuc = subElement.getElementsByTagName("TEN_TIEU_MUC").item(0).getTextContent();
-							subObject.put("TEN_TIEU_MUC", tenTieuMuc);
-						}
-						dossierTaxArr.put(subObject);
-					}
-					_log.info("MA_HS: " + dossierNo);
-					_log.debug("dossierTaxArr: " + dossierTaxArr);
+						for (int j = 0; j < subList.getLength(); j++) {
+							JSONObject subObject = JSONFactoryUtil.createJSONObject();
+							subObject.put("MA_HSO", dossierNo);
+							Node subChild = subList.item(j);
+							Element subElement = (Element) subChild;
+							String maSoThue = StringPool.BLANK;
+							String soQD = StringPool.BLANK;
+							if (Validator.isNotNull(subElement.getElementsByTagName(MA_SO_THUE).item(0).getTextContent())) {
+								maSoThue = subElement.getElementsByTagName(MA_SO_THUE).item(0).getTextContent();
+								subObject.put(MA_SO_THUE, maSoThue);
+							}
+							if (Validator.isNotNull(subElement.getElementsByTagName("SO_QUYET_DINH").item(0).getTextContent())) {
+								soQD = subElement.getElementsByTagName("SO_QUYET_DINH").item(0).getTextContent();
+								subObject.put("SO_QUYET_DINH", soQD);
+							}
+							if (Validator.isNotNull(subElement.getElementsByTagName("NGAY_QUYET_DINH").item(0).getTextContent())) {
+								String ngayQD = subElement.getElementsByTagName("NGAY_QUYET_DINH").item(0).getTextContent();
+								subObject.put("NGAY_QUYET_DINH", ngayQD);
+							}
+							if (Validator.isNotNull(subElement.getElementsByTagName("SO_TIEN").item(0))) {
+								String soTien = subElement.getElementsByTagName("SO_TIEN").item(0).getTextContent();
+								subObject.put("SO_TIEN", soTien);
+							}
+							if (Validator.isNotNull(subElement.getElementsByTagName(TEN_TIEU_MUC).item(0))) {
+								String tenTieuMuc = subElement.getElementsByTagName(TEN_TIEU_MUC).item(0).getTextContent();
+								subObject.put(TEN_TIEU_MUC, tenTieuMuc);
+							}
+							_log.info("MA_HS: " + dossierNo);
+							_log.debug("dossierTaxArr: " + dossierTaxArr);
+							_log.debug("subObject: " + subObject);
 
-					Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
+							Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
+							Counter.setCount(1);
+							String dossierTax = getDetailDossierTax(dossierNo, maSoThue, soQD);
+							_log.info("Count : " + Counter.getCount());
+							if (Validator.isNotNull(dossier)) {
+								if (Validator.isNull(dossierTax)) {
+									threadPoolExecutor.execute(() -> mainProcess(groupId, dossier, dossierNo, xmlFileThongBaoThue, subObject, result, resultArray, serviceContext));
+								} else {
+									Counter.decreaseCount();
+									createResponseMessage(result, 1, "Hồ sơ đã tồn tại trên hệ thống : " + dossierNo);
+									resultArray.put(result);
+								}
+							} else {
+								Counter.decreaseCount();
+								createResponseMessage(result, -1, "Hồ sơ: " + dossierNo + "không tồn tại trên hệ thống ");
+								resultArray.put(result);
+							}
 
-					String syncTrackingDetail = getSyncTracking(groupId, dossierNo, DVCQG_THONG_BAO_THUE_DAT);
-					if(Validator.isNotNull(dossier)) {
-						if(Validator.isNull(syncTrackingDetail)) {
-							threadPoolExecutor.execute(() -> mainProcess(groupId, dossier, dossierNo, xmlFileThongBaoThue, dossierTaxArr, serviceContext));
-							createResponseMessage(result, 0,  "Gửi dữ liệu thành công : " +  dossierNo);
-							resultJSON.put(result);
-						}else {
-							createResponseMessage(result, 1,  "Hồ sơ đã tồn tại trên hệ thống : " + dossierNo);
-							resultJSON.put(result);
 						}
-					}else{
-						createResponseMessage(result, -1,  "Hồ sơ: " + dossierNo + "không tồn tại trên hệ thống ");
-						resultJSON.put(result);
 					}
 				}
 			}
-			return resultJSON;
-		}catch (Exception e){
+			_log.info("Count : " + Counter.getCount());
+			int timeWaiting = 0;
+			while (Counter.getCount() != 0 && timeWaiting < 10) {
+				Thread.sleep(1000);
+				timeWaiting ++;
+				_log.info("timeWaiting: " + timeWaiting);
+			}
+		} catch (Exception e) {
 			e.getMessage();
 			_log.error(e);
 		}
-
-		return resultJSON;
+		_log.info("Count Result: " + Counter.getCount());
+		return resultArray;
 	}
 
-	private void mainProcess(long groupId, Dossier dossier, String dossierNo, String xmlFileThongBaoThue, JSONArray dossierTaxArr, ServiceContext context) {
+	private JSONArray mainProcess(long groupId, Dossier dossier, String dossierNo, String xmlFileThongBaoThue, JSONObject subObject, JSONObject result,JSONArray resultArray, ServiceContext context) {
 		try {
 			// doAction
-			JSONObject reponse = doActionPP( dossier, false, context);
+			JSONObject reponse = doAction(dossier, false, context);
+			_log.info("Result : " + dossierNo + "/" + subObject.getString(SO_QUYET_DINH));
+			if(Validator.isNotNull(reponse) && Validator.isNotNull(reponse.getString("dossierActionId"))) {
+				//Lưu thông tin thuế
+				callPostAPIDossierTax(groupId, subObject, dossier, result, resultArray);
+			}else{
+				createResponseMessage(result, -1, "Hồ sơ: " + dossierNo + "thực hiện không thành công ");
+				resultArray.put(result);
+			}
+			_log.info("Count : " + Counter.getCount());
+			_log.info("Result: " + resultArray);
 
 			// Ghi log SyncTracking
 			callPostAPISyncTracking(groupId, dossierNo, dossier, xmlFileThongBaoThue, reponse.toString(), DVCQG_THONG_BAO_THUE_DAT);
-
-			//Lưu thông tin thuế
-			callPostAPIDossierTax(groupId, dossierTaxArr, dossier);
+			Counter.decreaseCount();
 		}catch (Exception e){
 			e.getMessage();
 			_log.info(e);
 		}
+		return resultArray;
 	}
 
-	private String getSyncTracking(long groupId, String dossierNo, String protocol) {
+	private String getDetailDossierTax(String dossierNo, String maSoThue, String soQuyetDinh) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", "*");
-		SyncTrackingInfo body = new SyncTrackingInfo();
+		DossierTaxInfo body = new DossierTaxInfo();
 		try {
 			JSONObject configJson = getServerConfigByServerNo(DossierTerm.API_SYNC_TRACKING,"");
-			String urlCall = configJson.getString(FrequencyOfficeConstants.CONFIG_URL_LOCAL)
-					+ configJson.getString(FrequencyOfficeConstants.CONFIG_GET_SYNC_TRACKING);
+			String urlCall = configJson.getString("urlMC") + configJson.getString(FrequencyOfficeConstants.CONFIG_GET_DOSSIER_TAX);
 			_log.info("Url: " + urlCall);
-			body.groupId = groupId;
 			body.dossierNo = dossierNo;
-			body.protocol = protocol;
-			headers.add("groupId", String.valueOf(body.groupId));
-			HttpEntity<SyncTrackingInfo> entity = new HttpEntity<>(body, headers);
+			body.maSoThue = maSoThue;
+			body.soQuyetDinh = soQuyetDinh;
+			HttpEntity<DossierTaxInfo> entity = new HttpEntity<>(body, headers);
 			ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
-			if(Validator.isNotNull(response.getBody())){
+			if(Validator.isNotNull(response)){
 				return response.getBody();
 			}
 			return null;
@@ -4536,7 +4581,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		body.setHuyenNguoiNopTien(huyenNguoiNopTien);
 		body.setXaNguoiNopTien(xaNguoiNopTien);
 
-		_log.info("body: " + JSONFactoryUtil.looseSerialize(body));
+		_log.debug("body: " + JSONFactoryUtil.looseSerialize(body));
 		headers.add("groupId", String.valueOf(body.groupId));
 		HttpEntity<DossierTaxInfo> entity = new HttpEntity<>(body, headers);
 		ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
@@ -4545,45 +4590,41 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return true;
 	}
 
-	private boolean callPostAPIDossierTax(long groupId, JSONArray dossierTaxArr, Dossier dossier){
+	private boolean callPostAPIDossierTax(long groupId, JSONObject subObject, Dossier dossier, JSONObject result,JSONArray resultArray) {
 		try {
-			JSONObject configJson = getServerConfigByServerNo(DossierTerm.API_SYNC_TRACKING,"");
+			JSONObject configJson = getServerConfigByServerNo(DossierTerm.API_SYNC_TRACKING, "");
 			String urlCall = configJson.getString("urlMC") + configJson.getString("saveDossierTax");
 
-			_log.info("url add DossierTax :" +  urlCall);
+			_log.info("url add DossierTax :" + urlCall);
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Accept", "*");
-			if(dossierTaxArr.length() > 0) {
-				for (int i = 0; i < dossierTaxArr.length(); i++) {
-					JSONObject listJSON = dossierTaxArr.getJSONObject(i);
-					DossierTaxInfo body = new DossierTaxInfo();
+			if (subObject != null) {
+				DossierTaxInfo body = new DossierTaxInfo();
 
-					body.setDossierId(dossier.getDossierId());
-					body.setGroupId(dossier.getGroupId());
-					body.setDossierNo(dossier.getDossierNo());
-					body.setMaSoThue(listJSON.getString("MA_SO_THUE"));
-					body.setSoQuyetDinh(listJSON.getString("SO_QUYET_DINH"));
-					body.setNgayQuyetDinh(listJSON.getString("NGAY_QUYET_DINH"));
-					body.setTenTieuMuc(listJSON.getString("TEN_TIEU_MUC"));
-					body.setSoTien(listJSON.getInt("SO_TIEN"));
-					_log.info("body: " + JSONFactoryUtil.looseSerialize(body));
-					headers.add("groupId", String.valueOf(body.groupId));
-					HttpEntity<DossierTaxInfo> entity = new HttpEntity<>(body, headers);
-					ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
-					_log.info("Response api saving dossierTax: " + response);
-					_log.info("Saved dossierTax!!!");
-				}
-			}else{
-
+				body.setDossierId(dossier.getDossierId());
+				body.setGroupId(dossier.getGroupId());
+				body.setDossierNo(dossier.getDossierNo());
+				body.setMaSoThue(subObject.getString(MA_SO_THUE));
+				body.setSoQuyetDinh(subObject.getString(SO_QUYET_DINH));
+				body.setNgayQuyetDinh(subObject.getString(NGAY_QUYET_DINH));
+				body.setTenTieuMuc(subObject.getString(TEN_TIEU_MUC));
+				body.setSoTien(subObject.getInt(SO_TIEN));
+				headers.add("groupId", String.valueOf(body.groupId));
+				HttpEntity<DossierTaxInfo> entity = new HttpEntity<>(body, headers);
+				ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
+				createResponseMessage(result, 0, "Gửi dữ liệu thành công : " + dossier.getDossierNo() + "/" + subObject.getString(SO_QUYET_DINH));
+				resultArray.put(result);
+				_log.info("Response api saving dossierTax: " + response);
+				_log.info("Saved dossierTax!!!");
 			}
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.getMessage();
 		}
 		return true;
 
 	}
 
-	private JSONObject doActionPP(Dossier dossier, boolean actionCTTD, ServiceContext serviceContext) {
+	private JSONObject doAction(Dossier dossier, boolean actionCTTD, ServiceContext serviceContext) {
 		JSONObject resPostDossier = JSONFactoryUtil.createJSONObject();
 		try {
 

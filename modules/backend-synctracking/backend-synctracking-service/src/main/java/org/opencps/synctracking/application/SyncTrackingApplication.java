@@ -177,6 +177,26 @@ public class SyncTrackingApplication extends Application{
     }
 
     @POST
+    @Path("/getDetailDossierTax")
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response getSynTracking(@HeaderParam("groupId") long groupId, DossierTaxInput input) {
+        try {
+            DossierTaxResponse response = new DossierTaxResponse();
+            response = syncTrackingAction.getDetailDossierTax(input);
+            _log.info("Response: " + JSONFactoryUtil.looseSerialize(response));
+            if(Validator.isNotNull(response.dossierNo)) {
+                return Response.status(200).entity(objectMapper.writeValueAsString(response)).build();
+            }else {
+                return Response.status(200).entity(StringPool.BLANK).build();
+            }
+        } catch (Exception e) {
+            _log.error(e);
+            return Response.status(500).entity("Error").build();
+        }
+    }
+
+    @POST
     @Path("/resend")
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_JSON })
