@@ -22,6 +22,7 @@ import org.opencps.api.controller.DeliverablesManagement;
 import org.opencps.api.controller.util.DeliverableUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.OneGateUtils;
+import org.opencps.api.controller.util.OpenCPSUtils;
 import org.opencps.api.deliverable.model.DeliverableInputModel;
 import org.opencps.api.deliverable.model.DeliverableModel;
 import org.opencps.api.deliverable.model.DeliverableSearchModel;
@@ -76,6 +77,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 	private static Log _log =
 		LogFactoryUtil.getLog(DeliverablesManagementImpl.class);
+	
+	private static final String API_LIST_DELIVERABLE = "API_LIST_DELIVERABLE";
+	private static final String API_VIEW_DELIVERABLE = "API_VIEW_DELIVERABLE";
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -86,6 +90,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 		// TODO
 		BackendAuth auth = new BackendAuthImpl();
+		long groupId =
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		JSONObject bodyResponse = JSONFactoryUtil.createJSONObject();
 
 		try {
 
@@ -97,10 +104,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			if (search.getEnd() == 0) {
 				search.setStart(QueryUtil.ALL_POS);
 				search.setEnd(QueryUtil.ALL_POS);
-			}
-
-			long groupId =
-				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			}			
 
 			// Default sort by modifiedDate
 			String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), Field.MODIFIED_DATE);
@@ -155,6 +159,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			// .addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>)
 			// jsonData.get(ConstantUtils.DATA)));
 			List<Document> docList = (List<Document>) jsonData.get(ConstantUtils.DATA);
+			
 
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
@@ -170,12 +175,25 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				formDataArr.put(formJson);
 			}
 			results.put(ConstantUtils.DATA, formDataArr);
-
+			
+			bodyResponse.put("status", HttpURLConnection.HTTP_OK);
+			bodyResponse.put("total", results.getInt(ConstantUtils.TOTAL));
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_LIST_DELIVERABLE, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 1,
+					JSONFactoryUtil.looseSerialize(search), bodyResponse.toJSONString());
+						
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 			// return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		}
 		catch (Exception e) {
+			
+			bodyResponse.put("status", HttpURLConnection.HTTP_INTERNAL_ERROR);
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_LIST_DELIVERABLE, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					JSONFactoryUtil.looseSerialize(search), bodyResponse.toJSONString());
 			return BusinessExceptionImpl.processException(e);
 		}
 
@@ -236,7 +254,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		// long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -256,10 +274,19 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				throw new Exception();
 			}
 
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_VIEW_DELIVERABLE, user.getUserId(),
+					deliverableInfo.getGroupId(), StringPool.NULL,StringPool.NULL, StringPool.NULL, 1,
+					String.valueOf(id), JSONFactoryUtil.looseSerialize(results));
+			
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_VIEW_DELIVERABLE, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					String.valueOf(id),  StringPool.NULL);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

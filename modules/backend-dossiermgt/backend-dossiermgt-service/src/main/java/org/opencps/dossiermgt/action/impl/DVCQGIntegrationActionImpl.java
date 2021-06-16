@@ -4400,7 +4400,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					Node child;
 
 					for (int i = 0; i < docs.getLength(); i++) {
-						JSONObject result = JSONFactoryUtil.createJSONObject();
 						JSONArray dossierTaxArr = JSONFactoryUtil.createJSONArray();
 						child = docs.item(i);
 						Element eElement = (Element) child;
@@ -4409,6 +4408,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 
 						for (int j = 0; j < subList.getLength(); j++) {
+							JSONObject result = JSONFactoryUtil.createJSONObject();
 							JSONObject subObject = JSONFactoryUtil.createJSONObject();
 							subObject.put("MA_HSO", dossierNo);
 							Node subChild = subList.item(j);
