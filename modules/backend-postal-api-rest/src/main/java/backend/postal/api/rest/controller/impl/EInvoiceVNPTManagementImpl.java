@@ -673,6 +673,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 		XMLInputFactory xif = XMLInputFactory.newFactory();
         StreamSource xml = new StreamSource(new StringReader(input));
         XMLStreamReader xsr = xif.createXMLStreamReader(xml);
+        _log.info("XSR :" + xsr);
         xsr.nextTag();
         while(!xsr.getLocalName().equals(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES)) {
             xsr.nextTag();
@@ -795,8 +796,8 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 			URL url = new URL(urlPath);
 
 			conn = (HttpURLConnection) url.openConnection();
-			conn.setConnectTimeout(3000);
-			conn.setReadTimeout(3000);
+			conn.setConnectTimeout(20000);
+			conn.setReadTimeout(20000);
 			conn.setRequestMethod(httpMethod);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);

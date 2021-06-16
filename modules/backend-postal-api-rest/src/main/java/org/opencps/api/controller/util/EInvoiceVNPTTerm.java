@@ -30,9 +30,9 @@ public class EInvoiceVNPTTerm {
 	public static final String XML_SERIAL = "tem:serial";
 	public static final String XML_CONVERT = "tem:convert";
 	public static final String XML_PASS = "tem:pass";
-	public static final String XML_UserName = "userName";
-	public static final String XML_UserPass = "userPass";
-	public static final String XML_FKEY = "fkey";
+	public static final String XML_UserName = "tem:userName";
+	public static final String XML_UserPass = "tem:userPass";
+	public static final String XML_FKEY = "tem:fkey";
 
 	
 	//api update customer
@@ -62,7 +62,7 @@ public class EInvoiceVNPTTerm {
 	public static final String IMPORTANDPUBLISHINV_RES_MESSAGE_SUCCESS = "Biên lai đã phát hành thành công";
 
 	//api downloadInvPDFFkeyNoPay
-	public static final String DOWNLOADINVPDFFKEYNOPAY = "downloadInvPDFFkeyNoPay";
+	public static final String DOWNLOADINVPDFFKEYNOPAY = "tem:downloadInvPDFFkeyNoPay";
 	public static final String DOWNLOADINVPDFFKEYNOPAY_SOAP_ENDPOINT = 
 			"https://vpboxaydungadmindemo.vnpt-invoice.com.vn/PortalService.asmx?wsdl";
 	public static final String DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION = 
