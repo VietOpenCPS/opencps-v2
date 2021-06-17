@@ -866,7 +866,15 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					JSONArray payments = JSONFactoryUtil.createJSONArray();
 					JSONObject onePayment = JSONFactoryUtil.createJSONObject();
 					onePayment.put("partnerCode", "PAYGOV_DONGTHAP");
-					onePayment.put("trangThai", paymentFile.getPaymentStatus());
+
+					int paymentStatusPaygov = 0;
+					if(Validator.isNotNull(paymentFile.getPaymentStatus())
+							&& paymentFile.getPaymentStatus() == 3) {
+						//da thanh toan
+						paymentStatusPaygov = 1;
+					}
+
+					onePayment.put("trangThai", paymentStatusPaygov);
 					onePayment.put("orderId", unitCode + "-" + dossier.getDossierNo() + "-01");
 					onePayment.put("soTien", paymentFile.getPaymentAmount());
 					onePayment.put("moTa", paymentFile.getPaymentNote());
