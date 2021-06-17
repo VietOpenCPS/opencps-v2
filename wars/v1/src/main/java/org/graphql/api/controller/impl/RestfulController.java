@@ -46,11 +46,14 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -75,6 +78,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -84,6 +88,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.graphql.api.controller.utils.CaptchaServiceSingleton;
 import org.graphql.api.controller.utils.CheckFileUtils;
 import org.graphql.api.controller.utils.DeliverableUtils;
@@ -93,6 +98,8 @@ import org.graphql.api.controller.utils.WebKeys;
 import org.graphql.api.errors.OpenCPSNotFoundException;
 import org.graphql.api.model.FileTemplateMiniItem;
 import org.graphql.api.model.UsersUserItem;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -102,14 +109,17 @@ import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
-import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.DeliverableType;
-import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
+import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 import org.opencps.usermgt.action.impl.UserActions;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.UserRegisterTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
@@ -121,6 +131,7 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.util.LGSPRestfulUtils;
 import org.opencps.usermgt.service.util.SendMailLGSPUtils;
 import org.opencps.usermgt.service.util.ServiceProps;
+import org.osgi.service.component.annotations.Reference;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -280,6 +291,26 @@ public class RestfulController {
 
 		return dataUser.toJSONString();
 	}
+	
+	
+	@RequestMapping(value = "/is-enabled-sso-login", method = RequestMethod.GET, produces = "text/plain; charset=utf-8")
+	public String isEnabledSSOLogin(HttpServletRequest request, HttpServletResponse response) {
+		
+		String isEnabledOpenIdConnect = "/c/opencps/login/openidconnectrequest";
+		
+		long companyId = PortalUtil.getCompanyId(request);
+		
+		OpenIdConnectUtils openIdConnectUtils = new OpenIdConnectUtils();
+		
+		boolean isEnabled =  openIdConnectUtils.isEnabled(companyId);
+		
+		if(isEnabled) {
+			return isEnabledOpenIdConnect;
+		}
+		
+		return null;
+	}
+	
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
 	public String doLogin(HttpServletRequest request, HttpServletResponse response) {
@@ -287,13 +318,12 @@ public class RestfulController {
 		String emailAddress = StringPool.BLANK;
 		String loginMax = PropsUtil.get("opencps.user.login.max");
 		String secretKey = PropsUtil.get("opencps.jwt.secret");
-		String SECRET = Validator.isNotNull(secretKey) ? secretKey : "secret";
 		//Custom login
 		boolean syncUserLGSP = Validator.isNotNull(PropsUtil.get("opencps.register.lgsp"))
 				? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
 
 		try {
-
+			
 			String jCaptchaResponse = request.getParameter("j_captcha_response");
 			_log.info("jCaptchaResponse: "+jCaptchaResponse);
 			if (Validator.isNotNull(jCaptchaResponse)) {
@@ -441,11 +471,12 @@ public class RestfulController {
 								boolean isRequireChangePassword = jsonLogin.getBoolean("isRequireChangePassword");
 
 								if (isRequireChangePassword) {
-									long userId = 0;
+									long userId;
 									try {
 										userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
 												CompanyConstants.AUTH_TYPE_EA);
 									} catch (PortalException e) {
+										_log.error(e);
 										userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
 												CompanyConstants.AUTH_TYPE_EA);
 										//Update applicant
@@ -472,13 +503,6 @@ public class RestfulController {
 										AuthenticatedSessionManagerUtil.login(request, response, email, passKey, false,
 												CompanyConstants.AUTH_TYPE_EA);
 
-										User user = UserLocalServiceUtil.fetchUser(userId);
-//											Algorithm algorithm = Algorithm.HMAC256(SECRET);
-//											String token = JWT.create()
-//													.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
-//													.sign(algorithm);
-//											response.setHeader("jwt-token", token);
-										
 										if (userId != 20139) {
 											_log.info("changeSecrect: OK");
 											response.setStatus(HttpServletResponse.SC_OK);
@@ -550,6 +574,7 @@ public class RestfulController {
 										userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
 												CompanyConstants.AUTH_TYPE_EA);
 									} catch (PortalException e) {
+										_log.error(e);
 										userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
 												CompanyConstants.AUTH_TYPE_EA);
 									}
@@ -981,8 +1006,8 @@ public class RestfulController {
 						Deliverable openCPSDeliverable = DeliverableLocalServiceUtil
 								.fetchDeliverable(Long.valueOf(pk));
 
-						openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
-						//
+//						openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
+						openCPSDeliverable.setFileAttachs(String.valueOf(fileAttach.getFileEntryId()));
 						String formData = openCPSDeliverable.getFormData();
 						if (Validator.isNotNull(formData)) {
 							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
@@ -1482,7 +1507,7 @@ public class RestfulController {
 	public @ResponseBody String getTextFromFileEntryId(HttpServletResponse response,
 			@ApiParam(value = "id của user", required = true) @PathVariable("id") Long id) {
 
-		String result = StringPool.BLANK;
+		String result;
 		response.setContentType("text/plain");
 		response.setCharacterEncoding("UTF-8");
 
@@ -1667,7 +1692,10 @@ public class RestfulController {
 				} else {
 					//DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
 					DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getByTypeCode(type, groupId);
-					
+					//Lấy danh sách deliverable theo deliverableType ==> null ==> lấy theo groupId = 0
+					if(Validator.isNull(deliverableType)){
+						deliverableType = DeliverableTypeLocalServiceUtil.getByTypeCode(type, 0);
+					}
 
 					JSONArray filterData = JSONFactoryUtil.createJSONArray(deliverableType.getDataConfig());
 
@@ -1716,9 +1744,9 @@ public class RestfulController {
 					hits = DeliverableLocalServiceUtil.searchLucene(keySearch, String.valueOf(groupId), type, mapFilter, sorts,
 							start, end, searchContext, userId);
 
-					if (hits != null) {
+					if 	(hits != null) {
 						List<Document> docList = hits.toList();
-						JSONArray data = DeliverableUtils.mappingToDeliverableResult(docList);
+						JSONArray data = DeliverableUtils.mappingToDeliverableResult(docList,userId,groupId);
 						result.put(ConstantUtils.DATA, data);
 						//System.out.println("hits: " + hits.toList());
 						//
@@ -1767,16 +1795,17 @@ public class RestfulController {
 	public String getDeliverableById(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("id") Long id) {
 
-		//JSONObject result = JSONFactoryUtil.createJSONObject();
+		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		try {
-			//long userId = 0;
-			//if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
-				//userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
-
-				//long groupId = 0;
-				//if (Validator.isNotNull(request.getHeader("groupId"))) {
-				//}
+			long userId = 0;
+			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+			}
+				long groupId = 0;
+			if (Validator.isNotNull(request.getHeader("groupId"))) {
+				groupId = Long.valueOf(request.getHeader("groupId"));
+			}
 
 				//JSONObject query = JSONFactoryUtil.createJSONObject(
 				//		" { \"from\" : 0, \"size\" : 1, \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
@@ -1784,8 +1813,32 @@ public class RestfulController {
 				//result = ElasticQueryWrapUtil.query(query.toJSONString());
 
 			Deliverable deliverable = DeliverableLocalServiceUtil.fetchDeliverable(id);
-			if (deliverable != null) {
-				return JSONFactoryUtil.looseSerialize(deliverable);
+			JSONObject jsonObject = DeliverableUtils.mappingToDeliverable(deliverable);
+			DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
+			try {
+				User user = UserLocalServiceUtil.getUser(userId);
+				Long[] longObjects = ArrayUtils.toObject(user.getRoleIds());
+				List<Long> roleIds = Arrays.asList(longObjects);
+				String typeValue = jsonObject.getString(DeliverableTerm.DELIVERABLE_TYPE);
+				if (Validator.isNotNull(typeValue)) {
+					DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(groupId, typeValue);
+					if (Validator.isNotNull(deliverableType)) {
+						List<DeliverableTypeRole> deliverableTypeRoles = actions.getRolesByType(deliverableType.getDeliverableTypeId());
+						if (deliverableTypeRoles != null && deliverableTypeRoles.size() > 0) {
+							for (DeliverableTypeRole deliverableTypeRole : deliverableTypeRoles) {
+								if (roleIds.contains(deliverableTypeRole.getRoleId()) && deliverableTypeRole.getModerator()) {
+										jsonObject.put(DeliverableTerm.MODERATOR, deliverableTypeRole.getModerator());
+								}
+							}
+						}
+					}
+				}
+			}catch (Exception e){
+				_log.error(e);
+			}
+			if (jsonObject != null) {
+				result.put(ConstantUtils.DATA,jsonObject);
+				return JSONFactoryUtil.looseSerialize(result);
 			}
 
 		} catch (Exception e) {
@@ -1928,7 +1981,7 @@ public class RestfulController {
 			return null;
 		}
 		
-	}	
+	}
 
 	public static final Log _log = LogFactoryUtil.getLog(RestfulController.class);
 }

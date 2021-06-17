@@ -142,7 +142,9 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		try {
 			if(Validator.isNotNull(searchGovAgencyCode)) {
 				if (searchGovAgencyCode.equals(DossierTerm._FIRSTSCOPE)) {
-					lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + employeeArr[0]);
+					if(employeeArr != null) {
+						lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + employeeArr[0]);
+					}
 				}else{
 					lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + searchGovAgencyCode);
 				}
@@ -162,9 +164,11 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 				if(searchGovAgencyCode.equals(DossierTerm._FIRSTSCOPE)){
 					if(Validator.isNotNull(employee)){
 //						String[] employeeArr = employee.getScope().split(StringPool.COMMA);
-						tempServiceConfigs = serviceConfigPersistence.findByG_SERVICE_CODE(groupId,employeeArr[0]);
-						cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
-								groupId + employeeArr[0], (Serializable)tempServiceConfigs, ttl);
+						if(employeeArr != null) {
+							tempServiceConfigs = serviceConfigPersistence.findByG_SERVICE_CODE(groupId, employeeArr[0]);
+							cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
+									groupId + employeeArr[0], (Serializable)tempServiceConfigs, ttl);
+						}
 					}
 				}else{
 					if(Validator.isNotNull(employee)){
@@ -179,7 +183,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 				cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
 						groupId + StringPool.BLANK, (Serializable)tempServiceConfigs, ttl);
 			}
-			return tempServiceConfigs;
+			return tempServiceConfigs;		
 		}
 	}
 
@@ -652,6 +656,10 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 	public List<ServiceConfig> getByGovAgencyCode(String govAgencyCode) {
 		return serviceConfigPersistence.findByF_GAC(govAgencyCode);
+	}
+
+	public ServiceConfig fetchByGID_SI_GOV_LEVEL(long groupId, long serviceInfo, String govAgencyCode, int serviceLevel) {
+		return serviceConfigPersistence.fetchByGID_SI_GOV_LEVEL(groupId,serviceInfo,govAgencyCode,serviceLevel);
 	}
 
 	public List<ServiceConfig> getByLevel(long groupId, int level) {

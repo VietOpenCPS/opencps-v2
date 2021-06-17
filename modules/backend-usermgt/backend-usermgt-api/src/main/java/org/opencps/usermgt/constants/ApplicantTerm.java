@@ -75,4 +75,9 @@ public class ApplicantTerm {
 	public static final String CREATE_DATE = "createDate";
 	public static final String HOUR_START = "000000";
 	public static final String HOUR_END = "235959";
+	public static final String SERVER_PROTOCOL = "SYNC_APPLICANT";
+	public static final String URL_SYNC = "url";
+	public static final String PASSWORD = "password";
+	public static final long GROUP_ID_DEFAULT = 0L;
+	public static final String APPLICANT = "APPLICANT";
 }

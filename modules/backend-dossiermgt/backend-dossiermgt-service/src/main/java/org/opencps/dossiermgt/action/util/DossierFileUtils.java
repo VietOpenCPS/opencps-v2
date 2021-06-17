@@ -43,12 +43,23 @@ public class DossierFileUtils {
 		return inputStream;
 	}
 
+	public static String fileToBase64(File file) throws Exception{
+		try {
+			byte[] bytes = Base64.getEncoder().encode(Files.readAllBytes(file.toPath()));
+			return new String(bytes);
+		} catch (Exception e) {
+			_log.error(e);
+			throw new Exception(e.getMessage());
+		}
+	}
+
 	public static File urlDownloadToFile(String url) throws Exception{
 		InputStream inputStream = null;
 		try {
 			inputStream = new URL(url).openStream();
 			return FileUtil.createTempFile(inputStream);
 		} catch (Exception e) {
+			_log.error(e);
 			throw new Exception(e.getMessage());
 		} finally {
 			if (inputStream != null) {

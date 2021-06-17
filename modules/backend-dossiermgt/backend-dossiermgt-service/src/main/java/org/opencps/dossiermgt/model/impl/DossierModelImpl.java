@@ -173,7 +173,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			{ "postalCodeSend", Types.VARCHAR },
 			{ "postalCodeReceived", Types.VARCHAR },
 			{ "lastReceiveDate", Types.TIMESTAMP },
-			{ "lastSendDate", Types.TIMESTAMP }
+			{ "lastSendDate", Types.TIMESTAMP },
+			{ "serviceLevel", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -284,9 +285,10 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		TABLE_COLUMNS_MAP.put("postalCodeReceived", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("lastReceiveDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("lastSendDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("serviceLevel", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossier (uuid_ VARCHAR(75) null,dossierId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,referenceUid VARCHAR(255) null,counter LONG,registerBookCode VARCHAR(100) null,registerBookName VARCHAR(1024) null,dossierRegister VARCHAR(255) null,processNo VARCHAR(128) null,serviceCode VARCHAR(128) null,serviceName TEXT null,govAgencyCode VARCHAR(128) null,govAgencyName VARCHAR(512) null,applicantName VARCHAR(500) null,applicantIdType VARCHAR(128) null,applicantIdNo VARCHAR(128) null,applicantIdDate DATE null,address TEXT null,cityCode VARCHAR(128) null,cityName VARCHAR(255) null,districtCode VARCHAR(128) null,districtName VARCHAR(512) null,wardCode VARCHAR(128) null,wardName VARCHAR(512) null,contactName TEXT null,contactTelNo VARCHAR(128) null,contactEmail VARCHAR(255) null,delegateType INTEGER,delegateName VARCHAR(512) null,delegateIdNo VARCHAR(128) null,delegateTelNo VARCHAR(128) null,delegateEmail VARCHAR(255) null,delegateAddress TEXT null,delegateCityCode VARCHAR(128) null,delegateCityName VARCHAR(512) null,delegateDistrictCode VARCHAR(128) null,delegateDistrictName VARCHAR(512) null,delegateWardCode VARCHAR(128) null,delegateWardName VARCHAR(512) null,documentNo VARCHAR(255) null,documentDate DATE null,dossierTemplateNo VARCHAR(128) null,dossierTemplateName TEXT null,dossierNote TEXT null,submissionNote TEXT null,applicantNote TEXT null,briefNote TEXT null,dossierNo VARCHAR(255) null,submitting BOOLEAN,processDate DATE null,submitDate DATE null,receiveDate DATE null,dueDate DATE null,extendDate DATE null,releaseDate DATE null,finishDate DATE null,cancellingDate DATE null,correcttingDate DATE null,dossierStatus VARCHAR(255) null,dossierStatusText TEXT null,dossierSubStatus VARCHAR(128) null,dossierSubStatusText TEXT null,folderId LONG,dossierActionId LONG,viaPostal INTEGER,postalServiceCode VARCHAR(255) null,postalServiceName VARCHAR(1024) null,postalAddress TEXT null,postalCityCode VARCHAR(255) null,postalCityName VARCHAR(512) null,postalDistrictCode VARCHAR(255) null,postalDistrictName VARCHAR(512) null,postalWardCode VARCHAR(255) null,postalWardName VARCHAR(512) null,postalTelNo VARCHAR(128) null,password_ VARCHAR(75) null,notification BOOLEAN,online_ BOOLEAN,original BOOLEAN,serverNo VARCHAR(255) null,endorsementDate DATE null,lockState VARCHAR(200) null,originality INTEGER,originDossierId LONG,sampleCount LONG,durationUnit INTEGER,durationCount DOUBLE,dossierName VARCHAR(1000) null,originDossierNo VARCHAR(255) null,groupDossierId VARCHAR(75) null,metaData TEXT null,systemId INTEGER,dossierCounter VARCHAR(128) null,vnpostalStatus INTEGER,vnpostalProfile TEXT null,fromViaPostal INTEGER,multipleCheck VARCHAR(75) null,postalCodeSend VARCHAR(75) null,postalCodeReceived VARCHAR(75) null,lastReceiveDate DATE null,lastSendDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossier (uuid_ VARCHAR(75) null,dossierId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,referenceUid VARCHAR(255) null,counter LONG,registerBookCode VARCHAR(100) null,registerBookName VARCHAR(1024) null,dossierRegister VARCHAR(255) null,processNo VARCHAR(128) null,serviceCode VARCHAR(128) null,serviceName TEXT null,govAgencyCode VARCHAR(128) null,govAgencyName VARCHAR(512) null,applicantName VARCHAR(500) null,applicantIdType VARCHAR(128) null,applicantIdNo VARCHAR(128) null,applicantIdDate DATE null,address TEXT null,cityCode VARCHAR(128) null,cityName VARCHAR(255) null,districtCode VARCHAR(128) null,districtName VARCHAR(512) null,wardCode VARCHAR(128) null,wardName VARCHAR(512) null,contactName TEXT null,contactTelNo VARCHAR(128) null,contactEmail VARCHAR(255) null,delegateType INTEGER,delegateName VARCHAR(512) null,delegateIdNo VARCHAR(128) null,delegateTelNo VARCHAR(128) null,delegateEmail VARCHAR(255) null,delegateAddress TEXT null,delegateCityCode VARCHAR(128) null,delegateCityName VARCHAR(512) null,delegateDistrictCode VARCHAR(128) null,delegateDistrictName VARCHAR(512) null,delegateWardCode VARCHAR(128) null,delegateWardName VARCHAR(512) null,documentNo VARCHAR(255) null,documentDate DATE null,dossierTemplateNo VARCHAR(128) null,dossierTemplateName TEXT null,dossierNote TEXT null,submissionNote TEXT null,applicantNote TEXT null,briefNote TEXT null,dossierNo VARCHAR(255) null,submitting BOOLEAN,processDate DATE null,submitDate DATE null,receiveDate DATE null,dueDate DATE null,extendDate DATE null,releaseDate DATE null,finishDate DATE null,cancellingDate DATE null,correcttingDate DATE null,dossierStatus VARCHAR(255) null,dossierStatusText TEXT null,dossierSubStatus VARCHAR(128) null,dossierSubStatusText TEXT null,folderId LONG,dossierActionId LONG,viaPostal INTEGER,postalServiceCode VARCHAR(255) null,postalServiceName VARCHAR(1024) null,postalAddress TEXT null,postalCityCode VARCHAR(255) null,postalCityName VARCHAR(512) null,postalDistrictCode VARCHAR(255) null,postalDistrictName VARCHAR(512) null,postalWardCode VARCHAR(255) null,postalWardName VARCHAR(512) null,postalTelNo VARCHAR(128) null,password_ VARCHAR(75) null,notification BOOLEAN,online_ BOOLEAN,original BOOLEAN,serverNo VARCHAR(255) null,endorsementDate DATE null,lockState VARCHAR(200) null,originality INTEGER,originDossierId LONG,sampleCount LONG,durationUnit INTEGER,durationCount DOUBLE,dossierName VARCHAR(1000) null,originDossierNo VARCHAR(255) null,groupDossierId VARCHAR(75) null,metaData TEXT null,systemId INTEGER,dossierCounter VARCHAR(128) null,vnpostalStatus INTEGER,vnpostalProfile TEXT null,fromViaPostal INTEGER,multipleCheck VARCHAR(75) null,postalCodeSend VARCHAR(75) null,postalCodeReceived VARCHAR(75) null,lastReceiveDate DATE null,lastSendDate DATE null,serviceLevel INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossier";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossier.dossierId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossier.dossierId ASC";
@@ -322,11 +324,12 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	public static final long POSTALCODESEND_COLUMN_BITMASK = 131072L;
 	public static final long PROCESSNO_COLUMN_BITMASK = 262144L;
 	public static final long REFERENCEUID_COLUMN_BITMASK = 524288L;
-	public static final long SERVICECODE_COLUMN_BITMASK = 1048576L;
-	public static final long USERID_COLUMN_BITMASK = 2097152L;
-	public static final long UUID_COLUMN_BITMASK = 4194304L;
-	public static final long VIAPOSTAL_COLUMN_BITMASK = 8388608L;
-	public static final long VNPOSTALSTATUS_COLUMN_BITMASK = 16777216L;
+	public static final long SERVERNO_COLUMN_BITMASK = 1048576L;
+	public static final long SERVICECODE_COLUMN_BITMASK = 2097152L;
+	public static final long USERID_COLUMN_BITMASK = 4194304L;
+	public static final long UUID_COLUMN_BITMASK = 8388608L;
+	public static final long VIAPOSTAL_COLUMN_BITMASK = 16777216L;
+	public static final long VNPOSTALSTATUS_COLUMN_BITMASK = 33554432L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.Dossier"));
 
@@ -473,6 +476,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		attributes.put("postalCodeReceived", getPostalCodeReceived());
 		attributes.put("lastReceiveDate", getLastReceiveDate());
 		attributes.put("lastSendDate", getLastSendDate());
+		attributes.put("serviceLevel", getServiceLevel());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -1120,6 +1124,12 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 		if (lastSendDate != null) {
 			setLastSendDate(lastSendDate);
+		}
+
+		Integer serviceLevel = (Integer)attributes.get("serviceLevel");
+
+		if (serviceLevel != null) {
+			setServiceLevel(serviceLevel);
 		}
 	}
 
@@ -2487,7 +2497,17 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public void setServerNo(String serverNo) {
+		_columnBitmask |= SERVERNO_COLUMN_BITMASK;
+
+		if (_originalServerNo == null) {
+			_originalServerNo = _serverNo;
+		}
+
 		_serverNo = serverNo;
+	}
+
+	public String getOriginalServerNo() {
+		return GetterUtil.getString(_originalServerNo);
 	}
 
 	@Override
@@ -2837,6 +2857,16 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	}
 
 	@Override
+	public int getServiceLevel() {
+		return _serviceLevel;
+	}
+
+	@Override
+	public void setServiceLevel(int serviceLevel) {
+		_serviceLevel = serviceLevel;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Dossier.class.getName()));
@@ -2979,6 +3009,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		dossierImpl.setPostalCodeReceived(getPostalCodeReceived());
 		dossierImpl.setLastReceiveDate(getLastReceiveDate());
 		dossierImpl.setLastSendDate(getLastSendDate());
+		dossierImpl.setServiceLevel(getServiceLevel());
 
 		dossierImpl.resetOriginalValues();
 
@@ -3088,6 +3119,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		dossierModelImpl._originalViaPostal = dossierModelImpl._viaPostal;
 
 		dossierModelImpl._setOriginalViaPostal = false;
+
+		dossierModelImpl._originalServerNo = dossierModelImpl._serverNo;
 
 		dossierModelImpl._originalOriginality = dossierModelImpl._originality;
 
@@ -3860,12 +3893,14 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			dossierCacheModel.lastSendDate = Long.MIN_VALUE;
 		}
 
+		dossierCacheModel.serviceLevel = getServiceLevel();
+
 		return dossierCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(213);
+		StringBundler sb = new StringBundler(215);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -4079,6 +4114,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		sb.append(getLastReceiveDate());
 		sb.append(", lastSendDate=");
 		sb.append(getLastSendDate());
+		sb.append(", serviceLevel=");
+		sb.append(getServiceLevel());
 		sb.append("}");
 
 		return sb.toString();
@@ -4086,7 +4123,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(322);
+		StringBundler sb = new StringBundler(325);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.Dossier");
@@ -4516,6 +4553,10 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			"<column><column-name>lastSendDate</column-name><column-value><![CDATA[");
 		sb.append(getLastSendDate());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>serviceLevel</column-name><column-value><![CDATA[");
+		sb.append(getServiceLevel());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -4635,6 +4676,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private boolean _online;
 	private boolean _original;
 	private String _serverNo;
+	private String _originalServerNo;
 	private Date _endorsementDate;
 	private String _lockState;
 	private int _originality;
@@ -4667,6 +4709,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private String _originalPostalCodeReceived;
 	private Date _lastReceiveDate;
 	private Date _lastSendDate;
+	private int _serviceLevel;
 	private long _columnBitmask;
 	private Dossier _escapedModel;
 }

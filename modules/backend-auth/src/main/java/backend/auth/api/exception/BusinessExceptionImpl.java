@@ -15,33 +15,34 @@ public class BusinessExceptionImpl {
 	private static Log _log = LogFactoryUtil.getLog(BusinessExceptionImpl.class);
 
 	public static Response processException(Exception e) {
-		_log.debug(e);
-//		_log.error(e);
+		_log.error(e);
+		try {
+			ErrorMsgModel error = new ErrorMsgModel();
 
-		ErrorMsgModel error = new ErrorMsgModel();
-
-		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
-			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
-
-			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		} else {
-			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
+			if (e instanceof UnauthenticationException) {
+				error.setMessage("Non-Authoritative Information.");
 				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
+				error.setDescription("Non-Authoritative Information.");
 
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
-
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 			} else {
-				error.setMessage("No Content.");
-				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription(e.getMessage());
-//				e.printStackTrace();
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+				if (e instanceof UnauthorizationException) {
+					error.setMessage("Unauthorized.");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Unauthorized.");
+
+					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
+
+				} else {
+					error.setMessage("No Content.");
+					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+					error.setDescription(e.getMessage());
+					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+				}
 			}
+		}catch (Exception exception) {
+			_log.error(exception);
+			return null;
 		}
 	}
-
 }

@@ -15,9 +15,12 @@
 package org.opencps.statistic.service.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.OrderFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -35,6 +38,7 @@ import java.util.Map;
 import org.opencps.statistic.dto.DossierStatisticData;
 import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
+import org.opencps.statistic.model.impl.OpencpsDossierStatisticImpl;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.opencps.statistic.service.base.OpencpsDossierStatisticLocalServiceBaseImpl;
 
@@ -377,7 +381,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 	}
 	
 	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode, int month, int year) throws NoSuchOpencpsDossierStatisticException {
-		opencpsDossierStatisticPersistence.removeByG_D_M_Y(groupId, domainCode, month, year);
+//		opencpsDossierStatisticPersistence.removeByG_D_M_Y(groupId, domainCode, month, year);
 	}
 	
 	public void removeDossierStatisticByMonthYear(long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
@@ -1153,6 +1157,8 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			int receiveDossierSatCount = dossierObj.has("receiveDossierSatCount") ? dossierObj.getInt("receiveDossierSatCount") : 0;
 			int releaseDossierSatCount = dossierObj.has("releaseDossierSatCount") ? dossierObj.getInt("releaseDossierSatCount") : 0;
 			int fromViaPostalCount = dossierObj.has("fromViaPostalCount") ? dossierObj.getInt("fromViaPostalCount") : 0;
+			int processingInAPeriodCount = dossierObj.has("processingInAPeriodCount") ? dossierObj.getInt("processingInAPeriodCount") : 0;
+			int releaseInAPeriodCount = dossierObj.has("releaseInAPeriodCount") ? dossierObj.getInt("releaseInAPeriodCount") : 0;
 			//Check record exit
 			OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsitSystem(groupId,
 					month, year, govAgencyCode, domainCode, system, groupGovAgencyCode);
@@ -1209,7 +1215,8 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
 				dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);		
 				dossierStatistic.setGroupAgencyCode(groupGovAgencyCode);
-				
+				dossierStatistic.setProcessingInAPeriodCount(processingInAPeriodCount);
+				dossierStatistic.setReleaseInAPeriodCount(releaseInAPeriodCount);
 //				lstStatistics.add(dossierStatistic);
 			} else {
 				if (dossierStatistic.getReporting() == 0) {
@@ -1257,6 +1264,8 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 					dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
 					dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);		
 					dossierStatistic.setGroupAgencyCode(groupGovAgencyCode);
+					dossierStatistic.setProcessingInAPeriodCount(processingInAPeriodCount);
+					dossierStatistic.setReleaseInAPeriodCount(releaseInAPeriodCount);
 				}
 			}
 
@@ -1266,11 +1275,11 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			}
 
 			dossierStatistic.setOntimePercentage(ontimePercent);
-			dossierStatistic = opencpsDossierStatisticPersistence.update(dossierStatistic);
+			opencpsDossierStatisticPersistence.update(dossierStatistic);
 			
 		}
 		long endTime = System.currentTimeMillis();
-		_log.debug("UPDATE BATCH DOSSIER STATISTIC: " + (endTime - startTime) / 1000.0);		
+		_log.debug("UPDATE BATCH DOSSIER STATISTIC: " + (endTime - startTime) / 1000.0);			
 	}
 	
 	public List<OpencpsDossierStatistic> findByG_NM_Y(long groupId, int notMonth, int year) {
@@ -1295,13 +1304,286 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			String govAgencyCode, String domainCode, String groupAgencyCode, String system) {
 		return opencpsDossierStatisticPersistence.findByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year, govAgencyCode, domainCode, groupAgencyCode, system);
 	}
+	
+	public List<OpencpsDossierStatistic> getByG_M_Y_GOV_DOM_GRO_NOT_SYS(long groupId, int month, int year,
+			String govAgencyCode, String domainCode, String groupAgencyCode, String system) {
+		return opencpsDossierStatisticPersistence.findByG_M_Y_GOV_DOM_GRO_NOT_SYS(groupId, month, year, govAgencyCode, domainCode, groupAgencyCode, system);
+	}
+	
+	public List<OpencpsDossierStatistic> getByG_M_Y_GOV_DOM_GRO_SYS(long groupId, int month, int year,
+			String govAgencyCode, String domainCode, String groupAgencyCode, String system) {
+		return opencpsDossierStatisticPersistence.findByG_M_Y_GOV_DOM_GRO_SYS(groupId, month, year, govAgencyCode, domainCode, groupAgencyCode, system);
+	}
 
 	public List<OpencpsDossierStatistic> getByG_Y_GO_DO_GR_SY(long groupId, int year, String[] groupAgencyArr,
 			String domainCode, String groupAgency, String system) {
 		return opencpsDossierStatisticPersistence.findByG_Y_GO_DO_GR_SY(groupId, year, groupAgencyArr, domainCode,
 				groupAgency, system);
 	}
+	
+	public OpencpsDossierStatistic getUniqueByGovMonthYearSystem(long groupId, String govAgencyCode, int month, int year,String system)
+			throws PortalException, SystemException {
+		
+		OpencpsDossierStatistic opencpsDossierStatistic = null;
+		
+		try {
+		
+			opencpsDossierStatistic = opencpsDossierStatisticPersistence.findByGID_M_Y_GAC_S(groupId, govAgencyCode, month, year,system);
+		
+		}catch(Exception e) {
+			
+			if(e instanceof NoSuchOpencpsDossierStatisticException) {
+				_log.warn(e.getMessage());
+			}else {
+				_log.error(e);
+			}
+		}
+		
+		return opencpsDossierStatistic;
+	}
+	
+	public OpencpsDossierStatistic createUniqueByGovMonthYearSystem(long companyId, long groupId, String govAgencyCode,String govAgencyName, int month, int year,String system)
+			throws PortalException, SystemException {
+		
+		OpencpsDossierStatistic opencpsDossierStatistic = opencpsDossierStatisticLocalService.getUniqueByGovMonthYearSystem(groupId, govAgencyCode, month, year,system);
+		
+		if (Validator.isNull(opencpsDossierStatistic)) {
 
+			long dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
+			opencpsDossierStatistic = opencpsDossierStatisticLocalService
+					.createOpencpsDossierStatistic(dossierStatisticId);
+
+			opencpsDossierStatistic.setCompanyId(companyId);
+			opencpsDossierStatistic.setGroupId(groupId);
+			opencpsDossierStatistic.setCreateDate(new Date());
+			opencpsDossierStatistic.setModifiedDate(new Date());
+			opencpsDossierStatistic.setUserId(-1);
+			opencpsDossierStatistic.setUserName("ADM");
+			opencpsDossierStatistic.setMonth(month);
+			opencpsDossierStatistic.setYear(year);
+			opencpsDossierStatistic.setGovAgencyCode(govAgencyCode);
+			opencpsDossierStatistic.setGovAgencyName(govAgencyName);
+			opencpsDossierStatistic.setSystem(system);
+
+			opencpsDossierStatisticLocalService.updateDossierStatistic(opencpsDossierStatistic);
+
+		}
+		
+		return opencpsDossierStatistic;
+	}
+
+	public OpencpsDossierStatistic getUniqueByMonthYearDomainSystem(long groupId,int month, int year,String domainCode, String system) {
+		
+		OpencpsDossierStatistic opencpsDossierStatistic = null;
+				
+		try {
+			opencpsDossierStatistic = opencpsDossierStatisticPersistence.fetchByGID_M_Y_S_DC(groupId, month, year, system,domainCode);
+		}catch(Exception e) {
+			if(e instanceof NoSuchOpencpsDossierStatisticException) {
+				_log.warn(e.getMessage());
+			}else {
+				_log.error(e);
+			}
+		}
+		
+		return opencpsDossierStatistic;
+	}
+	
+	public OpencpsDossierStatistic createUniqueByMonthYearDomainSystem(long companyId,long groupId,int month, int year,String domainCode,String domainName, String system) {
+		
+		OpencpsDossierStatistic opencpsDossierStatistic = opencpsDossierStatisticLocalService.getUniqueByMonthYearDomainSystem(groupId, month, year, domainCode,system);
+		
+		if (Validator.isNull(opencpsDossierStatistic)) {
+
+			long dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
+			opencpsDossierStatistic = opencpsDossierStatisticLocalService
+					.createOpencpsDossierStatistic(dossierStatisticId);
+
+			opencpsDossierStatistic.setCompanyId(companyId);
+			opencpsDossierStatistic.setGroupId(groupId);
+			opencpsDossierStatistic.setCreateDate(new Date());
+			opencpsDossierStatistic.setModifiedDate(new Date());
+			opencpsDossierStatistic.setUserId(-1);
+			opencpsDossierStatistic.setUserName("ADM");
+			opencpsDossierStatistic.setMonth(month);
+			opencpsDossierStatistic.setYear(year);
+			opencpsDossierStatistic.setDomainCode(domainCode);
+			opencpsDossierStatistic.setDomainName(domainName);
+			opencpsDossierStatistic.setSystem(system);
+
+			opencpsDossierStatisticLocalService.updateDossierStatistic(opencpsDossierStatistic);
+
+		}
+		
+		return opencpsDossierStatistic;
+	}
+	
+	public OpencpsDossierStatistic getUniqueByGovMonthYearNonSystem(long groupId, String govAgencyCode, int month, int year)
+		{
+		
+		OpencpsDossierStatistic opencpsDossierStatistic = null;
+		
+		try {
+		
+			opencpsDossierStatistic = opencpsDossierStatisticPersistence.findByGID_M_Y_GAC(groupId, govAgencyCode, month, year);
+		
+		}catch(Exception e) {
+			if(e instanceof NoSuchOpencpsDossierStatisticException) {
+				_log.warn(e.getMessage());
+			}else {
+				_log.error(e);
+			}
+		}
+		
+		return opencpsDossierStatistic;
+	}
+	
+	public OpencpsDossierStatistic createUniqueByGovMonthYearNonSystem(long companyId, long groupId,
+			String govAgencyCode, String govAgencyName, int month, int year) {
+
+		OpencpsDossierStatistic opencpsDossierStatistic = opencpsDossierStatisticLocalService
+				.getUniqueByGovMonthYearNonSystem(groupId, govAgencyCode, month, year);
+
+		if (Validator.isNull(opencpsDossierStatistic)) {
+
+			long dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
+			opencpsDossierStatistic = opencpsDossierStatisticLocalService
+					.createOpencpsDossierStatistic(dossierStatisticId);
+
+			opencpsDossierStatistic.setCompanyId(companyId);
+			opencpsDossierStatistic.setGroupId(groupId);
+			opencpsDossierStatistic.setCreateDate(new Date());
+			opencpsDossierStatistic.setModifiedDate(new Date());
+			opencpsDossierStatistic.setUserId(-1);
+			opencpsDossierStatistic.setUserName("ADM");
+			opencpsDossierStatistic.setMonth(month);
+			opencpsDossierStatistic.setYear(year);
+			opencpsDossierStatistic.setGovAgencyCode(govAgencyCode);
+			opencpsDossierStatistic.setGovAgencyName(govAgencyName);
+
+			opencpsDossierStatisticLocalService.updateDossierStatistic(opencpsDossierStatistic);
+
+		}
+
+		return opencpsDossierStatistic;
+	}
+
+	public OpencpsDossierStatistic getUniqueByMonthYearDomainNonSystem(long groupId,int month, int year,String domainCode) {
+		
+		OpencpsDossierStatistic opencpsDossierStatistic = null;
+				
+		try {
+			opencpsDossierStatistic = opencpsDossierStatisticPersistence.fetchByGID_M_Y_DC(groupId, month, year, domainCode);
+		}catch(Exception e) {
+			if(e instanceof NoSuchOpencpsDossierStatisticException) {
+				_log.warn(e.getMessage());
+			}else {
+				_log.error(e);
+			}
+		}
+		
+		return opencpsDossierStatistic;
+	}
+	
+	public OpencpsDossierStatistic createUniqueByMonthYearDomainNonSystem(long companyId,long groupId,int month, int year,String domainCode,String domainName) {
+		
+		OpencpsDossierStatistic opencpsDossierStatistic = opencpsDossierStatisticLocalService.getUniqueByMonthYearDomainNonSystem(groupId, month, year, domainCode);
+		
+		if(Validator.isNull(opencpsDossierStatistic)) {
+			
+			long dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
+			opencpsDossierStatistic = opencpsDossierStatisticLocalService
+					.createOpencpsDossierStatistic(dossierStatisticId);
+
+			opencpsDossierStatistic.setCompanyId(companyId);
+			opencpsDossierStatistic.setGroupId(groupId);
+			opencpsDossierStatistic.setCreateDate(new Date());
+			opencpsDossierStatistic.setModifiedDate(new Date());
+			opencpsDossierStatistic.setUserId(-1);
+			opencpsDossierStatistic.setUserName("ADM");
+			opencpsDossierStatistic.setMonth(month);
+			opencpsDossierStatistic.setYear(year);
+			opencpsDossierStatistic.setDomainCode(domainCode);
+			opencpsDossierStatistic.setDomainName(domainName);
+
+			opencpsDossierStatisticLocalService.updateDossierStatistic(opencpsDossierStatistic);
+		}
+		
+		
+		return opencpsDossierStatistic;
+	}
+	
+	public List<OpencpsDossierStatistic> getGovAgencyCodes(){
+		
+		DynamicQuery pushStatisticsLogQuery = opencpsDossierStatisticLocalService.dynamicQuery();
+		
+		pushStatisticsLogQuery.add(PropertyFactoryUtil.forName("govAgencyCode").isNotNull());
+		pushStatisticsLogQuery.addOrder(OrderFactoryUtil.asc("createDate"));
+		pushStatisticsLogQuery.setProjection(ProjectionFactoryUtil.projectionList()
+				.add(PropertyFactoryUtil.forName("govAgencyCode").group())
+				.add(PropertyFactoryUtil.forName("govAgencyName")));
+		
+		List<OpencpsDossierStatistic> listStatisticLog  = new ArrayList<OpencpsDossierStatistic>();
+		List<Object[]> objects = opencpsDossierStatisticLocalService.dynamicQuery(pushStatisticsLogQuery);
+		
+		for(Object[] object: objects){
+			_log.debug(object[0]+":"+object[1]);
+			
+			OpencpsDossierStatistic opencpsDossierStatistic = new OpencpsDossierStatisticImpl();
+			opencpsDossierStatistic.setGovAgencyCode(GetterUtil.getString(object[0]));
+			opencpsDossierStatistic.setGovAgencyName(GetterUtil.getString(object[1]));
+			
+			listStatisticLog.add(opencpsDossierStatistic);
+		}
+
+		
+		
+		for(OpencpsDossierStatistic opencpsDossierStatistic:listStatisticLog) {
+			 _log.debug("+++opencpsDossierStatistic.getGovAgencyCode():"+opencpsDossierStatistic.getGovAgencyCode());
+		}
+		
+		return listStatisticLog;
+	}
+	
+	public List<OpencpsDossierStatistic> getDomainCodes(){
+		
+		DynamicQuery pushStatisticsLogQuery = opencpsDossierStatisticLocalService.dynamicQuery();
+		
+		pushStatisticsLogQuery.add(PropertyFactoryUtil.forName("domainCode").isNotNull());
+		pushStatisticsLogQuery.addOrder(OrderFactoryUtil.asc("createDate"));
+		pushStatisticsLogQuery.setProjection(ProjectionFactoryUtil.projectionList()
+				.add(PropertyFactoryUtil.forName("domainCode").group())
+				.add(PropertyFactoryUtil.forName("domainName")));
+
+		List<OpencpsDossierStatistic> listStatisticLog  = new ArrayList<OpencpsDossierStatistic>();
+		List<Object[]> objects = opencpsDossierStatisticLocalService.dynamicQuery(pushStatisticsLogQuery);
+		
+		for(Object[] object: objects){
+			_log.debug(object[0]+":"+object[1]);
+			
+			OpencpsDossierStatistic opencpsDossierStatistic = new OpencpsDossierStatisticImpl();
+			opencpsDossierStatistic.setDomainCode(GetterUtil.getString(object[0]));
+			opencpsDossierStatistic.setDomainName(GetterUtil.getString(object[1]));
+			
+			listStatisticLog.add(opencpsDossierStatistic);
+		}
+		for(OpencpsDossierStatistic opencpsDossierStatistic:listStatisticLog) {
+			 _log.debug("+++opencpsDossierStatistic.getDomainCode():"+opencpsDossierStatistic.getDomainCode());
+		}
+		
+		return listStatisticLog;
+	}
+	
+	public List<OpencpsDossierStatistic> findByMonthYearREPO_ARR(int[] months, int[] years, int[] reportings) {
+		return opencpsDossierStatisticPersistence.findByF_M_Y_REPO(months, years, reportings);
+	}
+	
+	public List<OpencpsDossierStatistic> findByYearREPO_ARR(int[] years, int[] reportings) {
+		return opencpsDossierStatisticPersistence.findByF_Y_REPO(years, reportings);
+	}
+	
 	private Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticLocalServiceImpl.class);
+
+
 
 }

@@ -107,7 +107,7 @@ public interface PaymentFileManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
-			@QueryParam("secretCode") String secretCode);
+			@QueryParam("secretCode") String secretCode, @QueryParam("unit") String unit);
 
 	//4
 	/* Get info epaymentProfile - START */

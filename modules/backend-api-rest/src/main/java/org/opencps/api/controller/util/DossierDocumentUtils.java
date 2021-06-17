@@ -72,6 +72,7 @@ public class DossierDocumentUtils {
 	private static final String BN_TELEPHONE = "BN_telephone";
 	private static final String BN_ADDRESS = "BN_address";
 	private static final String BN_EMAIL = "BN_email";
+	private static final Integer DOSSIER_MARK_COUNT_DEFAULT = 1;
 
 	//LamTV_ Mapping process dossier and formData
 	public static JSONObject processMergeDossierFormData(Dossier dossier, JSONObject jsonData) {
@@ -329,7 +330,11 @@ public class DossierDocumentUtils {
 				jsonMark.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
 				jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
 				jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
-				jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
+				if(Validator.isNotNull(dossier.getOriginality()) && dossier.getOriginality() == 2) {
+					jsonMark.put(DossierPartTerm.RECORD_COUNT, DOSSIER_MARK_COUNT_DEFAULT);
+				} else {
+					jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
+				}
 //				String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
 				dossierMarkArr.put(jsonMark);
 			}
@@ -354,7 +359,11 @@ public class DossierDocumentUtils {
 						jsonMark.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
 						jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
 						jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
-						jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
+						if(Validator.isNotNull(dossier.getOriginality()) && dossier.getOriginality() == 2) {
+							jsonMark.put(DossierPartTerm.RECORD_COUNT, DOSSIER_MARK_COUNT_DEFAULT);
+						} else {
+							jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
+						}
 //						String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
 						jsonMark.put(DossierPartTerm.FORM_DATA, StringPool.BLANK);
 						dossierMarkArr.put(jsonMark);
@@ -632,6 +641,7 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		jsonData.put(DossierTerm.COUNTER, dossier.getCounter());
 		jsonData.put(DossierTerm.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
+		jsonData.put(DossierTerm.REGISTER_BOOK_NAME, dossier.getRegisterBookName());
 		jsonData.put(DossierTerm.SECRET, dossier.getPassword());
 		jsonData.put(DossierTerm.BRIEF_NOTE, dossier.getBriefNote());
 		jsonData.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
@@ -663,7 +673,11 @@ public class DossierDocumentUtils {
 				jsonMark.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
 				jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
 				jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
-				jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
+				if(Validator.isNotNull(dossier.getOriginality()) && dossier.getOriginality() == 2) {
+					jsonMark.put(DossierPartTerm.RECORD_COUNT, DOSSIER_MARK_COUNT_DEFAULT);
+				} else {
+					jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
+				}
 //				String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
 				dossierMarkArr.put(jsonMark);
 			}
@@ -688,7 +702,11 @@ public class DossierDocumentUtils {
 						jsonMark.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
 						jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
 						jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
-						jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
+						if(Validator.isNotNull(dossier.getOriginality()) && dossier.getOriginality() == 2) {
+							jsonMark.put(DossierPartTerm.RECORD_COUNT, DOSSIER_MARK_COUNT_DEFAULT);
+						} else {
+							jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
+						}
 						jsonMark.put(DossierPartTerm.PART_NAME_TITLE, part.getPartNameTitle() != null ? part.getPartNameTitle() : StringPool.BLANK);
 //						String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
 						dossierMarkArr.put(jsonMark);
@@ -786,6 +804,7 @@ public class DossierDocumentUtils {
 			try {
 				jsonData.put(DossierTerm.META_DATA, JSONFactoryUtil.createJSONObject(dossier.getMetaData()));
 			} catch (JSONException e) {
+				_log.error(e);
 				jsonData.put(DossierTerm.META_DATA, StringPool.BLANK);
 			}
 		} else {

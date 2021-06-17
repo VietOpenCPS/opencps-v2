@@ -48,6 +48,8 @@ import org.opencps.api.constants.StatisticManagementConstants;
 import org.opencps.api.controller.AdminConfigManagement;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.springframework.http.HttpStatus;
 
 import backend.admin.config.whiteboard.BundleLoader;
@@ -142,6 +144,10 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String ACCEPT = "Accept";
 	private static final String SORT = "sort";
 	private static final String SORT_ASC = "asc";
+	private static final String FILE_ITEM = "opencps_fileitem";
+	private static final String CLASSNAME_DELIVERABLE_TYPE = "opencps_deliverabletype";
+	private static final String TYPE_CODE = "typeCode";
+	private static final String NOK = "NOK";
 
 	@Override
 	public Response onMessage(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User u,
@@ -152,12 +158,13 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 		
 		try {
 			JSONObject message = JSONFactoryUtil.createJSONObject(text);
-			_log.debug("SOCKET MESSAGE: " + message.toJSONString());
+			_log.info("SOCKET MESSAGE: " + message.toJSONString());
 			try {
 				
 				if (message.getString(TYPE).equals(ADMIN)) {
 
 					String code = message.getString(CODE);
+					String id = message.getString(ID);
 	
 					AdminConfig adminConfig = AdminConfigLocalServiceUtil.fetchByCode(code);
 	
@@ -311,10 +318,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						JSONObject headersObj = JSONFactoryUtil.createJSONObject(adminConfig.getHeadersName());
 	
 	//					System.out.println("code: " + code.equals("opencps_employee"));
-						_log.debug("code: " + "opencps_employee".equalsIgnoreCase(code));
 						
 						if (message.getBoolean(CONFIG)) {
-	
+
 							JSONObject config = JSONFactoryUtil.createJSONObject();
 							config.put(CODE, adminConfig.getCode());
 							config.put(NAME, adminConfig.getName());
@@ -335,7 +341,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							messageData.put(message.getString(RESPONE), methodCounter.invoke(model, dynamicQuery));
 	
 						} else {
-	
+
 							int start = Validator.isNotNull(message.getString(START)) ? message.getInt(START) : 0;
 							int end = Validator.isNotNull(message.getString(END)) ? message.getInt(END) : 1;
 							if (CLASSNAME_EMPLOYEE.equals(code)) {
@@ -380,19 +386,33 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							messageData.put(STATUS, HttpStatus.OK);
 	
 						} else {
-//							_log.debug("SERVICE CLASS: " + serviceUtilStr);
 							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
 									JSONObject.class);
 	
 							JSONObject postData = message.getJSONObject(DATA);
-							
-							postData.put(Field.GROUP_ID, groupId);
+							JSONObject messageError = JSONFactoryUtil.createJSONObject();
+							_log.info("Data: " + postData);
+
+							if("0".equals(id)) {
+								if (Validator.isNotNull(code) && (CLASSNAME_DELIVERABLE_TYPE.equals(code))) {
+									DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(postData.getLong(Field.GROUP_ID), postData.getString(TYPE_CODE));
+									if (Validator.isNotNull(deliverableType)) {
+										messageError.put(STATUS, NOK);
+										return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+									}
+								}
+							}
+//							postData.put(Field.GROUP_ID, groupId);
+							if(FILE_ITEM.equals(code)){
+								postData.put(Field.GROUP_ID, 0L);
+							}else{
+								postData.put(Field.GROUP_ID, groupId);
+							}
 							postData.put(COMPANY_ID, company.getCompanyId());
 							postData.put(Field.USER_ID, u.getUserId());
 							postData.put(Field.USER_NAME, u.getFullName());
-	
+
 							messageData.put(message.getString(RESPONE), method.invoke(model, message.getJSONObject(DATA)));
-							
 							messageData.put(STATUS, HttpStatus.OK);
 	
 						}

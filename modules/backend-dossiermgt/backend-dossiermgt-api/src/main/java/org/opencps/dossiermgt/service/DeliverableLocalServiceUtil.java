@@ -119,7 +119,8 @@ public class DeliverableLocalServiceUtil {
 
 	public static long countLucene(String keywords, String groupId,
 		String type, java.util.Map<String, String> mapFilter,
-		com.liferay.portal.kernel.search.SearchContext searchContext, long userId)
+		com.liferay.portal.kernel.search.SearchContext searchContext,
+		long userId)
 		throws com.liferay.portal.kernel.search.ParseException,
 			com.liferay.portal.kernel.search.SearchException {
 		return getService()
@@ -249,6 +250,11 @@ public class DeliverableLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.dossiermgt.model.Deliverable fetchByGID_AID(
+		long groupId, String applicantIdNo) {
+		return getService().fetchByGID_AID(groupId, applicantIdNo);
+	}
+
 	public static org.opencps.dossiermgt.model.Deliverable fetchByGID_DID(
 		long groupId, long dossierId) {
 		return getService().fetchByGID_DID(groupId, dossierId);
@@ -269,6 +275,14 @@ public class DeliverableLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.Deliverable fetchDeliverableByUuidAndGroupId(
 		String uuid, long groupId) {
 		return getService().fetchDeliverableByUuidAndGroupId(uuid, groupId);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByCreateDate(
+		String createDateStart, String createDateEnd, String deliverableType,
+		long deliverableState) {
+		return getService()
+				   .findDeliverableByCreateDate(createDateStart, createDateEnd,
+			deliverableType, deliverableState);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByState(
@@ -293,6 +307,12 @@ public class DeliverableLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.Deliverable getByF_GID_DCODE(
 		long groupId, String deliverableCode) {
 		return getService().getByF_GID_DCODE(groupId, deliverableCode);
+	}
+
+	public static org.opencps.dossiermgt.model.Deliverable getByF_GID_DI_STATE(
+		long groupId, long dossierId, int deliverableState) {
+		return getService()
+				   .getByF_GID_DI_STATE(groupId, dossierId, deliverableState);
 	}
 
 	/**
@@ -483,7 +503,8 @@ public class DeliverableLocalServiceUtil {
 		String keywords, String groupId, String type,
 		java.util.Map<String, String> mapFilter,
 		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
-		com.liferay.portal.kernel.search.SearchContext searchContext, long userId)
+		com.liferay.portal.kernel.search.SearchContext searchContext,
+		long userId)
 		throws com.liferay.portal.kernel.search.ParseException,
 			com.liferay.portal.kernel.search.SearchException {
 		return getService()

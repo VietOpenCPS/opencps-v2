@@ -1432,6 +1432,91 @@ public class ServiceConfigUtil {
 	}
 
 	/**
+	* Returns the service config where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63; or throws a {@link NoSuchServiceConfigException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param serviceInfoId the service info ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceLevel the service level
+	* @return the matching service config
+	* @throws NoSuchServiceConfigException if a matching service config could not be found
+	*/
+	public static ServiceConfig findByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfoId, String govAgencyCode, int serviceLevel)
+		throws org.opencps.dossiermgt.exception.NoSuchServiceConfigException {
+		return getPersistence()
+				   .findByGID_SI_GOV_LEVEL(groupId, serviceInfoId,
+			govAgencyCode, serviceLevel);
+	}
+
+	/**
+	* Returns the service config where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serviceInfoId the service info ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceLevel the service level
+	* @return the matching service config, or <code>null</code> if a matching service config could not be found
+	*/
+	public static ServiceConfig fetchByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfoId, String govAgencyCode, int serviceLevel) {
+		return getPersistence()
+				   .fetchByGID_SI_GOV_LEVEL(groupId, serviceInfoId,
+			govAgencyCode, serviceLevel);
+	}
+
+	/**
+	* Returns the service config where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serviceInfoId the service info ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceLevel the service level
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching service config, or <code>null</code> if a matching service config could not be found
+	*/
+	public static ServiceConfig fetchByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfoId, String govAgencyCode, int serviceLevel,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByGID_SI_GOV_LEVEL(groupId, serviceInfoId,
+			govAgencyCode, serviceLevel, retrieveFromCache);
+	}
+
+	/**
+	* Removes the service config where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param serviceInfoId the service info ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceLevel the service level
+	* @return the service config that was removed
+	*/
+	public static ServiceConfig removeByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfoId, String govAgencyCode, int serviceLevel)
+		throws org.opencps.dossiermgt.exception.NoSuchServiceConfigException {
+		return getPersistence()
+				   .removeByGID_SI_GOV_LEVEL(groupId, serviceInfoId,
+			govAgencyCode, serviceLevel);
+	}
+
+	/**
+	* Returns the number of service configs where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceInfoId the service info ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceLevel the service level
+	* @return the number of matching service configs
+	*/
+	public static int countByGID_SI_GOV_LEVEL(long groupId, long serviceInfoId,
+		String govAgencyCode, int serviceLevel) {
+		return getPersistence()
+				   .countByGID_SI_GOV_LEVEL(groupId, serviceInfoId,
+			govAgencyCode, serviceLevel);
+	}
+
+	/**
 	* Caches the service config in the entity cache if it is enabled.
 	*
 	* @param serviceConfig the service config

@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -88,6 +89,10 @@ public interface ApplicantLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public Applicant addApplicant(Applicant applicant);
+
+	public User addUser(String fullName, String screenName, String email,
+		String password, ServiceContext serviceContext)
+		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Applicant adminProcessData(JSONObject objectData)
@@ -459,5 +464,9 @@ public interface ApplicantLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Applicant verifyApplicant(long applicantId)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant verifyApplicantWithValue(long applicantId, int verification)
 		throws PortalException;
 }

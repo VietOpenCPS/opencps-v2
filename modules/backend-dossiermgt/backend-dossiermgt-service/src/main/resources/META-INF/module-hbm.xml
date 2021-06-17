@@ -139,6 +139,7 @@
 		<property column="online_" name="online" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="bookingInTime" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="telNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="govAgencyCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ConfigCounterImpl" table="opencps_configcounter">
 		<id name="configCounterId" type="long">
@@ -373,6 +374,7 @@
 		<property name="postalCodeReceived" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="lastReceiveDate" type="org.hibernate.type.TimestampType" />
 		<property name="lastSendDate" type="org.hibernate.type.TimestampType" />
+		<property name="serviceLevel" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierActionImpl" table="opencps_dossieraction">
 		<id name="dossierActionId" type="long">
@@ -697,6 +699,7 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eFormData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="email" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="secret" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="govAgencyCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.MenuConfigImpl" table="opencps_menuconfig">
 		<id name="menuConfigId" type="long">
@@ -919,6 +922,8 @@
 		<property name="submissionNote" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="sampleCount" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="registerBookCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="forCitizen" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property name="forBusiness" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ProcessPluginImpl" table="opencps_process_plugin">
 		<id name="processPluginId" type="long">
@@ -1187,6 +1192,8 @@
 		<property name="govAgencyText" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="isNotarization" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="serviceNameTitle" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="tagCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="tagName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ServiceInfoMappingImpl" table="opencps_serviceinfomapping">
 		<id name="serviceInfoMappingId" type="long">

@@ -21,6 +21,7 @@ import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DeliverableTypeRole;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,14 +49,17 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableTypeDyna
 
 		DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
 
+		long groupId = 0;
+
 		int start = dataFetchingEnvironment.getArgument(WebKeys.START);
 		int end = dataFetchingEnvironment.getArgument(WebKeys.END);
 
-		long groupId = 0;
 
 		if (Validator.isNotNull(request.getHeader(WebKeys.GROUPID))) {
-			groupId = Long.valueOf(request.getHeader(WebKeys.GROUPID));
+				groupId = Long.valueOf(request.getHeader(WebKeys.GROUPID));
 		}
+		long[] groupIds = new long [] {0, groupId > 0 ? groupId : null};
+
 		long userId = 0;
 		
 		if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
@@ -65,11 +69,10 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableTypeDyna
 		List<DeliverableTypeDynamic> results = new ArrayList<>();
 		
 		if (userId > 0) {
-			
-			List<DeliverableType> resultsTemp = actions.getDeliverableTypesList(groupId, start, end);
-			
+			//getDeliverableTypesList
 			try {
-				
+				List<DeliverableType> resultsTemp = DeliverableTypeLocalServiceUtil.getDeliverableTypeByGroupId(groupIds, start, end);
+				_log.info("Size: " + resultsTemp.size());
 				User user = UserLocalServiceUtil.getUser(userId);
 				
 				Long[] longObjects = ArrayUtils.toObject(user.getRoleIds());
@@ -77,6 +80,7 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableTypeDyna
 				//List<Long> rIds = new ArrayList<>();
 				
 				for (DeliverableType openCPSDeliverableType : resultsTemp) {
+					openCPSDeliverableType.setGroupId(openCPSDeliverableType.getGroupId());
 					
 					// List<Long> rIds = actions.getRoleIdByTypes(openCPSDeliverableType.getDeliverableTypeId());
 					List<DeliverableTypeRole> deliverableTypeRoles = actions.getRolesByType(openCPSDeliverableType.getDeliverableTypeId());

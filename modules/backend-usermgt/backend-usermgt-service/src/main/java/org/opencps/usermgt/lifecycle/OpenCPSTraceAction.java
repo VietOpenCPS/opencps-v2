@@ -34,12 +34,12 @@ import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DeviceResolver;
 import org.springframework.mobile.device.LiteDeviceResolver;
 
-@Component(immediate = true, property = { "key=servlet.service.events.post" }, service = LifecycleAction.class)
+//@Component(immediate = true, property = { "key=servlet.service.events.post" }, service = LifecycleAction.class)
 public class OpenCPSTraceAction extends Action {
 
 	@Override
 	public void run(HttpServletRequest request, HttpServletResponse response) {
-        _log.info("### Start Post Trace Action ######################");
+        _log.debug("### Start Post Trace Action ######################");
 		String completeUrl = (String) request.getAttribute(CommonTerm.LOGIN_ACTION_CURRENT_COMPLETE_URL);
 
 		String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
@@ -148,7 +148,7 @@ public class OpenCPSTraceAction extends Action {
 				_log.debug(e);
 			}
 		}
-        _log.info("### End Post Trace Action ######################");
+        _log.debug("### End Post Trace Action ######################");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(OpenCPSTraceAction.class);

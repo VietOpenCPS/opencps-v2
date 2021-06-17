@@ -14,29 +14,17 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Image;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.*;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.service.ImageLocalServiceUtil;
-import com.liferay.portal.kernel.service.PasswordTrackerLocalServiceUtil;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PwdGenerator;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.service.*;
+import com.liferay.portal.kernel.util.*;
 import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
+import com.liferay.portal.liveusers.LiveUsers;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +35,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.backend.usermgt.service.util.ConfigConstants;
@@ -78,12 +67,14 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 import org.opencps.usermgt.service.PreferencesLocalServiceUtil;
 import org.opencps.usermgt.service.util.ConstantUtils;
+import org.opencps.usermgt.utils.DateTimeUtils;
 
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
 import backend.auth.api.exception.UnauthorizationException;
 import backend.auth.api.keys.Constants;
 import backend.utils.FileUploadUtils;
+
 
 public class UserActions implements UserInterface {
 
@@ -1289,7 +1280,7 @@ public class UserActions implements UserInterface {
 				Applicant applicant = userId > 0 ? 
 					ApplicantLocalServiceUtil.fetchByMappingID(userId) : null;
 
-				if (Validator.isNotNull(applicant)) {
+				if (applicant != null) {
 
 					result.put(UserTerm.CLASS_NAME, Applicant.class.getName());
 					result.put(UserTerm.CLASS_PK, applicant.getApplicantId());
@@ -1325,7 +1316,8 @@ public class UserActions implements UserInterface {
 					result.put(UserTerm.MAPPING_USER_ID, applicant.getMappingUserId());
 					result.put(UserTerm.GOV_AGENCY_CODE, StringPool.BLANK);
 					result.put(UserTerm.GOV_AGENCY_NAME, StringPool.BLANK);
-
+					result.put(ApplicantTerm.VERIFICATION, applicant.getVerification());
+					result.put(UserTerm.SCREEN_NAME, user.getScreenName());
 				}
 
 			}
@@ -1376,4 +1368,177 @@ public class UserActions implements UserInterface {
 		return jsonObject;
 	}
 
+	@Override
+	public JSONObject getLiveUser(long userId, long companyId, long groupId, ServiceContext serviceContext) {
+		List<UserTracker> userTrackers = null;
+
+		Map<String, UserTracker> sessionUsers = LiveUsers.getSessionUsers(companyId);
+
+		userTrackers = new ArrayList<UserTracker>(sessionUsers.values());
+
+		// userTrackers = ListUtil.sort(userTrackers, new
+		// UserTrackerModifiedDateComparator(true));
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		JSONArray dataArr = JSONFactoryUtil.createJSONArray();
+		int total = 0;
+		if (userTrackers != null) {
+			total = userTrackers.size();
+			JSONObject userTrackerObj = null;
+
+			for (UserTracker userTracker : userTrackers) {
+				userTrackerObj = JSONFactoryUtil.createJSONObject();
+				userTrackerObj.put("userId", userTracker.getUserId());
+				userTrackerObj.put("email", userTracker.getEmailAddress());
+				userTrackerObj.put("fullName", userTracker.getFullName());
+				userTrackerObj.put("hits", userTracker.getHits());
+				userTrackerObj.put("lastRequest", DateTimeUtils.convertDateToString(userTracker.getModifiedDate(),
+						DateTimeUtils._VN_DATE_TIME_FORMAT));
+				dataArr.put(userTrackerObj);
+			}
+
+		}
+
+		result.put("total", total);
+		result.put("data", dataArr);
+
+		return result;
+
+	}
+
+	private static final String EMAIL = "@mt.gov.vn";
+
+
+	public User checkUser(String fullName, String screenName, String email, String password,
+						  ServiceContext serviceContext) throws PortalException {
+
+		User exitedUser = null;
+		try {
+
+
+			if (Validator.isNotNull(email)) {
+				exitedUser = UserLocalServiceUtil.getUserByEmailAddress(serviceContext.getCompanyId(), email);
+			} else {
+
+				email = screenName + EMAIL;
+
+				exitedUser = UserLocalServiceUtil.getUserByEmailAddress(serviceContext.getCompanyId(), email);
+			}
+
+			/*
+			if(Validator.isNotNull(exitedUser)){
+				updateUser(exitedUser,password,serviceContext);
+			}
+			*/
+
+
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+
+			if( e instanceof NoSuchUserException) {
+
+				exitedUser = createUser(fullName, email, screenName, password, serviceContext);
+			}else {
+				_log.error(e);
+				throw new PortalException();
+			}
+
+
+		}
+
+		return exitedUser;
+	}
+
+	private  User createUser(String fullName,String email,String screenName,String password,
+							 ServiceContext serviceContext) throws PortalException {
+
+		String[] fml = getF_M_LastName(fullName);
+
+		Role role =
+				RoleLocalServiceUtil.fetchRole(serviceContext.getCompanyId(), ApplicantTerm.APPLICANT);
+
+		List<Long> roleIds = new ArrayList<>();
+		if (Validator.isNotNull(role)) {
+			roleIds.add(role.getRoleId());
+		}
+
+		long[] groupIds = {serviceContext.getScopeGroupId()};
+
+		String firstName = fml[0];
+		String lastName = fml[fml.length -1];
+
+		if(Validator.isNull(firstName)) {
+			firstName = screenName;
+		}
+
+		if(Validator.isNull(lastName)) {
+			lastName = screenName;
+		}
+
+		User user = UserLocalServiceUtil.addUser(serviceContext.getUserId(), serviceContext.getCompanyId(),
+				false, password, password, false, screenName, email, 0,
+				StringPool.BLANK, serviceContext.getLocale(), firstName, fml[1], lastName, 0, 0,
+				true, Calendar.JANUARY, 1,
+				1979, StringPool.BLANK, groupIds, null, null, null,
+				true, serviceContext);
+
+		UserLocalServiceUtil.authenticateForBasic(serviceContext.getCompanyId(), CompanyConstants.AUTH_TYPE_EA,
+				user.getEmailAddress(), password);
+		serviceContext.setAttribute("sendEmail",true);
+
+		UserLocalServiceUtil.completeUserRegistration(user,serviceContext);
+
+		updateUser(user,password,serviceContext);
+
+		return user;
+
+	}
+
+	private  User updateUser(User user, String password, ServiceContext serviceContext)
+			throws PortalException {
+
+		Role role = RoleLocalServiceUtil.fetchRole(serviceContext.getCompanyId(), ApplicantTerm.APPLICANT);
+
+		long[] groupIds = { serviceContext.getScopeGroupId() };
+
+		user = UserLocalServiceUtil.updatePassword(user.getUserId(), password, password, false, true);
+		UserLocalServiceUtil.addGroupUser(serviceContext.getScopeGroupId(),user);
+		UserLocalServiceUtil.addRoleUser(role.getRoleId(),user);
+
+		UserLocalServiceUtil.authenticateForBasic(serviceContext.getCompanyId(), CompanyConstants.AUTH_TYPE_EA,
+				user.getEmailAddress(), password);
+
+		UserLocalServiceUtil.updateUser(user);
+
+		return user;
+
+	}
+
+	private  String[] getF_M_LastName(String fullName) {
+
+
+		String[] fml = new String[3];
+
+		String[] splitName =
+				StringUtil.split(fullName, StringPool.SPACE);
+
+		if (splitName != null && splitName.length > 0) {
+			fml[0] = splitName[0];
+
+			fml[1] = splitName.length >= 3
+					? StringUtil.merge(
+					ArrayUtil.subset(
+							splitName, 1, splitName.length - 1),
+					StringPool.SPACE)
+					: StringPool.BLANK;
+			fml[2] = splitName.length >= 2
+					? splitName[splitName.length - 1] : splitName[0];
+		}
+		else {
+			fml[0] = fullName;
+			fml[1] = StringPool.BLANK;
+			fml[2] = fullName;
+		}
+
+		return fml;
+	}
 }

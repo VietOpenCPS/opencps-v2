@@ -229,7 +229,14 @@ import javax.xml.bind.annotation.XmlType;
 	"votingName3",
 	"resultVotingCode1",
 	"resultVotingCode2",
-	"resultVotingCode3"
+	"resultVotingCode3",
+	"feeAmount",
+	"serviceAmount",
+	"totalAmount",
+	"votingCode4",
+	"votingName4",
+	"resultVotingCode4",
+	"unStep"
 })
 public class DossierDataModel {
 
@@ -365,6 +372,21 @@ public class DossierDataModel {
 	protected Integer resultVotingCode1;
 	protected Integer resultVotingCode2;
 	protected Integer resultVotingCode3;
+	protected Long feeAmount;
+	protected Long serviceAmount;
+	protected Long totalAmount;
+	protected String votingCode4;
+	protected String votingName4;
+	protected Integer resultVotingCode4;
+	protected String unStep;
+
+	public String getUnStep() {
+		return unStep;
+	}
+
+	public void setUnStep(String unStep) {
+		this.unStep = unStep;
+	}
 
 	public String getVotingCode1() {
 		return votingCode1;
@@ -2431,4 +2453,52 @@ public class DossierDataModel {
 		this.metaData = metaData;
 	}
 
+	public Long getFeeAmount() {
+		return feeAmount;
+	}
+
+	public void setFeeAmount(Long feeAmount) {
+		this.feeAmount = feeAmount;
+	}
+
+	public Long getServiceAmount() {
+		return serviceAmount;
+	}
+
+	public void setServiceAmount(Long serviceAmount) {
+		this.serviceAmount = serviceAmount;
+	}
+
+	public Long getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(Long totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public String getVotingCode4() {
+		return votingCode4;
+	}
+
+	public void setVotingCode4(String votingCode4) {
+		this.votingCode4 = votingCode4;
+	}
+
+	public String getVotingName4() {
+		return votingName4;
+	}
+
+	public void setVotingName4(String votingName4) {
+		this.votingName4 = votingName4;
+	}
+
+	public Integer getResultVotingCode4() {
+		return resultVotingCode4;
+	}
+
+	public void setResultVotingCode4(Integer resultVotingCode4) {
+		this.resultVotingCode4 = resultVotingCode4;
+	}		
+	
 }

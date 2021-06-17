@@ -46,6 +46,7 @@ public class VnPostTerm {
 	public static final String SERVER_ACTIVE = "active";
 	public static final String SERVER_KEY_TOKEN_LGSP = "keyToken";
 	public static final String SERVER_IS_THROUGH_LGSP = "isThroughLGSP";
+	public static final String SERVER_LGSP_TYPE = "lgspType";
 	public static final String SERVER_CUSTOMERCODE = "customerCode";
 	public static final String SERVER_SENDERPROVINCE = "senderProvince";
 	public static final String SERVER_SENDERDISTRICT = "senderDistrict";
@@ -54,6 +55,45 @@ public class VnPostTerm {
 	public static final String SERVER_SENDERTEL = "senderTel";
 	public static final String SERVER_SENDERNAME = "senderName";
 	
+
+	
+	public static final String LGSP_ACTIVE = "lgsp_active";
+	public static final String LGSP_TYPE = "lgsp_type";
+	public static final String LGSP_USERNAME = "lgsp_username";
+	public static final String LGSP_PASSWORD = "lgsp_password";
+	public static final String LGSP_SERCUREKEY = "lgsp_sercurekey";
+	public static final String LGSP_CUSTOMERCODE = "lgsp_customercode";
+	public static final String LGSP_CONSUMERKEY = "lgsp_consumerkey";
+	public static final String LGSP_TOKENURL = "lgsp_tokenurl";
+	public static final String LGSP_VNPOSTURL = "lgsp_vnposturl";
+	public static final String LGSP_VNPOST_ORDERPOST = "lgsp_vnpost_orderpost";
+	public static final String LGSP_VNPOST_ORDERCANCEL = "lgsp_vnpost_ordercancel";
+	public static final String LGSP_VNPOST_ORDERTRACKING = "lgsp_vnpost_ordertracking";
+	public static final String LGSP_VNPOST_GETPOSTAGEVAS = "lgsp_vnpost_getpostagevas";
+	public static final String LGSP_VNPOST_GETINFOMATIONPOST = "lgsp_vnpost_getinfomationpost";
+	public static final String LGSP_VNPOST_PRICEHCC = "lgsp_vnpost_pricehcc";
+	public static final String LGSP_VNPOST_DOCUMENT = "lgsp_vnpost_document";
+	public static final String LGSP_VNPOST_GETPRICE = "lgsp_vnpost_getprice";
+
+
+	public static final String CUSTOMER_CODE = "CustomerCode";
+	public static final String ORDER_NUMBER = "OrderNumber";
+	public static final String COD_AMOUNT = "CODAmount";
+	public static final String SENDER_PROVINCE = "SenderProvince";
+	public static final String SENDER_DISTRICT = "SenderDistrict";
+	public static final String SENDER_ADDRESS = "SenderAddress";
+	public static final String SENDER_NAME = "SenderName";
+	public static final String SENDER_EMAIL = "SenderEmail";
+	public static final String SENDER_TEL = "SenderTel";
+	public static final String SENDER_DESC = "SenderDesc";
+	public static final String DESCRIPTION = "Description";
+	public static final String RECEIVER_NAME = "ReceiverName";
+	public static final String RECEIVER_ADDRESS = "ReceiverAddress";
+	public static final String RECEIVER_TEL = "ReceiverTel";
+	public static final String RECEIVER_PROVINCE = "ReceiverProvince";
+	public static final String RECEIVER_DISTRICT = "ReceiverDistrict";
+	public static final String RECEIVER_EMAIL = "ReceiverEmail";
+
 	public static final String STATUS_CODE = "statusCode";
 	public static final String STATUS_MESSAGE = "statusMessage";
 	

@@ -2,6 +2,7 @@ package org.opencps.api.controller.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -21,16 +22,20 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import javax.ws.rs.core.Response;
 
 import io.swagger.models.auth.In;
+
+import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.dossier.model.*;
+import org.opencps.api.dossiermark.model.DossierMarkModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -50,9 +55,11 @@ import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -63,10 +70,12 @@ import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
@@ -237,6 +246,17 @@ public class DossierUtils {
 //						model.setDossierOverdue("Sớm hạn");
 //					} 
 //					if (dueDateTimeStamp != 0 && extendDateTimeStamp != 0 && 3 == valueCompareRelease) {
+					
+					// add by phuchn- sua lai theo yeu cau cua DuanTV khi tinh toan ho so : som han, dung han, tre han
+					// ho so som han: 2 case:
+					// 						case 1 : dueDate != null && releaseDate != null && releaseDate < dueDate 
+					//						case 2 : dueDate != null && finishDate != null && finishDate < dueDate
+					// ho so dung han: 2 case:
+					//						case 1 : releaseDate != null && dueDate != null && releaseDate < dueDate(releaseDate.getTime = dueDate.getTime) 
+					// 						case 2 : releaseDate != null && dueDate == null
+					// ho so tre han: releaseDate != null && dueDate != null && releaseDate > dueDate
+					
+					
 					if (dueDateTimeStamp != 0 && 3 == valueCompareRelease) {
 						DueDateUtils dueDateUtil = new DueDateUtils(now, dueDateCalc, 1, groupId);
 						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
@@ -410,11 +430,17 @@ public class DossierUtils {
 			model.setSubmitting(doc.get(DossierTerm.SUBMITTING));
 //			model.setPermission(getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			String strPermission = GetterUtil.getString(doc.get(DossierTerm.MAPPING_PERMISSION));
+			_log.debug("StrPermission: " +strPermission);
+//			_log.info("globalGroup: " + query.isGlobalViewGroup());
+//			_log.info("isGlobalViewAll: " + query.isGlobalViewAll());
 			if (Validator.isNotNull(strPermission)) {
 				String[] permissionArr = strPermission.split(StringPool.SPACE);
 				if (permissionArr != null) {
 					for (String permission: permissionArr) {
-						if (Validator.isNotNull(permission) && permission.contains(String.valueOf(userId))) {
+						if((Validator.isNotNull(permission) && query.isGlobalViewAll() || query.isGlobalViewGroup())){
+							model.setPermission(permission);
+							break;
+						} else if (Validator.isNotNull(permission) && permission.contains(String.valueOf(userId))) {
 							model.setPermission(permission);
 							break;
 						} else {
@@ -462,6 +488,7 @@ public class DossierUtils {
 			
 			model.setLastActionUserId(GetterUtil.getLong(doc.get(DossierTerm.USER_DOSSIER_ACTION_ID)));
 			model.setStepCode(doc.get(DossierTerm.STEP_CODE));
+			model.setUnStep(doc.get(DossierTerm.UNSTEP));
 			model.setStepName(doc.get(DossierTerm.STEP_NAME));
 			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
 //			model.setStepOverdue(StringPool.BLANK);
@@ -583,15 +610,22 @@ public class DossierUtils {
 			model.setProcessNo(doc.get(DossierTerm.PROCESS_NO));
 			model.setPostalCodeSend(doc.get(DossierTerm.POSTAL_CODE_SEND));
 			model.setPostalCodeReceived(doc.get(DossierTerm.POSTAL_CODE_RECEIVED));
-			model.setVotingCode1("");
-			model.setVotingCode2("");
-			model.setVotingCode3("");
-			model.setVotingName1("");
-			model.setVotingName2("");
-			model.setVotingName3("");
-			model.setResultVotingCode1(0);
-			model.setResultVotingCode2(0);
-			model.setResultVotingCode3(0);
+			
+			// add fee amount, service amount, total amount
+			if(doc.hasField(Field.ENTRY_CLASS_PK) && 
+					Validator.isNotNull(doc.get(Field.ENTRY_CLASS_PK))) {
+				PaymentFile pf = PaymentFileLocalServiceUtil.getByDossierId(groupId, GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+				if (pf != null) {
+					model.setFeeAmount(pf.getFeeAmount());
+					model.setServiceAmount(pf.getServiceAmount());
+					model.setTotalAmount(pf.getPaymentAmount());
+				}else {
+					model.setFeeAmount(0L);
+					model.setServiceAmount(0L);
+					model.setTotalAmount(0L);
+				}
+			}
+			
 			ouputs.add(model);
 		}
 
@@ -602,7 +636,7 @@ public class DossierUtils {
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 			return employee;
 		}catch (Exception e){
-			_log.info("EXCEPTION" + e.getMessage());
+			_log.error(e);
 			return null;
 		}
 	}
@@ -1160,7 +1194,14 @@ public class DossierUtils {
 		model.setFromViaPostal(input.getFromViaPostal());
 		model.setPostalCodeSend(input.getPostalCodeSend());
 		model.setProcessNo(input.getProcessNo());
-
+		List<DossierMark> lstDossierMark = DossierMarkLocalServiceUtil.getDossierMarks(input.getGroupId(), input.getDossierId());
+		if(lstDossierMark !=null){
+			JSONObject objectMark = JSONFactoryUtil.createJSONObject();
+			for(DossierMark dossierMark : lstDossierMark) {
+				objectMark.put(dossierMark.getDossierPartNo(), dossierMark.getFileCheck());
+			}
+			model.setDossierMarks(objectMark.toString());
+		}
 		return model;
 	}
 
@@ -1275,6 +1316,7 @@ public class DossierUtils {
 			try {
 				return DossierLocalServiceUtil.getDossier(dossierId);
 			} catch (PortalException e) {
+				_log.error(e);
 				return null;
 			}
 		} else {
@@ -1305,15 +1347,14 @@ public class DossierUtils {
 	public static ProcessAction getProcessAction(User user, long groupId, Dossier dossier, String actionCode,
 			long serviceProcessId) throws PortalException {
 
-		_log.debug("GET PROCESS ACTION____");
+		_log.info("GET PROCESS ACTION for dossierId " + dossier.getDossierId() +" and info: "
+				+ groupId + "," + actionCode + "," + serviceProcessId);
 		ProcessAction action = null;
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		
 		try {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);
-
-			_log.debug("GET PROCESS ACTION____" + groupId + "," + actionCode + "," + serviceProcessId);
 
 			String dossierStatus = dossier.getDossierStatus();
 			String dossierSubStatus = dossier.getDossierSubStatus();
@@ -1328,13 +1369,14 @@ public class DossierUtils {
 			for (ProcessAction act : actions) {
 
 				preStepCode = act.getPreStepCode();
+				// Đối với acion đặc biêt 8888 check preStepCode với postStepCodde
 				if(actionCode.equals(DossierActionTerm.OUTSIDE_ACTION_PAYMENT)){
 					if(Validator.isNull(act.getPreStepCode()) && Validator.isNull(act.getPostStepCode())){
 						action = act;
 						break;
 					}
 				}else {
-					_log.debug("LamTV_preStepCode: " + preStepCode );
+					_log.info("LamTV_preStepCode: " + preStepCode );
 					if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
 				}
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
@@ -1356,11 +1398,12 @@ public class DossierUtils {
 					else {
 						flagCheck = true;
 					}
-					_log.debug("LamTV_preStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + "," + dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
+					_log.info("LogPreStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + ","
+							+ dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
-						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user)) {
+						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user,Validator.isNotNull(act.getAutoEvent()) ? act.getAutoEvent() : "")) {
 							action = act;
 							break;							
 						}
@@ -1447,21 +1490,27 @@ public class DossierUtils {
 //					pk.setDossierId(dossier.getDossierId());
 //					pk.setUserId(e.getMappingUserId());
 //					DossierUser ds = DossierUserLocalServiceUtil.fetchDossierUser(pk);
-					if (mapDaus.get(e.getMappingUserId()) == null) {
-//					if (ds == null) {
-						DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(), moderator, Boolean.FALSE);						
-					}
-					else {
-						DossierUser ds = mapDaus.get(e.getMappingUserId());
-						
-						if (moderator == 1 && ds.getModerator() == 0) {
-							ds.setModerator(1);
-							DossierUserLocalServiceUtil.updateDossierUser(ds);
+					if(checkGovDossierEmployee(dossier, e)) {
+						if (mapDaus.get(e.getMappingUserId()) == null) {
+//							_log.debug("Scope : " + e.getScope());
+							DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(), moderator, Boolean.FALSE);
+						} else {
+							DossierUser ds = mapDaus.get(e.getMappingUserId());
+							if (moderator == 1 && ds.getModerator() == 0) {
+								ds.setModerator(1);
+								DossierUserLocalServiceUtil.updateDossierUser(ds);
+							}
 						}
 					}
 				}
 			}
 		}
+	}
+	private static boolean checkGovDossierEmployee(Dossier dossier, Employee e) {
+		if (e != null && (Validator.isNull(e.getScope()) || (Arrays.asList(e.getScope().split(StringPool.COMMA)).indexOf(dossier.getGovAgencyCode()) >= 0))) {
+			return true;
+		}
+		return false;
 	}
 
 	public static DossierActionDetailModel mappingDossierAction(DossierAction dAction, long dossierDocumentId) {
@@ -1477,6 +1526,35 @@ public class DossierUtils {
 		model.setSequenceNo(dAction.getSequenceNo());
 		model.setServiceProcessId(dAction.getServiceProcessId());
 		model.setRollbackable(dAction.getRollbackable());
+
+		return model;
+	}
+
+	public static DossierActionDetailModel mappingLstDossierAction(DossierAction dAction, long dossierDocumentId, Map<String, String> lstMap ) {
+		DossierActionDetailModel model = new DossierActionDetailModel();
+		String dossierIds = StringPool.BLANK;
+		if(Validator.isNotNull(lstMap)) {
+			for (Map.Entry<String, String> entry : lstMap.entrySet()) {
+				if(Validator.isNull(dossierIds)){
+					dossierIds += entry.getValue();
+				}else if(Validator.isNotNull(dossierIds)){
+					dossierIds += "," + entry.getValue();
+				}
+			}
+			if(Validator.isNotNull(dossierIds)){
+				model.setDossierIds(dossierIds);
+			}
+		}
+			model.setDossierActionId(dAction.getDossierActionId());
+			model.setDossierId(dAction.getDossierId());
+			model.setDossierDocumentId(dossierDocumentId);
+			model.setFromStepCode(dAction.getFromStepCode());
+			model.setNextActionId(dAction.getNextActionId());
+			model.setGroupId(dAction.getGroupId());
+			model.setPreviousActionId(dAction.getPreviousActionId());
+			model.setSequenceNo(dAction.getSequenceNo());
+			model.setServiceProcessId(dAction.getServiceProcessId());
+			model.setRollbackable(dAction.getRollbackable());
 
 		return model;
 	}
@@ -1522,6 +1600,8 @@ public class DossierUtils {
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
 			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
 			model.setDossierSubStatusText(doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
+			model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
+			model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
 
 			ouputs.add(model);
 		}
@@ -1695,6 +1775,7 @@ public class DossierUtils {
 		model.setVnpostalStatus(input.getVnpostalStatus());
 		model.setVnpostalProfile(input.getVnpostalProfile());
 		model.setFromViaPostal(input.getFromViaPostal());
+		model.setSystemId(input.getSystemId());
 		
 		return model;
 	}
@@ -1793,7 +1874,9 @@ public class DossierUtils {
 			model.setApplicantName(doc.getApplicantName() != null ? doc.getApplicantName().toUpperCase().replace(";", "; ") : StringPool.BLANK);
 			model.setDossierNo(doc.getDossierNo());
 			model.setOriginality(originality);
-			model.setDueDate(doc.getDueDate().toGMTString());
+			if(Validator.isNotNull(doc.getDueDate())) {
+				model.setDueDate(doc.getDueDate().toGMTString());
+			}
 			if(Validator.isNotNull(doc.getExtendDate())) {
 				model.setExtendDate(doc.getExtendDate().toGMTString());
 			}
@@ -1814,6 +1897,180 @@ public class DossierUtils {
 		}
 
 		return ouputs;
+	}
+	
+	/**
+	 * Mapping for list dossier voting.
+	 *
+	 * @param docs the docs
+	 * @param groupId the group id
+	 * @return the list
+	 * Bao cao danh gia giai quyet TTHC theo tung ho so cua co quan, don vi
+	 */
+	public static List<DossierVotingDataModel> mappingForListDossierVoting(List<Document> docs, long groupId) {
+		List<DossierVotingDataModel> ouputs = new ArrayList<DossierVotingDataModel>();
+		List<String> listDossierId = new ArrayList<>();
+		int size = 0;
+		long classPK;
+		String votingCode;
+		String votingName;
+		Integer point;
+		long dossierIdFromDossier;
+		int indexVoting = 1;
+		List<Object[]> listVoting = new ArrayList<Object[]>();
+
+		for (Document doc : docs) {
+			if (doc.hasField(Field.ENTRY_CLASS_PK) && Validator.isNotNull(doc.get(Field.ENTRY_CLASS_PK))) {
+				listDossierId.add(doc.get(Field.ENTRY_CLASS_PK));
+			}
+		}
+
+		
+
+		for (Document doc : docs) {
+			DossierVotingDataModel model = new DossierVotingDataModel();
+			
+			// set default cac tieu chi danh gia 5, 6, 8, 9
+			model.setVotingCode5(StringPool.BLANK);
+			model.setVotingCode6(StringPool.BLANK);
+			model.setVotingCode8(StringPool.BLANK);
+			model.setVotingCode9(StringPool.BLANK);
+			model.setVotingName5(StringPool.BLANK);
+			model.setVotingName6(StringPool.BLANK);
+			model.setVotingName8(StringPool.BLANK);
+			model.setVotingName9(StringPool.BLANK);
+			model.setResultVotingCode5(1);
+			model.setResultVotingCode6(2);
+			model.setResultVotingCode8(2);
+			model.setResultVotingCode9(2);
+
+			if (listDossierId.size() > 0) {
+				listVoting = DossierLocalServiceUtil.getListVotingByDossier(groupId, listDossierId);
+				if (Validator.isNull(listVoting) || listVoting.size() == 0) {
+					model.setVotingCode3(StringPool.BLANK);
+					model.setVotingCode4(StringPool.BLANK);
+					model.setVotingCode7(StringPool.BLANK);
+					model.setVotingName3(StringPool.BLANK);
+					model.setVotingName4(StringPool.BLANK);
+					model.setVotingName7(StringPool.BLANK);
+					model.setResultVotingCode3(2);
+					model.setResultVotingCode4(2);
+					model.setResultVotingCode7(2);
+				} else {
+					size = listVoting.size();
+				}
+			}
+
+			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
+			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+			model.setDossierName(doc.get(DossierTerm.DOSSIER_NAME));
+			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
+			model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+			model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
+			model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+			model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
+			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
+			
+			Date dueDate = Validator.isNull(model.getDueDate()) ? null
+					: DateTimeUtils.convertStringToFullDate(model.getDueDate());
+			Date extendDate = Validator.isNull(model.getExtendDate()) ? null
+					: DateTimeUtils.convertStringToFullDate(model.getExtendDate());
+			Date releaseDate = Validator.isNull(model.getReleaseDate()) ? null
+					: DateTimeUtils.convertStringToFullDate(model.getReleaseDate());
+			Date finishDate = Validator.isNull(model.getFinishDate()) ? null
+					: DateTimeUtils.convertStringToFullDate(model.getFinishDate());
+			int overdue = 1;
+			if (dueDate != null) {
+				// Check extendDate != null and releaseDate < dueDate
+				if (releaseDate != null && releaseDate.before(dueDate) && extendDate != null)
+					overdue = 2;
+				// Or check finishDate < dueDate
+				if (finishDate != null && finishDate.before(dueDate))
+					overdue = 2;
+
+				// Check overTime condition releaseDate > dueDate
+				if (releaseDate != null && releaseDate.after(dueDate))
+					overdue = 0;
+			}
+			model.setVotingCode1(StringPool.BLANK);
+			model.setVotingName1(StringPool.BLANK);
+			model.setResultVotingCode1(overdue);
+			model.setVotingCode2(StringPool.BLANK);
+			model.setVotingName2(StringPool.BLANK);
+			model.setResultVotingCode2(overdue);
+			
+			dossierIdFromDossier = GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
+			
+			if (size > 0) {
+				for (int i = 0; i < size; i++) {
+					// each voting
+					if (Validator.isNull(listVoting.get(i))) {
+						continue;
+					}
+
+					if (Validator.isNull(listVoting.get(i)[0])) {
+						// No classPK
+						continue;
+					}
+
+					classPK = GetterUtil.getLong(listVoting.get(i)[0]);
+					if (classPK == 0) {
+						// classPK is string or = 0
+						continue;
+					}
+					if (dossierIdFromDossier == classPK) {
+						votingCode = Validator.isNotNull(listVoting.get(i)[1]) ? (String) listVoting.get(i)[1] : "";
+						votingName = Validator.isNotNull(listVoting.get(i)[3]) ? (String) listVoting.get(i)[3] : "";
+						point = Validator.isNotNull(listVoting.get(i)[4]) ? (Integer) listVoting.get(i)[4] : 0;
+
+						if (indexVoting == 1) {
+							model.setVotingCode3(votingCode);
+							model.setVotingName3(votingName);
+							model.setResultVotingCode3(point);
+						} else if (indexVoting == 2) {
+							model.setVotingCode4(votingCode);
+							model.setVotingName4(votingName);
+							model.setResultVotingCode4(point);
+						} else if (indexVoting == 3) {
+							model.setVotingCode7(votingCode);
+							model.setVotingName7(votingName);
+							model.setResultVotingCode7(point);
+							break;
+						} 
+						indexVoting++;
+					}
+				}
+			}
+			ouputs.add(model);
+		}
+
+	return ouputs;
+
+	}
+	
+	public static String getmd5(String input) {
+		try {
+			// Static getInstance method is called with hashing MD5
+            MessageDigest md = MessageDigest.getInstance("MD5");
+  
+            // digest() method is called to calculate message digest
+            //  of an input digest() return array of byte
+            byte[] messageDigest = md.digest(input.getBytes());
+  
+            // Convert byte array into signum representation
+            BigInteger no = new BigInteger(1, messageDigest);
+  
+            // Convert message digest into hex value
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

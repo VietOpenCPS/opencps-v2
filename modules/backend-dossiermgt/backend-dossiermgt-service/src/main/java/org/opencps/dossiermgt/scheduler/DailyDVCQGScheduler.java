@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.*;
 import java.util.Date;
 import java.util.Map;
 
-@Component(immediate = true, service = DailyDVCQGScheduler.class)
+//@Component(immediate = true, service = DailyDVCQGScheduler.class)
 public class DailyDVCQGScheduler extends BaseMessageListener {
     private volatile boolean isRunning = false;
 
@@ -39,7 +39,7 @@ public class DailyDVCQGScheduler extends BaseMessageListener {
             DVCQGIntegrationAction action = new DVCQGIntegrationActionImpl();
             action.syncSummaryVote();
         } catch (Exception e){
-            _log.error(e.getMessage());
+            _log.error(e);
         }
         isRunning = false;
     }

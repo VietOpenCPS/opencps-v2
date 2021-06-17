@@ -406,4 +406,47 @@ public interface DeliverablesManagement {
 		@Context ServiceContext serviceContext,
 		@ApiParam(value = "deliverableCode of Deliverable", required = true) @FormParam("deliverableCode") String deliverableCode,
 		@ApiParam(value = "id of DossierFile", required = true) @FormParam("dossierFileId") Long dossierFileId);
+
+	@POST
+	@Path("/deliverables/import/file/v3")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "import deliverable excel file")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Return a list Deliverable was imported"),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response importDeliverables3(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
+			@ApiParam(value = "deliverableType of Deliverable", required = true) @Multipart("deliverableTypeCode") String deliverableTypeCode);
+
+	@GET
+	@Path("/genDeliverable/{typeCode}/{govAgencyCode}")
+	@Consumes({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Gen deliverables")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Return a list Deliverable"),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not Found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access defined", response = ExceptionModel.class)
+	})
+	public Response genDeliverable(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@PathParam("typeCode") String typeCode,
+			@PathParam("govAgencyCode") String govAgencyCode);
+
 }

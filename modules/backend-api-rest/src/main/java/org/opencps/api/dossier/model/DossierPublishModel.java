@@ -283,6 +283,16 @@ public class DossierPublishModel {
 	protected String vnpostalProfile;
 	@FormParam(value = "fromViaPostal")
 	protected Integer fromViaPostal;
+	@FormParam(value = "systemId")
+	protected int systemId;
+
+	public int getSystemId() {
+		return systemId;
+	}
+
+	public void setSystemId(int systemId) {
+		this.systemId = systemId;
+	}
 
 	public String getPostalDistrictName() {
 		return postalDistrictName;

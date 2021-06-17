@@ -49,6 +49,8 @@
 		<column name="govAgencyText" type="String" />
 		<column name="isNotarization" type="boolean" />
 		<column name="serviceNameTitle" type="String"/>
+		<column name="tagCode" type="String"/>
+		<column name="tagName" type="String"/>
 
 		<!-- Order -->
 
@@ -150,6 +152,7 @@
 		<column name="eFormData" type="String" />
 		<column name="email" type="String" />
 		<column name="secret" type="String" />
+		<column name="govAgencyCode" type="String" />
 <!-- 		<column name="checkinDate" type="Date" /> -->
 <!-- 		<column name="gateNumber" type="String" /> -->
 <!-- 		<column name="state" type="int" /> -->
@@ -202,6 +205,7 @@
 		<column name="online" type="boolean" />
 		<column name="bookingInTime" type="String" />
 		<column name="telNo" type="String" />
+		<column name="govAgencyCode" type="String" />
 
 		<!-- Order -->
 		<order>
@@ -420,6 +424,14 @@
 			<finder-column name="serviceLevel" />
 		</finder>
 
+		<finder return-type="ServiceConfig" name="GID_SI_GOV_LEVEL">
+			<finder-column name="groupId" />
+			<finder-column name="serviceInfoId" />
+			<finder-column name="govAgencyCode" />
+			<finder-column name="serviceLevel" />
+		</finder>
+
+
 	</entity>
 
 	<entity name="ProcessOption" table="opencps_processoption"
@@ -453,6 +465,8 @@
 		<column name="submissionNote" type="String" />
 		<column name="sampleCount" type="long" />
 		<column name="registerBookCode" type="String"></column>
+		<column name="forCitizen" type="boolean" />
+		<column name="forBusiness" type="boolean" />
 
 		<finder return-type="Collection" name="SC_ID">
 			<finder-column name="serviceConfigId" />
@@ -598,7 +612,7 @@
 		<column name="postalCodeReceived" type="String" />
 		<column name="lastReceiveDate" type="Date" />
 		<column name="lastSendDate" type="Date" />
-		
+		<column name="serviceLevel" type="int"/>
 		<!-- Order -->
 		
 		<!-- Finder methods -->
@@ -740,6 +754,15 @@
 			<finder-column name="govAgencyCode" />
 			<finder-column name="dossierTemplateNo" />
 			<finder-column name="originDossierId"/>
+		</finder>
+		<finder return-type="Dossier" name="G_AN_SC_GAC_DTNO_SN_ODID">
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo" />
+			<finder-column name="serviceCode" />
+			<finder-column name="govAgencyCode" />
+			<finder-column name="dossierTemplateNo" />
+			<finder-column name="originDossierId"/>
+			<finder-column name="serverNo"/>
 		</finder>
 		
 		<finder return-type="Collection" name="O">
@@ -1001,6 +1024,11 @@
 		<finder return-type="Collection" name="DID_GROUP">
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />
+		</finder>
+		<finder return-type="Collection" name="G_DID_FILE">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" comparator="=" arrayable-operator="OR"/>
+			<finder-column name="dossierPartNo" />
 		</finder>
 	</entity>
 
@@ -2163,6 +2191,9 @@
 		<finder return-type="Collection" name="C">
 			<finder-column name="companyId" />
 		</finder>
+		<finder return-type="Collection" name="D_OR_D">
+			<finder-column name="groupId" comparator="=" arrayable-operator="OR"/>
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="Deliverable" remote-service="false" 
@@ -2229,6 +2260,15 @@
 		<finder return-type="Deliverable" name="F_GID_DID">
 			<finder-column name="groupId"/>
 			<finder-column name="dossierId"/>
+		</finder>
+		<finder return-type="Deliverable" name="F_GID_AID">
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo"/>
+		</finder>
+		<finder return-type="Deliverable" name="F_GID_DI_STATE">
+			<finder-column name="groupId"/>
+			<finder-column name="dossierId"/>
+			<finder-column name="deliverableState"/>
 		</finder>
 <!-- 		<order> -->
 <!-- 			<order-column name="modifiedDate" order-by="asc" /> -->
@@ -2737,6 +2777,11 @@
 			<finder-column name="serverNo" />					
 		</finder>
 
+		<finder return-type="Collection" name="DID_SN">
+			<finder-column name="dossierId" />
+			<finder-column name="serverNo" />
+		</finder>
+
 		<finder return-type="Collection" name="G_DID_SN_NST">
 			<finder-column name="groupId" />	
 			<finder-column name="dossierId" />	
@@ -2761,6 +2806,11 @@
 		<finder name="STS_SN_NOT" return-type="Collection">
 			<finder-column name="status" comparator="=" arrayable-operator="OR"></finder-column>
 			<finder-column name="serverNo" comparator="!="></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="DID_SN_NOT">
+			<finder-column name="dossierId" />
+			<finder-column name="serverNo" comparator="!="/>
 		</finder>
 
 		<finder name="STS_SN" return-type="Collection">

@@ -139,6 +139,7 @@ public class DossierSoap implements Serializable {
 		soapModel.setPostalCodeReceived(model.getPostalCodeReceived());
 		soapModel.setLastReceiveDate(model.getLastReceiveDate());
 		soapModel.setLastSendDate(model.getLastSendDate());
+		soapModel.setServiceLevel(model.getServiceLevel());
 
 		return soapModel;
 	}
@@ -1055,6 +1056,14 @@ public class DossierSoap implements Serializable {
 		_lastSendDate = lastSendDate;
 	}
 
+	public int getServiceLevel() {
+		return _serviceLevel;
+	}
+
+	public void setServiceLevel(int serviceLevel) {
+		_serviceLevel = serviceLevel;
+	}
+
 	private String _uuid;
 	private long _dossierId;
 	private long _groupId;
@@ -1161,4 +1170,5 @@ public class DossierSoap implements Serializable {
 	private String _postalCodeReceived;
 	private Date _lastReceiveDate;
 	private Date _lastSendDate;
+	private int _serviceLevel;
 }

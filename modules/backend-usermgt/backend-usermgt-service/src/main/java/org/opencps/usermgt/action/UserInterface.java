@@ -85,4 +85,8 @@ public interface UserInterface {
 			ServiceContext serviceContext)
 			throws PortalException;
 
+	public JSONObject getLiveUser(long userId, long companyId, long groupId, ServiceContext serviceContext);
+
+	public User checkUser(String fullName, String screenName, String email, String password,
+						  ServiceContext serviceContext) throws PortalException;
 }

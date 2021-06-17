@@ -1,6 +1,7 @@
 
 package org.opencps.api.controller.util;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -19,12 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -257,44 +253,16 @@ public class ConvertDossierFromV1Dot9Utils {
 	}
 
 	public static InputStream getFileFromDVCOld(String url) {
-
 		URL oracle;
-//		BufferedReader br = null;
 		InputStream result = null;
 		try {
 			oracle = new URL(url);
-
 			result = oracle.openStream();
-			_log.info(url);
-			// if (url.indexOf("txt") > 0) {
-			// br = new BufferedReader(new InputStreamReader(result));
-			//
-			// String line = null;
-			//
-			// while ((line = br.readLine()) != null) {
-			// if (line.equalsIgnoreCase("quit")) {
-			// break;
-			// }
-			// System.out.println("Line entered : " + line);
-			// }
-			// }
-
 		}
 		catch (Exception e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
 			_log.debug(e);
 		}
-		finally {
-//			if (br != null) {
-//				try {
-//					br.close();
-//				}
-//				catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-		}
+
 		return result;
 	}
 
@@ -487,16 +455,27 @@ public class ConvertDossierFromV1Dot9Utils {
 		List<Employee> employees = EmployeeLocalServiceUtil.findByG(groupId);
 		System.out.println(
 			groupId + "start import dossier user..." + dossierId);
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		for (Employee e : employees) {
-			if (e.getMappingUserId() > 0) {
+			if (checkGovDossierEmployee(dossier, e)) {
+				if (e.getMappingUserId() > 0) {
 
-				DossierUserActions duActions = new DossierUserActionsImpl();;
-				duActions.addDossierUser(
-					groupId, dossierId, e.getMappingUserId(), 1, true);
+					DossierUserActions duActions = new DossierUserActionsImpl();
+					duActions.addDossierUser(
+							groupId, dossierId, e.getMappingUserId(), 1, true);
+				}
 			}
 		}
 		System.out.println(
 			groupId + "start import dossier user done..." + dossierId);
+	}
+
+	private static boolean checkGovDossierEmployee(Dossier dossier, Employee e) {
+		if (e != null && (Validator.isNull(e.getScope()) || (Arrays.asList(e.getScope().split(StringPool.COMMA)).indexOf(dossier.getGovAgencyCode()) >= 0))) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public static void insertUserDossierDvc(long mappingID, long dossierId) {

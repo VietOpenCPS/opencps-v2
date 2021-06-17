@@ -16,12 +16,14 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -46,27 +48,80 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 	@Override
 	public String getAuthURL(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String state, String redirectURL) {
+			String state, String redirectURL, String ... providers) {
 
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
 
+		String provider = StringPool.BLANK;
+		
+		if(providers != null && providers.length > 0) {
+			provider = providers[0];
+		}
+		
+		_log.debug("=======>>> getAuthURL provider " + provider);
+		
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
 			try {
+				
+				state = state + "@" + redirectURL;
+			
+				state = Base64.getEncoder().encodeToString(state.getBytes());
 				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+				
+				if (Validator.isNotNull(provider) && provider.equalsIgnoreCase("ssocs")) {
+					String auth_server = config.getString("ssocs_auth_server");
+					String accesstoken_endpoint = config.getString("ssocs_accesstoken_endpoint");
+					String scope = config.getString("ssocs_scope");
+					String auth_endpoint = config.getString("ssocs_auth_endpoint");
+
+					JSONObject headerNode = JSONFactoryUtil.createJSONObject();
+
+					JSONObject bodyNode;
+
+					String endpoint;
+
+					JSONObject resultObj = getAccessToken(serverConfig);
+
+					String authorizeEndpoint = StringPool.BLANK;
+
+					if (resultObj.has("access_token")) {
+						
+						String token = resultObj.getString("access_token");
+
+						endpoint = auth_server + auth_endpoint;
+
+						headerNode.put("Authorization", "Bearer " + token);
+						headerNode.put("scope", scope);
+
+						bodyNode = JSONFactoryUtil.createJSONObject();
+
+						//get AuthorizeEndpoint
+						String  authorizeEndpointData = doConnect(endpoint, "POST", false, 10 * 1000, StringPool.BLANK, headerNode, bodyNode);
+
+						if (Validator.isNotNull(authorizeEndpointData)) {
+							resultObj = JSONFactoryUtil.createJSONObject(authorizeEndpointData);
+
+							authorizeEndpoint = resultObj.has("authorize_endpoint")
+									? resultObj.getString("authorize_endpoint")
+									: StringPool.BLANK;
+							
+							_log.debug("=======>>> authorizeEndpoint " + authorizeEndpoint);
+						}
+					}
+
+					return authorizeEndpoint;
+				}
+
 				String auth_server = config.getString("auth_server");
 				String auth_endpoint = config.getString("auth_endpoint");
 				String clientid = config.getString("clientid");
 				String callback_url = config.getString("callback_url");
 				String scope = config.getString("scope");
 				String acr_values = config.getString("acr_values");
-				state = state + "@" + redirectURL;
-				state = Base64.getEncoder().encodeToString(state.getBytes());
-				String endpoint = auth_server + auth_endpoint + "?response_type=code" + "&client_id=" + clientid
-						+ "&redirect_uri=" + callback_url + "&scope=" + scope + "&acr_values=" + acr_values + "&state="
-						+ state;
 
-				return endpoint;
+				return auth_server + auth_endpoint + "?response_type=code" + "&client_id=" + clientid + "&redirect_uri="
+						+ callback_url + "&scope=" + scope + "&acr_values=" + acr_values + "&state=" + state;
 
 			} catch (Exception e) {
 				_log.error(e);
@@ -148,7 +203,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 	@Override
 	public JSONObject getUserInfo(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String authToken, String state) {
+			String authToken, String state, String... providers) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
@@ -156,8 +211,19 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		String accessToken = StringPool.BLANK;
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
+			
+			String provider = (providers != null && providers.length > 0) ? providers[0] : StringPool.BLANK; 
+			
+			_log.debug("=====>>> getUserInfo: providers " + com.liferay.portal.kernel.util.StringUtil.merge(providers));
 
-			JSONObject accessTokenInfo = getAccessToken(user, groupId, serviceContext, authToken, serverConfig);
+			JSONObject accessTokenInfo  = null;
+			
+			if(Validator.isNotNull(provider) && provider.equalsIgnoreCase("ssocs")) {
+				accessTokenInfo = getAccessToken(serverConfig);
+				_log.debug("=====>>> getUserInfo: accessTokenInfo " + accessTokenInfo);
+			}else {
+				accessTokenInfo = getAccessToken(user, groupId, serviceContext, authToken, serverConfig);
+			}
 
 			if (accessTokenInfo.length() > 0 && accessTokenInfo.has("access_token")) {
 				accessToken = accessTokenInfo.getString("access_token");
@@ -171,7 +237,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				String SoDinhDanh;// = StringPool.BLANK;
 				String TechID;// = StringPool.BLANK;
 
-				result = invokeUserInfo(user, groupId, serviceContext, accessToken, serverConfig);
+				result = invokeUserInfo(user, groupId, serviceContext, accessToken, serverConfig, providers);
 
 				if (result == null || result.length() == 0) {
 					result = JSONFactoryUtil.createJSONObject();
@@ -243,26 +309,53 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		String encryptData = (result != null && result.length() > 0)
 				? Base64.getEncoder().encodeToString(result.toJSONString().getBytes())
 				: StringPool.BLANK;
-		if (result != null)
+		if (result != null) {
 			result.put("encryptData", encryptData);
-
-		result.put("id_token", id_token);
-		result.put("access_token", accessToken);
+			result.put("id_token", id_token);
+			result.put("access_token", accessToken);
+		}
 
 		return result;
 	}
 
 	private JSONObject invokeUserInfo(User user, long groupId, ServiceContext serviceContext, String accessToken,
-			ServerConfig serverConfig) {
+			ServerConfig serverConfig, String ...providers) {
 
 		HttpURLConnection conn = null;
+		
+		String provider = (providers != null && providers.length > 0) ? providers[0] : StringPool.BLANK;
+		String code =  (providers != null && providers.length > 1) ? providers[1] : StringPool.BLANK;
+		
 		try {
 
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-			String auth_server = config.getString("auth_server");
-			String userinfo_endpoint = config.getString("userinfo_endpoint");
-
+			
+			String auth_server = StringPool.BLANK;
+			
+			String userinfo_endpoint = StringPool.BLANK;
+			
+			String scope = StringPool.BLANK;
+			
+			if(provider != null && provider.equalsIgnoreCase("ssocs")) {
+				auth_server = config.getString("ssocs_auth_server");
+				
+				userinfo_endpoint = config.getString("ssocs_userinfo_endpoint");
+				
+				scope = config.getString("ssocs_scope");
+				
+			}else {
+				auth_server = config.getString("auth_server");
+				
+				userinfo_endpoint = config.getString("userinfo_endpoint");
+			}
+			
 			String endpoint = auth_server + userinfo_endpoint;
+			
+			if(provider != null && provider.equalsIgnoreCase("ssocs")) {
+				endpoint += "?code=" + code;
+			}
+			
+			System.out.println("invokeUserInfo " + endpoint);
 
 			URL url = new URL(endpoint);
 
@@ -273,6 +366,10 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
+			if(provider != null && provider.equalsIgnoreCase("ssocs")) {
+				conn.setRequestProperty("scope", scope);
+				conn.setRequestMethod(HttpMethod.GET);
+			}
 			conn.setReadTimeout(60 * 1000);
 
 			conn.setUseCaches(false);
@@ -474,6 +571,50 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			}
 		}
 	}
+	
+	private JSONObject getAccessToken(
+			ServerConfig serverConfig) {
+
+		try {
+			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			String auth_server = config.getString("ssocs_auth_server");
+			String username = config.getString("ssocs_username");
+			String password = config.getString("ssocs_password");
+			String clientid = config.getString("ssocs_clientid");
+			String client_secret = config.getString("ssocs_client_secret");
+			String accesstoken_endpoint = config.getString("ssocs_accesstoken_endpoint");
+			String scope = config.getString("ssocs_scope");
+			
+			JSONObject headerNode = JSONFactoryUtil.createJSONObject();
+			headerNode.put("Accept", "application/json");
+			headerNode.put("Content-Type", "application/json");
+			String authorization = Base64.getEncoder().encodeToString((clientid + ":" + client_secret).getBytes()).toString();
+			_log.debug("=====>>> getAccessToken authorization " + authorization);
+			headerNode.put("Authorization",
+					"Basic " + authorization);
+
+			JSONObject bodyNode = JSONFactoryUtil.createJSONObject();
+
+			bodyNode.put("username", username);
+			bodyNode.put("password", password);
+			bodyNode.put("scope", scope);
+
+			String endpoint = auth_server + accesstoken_endpoint;
+			
+			System.out.println(headerNode);
+			
+			System.out.println(bodyNode);
+
+			String result = doConnect(endpoint, "POST", true, 10 * 1000, "payload", headerNode, bodyNode);
+		
+			return JSONFactoryUtil.createJSONObject(result);
+
+			
+		} catch (Exception e) {
+			_log.error(e);
+			return JSONFactoryUtil.createJSONObject();
+		}
+	}
 
 	private JSONObject createErrorMessage(String error, int statusCode) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
@@ -591,7 +732,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 							Validator.isNotNull(SoCMND) ? SoCMND : SoDinhDanh);
 
 					if (applicant == null) {
-						applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
+						ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
 					}
 				}
 				// doanh nghiep
@@ -602,7 +743,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 					applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId,
 							Validator.isNotNull(MaSoThue) ? MaSoThue : MaSoDoanhNghiep);
 					if (applicant == null) {
-						applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
+						ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
 					}
 				} else {
 					return createErrorMessage("Unknown LoaiTaiKhoan", 404);
@@ -924,6 +1065,121 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 	}
 
 	//private String _SESSION_API_PRIFIX = "equinox.http.rest.v2";
+	
+	public String doConnect(String endpoint, String method, boolean useCaches, int timeout,
+			String requestBodyType, JSONObject headerNode, JSONObject bodyNode) {
+		String result = StringPool.BLANK;
+
+		HttpURLConnection conn = null;
+
+		BufferedReader bufferedReader = null;
+
+		InputStreamReader inputStreamReader = null;
+
+		try {
+			
+			_log.debug("=====>>> doConnect endpoint " + endpoint);
+
+			URL url = new URL(endpoint);
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod(method);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+
+
+			if (headerNode != null) {
+				Iterator<String> itr = headerNode.keys();
+				while (itr.hasNext()) {
+					String key = itr.next();
+					String value = headerNode.getString(key);
+					conn.setRequestProperty(key, value);
+				}
+			}
+
+			conn.setInstanceFollowRedirects(true);
+			HttpURLConnection.setFollowRedirects(true);
+			conn.setReadTimeout(timeout);
+			conn.setUseCaches(useCaches);
+
+			if (bodyNode != null && requestBodyType != null) {
+				switch (requestBodyType) {
+				case "urlencoded":
+					StringBuffer params = new StringBuffer();
+					Iterator<String> itr = bodyNode.keys();
+					while (itr.hasNext()) {
+						String key = itr.next();
+						String value = bodyNode.getString(key);
+						params.append("&" + key + "=" + value);
+					}
+					byte[] postData = params.toString().substring(1).getBytes("UTF-8");
+					int postDataLength = postData.length;
+					conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+					try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+						wr.write(postData);
+					}
+					break;
+
+				
+				case "payload":
+					postData = bodyNode.toString().getBytes("UTF-8");
+					postDataLength = postData.length;
+					conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+					try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+						wr.write(postData);
+					}
+					break;
+
+				default:
+					break;
+				}
+			}
+
+			conn.connect();
+
+			inputStreamReader = new InputStreamReader(conn.getInputStream(), "UTF-8");
+
+			bufferedReader = new BufferedReader(inputStreamReader);
+
+			String output = "";
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = bufferedReader.readLine()) != null) {
+				sb.append(output);
+			}
+
+			result = sb.toString();
+
+			_log.info("invoke data response: " + result);
+
+		} catch (Exception e) {
+			_log.error(e);
+		} finally {
+
+			if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				} catch (IOException e) {
+					_log.error(e);
+				}
+			}
+
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (IOException e) {
+					_log.error(e);
+				}
+			}
+
+			if (conn != null) {
+				conn.disconnect();
+			}
+		}
+		return result;
+	}
 
 	private String _DEFAULT_CLASS_NAME = "dvcqg";
+	
+	//private String _SSOCS_CLASS_NAME = "ssocs";
 }

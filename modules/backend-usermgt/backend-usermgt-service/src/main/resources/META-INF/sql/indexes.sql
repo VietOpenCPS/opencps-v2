@@ -40,7 +40,6 @@ create index IX_F9CB80BF on opencps_employee_jobpos (uuid_[$COLUMN_LENGTH:75$], 
 create unique index IX_E16B2B01 on opencps_employee_jobpos (uuid_[$COLUMN_LENGTH:75$], groupId);
 create index IX_B6CA9215 on opencps_employee_jobpos (workingUnitId);
 
-create index IX_8ADED1C3 on opencps_fileitem (fileTemplateNo[$COLUMN_LENGTH:128$]);
 create index IX_A082263D on opencps_fileitem (groupId, fileTemplateNo[$COLUMN_LENGTH:128$]);
 create index IX_9F5B50F8 on opencps_fileitem (groupId, status);
 create index IX_E9DD878C on opencps_fileitem (uuid_[$COLUMN_LENGTH:75$], companyId);
@@ -50,11 +49,9 @@ create index IX_A68549C2 on opencps_jobpos (groupId, jobPosCode[$COLUMN_LENGTH:2
 create index IX_3D2FB230 on opencps_jobpos (groupId, jobPosId);
 create index IX_D307AE5 on opencps_jobpos (groupId, mappingRoleId);
 create index IX_F3E0B05E on opencps_jobpos (groupId, title[$COLUMN_LENGTH:255$]);
+create index IX_35B18698 on opencps_jobpos (jobPosCode[$COLUMN_LENGTH:255$]);
 create index IX_20408734 on opencps_jobpos (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_6EE94AB6 on opencps_jobpos (uuid_[$COLUMN_LENGTH:75$], groupId);
-
-create unique index IX_42C3A548 on opencps_lgsp_token (tokenType[$COLUMN_LENGTH:75$]);
-create index IX_D07481B9 on opencps_lgsp_token (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_20BCFC05 on opencps_officesite (groupId, siteGroupId);
 create index IX_31C5CE40 on opencps_officesite (uuid_[$COLUMN_LENGTH:75$], companyId);
@@ -90,7 +87,6 @@ create index IX_4D2C3370 on opencps_track_client (sessionId[$COLUMN_LENGTH:128$]
 create index IX_D692EFEC on opencps_track_client (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_8E58C98E on opencps_track_client_statistic (day, month, year, desktop, mobile, tablet);
-create index IX_C238356 on opencps_track_client_statistic (url[$COLUMN_LENGTH:2048$], desktop, mobile, tablet);
 create index IX_68556269 on opencps_track_client_statistic (url[$COLUMN_LENGTH:2048$], year, month, day, desktop, mobile, tablet);
 create index IX_7281E1BB on opencps_track_client_statistic (uuid_[$COLUMN_LENGTH:75$]);
 

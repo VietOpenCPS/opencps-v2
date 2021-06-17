@@ -1,4 +1,4 @@
-package org.opencps.dossiermgt.action.util;
+	package org.opencps.dossiermgt.action.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -22,15 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
+import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.dossiermgt.service.comparator.DossierActionComparator;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.action.ApplicantActions;
@@ -85,6 +80,8 @@ public class AutoFillFormData {
 			String _sampleCount = StringPool.BLANK;
 			String _documentDate = StringPool.BLANK;
 			String _documentNo = StringPool.BLANK;
+			String _govAgencyCode = StringPool.BLANK;
+			String _deliverableCode = StringPool.BLANK;
 
 			SimpleDateFormat sfd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE_TIME);
 
@@ -94,6 +91,7 @@ public class AutoFillFormData {
 				_receiveDate = Validator.isNotNull(dossier.getReceiveDate()) ? dossier.getReceiveDate().toGMTString()
 						: StringPool.BLANK;
 				_dossierNo = dossier.getDossierNo();
+				_govAgencyCode = dossier.getGovAgencyCode();
 
 				// get data applicant or employee
 				ApplicantActions applicantActions = new ApplicantActionsImpl();
@@ -111,19 +109,11 @@ public class AutoFillFormData {
 						_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
 						_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
-						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
-						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
-						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
-						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
-						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
-						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
 						_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
 						_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
 						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
-						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
 						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
-//						_applicantIdDate = applicantJSON.getString("applicantIdDate");
 						_applicantIdDate = applicantJSON.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE);
 
 					} else {
@@ -134,26 +124,16 @@ public class AutoFillFormData {
 						_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
 						_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
-						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
-						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
-						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
-						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
-						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
-						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
 						_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
 						_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
 						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
-						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
 						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
 						_applicantIdDate = applicantJSON.getString(ApplicantTerm.APPLICANTIDDATE);
 						_representative = applicantJSON.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE);
-
 					}
 
 				} catch (PortalException e1) {
-					// TODO Auto-generated catch block
-//					e1.printStackTrace();
 					_log.error(e1);
 				}
 
@@ -161,6 +141,15 @@ public class AutoFillFormData {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
 							serviceContext.getUserId());
 
+					List<DossierFile> lstFile = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossierId);
+					if(lstFile !=null && !lstFile.isEmpty()){
+						for(DossierFile item : lstFile){
+							if(Validator.isNotNull(item.getDeliverableCode())){
+								_deliverableCode = item.getDeliverableCode();
+								break;
+							}
+						}
+					}
 					// _log.info("GET EMPLOYEE ID ____" +
 					// serviceContext.getUserId());
 
@@ -207,7 +196,6 @@ public class AutoFillFormData {
 			for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
 
 				String value = String.valueOf(entry.getValue());
-
 				if (value.startsWith(StringPool.UNDERLINE) && !value.contains(StringPool.COLON)) {
 
 					if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_NAME).equals(value)) {
@@ -238,6 +226,8 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _receiveDate);
 					} else if ((StringPool.UNDERLINE + DossierTerm.DOSSIER_NO).equals(value)) {
 						jsonMap.put(entry.getKey(), _dossierNo);
+					} else if ((StringPool.UNDERLINE + DossierTerm.GOV_AGENCY_CODE).equals(value)) {
+						jsonMap.put(entry.getKey(), _govAgencyCode);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_EMPLOYEE_NO).equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_employeeNo);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_FULL_NAME).equals(value)) {
@@ -266,6 +256,8 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _documentDate);
 					}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_NO).equals(value)){
 						jsonMap.put(entry.getKey(), _documentNo);
+					}else if((StringPool.UNDERLINE + DossierTerm.DELIVERABLE_CODE).equals(value)){
+						jsonMap.put(entry.getKey(), _deliverableCode);
 					}
 //					if(value.contains(StringPool.UNDERLINE + DossierTerm.META_DATA)){
 					if (value.startsWith(StringPool.UNDERLINE) && value.contains(DossierTerm.META_DATA)){
@@ -288,7 +280,7 @@ public class AutoFillFormData {
 									jsonMap.put(entry.getKey(),  StringPool.BLANK);
 								}
 							} catch (JSONException e) {
-								_log.debug(e.getMessage());
+								_log.debug(e);
 								e.printStackTrace();
 							}
 						}
@@ -325,6 +317,8 @@ public class AutoFillFormData {
 							resultBinding += StringPool.COMMA_AND_SPACE + _receiveDate;
 						} else if ((StringPool.UNDERLINE + DossierTerm.DOSSIER_NO).equals(value)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _dossierNo;
+						}else if ((StringPool.UNDERLINE + DossierTerm.GOV_AGENCY_CODE).equals(value)) {
+								resultBinding += StringPool.COMMA_AND_SPACE + _govAgencyCode;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_EMPLOYEE_NO).equals(value)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _employee_employeeNo;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_FULL_NAME).equals(value)) {
@@ -353,6 +347,8 @@ public class AutoFillFormData {
 							jsonMap.put(entry.getKey(), _documentDate);
 						}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_NO).equals(value)){
 							jsonMap.put(entry.getKey(), _documentNo);
+						}else if((StringPool.UNDERLINE + DossierTerm.DELIVERABLE_CODE).equals(value)){
+							jsonMap.put(entry.getKey(), _deliverableCode);
 						}
 					}
 
@@ -382,7 +378,11 @@ public class AutoFillFormData {
 									}
 									myCHK = myCHK.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK);
 								} else {
-									myCHK = jsonOtherMap.get(variable).toString();
+									if(Validator.isNotNull(jsonOtherMap.get(variable))) {
+										myCHK = jsonOtherMap.get(variable).toString();
+									}else{
+										myCHK = StringPool.BLANK;
+									}
 								}
 							} catch (Exception e) {
 								// TODO: handle exception
@@ -444,7 +444,8 @@ public class AutoFillFormData {
 				}
 			}
 		} catch (JSONException e) {
-			_log.error(e);
+			_log.error("Error While FillFormData! Configurate Debug Log: org.opencps.dossiermgt.action.util.AutoFillFormData for more details!");
+			_log.debug(e);
 //			e.printStackTrace();
 		}
 
@@ -473,7 +474,7 @@ public class AutoFillFormData {
 		Iterator<String> keysItr = object.keys();
 		while (keysItr.hasNext()) {
 			String key = keysItr.next();
-			Object value = null;
+			Object value;
 			if (Validator.isNotNull(object.getJSONArray(key))) {
 				value = (JSONArray) object.getJSONArray(key);
 				map.put(key, value);
@@ -541,6 +542,7 @@ public class AutoFillFormData {
 			String _representative = StringPool.BLANK;
 			String _govAgencyName = StringPool.BLANK;
 			String _serviceName = StringPool.BLANK;
+			String _deliverableCode = StringPool.BLANK;
 
 			SimpleDateFormat sfd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE_TIME);
 
@@ -617,6 +619,15 @@ public class AutoFillFormData {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
 							serviceContext.getUserId());
 
+					List<DossierFile> lstFile = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossier.getDossierId());
+					if(lstFile !=null && !lstFile.isEmpty()){
+						for(DossierFile item : lstFile){
+							if(Validator.isNotNull(item.getDeliverableCode())){
+								_deliverableCode = item.getDeliverableCode();
+								break;
+							}
+						}
+					}
 					// _log.info("GET EMPLOYEE ID ____" +
 					// serviceContext.getUserId());
 
@@ -703,6 +714,8 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _govAgencyName);
 					} else if ((StringPool.UNDERLINE + DossierTerm.SERVICE_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _serviceName);
+					}else if((StringPool.UNDERLINE + DossierTerm.DELIVERABLE_CODE).equals(value)){
+						jsonMap.put(entry.getKey(), _deliverableCode);
 					}
 
 				} else if (value.startsWith(StringPool.UNDERLINE) && value.contains(StringPool.COLON)) {
@@ -759,6 +772,8 @@ public class AutoFillFormData {
 							jsonMap.put(entry.getKey(), _govAgencyName);
 						} else if ((StringPool.UNDERLINE + DossierTerm.SERVICE_NAME).equals(value)) {
 							jsonMap.put(entry.getKey(), _serviceName);
+						}else if((StringPool.UNDERLINE + DossierTerm.DELIVERABLE_CODE).equals(value)){
+							jsonMap.put(entry.getKey(), _deliverableCode);
 						}
 					}
 
@@ -777,8 +792,6 @@ public class AutoFillFormData {
 								&& dossierFile.getFormData().trim().length() != 0) {
 							JSONObject jsonOtherData = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
 							Map<String, Object> jsonOtherMap = jsonToMap(jsonOtherData);
-							// _log.info("JSON other map: " +
-							// Arrays.toString(jsonOtherMap.entrySet().toArray()));
 							String myCHK = StringPool.BLANK;
 							try {
 								if (variable.contains(StringPool.COLON)) {
@@ -788,7 +801,11 @@ public class AutoFillFormData {
 									}
 									myCHK = myCHK.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK);
 								} else {
-									myCHK = jsonOtherMap.get(variable).toString();
+									if(Validator.isNotNull(jsonOtherMap.get(variable))) {
+										myCHK = jsonOtherMap.get(variable).toString();
+									}else{
+										myCHK = StringPool.BLANK;
+									}
 								}
 							} catch (Exception e) {
 								// TODO: handle exception

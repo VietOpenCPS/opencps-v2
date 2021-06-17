@@ -726,7 +726,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 
-			dossier.setSubmitDate(new Date());
+//			dossier.setSubmitDate(new Date());
 			dossier.setSubmitting(true);
 
 			dossierLocalService.updateDossier(dossier);
@@ -1108,7 +1108,13 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		_log.info("groupId" + groupId + "date " +date);
 		return paymentFileFinder.findSumPaymentAmountDay(groupId,date,0,2);
 	}
-	
+
+
+	public PaymentFile findPaymentFileByDossierId(long groupId, long dossierId) {
+
+		return paymentFileFinder.findPaymentFileByDossierId(groupId,dossierId);
+	}
+
 	public List<PaymentFile> findByG_PT(long groupId, int paymentStatus) {
 		return paymentFilePersistence.findByG_PT(groupId, paymentStatus);
 	}

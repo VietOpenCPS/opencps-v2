@@ -6,8 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 public class StatisticUtils {
@@ -53,6 +56,7 @@ public class StatisticUtils {
 			String strDateTime = outputFormatter.format(da);
 			return strDateTime;
 		} catch (Exception e) {
+			_log.error(e);
 			return null;
 		}
 	}
@@ -99,6 +103,27 @@ public class StatisticUtils {
 		cal.set(Calendar.MINUTE, cal.getActualMaximum(Calendar.MINUTE));
 		cal.set(Calendar.SECOND, cal.getActualMaximum(Calendar.SECOND));
 		return cal.getTime();
+	}
+	
+	public static String convertDateToString(Date date, String pattern) {
+
+		try {
+			DateFormat dateFormat =
+					DateFormatFactoryUtil.getSimpleDateFormat(pattern);
+				if (date == null || Validator.isNull(pattern)) {
+					return StringPool.BLANK;
+				}
+				dateFormat.setTimeZone(TimeZoneUtil.getDefault());
+
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(date);
+
+				return dateFormat.format(calendar.getTime());
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return null;
+		
 	}
 
 }

@@ -446,9 +446,10 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		// jobPosId) {
 		// throw new DuplicateCategoryException();
 		// }
-		_log.debug("Job pos code: " + jobPosCode);
+		_log.info("Job pos code: " + jobPosCode);
 		
 		if (jobPos != null) {
+			_log.info("Job pos code is not null: " + jobPosCode);
 			// Audit field
 			jobPos.setUserId(user.getUserId());
 			jobPos.setUserName(user.getFullName());
@@ -464,23 +465,24 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			titleMap.put(Locale.getDefault(), title);
 			String globalRoleName = jobPosCode.startsWith(JobPosTerm.GLOBAL_PREFIX) ? jobPosCode : StringPool.BLANK;
 			Role role = null;
-			_log.debug("Update job pos global role name: " + globalRoleName);
+			_log.info("Update job pos global role name: " + globalRoleName);
 			if (Validator.isNotNull(globalRoleName)) {
+				_log.info("Update job pos global role name: " + globalRoleName);
 				role = RoleLocalServiceUtil.fetchRole(serviceContext.getCompanyId(), globalRoleName);
 				if (role == null) {
-					role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
+					RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
 							globalRoleName, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);
 				}
 			}
 			else {
-				role = RoleLocalServiceUtil.fetchRole(serviceContext.getCompanyId(), role_name);
-				if (role == null) {
-					role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
-							role_name, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);									
+				if(Validator.isNull(jobPos.getMappingRoleId())) {
+						role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
+								role_name, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);
+					jobPos.setMappingRoleId(role != null ? role.getRoleId() : 0);
 				}
 			}
-			jobPos.setMappingRoleId(role != null ? role.getRoleId() : 0);
 		} else {
+			_log.info("Job pos code is null: " + jobPosCode);
 			long jobPosId = counterLocalService.increment(JobPos.class.getName());
 			jobPos = jobPosPersistence.create(jobPosId);
 			// create role name
@@ -499,6 +501,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			Role role = null;
 			
 			if (Validator.isNotNull(globalRoleName)) {
+				_log.info("globalRoleName: " + globalRoleName);
 				role = RoleLocalServiceUtil.fetchRole(serviceContext.getCompanyId(), globalRoleName);
 				if (role == null) {
 					role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
@@ -506,8 +509,9 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 				}
 			}
 			else {
+				_log.info("globalRoleName null: " );
 				role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
-						role_name, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);				
+						role_name, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);
 			}
 			_log.debug("Create job pos global role name: " + globalRoleName);
 
@@ -533,6 +537,11 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 	public JobPos getByJobCode(long groupId, String jobCode) {
 		return jobPosPersistence.fetchByF_CODE(groupId, jobCode);
+	}
+
+	@Override
+	public JobPos getByJobPosCode(String jobCode) {
+		return jobPosPersistence.fetchByF_JOB_POS_CODE(jobCode);
 	}
 
 	// super_admin Generators
@@ -575,6 +584,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			serviceContext.setUserId(objectData.getLong(JobPosTerm.USER_ID));
 
 			String role_name = objectData.getString(JobPosTerm.JOBPOS_CODE) + StringPool.UNDERLINE + id;
+			_log.info("roleName: " +role_name);
 
 			Map<Locale, String> titleMap = new HashMap<>();
 			titleMap.put(Locale.getDefault(), objectData.getString(JobPosTerm.TITLE));
@@ -582,11 +592,9 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			Role role;
 
 			try {
-
 				role = RoleLocalServiceUtil.addRole(objectData.getLong(JobPosTerm.USER_ID), Role.class.getName(),
 						counterLocalService.increment(), role_name, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK,
 						serviceContext);
-
 				object.setMappingRoleId(role.getRoleId());
 
 			} catch (PortalException e) {

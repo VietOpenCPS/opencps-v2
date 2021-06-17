@@ -210,6 +210,22 @@ public class PublishQueueLocalServiceWrapper implements PublishQueueLocalService
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByDossierIdAndNotServerNo(
+		long dossierId, String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.PublishQueue> orderByComparator) {
+		return _publishQueueLocalService.getByDossierIdAndNotServerNo(dossierId,
+			serverNo, start, end, orderByComparator);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByDossierIdAndServerNo(
+		long dossierId, String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.PublishQueue> orderByComparator) {
+		return _publishQueueLocalService.getByDossierIdAndServerNo(dossierId,
+			serverNo, start, end, orderByComparator);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.PublishQueue getByG_DID_SN(
 		long groupId, long dossierId, String serverNo) {
 		return _publishQueueLocalService.getByG_DID_SN(groupId, dossierId,
@@ -251,9 +267,10 @@ public class PublishQueueLocalServiceWrapper implements PublishQueueLocalService
 
 	@Override
 	public java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByStatusesAndServerNo(
-		int[] statuses, String serverNo, int start, int end) {
+		int[] statuses, String serverNo, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.PublishQueue> orderByComparator) {
 		return _publishQueueLocalService.getByStatusesAndServerNo(statuses,
-			serverNo, start, end);
+			serverNo, start, end, orderByComparator);
 	}
 
 	@Override

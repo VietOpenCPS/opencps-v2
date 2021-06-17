@@ -261,6 +261,11 @@ public class JobPosLocalServiceUtil {
 		return getService().getByJobCode(groupId, jobCode);
 	}
 
+	public static org.opencps.usermgt.model.JobPos getByJobPosCode(
+		String jobCode) {
+		return getService().getByJobPosCode(jobCode);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
 		return getService().getExportActionableDynamicQuery(portletDataContext);

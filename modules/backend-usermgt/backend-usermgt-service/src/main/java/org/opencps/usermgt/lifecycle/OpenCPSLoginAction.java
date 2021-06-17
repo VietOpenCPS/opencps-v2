@@ -33,11 +33,11 @@ import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DeviceResolver;
 import org.springframework.mobile.device.LiteDeviceResolver;
 
-@Component(immediate = true, property = { "key=login.events.post" }, service = LifecycleAction.class)
+//@Component(immediate = true, property = { "key=login.events.post" }, service = LifecycleAction.class)
 public class OpenCPSLoginAction extends Action {
 	@Override
 	public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
-        _log.info("### Start Post Login Action ######################");
+//        _log.info("### Start Post Login Action ######################");
         if (UserMgtConfigUtil.isTrackClientEnable()) {
 			String completeUrl = (String) request.getAttribute(CommonTerm.LOGIN_ACTION_CURRENT_COMPLETE_URL);
 			String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
@@ -130,7 +130,7 @@ public class OpenCPSLoginAction extends Action {
 			}
 		}
 
-        _log.info("### End Post Login Action ######################");
+//        _log.info("### End Post Login Action ######################");
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(OpenCPSLoginAction.class);

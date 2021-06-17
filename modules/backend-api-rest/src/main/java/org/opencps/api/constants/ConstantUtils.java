@@ -16,7 +16,9 @@ public class ConstantUtils {
 	public static final String PNG = "png";
 	public static final String DOT_XLSX = ".xlsx";
 	public static final String DOT_XLS = ".xls";
-	
+	public static final String DOT_DOCX = ".docx";
+	public static final String DOT_DOC = ".doc";
+
 	//Destination import file
 	public static final String DEST_DIRECTORY = "imported";
 	public static final String SOURCE_DICTS = "dicts";
@@ -28,6 +30,8 @@ public class ConstantUtils {
 	public static final String SOURCE_SERVICES = "services";
 	public static final String SOURCE_TEMPLATES = "templates";
 	public static final String SOURCE_PROCESSES = "processes";
+	public static final String SOURCE_SERVICE_INFOS = "seriviceinfos";
+	public static final String SOURCE_SERVICE_CONFIGS ="serviceconfigs";
 	public static final String SOURCE_VALIDATE = "services, processes, processes, dicts";
 	//
 	public static final String PREFIX_ACTIONCONFIG = "ACTION_";
@@ -121,7 +125,9 @@ public class ConstantUtils {
 	public static final String ROLE_ADMIN = "Administrator";
 	public static final String ROLE_ADMIN_LOWER = "admin";
 	public static final String ROLE_ADMIN_DATA = "Administrator_data";
-	
+	public static final String GLOBAL_VIEW_GROUP = "GLOBAL_VIEW_GROUP";
+	public static final String GLOBAL_VIEW_ALL  = "GLOBAL_VIEW_ALL";
+
 	public static final String NGSP_TOKEN_URL_KEY = "org.opencps.ngsp.token.url";
 	public static final String NGSP_SECRET_KEY = "org.opencps.ngsp.secret.key";
 	public static final String NGSP_CONSUMER_KEY = "org.opencps.ngsp.consumer.key";
@@ -297,6 +303,7 @@ public class ConstantUtils {
 	public static final String DOSSIERDOCUMENT_MESSAGE_DOSSIERWASNOTONPROCESS = "dossierdocument.message.dossierwasnotonprocess";
 	public static final String DOSSIERDOCUMENT_MESSAGE_CANNOTGETDOSSIERWITHID = "dossierdocument.message.cannotgetdossierwithid";
 	public static final String DOSSIERDOCUMENT_PROCESSSEQUENCEARR_KEY = "processSequenceArr";
+	public static final String DOSSIERDOCUMENT_PROCESSSEQUENCEARRDONE_KEY = "processSequenceArrDone";
 	
 	public static final String DOSSIERFILE_MESSAGE_FILEFORMATERROR = "dossierfile.message.fileformaterror";
 	public static final String DOSSIERFILE_MESSAGE_FOLDERISNOTSTRUCTURE = "dossierfile.message.folderisnotstructure";
@@ -457,4 +464,5 @@ public class ConstantUtils {
 	public static final String CTN = "CTN";
 	public static final String DOSSIER_STATUS = "DOSSIER_STATUS";
 	public static final String ROLE_OVERDUE = "RoleOverdue";
+	public static final String GLOBAL_EDIT_OVERDUE = "GLOBAL_EDIT_OVERDUE";
 }

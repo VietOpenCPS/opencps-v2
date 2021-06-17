@@ -29,7 +29,6 @@ import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.SSOIntegration;
 import org.opencps.dossiermgt.action.impl.SSOIntegrationImpl;
 import org.opencps.usermgt.action.impl.DVCQGSSOActionImpl;
-
 public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	private static final Log _log = LogFactoryUtil.getLog(DVCQGSSOManagementImpl.class);
 	private static final String MIC_SSO_KEY_CONFIG = "MIC-OPENID";
@@ -51,10 +50,10 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 
 	@Override
 	public Response getUserInfo(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
-			Company company, Locale locale, User user, ServiceContext serviceContext, String authToken, String state) {
+			Company company, Locale locale, User user, ServiceContext serviceContext, String authToken, String state, String provider) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
-		JSONObject result = action.getUserInfo(user, groupId, request, serviceContext, authToken, state);
+		JSONObject result = action.getUserInfo(user, groupId, request, serviceContext, authToken, state, new String[] {provider, authToken});
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 	}
@@ -92,13 +91,13 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	@Override
 	public Response getAuthURL(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String state,
-			String redirectURL) {
+			String redirectURL, String provider) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
 
-		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, state, redirectURL);
+		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, state, redirectURL, new String[] {provider});
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(endpoint).build();
 	}
@@ -112,7 +111,7 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 			String urlSSO = ssoIntegration.getUrlSSo(state, redirectURL);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(urlSSO).build();
 		} catch (Exception e) {
-			_log.error("Error when url sso MIC: " + e.getMessage());
+			_log.error(e);
 			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity("").build();
 		}
 	}
@@ -129,7 +128,7 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
-			_log.error("Exception when do authenticate through Mic sso: " + e.getMessage());
+			_log.error(e);
 			result.put("statusCode", 3);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result.toJSONString()).build();
 		}

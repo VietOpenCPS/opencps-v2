@@ -61,6 +61,10 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyService;
+import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyServiceImpl;
+import org.opencps.datamgt.model.DictItemMapping;
+import org.opencps.datamgt.service.DictItemMappingLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
@@ -104,12 +108,13 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.springframework.http.MediaType;
 
 public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 	/**
 	 * Get all PaymentFile of DossierId
-	 * 
+	 *
 	 * @param dossierId
 	 * @return Response
 	 */
@@ -295,7 +300,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	/**
 	 * Get info EpaymentProfile of DossierId and referenceUid
 	 * 
-	 * @param dossierId
+	 * @param
 	 * @param referenceUid
 	 * @return Response
 	 */
@@ -380,7 +385,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	/**
 	 * Update Payment File Confirm of DossierId and referenceUid
 	 * 
-	 * @param formparams
+	 * @param
 	 * @return Response
 	 */
 	@Override
@@ -798,7 +803,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	//LamTV_Process new API Payment
 	@Override
 	public Response getPaymentFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id, String secretCode) {
+			Locale locale, User user, ServiceContext serviceContext, String id, String secretCode, String unit) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = GetterUtil.getLong(id);
@@ -839,14 +844,65 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFileModel result = null;
 			if (dossier != null) {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-				result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
-				if (result != null){
-					result.setAddress(dossier.getAddress() + ", " + dossier.getWardName() +
-							", " + dossier.getDistrictName() + ", " + dossier.getCityName());
-					result.setOrderId(dossier.getDossierNo() + "-01");
-				}
-			}
 
+				if(paymentFile == null) {
+					throw new Exception("No payment file was found with dossierId " + dossierId + " and groupId " + groupId);
+				}
+
+				if(Validator.isNotNull(unit) && unit.equals("dongthap")) {
+					String unitCode;
+					DictItemMapping itemMapping = DictItemMappingLocalServiceUtil.fetchByF_IC(dossier.getGovAgencyCode());
+					if(Validator.isNull(itemMapping) || itemMapping.getItemCodeDVCQG().isEmpty()) {
+						throw new Exception("No itemMapping or itemCodeDVCQG was found with item code " + dossier.getGovAgencyCode());
+					}
+					unitCode = itemMapping.getItemCodeDVCQG();
+
+					JSONObject jsonResult = JSONFactoryUtil.createJSONObject();
+					jsonResult.put("error_code", "SUCCESSFUL");
+					jsonResult.put("error_message", "SUCCESSFUL");
+
+					JSONObject data = JSONFactoryUtil.createJSONObject();
+					JSONObject thongTinBienLai = JSONFactoryUtil.createJSONObject();
+					JSONArray payments = JSONFactoryUtil.createJSONArray();
+					JSONObject onePayment = JSONFactoryUtil.createJSONObject();
+					onePayment.put("partnerCode", "PAYGOV_DONGTHAP");
+
+					int paymentStatusPaygov = 0;
+					if(Validator.isNotNull(paymentFile.getPaymentStatus())
+							&& paymentFile.getPaymentStatus() == 3) {
+						//da thanh toan
+						paymentStatusPaygov = 1;
+					}
+
+					onePayment.put("trangThai", paymentStatusPaygov);
+					onePayment.put("orderId", unitCode + "-" + dossier.getDossierNo() + "-01");
+					onePayment.put("soTien", paymentFile.getPaymentAmount());
+					onePayment.put("moTa", paymentFile.getPaymentNote());
+					payments.put(onePayment);
+					String address = dossier.getAddress() + ", " + dossier.getWardName() +
+							", " + dossier.getDistrictName() + ", " + dossier.getCityName();
+
+					data.put("diaChi", address);
+					data.put("tenNguoiNop", dossier.getDelegateName());
+					data.put("soCMND", dossier.getDelegateIdNo());
+
+					thongTinBienLai.put("tenThuTucHanhChinh", dossier.getServiceName());
+					thongTinBienLai.put("huyenNguoiNop", dossier.getDistrictName());
+					thongTinBienLai.put("tinhNguoiNop", dossier.getCityName());
+					thongTinBienLai.put("ngayQuyetDinh", APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(),
+							"dd-MM-yyyy"));
+					thongTinBienLai.put("maDonViThuHuong", unitCode);
+					thongTinBienLai.put("tenDonViThuHuong", dossier.getGovAgencyName());
+					data.put("thongTinBienLai", thongTinBienLai);
+					data.put("danhSachThanhToan", payments);
+
+					jsonResult.put("data", data);
+					return Response.status(HttpURLConnection.HTTP_OK).entity(jsonResult.toJSONString()).build();
+				}
+
+
+				result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
+			}
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
@@ -861,6 +917,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
+			_log.info("PaymentInput: " + JSONFactoryUtil.looseSerialize(input.getEpaymentProfile()));
 			PaymentFile paymentFile = CPSDossierBusinessLocalServiceUtil.createPaymentFileByDossierId(groupId, serviceContext, id, PaymentFileUtils.convertFormModelToInputModel(input));		
 
 			PaymentFileInputModel result = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);
@@ -907,9 +964,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			if (dossier != null) {
 				PaymentFileActions action = new PaymentFileActionsImpl();
-				PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);
-				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getByInvoiceTemplateNo(groupId, paymentFile.getInvoiceTemplateNo());
-				
+				PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);				
+				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, dossier.getGovAgencyCode());
 				//String formData = JSONFactoryUtil.looseSerialize(paymentFile);
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(paymentFile));
 				String formReport = paymentConfig.getInvoiceForm();
@@ -980,11 +1036,10 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		        }
 
 		     // TODO: PP continue
-				if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())
-						|| PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
+				if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
 					JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 					JSONObject banksInfo = schema.getJSONObject("BankInfo");
-					JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+					JSONObject bankInfo;
 					if (banksInfo.has(dossier.getServiceCode())) {
 						bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
 					} else {
@@ -1043,7 +1098,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	@Override
 	public Response updateByPaymentFileId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
-		
+
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -1093,10 +1148,11 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			if(Validator.isNotNull(input.getPaymentNote())){
 				paymentFile.setPaymentNote(input.getPaymentNote());
 			}
+
 			//Update Invoice File EntryId
 			//PaymentFileActions action = new PaymentFileActionsImpl();
 			//PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);
-			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getByInvoiceTemplateNo(groupId, paymentFile.getInvoiceTemplateNo());
+			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, dossier.getGovAgencyCode());
 			
 			//String formData = JSONFactoryUtil.looseSerialize(paymentFile);
 			JSONObject jsonData = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(paymentFile));
@@ -1169,11 +1225,10 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				jsonData.put("govAddress", "");
 			}
 			// TODO: PP continue
-			if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())
-					|| PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
+			if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
 				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				JSONObject banksInfo = schema.getJSONObject("BankInfo");
-				JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+				JSONObject bankInfo;
 				if (banksInfo.has(dossier.getServiceCode())) {
 					bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
 				} else {
@@ -1364,6 +1419,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		long dossierId = GetterUtil.getLong(id);
 
+		_log.debug("===downloadInvoiceFileDVCQG===");
+
 		// TODO get Dossier by referenceUid if dossierId = 0
 		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
 
@@ -1376,8 +1433,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFileActions action = new PaymentFileActionsImpl();
 			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
 
-			_log.info(PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG +"===========dossierId, referenceUid=======" + dossierId + referenceUid);
-			_log.info("===========paymentFile=======" + paymentFile);
 			if (paymentFile != null && paymentFile.getInvoiceFileEntryId() > 0) {
 
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
@@ -1429,6 +1484,103 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				InputStream file = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(url);
 				return Response.ok(file).header(
 							"Content-Disposition", "attachment; filename=\"" + new Date().getTime() + ".pdf" + "\"").build();
+			} else if (Validator.isNotNull(paymentFile)
+					&& PaymentFileTerm.PAYMENT_METHOD_PAYGOV.equals(paymentFile.getPaymentMethod())) {
+				_log.debug("Getting url bien lai paygov...");
+				if(Validator.isNull(paymentFile.getConfirmPayload())
+						|| paymentFile.getConfirmPayload().isEmpty()) {
+					throw new Exception("No confirm payload was found with payment file: " + paymentFile.getPaymentFileId());
+				}
+
+				if(Validator.isNull(paymentFile.getEpaymentProfile())
+						|| paymentFile.getEpaymentProfile().isEmpty()) {
+					throw new Exception("No payment profile was found with payment file: " + paymentFile.getPaymentFileId());
+				}
+
+				JSONObject confirmPayload = JSONFactoryUtil.createJSONObject(paymentFile.getConfirmPayload());
+				JSONObject paygovConfig = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+						.getJSONObject(KeyPayTerm.PAYGOV_CONFIG);
+				if(Validator.isNull(paygovConfig)) {
+					throw new Exception("No paygov config was found with payment file: " + paymentFile.getPaymentFileId());
+				}
+				Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+				if(Validator.isNull(dossier)) {
+					throw new Exception("No dossier was found with dossier: " + dossierId);
+				}
+				ApiThirdPartyService serviceApi = new ApiThirdPartyServiceImpl();
+				//Case in bien lai paygov
+
+					String partnerCode = paygovConfig.getString("partnerCode");
+					String accessKey   = paygovConfig.getString("accessKey");
+					String secretKey   = paygovConfig.getString("secretKey");
+					String payerId     = Validator.isNotNull(dossier.getApplicantIdNo())
+							? dossier.getApplicantIdNo() : "";
+					String payerName   = Validator.isNotNull(dossier.getApplicantName())
+							? StringUtils.stripAccents(dossier.getApplicantName()) : "";
+					String payerAddress  = Validator.isNotNull(dossier.getAddress())
+							? StringUtils.stripAccents(dossier.getAddress()) : "";
+					String payerDistrict = Validator.isNotNull(dossier.getDistrictName())
+							? StringUtils.stripAccents(dossier.getDistrictName()) : "";
+					String payerProvince = Validator.isNotNull(dossier.getCityName())
+							? StringUtils.stripAccents(dossier.getCityName()) : "";
+
+					String docCode = Validator.isNotNull(dossier.getDossierNo()) ? dossier.getDossierNo(): "";
+					String procedureName = Validator.isNotNull(dossier.getServiceName()) ? dossier.getServiceName():"";
+
+					//create paids
+					String paids = "[\"" + confirmPayload.getString("transactionCode") + "\"]";
+					String base64Paids = Base64.getEncoder().encodeToString(paids.getBytes());
+
+					//create other info
+					JSONObject otherInfo = JSONFactoryUtil.createJSONObject();
+
+					otherInfo.put("beneficiaryUnitCode", paygovConfig.getString("beneficiaryUnitCode"));
+					otherInfo.put("beneficiaryUnitName", paygovConfig.getString("beneficiaryUnitName"));
+
+					String base64OtherInfo = Base64.getEncoder().encodeToString(otherInfo.toString().getBytes());
+					String decisionDate = APIDateTimeUtils.convertDateToString(new Date(), "dd-MM-yyyy");
+					String checkSumBeforeHash = secretKey + partnerCode + accessKey + payerId + payerName
+							+ payerAddress + payerDistrict + payerProvince + docCode + procedureName + base64Paids
+							+ base64OtherInfo + decisionDate;
+
+					_log.debug("Checksum: " + secretKey + " | " + partnerCode + " | " + accessKey
+							+ " | " + payerId + " | " + payerName
+							+ " | " + payerAddress + " | " + payerDistrict + " | " +payerProvince + " | " +docCode
+							+ " | " + procedureName + " | " + base64Paids
+							+ " | " + base64OtherInfo + " | " + decisionDate);
+					String shs256CheckSum = this.generateCheckSumHG(checkSumBeforeHash);
+					org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+					headers.setContentType(MediaType.APPLICATION_JSON);
+					headers.set("lgspaccesstoken", paygovConfig.getString("lgspAccessToken"));
+
+					Map<String, Object> body = new HashMap<>();
+					body.put("partnerCode", partnerCode);
+					body.put("accessKey", accessKey);
+					body.put("payerId", payerId);
+					body.put("payerName", payerName);
+					body.put("payerAddress", payerAddress);
+					body.put("payerDistrict", payerDistrict);
+					body.put("payerProvince", payerProvince);
+					body.put("docCode", docCode);
+					body.put("decisionDate", decisionDate);
+					body.put("procedureName", procedureName);
+					body.put("paids", base64Paids);
+					body.put("otherInfo", base64OtherInfo);
+					body.put("checksum", shs256CheckSum);
+
+					JSONObject response = serviceApi.callAPIPaygovPrintInvoice(body,paygovConfig);
+					if(response.length() >0
+							&& response.has("transactionReceipt")
+							&& !response.getString("transactionReceipt").isEmpty()) {
+						String urlBienLaiPaygov = response.getString("transactionReceipt");
+						_log.debug("Url bien lai paygov: " + urlBienLaiPaygov);
+						InputStream file = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(urlBienLaiPaygov);
+						return Response.ok(file).header(
+								"Content-Disposition", "attachment; filename=\""
+										+ new Date().getTime() + ".pdf" + "\"").build();
+					}
+
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 			} else {
 				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 			}
@@ -1438,12 +1590,24 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		}
 	}
 
+	private String generateCheckSumHG(String stringBeforeHash) throws Exception {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			digest.update(stringBeforeHash.getBytes(StandardCharsets.UTF_8));
+			byte[] digest1 = digest.digest();
+			String hex = String.format("%064x", new BigInteger(1, digest1));
+			System.out.println("String after hash: " + hex);
+			return hex;
+		} catch (Exception e) {
+			_log.error(e);
+			throw new Exception(e.getMessage());
+		}
+	}
 	@Override
 	public Response reindexPaymentFile(
 			HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		long paymentFileId = GetterUtil.getLong(id);
 

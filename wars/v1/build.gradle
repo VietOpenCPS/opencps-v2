@@ -27,7 +27,8 @@ dependencies {
 	compile group: 'commons-io', name: 'commons-io', version: '2.6'
 	compileOnly group: 'io.swagger', name: 'swagger-annotations', version: '1.5.21'
 	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.8'
-	
+	compileOnly group: 'com.liferay', name: 'com.liferay.portal.security.sso.openid.connect.api', version: '4.0.2'
+
 	compile 'com.graphql-java:graphql-java:3.0.0'
     compile "com.graphql-java:graphql-java-annotations:0.13.1"
     	
@@ -44,6 +45,11 @@ dependencies {
 
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-api")
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-service")
+
+	compileOnly project(":modules:backend-communication:backend-communication-api")
+	compileOnly project(":modules:backend-communication:backend-communication-service")
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.1.4'
 
 	//compileOnly project(":modules:backend-deliverable:backend-deliverable-api")
 	//compileOnly project(":modules:backend-deliverable:backend-deliverable-service")

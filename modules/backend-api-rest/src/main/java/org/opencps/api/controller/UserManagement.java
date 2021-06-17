@@ -1,30 +1,27 @@
 package org.opencps.api.controller;
 
+import java.net.HttpURLConnection;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import org.opencps.api.usermgt.model.UserInputModel;
+import org.opencps.exception.model.ExceptionModel;
 
 @Path("/users")
 public interface UserManagement {
@@ -248,4 +245,22 @@ public interface UserManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
 			@PathParam("screenname_email") String screenname_email, @PathParam("code") String code, @QueryParam("j_captcha_response") String jCaptchaResponse);
+	
+	@GET
+	@Path("/liveuser")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getLiveUser(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext);
+
+
+	@POST
+	@Path("/liferayuser")
+	@Consumes({MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Register a user liferay", response = UserInputModel.class)
+	public Response register(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+							 @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+							 @BeanParam UserInputModel input);
 }

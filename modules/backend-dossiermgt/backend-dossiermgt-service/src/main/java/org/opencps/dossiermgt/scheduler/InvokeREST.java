@@ -155,14 +155,14 @@ public class InvokeREST {
 				postData.append(StringPool.EQUAL.charAt(0));
 				postData.append(java.net.URLEncoder.encode(String.valueOf(param.getValue()), ConstantUtils.UTF_8));
 			}
-			_log.info("PostData :" + postData.toString());
+			_log.debug("PostData :" + postData.toString());
 
 			byte[] postDataBytes = postData.toString().getBytes(ConstantUtils.UTF_8);
 
 			conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, String.valueOf(postDataBytes.length));
 
 			conn.getOutputStream().write(postDataBytes);
-
+			
 			br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
 			String output;
@@ -175,6 +175,7 @@ public class InvokeREST {
 
 			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
 			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+			_log.debug("response: " +  response);
 
 			conn.disconnect();
 

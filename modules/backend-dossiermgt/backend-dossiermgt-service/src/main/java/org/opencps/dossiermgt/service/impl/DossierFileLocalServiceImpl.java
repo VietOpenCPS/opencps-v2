@@ -45,6 +45,8 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.exception.FileNameException;
 import com.liferay.document.library.kernel.util.DLValidatorUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -128,6 +130,7 @@ public class DossierFileLocalServiceImpl
 		InputStream inputStream, String fileType, String isSync,
 		ServiceContext serviceContext)
 		throws PortalException, SystemException {
+		_log.debug("FileSize add: " + fileSize);
 
 		long userId = serviceContext.getUserId();
 
@@ -160,6 +163,7 @@ public class DossierFileLocalServiceImpl
 				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
 					userId, groupId, inputStream, sourceFileName, fileType,
 					fileSize, serviceContext);
+				_log.debug("FileEntry: " + JSONFactoryUtil.looseSerialize(fileEntry));
 
 				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();
@@ -235,12 +239,17 @@ public class DossierFileLocalServiceImpl
 			DeliverableType deliverableType =
 				DeliverableTypeLocalServiceUtil.getByCode(
 					groupId, dossierPart.getDeliverableType());
+			if(Validator.isNull(deliverableType)){
+				deliverableType =
+						DeliverableTypeLocalServiceUtil.getByCode(
+								0L, dossierPart.getDeliverableType());
+			}
 
 			if (Validator.isNotNull(deliverableType)) {
 				deliverableCode =
 					DeliverableNumberGenerator.generateDeliverableNumber(
 						groupId, serviceContext.getCompanyId(),
-						deliverableType.getDeliverableTypeId());
+						deliverableType.getDeliverableTypeId(), dossierId);
 				object.setDeliverableCode(deliverableCode);
 			}
 		}
@@ -255,6 +264,141 @@ public class DossierFileLocalServiceImpl
 		}
 
 		return dossierFilePersistence.update(object);
+	}
+
+	public DossierFile addDossierFileByFileEntryId(
+			long groupId, long dossierId, String referenceUid,
+			String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
+			String displayName, String sourceFileName, long fileSize,
+			InputStream inputStream, String fileType, String isSync, long fileEntryId,
+			ServiceContext serviceContext)
+			throws PortalException, SystemException {
+		try {
+			_log.debug("FileSize add: " + fileSize);
+
+			long userId = serviceContext.getUserId();
+
+			_log.debug("****Start add file at:" + new Date());
+
+			validateAddDossierFile(
+					groupId, dossierId, referenceUid, dossierTemplateNo, dossierPartNo,
+					fileTemplateNo);
+
+			_log.debug("****End validator file at:" + new Date());
+
+			_log.debug(
+					"Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " +
+							dossierPartNo + ", groupId: " + groupId);
+			DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(
+					groupId, dossierTemplateNo, dossierPartNo);
+			_log.debug(
+					"Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " +
+							dossierPartNo);
+			try {
+				DLValidatorUtil.validateFileName(sourceFileName);
+			} catch (FileNameException e) {
+				sourceFileName = displayName;
+				_log.debug(e);
+			}
+			if (fileEntryId == 0) {
+				if (inputStream != null) {
+					try {
+						FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+								userId, groupId, inputStream, sourceFileName, fileType,
+								fileSize, serviceContext);
+						_log.debug("FileEntry: " + JSONFactoryUtil.looseSerialize(fileEntry));
+
+						if (fileEntry != null) {
+							fileEntryId = fileEntry.getFileEntryId();
+						}
+					} catch (Exception e) {
+						_log.debug(e);
+					}
+				}
+			}
+			_log.debug("****End uploadFile file at:" + new Date());
+
+			Date now = new Date();
+
+			User userAction = null;
+
+			if (userId != 0) {
+				userAction = userLocalService.getUser(userId);
+			}
+
+			long dossierFileId =
+					counterLocalService.increment(DossierFile.class.getName());
+
+			DossierFile object = dossierFilePersistence.create(dossierFileId);
+
+			// Add audit fields
+			object.setCompanyId(serviceContext.getCompanyId());
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userAction != null ? userAction.getUserId() : 0l);
+			object.setUserName(
+					userAction != null ? userAction.getFullName() : StringPool.BLANK);
+
+			// Add other fields
+
+			object.setDossierId(dossierId);
+			if (Validator.isNull(referenceUid)) {
+				referenceUid = PortalUUIDUtil.generate();
+			}
+
+			object.setReferenceUid(referenceUid);
+			object.setDossierTemplateNo(dossierTemplateNo);
+			object.setFileEntryId(fileEntryId);
+			object.setDossierPartNo(dossierPartNo);
+			object.setFileTemplateNo(fileTemplateNo);
+			object.setDossierPartType(dossierPart.getPartType());
+
+			if (Validator.isNull(displayName)) {
+				displayName = sourceFileName;
+			}
+
+			_log.debug("****Start autofill file at:" + new Date());
+
+			_log.debug("****End autofill file at:" + new Date());
+
+			object.setDisplayName(displayName);
+			object.setOriginal(false);
+
+			if (Boolean.parseBoolean(isSync)) {
+				object.setIsNew(true);
+			}
+
+			String deliverableCode = StringPool.BLANK;
+
+			if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+				DeliverableType deliverableType =
+						DeliverableTypeLocalServiceUtil.getByCode(
+								groupId, dossierPart.getDeliverableType());
+
+				if (Validator.isNotNull(deliverableType)) {
+					deliverableCode =
+							DeliverableNumberGenerator.generateDeliverableNumber(
+									groupId, serviceContext.getCompanyId(),
+									deliverableType.getDeliverableTypeId(), dossierId);
+					object.setDeliverableCode(deliverableCode);
+				}
+			}
+
+			if (Validator.isNotNull(dossierPart.getSampleData())) {
+				String formData = AutoFillFormData.sampleDataBinding(
+						dossierPart.getSampleData(), dossierId, serviceContext);
+				JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
+				formDataObj.put(DeliverableTerm.LICENCE_NO, deliverableCode);
+				formData = formDataObj.toJSONString();
+				object.setFormData(formData);
+			}
+
+			return dossierFilePersistence.update(object);
+		}catch (Exception e){
+			 _log.error(e);
+		}
+		return null;
 	}
 
 	//
@@ -378,12 +522,17 @@ public class DossierFileLocalServiceImpl
 			DeliverableType deliverableType =
 				DeliverableTypeLocalServiceUtil.getByCode(
 					groupId, dossierPart.getDeliverableType());
+			if(Validator.isNull(deliverableType)){
+				deliverableType =
+						DeliverableTypeLocalServiceUtil.getByCode(
+								0L, dossierPart.getDeliverableType());
+			}
 
 			if (Validator.isNotNull(deliverableType)) {
 				deliverableCode =
 					DeliverableNumberGenerator.generateDeliverableNumber(
 						groupId, serviceContext.getCompanyId(),
-						deliverableType.getDeliverableTypeId());
+						deliverableType.getDeliverableTypeId(), dossierId);
 				object.setDeliverableCode(deliverableCode);
 			}
 		}
@@ -529,7 +678,7 @@ public class DossierFileLocalServiceImpl
 			deliverableCode =
 				DeliverableNumberGenerator.generateDeliverableNumber(
 					groupId, serviceContext.getCompanyId(),
-					deliverableType.getDeliverableTypeId());
+					deliverableType.getDeliverableTypeId(), dossierId);
 			object.setDeliverableCode(deliverableCode);
 		}
 
@@ -1915,11 +2064,18 @@ public class DossierFileLocalServiceImpl
 			dossierId, fileTemplateNo, dossierPartType, fileEntryId, removed,
 			start, end, orderByComparator);
 	}
+	
 
 	@Override
 	public List<DossierFile> findByDID_GROUP(long groupId, long dossierId) {
 		return dossierFilePersistence.findByDID_GROUP(groupId,dossierId);
 	}
+
+	@Override
+	public List<DossierFile> getByG_DID_FILE(long groupId, long[] dossierIds, String dossierPartNo) {
+		return dossierFilePersistence.findByG_DID_FILE(groupId,dossierIds,dossierPartNo);
+	}
+	
 
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

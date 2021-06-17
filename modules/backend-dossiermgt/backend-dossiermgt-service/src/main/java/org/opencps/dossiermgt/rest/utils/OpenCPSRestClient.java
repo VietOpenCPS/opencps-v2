@@ -128,7 +128,6 @@ public class OpenCPSRestClient {
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = OpenCPSConverter.convertHttpParams(model);
 		ServiceContext context = new ServiceContext();
-		
 		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON,
 				baseUrl, ConstantUtils.DOSSIERS_BASE_PATH, username,
 				password, properties, params, context);
@@ -161,6 +160,7 @@ public class OpenCPSRestClient {
 
 			String requestURL = ConstantUtils.DOSSIERS_BASE_PATH + StringPool.FORWARD_SLASH + dossierUnique
 					+ StringPool.FORWARD_SLASH + DossierActionTerm.FILES;
+			_log.info("Them file cho hs : " + requestURL);
 			InvokeREST callRest = new InvokeREST();
 			HashMap<String, String> properties = OpenCPSConverter.convertDossierFileHttpParams(model);
 			ServiceContext context = new ServiceContext();
@@ -191,8 +191,8 @@ public class OpenCPSRestClient {
 					hslt = DossierLocalServiceUtil.getByDossierNo(groupId, dossier.getOriginDossierNo());
 				}
 			}
-
-			if (hslt != null && !hslt.getReferenceUid().contains(DossierTerm.PREFIX_UUID)) {
+			// nên bỏ đk hslt.getReferenceUid().contains(DossierTerm.PREFIX_UUID) chỉ đúng khi trả về sở => referenceUid có xxx-cps còn xã thì ko
+			if (hslt != null) {
 				dossierUnique = hslt.getReferenceUid();
 			}
 
@@ -258,7 +258,7 @@ public class OpenCPSRestClient {
 			Map<String, Object> params = OpenCPSConverter.convertExecuteActionHttpParams(model);
 			InvokeREST callRest = new InvokeREST();
 			ServiceContext context = new ServiceContext();
-			
+
 			JSONObject jsonObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON,
 					baseUrl, requestURL, username,
 					password, properties, params, context);

@@ -10,7 +10,10 @@ dependencies {
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 	compileOnly group: 'commons-io', name: 'commons-io', version: '2.6'
 	compileOnly group: "com.liferay", name: "com.liferay.portal.dao.orm.custom.sql.api", version: "1.0.0"
-	
+	 // https://mvnrepository.com/artifact/com.liferay/com.liferay.portal.upgrade.api
+	compileOnly group: 'com.liferay', name: 'com.liferay.portal.upgrade.api', version: '2.0.0'
+	compile group:'com.fasterxml.jackson.dataformat', name:'jackson-dataformat-xml', version:'2.8.8'
+
 	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-service")
@@ -20,6 +23,7 @@ dependencies {
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-api")
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-service")
 	compileOnly project(":modules:backend-auth")
+	compileOnly project(":modules:backend-bundlemgt")
 
 	//compileOnly project(":modules:backend-deliverable:backend-deliverable-api")
 	//compileOnly project(":modules:backend-deliverable:backend-deliverable-service")
@@ -29,15 +33,31 @@ dependencies {
 
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-api")
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-service")
+
+	compileOnly project(":modules:backend-synctracking:backend-synctracking-api")
+	compileOnly project(":modules:backend-synctracking:backend-synctracking-service")
+
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-text
 	compileOnly group: 'org.apache.commons', name: 'commons-text', version: '1.8'
 	
 	compileOnly group :  "org.osgi", name: "org.osgi.core", version: "5.0.0"
-    compileOnly group :  "org.osgi", name: "org.osgi.service.component.annotations", version: "1.3.0"  
-       
+    compileOnly group :  "org.osgi", name: "org.osgi.service.component.annotations", version: "1.3.0"
 	testCompile group: "junit", name: "junit", version: "4.12"
-}	
+	compileInclude name : "JAVA_SDK_VXP-2.0.4", transitive:false
+	compileInclude name : "httpcore-4.4.10-local", transitive:false
+	compileInclude name : "httpclient-4.5.6-local", transitive:false
+	compileInclude name : "httpmime-4.5.6-local", transitive:false
+	compileInclude name : "guava-14.0-rc1-local", transitive:false
+	compileInclude name : "status-transformer-3.0.0-local", transitive:false
+	compileInclude name : "base-102-transformer-3.0.0-local", transitive:false
+	compileInclude name : "jdom2-2.0.6-local", transitive:false
+}
 
+repositories {
+	flatDir {
+		dirs 'lib'
+	}
+}
 buildService {
 	apiDir = "../backend-dossiermgt-api/src/main/java"
 }

@@ -35,7 +35,7 @@ public class MICSSOAutoLogin extends BaseAutoLogin {
             return null;
         }
 
-        _log.info("--->>> MICSSOAutoLogin");
+        _log.debug("--->>> MICSSOAutoLogin");
 
         String[] credentials = new String[3];
 
@@ -62,7 +62,7 @@ public class MICSSOAutoLogin extends BaseAutoLogin {
             }
             return _userLocalService.fetchUser(employee.getMappingUserId());
         } catch (Exception e) {
-            _log.error("Error when get user in auto login: " + e.getMessage());
+            _log.error(e);
             return null;
         }
     }

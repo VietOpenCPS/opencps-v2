@@ -8,10 +8,14 @@
 
 package org.opencps.api.dossier.model;
 
+import com.liferay.portal.kernel.json.JSONObject;
+import org.opencps.api.dossiermark.model.DossierMarkModel;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -207,7 +211,9 @@ import javax.xml.bind.annotation.XmlType;
     "vnpostalProfile",
     "fromViaPostal",
 	"postalCodeSend",
-	"processNo"
+	"processNo",
+	"dossierMarks",
+	"serviceLevel"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -322,6 +328,24 @@ public class DossierDetailModel {
 	protected Integer fromViaPostal;
 	protected String postalCodeSend;
 	protected String processNo;
+	protected String dossierMarks;
+	protected int serviceLevel;
+
+	public int getServiceLevel() {
+		return serviceLevel;
+	}
+
+	public void setServiceLevel(int serviceLevel) {
+		this.serviceLevel = serviceLevel;
+	}
+
+	public String getDossierMarks() {
+		return dossierMarks;
+	}
+
+	public void setDossierMarks(String dossierMarks) {
+		this.dossierMarks = dossierMarks;
+	}
 
 	public String getProcessNo() {
 		return processNo;

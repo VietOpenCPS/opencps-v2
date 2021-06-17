@@ -14,18 +14,27 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.http.HttpStatus;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.util.DueDateUtils;
@@ -49,10 +58,13 @@ import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
+import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
@@ -66,6 +78,7 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 public class DossierMgtUtils {
 	private static final Log _log = LogFactoryUtil.getLog(DossierMgtUtils.class);
+	public static final String AUTO_EVENT_SPECIAL = "special";
 	
 	public static String _dateToString(Date date, String format) {
 
@@ -560,14 +573,37 @@ public class DossierMgtUtils {
 
 		return dossier;
 	}
+	public static boolean checkPreConditionSpecial(String[] preConditions, Dossier dossier, User curUser) {
+		boolean result = true;
+		for (String preCondition : preConditions) {
 
-	public static boolean checkPreCondition(String[] preConditions, Dossier dossier, User curUser) {
+			preCondition = preCondition.trim();
+			if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
+				String[] splitRoles = preCondition.split(StringPool.EQUAL);
+				if (splitRoles.length == 2) {
+					result = result && checkRoleCodeSpecial(splitRoles[1], curUser, dossier);
+				}
+			}else{
+				// roleCode
+				if(preCondition.contains(DossierTerm.ROLE_CODE)){
+					String[] splitRoles = preCondition.split(StringPool.EQUAL);
+					if (splitRoles.length == 2) {
+						result = result && checkRoleCodeSpecial(splitRoles[1], curUser, dossier);
+					}
+				}
+			}
+
+		}
+		return result;
+	}
+
+	public static boolean checkPreCondition(String[] preConditions, Dossier dossier, User curUser,String autoEvent) {
 		boolean result = true;
 		
 		for (String preCondition : preConditions) {
 			
 			preCondition = preCondition.trim();
-			
+			_log.info("preCondition : " + preCondition);
 			switch (preCondition) {
 			case DossierTerm.PAY_OK:
 					result = result && checkPayOk(dossier);
@@ -606,6 +642,12 @@ public class DossierMgtUtils {
 			case DossierTerm.ONLINE_FALSE:
 					result = result && checkDossierOnegate(dossier);
 					break;
+			case DossierTerm.FROMPOSTAL_TRUE:
+				result = result && checkUsedVNPostCollection(dossier);
+				break;
+			case DossierTerm.FROMPOSTAL_FALSE:
+				result = result && checkUnUsedVNPostCollection(dossier);
+				break;
 				default:
 					break;
 			}
@@ -685,11 +727,37 @@ public class DossierMgtUtils {
 					result = result && checkRoleDone(splitRoles[1], curUser, dossier);
 				}																			
 			}
-			if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
-				String[] splitRoles = preCondition.split(StringPool.EQUAL);
-				System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
-				if (splitRoles.length == 2) {
-					result = result && checkRoleCode(splitRoles[1], curUser, dossier);
+			if(Validator.isNotNull(autoEvent) && AUTO_EVENT_SPECIAL.equals(autoEvent)){
+				if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
+					String[] splitRoles = preCondition.split(StringPool.EQUAL);
+					System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
+					if (splitRoles.length == 2) {
+						result = result && checkRoleCodeSpecial(splitRoles[1], curUser, dossier);
+					}
+				} else {
+					// roleCode
+					if (preCondition.contains(DossierTerm.ROLE_CODE)) {
+						String[] splitRoles = preCondition.split(StringPool.EQUAL);
+						if (splitRoles.length == 2) {
+							result = result && checkRoleCodeSpecial(splitRoles[1], curUser, dossier);
+						}
+					}
+				}
+			}else {
+				if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
+					String[] splitRoles = preCondition.split(StringPool.EQUAL);
+					System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
+					if (splitRoles.length == 2) {
+						result = result && checkRoleCode(splitRoles[1], curUser, dossier);
+					}
+				} else {
+					// roleCode
+					if (preCondition.contains(DossierTerm.ROLE_CODE)) {
+						String[] splitRoles = preCondition.split(StringPool.EQUAL);
+						if (splitRoles.length == 2) {
+							result = result && checkRoleCode(splitRoles[1], curUser, dossier);
+						}
+					}
 				}
 			}
 			if (preCondition.contains(DossierTerm.CONTAIN_WAITING_OVERDUE_THAN)) {
@@ -722,6 +790,9 @@ public class DossierMgtUtils {
 				if (splitMultipleCheck.length == 2) {
 					result = result && checkMultipleCheck(splitMultipleCheck[1], dossier.getMultipleCheck());
 				}
+			}
+			if (preCondition.contains(DossierTerm.SENDINVOICE_VNPT)) {
+				result = result && checkSendInvoiceVNPT(dossier);
 			}
 		}
 
@@ -855,6 +926,33 @@ public class DossierMgtUtils {
 			return false;
 		}
 	}
+	private static boolean checkRoleDoneSpecial(String roleCode, User user, Dossier dossier) {
+		JobPos jobPos = JobPosLocalServiceUtil.getByJobCode(dossier.getGroupId(), roleCode);
+		if (jobPos != null) {
+//			List<DossierActionUser> dActionUsers = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
+
+			boolean flag = false;
+//			for (DossierActionUser dau : dActionUsers) {
+//				if (dau.getUserId() == user.getUserId()) {
+					List<Role> lstRoles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
+					for (Role r : lstRoles) {
+						if (r.getRoleId() == jobPos.getMappingRoleId()) {
+							flag = true;
+							break;
+						}
+					}
+					if (flag) {
+						return true;
+					}
+//				}
+//			}
+
+			return flag;
+		} else {
+			return false;
+		}
+	}
+
 
 	private static boolean checkRoleCode(String roleCode, User user, Dossier dossier) {
 		boolean flag = false;
@@ -869,6 +967,24 @@ public class DossierMgtUtils {
 				}
 			} else {
 				flag = checkRoleDone(roleCode, user, dossier);
+			}
+		}
+		return flag;
+	}
+
+	private static boolean checkRoleCodeSpecial(String roleCode, User user, Dossier dossier) {
+		boolean flag = false;
+		if (Validator.isNotNull(roleCode)) {
+			if (roleCode.contains(StringPool.PLUS)) {
+				String[] splitRole = StringUtil.split(StringPool.PLUS);
+				if (splitRole != null && splitRole.length > 0) {
+					for (String role : splitRole) {
+						flag = checkRoleDoneSpecial(role, user, dossier);
+						if (flag) break;
+					}
+				}
+			} else {
+				flag = checkRoleDoneSpecial(roleCode, user, dossier);
 			}
 		}
 		return flag;
@@ -1058,6 +1174,34 @@ public class DossierMgtUtils {
 		}
 		
 		return false;
+	}
+	
+	private static boolean checkUsedVNPostCollection(Dossier dossier) {
+		if (dossier.getVnpostalStatus() > 0) 
+			return true;
+		else
+			return false;
+	}
+	
+	private static boolean checkUnUsedVNPostCollection(Dossier dossier) {
+		if (dossier.getVnpostalStatus() > 0) 
+			return false;
+		else
+			return true;
+	}
+	
+	private static boolean checkSendInvoiceVNPT(Dossier dossier) {
+		
+		_log.info("Cấu hình cho phép lấy hóa đơn điên tử của VNPT");
+		boolean result = false;
+		PaymentFileActions actions = new PaymentFileActionsImpl();
+		PaymentFile paymentFile = actions.getPaymentFiles(dossier.getGroupId(), dossier.getDossierId());
+		if (paymentFile != null && Validator.isNull(paymentFile.getInvoicePayload())) {			
+			paymentFile.setInvoicePayload("VNPT");
+			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+			result = true;
+		}
+		return result;
 	}
 
 	//Calculator startDate and endDate

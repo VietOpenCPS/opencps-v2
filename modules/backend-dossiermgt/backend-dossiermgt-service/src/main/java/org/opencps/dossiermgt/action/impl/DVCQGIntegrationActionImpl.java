@@ -6,9 +6,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -16,6 +18,9 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import com.liferay.portal.kernel.json.*;
 import org.apache.commons.text.similarity.CosineSimilarity;
@@ -35,37 +40,18 @@ import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierFileUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
+import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
-import org.opencps.dossiermgt.model.AccessToken;
-import org.opencps.dossiermgt.model.ActionConfig;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.DossierStatusMapping;
-import org.opencps.dossiermgt.model.ProcessAction;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceFileTemplate;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.model.ServiceInfoMapping;
+import org.opencps.dossiermgt.input.model.SyncTrackingInfo;
+import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.impl.ServiceInfoImpl;
-import org.opencps.dossiermgt.service.AccessTokenLocalServiceUtil;
-import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierStatusMappingLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigMappingLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
+import org.opencps.synctracking.model.SyncTrackingQuery;
+import org.opencps.synctracking.service.SyncTrackingLocalServiceUtil;
 import org.opencps.usermgt.model.Answer;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Question;
@@ -98,6 +84,17 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import backend.auth.api.exception.ErrorMsgModel;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  * @author trungnt
@@ -114,11 +111,20 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private static HashMap<String, JSONObject> _dictItemMapItems = new HashMap<String, JSONObject>();
 
 	private static JSONArray _serviceInfoDVCQG = JSONFactoryUtil.createJSONArray();
+	private RestTemplate restTemplate;
 
 	private Log _log = LogFactoryUtil.getLog(DVCQGIntegrationActionImpl.class);
 	private static final String LUCENE_DATE_FORMAT = "yyyyMMddHHmmss";
 	private static final String HCM_TIMEZONE = "Asia/Ho_Chi_Minh";
 	private static final String DVCQG_INTEGRATION = "DVCQG_INTEGRATION";
+	private static final Integer timeout = 10000 ;
+
+	private static final Integer TIMEOUT_DVCQG = 6;
+
+	public DVCQGIntegrationActionImpl(){
+		this.restTemplate = new RestTemplate(setConfigRestTemplate(timeout));
+		this.restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+	}
 
 	private String convertDate2String(Date date) {
 
@@ -138,10 +144,10 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	private JSONObject createSyncDossierBodyRequest(long groupId, Dossier dossier, JSONObject config,
-			String accessToken, HttpServletRequest request) {
+													String accessToken, HttpServletRequest request) {
 		JSONObject object = JSONFactoryUtil.createJSONObject();
 		String _oServiceCode = dossier.getServiceCode();
-		String _mServiceCode = StringPool.BLANK;
+		String _mServiceCode;
 		ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId,
 				_oServiceCode);
 		if (serviceInfoMapping != null) {
@@ -217,7 +223,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("HinhThuc", String.valueOf(HinhThuc));
 		object.put("NgayKetThucXuLy", convertDate2String(dossier.getReleaseDate()));// ko bb
 		object.put("DonViXuLy", dossier.getGovAgencyName());
-		object.put("GhiChu", dossier.getDossierNote());// ko bb
+		//Giao remove this because dossierNote length > 2k
+//		object.put("GhiChu", dossier.getDossierNote());// ko bb
 
 		JSONArray DanhSachLePhi = JSONFactoryUtil.createJSONArray();
 		object.put("DanhSachLePhi", DanhSachLePhi);// ko bb
@@ -260,7 +267,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						&& dossierFile.getDossierPartType() > 0) {
 					try {
 						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
-						String url = StringPool.BLANK;
+						String url;
 						if (request != null) {
 							url = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(),
 									(ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
@@ -325,10 +332,10 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	private JSONObject createSyncDossierBodyRequest(long groupId, Dossier dossier, ServerConfig serverConfig,
-			HttpServletRequest request) {
+													HttpServletRequest request) {
 		JSONObject object = JSONFactoryUtil.createJSONObject();
 		String _oServiceCode = dossier.getServiceCode();
-		String _mServiceCode = StringPool.BLANK;
+		String _mServiceCode;
 		ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId,
 				_oServiceCode);
 		if (serviceInfoMapping != null) {
@@ -396,7 +403,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("HinhThuc", String.valueOf(HinhThuc));
 		object.put("NgayKetThucXuLy", convertDate2String(dossier.getReleaseDate()));// ko bb
 		object.put("DonViXuLy", dossier.getGovAgencyName());
-		object.put("GhiChu", dossier.getDossierNote());// ko bb
+		//Giao remove this because dossierNote length > 2k
+//		object.put("GhiChu", dossier.getDossierNote());// ko bb
 
 		JSONArray DanhSachLePhi = JSONFactoryUtil.createJSONArray();
 		object.put("DanhSachLePhi", DanhSachLePhi);// ko bb
@@ -440,7 +448,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						&& dossierFile.getDossierPartType() > 0) {
 					try {
 						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
-						String url = StringPool.BLANK;
+						String url;
 						if (request != null) {
 							url = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(),
 									(ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
@@ -504,7 +512,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	private JSONObject createSyncTTKMDossierBodyRequest(long groupId, Dossier dossier, ServerConfig serverConfig,
-			HttpServletRequest request) {
+														HttpServletRequest request) {
 		JSONObject object = JSONFactoryUtil.createJSONObject();
 		object.put("MaHoSo", dossier.getReferenceUid());
 		object.put("MaHoSoDonVi", dossier.getDossierNo());
@@ -543,7 +551,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						&& dossierFile.getDossierPartType() > 0) {
 					try {
 						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
-						String url = StringPool.BLANK;
+						String url;
 						if (request != null) {
 							url = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(),
 									(ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
@@ -612,11 +620,78 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					dossierAction != null ? convertDate2String(dossierAction.getCreateDate()) : StringPool.BLANK);
 		}
 
-		object.put("PhongBanXuLy", "");// ko bb
-		object.put("NoiDungXuLy", dossierAction != null ? dossierAction.getActionNote() : StringPool.BLANK);
+		//sequenceRole- PhongBanXuLy
+		//
+		String sequenceRole      = "";
+		String dateReturnDossier = "";
+		try {
+			String submissionNote = dossier.getSubmissionNote();
+
+			if(Validator.isNull(submissionNote)) {
+				throw new Exception("No submissionNote found with dossierId: " + dossier.getDossierId());
+			}
+
+			JSONObject subJson = JSONFactoryUtil.createJSONObject(submissionNote);
+			if(Validator.isNull(subJson) || !subJson.has("data")) {
+				throw new Exception("No json found for submissionNote with dossierId: " + dossier.getDossierId());
+			}
+
+			JSONArray data = subJson.getJSONArray("data");
+			JSONObject oneData;
+			JSONObject oneAction;
+			JSONArray actions;
+			String actionCode;
+
+			for(int i = 0; i< data.length(); i++) {
+				oneData = data.getJSONObject(i);
+				if(Validator.isNull(oneData)) {
+					continue;
+				}
+				actions = oneData.getJSONArray("actions");
+				if(Validator.isNull(actions) || actions.length() ==0) {
+					continue;
+				}
+				oneAction = actions.getJSONObject(0);
+				if(Validator.isNull(oneAction)) {
+					continue;
+				}
+				actionCode = oneAction.getString("actionCode");
+
+				if(dossierAction != null) {
+					if(Validator.isNotNull(dossierAction.getActionCode()) &&
+							actionCode.equals(dossierAction.getActionCode())) {
+						sequenceRole = oneData.getString("sequenceRole");
+						if(oneAction.has("dueDate") && !oneAction.getString("dueDate").isEmpty()) {
+							Date date = new Date(Long.parseLong(oneAction.getString("dueDate")));
+							dateReturnDossier = convertDate2String(date);
+						}
+					}
+				}
+			}
+		}catch (Exception e) {
+			_log.error(e);
+			e.printStackTrace();
+		}
+
+		object.put("PhongBanXuLy", sequenceRole);// ko bb
+		String processContent = "";
+		if(Validator.isNotNull(dossierAction)) {
+			String actionName = Validator.isNotNull(dossierAction.getActionName())
+					? dossierAction.getActionName(): StringPool.BLANK;
+			String actionNote = Validator.isNotNull(dossierAction.getActionNote())
+					? dossierAction.getActionNote(): StringPool.BLANK;
+			if(!actionName.isEmpty()) {
+				processContent += actionName;
+				if(!actionNote.isEmpty()) {
+					processContent += "-" + actionNote;
+				}
+			}
+		}
+
+		object.put("NoiDungXuLy", processContent);
 		object.put("TrangThai", getMappingStatus(groupId, dossier));
 		object.put("NgayBatDau", "");// ko bb
-		object.put("NgayKetThucTheoQuyDinh", "");// ko bb
+		object.put("NgayKetThucTheoQuyDinh", dateReturnDossier);// ko bb
 
 		return object;
 	}
@@ -624,7 +699,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	@Override
 	public JSONObject doSyncGovernmentAgency(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
-		JSONObject qajson = JSONFactoryUtil.createJSONObject();
+		JSONObject qajson;
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			try {
@@ -648,7 +723,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 					JSONArray resultData = JSONFactoryUtil.createJSONArray();
 
-					JSONObject item = null;
+					JSONObject item;
 
 					for (int i = 0; i < dmlst.length(); i++) {
 						JSONObject dmobj = dmlst.getJSONObject(i);
@@ -678,12 +753,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						item.put("createDate",
 								Validator.isNotNull(dictItem.getCreateDate())
 										? APIDateTimeUtils.convertDateToString(dictItem.getCreateDate(),
-												APIDateTimeUtils._TIMESTAMP)
+										APIDateTimeUtils._TIMESTAMP)
 										: StringPool.BLANK);
 						item.put("modifiedDate",
 								Validator.isNotNull(dictItem.getModifiedDate())
 										? APIDateTimeUtils.convertDateToString(dictItem.getModifiedDate(),
-												APIDateTimeUtils._TIMESTAMP)
+										APIDateTimeUtils._TIMESTAMP)
 										: StringPool.BLANK);
 						item.put("itemCode", dictItem.getItemCode());
 						item.put("itemName", dictItem.getItemName());
@@ -712,7 +787,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	@Override
 	public JSONObject doSyncServiceAdministration(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
-		JSONObject qajson = JSONFactoryUtil.createJSONObject();
+		JSONObject qajson;
 		_log.info("-->>>>>>>> doSyncGovernmentAgency: " + serverConfigs + "|" + serverConfigs.size());
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
@@ -767,12 +842,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						item.put("createDate",
 								Validator.isNotNull(dictItem.getCreateDate())
 										? APIDateTimeUtils.convertDateToString(dictItem.getCreateDate(),
-												APIDateTimeUtils._TIMESTAMP)
+										APIDateTimeUtils._TIMESTAMP)
 										: StringPool.BLANK);
 						item.put("modifiedDate",
 								Validator.isNotNull(dictItem.getModifiedDate())
 										? APIDateTimeUtils.convertDateToString(dictItem.getModifiedDate(),
-												APIDateTimeUtils._TIMESTAMP)
+										APIDateTimeUtils._TIMESTAMP)
 										: StringPool.BLANK);
 						item.put("itemCode", dictItem.getItemCode());
 						item.put("itemName", dictItem.getItemName());
@@ -801,7 +876,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	@Override
 	public JSONObject doSyncServiceDomain(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
-		JSONObject qajson = JSONFactoryUtil.createJSONObject();
+		JSONObject qajson;
 		_log.info("-->>>>>>>> doSyncServiceDomain: " + serverConfigs + "|" + serverConfigs.size());
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
@@ -864,11 +939,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 							item.put("createDate",
 									Validator.isNotNull(dictItem.getCreateDate())
 											? APIDateTimeUtils.convertDateToString(dictItem.getCreateDate(),
-													APIDateTimeUtils._TIMESTAMP)
+											APIDateTimeUtils._TIMESTAMP)
 											: StringPool.BLANK);
 							item.put("modifiedDate", Validator.isNotNull(dictItem.getModifiedDate())
 									? APIDateTimeUtils.convertDateToString(dictItem.getModifiedDate(),
-											APIDateTimeUtils._TIMESTAMP)
+									APIDateTimeUtils._TIMESTAMP)
 									: StringPool.BLANK);
 							item.put("itemCode", dictItem.getItemCode());
 							item.put("itemName", dictItem.getItemName());
@@ -959,7 +1034,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	private JSONArray extractFAQResult(User user, JSONArray resultData, JSONObject qajson,
-			ServiceContext serviceContext, long domainCollectionId, long agencyCollectionId) {
+									   ServiceContext serviceContext, long domainCollectionId, long agencyCollectionId) {
 		if (qajson.has("error_code") && qajson.getInt("error_code") == 0 && qajson.has("result")
 				&& qajson.getJSONArray("result").length() > 0) {
 
@@ -979,11 +1054,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				String malinhvuc = StringPool.BLANK;
 				if (qaobj.has("MALINHVUC")) {
 					malinhvuc = qaobj.getString("MALINHVUC");
-				}
-
-				String tendonvi = StringPool.BLANK;
-				if (qaobj.has("TENDONVI")) {
-					tendonvi = qaobj.getString("TENDONVI");
 				}
 
 				String noidung = StringPool.BLANK;
@@ -1039,11 +1109,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					}
 				}
 
-				String domainName = StringPool.BLANK;
+				String domainName;
 
-				String domainCode = StringPool.BLANK;
+				String domainCode;
 
-				String domainCodeTemp = StringPool.BLANK;
+				String domainCodeTemp;
 				// Dung cho phuong an replace
 				if (Validator.isNotNull(malinhvuc)) {
 					// domainCode = malinhvuc;
@@ -1198,10 +1268,13 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Charset", "utf-8");
-			conn.setRequestProperty("dstcode", dstcode);
+
+			if(Validator.isNotNull(dstcode)) {
+				conn.setRequestProperty("dstcode", dstcode);
+			}
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
-			conn.setReadTimeout(60 * 1000);
+			conn.setReadTimeout(TIMEOUT_DVCQG * 1000);
 
 			byte[] postData = body.toJSONString().getBytes("UTF-8");
 			int postDataLength = postData.length;
@@ -1267,7 +1340,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	@Override
 	public String getAccessToken(User user, HttpServletRequest request, HttpServletResponse response,
-			ServiceContext serviceContext) {
+								 ServiceContext serviceContext) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
@@ -1276,13 +1349,13 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			/*
 			 * HttpSession session = request.getSession();
-			 * 
+			 *
 			 * String accessToken = (String)session.getAttribute("ACCESS_TOKEN");
-			 * 
+			 *
 			 * if(Validator.isNull(accessToken)) {
-			 * 
+			 *
 			 * accessToken = getAccessToken(serverConfig);
-			 * 
+			 *
 			 * session.setAttribute("ACCESS_TOKEN", accessToken); }
 			 */
 
@@ -1295,7 +1368,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	private JSONArray getAnswer(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
-		JSONObject qajson = JSONFactoryUtil.createJSONObject();
+		JSONObject qajson;
 		_log.info("-->>>>>>>> syncAnswer: " + serverConfigs + "|" + serverConfigs.size());
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			try {
@@ -1378,7 +1451,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	public JSONArray getServiceInfoDVCQG(User user, long groupId, ServiceContext serviceContext, String serviceCode,
-			String serviceName) {
+										 String serviceName) {
 		JSONArray result = JSONFactoryUtil.createJSONArray();
 
 		if (_serviceInfoDVCQG.length() == 0) {
@@ -1500,7 +1573,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	@Deprecated
 	public JSONArray getServiceInfoSimilarity(long groupId, String serviceCode, String serviceName,
-			HashMap<String, String> map) {
+											  HashMap<String, String> map) {
 		ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId,
 				serviceCode);
 		String _tmpServiceName = serviceName.replaceAll("[.,\\-_:;\\\"\\']", "").toLowerCase();
@@ -1621,7 +1694,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	public JSONArray getDictItemSimilarity(long groupId, String collectionCode, String dictItemCode,
-			String dictItemName, HashMap<String, String> map, List<String> mappedCode) {
+										   String dictItemName, HashMap<String, String> map, List<String> mappedCode) {
 		JSONArray result = JSONFactoryUtil.createJSONArray();
 		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode,
 				groupId);
@@ -1718,7 +1791,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				Map<CharSequence, Integer> vectorB = Arrays.stream(name.split(" "))
 						.collect(Collectors.toMap(character -> character, character -> 1, Integer::sum));
 
-				_dictItemMapChars.put(key, vectorB);
+				if(_dictItemMapChars != null) {
+					_dictItemMapChars.put(key, vectorB);
+				}
 
 				Double weightIndex = documentsSimilarity.cosineSimilarity(vectorA, vectorB);
 
@@ -1727,7 +1802,10 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				item.put("itemNameDVCQG", entry.getValue());
 				item.put("dictItemMappingId", 0);
 				item.put("mapped", false);
-				_dictItemMapItems.put(key, item);
+
+				if(_dictItemMapItems != null) {
+					_dictItemMapItems.put(key, item);
+				}
 
 				if (weightIndex >= 0.4) {
 
@@ -1789,7 +1867,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
-			conn.setReadTimeout(60 * 1000);
+			conn.setReadTimeout(TIMEOUT_DVCQG * 1000);
 
 			byte[] postData = body.toJSONString().getBytes("UTF-8");
 			int postDataLength = postData.length;
@@ -1871,7 +1949,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
-			conn.setReadTimeout(60 * 1000);
+			conn.setReadTimeout(TIMEOUT_DVCQG * 1000);
 
 			byte[] postData = body.toJSONString().getBytes("UTF-8");
 			int postDataLength = postData.length;
@@ -1970,7 +2048,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
-			conn.setReadTimeout(60 * 1000);
+			conn.setReadTimeout(TIMEOUT_DVCQG * 1000);
 
 			byte[] postData = body.toJSONString().getBytes("UTF-8");
 			int postDataLength = postData.length;
@@ -2038,21 +2116,38 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return result;
 	}
 
-	private boolean hasSyncDossier(String dossierNo, JSONObject config, String accessToken) {
-		JSONObject searchData = searchDossier(dossierNo, config, accessToken);
-		if (searchData != null && searchData.has("result")) {
-			JSONArray result = searchData.getJSONArray("result");
-			if (result != null && result.length() > 0) {
+	private boolean hasSyncDossier(Dossier dossier, JSONObject config, String accessToken) {
+		try {
+			String dossierNo = dossier.getDossierNo();
+			// duan idea
+			List<PublishQueue> publishQueue =  PublishQueueLocalServiceUtil.getByG_DID_SN_NST(dossier.getGroupId(),
+					dossier.getDossierId(), ServerConfigTerm.DVCQG_INTEGRATION, PublishQueueTerm.STATE_RECEIVED_ACK);
+
+			if(Validator.isNotNull(publishQueue) && publishQueue.size() > 0) {
+				_log.info("Dossier " + dossierNo + " has been created on DVCQG");
 				return true;
+			} else {
+				_log.info("Dossier " + dossierNo + " does not existed on DVCQG or not appear in queue");
 			}
 
+			// trung idea
+			JSONObject searchData = searchDossier(dossierNo, config, accessToken);
+			if (searchData != null && searchData.has("result")) {
+				JSONArray result = searchData.getJSONArray("result");
+				if (result != null && result.length() > 0) {
+					return true;
+				}
+
+			}
+		} catch (Exception e) {
+			_log.error(e);
 		}
 		return false;
 	}
 
 	@Override
 	public JSONObject mappingServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCode,
-			String serviceCodeDVCQG, String serviceNameDVCQG) {
+										 String serviceCodeDVCQG, String serviceNameDVCQG) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (Validator.isNotNull(serviceCode) && Validator.isNotNull(serviceCodeDVCQG)) {
 			try {
@@ -2148,7 +2243,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
-			conn.setReadTimeout(60 * 1000);
+			conn.setReadTimeout(TIMEOUT_DVCQG * 1000);
 
 			byte[] postData = body.toJSONString().getBytes("UTF-8");
 			_log.debug("body:" + body.toJSONString());
@@ -2191,7 +2286,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	@Override
 	public JSONObject syncDossier(User user, long groupId, ServiceContext serviceContext, String strDossierId,
-			String isUpdating, HttpServletRequest request) {
+								  String isUpdating, HttpServletRequest request) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		if (serverConfigs != null && !serverConfigs.isEmpty() && Validator.isNotNull(strDossierId)) {
@@ -2254,7 +2349,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					result = syncData(serverConfig, body);
 
 				} else {
-					boolean hasSync = hasSyncDossier(dossier.getDossierNo(), config, accessToken);
+					boolean hasSync = hasSyncDossier(dossier, config, accessToken);
 					JSONObject synsObject = createSyncDossierBodyRequest(groupId, dossier, config, accessToken,
 							request);
 
@@ -2294,7 +2389,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	@Override
 	public JSONObject syncDossierStatus(User user, long groupId, ServiceContext serviceContext, String strDossierId,
-			HttpServletRequest request) {
+										HttpServletRequest request) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		if (serverConfigs != null && !serverConfigs.isEmpty() && Validator.isNotNull(strDossierId)) {
@@ -2327,7 +2422,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	/*
 	 * @Deprecated
-	 * 
+	 *
 	 * @Override public JSONObject syncServiceInfo(User user, long groupId,
 	 * ServiceContext serviceContext, String serviceCodes) { List<ServerConfig>
 	 * serverConfigs =
@@ -2340,11 +2435,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	 * JSONFactoryUtil.createJSONObject(serverConfig.getConfigs()); String
 	 * accessToken = getAccessToken(config); String[] arrayServiceCode =
 	 * StringUtil.split(serviceCodes);
-	 * 
+	 *
 	 * JSONObject body = JSONFactoryUtil.createJSONObject();
-	 * 
+	 *
 	 * body.put("service", "LayThuTuc");
-	 * 
+	 *
 	 * for (String serviceCode : arrayServiceCode) { ServiceInfoMapping
 	 * serviceInfoMapping = ServiceInfoMappingLocalServiceUtil
 	 * .fetchDVCQGServiceCode(groupId, serviceCode); ServiceInfo serviceInfo =
@@ -2352,11 +2447,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	 * (serviceInfoMapping != null &&
 	 * Validator.isNotNull(serviceInfoMapping.getServiceCodeDVCQG()) && serviceInfo
 	 * != null) {
-	 * 
+	 *
 	 * body.put("maTTHC", serviceInfoMapping.getServiceCodeDVCQG());
-	 * 
+	 *
 	 * JSONObject serviceInfoDVCQG = getSharingData(config, body, accessToken);
-	 * 
+	 *
 	 * if (serviceInfoDVCQG != null && serviceInfoDVCQG.has("result")) { JSONArray
 	 * results = serviceInfoDVCQG.getJSONArray("result"); if (results.length() > 0)
 	 * { JSONObject _tmp = results.getJSONObject(0); StringBuffer sb = null;
@@ -2372,9 +2467,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	 * (trinhtu_arr != null) { for (int j = 0; j < trinhtu_arr.length(); j++) {
 	 * String tentrinhtu = trinhtu_arr.getJSONObject(j) .getString("TENTRINHTU");
 	 * sb.append(tentrinhtu + "<br>"); } } }
-	 * 
+	 *
 	 * } } serviceInfo.setProcessText(sb.toString());
-	 * 
+	 *
 	 * //CACHTHUCTHUCHIEN sb = new StringBuffer(); String durationText =
 	 * StringPool.BLANK; String feeText = StringPool.BLANK; if
 	 * (_tmp.has("CACHTHUCTHUCHIEN")) { JSONArray cachthucthuchien_arr =
@@ -2384,9 +2479,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	 * cachthucthuchien_obj.getInt("KENH"); String nhankenh = "Trực tiếp"; if (kenh
 	 * == 2) { nhankenh = "Trực tuyến"; } else if (kenh == 3) { nhankenh =
 	 * "Nộp qua bưu chính công ích"; } sb.append(nhankenh + ":<br>");
-	 * 
+	 *
 	 * JSONArray thoigian_arr = cachthucthuchien_obj.getJSONArray("THOIGIAN");
-	 * 
+	 *
 	 * if (thoigian_arr != null) { for (int j = 0; j < thoigian_arr.length(); j++) {
 	 * JSONObject thoigian_obj = thoigian_arr.getJSONObject(j); int
 	 * thoigiangiaiquyet = thoigian_obj.getInt("THOIGIANGIAIQUYET"); String
@@ -2406,15 +2501,15 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	 * serviceInfo.setMethodText(sb.toString()); //durationText
 	 * serviceInfo.setDurationText(durationText); //feeText
 	 * serviceInfo.setFeeText(feeText);
-	 * 
+	 *
 	 * //YEUCAU String yeucau = StringPool.BLANK; if (_tmp.has("YEUCAU")) { yeucau =
 	 * _tmp.getString("YEUCAU"); } serviceInfo.setConditionText(yeucau);
-	 * 
+	 *
 	 * //MOTADOITUONGTHUCHIEN String motadoituongthuchien = StringPool.BLANK; if
 	 * (_tmp.has("MOTADOITUONGTHUCHIEN")) { motadoituongthuchien =
 	 * _tmp.getString("MOTADOITUONGTHUCHIEN"); }
 	 * serviceInfo.setApplicantText(motadoituongthuchien);
-	 * 
+	 *
 	 * //KETQUATHUCHIEN sb = new StringBuffer(); if (_tmp.has("KETQUATHUCHIEN")) {
 	 * JSONArray ketquathuchien_arr = _tmp.getJSONArray("KETQUATHUCHIEN"); if
 	 * (ketquathuchien_arr != null) { for (int i = 0; i <
@@ -2423,11 +2518,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	 * ketquathuchien_obj.getString("MAKETQUA"); String tenketqua =
 	 * ketquathuchien_obj.getString("TENKETQUA"); sb.append("- Mã kết quả:" +
 	 * maketqua + "<br>"); sb.append("- Kết quả:" + tenketqua + "<br>"); }
-	 * 
+	 *
 	 * }
-	 * 
+	 *
 	 * } serviceInfo.setResultText(sb.toString());
-	 * 
+	 *
 	 * //CANCUPHAPLY sb = new StringBuffer(); if (_tmp.has("CANCUPHAPLY")) {
 	 * JSONArray cancuphaply_arr = _tmp.getJSONArray("CANCUPHAPLY"); if
 	 * (cancuphaply_arr != null) { for (int i = 0; i < cancuphaply_arr.length();
@@ -2435,15 +2530,15 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	 * sovanban = cancuphaply_obj.getString("SOVANBAN"); String tenvanban =
 	 * cancuphaply_obj.getString("TENVANBAN"); sb.append("- Số văn bản: " + sovanban
 	 * + "<br>"); sb.append("- Tên văn bản: " + tenvanban + "<br>"); }
-	 * 
+	 *
 	 * }
-	 * 
+	 *
 	 * } serviceInfo.setRegularText(sb.toString());
-	 * 
+	 *
 	 * //TRANGTHAI boolean public_ = true; if (_tmp.has("TRANGTHAI")) { int
 	 * trangthai = _tmp.getInt("TRANGTHAI"); if (trangthai != 1) { public_ = false;
 	 * } } serviceInfo.setPublic_(public_);
-	 * 
+	 *
 	 * //COQUANTHUCHIEN sb = new StringBuffer(); if (_tmp.has("COQUANTHUCHIEN")) {
 	 * JSONArray coquanthuchien_arr = _tmp.getJSONArray("COQUANTHUCHIEN"); if
 	 * (coquanthuchien_arr != null) { for (int i = 0; i <
@@ -2452,11 +2547,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	 * coquanthuchien_obj.getString("TENDONVI"); String madonvi =
 	 * coquanthuchien_obj.getString("MADONVI"); sb.append("- Tên đơn vị: " +
 	 * tendonvi + "<br>"); sb.append("- Mã đơn vị: " + madonvi + "<br>"); } } }
-	 * 
+	 *
 	 * serviceInfo.setGovAgencyText(sb.toString());
-	 * 
+	 *
 	 * ServiceInfoLocalServiceUtil.updateServiceInfo(serviceInfo);
-	 * 
+	 *
 	 * //THANHPHANHOSO List<ServiceFileTemplate> serviceFileTemplates =
 	 * ServiceFileTemplateLocalServiceUtil
 	 * .getByServiceInfoId(serviceInfo.getServiceInfoId()); if (serviceFileTemplates
@@ -2464,7 +2559,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	 * serviceFileTemplates) {
 	 * ServiceFileTemplateLocalServiceUtil.removeServiceFileTemplate(
 	 * serviceInfo.getServiceInfoId(), serviceFileTemplate.getFileTemplateNo()); } }
-	 * 
+	 *
 	 * if (_tmp.has("THANHPHANHOSO")) { JSONArray thanhphanhoso_arr =
 	 * _tmp.getJSONArray("THANHPHANHOSO"); ServiceInfoActions actions = new
 	 * ServiceInfoActionsImpl(); if (thanhphanhoso_arr != null) { for (int i = 0; i
@@ -2476,7 +2571,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	 * giayto_obj.getString("MAGIAYTO"); String tenmaudon =
 	 * giayto_obj.getString("TENMAUDON"); String link = giayto_obj.getString("URL");
 	 * String tengiayto = giayto_obj.getString("TENGIAYTO");
-	 * 
+	 *
 	 * if (Validator.isNotNull(link) && Validator.isNotNull(magiayto)) { InputStream
 	 * in = null; URLConnection connection = null; try { URL url = new URL(link);
 	 * connection = url.openConnection(); in = connection.getInputStream(); String
@@ -2485,26 +2580,26 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	 * actions.addServiceFileTemplate(user.getUserId(), groupId,
 	 * serviceInfo.getServiceInfoId(), magiayto, tengiayto, tenmaudon, in, mimeType,
 	 * connection.getContentLength(), serviceContext);
-	 * 
+	 *
 	 * } catch (Exception e) { _log.error(e); } finally { if (in != null) {
 	 * in.close(); } }
-	 * 
+	 *
 	 * }
-	 * 
+	 *
 	 * } } } } } result.put(serviceCode, true); } else { result.put(serviceCode,
 	 * false); }
-	 * 
+	 *
 	 * } else { result.put(serviceCode, false); } } } } catch (Exception e) {
 	 * _log.error(e);
-	 * 
+	 *
 	 * } }
-	 * 
+	 *
 	 * return result; }
 	 */
 
 	@Override
 	public JSONObject syncServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCodes,
-			String type) {
+									  String type) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		JSONArray responseData = JSONFactoryUtil.createJSONArray();
@@ -2536,7 +2631,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 						if (serviceInfo != null && type.equalsIgnoreCase("sync")) {
 
-							String serviceCodeDVCQG = StringPool.BLANK;
+							String serviceCodeDVCQG;
 
 							ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil
 									.fetchDVCQGServiceCode(groupId, serviceCode);
@@ -2603,8 +2698,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	// TODO
 	private JSONObject syncServiceInfo(User user, long groupId, JSONObject config, String serviceCodeDVCQG,
-			ServiceInfo serviceInfo, long domainCollectionId, long govAgencyCollectionId, JSONObject body,
-			String accessToken, ServiceContext serviceContext, String type) {
+									   ServiceInfo serviceInfo, long domainCollectionId, long govAgencyCollectionId, JSONObject body,
+									   String accessToken, ServiceContext serviceContext, String type) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
@@ -2742,7 +2837,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 										String lephimota = philephi_arr.getJSONObject(0).getString("MOTA");
 										feeText += nhankenh + ":" + maphilephi + ", " + sotien + " " + donvi
 												+ (Validator.isNotNull(lephimota) ? "(" + lephimota + ")"
-														: StringPool.BLANK)
+												: StringPool.BLANK)
 												+ "<br>";
 									}
 								}
@@ -2767,7 +2862,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				/*
 				 * String motadoituongthuchien = StringPool.BLANK; if
 				 * (_tmp.has("MOTADOITUONGTHUCHIEN")) {
-				 * 
+				 *
 				 * motadoituongthuchien = _tmp.getString("MOTADOITUONGTHUCHIEN");
 				 * _log.debug("MOTADOITUONGTHUCHIEN " + motadoituongthuchien); }
 				 */
@@ -2867,7 +2962,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 								serviceInfo.getApplicantText(), serviceInfo.getResultText(),
 								serviceInfo.getRegularText(), serviceInfo.getFeeText(),
 								serviceInfo.getAdministrationCode(), serviceInfo.getDomainCode(),
-								serviceInfo.getMaxLevel(), false, serviceInfo.getGovAgencyText(), serviceContext);
+								serviceInfo.getMaxLevel(), false, serviceInfo.getGovAgencyText(), serviceInfo.getTagCode(),
+								serviceInfo.getTagName(), serviceContext);
 					}
 				} catch (Exception e) {
 					_log.error(e);
@@ -3040,7 +3136,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	@Override
 	public JSONObject doCreateDossierFromDVCQG(Company company, User user, long groupId, ServiceContext serviceContext,
-			JSONObject data) {
+											   JSONObject data) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
@@ -3071,7 +3167,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			return createResponseMessage(result, -1, "MaSoThue empty");
 		}
 
-		String techId = StringPool.BLANK;
+		String techId;
 
 		JSONObject body = JSONFactoryUtil.createJSONObject();
 		body.put("service", "TraCuuTechID");
@@ -3337,7 +3433,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					return createResponseMessage(result, 1, MaHoSo + "| duplicate refId");
 				}
 			} catch (Exception e) {
-
+				_log.error(e);
 			}
 
 			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossier(groupId, company, user, serviceContext,
@@ -3364,6 +3460,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			dossier.setReferenceUid(MaHoSo);
 			// 5: tu he thong dvcqg
 			dossier.setSystemId(5);
+			dossier.setSubmitDate(new Date());
 
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 
@@ -3379,7 +3476,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, processAction, actionCode,
 					applicant.getApplicantName(), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 					StringPool.BLANK, actConfig.getSyncType(), serviceContext, errorModel);
-			_log.info("ttkm result: " + "create dossier error|" + MaHoSo);
+			_log.info("ttkm result: " + "create dossier success|" + MaHoSo);
 			return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
 
 		} catch (Exception e) {
@@ -3423,7 +3520,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				return createResponseMessage(result, -1, "MaSoThue empty");
 			}
 
-			String techId = StringPool.BLANK;
+			String techId;
 			JSONObject body = JSONFactoryUtil.createJSONObject();
 			body.put("service", "TraCuuTechID");
 			body.put("provider", "wso2is");
@@ -3760,13 +3857,13 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				return createResponseMessage(result, -1, MaHoSo + "| create dossier error");
 			}
 		} catch (Exception e) {
-			_log.error("HSKMBS error: " + e.getMessage());
+			_log.error(e);
 			return createResponseMessage(result, -1, "System error");
 		}
 	}
 
 	private ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
-			long groupId) throws PortalException {
+										   long groupId) throws PortalException {
 
 		ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceInfoCode, govAgencyCode);
 		if (config != null) {
@@ -3908,7 +4005,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			syncData(serverConfig, payload);
 			_log.info("End get summary vote.");
 		}catch (Exception e) {
-			throw new Exception(e.getMessage());
+			throw new Exception(e);
 		}
 	}
 
@@ -3936,12 +4033,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 			}
 		} catch (Exception e) {
-			_log.error("HSKMBS error attach file: " + e.getMessage());
+			_log.error(e);
 		}
 	}
 
 	private void addDossierFileAttachment(long groupId, long dossierId, String dossierTemplateNo, String fileName,
-			String base64, ServiceContext serviceContext) throws PortalException, IOException {
+										  String base64, ServiceContext serviceContext) throws PortalException, IOException {
 		if (Validator.isNotNull(fileName) && Validator.isNotNull(base64)) {
 			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossierTemplateNo,
 					"TP99");
@@ -4076,11 +4173,247 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	}
 
+	@Override
+	public JSONObject doCreateUpdateDossierFromDVCQG(Company company, User user, long groupId, ServiceContext serviceContext, JSONObject data, boolean isUpdating, boolean isSync) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", "*");
+		JSONObject configJson = getServerConfigByServerNo();
+		String urlCall = configJson.getString(FrequencyOfficeConstants.CONFIG_URL_LOCAL)
+				+ configJson.getString(FrequencyOfficeConstants.CONFIG_SAVE_SYNC_TRACKING);
+		_log.info("Url: " + urlCall);
+		try {
+			if (data == null) {
+				_log.error("HSKMBS result: " + "Data empty");
+				return createResponseMessage(result, -1, "Data empty");
+			}
+			_log.info("------------ Hồ Sơ Chứng Từ Thuế Đất -------------");
+			String MaHoSo = data.getString("MaHoSo");
+			if (Validator.isNull(MaHoSo)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "MaHoSo empty");
+				return createResponseMessage(result, -1, "MaHoSo empty");
+			}
+
+			String HoTenNguoiNopTien = data.getString("HoTenNguoiNopTien");
+			if (Validator.isNull(HoTenNguoiNopTien)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "HoTenNguoiNopTien empty");
+				return createResponseMessage(result, -1, "HoTenNguoiNopTien empty");
+			}
+
+
+			String MaSoThue = data.getString("MaSoThue");
+			if (Validator.isNull(MaSoThue)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "MaSoThue empty");
+				return createResponseMessage(result, -1, "MaSoThue empty");
+			}
+
+			String ThongTinThanhToan = data.getString("ThongTinThanhToan");
+			if (Validator.isNull(ThongTinThanhToan)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "ThongTinThanhToan empty");
+				return createResponseMessage(result, -1, "ThongTinThanhToan empty");
+			}
+
+			String UrlFileChungTu = data.getString("UrlFileChungTu");
+			if (Validator.isNull(UrlFileChungTu)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "UrlFileChungTu empty");
+				return createResponseMessage(result, -1, "UrlFileChungTu empty");
+			}
+			// Thông tin thanh toán
+			JSONObject TtttChitiet = data.getJSONObject("ThongTinThanhToan");
+			if (Validator.isNull(TtttChitiet)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "TtttChitiet empty");
+				return createResponseMessage(result, -1, "Thong tin thanh toán chi tiết empty");
+			}
+
+			String MaThongBaoThue = TtttChitiet.getString("MaThongBaoThue");
+			if (Validator.isNull(MaThongBaoThue)) {
+				_log.info("HSCTTD data: " + TtttChitiet.toJSONString());
+				_log.info("HSCTTD result: " + "MaThongBaoThue empty");
+				return createResponseMessage(result, -1, "MaThongBaoThue empty");
+			}
+
+			String ThoiGianThanhToan = TtttChitiet.getString("ThoiGianThanhToan");
+			if (Validator.isNull(ThoiGianThanhToan)) {
+				_log.info("HSCTTD data: " + TtttChitiet.toJSONString());
+				_log.info("HSCTTD result: " + "UrlFileChungTu empty");
+				return createResponseMessage(result, -1, "ThoiGianThanhToan empty");
+			}
+
+			String SoTien = TtttChitiet.getString("SoTien");
+			if (Validator.isNull(SoTien)) {
+				_log.info("HSCTTD data: " + TtttChitiet.toJSONString());
+				_log.info("HSCTTD result: " + "SoTien empty");
+				return createResponseMessage(result, -1, "SoTien empty");
+			}
+
+			String NoiDungThanhToan = TtttChitiet.getString("NoiDungThanhToan");
+			if (Validator.isNull(NoiDungThanhToan)) {
+				_log.info("HSCTTD data: " + TtttChitiet.toJSONString());
+				_log.info("HSCTTD result: " + "NoiDungThanhToan empty");
+				return createResponseMessage(result, -1, "NoiDungThanhToan empty");
+			}
+
+			int TrangThaiThanhToan = TtttChitiet.getInt("TrangThaiThanhToan");
+			if (Validator.isNull(TrangThaiThanhToan)) {
+				_log.info("HSCTTD data: " + TtttChitiet.toJSONString());
+				_log.info("HSCTTD result: " + "TrangThaiThanhToan empty");
+				return createResponseMessage(result, -1, "TrangThaiThanhToan empty");
+			}
+			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(MaHoSo);
+			if(Validator.isNotNull(dossier)) {
+				if(isSync) {
+					SyncTrackingInfo body = new SyncTrackingInfo();
+					body.groupId = groupId;
+					body.bodyRequest = data.toString();
+					body.dossierNo = MaHoSo;
+					body.referenceUid = dossier.getReferenceUid();
+					headers.add("groupId", String.valueOf(body.groupId));
+					HttpEntity<SyncTrackingInfo> entity = new HttpEntity<>(body, headers);
+					ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
+					_log.info("Response api saving tracking: " + response);
+					_log.info("Saved tracking!!!");
+				}else {
+					SyncTrackingQuery query = new SyncTrackingQuery();
+					query.dossierNo = MaHoSo;
+					query.groupId = groupId;
+					query.bodyRequest = data.toString();
+					SyncTrackingLocalServiceUtil.createSyncTrackingManual(query);
+					_log.info("Saved tracking!!!");
+				}
+			}else{
+				return createResponseMessage(result, 0,  MaHoSo+"| không tồn tại trên hệ thống");
+			}
+			return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
+		} catch (Exception e) {
+			e.getMessage();
+			_log.error(e);
+		}
+		return result;
+	}
+
+
+	@Override
+	public JSONObject doCrUpDossierThongBaoThueDatDVCQG(Company company, User user, long groupId,
+														ServiceContext serviceContext, JSONObject data, boolean isUpdating) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.set("Accept", "*");
+//
+//		JSONObject configJson = getServerConfigByServerNo();
+//		String urlCall = configJson.getString(FrequencyOfficeConstants.CONFIG_URL_LOCAL)
+//				+ configJson.getString(FrequencyOfficeConstants.CONFIG_SAVE_SYNC_TRACKING);
+		String msHS = StringPool.BLANK;
+		try {
+			if (data == null) {
+				_log.error("HSKMBS result: " + "Data empty");
+				return createResponseMessage(result, -1, "Data empty");
+			}
+			_log.info("------------ Hồ Sơ nhận thông báo Thuế Đất -------------");
+			String FileThongBaoThue = data.getString("FileThongBaoThue");
+			if (Validator.isNull(FileThongBaoThue)) {
+				_log.info("HSCTTD data: " + data.toJSONString());
+				_log.info("HSCTTD result: " + "FileThongBaoThue empty");
+				return createResponseMessage(result, -1, "FileThongBaoThue empty");
+			}else{
+				byte[] decodedBytes = Base64.getDecoder().decode(FileThongBaoThue);
+				String xmlFileThongBaoThue = new String(decodedBytes);
+				Document xml = convertStringToXMLDocument(xmlFileThongBaoThue);
+
+				NodeList childs = xml.getElementsByTagName("MA_HSO");
+				Node child;
+
+				for (int i = 0; i < childs.getLength(); i++) {
+					child = childs.item(i);
+					child.getFirstChild();
+					_log.info("MA_HS: " + child.getTextContent());
+					Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(child.getTextContent());
+					msHS += child.getTextContent() + ",";
+					if(Validator.isNotNull(dossier)) {
+//						org.opencps.reportland.service.ReportLandTaxLocalServiceUtil.addReportLandTax(groupId, child.getTextContent(), xmlFileThongBaoThue, "", serviceContext);
+						SyncTrackingQuery query = new SyncTrackingQuery();
+						query.dossierNo = child.getTextContent();
+						query.groupId = groupId;
+						query.bodyRequest = xmlFileThongBaoThue;
+						SyncTrackingLocalServiceUtil.createSyncTrackingManual(query);
+						_log.info("Saved tracking!!!");
+					}else{
+						createResponseMessage(result, 0,  msHS+"| không tồn tại trên hệ thống");
+					}
+				}
+			}
+			return createResponseMessage(result, 0,  msHS+"| create dossier success");
+		}catch (Exception e){
+			e.getMessage();
+			_log.error(e);
+		}
+
+		return result;
+	}
+
 	private JSONObject createResponseMessage(JSONObject object, int status, String message, String desc) {
 		object.put("status", status);
 		object.put("message", message);
 		object.put("description", desc);
 		return object;
+	}
+
+	private static Document convertStringToXMLDocument(String xmlString) throws ParserConfigurationException {
+		//Parser that produces DOM object trees from XML content
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+		//API to obtain DOM Document instance
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		try
+		{
+			//Create DocumentBuilder with default configuration
+			builder = factory.newDocumentBuilder();
+
+			//Parse the content to Document object
+			InputSource is = new InputSource(new StringReader(xmlString));
+
+			Document doc = builder.parse(is);
+			return doc;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	private ClientHttpRequestFactory setConfigRestTemplate(Integer timeout) {
+		HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
+				= new HttpComponentsClientHttpRequestFactory();
+		clientHttpRequestFactory.setConnectTimeout(timeout);
+		return clientHttpRequestFactory;
+	}
+
+	private static final String SERVER_CONFIG_NULL = "There is no server config frequency";
+	private static final String PARSE_CONFIG_JSON_FAIL= "Create object json from config error";
+	public JSONObject getServerConfigByServerNo() {
+		// Get ServerConfig
+		List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByProtocol("API_SYNC_TRACKING");
+		JSONObject configJson = JSONFactoryUtil.createJSONObject();
+		try {
+			ServerConfig serverConfig = listConfig.get(0);
+			if (Validator.isNull(serverConfig.getConfigs())
+					|| serverConfig.getConfigs().isEmpty()) {
+				throw new Exception(SERVER_CONFIG_NULL);
+			}
+			configJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+
+			if (Validator.isNull(configJson)) {
+				throw new Exception(PARSE_CONFIG_JSON_FAIL);
+			}
+		} catch (Exception e) {
+			e.getMessage();
+		}
+		return configJson;
 	}
 
 	private String _DEFAULT_CLASS_NAME = "dvcqg";

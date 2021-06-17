@@ -175,6 +175,23 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int releaseDossierSatCount, int fromViaPostalCount)
 		throws PortalException, SystemException;
 
+	public OpencpsDossierStatistic createUniqueByGovMonthYearNonSystem(
+		long companyId, long groupId, String govAgencyCode,
+		String govAgencyName, int month, int year);
+
+	public OpencpsDossierStatistic createUniqueByGovMonthYearSystem(
+		long companyId, long groupId, String govAgencyCode,
+		String govAgencyName, int month, int year, String system)
+		throws PortalException, SystemException;
+
+	public OpencpsDossierStatistic createUniqueByMonthYearDomainNonSystem(
+		long companyId, long groupId, int month, int year, String domainCode,
+		String domainName);
+
+	public OpencpsDossierStatistic createUniqueByMonthYearDomainSystem(
+		long companyId, long groupId, int month, int year, String domainCode,
+		String domainName, String system);
+
 	/**
 	* Deletes the opencps dossier statistic with the primary key from the database. Also notifies the appropriate model listeners.
 	*
@@ -302,12 +319,28 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int year, String govAgencyCode, String domainCode,
 		String groupAgencyCode, String system);
 
+	public List<OpencpsDossierStatistic> findByMonthYearREPO_ARR(int[] months,
+		int[] years, int[] reportings);
+
 	public List<OpencpsDossierStatistic> findByNOT_GROUPID(long groupId);
 
 	public List<OpencpsDossierStatistic> findByREPO_ARR(int[] reporting);
 
+	public List<OpencpsDossierStatistic> findByYearREPO_ARR(int[] years,
+		int[] reportings);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> getByG_M_Y_GOV_DOM_GRO_NOT_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> getByG_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> getByG_Y_GO_DO_GR_SY(long groupId,
@@ -334,6 +367,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		String domainCode, String groupAgencyCode, String system);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> getDomainCodes();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthsYearAndReport(
 		long groupId, int[] month, int year, int reporting);
 
@@ -352,6 +388,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> getGovAgencyCodes();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -446,6 +485,23 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpencpsDossierStatistic getUniqueByGovMonthYearNonSystem(
+		long groupId, String govAgencyCode, int month, int year);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpencpsDossierStatistic getUniqueByGovMonthYearSystem(long groupId,
+		String govAgencyCode, int month, int year, String system)
+		throws PortalException, SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpencpsDossierStatistic getUniqueByMonthYearDomainNonSystem(
+		long groupId, int month, int year, String domainCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpencpsDossierStatistic getUniqueByMonthYearDomainSystem(
+		long groupId, int month, int year, String domainCode, String system);
 
 	public OpencpsDossierStatistic removeByG_M_Y_G_D(long groupId, int month,
 		int year, String govAgencyCode, String domainCode)

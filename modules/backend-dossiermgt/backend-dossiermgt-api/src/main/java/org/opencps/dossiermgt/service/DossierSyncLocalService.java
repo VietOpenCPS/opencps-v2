@@ -36,6 +36,7 @@ import org.opencps.dossiermgt.model.DossierSync;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -235,6 +236,10 @@ public interface DossierSyncLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierSync getDossierSync(long DossierSyncId)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierSync> getDossierSyncBeforeDateAndState(Date createDate,
+		int state_, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierSync> getDossierSyncByIdList(Long dossierId,

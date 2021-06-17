@@ -7,10 +7,10 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.GetDossierData;
 import org.opencps.statistic.rest.dto.GetPersonData;
@@ -20,7 +20,6 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 
 public class StatisticEngineFetchEntry {
 	private static final int USED_POSTAL = 2;
-//	private static final int NOT_USED_POSTAL = 1;
 	protected Log _log = LogFactoryUtil.getLog(StatisticEngineFetchEntry.class);
 		
 	//Caculate dueDate by day
@@ -38,12 +37,10 @@ public class StatisticEngineFetchEntry {
 		statisticData.setYear(dateStatistic.get(Calendar.YEAR));
 		statisticData.setGroupId(dossierData.getGroupId());
 		statisticData.setReporting(reporting);
+		
 		Date dueDate = Validator.isNull(dossierData.getDueDate())
 					? null
 					: StatisticUtils.convertStringToDate(dossierData.getDueDate());
-		Date extendDate = Validator.isNull(dossierData.getExtendDate())
-					? null
-					: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
 		Date releaseDate = Validator.isNull(dossierData.getReleaseDate())
 					? null
 					: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());
@@ -87,8 +84,10 @@ public class StatisticEngineFetchEntry {
 		if (LEVEL_4 == serviceLevel) {
 			statisticData.setDossierOnline4Count(statisticData.getDossierOnline4Count() + 1);
 		}
-		//
-		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		//tong so tiep nhan dau ky
+		if (receviedDate != null && (releaseDate == null || releaseDate.after(fromStatisticDate))) {
+			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		}
 		if (dossierData.getDossierStatus().contentEquals(DossierStatusTerm.DENIED)) {
 			statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);				
 		} else {
@@ -96,16 +95,20 @@ public class StatisticEngineFetchEntry {
 			statisticData.setProcessCount(statisticData.getProcessCount() + 1);
 
 			//if (receviedDate != null && receviedDate.after(getFirstDay(month, year))) {
-			if (receviedDate != null && receviedDate.after(fromStatisticDate)) {
-				// trong ky
+			if (receviedDate != null && receviedDate.after(fromStatisticDate)
+					&& receviedDate.before(toStatisticDate)) {
+				// ho so tiep nhan trong ky:
+				// ngay nhan thuoc from - to
 				statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 				if (dossierData.getOnline()) {
 					statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
 				} else {
 					statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 				}
-			} else {
-				// ton ky truoc
+			} else if (receviedDate != null && receviedDate.before(fromStatisticDate)
+					&& ( releaseDate == null || releaseDate.after(fromStatisticDate))) {
+				// ho so ton ky truoc:
+				// ngay nhan truoc ngay from, ngay release sau ngay from hoac ko co ngay release
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
 			}
 			
@@ -167,29 +170,42 @@ public class StatisticEngineFetchEntry {
 					}
 
 					// add by phuchn - caculate duedate by day
-					if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
-						dueDate = Validator.isNull(dossierData.getDueDate())
-								? null : StatisticUtils.convertStringToDate(dossierData.getDueDate(), DossierStatusTerm.DATE_FORMAT);
-						releaseDate = Validator.isNull(dossierData.getReleaseDate())
-								? null
-								: StatisticUtils.convertStringToDate(dossierData.getReleaseDate(), DossierStatusTerm.DATE_FORMAT);
-						finishDate = Validator.isNull(dossierData.getFinishDate())
-								? null
-								: StatisticUtils.convertStringToDate(dossierData.getFinishDate(), DossierStatusTerm.DATE_FORMAT);
-					}
+					
 					// hồ sơ có kết quả hoặc từ chối tính hạn xử lý
 					int overdue = 1; // 0: sớm hạn, 1: đúng hạn, 2: quá hạn
-					// Check condition filter betimes
-					if (dueDate != null) {
-						//Check extendDate != null and releaseDate < dueDate
-						if (releaseDate != null && releaseDate.before(dueDate) && extendDate != null) overdue = 0;
-						//Or check finishDate < dueDate
-						if (finishDate != null && finishDate.before(dueDate)) overdue = 0;
-						
-						//Check overTime condition releaseDate > dueDate
-						if (releaseDate != null && releaseDate.after(dueDate)) overdue = 2;
+					Date dueDateSpec = Validator.isNull(dossierData.getDueDate())
+							? null : StatisticUtils.convertStringToDate(dossierData.getDueDate(), DossierStatusTerm.DATE_FORMAT);
+					Date releaseDateSpec = Validator.isNull(dossierData.getReleaseDate())
+							? null
+							: StatisticUtils.convertStringToDate(dossierData.getReleaseDate(), DossierStatusTerm.DATE_FORMAT);
+					Date finishDateSpec = Validator.isNull(dossierData.getFinishDate())
+							? null
+							: StatisticUtils.convertStringToDate(dossierData.getFinishDate(), DossierStatusTerm.DATE_FORMAT);
+					
+					if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {						
+						// Check condition filter betimes - tính cho hậu giang
+						if (dueDateSpec != null) {
+							//Check releaseDateSpec < dueDateSpec (tính theo ngày)
+							if (releaseDateSpec != null && releaseDateSpec.before(dueDateSpec)) overdue = 0;
+							//Or check finishDate < dueDate (tính theo ngày)
+							if (finishDateSpec != null && finishDateSpec.before(dueDateSpec)) overdue = 0;
+							
+							//Check overTime condition releaseDateSpec > dueDateSpec (tính theo ngày)
+							if (releaseDateSpec != null && releaseDateSpec.after(dueDateSpec)) overdue = 2;
+						}
+					} else {
+						// Check condition filter betimes - default
+						if (dueDate != null) {
+							//Check releaseDateSpec < dueDateSpec (tính theo ngày)
+							if (releaseDateSpec != null && releaseDateSpec.before(dueDateSpec)) overdue = 0;
+							//Or check finishDate < dueDate (tính theo ngày)
+							if (finishDateSpec != null && finishDateSpec.before(dueDateSpec)) overdue = 0;
+							
+							//Check overTime condition releaseDate > dueDate (tính theo giờ)
+							if (releaseDate != null && releaseDate.after(dueDate)) overdue = 2;
+						}
 					}
-
+					
 					if (overdue==0) {
 						statisticData.setBetimesCount(statisticData.getBetimesCount() + 1);
 					} else if (overdue==2) {
@@ -202,8 +218,26 @@ public class StatisticEngineFetchEntry {
 						}
 					} else {
 						statisticData.setOntimeCount(statisticData.getOntimeCount() + 1);
-					}					
+					}	
 				}
+			}
+			// tong so ho so dang xu ly, hoan thanh doi voi cac ho so tiep nhan trong ky
+			if (receviedDate != null && receviedDate.after(fromStatisticDate)
+					&& receviedDate.before(toStatisticDate)) {
+				// tong so ho so dang xu ly
+				if (releaseDate == null || releaseDate.after(toStatisticDate)) {
+					if (!DossierStatusTerm.WAITING.equals(dossierData.getDossierStatus()) && 
+							!DossierStatusTerm.RECEIVING.equals(dossierData.getDossierStatus())) {
+						// set ho so dang xu ly
+						statisticData.setProcessingInAPeriodCount(statisticData.getProcessingInAPeriodCount() + 1);
+					}
+				} // tong so ho so hoan thanh
+				else {
+					if (!DossierStatusTerm.CANCELLED.equals(dossierData.getDossierStatus())) {
+						// set ho so hoan thanh
+						statisticData.setReleaseInAPeriodCount(statisticData.getReleaseInAPeriodCount() + 1);
+					}
+				}	
 			}
 		}
 	}
@@ -225,9 +259,6 @@ public class StatisticEngineFetchEntry {
 		Date dueDate = Validator.isNull(dossierData.getDueDate())
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getDueDate());
-		Date extendDate = Validator.isNull(dossierData.getExtendDate())
-					? null
-					: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
 		Date releaseDate = Validator.isNull(dossierData.getReleaseDate())
 					? null
 					: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());
@@ -237,8 +268,10 @@ public class StatisticEngineFetchEntry {
 		Date finishDate = Validator.isNull(dossierData.getFinishDate())
 					? null
 					: StatisticUtils.convertStringToDate(dossierData.getFinishDate());
-		//
-		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		//tong so tiep nhan dau ky
+		if (receviedDate != null && (releaseDate == null || releaseDate.after(fromStatisticDate))) {
+			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		}
 		int viaPostalCount = dossierData.getViaPostal();
 		if (viaPostalCount == USED_POSTAL) {
 			statisticData.setViaPostalCount(statisticData.getViaPostalCount() + 1);
@@ -276,16 +309,20 @@ public class StatisticEngineFetchEntry {
 			statisticData.setProcessCount(statisticData.getProcessCount() + 1);
 
 			//if (receviedDate != null && receviedDate.after(getFirstDay(month, year))) {
-			if (receviedDate != null && receviedDate.after(fromStatisticDate)) {
-				// trong ky
+			if (receviedDate != null && receviedDate.after(fromStatisticDate) 
+					&& receviedDate.before(toStatisticDate)) {
+				// ho so tiep nhan trong ky:
+				// ngay nhan thuoc from - to
 				statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
 				if (dossierData.getOnline()) {
 					statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
 				} else {
 					statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
 				}			
-			} else {
-				// ton ky truoc
+			} else if (receviedDate != null && receviedDate.before(fromStatisticDate)
+					&& (releaseDate == null ||releaseDate.after(fromStatisticDate))) {
+				// ho so ton ky truoc:
+				// ngay nhan truoc ngay from, ngay release sau ngay from hoac ko co ngay release
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
 			}
 			
@@ -384,29 +421,44 @@ public class StatisticEngineFetchEntry {
 						*/
 						
 						//int betimeCal = dueDate != null ? BetimeUtils.getValueCompareRelease(dossierData.getGroupId(), releaseDate, dueDate) : 3;
+						
 						// add by phuchn - caculate duedate by day
-						if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {
-							dueDate = Validator.isNull(dossierData.getDueDate())
-									? null : StatisticUtils.convertStringToDate(dossierData.getDueDate(), DossierStatusTerm.DATE_FORMAT);
-							releaseDate = Validator.isNull(dossierData.getReleaseDate())
-									? null
-									: StatisticUtils.convertStringToDate(dossierData.getReleaseDate(), DossierStatusTerm.DATE_FORMAT);
-							finishDate = Validator.isNull(dossierData.getFinishDate())
-									? null
-									: StatisticUtils.convertStringToDate(dossierData.getFinishDate(), DossierStatusTerm.DATE_FORMAT);
+
+						// hồ sơ có kết quả hoặc từ chối tính hạn xử lý
+						int overdue = 1; // 0: sớm hạn, 1: đúng hạn, 2: quá hạn
+						Date dueDateSpec = Validator.isNull(dossierData.getDueDate())
+								? null : StatisticUtils.convertStringToDate(dossierData.getDueDate(), DossierStatusTerm.DATE_FORMAT);
+						Date releaseDateSpec = Validator.isNull(dossierData.getReleaseDate())
+								? null
+								: StatisticUtils.convertStringToDate(dossierData.getReleaseDate(), DossierStatusTerm.DATE_FORMAT);
+						Date finishDateSpec = Validator.isNull(dossierData.getFinishDate())
+								? null
+								: StatisticUtils.convertStringToDate(dossierData.getFinishDate(), DossierStatusTerm.DATE_FORMAT);
+						
+						if (CALCULATE_DOSSIER_STATISTIC_DUEDATE_DAY_ENABLE) {						
+							// Check condition filter betimes - tính cho hậu giang
+							if (dueDateSpec != null) {
+								//Check releaseDateSpec < dueDateSpec (tính theo ngày)
+								if (releaseDateSpec != null && releaseDateSpec.before(dueDateSpec)) overdue = 0;
+								//Or check finishDate < dueDate (tính theo ngày)
+								if (finishDateSpec != null && finishDateSpec.before(dueDateSpec)) overdue = 0;
+								
+								//Check overTime condition releaseDateSpec > dueDateSpec (tính theo ngày)
+								if (releaseDateSpec != null && releaseDateSpec.after(dueDateSpec)) overdue = 2;
+							}
+						} else {
+							// Check condition filter betimes - default
+							if (dueDate != null) {
+								//Check releaseDateSpec < dueDateSpec (tính theo ngày)
+								if (releaseDateSpec != null && releaseDateSpec.before(dueDateSpec)) overdue = 0;
+								//Or check finishDate < dueDate (tính theo ngày)
+								if (finishDateSpec != null && finishDateSpec.before(dueDateSpec)) overdue = 0;
+								
+								//Check overTime condition releaseDate > dueDate (tính theo giờ)
+								if (releaseDate != null && releaseDate.after(dueDate)) overdue = 2;
+							}
 						}
 						
-						int overdue = 1; // 0: sớm hạn, 1: đúng hạn, 2: quá hạn
-						// Check condition filter betimes
-						if (dueDate != null) {
-							//Check extendDate != null and releaseDate < dueDate
-							if (releaseDate != null && releaseDate.before(dueDate) && extendDate != null) overdue = 0;
-							//Or check finishDate < dueDate
-							if (finishDate != null && finishDate.before(dueDate)) overdue = 0;
-
-							//Check overTime condition releaseDate > dueDate
-							if (releaseDate != null && releaseDate.after(dueDate)) overdue = 2;
-						}
 						if (overdue==0) {
 							statisticData.setBetimesCount(statisticData.getBetimesCount() + 1);
 						} else if (overdue==2) {
@@ -462,6 +514,24 @@ public class StatisticEngineFetchEntry {
 						}
 					}
 				}
+			}
+			// tong so ho so dang xu ly, hoan thanh doi voi cac ho so tiep nhan trong ky
+			if (receviedDate != null && receviedDate.after(fromStatisticDate)
+					&& receviedDate.before(toStatisticDate)) {
+				// tong so ho so dang xu ly
+				if (releaseDate == null || releaseDate.after(toStatisticDate)) {
+					if (!DossierStatusTerm.WAITING.equals(dossierData.getDossierStatus()) && 
+							!DossierStatusTerm.RECEIVING.equals(dossierData.getDossierStatus())) {
+						// set ho so dang xu ly
+						statisticData.setProcessingInAPeriodCount(statisticData.getProcessingInAPeriodCount() + 1);
+					}
+				} // tong so ho so hoan thanh
+				else {
+					if (!DossierStatusTerm.CANCELLED.equals(dossierData.getDossierStatus())) {
+						// set ho so hoan thanh
+						statisticData.setReleaseInAPeriodCount(statisticData.getReleaseInAPeriodCount() + 1);
+					}
+				}	
 			}
 		}
 	}

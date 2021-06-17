@@ -66,7 +66,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-@Component(immediate = true, service = VotingStatisticScheduler.class)
+//@Component(immediate = true, service = VotingStatisticScheduler.class)
 public class VotingStatisticScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	//private final static Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);
@@ -262,6 +262,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 			ResponseEntity<String> response = restTemplate.postForEntity(urlSync, request , String.class );
 			System.out.print("Status sync data vote to DVC: " + response.getStatusCodeValue());
 		} catch (Exception e) {
+			_log.error(e);
 			throw new Exception(e.getMessage());
 		}
 	}

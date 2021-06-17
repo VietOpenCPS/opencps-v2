@@ -71,6 +71,7 @@ public class SSOIntegrationImpl implements SSOIntegration {
                     + state;
             return urlSSO;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -95,8 +96,9 @@ public class SSOIntegrationImpl implements SSOIntegration {
             body.add("client_id", clientId);
             body.add("client_secret", clientSecret);
 
-            return this.apiService.callApiEncode(urlGetToken, headers, body);
+            return this.apiService.callApiEncode(urlGetToken, headers, body, false, null);
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -125,7 +127,7 @@ public class SSOIntegrationImpl implements SSOIntegration {
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             headers.set("Authorization", "Bearer " + accessToken);
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            JSONObject userInfo =  this.apiService.callApiEncode(urlGetUserInfo, headers, body);
+            JSONObject userInfo =  this.apiService.callApiEncode(urlGetUserInfo, headers, body, false, null);
 
             if(Validator.isNull(userInfo) || userInfo.length() == 0) {
                 result.put("statusCode", STATUS_CODE_USER_MIC_NULL);
@@ -174,6 +176,7 @@ public class SSOIntegrationImpl implements SSOIntegration {
 
             return result;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }

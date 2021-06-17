@@ -283,13 +283,19 @@ public class ReadXMLFileUtils {
 					strFile = processListFileDict(fileEntry, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_SERVICES:
-					strFile = processListFileService(fileEntry, folderParentPath, groupId, userId, serviceContext);
+					strFile = processListFileService(fileEntry, folderParentPath, groupId, userId, StringPool.BLANK, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_TEMPLATES:
 					strFile =processListFileTemplate(fileEntry, folderParentPath, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_PROCESSES:
 					strFile = processListFileProcess(fileEntry, groupId, userId, serviceContext);
+					break;
+				case ConstantUtils.SOURCE_SERVICE_INFOS:
+					strFile = processListFileService(fileEntry, folderParentPath, groupId, userId, subFolder, serviceContext);
+					break;
+				case ConstantUtils.SOURCE_SERVICE_CONFIGS:
+					strFile = processListFileService(fileEntry,folderParentPath,groupId,userId, subFolder, serviceContext);
 					break;
 				default:
 					break;
@@ -487,7 +493,7 @@ public class ReadXMLFileUtils {
 		return sbDictFile.toString();
 	}
 
-	private static String processListFileService(File fileEntry, String folderParentPath, long groupId, long userId,
+	private static String processListFileService(File fileEntry, String folderParentPath, long groupId, long userId, String keyImport,
 			ServiceContext serviceContext) throws Exception {
 		StringBuilder sbServiceFile = new StringBuilder();
 		File[] files = fileEntry.listFiles();
@@ -501,7 +507,7 @@ public class ReadXMLFileUtils {
 					String filePath = file.getPath();
 					String xmlString = convertFiletoString(file);
 					ServiceInfo service = convertXMLToServiceInfo(xmlString);
-					boolean flag = ProcessUpdateDBUtils.processUpdateServiceInfo(service, filePath, folderParentPath, groupId, userId,
+					boolean flag = ProcessUpdateDBUtils.processUpdateServiceInfo(service, filePath, folderParentPath, groupId, userId, keyImport,
 							serviceContext);
 					if (flag) {
 						//Append file success

@@ -10,11 +10,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.search.*;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -44,6 +40,7 @@ import org.opencps.api.controller.OneGateController;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.OneGateUtils;
 import org.opencps.api.controller.util.ServiceConfigUtils;
+import org.opencps.api.controller.util.ServiceInfoUtils;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierOnegateInputModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
@@ -52,11 +49,14 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.ServiceProcessActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
+import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTemplateTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
@@ -115,7 +115,34 @@ public class OneGateControllerImpl implements OneGateController {
 
 			Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
 			List<ServiceInfo> lstServiceInfos = null;
-			if (Validator.isNotNull(public_) && !Boolean.parseBoolean(public_)) {
+			//Search lucene
+			SearchContext searchContext = new SearchContext();
+			searchContext.setCompanyId(serviceContext.getCompanyId());
+			if(Validator.isNotNull(query.getKeyword()) || Validator.isNotNull(query.getLevel())) {
+				//Search theo tên thủ tục sử dụng cho Phòng II
+				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+				params.put(Field.GROUP_ID, String.valueOf(groupId));
+				String keywordSearch = query.getKeyword();
+				String keySearch = StringPool.BLANK;
+				if (Validator.isNotNull(keywordSearch)) {
+					keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
+				}
+				params.put(Field.KEYWORD_SEARCH, keySearch);
+
+				String stringSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), ServiceInfoTerm.SERVICE_CODE_SEARCH);
+				Sort[] sorts = new Sort[] { SortFactoryUtil.create(stringSort, Sort.STRING_TYPE,
+						GetterUtil.getBoolean(query.getOrder())) };
+				params.put(ServiceInfoTerm.PUBLIC_, true);
+				params.put(ServiceInfoTerm.MAX_LEVEL, query.getLevel());
+
+				Hits hits =  ServiceInfoLocalServiceUtil.searchLucene(params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+						searchContext);
+
+				if (hits != null) {
+					lstServiceInfos = ServiceInfoUtils.mappingToServiceInfoResultModels(hits.toList(), groupId);
+				}
+			}
+			else if (Validator.isNotNull(public_) && !Boolean.parseBoolean(public_)) {
 				lstServiceInfos = ServiceInfoLocalServiceUtil.findByGroupAndPublic(groupId,
 						Boolean.parseBoolean(public_));
 			} else {
@@ -164,10 +191,6 @@ public class OneGateControllerImpl implements OneGateController {
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(querySort, Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
 
-			
-			//Search lucene
-			SearchContext searchContext = new SearchContext();
-			searchContext.setCompanyId(serviceContext.getCompanyId());
 
 			Hits hits = ProcessOptionLocalServiceUtil.searchLucene(params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					searchContext);
@@ -177,11 +200,10 @@ public class OneGateControllerImpl implements OneGateController {
 			}
 
 			/*******/
-			_log.info("processList: " + processList != null ? processList.size() : 0);
+			_log.debug("processList: " + processList != null ? processList.size() : 0);
 			String serviceCodeOld = "";
 			if (serviceConfigs != null) {
 				for (ServiceConfig serviceConfig : serviceConfigs) {
-
 					if (serviceConfig.getServiceLevel() >= 2 && ((e != null && (Validator.isNull(e.getScope())))
 							|| (e != null && Validator.isNotNull(e.getScope())
 									&& e.getScope().indexOf(serviceConfig.getGovAgencyCode()) >= 0))) {
@@ -199,6 +221,7 @@ public class OneGateControllerImpl implements OneGateController {
 										serviceInfo.getServiceCode());
 								elmData.put(ServiceInfoTerm.SERVICE_CODE, serviceInfo.getServiceCode());
 								elmData.put(ServiceInfoTerm.SERVICE_NAME, serviceInfo.getServiceName());
+								elmData.put(ServiceInfoTerm.MAX_LEVEL, serviceInfo.getMaxLevel());
 								elmData.put(ServiceInfoTerm.SERVICE_CODE_DVCQG,
 										serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG()
 												: StringPool.BLANK);
@@ -313,9 +336,9 @@ public class OneGateControllerImpl implements OneGateController {
 
 		DossierActions actions = new DossierActionsImpl();
 
-		_log.info("__INPUT_ONEGATE");
-		_log.info(JSONFactoryUtil.looseSerialize(input));
-		_log.info("__XXXXXXXXXXXXX");
+		_log.debug("__INPUT_ONEGATE");
+		_log.debug(JSONFactoryUtil.looseSerialize(input));
+		_log.debug("__XXXXXXXXXXXXX");
 
 		try {
 			
@@ -369,9 +392,9 @@ public class OneGateControllerImpl implements OneGateController {
 		long dActionId = GetterUtil.getLong(input.getDossierActionId());
 
 
-		_log.info("__INPUT_ONEGATE_UPDATE");
-		_log.info(JSONFactoryUtil.looseSerialize(input));
-		_log.info("__XXXXXXXXXXXXX_UPDATE");
+		_log.debug("__INPUT_ONEGATE_UPDATE");
+		_log.debug(JSONFactoryUtil.looseSerialize(input));
+		_log.debug("__XXXXXXXXXXXXX_UPDATE");
 
 		try {
 
@@ -552,18 +575,18 @@ public class OneGateControllerImpl implements OneGateController {
 //			
 //			String token = (String) request.getSession().getAttribute(CSRF_TOKEN_FOR_SESSION_NAME);
 //			
-//			_log.info("CHECK::TOKEN:::::" + token);
+//			_log.debug("CHECK::TOKEN:::::" + token);
 //			
 //			if (Validator.isNull(token)) {
 //				token = PortalUUIDUtil.generate();
 //				
-//				_log.info("GENERATE_TOKEN:::::" + token);
+//				_log.debug("GENERATE_TOKEN:::::" + token);
 //
 //				request.getSession().setAttribute(CSRF_TOKEN_FOR_SESSION_NAME, token);
 //			}
 //			return Response.status(HttpURLConnection.HTTP_OK).entity(token).build();
 //		} catch (Exception e) {
-//			_log.info(e);
+//			_log.debug(e);
 //			return _processException(e);
 //		}
 //

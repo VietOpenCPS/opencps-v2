@@ -23,9 +23,10 @@ create unique index IX_EA0DCA13 on opencps_configcounter (uuid_[$COLUMN_LENGTH:7
 
 create index IX_62C6C2A0 on opencps_deliverable (deliverableCode[$COLUMN_LENGTH:128$], deliverableState);
 create index IX_8D12CC2D on opencps_deliverable (deliverableState, govAgencyCode[$COLUMN_LENGTH:128$], deliverableType[$COLUMN_LENGTH:255$], applicantIdNo[$COLUMN_LENGTH:128$]);
+create index IX_B5D727C6 on opencps_deliverable (groupId, applicantIdNo[$COLUMN_LENGTH:128$]);
 create index IX_6113CEF4 on opencps_deliverable (groupId, deliverableCode[$COLUMN_LENGTH:128$]);
 create index IX_CBA1DBE2 on opencps_deliverable (groupId, deliverableId);
-create index IX_E86EDBAE on opencps_deliverable (groupId, dossierId);
+create index IX_277A1074 on opencps_deliverable (groupId, dossierId, deliverableState);
 create index IX_59547196 on opencps_deliverable (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_7586598 on opencps_deliverable (uuid_[$COLUMN_LENGTH:75$], groupId);
 
@@ -51,7 +52,7 @@ create index IX_A19EE260 on opencps_dossier (dossierNo[$COLUMN_LENGTH:255$], app
 create index IX_3EE7C4FC on opencps_dossier (dossierNo[$COLUMN_LENGTH:255$], groupId);
 create index IX_BC4A37EA on opencps_dossier (dossierStatus[$COLUMN_LENGTH:255$], modifiedDate);
 create index IX_6C6803BB on opencps_dossier (groupId, applicantIdNo[$COLUMN_LENGTH:128$], dossierStatus[$COLUMN_LENGTH:255$]);
-create index IX_6E05E1CA on opencps_dossier (groupId, applicantIdNo[$COLUMN_LENGTH:128$], serviceCode[$COLUMN_LENGTH:128$], govAgencyCode[$COLUMN_LENGTH:128$], dossierTemplateNo[$COLUMN_LENGTH:128$], originDossierId);
+create index IX_DF73B3A2 on opencps_dossier (groupId, applicantIdNo[$COLUMN_LENGTH:128$], serviceCode[$COLUMN_LENGTH:128$], govAgencyCode[$COLUMN_LENGTH:128$], dossierTemplateNo[$COLUMN_LENGTH:128$], originDossierId, serverNo[$COLUMN_LENGTH:255$]);
 create index IX_292E6FC5 on opencps_dossier (groupId, companyId, govAgencyCode[$COLUMN_LENGTH:128$], serviceCode[$COLUMN_LENGTH:128$], dossierTemplateNo[$COLUMN_LENGTH:128$], dossierStatus[$COLUMN_LENGTH:255$]);
 create index IX_D4ACCBFA on opencps_dossier (groupId, dossierId);
 create index IX_D4AF3B20 on opencps_dossier (groupId, dossierNo[$COLUMN_LENGTH:255$]);
@@ -266,6 +267,7 @@ create index IX_85322B32 on opencps_processsteprole (processStepId);
 create index IX_30CABA8B on opencps_processsteprole (roleCode[$COLUMN_LENGTH:255$]);
 create index IX_134D7D60 on opencps_processsteprole (uuid_[$COLUMN_LENGTH:75$]);
 
+create index IX_96CAAE8A on opencps_publish_queue (dossierId, serverNo[$COLUMN_LENGTH:255$]);
 create index IX_3EBC1A0E on opencps_publish_queue (groupId, dossierId, serverNo[$COLUMN_LENGTH:255$], status);
 create index IX_62B041F5 on opencps_publish_queue (status, modifiedDate);
 create index IX_7D659302 on opencps_publish_queue (status, serverNo[$COLUMN_LENGTH:255$]);
@@ -297,9 +299,12 @@ create index IX_D7DDCD42 on opencps_registrationtemplate (groupId, govAgencyCode
 create index IX_B9CBE330 on opencps_registrationtemplate (groupId, registrationTemplateId);
 create unique index IX_22CC0D32 on opencps_registrationtemplate (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_F6685C03 on opencps_reportlandtax (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_CB4E0745 on opencps_reportlandtax (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_29DADB16 on opencps_serviceconfig (govAgencyCode[$COLUMN_LENGTH:128$]);
 create index IX_E713E0A0 on opencps_serviceconfig (groupId, govAgencyCode[$COLUMN_LENGTH:128$]);
-create index IX_ABABE3D2 on opencps_serviceconfig (groupId, serviceInfoId, govAgencyCode[$COLUMN_LENGTH:128$]);
+create index IX_5ED8CC55 on opencps_serviceconfig (groupId, serviceInfoId, govAgencyCode[$COLUMN_LENGTH:128$], serviceLevel);
 create index IX_195F08D3 on opencps_serviceconfig (groupId, serviceLevel);
 create index IX_4F240C8E on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_6FC25E90 on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:75$], groupId);

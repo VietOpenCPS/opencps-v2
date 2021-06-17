@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.1.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_1_0.dtd">
+
+<service-builder
+	package-path="org.opencps.backend.systemlogmgt">
+	<namespace>SystemLogMgt</namespace>
+	<!--<entity data-source="sampleDataSource" local-service="true" name="Foo" 
+		remote-service="false" session-factory="sampleSessionFactory" table="foo" 
+		tx-manager="sampleTransactionManager uuid="true""> -->
+	<entity local-service="true" name="SystemLog"
+		remote-service="false" uuid="true" table="opencps_systemlog">
+
+		<!-- PK fields -->
+		<column name="logId" type="long" primary="true"></column>
+		<!-- Group instance -->
+		<column name="groupId" type="long"></column>
+		<column name="createDate" type="Date"></column>
+		<column name="moduleName" type="String"></column>
+		<column name="preLine" type="int"></column>
+		<column name="preMethod" type="String"></column>
+		<column name="line" type="int"></column>
+		<column name="method" type="String"></column>
+		<column name="message" type="String"></column>
+		<column name="type" type="String"></column>
+		<column name="threadId" type="String"></column>
+		<column name="param" type="String"></column>
+		
+	</entity>
+</service-builder>

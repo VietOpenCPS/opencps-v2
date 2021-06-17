@@ -219,11 +219,13 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 		} catch (MalformedURLException e) {
 			_log.error("Can't invoke api " + urlPath);
+			_log.error(e);
 		} catch (IOException e) {
 			_log.error("Can't invoke api " + urlPath);
+			_log.error(e);
 		} catch (JSONException e) {
 			_log.error("Can't invoke api " + urlPath);
-			e.printStackTrace();
+			_log.error(e);
 		} finally {
 			if (conn != null) {
 				conn.disconnect();
@@ -433,7 +435,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			return confirmResponseData(billcode, order_id, merchant_code, check_sum, paymentFile.getPaymentAmount(),
 					PayGateTerm.ERROR_CODE_00);
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_03);
 		}
 	}
@@ -475,7 +477,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			if (payment_status == 1 && PayGateTerm.ERROR_CODE_00.equals(error_code)
 					&& !PaymentFileTerm.PAYMENT_METHOD_VIETTEL_PAY.equals(paymentFile.getPaymentMethod())) {
 
-				JSONObject action = JSONFactoryUtil.createJSONObject();
+				JSONObject action;
 
 				if (dossier.isOnline()) {
 					// TODO: call api doaction to DVC
@@ -539,8 +541,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 			return receiverResponseData(order_id, merchant_code, check_sum_encoded, PayGateTerm.ERROR_CODE_00);
 		} catch (Exception e) {
-
-			e.printStackTrace();
+			_log.error(e);
 			return receiverResponseData(order_id, merchant_code, check_sum, PayGateTerm.ERROR_CODE_03);
 		}
 
@@ -602,7 +603,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			return searchResult;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 			return JSONFactoryUtil.createJSONObject();
 		}
 	}
@@ -684,7 +685,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			return resPostDossier;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 			return JSONFactoryUtil.createJSONObject();
 		}
 	}
@@ -1057,7 +1058,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 						if (paymentFile == null) {
 							return PayGateUtil.createResponseMessage(-1, "error: paymentfile_null");
 						}
-						paymentFileId = paymentFile.getPaymentFileId();
+						paymentFile.getPaymentFileId();
 					}
 				} else {
 					paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(paymentFileId);
@@ -1146,11 +1147,11 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_ERR);
 				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
 				return response;
-			} else  if (Validator.isNotNull(dossier)) {
+			} else  if (dossier != null) {
 				paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
 			}
 
-			if (Validator.isNull(paymentFile) || paymentFile.getPaymentStatus() == 5 || paymentFile.getPaymentStatus() == 3) {
+			if (paymentFile == null || paymentFile.getPaymentStatus() == 5 || paymentFile.getPaymentStatus() == 3) {
 				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_NONE);
 				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
 				return response;
@@ -1189,7 +1190,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 			PaymentFileActions actions = new PaymentFileActionsImpl();
 
-			JSONObject action = JSONFactoryUtil.createJSONObject();
+			JSONObject action;
 
 			if (dossier.isOnline()) {
 				// TODO: call api doaction to DVC
@@ -1524,7 +1525,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 		// moi dich vu cong co 1 thong tin ngan hang thu huong khac nhau
 		JSONObject banksInfo = schema.getJSONObject(PayGateTerm.BANKINFO);
-		JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+		JSONObject bankInfo;
 		if (banksInfo.has(dossier.getServiceCode())) {
 			bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
 		} else {
@@ -1607,7 +1608,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 				String loaiBantin = data.getString(PayGateTerm.LOAIBANTIN);
 				String maLoi = data.getString(PayGateTerm.MALOI_KEY);
-				String maDoitac = StringPool.BLANK;
+				String maDoitac;
 				String maThamchieu = data.getString(PayGateTerm.MATHAMCHIEU);
 				int sotien = data.getInt(PayGateTerm.SOTIEN);
 				String maTiente = data.getString(PayGateTerm.MATIENTE);
@@ -1635,7 +1636,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 					if (Validator.isNull(dossierNo) || Validator.isNull(dossier)) {
 						return PayGateUtil.createResponseMessage(-1, "error: dossier paymentfile_id = 0");
-					} else  if (Validator.isNotNull(dossier)) {
+					} else  if (dossier != null) {
 						paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
 					}
 				} else {
@@ -1667,33 +1668,24 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				if (!maXacthuc.equals(maXacthuc_tmp)) {
 					// return PayGateUtil.createResponseMessage(-1, "error: check_sum invalid");
 				}
-
 				// int status = data.getInt(PayGateTerm.STATUS);
+				boolean doAction = false;
+				if ("00".equals(maLoi)) {
 
-//				if ("00".equals(maLoi)) {
-//
-//					boolean doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, data, serviceContext);
-//
-//					if (doAction) {
-//						return PayGateUtil.createResponseMessage("00", "Thành công", maDoitac,
-//								maThamchieu, thoigianGD, maXacthuc);
-//					} else {
-//						return PayGateUtil.createResponseMessage("99", "Các lỗi khác", maDoitac,
-//								maThamchieu, thoigianGD, maXacthuc);
-//					}
-//				} else {
-//					return PayGateUtil.createResponseMessage("99", "Các lỗi khác", maDoitac,
-//							maThamchieu, thoigianGD, maXacthuc);
-//				}
-				boolean doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, data, serviceContext);
+					 doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, data, serviceContext);
 
-				if (doAction) {
-					return PayGateUtil.createResponseMessage("00", "Thành công", maDoitac,
-							maThamchieu, thoigianGD, maXacthuc);
+					if (doAction) {
+						return PayGateUtil.createResponseMessage("00", "Thành công", maDoitac,
+								maThamchieu, thoigianGD, maXacthuc);
+					} else {
+						return PayGateUtil.createResponseMessage("99", "Các lỗi khác", maDoitac,
+								maThamchieu, thoigianGD, maXacthuc);
+					}
 				} else {
 					return PayGateUtil.createResponseMessage("99", "Các lỗi khác", maDoitac,
 							maThamchieu, thoigianGD, maXacthuc);
 				}
+
 			} else {
 				return PayGateUtil.createResponseMessage(-1, "error: data empty of not found server config");
 			}
@@ -1706,27 +1698,29 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	@Override
 	public JSONObject ppConfirmTransactionPaygov(User user, ServiceContext serviceContext, String body) {
 		try {
-			_log.info("=======body========" + body);
+			_log.debug("=======ppConfirmTransactionPaygov========" + body);
 			JSONObject data = JSONFactoryUtil.createJSONObject(body);
 			final String PAY_SUCCESS = "00";
 
-			if(Validator.isNull(data)) {
+			if(Validator.isNull(body)) {
 				throw new Exception("Body null");
 			}
 
-			Integer amount = data.getInt(PayGateTerm.PAYGOV_AMOUNT);
 			String orderId = data.getString(PayGateTerm.PAYGOV_ORDER_ID);
-			String orderInfo = data.getString(PayGateTerm.PAYGOV_ORDER_INFO);
-			String requestCode = data.getString(PayGateTerm.PAYGOV_REQUEST_CODE);
-			String transactionNo = data.getString(PayGateTerm.PAYGOV_TRANSACTION_NO);
-			String payDate = data.getString(PayGateTerm.PAYGOV_PAY_DATE);
-			String paygate = data.getString(PayGateTerm.PAYGOV_PAY_GATE);
 			String errorCode = data.getString(PayGateTerm.PAYGOV_ERROR_CODE);
-			String type = data.getString(PayGateTerm.PAYGOV_TYPE);
-			String transactionCode = data.getString(PayGateTerm.PAYGOV_TRANSACTION_CODE);
-			String checksum = data.getString(PayGateTerm.PAYGOV_CHECKSUM);
-
 			String dossierNo = orderId.substring(0, orderId.length()- 3); //remove -01
+			dossierNo = dossierNo.substring(14);
+
+//			Integer amount = data.getInt(PayGateTerm.PAYGOV_AMOUNT);
+//			String orderInfo = data.getString(PayGateTerm.PAYGOV_ORDER_INFO);
+//			String requestCode = data.getString(PayGateTerm.PAYGOV_REQUEST_CODE);
+//			String transactionNo = data.getString(PayGateTerm.PAYGOV_TRANSACTION_NO);
+//			String payDate = data.getString(PayGateTerm.PAYGOV_PAY_DATE);
+//			String paygate = data.getString(PayGateTerm.PAYGOV_PAY_GATE);
+//			String type = data.getString(PayGateTerm.PAYGOV_TYPE);
+//			String transactionCode = data.getString(PayGateTerm.PAYGOV_TRANSACTION_CODE);
+//			String checksum = data.getString(PayGateTerm.PAYGOV_CHECKSUM);
+
 			if(!errorCode.equals(PAY_SUCCESS)) {
 				throw new Exception("Pay error with error code: " + errorCode);
 			}
@@ -1754,7 +1748,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			}
 
 		} catch (Exception e) {
-			_log.error(e.getMessage());
+			_log.error(e);
 			return PayGateUtil.createResponseToPaygov(PayGateTerm.FAILED, e.getMessage());
 		}
 	}
@@ -1778,16 +1772,24 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				throw new Exception("No paygov config in payment profile");
 			}
 
+			//Duan idea: Get mdv = itemcodeDVCQG trong dictItemMapping map vs itemcode (govAgencyCode in dossier)
+			DictItemMapping itemMapping = DictItemMappingLocalServiceUtil.fetchByF_IC(dossier.getGovAgencyCode());
+			if(Validator.isNull(itemMapping) || itemMapping.getItemCodeDVCQG().isEmpty()) {
+				throw new Exception("No itemMapping or itemCodeDVCQG was found with item code " + dossier.getGovAgencyCode());
+			}
+
+			String unitCode = itemMapping.getItemCodeDVCQG();
+
 			JSONObject paygovConfig = ePaymentProfile.getJSONObject("PAYGOV_CONFIG");
 			Map<String, Object> body = new HashMap<>();
-			String orderId     = dossier.getDossierNo() + "-01";
+			String orderId     = unitCode + "-" + dossier.getDossierNo() + "-01";
 			long amount        = paymentFile.getPaymentAmount();
 			String requestCode = String.valueOf(dossierId) + System.currentTimeMillis();
 
 			body.put("partnerCode", paygovConfig.getString("partnerCode"));
 			body.put("returnUrl", paygovConfig.getString("urlDomain"));
 			body.put("orderId", orderId);
-			body.put("amount", amount);
+			body.put("amount",  amount);
 			body.put("orderInfo", StringUtils.stripAccents(dossier.getDossierName()));
 			body.put("requestCode", requestCode);
 			body.put("ipAddress", ipAddress);
@@ -1796,13 +1798,24 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				body.put("checksum", PayGateTerm.genChecksum(paygovConfig, orderId, amount, requestCode));
 				body.put("accessKey", paygovConfig.getString("accessKey"));
 				body.put("serviceCode", paygovConfig.getString("serviceCode"));
+			} else if (paygovConfig.getString("partnerCode").equals(PayGateTerm.ListPaygovUnit.DONGTHAP.getValue())) {
+				_log.info("Paygov dong thap");
+				body.put("beneficiaryCode", "");
+				body.put("accountPay", "tinhdt");
+				_log.info("body: " + body);
+				String token = apiService.getTokenLGSP(paygovConfig);
+				return apiService.getUrlRedirectToPaygovBackup(token, body, paygovConfig);
+			} else {
+				body.put("checksum", PayGateTerm.genChecksum(paygovConfig, orderId, amount, requestCode));
+				body.put("accessKey", paygovConfig.getString("accessKey"));
+				body.put("serviceCode", paygovConfig.getString("serviceCode"));
 			}
-
+			_log.debug("body: " + body);
 			String token = apiService.getTokenLGSP(paygovConfig);
-
+			_log.debug("token: " + token);
 			return apiService.getUrlRedirectToPaygov(token, body, paygovConfig);
 		} catch (Exception e){
-			_log.error(e.getMessage());
+			_log.error(e);
 			throw new Exception(e.getMessage());
 		}
 	}
@@ -1813,13 +1826,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			JSONObject config = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 					.getJSONObject("PAYGOV_CONFIG");
 			PaymentFileActions actions = new PaymentFileActionsImpl();
-			JSONObject action = JSONFactoryUtil.createJSONObject();
+			JSONObject action;
 			if(dossier.isOnline()) {
 				action = config.getJSONObject(PayGateTerm.ACTION_IS_ONLINE);
 				String actionCode = action.getString(PayGateTerm.ACTION_CODE);
 				String url = action.getString(PayGateTerm.URL);
 				String username = action.getString(PayGateTerm.USERNAME);
-
 				String pwd = action.getString(PayGateTerm.PWD);
 				paymentFile = actions.updateFileConfirm(groupId, dossier.getDossierId(), paymentFile.getReferenceUid(),
 						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_PAYGOV,
@@ -1836,7 +1848,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
 				payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
 				payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
-				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG);
+				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAYGOV);
 				payment.put(PaymentFileTerm.CONFIRM_PAYLOAD, confirmPayload.toJSONString());
 				params.put(PayGateTerm.PAYMENT, payment.toString());
 
@@ -1865,16 +1877,23 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 							payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
 							payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
 							payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
-							payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG);
+							payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAYGOV);
 							payment.put(PaymentFileTerm.CONFIRM_PAYLOAD, confirmPayload.toJSONString());
 							params.put(PayGateTerm.PAYMENT, payment.toString());
 						}
 					}
 				}
 				_log.info("params============" + params);
+				_log.info("endPoint============" + endPoint);
+				_log.info("username: " + username + ", pwd: " + pwd);
 				JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
 						properties, params, username, pwd);
 				_log.info("=====resPostDossier=========" + resPostDossier);
+
+				if(resPostDossier.length() >0){
+					return true;
+				}
+
  			} else {
 				paymentFile = actions.updateFileConfirm(groupId, dossier.getDossierId(), paymentFile.getReferenceUid(),
 						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_PAYGOV,
@@ -1899,7 +1918,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
 				payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
 				payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
-				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG);
+				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAYGOV);
 				payment.put(PaymentFileTerm.CONFIRM_PAYLOAD, confirmPayload.toJSONString());
 				params.put(PayGateTerm.PAYMENT, payment.toString());
 
@@ -1909,10 +1928,13 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 						properties, params, action.getString(PayGateTerm.USERNAME), action.getString(PayGateTerm.PWD));
 
 				_log.info("=====resPostDossier=========" + resPostDossier);
+				if(resPostDossier.length() >0){
+					return true;
+				}
 			}
-			return true;
+
 		} catch (Exception e) {
-			_log.error("Error when doaction paygov: " + e.getMessage());
+			_log.error(e);
 		}
 		return false;
 	}
@@ -1927,7 +1949,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 			PaymentFileActions actions = new PaymentFileActionsImpl();
 
-			JSONObject action = JSONFactoryUtil.createJSONObject();
+			JSONObject action;
 
 			if (dossier.isOnline()) {
 				// TODO: call api doaction to DVC
