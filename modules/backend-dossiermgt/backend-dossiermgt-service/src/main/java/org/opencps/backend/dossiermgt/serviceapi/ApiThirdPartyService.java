@@ -23,8 +23,10 @@ public interface ApiThirdPartyService {
 
     public JSONObject callApiAndTracking(String url, SyncTrackingInfo syncTrackingInfo,
                                          HttpHeaders headers, Object body);
-    public JSONObject callApiEncode(String url, HttpHeaders headers, MultiValueMap<String, String> body) throws Exception;
+    public JSONObject callApiEncode(String url, HttpHeaders headers, MultiValueMap<String, String> body
+            , boolean isHTTPS, String lgspAccessToken) throws Exception;
     public JSONArray callApiWithResponseArray(String url, HttpHeaders headers, Map<String, Object> body);
+    public String callApiWithRawBody(String url, JSONObject body) throws Exception;
     public JSONObject get(String url, HttpHeaders headers, SyncTrackingInfo syncTrackingInfo);
     public JSONObject getNew(String url, String token);
 }
