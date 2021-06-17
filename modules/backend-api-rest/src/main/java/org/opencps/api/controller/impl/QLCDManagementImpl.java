@@ -58,7 +58,7 @@ public class QLCDManagementImpl implements QLCDManagement {
 
             QLCDIntegrationAction qlcdAction = new QLCDIntegrationActionImpl(serverConfig);
             JSONObject bodyJson = JSONFactoryUtil.createJSONObject(body);
-            if(bodyJson.has("type") || Validator.isNull(bodyJson.getString("type"))) {
+            if(!bodyJson.has("type") || Validator.isNull(bodyJson.getString("type"))) {
                 throw new Exception("No type api was found");
             }
 
