@@ -48,7 +48,8 @@ create table opencps_synctracking (
 	api VARCHAR(75) null,
 	fromUnit VARCHAR(75) null,
 	toUnit VARCHAR(75) null,
-	bodyRequest VARCHAR(75) null,
-	response VARCHAR(75) null,
-	metaData VARCHAR(75) null
+	bodyRequest text DEFAULT NULL,
+    response text DEFAULT NULL,
+    metaData varchar(300) DEFAULT NULL
+
 );
