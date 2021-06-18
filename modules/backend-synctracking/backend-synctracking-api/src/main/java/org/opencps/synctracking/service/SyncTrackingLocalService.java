@@ -49,7 +49,7 @@ import java.util.List;
  * credentials because this service can only be accessed from within the same
  * VM.
  *
- * @author Brian Wing Shun Chan
+ * @author duongnt
  * @see SyncTrackingLocalServiceUtil
  * @see org.opencps.synctracking.service.base.SyncTrackingLocalServiceBaseImpl
  * @see org.opencps.synctracking.service.impl.SyncTrackingLocalServiceImpl

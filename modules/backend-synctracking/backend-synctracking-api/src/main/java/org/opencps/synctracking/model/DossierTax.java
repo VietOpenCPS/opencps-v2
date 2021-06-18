@@ -23,7 +23,7 @@ import com.liferay.portal.kernel.util.Accessor;
 /**
  * The extended model interface for the DossierTax service. Represents a row in the &quot;opencps_dossier_tax&quot; database table, with each column mapped to a property of this class.
  *
- * @author Brian Wing Shun Chan
+ * @author duongnt
  * @see DossierTaxModel
  * @see org.opencps.synctracking.model.impl.DossierTaxImpl
  * @see org.opencps.synctracking.model.impl.DossierTaxModelImpl

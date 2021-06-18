@@ -1,9 +1,13 @@
 <?xml version="1.0"?>
-<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.2.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_2_0.dtd">
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
 
-<service-builder dependency-injector="ds" package-path="org.opencps.synctracking">
+<service-builder auto-namespace-tables="false" 
+	package-path="org.opencps.synctracking"
+>
+	<author>duongnt</author>
 	<namespace>syncTracking</namespace>
-	<entity local-service="true" name="SyncTracking" remote-service="true" uuid="true" table="opencps_synctracking">
+	<entity name="SyncTracking" table="opencps_synctracking"
+	 	local-service="true" remote-service="false" uuid="true" >
 
 		<!-- PK fields -->
 		<column name="trackingId" type="long" primary="true" />
@@ -113,7 +117,8 @@
 
 	</entity>
 	
-	<entity local-service="true" name="DossierTax" remote-service="true" uuid="true" table="opencps_dossier_tax">
+	<entity local-service="true" name="DossierTax" remote-service="false"
+			uuid="true" table="opencps_dossier_tax">
 
 		<!-- PK fields -->
 		<column name="taxId" type="long" primary="true" />
@@ -159,7 +164,6 @@
 			<finder-column name="maSoThue" />
 			<finder-column name="soQuyetDinh" />
 		</finder>
-		
 
 	</entity>
 </service-builder>

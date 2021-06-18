@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.service.ServiceWrapper;
 /**
  * Provides a wrapper for {@link DossierTaxLocalService}.
  *
- * @author Brian Wing Shun Chan
+ * @author duongnt
  * @see DossierTaxLocalService
  * @generated
  */

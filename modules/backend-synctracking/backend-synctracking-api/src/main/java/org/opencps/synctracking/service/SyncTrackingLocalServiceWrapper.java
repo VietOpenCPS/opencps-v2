@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.service.ServiceWrapper;
 /**
  * Provides a wrapper for {@link SyncTrackingLocalService}.
  *
- * @author Brian Wing Shun Chan
+ * @author duongnt
  * @see SyncTrackingLocalService
  * @generated
  */
