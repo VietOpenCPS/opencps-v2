@@ -39,6 +39,7 @@ import org.opencps.synctracking.model.SyncTracking;
 import org.opencps.synctracking.model.SyncTrackingQuery;
 
 import java.io.Serializable;
+
 import java.util.Date;
 import java.util.List;
 
@@ -64,43 +65,6 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link SyncTrackingLocalServiceUtil} to access the sync tracking local service. Add custom service methods to {@link org.opencps.synctracking.service.impl.SyncTrackingLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SyncTracking getByDossierNo(long groupId, String dossierNo);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByGroupId(long groupId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByGroupIdAndApi(long groupId, String api,
-		int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByGroupIdAndDate(long groupId, Date fromDate,
-		Date toDate, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByGroupIdAndDossierNoAndDate(long groupId,
-		String dossierNo, Date fromDate, Date toDate, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByGroupIdAndDossierNoAndServiceCodeAndDate(
-		long groupId, String dossierNo, String serviceCode, Date fromDate,
-		Date toDate, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByGroupIdAndServiceCodeAndDate(long groupId,
-		String serviceCode, Date fromDate, Date toDate, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SyncTracking getByReferenceUid(long groupId, String referenceUid);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SyncTracking> getByReferenceUidAndDate(long groupId,
-		String referenceUid, Date fromDate, Date toDate, int start, int end);
-	
-	public SyncTracking createSyncTrackingManual(
-			SyncTrackingQuery syncTrackingQuery);
 
 	/**
 	* Adds the sync tracking to the database. Also notifies the appropriate model listeners.
@@ -119,6 +83,9 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 	*/
 	@Transactional(enabled = false)
 	public SyncTracking createSyncTracking(long trackingId);
+
+	public SyncTracking createSyncTrackingManual(
+		SyncTrackingQuery syncTrackingQuery);
 
 	/**
 	* @throws PortalException
@@ -222,6 +189,44 @@ public interface SyncTrackingLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SyncTracking getByDossierNo(long groupId, String dossierNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SyncTracking getByDossierNoAndProtocol(long groupId,
+		String dossierNo, String protocol);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByGroupId(long groupId, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByGroupIdAndApi(long groupId, String api,
+		int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByGroupIdAndDate(long groupId, Date fromDate,
+		Date toDate, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByGroupIdAndDossierNoAndDate(long groupId,
+		String dossierNo, Date fromDate, Date toDate, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByGroupIdAndDossierNoAndServiceCodeAndDate(
+		long groupId, String dossierNo, String serviceCode, Date fromDate,
+		Date toDate, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByGroupIdAndServiceCodeAndDate(long groupId,
+		String serviceCode, Date fromDate, Date toDate, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SyncTracking getByReferenceUid(long groupId, String referenceUid);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncTracking> getByReferenceUidAndDate(long groupId,
+		String referenceUid, Date fromDate, Date toDate, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(

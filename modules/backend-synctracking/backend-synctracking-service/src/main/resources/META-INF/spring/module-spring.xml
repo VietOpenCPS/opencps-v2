@@ -7,6 +7,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
 >
+	<bean class="org.opencps.synctracking.service.impl.DossierTaxLocalServiceImpl" id="org.opencps.synctracking.service.DossierTaxLocalService" />
+	<bean class="org.opencps.synctracking.service.impl.DossierTaxServiceImpl" id="org.opencps.synctracking.service.DossierTaxService" />
+	<bean class="org.opencps.synctracking.service.persistence.impl.DossierTaxPersistenceImpl" id="org.opencps.synctracking.service.persistence.DossierTaxPersistence" parent="basePersistence" />
 	<bean class="org.opencps.synctracking.service.impl.SyncTrackingLocalServiceImpl" id="org.opencps.synctracking.service.SyncTrackingLocalService" />
 	<bean class="org.opencps.synctracking.service.impl.SyncTrackingServiceImpl" id="org.opencps.synctracking.service.SyncTrackingService" />
 	<bean class="org.opencps.synctracking.service.persistence.impl.SyncTrackingPersistenceImpl" id="org.opencps.synctracking.service.persistence.SyncTrackingPersistence" parent="basePersistence" />

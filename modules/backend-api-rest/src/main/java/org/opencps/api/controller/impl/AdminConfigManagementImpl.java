@@ -214,7 +214,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 		
 		try {
 			JSONObject message = JSONFactoryUtil.createJSONObject(text);
-			_log.info("SOCKET MESSAGE: " + message.toJSONString());
+			_log.debug("SOCKET MESSAGE: " + message.toJSONString());
 			try {
 				
 				if (message.getString(TYPE).equals(ADMIN)) {
@@ -447,7 +447,6 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	
 							JSONObject postData = message.getJSONObject(DATA);
 							JSONObject messageError = JSONFactoryUtil.createJSONObject();
-							_log.info("Data: " + postData);
 
 							if("0".equals(id)) {
 								if (Validator.isNotNull(code) && (CLASSNAME_DELIVERABLE_TYPE.equals(code))) {
@@ -646,7 +645,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 
 			String fileName = headerData.getString(NAME) + StringPool.UNDERLINE
 					+ String.format("%d.xls", System.currentTimeMillis());
-			_log.info("fileName: "+fileName);
+			_log.debug("fileName: "+fileName);
 
 			File exportDir = new File(StatisticManagementConstants.FOLDER_EXPORTED);
 			if (!exportDir.exists()) {
