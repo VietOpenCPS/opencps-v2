@@ -558,6 +558,12 @@ public class ActionUtil {
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
+			}else if(type == 22){
+
+				return factory.getDossierStatistic21(groupId, userId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
+						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
 			} else {
 				return StatisticUtil.createResponseSchema(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
