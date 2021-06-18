@@ -30,7 +30,7 @@ import java.util.Date;
  * Caching information and settings can be found in <code>portal.properties</code>
  * </p>
  *
- * @author Brian Wing Shun Chan
+ * @author duongnt
  * @see org.opencps.synctracking.service.persistence.impl.SyncTrackingPersistenceImpl
  * @see SyncTrackingUtil
  * @generated

@@ -36,7 +36,7 @@ import java.util.List;
  * Caching information and settings can be found in <code>portal.properties</code>
  * </p>
  *
- * @author Brian Wing Shun Chan
+ * @author duongnt
  * @see DossierTaxPersistence
  * @see org.opencps.synctracking.service.persistence.impl.DossierTaxPersistenceImpl
  * @generated

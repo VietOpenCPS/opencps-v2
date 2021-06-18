@@ -16,10 +16,9 @@ package org.opencps.synctracking.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.kernel.util.StringBundler;
-
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.util.HashUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 
 import org.opencps.synctracking.model.SyncTracking;
 
@@ -33,7 +32,7 @@ import java.util.Date;
 /**
  * The cache model class for representing SyncTracking in entity cache.
  *
- * @author Brian Wing Shun Chan
+ * @author duongnt
  * @see SyncTracking
  * @generated
  */
