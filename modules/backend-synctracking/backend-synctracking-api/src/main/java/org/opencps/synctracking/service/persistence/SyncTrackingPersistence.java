@@ -30,7 +30,7 @@ import java.util.Date;
  * Caching information and settings can be found in <code>portal.properties</code>
  * </p>
  *
- * @author Brian Wing Shun Chan
+ * @author duongnt
  * @see org.opencps.synctracking.service.persistence.impl.SyncTrackingPersistenceImpl
  * @see SyncTrackingUtil
  * @generated
@@ -599,6 +599,63 @@ public interface SyncTrackingPersistence extends BasePersistence<SyncTracking> {
 	* @return the number of matching sync trackings
 	*/
 	public int countByF_GID_DossierNo(long groupId, String dossierNo);
+
+	/**
+	* Returns the sync tracking where groupId = &#63; and dossierNo = &#63; and protocol = &#63; or throws a {@link NoSuchSyncTrackingException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param protocol the protocol
+	* @return the matching sync tracking
+	* @throws NoSuchSyncTrackingException if a matching sync tracking could not be found
+	*/
+	public SyncTracking findByF_GID_DossierNo_Protocol(long groupId,
+		String dossierNo, String protocol) throws NoSuchSyncTrackingException;
+
+	/**
+	* Returns the sync tracking where groupId = &#63; and dossierNo = &#63; and protocol = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param protocol the protocol
+	* @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	*/
+	public SyncTracking fetchByF_GID_DossierNo_Protocol(long groupId,
+		String dossierNo, String protocol);
+
+	/**
+	* Returns the sync tracking where groupId = &#63; and dossierNo = &#63; and protocol = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param protocol the protocol
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	*/
+	public SyncTracking fetchByF_GID_DossierNo_Protocol(long groupId,
+		String dossierNo, String protocol, boolean retrieveFromCache);
+
+	/**
+	* Removes the sync tracking where groupId = &#63; and dossierNo = &#63; and protocol = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param protocol the protocol
+	* @return the sync tracking that was removed
+	*/
+	public SyncTracking removeByF_GID_DossierNo_Protocol(long groupId,
+		String dossierNo, String protocol) throws NoSuchSyncTrackingException;
+
+	/**
+	* Returns the number of sync trackings where groupId = &#63; and dossierNo = &#63; and protocol = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param protocol the protocol
+	* @return the number of matching sync trackings
+	*/
+	public int countByF_GID_DossierNo_Protocol(long groupId, String dossierNo,
+		String protocol);
 
 	/**
 	* Returns all the sync trackings where groupId = &#63; and api = &#63;.

@@ -42,6 +42,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -177,7 +178,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Date idDate = DateTimeUtils.stringToDate(applicantIdDate);
 		_log.debug("ADD APPLICANT | profile: "+profile);
 		if (applicantId == 0) {
-
+			_log.info("4444444");
 			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
 
 			validateApplicantDuplicate(groupId, context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
@@ -193,9 +194,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			}
 
 			applicantId = counterLocalService.increment(Applicant.class.getName());
-
+			
+			_log.info("5555555 : applicantId " + applicantId);
 			applicant = applicantPersistence.create(applicantId);
-			_log.debug("ADD APPLICANT: " + applicant);
+			_log.info("ADD APPLICANT: " + applicant);
 
 			Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
 
@@ -264,6 +266,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			// _log.info("MAPPING USER: " + mappingUser.getLastName() + "," +
 			// mappingUser.getFullName());
 			mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
+			
+			_log.info("6666666 : " + JSONFactoryUtil.looseSerialize(mappingUser));
 
 			long mappingUserId = mappingUser.getUserId();
 
@@ -351,6 +355,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		}
 
+		_log.info("7777777 : " + JSONFactoryUtil.looseSerialize(applicant));
 		return applicantPersistence.update(applicant);
 	}
 

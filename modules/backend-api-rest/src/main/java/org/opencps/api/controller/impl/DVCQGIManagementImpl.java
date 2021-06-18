@@ -353,9 +353,8 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 			boolean isUpdating = bodyFull.getBoolean("isUpdating");
 			String service = bodyFull.getString("service");
 			if(Validator.isNotNull(service) && "NhanChungTuThueDat".equals(service)) {
-				boolean isSync = bodyFull.getBoolean("isSync");
 				//API nhận chứng từ thanh toán thuế đất cho hồ sơ từ Cổng DVCQG
-				result = actionImpl.doCreateUpdateDossierFromDVCQG(company, user, groupId, serviceContext, data, isUpdating, isSync);
+				result = actionImpl.doCreateUpdateDossierFromDVCQG(company, user, groupId, serviceContext, data, isUpdating);
 			}else {
 				result = actionImpl.doCreateDossierSuaDoiBoSungFromDVCQG(company, user, groupId, serviceContext, data, isUpdating);
 			}
@@ -402,7 +401,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 
 		_log.debug("doCreateDossierFromDVCQG API " + body);
 		try {
-			JSONObject result = JSONFactoryUtil.createJSONObject();
+			JSONArray result = JSONFactoryUtil.createJSONArray();
 			JSONObject bodyFull = JSONFactoryUtil.createJSONObject(body);
 			if(Validator.isNull(bodyFull)) {
 				throw new Exception("Body is empty");
