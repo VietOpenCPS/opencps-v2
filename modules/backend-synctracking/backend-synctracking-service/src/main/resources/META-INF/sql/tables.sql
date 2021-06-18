@@ -51,5 +51,4 @@ create table opencps_synctracking (
 	bodyRequest text DEFAULT NULL,
     response text DEFAULT NULL,
     metaData varchar(300) DEFAULT NULL
-
 );
