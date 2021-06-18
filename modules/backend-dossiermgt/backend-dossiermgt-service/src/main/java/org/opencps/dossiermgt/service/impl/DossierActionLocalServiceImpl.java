@@ -634,15 +634,15 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			fullName = userAction.getFullName();
 		}
 
-		try {
-			Counter counterDetail = CounterLocalServiceUtil.fetchCounter("org.opencps.dossiermgt.model.DossierAction");
-			if(counterDetail != null) {
-				_log.info("DossierAction current counter: " + counterDetail.getCurrentId() + " with dossier: " + dossierIdString);
-			}
-
-		} catch (Exception e) {
-			_log.error("Error when get DossierAction counter");
-		}
+//		try {
+//			Counter counterDetail = CounterLocalServiceUtil.fetchCounter("org.opencps.dossiermgt.model.DossierAction");
+//			if(counterDetail != null) {
+//				_log.info("DossierAction current counter: " + counterDetail.getCurrentId() + " with dossier: " + dossierIdString);
+//			}
+//
+//		} catch (Exception e) {
+//			_log.error("Error when get DossierAction counter");
+//		}
 
 		if (dossierActionId == 0) {
 			try {
