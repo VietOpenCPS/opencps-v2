@@ -105,7 +105,7 @@ public class SyncTrackingLocalServiceImpl
 	}
 
 	public SyncTracking createSyncTrackingManual(SyncTrackingQuery syncTrackingQuery) {
-		System.out.println("SyncTrackingQuery: " + JSONFactoryUtil.looseSerialize(syncTrackingQuery));
+//		System.out.println("SyncTrackingQuery: " + JSONFactoryUtil.looseSerialize(syncTrackingQuery));
 		long syncTrackingId = counterLocalService.increment(SyncTracking.class.getName());
 		Date now = new Date();
 
@@ -153,4 +153,5 @@ public class SyncTrackingLocalServiceImpl
 
 		return syncTracking;
 	}
+	
 }

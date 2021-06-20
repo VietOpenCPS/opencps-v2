@@ -5,6 +5,7 @@ import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -115,122 +116,133 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+		
 		String result = StringPool.BLANK;
 		// Hồ sơ có thanh toán và được cấu hình in biên lai
 		if(dossier != null && paymentFile != null && paymentFile.getInvoicePayload().contentEquals("VNPT")) {
 			
-			// Call api phát hành biên lai			
-			Response importInvResponse = importAndPublishInv(request, header, company, locale, user, serviceContext, dossier, paymentFile);			
-			int status = importInvResponse.getStatus();
-			if (status != HttpStatus.SC_OK) {
-				return Response.status(HttpStatus.SC_NOT_FOUND)
-						   .entity("Hồ sơ không có hóa đơn điện tử VNPT")
-						   .type(MediaType.APPLICATION_JSON)
-						   .build();
-			}
-			
-			//Cấu hình đầu vào cho node của file xml downloadInvPDFFkeyNoPay
-			JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject("EINVOICE_VNPT_CONFIG").getJSONObject("downloadInvPDFFkeyNoPay");
-			String xmlUsername = schema.getString(EInvoiceVNPTTerm.USER_NAME);
-			String xmlPassword = schema.getString(EInvoiceVNPTTerm.PASS_WORD);
-			
-			//Read file xml 		
-			String realPath = PropsUtil.get(ConfigProps.EINV_VNPT_HOME) + "/" ;
-			File xmlFile = new File(realPath + EInvoiceVNPTTerm.downloadInvPDFFkeyNoPayFile);
-			
-			String soapRequest = "";			
-			JSONObject importInv = JSONFactoryUtil.createJSONObject(importInvResponse.getEntity().toString());
-			String fkey = importInv.getString("Fkey");
-			
-			if (xmlFile.exists()) {
-				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder dBuilder;
+			if(paymentFile.getInvoiceFileEntryId() > 0 && paymentFile.getEinvoice() != null) {
+				// da co bien lai
+				_log.info("Ho so da co bien lai dien tu");
+				return getEInvoiceFile(paymentFile).build();
 				
-				try {
-					
-					dBuilder = dbFactory.newDocumentBuilder();
-		            Document doc = dBuilder.parse(xmlFile);
-		            doc.getDocumentElement().normalize();
-		            
-		            // Set node value
-		            NodeList nodeList = doc.getElementsByTagName(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY);
-		            Element element = null;
-		            for (int i =0; i< nodeList.getLength(); i++) {
-		            	element = (Element) nodeList.item(i);
-		            	Node fkeyNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_FKEY).item(0).getFirstChild();
-		            	fkeyNode.setNodeValue(fkey);
-		            	Node xmlUserNameNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_UserName).item(0).getFirstChild();
-		            	xmlUserNameNode.setNodeValue(xmlUsername);
-		            	Node xmlPassWordNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_UserPass).item(0).getFirstChild();
-		            	xmlPassWordNode.setNodeValue(xmlPassword);
-		            }
-		            
-		            doc.getDocumentElement().normalize();
-		            StringWriter sw = new StringWriter();
-		            TransformerFactory tf = TransformerFactory.newInstance();
-		            Transformer transformer = tf.newTransformer();
-		            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-		            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-		            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-
-		            transformer.transform(new DOMSource(doc), new StreamResult(sw));
-		            soapRequest = removeSpecialChar(sw.toString());		  
-		            
-		            _log.debug("downloadInvPDFFkeyNoPay : " + soapRequest);
-
-		            HashMap<String, String> properties = new HashMap<String, String>();
-		            properties.put("Content-Type","text/xml; charset=utf-8");
-		            properties.put("SOAPAction", EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION);
-		            
-					result = callSoapApi("POST", EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ENDPOINT, 
-							properties, soapRequest, EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION);
-					
-					_log.info("DownloadInvPDFFkeyNoPayResponse : " + result.toString());
-				} catch (Exception e) {
-					e.printStackTrace();
+			}else {
+				// Call api phát hành biên lai	
+				_log.info("Ho so chua co bien lai dien tu");
+				Response importInvResponse = importAndPublishInv(request, header, company, locale, user, serviceContext, dossier, paymentFile);			
+				int status = importInvResponse.getStatus();
+				if (status != HttpStatus.SC_OK) {
+					return Response.status(HttpStatus.SC_NOT_FOUND)
+							   .entity("Hồ sơ không có hóa đơn điện tử VNPT")
+							   .type(MediaType.APPLICATION_JSON)
+							   .build();
 				}
 				
-			}
-
-		}
-		
-		DownloadInvPDFFkeyNoPayResponse doFkeyNoPayResponse = unMarshalXmlToDownloadInvPDFFkeyNoPayResponse(result);
-		String downloadInvPDFFkeyNoPayResult = doFkeyNoPayResponse.getDownloadInvPDFFkeyNoPayResult();
-		switch (downloadInvPDFFkeyNoPayResult) {
-		case "ERR:1":
-			return Response.status(HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION)
-						   .entity(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES_MESSAGE_ERR1)
-						   .type(MediaType.APPLICATION_JSON)
-						   .build();
-		case "ERR:6":
-			return Response.status(HttpStatus.SC_BAD_REQUEST)
-					   .entity(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES_MESSAGE_ERR6)
-					   .type(MediaType.APPLICATION_JSON)
-					   .build();
-		case "ERR:7":
-			return Response.status(HttpStatus.SC_NOT_IMPLEMENTED)
-					   .entity(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES_MESSAGE_ERR7)
-					   .type(MediaType.APPLICATION_JSON)
-					   .build();
-		default:
-			// download bien lai
-			Response saveResponse = uploadEInvoicePDF(paymentFile, downloadInvPDFFkeyNoPayResult, groupId, serviceContext, user, request);
-			if(saveResponse.getStatus() == 200) {
-				if(paymentFile.getInvoiceFileEntryId() > 0) {
-					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
-
-					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
-							true);
+				//Cấu hình đầu vào cho node của file xml downloadInvPDFFkeyNoPay
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject("EINVOICE_VNPT_CONFIG").getJSONObject("downloadInvPDFFkeyNoPay");
+				String xmlUsername = schema.getString(EInvoiceVNPTTerm.USER_NAME);
+				String xmlPassword = schema.getString(EInvoiceVNPTTerm.PASS_WORD);
+				
+				//Read file xml 		
+				String realPath = PropsUtil.get(ConfigProps.EINV_VNPT_HOME) + "/" ;
+				File xmlFile = new File(realPath + EInvoiceVNPTTerm.downloadInvPDFFkeyNoPayFile);
+				
+				String soapRequest = "";			
+				JSONObject importInv = JSONFactoryUtil.createJSONObject(importInvResponse.getEntity().toString());
+				String fkey = importInv.getString("Fkey");
+				
+				if (xmlFile.exists()) {
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+					DocumentBuilder dBuilder;
 					
-					ResponseBuilder responseBuilder = Response.ok((Object) file);
+					try {
+						
+						dBuilder = dbFactory.newDocumentBuilder();
+			            Document doc = dBuilder.parse(xmlFile);
+			            doc.getDocumentElement().normalize();
+			            
+			            // Set node value
+			            NodeList nodeList = doc.getElementsByTagName(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY);
+			            Element element = null;
+			            for (int i =0; i< nodeList.getLength(); i++) {
+			            	element = (Element) nodeList.item(i);
+			            	Node fkeyNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_FKEY).item(0).getFirstChild();
+			            	fkeyNode.setNodeValue(fkey);
+			            	Node xmlUserNameNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_UserName).item(0).getFirstChild();
+			            	xmlUserNameNode.setNodeValue(xmlUsername);
+			            	Node xmlPassWordNode = element.getElementsByTagName(EInvoiceVNPTTerm.XML_UserPass).item(0).getFirstChild();
+			            	xmlPassWordNode.setNodeValue(xmlPassword);
+			            }
+			            
+			            doc.getDocumentElement().normalize();
+			            StringWriter sw = new StringWriter();
+			            TransformerFactory tf = TransformerFactory.newInstance();
+			            Transformer transformer = tf.newTransformer();
+			            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+			            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
-					responseBuilder.header("Content-Disposition",
-							"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-					responseBuilder.header("Content-Type", fileEntry.getMimeType());
+			            transformer.transform(new DOMSource(doc), new StreamResult(sw));
+			            soapRequest = removeSpecialChar(sw.toString());		  
+			            
+			            _log.debug("downloadInvPDFFkeyNoPay : " + soapRequest);
 
-					return responseBuilder.build();
+			            HashMap<String, String> properties = new HashMap<String, String>();
+			            properties.put("Content-Type","text/xml; charset=utf-8");
+			            properties.put("SOAPAction", EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION);
+			            
+						result = callSoapApi("POST", EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ENDPOINT, 
+								properties, soapRequest, EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION);
+						
+						_log.debug("DownloadInvPDFFkeyNoPayResponse : " + result.toString());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
 				}
+				
+				DownloadInvPDFFkeyNoPayResponse doFkeyNoPayResponse = unMarshalXmlToDownloadInvPDFFkeyNoPayResponse(result);
+				String downloadInvPDFFkeyNoPayResult = doFkeyNoPayResponse.getDownloadInvPDFFkeyNoPayResult();
+				
+				switch (downloadInvPDFFkeyNoPayResult) {
+				case "ERR:1":
+					return Response.status(HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION)
+								   .entity(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES_MESSAGE_ERR1)
+								   .type(MediaType.APPLICATION_JSON)
+								   .build();
+				case "ERR:6":
+					return Response.status(HttpStatus.SC_BAD_REQUEST)
+							   .entity(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES_MESSAGE_ERR6)
+							   .type(MediaType.APPLICATION_JSON)
+							   .build();
+				case "ERR:7":
+					return Response.status(HttpStatus.SC_NOT_IMPLEMENTED)
+							   .entity(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES_MESSAGE_ERR7)
+							   .type(MediaType.APPLICATION_JSON)
+							   .build();
+				default:
+					// download bien lai
+					Response saveResponse = uploadEInvoicePDF(paymentFile, downloadInvPDFFkeyNoPayResult, groupId, serviceContext, user, request);
+					_log.info("3333 :" + saveResponse.getStatus());
+					_log.info("4444 :" + JSONFactoryUtil.looseSerialize(paymentFile));
+					int tryCount = 0;
+					long invoiceFileEntryId = paymentFile.getInvoiceFileEntryId();
+					while (Validator.isNull(invoiceFileEntryId) || invoiceFileEntryId == 0) {
+						try {
+							Thread.sleep(2000);
+							uploadEInvoicePDF(paymentFile, downloadInvPDFFkeyNoPayResult, groupId, serviceContext, user, request);
+							tryCount++;
+							if (tryCount == 5 ) break;
+							if (paymentFile.getInvoiceFileEntryId() > 0 ) break;
+						} catch (Exception e) {
+							e.getMessage();
+						}
+					}
+					if(saveResponse.getStatus() == 200 && paymentFile.getInvoiceFileEntryId() > 0) {
+						return getEInvoiceFile(paymentFile).build();
+					}
+				}				
 			}
 		}
 		return null;
@@ -374,7 +386,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 					result = callSoapApi("POST", EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_SOAP_ENDPOINT, 
 							properties, soapRequest, EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_SOAP_ACTION);
 
-					_log.info("ImportAndPublishInvResponse : " + result.toString());
+					_log.debug("ImportAndPublishInvResponse : " + result.toString());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -524,7 +536,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 				result = callSoapApi("POST", EInvoiceVNPTTerm.UPDATE_CUS_SOAP_ENDPOINT,
 						properties, soapRequest, EInvoiceVNPTTerm.UPDATE_CUS_SOAP_ACTION);
 
-				_log.info("UpdateCusResponse : " + result.toString());
+				_log.debug("UpdateCusResponse : " + result.toString());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -783,8 +795,8 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 			URL url = new URL(urlPath);
 
 			conn = (HttpURLConnection) url.openConnection();
-			conn.setConnectTimeout(3000);
-			conn.setReadTimeout(3000);
+			conn.setConnectTimeout(20000);
+			conn.setReadTimeout(20000);
 			conn.setRequestMethod(httpMethod);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
@@ -818,6 +830,27 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return response;
+		return response;		
 	}
+	
+	private ResponseBuilder getEInvoiceFile(PaymentFile paymentFile) {
+		
+		try {
+			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
+			File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+					true);
+			ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+			responseBuilder.header("Content-Disposition",
+					"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+			responseBuilder.header("Content-Type", fileEntry.getMimeType());
+
+			return responseBuilder;
+		} catch (PortalException e) {
+			e.getMessage();
+		}
+		return null;
+	}
+	
+	
 }

@@ -9,11 +9,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
-import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
+import org.opencps.dossiermgt.action.util.TrustManager;
 import org.opencps.dossiermgt.input.model.SyncTrackingInfo;
 import org.opencps.usermgt.service.util.LGSPRestfulUtils;
-import org.apache.http.impl.client.HttpClients;
-import org.opencps.dossiermgt.input.model.ResponseListDossier;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -21,6 +19,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.DataOutputStream;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -457,15 +456,65 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     }
 
     @Override
-    public JSONObject callApiEncode(String url, HttpHeaders headers, MultiValueMap<String, String> body) throws Exception{
+    public JSONObject callApiEncode(String url, HttpHeaders headers
+            , MultiValueMap<String, String> body, boolean isHTTPS, String lgspAccessToken) throws Exception{
+        HttpsURLConnection conn = null;
+        JSONObject result = JSONFactoryUtil.createJSONObject();
         try {
             _log.info("Calling api: " + url);
-            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
-            ResponseEntity<String> response = restTemplate.postForEntity(url, entity , String.class);
-            _log.info("Response: " + response.getBody());
-            return JSONFactoryUtil.createJSONObject(response.getBody());
-        }catch (Exception e) {
+            if(!isHTTPS) {
+                headers.set("Accept", "*");
+                HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
+                ResponseEntity<String> response = restTemplate.postForEntity(url, entity , String.class);
+                _log.info("Response: " + response.getBody());
+                return JSONFactoryUtil.createJSONObject(response.getBody());
+            }
+
+            URL urlNew = new URL(url);
+            conn = (HttpsURLConnection ) urlNew.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Charset", "utf-8");
+            conn.setRequestProperty("lgspaccesstoken", lgspAccessToken);
+            conn.setInstanceFollowRedirects(true);
+            conn.setReadTimeout(10 * 1000);
+            StringBuilder bodyRequest = new StringBuilder();
+            bodyRequest.append("grant_type").append(StringPool.EQUAL).append("client_credentials");
+
+            byte[] postData = bodyRequest.toString().getBytes("UTF-8");
+            int postDataLength = postData.length;
+            conn.setRequestProperty("Content-Length",
+                    Integer.toString(postDataLength));
+            TrustManager myTrustManager = new TrustManager();
+            conn = myTrustManager.disableSSL(conn);
+
+            try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+                wr.write(postData);
+            }
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String output = StringPool.BLANK;
+
+            StringBuilder sb = new StringBuilder();
+
+            while ((output = bufferedReader.readLine()) != null) {
+                sb.append(output);
+            }
+            if(Validator.isNotNull(sb.toString())){
+                result = JSONFactoryUtil.createJSONObject(sb.toString());
+            }
+            _log.info("+++++token return:"+ result);
+
+            return result;
+
+        } catch (Exception e) {
             throw new Exception(e);
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
     }
 
@@ -484,6 +533,47 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
         } catch (Exception e) {
             _log.error(e);
             return null;
+        }
+    }
+
+    @Override
+    public String callApiWithRawBody(String url, JSONObject body) throws Exception {
+        HttpsURLConnection conn = null;
+        try {
+            _log.info("Calling api: " + url);
+            _log.info("Body: " + body);
+            URL urlNew = new URL(url);
+            conn = (HttpsURLConnection ) urlNew.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Accept", "*");
+            conn.setRequestProperty("Content-Type", "application/xml");
+            conn.setRequestProperty("Authorization", body.getString("accessToken"));
+            conn.setRequestProperty("lgspaccesstoken", body.getString("lgspAccessToken"));
+            conn.setInstanceFollowRedirects(true);
+            conn.setReadTimeout(10 * 1000);
+            String bodyRequest = body.getString("data");
+            byte[] postData = bodyRequest.toString().getBytes("UTF-8");
+            int postDataLength = postData.length;
+            conn.setRequestProperty("Content-Length",
+                    Integer.toString(postDataLength));
+            TrustManager myTrustManager = new TrustManager();
+            conn = myTrustManager.disableSSL(conn);
+            try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+                wr.write(postData);
+            }
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String output = StringPool.BLANK;
+            StringBuilder sb = new StringBuilder();
+
+            while ((output = bufferedReader.readLine()) != null) {
+                sb.append(output);
+            }
+            _log.info("Response soap:"+ sb.toString());
+
+            return sb.toString();
+        }catch (Exception e) {
+            throw new Exception(e);
         }
     }
 
