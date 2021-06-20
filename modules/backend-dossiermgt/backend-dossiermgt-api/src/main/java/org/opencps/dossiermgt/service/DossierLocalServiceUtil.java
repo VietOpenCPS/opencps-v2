@@ -14,12 +14,12 @@
 
 package org.opencps.dossiermgt.service;
 
-import com.liferay.portal.kernel.exception.PortalException;
+import aQute.bnd.annotation.ProviderType;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.util.tracker.ServiceTracker;
 
-import aQute.bnd.annotation.ProviderType;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Provides the local service utility for Dossier. This utility wraps
@@ -425,8 +425,8 @@ public class DossierLocalServiceUtil {
 		return getService().findByGID(groupId, start, end);
 	}
 
-	public static java.util.List<org.opencps.dossiermgt.model.ServiceInfo> findByGID_PUB_SID(long groupId,
-		boolean public_, long[] serviceInfoArr) {
+	public static java.util.List<org.opencps.dossiermgt.model.ServiceInfo> findByGID_PUB_SID(
+		long groupId, boolean public_, long[] serviceInfoArr) {
 		return getService().findByGID_PUB_SID(groupId, public_, serviceInfoArr);
 	}
 
@@ -709,8 +709,10 @@ public class DossierLocalServiceUtil {
 		String postalAddress, String postalCityCode, String postalCityName,
 		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
-		String applicantNote, int originality, org.opencps.dossiermgt.model.ServiceInfo service,
-		org.opencps.dossiermgt.model.ServiceProcess serviceProcess, org.opencps.dossiermgt.model.ProcessOption processOption,
+		String applicantNote, int originality,
+		org.opencps.dossiermgt.model.ServiceInfo service,
+		org.opencps.dossiermgt.model.ServiceProcess serviceProcess,
+		org.opencps.dossiermgt.model.ProcessOption processOption,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -771,7 +773,8 @@ public class DossierLocalServiceUtil {
 		String delegateDistrictCode, String delegateDistrictName,
 		String delegateWardCode, String delegateWardName,
 		String registerBookCode, String registerBookName, int sampleCount,
-		String dossierName, org.opencps.dossiermgt.model.ServiceInfo service, org.opencps.dossiermgt.model.ServiceProcess process,
+		String dossierName, org.opencps.dossiermgt.model.ServiceInfo service,
+		org.opencps.dossiermgt.model.ServiceProcess process,
 		org.opencps.dossiermgt.model.ProcessOption option,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -809,8 +812,10 @@ public class DossierLocalServiceUtil {
 		String delegateDistrictCode, String delegateDistrictName,
 		String delegateWardCode, String delegateWardName,
 		String registerBookCode, String registerBookName, int sampleCount,
-		String dossierName, int durationCount, org.opencps.dossiermgt.model.ServiceInfo service,
-		org.opencps.dossiermgt.model.ServiceProcess process, org.opencps.dossiermgt.model.ProcessOption option,
+		String dossierName, int durationCount,
+		org.opencps.dossiermgt.model.ServiceInfo service,
+		org.opencps.dossiermgt.model.ServiceProcess process,
+		org.opencps.dossiermgt.model.ProcessOption option,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()

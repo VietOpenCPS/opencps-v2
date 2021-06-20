@@ -50,7 +50,6 @@ import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.DossierDocument;
-import org.opencps.dossiermgt.model.Dossier;
 
 import java.io.Serializable;
 

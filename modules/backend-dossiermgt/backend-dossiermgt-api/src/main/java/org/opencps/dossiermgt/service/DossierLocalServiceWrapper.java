@@ -14,9 +14,10 @@
 
 package org.opencps.dossiermgt.service;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.service.ServiceWrapper;
 import aQute.bnd.annotation.ProviderType;
+
+import com.liferay.portal.kernel.service.ServiceWrapper;
+
 /**
  * Provides a wrapper for {@link DossierLocalService}.
  *
@@ -446,8 +447,8 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
-	public java.util.List<org.opencps.dossiermgt.model.ServiceInfo> findByGID_PUB_SID(long groupId,
-		boolean public_, long[] serviceInfoArr) {
+	public java.util.List<org.opencps.dossiermgt.model.ServiceInfo> findByGID_PUB_SID(
+		long groupId, boolean public_, long[] serviceInfoArr) {
 		return _dossierLocalService.findByGID_PUB_SID(groupId, public_,
 			serviceInfoArr);
 	}
@@ -765,8 +766,10 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String postalCityCode, String postalCityName,
 		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
-		String applicantNote, int originality, org.opencps.dossiermgt.model.ServiceInfo service,
-		org.opencps.dossiermgt.model.ServiceProcess serviceProcess, org.opencps.dossiermgt.model.ProcessOption processOption,
+		String applicantNote, int originality,
+		org.opencps.dossiermgt.model.ServiceInfo service,
+		org.opencps.dossiermgt.model.ServiceProcess serviceProcess,
+		org.opencps.dossiermgt.model.ProcessOption processOption,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _dossierLocalService.initDossier(groupId, dossierId,
@@ -827,7 +830,9 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, String registerBookCode,
 		String registerBookName, int sampleCount, String dossierName,
-		org.opencps.dossiermgt.model.ServiceInfo service, org.opencps.dossiermgt.model.ServiceProcess process, org.opencps.dossiermgt.model.ProcessOption option,
+		org.opencps.dossiermgt.model.ServiceInfo service,
+		org.opencps.dossiermgt.model.ServiceProcess process,
+		org.opencps.dossiermgt.model.ProcessOption option,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _dossierLocalService.initFullDossier(groupId, dossierId,
@@ -864,8 +869,10 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String delegateDistrictCode, String delegateDistrictName,
 		String delegateWardCode, String delegateWardName,
 		String registerBookCode, String registerBookName, int sampleCount,
-		String dossierName, int durationCount, org.opencps.dossiermgt.model.ServiceInfo service,
-		org.opencps.dossiermgt.model.ServiceProcess process, org.opencps.dossiermgt.model.ProcessOption option,
+		String dossierName, int durationCount,
+		org.opencps.dossiermgt.model.ServiceInfo service,
+		org.opencps.dossiermgt.model.ServiceProcess process,
+		org.opencps.dossiermgt.model.ProcessOption option,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _dossierLocalService.initMultipleDossier(groupId, dossierId,

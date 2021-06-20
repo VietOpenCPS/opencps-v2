@@ -43,9 +43,7 @@ import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 
-import java.io.*;
-
-import java.text.*;
+import java.io.InputStream;
 
 /**
  * Provides the local service interface for CPSDossierBusiness. Methods of this
@@ -89,7 +87,7 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 		SystemException.class, PortalException.class, Exception.class}
 	)
 	public DossierFile addDossierFileFrequency(long groupId,
-		ServiceContext serviceContext, java.io.InputStream inputStream,
+		ServiceContext serviceContext, InputStream inputStream,
 		String referenceUid, Dossier dossier, String displayName,
 		String fileType, String isSync, String formData, String removed,
 		String eForm) throws Exception;
