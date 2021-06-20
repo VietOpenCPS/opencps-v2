@@ -133,6 +133,8 @@ public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
             CsdlDcServiceInfo serviceInfoMapping = CsdlDcServiceInfoLocalServiceUtil.findByServiceCodeAndStatus(
                             body.getString(QLCDConstants.KEY_MaDVC), STATUS_ACTIVE);
 
+            body.put(QLCDConstants.KEY_MaDVC, serviceInfoMapping.getServiceCodeDvcqg());
+
             if(Validator.isNull(serviceInfoMapping)) {
                 throw new Exception("No mapping service code was found with key MaDVC: " + body.getString(QLCDConstants.KEY_MaDVC));
             }
