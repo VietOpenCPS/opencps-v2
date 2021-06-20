@@ -93,6 +93,32 @@ create table opencps_configcounter (
 	startCounter INTEGER
 );
 
+create table opencps_csdldc_serviceinfo (
+	uuid_ VARCHAR(75) null,
+	idDcService LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	serviceCode VARCHAR(75) null,
+	serviceCodeDvcqg VARCHAR(75) null,
+	status INTEGER
+);
+
+create table opencps_csdldc_user (
+	uuid_ VARCHAR(75) null,
+	idDcUser LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	govAgencyCode VARCHAR(75) null,
+	govAgencyCodeDvcqg VARCHAR(75) null,
+	keyName VARCHAR(75) null,
+	keyPass VARCHAR(75) null,
+	userName VARCHAR(75) null,
+	employeeEmail VARCHAR(75) null,
+	status INTEGER
+);
+
 create table opencps_deliverable (
 	uuid_ VARCHAR(75) null,
 	deliverableId LONG not null primary key,
