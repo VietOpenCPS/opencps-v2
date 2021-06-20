@@ -134,6 +134,44 @@ create table opencps_statistic_manual (
 	fromViaPostalCount INTEGER
 );
 
+create table opencps_statistic_mgt (
+	uuid_ VARCHAR(75) null,
+	dossierStatisticMgtId LONG not null primary key,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	month INTEGER,
+	year INTEGER,
+	totalCount INTEGER,
+	processCount INTEGER,
+	remainingCount INTEGER,
+	receivedCount INTEGER,
+	onlineCount INTEGER,
+	onegateCount INTEGER,
+	releaseCount INTEGER,
+	betimesCount INTEGER,
+	ontimeCount INTEGER,
+	overtimeCount INTEGER,
+	doneCount INTEGER,
+	releasingCount INTEGER,
+	processingCount INTEGER,
+	undueCount INTEGER,
+	overdueCount INTEGER,
+	ontimePercentage INTEGER,
+	waitingCount INTEGER,
+	govAgencyCode VARCHAR(75) null,
+	govAgencyName VARCHAR(75) null,
+	domainCode VARCHAR(75) null,
+	domainName VARCHAR(75) null,
+	serviceCode VARCHAR(75) null,
+	serviceName VARCHAR(75) null,
+	groupBy INTEGER,
+	cancelledCount INTEGER,
+	unresolvedCount INTEGER
+);
+
 create table opencps_voting_statistic (
 	uuid_ VARCHAR(75) null,
 	votingStatisticId LONG not null primary key,

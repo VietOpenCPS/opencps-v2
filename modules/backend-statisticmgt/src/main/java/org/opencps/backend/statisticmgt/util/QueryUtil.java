@@ -363,6 +363,8 @@ public class QueryUtil {
 			} else {
 				sql = sql.replace("{scopeEmpl}", "''");
 			}
+		}else {
+			sql = sql.replace("{scopeEmpl}", "''");
 		}
 
 		try (PreparedStatement pst = ConnectionUtil._getConnection().prepareStatement(sql)) {
