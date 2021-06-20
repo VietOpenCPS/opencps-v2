@@ -550,6 +550,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             conn.setRequestProperty("Content-Type", "application/xml");
             conn.setRequestProperty("Authorization", body.getString("accessToken"));
             conn.setRequestProperty("lgspaccesstoken", body.getString("lgspAccessToken"));
+            conn.setRequestProperty("AuthHash", body.getString("AuthHash"));
             conn.setInstanceFollowRedirects(true);
             conn.setReadTimeout(10 * 1000);
             String bodyRequest = body.getString("data");
