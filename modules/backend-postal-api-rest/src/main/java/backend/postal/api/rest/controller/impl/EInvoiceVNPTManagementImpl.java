@@ -142,7 +142,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject("EINVOICE_VNPT_CONFIG").getJSONObject("downloadInvPDFFkeyNoPay");
 				String xmlUsername = schema.getString(EInvoiceVNPTTerm.USER_NAME);
 				String xmlPassword = schema.getString(EInvoiceVNPTTerm.PASS_WORD);
-				
+				String urlPath = schema.getString(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ENDPOINT);
 				//Read file xml 		
 				String realPath = PropsUtil.get(ConfigProps.EINV_VNPT_HOME) + "/" ;
 				File xmlFile = new File(realPath + EInvoiceVNPTTerm.downloadInvPDFFkeyNoPayFile);
@@ -192,7 +192,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 			            properties.put("Content-Type","text/xml; charset=utf-8");
 			            properties.put("SOAPAction", EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION);
 			            
-						result = callSoapApi("POST", EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ENDPOINT, 
+						result = callSoapApi("POST", urlPath, 
 								properties, soapRequest, EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION);
 						
 						_log.debug("DownloadInvPDFFkeyNoPayResponse : " + result.toString());
@@ -276,7 +276,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 			String xmlPattern = schema.getString(EInvoiceVNPTTerm.PATTERN);
 			String xmlSerial = schema.getString(EInvoiceVNPTTerm.SERIAL);
 			String xmlConvert = schema.getString(EInvoiceVNPTTerm.CONVERT);
-					
+			String urlPath = schema.getString(EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_SOAP_ENDPOINT);		
 			
 			// Set value for ListInvModel
 			ProductModel productModel = new ProductModel();
@@ -383,7 +383,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 		            properties.put("Content-Type","text/xml; charset=utf-8");
 		            properties.put("SOAPAction", EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_SOAP_ACTION);
 		            
-					result = callSoapApi("POST", EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_SOAP_ENDPOINT, 
+					result = callSoapApi("POST", urlPath, 
 							properties, soapRequest, EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_SOAP_ACTION);
 
 					_log.debug("ImportAndPublishInvResponse : " + result.toString());
@@ -455,6 +455,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 		String xmlUsername = schema.getString(EInvoiceVNPTTerm.USER_NAME);
 		String xmlPassword = schema.getString(EInvoiceVNPTTerm.PASS_WORD);
 		String xmlConvert = schema.getString(EInvoiceVNPTTerm.CONVERT);
+		String urlPath = schema.getString(EInvoiceVNPTTerm.UPDATE_CUS_SOAP_ENDPOINT);
 
 		// Create ListCustomerModel		
 		CustomerModel customerModel = new CustomerModel();
@@ -533,7 +534,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 	            properties.put("Content-Type","text/xml; charset=utf-8");
 	            properties.put("SOAPAction", EInvoiceVNPTTerm.UPDATE_CUS_SOAP_ACTION);
 	            
-				result = callSoapApi("POST", EInvoiceVNPTTerm.UPDATE_CUS_SOAP_ENDPOINT,
+				result = callSoapApi("POST", urlPath,
 						properties, soapRequest, EInvoiceVNPTTerm.UPDATE_CUS_SOAP_ACTION);
 
 				_log.debug("UpdateCusResponse : " + result.toString());
