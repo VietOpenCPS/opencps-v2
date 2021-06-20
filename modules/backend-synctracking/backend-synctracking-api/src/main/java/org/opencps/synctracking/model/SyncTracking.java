@@ -23,7 +23,7 @@ import com.liferay.portal.kernel.util.Accessor;
 /**
  * The extended model interface for the SyncTracking service. Represents a row in the &quot;opencps_synctracking&quot; database table, with each column mapped to a property of this class.
  *
- * @author Brian Wing Shun Chan
+ * @author duongnt
  * @see SyncTrackingModel
  * @see org.opencps.synctracking.model.impl.SyncTrackingImpl
  * @see org.opencps.synctracking.model.impl.SyncTrackingModelImpl

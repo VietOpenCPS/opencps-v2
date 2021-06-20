@@ -28,6 +28,8 @@ public class FrequencyOfficeConstants {
     public static final String CONFIG_URL = "adapter_url";
     public static final String CONFIG_GET_TOKEN = "getToken";
     public static final String CONFIG_SAVE_SYNC_TRACKING = "saveSyncTracking";
+    public static final String CONFIG_GET_SYNC_TRACKING = "getSyncTracking";
+    public static final String CONFIG_GET_DOSSIER_TAX = "getDetailDossierTax";
     public static final String CONFIG_URL_LOCAL = "urlLocal";
     public static final String CONFIG_GROUP_ID = "groupId";
     public static final String CONFIG_GET_LIST_DOSSIERS = "getListDossier";
