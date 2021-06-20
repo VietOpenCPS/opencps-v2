@@ -195,7 +195,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 						result = callSoapApi("POST", EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ENDPOINT, 
 								properties, soapRequest, EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION);
 						
-						_log.info("DownloadInvPDFFkeyNoPayResponse : " + result.toString());
+						_log.debug("DownloadInvPDFFkeyNoPayResponse : " + result.toString());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -386,7 +386,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 					result = callSoapApi("POST", EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_SOAP_ENDPOINT, 
 							properties, soapRequest, EInvoiceVNPTTerm.IMPORTANDPUBLISHINV_SOAP_ACTION);
 
-					_log.info("ImportAndPublishInvResponse : " + result.toString());
+					_log.debug("ImportAndPublishInvResponse : " + result.toString());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -536,7 +536,7 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 				result = callSoapApi("POST", EInvoiceVNPTTerm.UPDATE_CUS_SOAP_ENDPOINT,
 						properties, soapRequest, EInvoiceVNPTTerm.UPDATE_CUS_SOAP_ACTION);
 
-				_log.info("UpdateCusResponse : " + result.toString());
+				_log.debug("UpdateCusResponse : " + result.toString());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -673,7 +673,6 @@ public class EInvoiceVNPTManagementImpl implements EInvoiceVNPTManagement{
 		XMLInputFactory xif = XMLInputFactory.newFactory();
         StreamSource xml = new StreamSource(new StringReader(input));
         XMLStreamReader xsr = xif.createXMLStreamReader(xml);
-        _log.info("XSR :" + xsr);
         xsr.nextTag();
         while(!xsr.getLocalName().equals(EInvoiceVNPTTerm.DOWNLOADINVPDFFKEYNOPAY_RES)) {
             xsr.nextTag();
