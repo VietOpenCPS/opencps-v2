@@ -46,10 +46,10 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.model.DossierDocument;
 
 import java.io.Serializable;
 
