@@ -91,6 +91,24 @@ public class DossierTerm {
 	public static final String ASSIGNED_USER_ID = "assignedUserId";
 	public static final String ASSIGNED_USER_ID_SEARCH = "assignedUserIdSearch";
 	public static final String IS_SAME_APPLICANT = "isSameAsApplicant";
+
+	public static final String ACTION_IS_ONLINE = "actionIsOnline";
+	public static final String ACTION_IS_NOT_ONLINE = "actionIsNotOnline";
+	public static final String ACTION_CODE = "actionCode";
+	public static final String PAYMENT = "payment";
+	public static final String URL = "url";
+	public static final String URL_DOMAIN = "url_domain";
+	public static final String MC_URL = "mcUrl";
+	public static final String USERNAME = "userName";
+	public static final String PWD = "pwd";
+	public static final String DVCQG_THANH_TOAN_THUE = "DVCQG_THANH_TOAN_THUE";
+	public static final String API_SYNC_TRACKING = "API_SYNC_TRACKING";
+	public static final String ACTION_CODE_CHUNG_TU = "actionCodeChungTu";
+
+	public static String buildPathDoAction(String path, String dossierId) {
+		return path + "/o/rest/v2/dossiers/" + dossierId + "/actions";
+	};
+
 	
 	public static final String STATUS = "status";
 	public static final String SUBSTATUS = "subStatus";

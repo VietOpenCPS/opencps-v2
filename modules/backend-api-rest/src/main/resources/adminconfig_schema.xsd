@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:element name="ApiManagerDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="apiManagerId" type="xsd:long" />
+				<xsd:element name="groupId" type="xsd:long" />
+				<xsd:element name="createDate" type="xsd:string" />
+
+				<xsd:element name="modifiedDate" type="xsd:string" />					
+				<xsd:element name="userId" type="xsd:long" />
+				<xsd:element name="apiCode" type="xsd:string" />
+				<xsd:element name="apiName" type="xsd:string" />
+				<xsd:element name="apiDescription" type="xsd:string" />
+				<xsd:element name="apiStatus" type="xsd:int" />
+				<xsd:element name="className" type="xsd:string" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="ApiManagerModel">
+		<xsd:sequence>
+			<xsd:sequence>
+				<xsd:element name="apiManagerId" type="xsd:long" />
+				<xsd:element name="groupId" type="xsd:long" />
+				<xsd:element name="createDate" type="xsd:string" />
+
+				<xsd:element name="modifiedDate" type="xsd:string" />					
+				<xsd:element name="userId" type="xsd:long" />
+				<xsd:element name="apiCode" type="xsd:string" />
+				<xsd:element name="apiName" type="xsd:string" />
+				<xsd:element name="apiDescription" type="xsd:string" />
+				<xsd:element name="apiStatus" type="xsd:int" />
+				<xsd:element name="className" type="xsd:string" />
+			</xsd:sequence>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="ApiManagerInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="modifiedDate" type="xsd:string" />					
+				<xsd:element name="userId" type="xsd:long" />
+				<xsd:element name="apiCode" type="xsd:string" />
+				<xsd:element name="apiName" type="xsd:string" />
+				<xsd:element name="apiDescription" type="xsd:string" />
+				<xsd:element name="apiStatus" type="xsd:int" />
+				<xsd:element name="className" type="xsd:string" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="ApiManagerResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="ApiManagerModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ApiRoleDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="apiRoleId" type="xsd:long" />
+				<xsd:element name="groupId" type="xsd:long" />
+				<xsd:element name="createDate" type="xsd:string" />
+				<xsd:element name="modifiedDate" type="xsd:string" />
+				<xsd:element name="userId" type="xsd:long" />	
+				<xsd:element name="apiCode" type="xsd:string" />
+				<xsd:element name="roleId" type="xsd:long" />
+				<xsd:element name="roleCode" type="xsd:string" />
+				<xsd:element name="apiRoleStatus" type="xsd:int" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="ApiRoleModel">
+		<xsd:sequence>
+				<xsd:element name="apiRoleId" type="xsd:long" />
+				<xsd:element name="groupId" type="xsd:long" />
+				<xsd:element name="createDate" type="xsd:string" />
+				<xsd:element name="modifiedDate" type="xsd:string" />
+				<xsd:element name="userId" type="xsd:long" />	
+				<xsd:element name="apiCode" type="xsd:string" />
+				<xsd:element name="roleId" type="xsd:long" />
+				<xsd:element name="roleCode" type="xsd:string" />
+				<xsd:element name="apiRoleStatus" type="xsd:int" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="ApiRoleInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="modifiedDate" type="xsd:string" />
+				<xsd:element name="userId" type="xsd:long" />	
+				<xsd:element name="apiCode" type="xsd:string" />
+				<xsd:element name="roleId" type="xsd:long" />
+				<xsd:element name="roleCode" type="xsd:string" />
+				<xsd:element name="apiRoleStatus" type="xsd:int" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>		
+	
+	<xsd:element name="ApiRoleResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="ApiRoleModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>	
+</xsd:schema>
+

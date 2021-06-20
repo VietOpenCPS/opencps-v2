@@ -634,15 +634,15 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			fullName = userAction.getFullName();
 		}
 
-		try {
-			Counter counterDetail = CounterLocalServiceUtil.fetchCounter("org.opencps.dossiermgt.model.DossierAction");
-			if(counterDetail != null) {
-				_log.info("DossierAction current counter: " + counterDetail.getCurrentId() + " with dossier: " + dossierIdString);
-			}
-
-		} catch (Exception e) {
-			_log.error("Error when get DossierAction counter");
-		}
+//		try {
+//			Counter counterDetail = CounterLocalServiceUtil.fetchCounter("org.opencps.dossiermgt.model.DossierAction");
+//			if(counterDetail != null) {
+//				_log.info("DossierAction current counter: " + counterDetail.getCurrentId() + " with dossier: " + dossierIdString);
+//			}
+//
+//		} catch (Exception e) {
+//			_log.error("Error when get DossierAction counter");
+//		}
 
 		if (dossierActionId == 0) {
 			try {
@@ -650,9 +650,10 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 				dossierActionId = counterLocalService.increment(DossierAction.class.getName());
 				object = dossierActionPersistence.create(dossierActionId);
 				logLineLevelType("updateDossierAction", 2 , dossierIdString);
+				logLineLevelType("updateDossierAction", 3 , dossierIdString + "_"+ dossierActionId);
 			} catch (Exception e) {
 				_log.error("Error when creating dossierAction: " + e.getMessage());
-				logLineLevelType("updateDossierAction", 3 , dossierIdString);
+				logLineLevelType("updateDossierAction", 4 , dossierIdString);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException interruptedException) {

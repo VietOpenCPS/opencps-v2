@@ -85,7 +85,6 @@ public class GraphQLController {
 	public ResponseEntity<Object> adminconfig(HttpServletRequest request, HttpServletResponse response, @RequestBody String query) {
 
 		ExecutionResult result = adminConfigService.getGraphQL().execute(query);
-
 		Gson gson = new Gson();
 
 		String json = gson.toJson(result.getData(), LinkedHashMap.class);

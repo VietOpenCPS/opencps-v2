@@ -14,18 +14,12 @@
 
 package org.opencps.dossiermgt.service;
 
-import com.liferay.portal.kernel.exception.PortalException;
+import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierDocument;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.model.ServiceProcess;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.util.tracker.ServiceTracker;
 
-import aQute.bnd.annotation.ProviderType;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Provides the local service utility for Dossier. This utility wraps
@@ -431,8 +425,8 @@ public class DossierLocalServiceUtil {
 		return getService().findByGID(groupId, start, end);
 	}
 
-	public static java.util.List<ServiceInfo> findByGID_PUB_SID(long groupId,
-		boolean public_, long[] serviceInfoArr) {
+	public static java.util.List<org.opencps.dossiermgt.model.ServiceInfo> findByGID_PUB_SID(
+		long groupId, boolean public_, long[] serviceInfoArr) {
 		return getService().findByGID_PUB_SID(groupId, public_, serviceInfoArr);
 	}
 
@@ -451,6 +445,11 @@ public class DossierLocalServiceUtil {
 		return getService().findByVnpostalStatus(groupId, vnpostalStatus);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierBeforeDateAndDossierStatusisNull(
+		java.util.Date date) {
+		return getService().findDossierBeforeDateAndDossierStatusisNull(date);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(
 		String date) {
 		return getService().findDossierByDay(date);
@@ -466,7 +465,7 @@ public class DossierLocalServiceUtil {
 		return getService().findDossierByGroup(groupId);
 	}
 
-	public static DossierDocument findDossierDocumentByDossierId(
+	public static org.opencps.dossiermgt.model.DossierDocument findDossierDocumentByDossierId(
 		long dossierDocumentId) {
 		return getService().findDossierDocumentByDossierId(dossierDocumentId);
 	}
@@ -710,8 +709,10 @@ public class DossierLocalServiceUtil {
 		String postalAddress, String postalCityCode, String postalCityName,
 		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
-		String applicantNote, int originality, ServiceInfo service,
-		ServiceProcess serviceProcess, ProcessOption processOption,
+		String applicantNote, int originality,
+		org.opencps.dossiermgt.model.ServiceInfo service,
+		org.opencps.dossiermgt.model.ServiceProcess serviceProcess,
+		org.opencps.dossiermgt.model.ProcessOption processOption,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -772,8 +773,9 @@ public class DossierLocalServiceUtil {
 		String delegateDistrictCode, String delegateDistrictName,
 		String delegateWardCode, String delegateWardName,
 		String registerBookCode, String registerBookName, int sampleCount,
-		String dossierName, ServiceInfo service, ServiceProcess process,
-		ProcessOption option,
+		String dossierName, org.opencps.dossiermgt.model.ServiceInfo service,
+		org.opencps.dossiermgt.model.ServiceProcess process,
+		org.opencps.dossiermgt.model.ProcessOption option,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -810,8 +812,10 @@ public class DossierLocalServiceUtil {
 		String delegateDistrictCode, String delegateDistrictName,
 		String delegateWardCode, String delegateWardName,
 		String registerBookCode, String registerBookName, int sampleCount,
-		String dossierName, int durationCount, ServiceInfo service,
-		ServiceProcess process, ProcessOption option,
+		String dossierName, int durationCount,
+		org.opencps.dossiermgt.model.ServiceInfo service,
+		org.opencps.dossiermgt.model.ServiceProcess process,
+		org.opencps.dossiermgt.model.ProcessOption option,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -1119,7 +1123,7 @@ public class DossierLocalServiceUtil {
 
 	public static org.opencps.dossiermgt.model.Dossier rollback(
 		org.opencps.dossiermgt.model.Dossier dossier,
-		DossierAction dossierAction) {
+		org.opencps.dossiermgt.model.DossierAction dossierAction) {
 		return getService().rollback(dossier, dossierAction);
 	}
 

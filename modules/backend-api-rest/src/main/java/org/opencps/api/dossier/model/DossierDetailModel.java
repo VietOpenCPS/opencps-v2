@@ -212,7 +212,8 @@ import java.util.List;
     "fromViaPostal",
 	"postalCodeSend",
 	"processNo",
-	"dossierMarks"
+	"dossierMarks",
+	"serviceLevel"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -328,6 +329,15 @@ public class DossierDetailModel {
 	protected String postalCodeSend;
 	protected String processNo;
 	protected String dossierMarks;
+	protected int serviceLevel;
+
+	public int getServiceLevel() {
+		return serviceLevel;
+	}
+
+	public void setServiceLevel(int serviceLevel) {
+		this.serviceLevel = serviceLevel;
+	}
 
 	public String getDossierMarks() {
 		return dossierMarks;

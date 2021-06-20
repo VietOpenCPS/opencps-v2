@@ -2,7 +2,7 @@ package org.opencps.backend.systemlogmgt.constant;
 
 
 /**
- * @author trungnt
+ * @author vietdd
  *
  */
 public class Constants {

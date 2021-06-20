@@ -533,7 +533,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
 		actionModel.setActionNote(dossierSync.getActionNote());
-		actionModel.setActionNote(dossierSync.getActionNote());
 		//actionModel.setPayload(dossierSync.getPayload());
 		
 		//Test submitsionNote

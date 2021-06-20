@@ -10,6 +10,7 @@ public class SyncTrackingInfo {
     public String referenceUid;
     public String bodyRequest;
     public String bodyResponse;
+    public String serverNo;
     public String protocol;
     public String unit;
     public Integer stateSync;
