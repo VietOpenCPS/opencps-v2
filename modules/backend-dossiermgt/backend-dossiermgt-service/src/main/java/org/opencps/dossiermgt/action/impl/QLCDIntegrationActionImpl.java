@@ -164,11 +164,11 @@ public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
             CsdlDcServiceInfo serviceInfoMapping = CsdlDcServiceInfoLocalServiceUtil.findByServiceCodeAndStatus(
                             body.getString(QLCDConstants.KEY_MaDVC), STATUS_ACTIVE);
 
-            body.put(QLCDConstants.KEY_MaDVC, serviceInfoMapping.getServiceCodeDvcqg());
-
             if(Validator.isNull(serviceInfoMapping)) {
                 throw new Exception(QLCDConstants.ERROR_MAPPING_DVC);
             }
+
+            body.put(QLCDConstants.KEY_MaDVC, serviceInfoMapping.getServiceCodeDvcqg());
 
             CsdlDcUser staffInfoMapping = CsdlDcUserLocalServiceUtil.findByGovAndEmailAndStatus(
                     body.getString(QLCDConstants.KEY_GovAgencyCode), body.getString(QLCDConstants.KEY_StaffEmail), STATUS_ACTIVE
@@ -189,7 +189,7 @@ public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
 
             return body;
         } catch (Exception e) {
-            throw new Exception(e);
+            throw new Exception(e.getMessage());
         }
     }
 
