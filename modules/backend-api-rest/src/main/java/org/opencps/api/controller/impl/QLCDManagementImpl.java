@@ -29,6 +29,7 @@ public class QLCDManagementImpl implements QLCDManagement {
 
     @Override
     public Response forwardApi(String body) {
+        _log.info("forwarding api...");
         String type = "noType";
         try {
             if(Validator.isNull(body)) {
@@ -51,8 +52,8 @@ public class QLCDManagementImpl implements QLCDManagement {
                 throw new Exception("Parse config json error");
             }
 
-            String server = configJson.getString(QLCDConstants.CONFIG_SERVER);
-            if(Validator.isNull(server) || server.isEmpty()) {
+            String unit = configJson.getString(QLCDConstants.CONFIG_SERVER);
+            if(Validator.isNull(unit) || unit.isEmpty()) {
                 throw new Exception("No server config was found");
             }
 
@@ -64,10 +65,12 @@ public class QLCDManagementImpl implements QLCDManagement {
 
             type = bodyJson.getString("type");
             String responseCongDan = "";
-            if(server.equals(SERVER_HAUGIANG)) {
-                String token = qlcdAction.getToken();
-                responseCongDan = qlcdAction.sendData(token, bodyJson);
-            }
+            JSONObject typeServer = JSONFactoryUtil.createJSONObject();
+
+            typeServer.put("partnerCode", QLCDConstants.UNIT_HG);
+
+            String token = qlcdAction.getToken(unit);
+            responseCongDan = qlcdAction.sendData(token, bodyJson, unit);
 
             return Response.status(HttpURLConnection.HTTP_OK).entity(responseCongDan).build();
         } catch (Exception e) {

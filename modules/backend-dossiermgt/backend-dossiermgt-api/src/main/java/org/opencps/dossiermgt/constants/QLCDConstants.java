@@ -36,6 +36,8 @@ public class QLCDConstants {
     public static final String CONFIG_PARTNER_CODE_CUS = "partnerCodeCus";
     public static final String CONFIG_SERVER = "serverQLCD";
 
+    public static final String UNIT_HG = "HAUGIANG";
+    public static final String UNIT_DT = "DONGTHAP";
 
     public static final String KEY_TYPE_API = "type";
     public static final String KEY_MaYeuCau = "MaYeuCau";
