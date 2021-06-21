@@ -264,13 +264,11 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setApplicantDataType(0);
 		
 		long fileEntryId = 0;
-		_log.info("inputStream: " + inputStream);
 		if (inputStream != null) {
 			try {
 				FileEntry fileEntry = uploadApplicantDataFile(serviceContext.getUserId(), groupId, inputStream, sourceFileName, StringPool.BLANK,
 					0, serviceContext);
 
-				_log.info("FileEntry: " + fileEntry.getFileEntryId());
 				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();
 				}

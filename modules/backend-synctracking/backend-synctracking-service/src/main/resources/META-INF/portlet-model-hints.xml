@@ -47,11 +47,19 @@
 		<field name="protocol" type="String" />
 		<field name="stateSync" type="int" />
 		<field name="serviceCode" type="String" />
-		<field name="api" type="String" />
+		<field name="api" type="String">
+			<hint name="max-length">200</hint>
+		</field>
 		<field name="fromUnit" type="String" />
 		<field name="toUnit" type="String" />
-		<field name="bodyRequest" type="String" />
-		<field name="response" type="String" />
-		<field name="metaData" type="String" />
+		<field name="bodyRequest" type="String">
+			<hint name="max-length">5000</hint>
+		</field>
+		<field name="response" type="String">
+			<hint name="max-length">5000</hint>
+		</field>
+		<field name="metaData" type="String">
+			<hint name="max-length">500</hint>
+		</field>
 	</model>
 </model-hints>

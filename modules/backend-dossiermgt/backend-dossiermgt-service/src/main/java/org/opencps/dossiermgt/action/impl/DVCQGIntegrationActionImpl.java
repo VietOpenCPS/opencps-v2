@@ -4338,15 +4338,15 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					}else{
 						// Ghi log SyncTracking
 						callPostAPISyncTracking(groupId, MaHoSo, dossier, data.toString(), reponse.toString(), DVCQG_NHAN_CHUNG_TU_THUE);
-						return createResponseMessage(result, -1, "Hồ sơ: " + MaHoSo + "thực hiện không thành công ");
+						return createResponseMessage(result, -1, "Hồ sơ: " + MaHoSo + " thực hiện không thành công ");
 					}
 				}else{
 					_log.info("Hồ sơ chưa tồn tại trên hệ thống: "  + MaHoSo);
 					return createResponseMessage(result, 1, "Hồ sơ chưa tồn tại trên hệ thống: " + MaHoSo);
 				}
 			}else{
-				_log.info(MaHoSo+" không tồn tại trên hệ thống");
-				return createResponseMessage(result, -1,  MaHoSo+"| không tồn tại trên hệ thống");
+				_log.info(MaHoSo + " không tồn tại trên hệ thống");
+				return createResponseMessage(result, -1,  MaHoSo + " không tồn tại trên hệ thống");
 			}
 		} catch (Exception e) {
 			e.getMessage();
@@ -4453,7 +4453,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 								}
 							} else {
 								Counter.decreaseCount();
-								createResponseMessage(result, -1, "Hồ sơ: " + dossierNo + "không tồn tại trên hệ thống ");
+								createResponseMessage(result, -1, "Hồ sơ: " + dossierNo + " không tồn tại trên hệ thống ");
 								resultArray.put(result);
 							}
 

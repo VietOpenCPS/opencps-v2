@@ -45,10 +45,10 @@ create table opencps_synctracking (
 	protocol VARCHAR(75) null,
 	stateSync INTEGER,
 	serviceCode VARCHAR(75) null,
-	api VARCHAR(75) null,
+	api VARCHAR(200) null,
 	fromUnit VARCHAR(75) null,
 	toUnit VARCHAR(75) null,
-	bodyRequest text DEFAULT NULL,
-    response text DEFAULT NULL,
-    metaData varchar(300) DEFAULT NULL
+	bodyRequest TEXT null,
+	response TEXT null,
+	metaData VARCHAR(500) null
 );
