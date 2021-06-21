@@ -94,7 +94,7 @@
 		
         <finder name="F_DRID" return-type="Collection">
             <finder-column name="dynamicReportId"></finder-column>
-        </finder>
+        </finder> 
 
         <finder name="F_RIDS" return-type="Collection">
             <finder-column name="roleId" comparator="=" arrayable-operator="OR"></finder-column>
@@ -105,5 +105,177 @@
             <finder-column name="roleId"></finder-column>
         </finder>
 				
-	</entity>	
+	</entity>
+	
+	<entity name="ApiManager" uuid="false" local-service="true"
+		remote-service="false" table="opencps_api_manager">
+		
+		<!-- PK fields -->
+		<column name="apiManagerId" type="long" primary="true" />
+		<column name="groupId" type="long" />
+		<column name="apiCode" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		<column name="userId" type="long" />
+		<column name="apiName" type="String" />
+		<column name="apiDescription" type="String" />
+		<column name="apiStatus" type="int" />
+		<column name="className" type="String" />
+		
+		<finder return-type="ApiManager" name="F_ID">
+			<finder-column name="apiManagerId"></finder-column>
+		</finder>
+		
+		<finder return-type="ApiManager" name="F_apiCode">
+			<finder-column name="apiCode"></finder-column>
+		</finder>	
+		
+		<finder return-type="Collection" name="F_GID">
+			<finder-column name="groupId"></finder-column>
+		</finder>	
+		
+	</entity>
+	
+	<entity name="ApiRole" uuid="false" local-service="true"
+		remote-service="false" table="opencps_api_role">
+		
+		<!-- PK fields -->
+		<column name="apiRoleId" type="long" primary="true" />
+		<column name="groupId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		<column name="userId" type="long" />
+		<column name="apiCode" type="String" />
+		<column name="roleId" type="int" />
+		<column name="roleCode" type="String" />
+		<column name="apiRoleStatus" type="int" />
+		
+		<finder return-type="ApiRole" name="F_ID">
+			<finder-column name="apiRoleId"></finder-column>
+		</finder>
+		
+		<finder return-type="ApiRole" name="F_roleCode">
+			<finder-column name="roleCode"></finder-column>
+		</finder>
+		
+		<finder return-type="Collection" name="F_GID">
+			<finder-column name="groupId"></finder-column>
+		</finder>		
+		
+	</entity>
+	
+	<entity name="SyncTracking" uuid="true" local-service="true"
+			remote-service="false" table="opencps_synctracking">
+		<!-- PK fields -->
+		<column name="trackingId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="dossierNo" type="String" />
+		<column name="referenceUid" type="String" />
+		<column name="serverNo" type="String" />
+		<column name="protocol" type="String" />
+		<column name="stateSync" type="int" />
+		<column name="serviceCode" type="String" />
+		<column name="api" type="String" />
+		<column name="fromUnit" type="String" />
+		<column name="toUnit" type="String" />
+		<column name="bodyRequest" type="String" />
+		<column name="response" type="String" />
+		<column name="metaData" type="String" />
+
+		<!-- Order -->
+		<order>
+			<order-column name="createDate" order-by="desc" />
+		</order>
+
+		<finder name="F_ReferenceUid" return-type="SyncTracking">
+			<finder-column name="referenceUid"></finder-column>
+		</finder>
+
+		<finder name="F_DossierNo" return-type="SyncTracking">
+			<finder-column name="dossierNo"></finder-column>
+		</finder>
+
+		<finder name="F_Protocol" return-type="Collection">
+			<finder-column name="protocol"></finder-column>
+		</finder>
+
+		<finder name="F_Protocol_DossierNo" return-type="Collection">
+			<finder-column name="protocol"></finder-column>
+			<finder-column name="dossierNo"></finder-column>
+		</finder>
+
+		<finder name="F_Protocol_ServiceCode" return-type="Collection">
+			<finder-column name="protocol"></finder-column>
+			<finder-column name="serviceCode"></finder-column>
+		</finder>
+		
+		<finder name="F_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+
+		<finder name="F_DOSSIERNO_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="dossierNo"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+
+		<finder name="F_REFERENCE_UID_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="referenceUid"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+
+		<finder name="F_SERVICECODE_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="serviceCode"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+
+		<finder name="F_SERVICECODE_DOSSIERNO_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="serviceCode"></finder-column>
+			<finder-column name="dossierNo"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+		
+		<finder name="F_API_SERVICECODE_DOSSIERNO_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="api"></finder-column>
+			<finder-column name="serviceCode"></finder-column>
+			<finder-column name="dossierNo"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+		
+		<finder name="F_API_SERVICECODE_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="api"></finder-column>
+			<finder-column name="serviceCode"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+		
+		<finder name="F_API_DOSSIERNO_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="api"></finder-column>
+			<finder-column name="dossierNo"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+		
+		<finder name="F_API_CREATED_BETWEEN" return-type="Collection">
+			<finder-column name="api"></finder-column>
+			<finder-column name="createDate" comparator="&gt;="/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>
+		</finder>
+		
+	</entity>
+
 </service-builder>

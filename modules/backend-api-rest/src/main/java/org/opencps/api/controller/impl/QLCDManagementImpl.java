@@ -72,7 +72,10 @@ public class QLCDManagementImpl implements QLCDManagement {
             return Response.status(HttpURLConnection.HTTP_OK).entity(responseCongDan).build();
         } catch (Exception e) {
             _log.error("Error when forward api " + type, e);
-            return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
+            JSONObject errorResponse = JSONFactoryUtil.createJSONObject();
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("errorCode", "01");
+            return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(errorResponse.toJSONString()).build();
         }
     }
 }

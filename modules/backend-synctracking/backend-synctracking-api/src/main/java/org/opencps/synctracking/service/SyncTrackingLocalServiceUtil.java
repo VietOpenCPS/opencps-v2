@@ -29,7 +29,7 @@ import org.osgi.util.tracker.ServiceTracker;
  * based on the propagated JAAS credentials because this service can only be
  * accessed from within the same VM.
  *
- * @author Brian Wing Shun Chan
+ * @author duongnt
  * @see SyncTrackingLocalService
  * @see org.opencps.synctracking.service.base.SyncTrackingLocalServiceBaseImpl
  * @see org.opencps.synctracking.service.impl.SyncTrackingLocalServiceImpl
@@ -42,66 +42,7 @@ public class SyncTrackingLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.synctracking.service.impl.SyncTrackingLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static org.opencps.synctracking.model.SyncTracking getByDossierNo(
-			long groupId, String dossierNo) {
-		return getService().getByDossierNo(groupId, dossierNo);
-	}
 
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupId(
-			long groupId, int start, int end) {
-		return getService().getByGroupId(groupId, start, end);
-	}
-
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDate(
-			long groupId, java.util.Date fromDate, java.util.Date toDate,
-			int start, int end) {
-		return getService()
-				.getByGroupIdAndDate(groupId, fromDate, toDate, start, end);
-	}
-
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDossierNoAndDate(
-			long groupId, String dossierNo, java.util.Date fromDate,
-			java.util.Date toDate, int start, int end) {
-		return getService()
-				.getByGroupIdAndDossierNoAndDate(groupId, dossierNo,
-						fromDate, toDate, start, end);
-	}
-
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDossierNoAndServiceCodeAndDate(
-			long groupId, String dossierNo, String serviceCode,
-			java.util.Date fromDate, java.util.Date toDate, int start, int end) {
-		return getService()
-				.getByGroupIdAndDossierNoAndServiceCodeAndDate(groupId,
-						dossierNo, serviceCode, fromDate, toDate, start, end);
-	}
-
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndServiceCodeAndDate(
-			long groupId, String serviceCode, java.util.Date fromDate,
-			java.util.Date toDate, int start, int end) {
-		return getService()
-				.getByGroupIdAndServiceCodeAndDate(groupId, serviceCode,
-						fromDate, toDate, start, end);
-	}
-
-	public static org.opencps.synctracking.model.SyncTracking getByReferenceUid(
-			long groupId, String referenceUid) {
-		return getService().getByReferenceUid(groupId, referenceUid);
-	}
-
-	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByReferenceUidAndDate(
-			long groupId, String referenceUid, java.util.Date fromDate,
-			java.util.Date toDate, int start, int end) {
-		return getService()
-				.getByReferenceUidAndDate(groupId, referenceUid, fromDate,
-						toDate, start, end);
-	}
-
-
-	public static org.opencps.synctracking.model.SyncTracking createSyncTrackingManual(
-			org.opencps.synctracking.model.SyncTrackingQuery syncTrackingQuery) {
-			return getService().createSyncTrackingManual(syncTrackingQuery);
-		}
-	
 	/**
 	* Adds the sync tracking to the database. Also notifies the appropriate model listeners.
 	*
@@ -122,6 +63,11 @@ public class SyncTrackingLocalServiceUtil {
 	public static org.opencps.synctracking.model.SyncTracking createSyncTracking(
 		long trackingId) {
 		return getService().createSyncTracking(trackingId);
+	}
+
+	public static org.opencps.synctracking.model.SyncTracking createSyncTrackingManual(
+		org.opencps.synctracking.model.SyncTrackingQuery syncTrackingQuery) {
+		return getService().createSyncTrackingManual(syncTrackingQuery);
 	}
 
 	/**
@@ -254,6 +200,71 @@ public class SyncTrackingLocalServiceUtil {
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
+	}
+
+	public static org.opencps.synctracking.model.SyncTracking getByDossierNo(
+		long groupId, String dossierNo) {
+		return getService().getByDossierNo(groupId, dossierNo);
+	}
+
+	public static org.opencps.synctracking.model.SyncTracking getByDossierNoAndProtocol(
+		long groupId, String dossierNo, String protocol) {
+		return getService()
+				   .getByDossierNoAndProtocol(groupId, dossierNo, protocol);
+	}
+
+	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupId(
+		long groupId, int start, int end) {
+		return getService().getByGroupId(groupId, start, end);
+	}
+
+	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndApi(
+		long groupId, String api, int start, int end) {
+		return getService().getByGroupIdAndApi(groupId, api, start, end);
+	}
+
+	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDate(
+		long groupId, java.util.Date fromDate, java.util.Date toDate,
+		int start, int end) {
+		return getService()
+				   .getByGroupIdAndDate(groupId, fromDate, toDate, start, end);
+	}
+
+	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDossierNoAndDate(
+		long groupId, String dossierNo, java.util.Date fromDate,
+		java.util.Date toDate, int start, int end) {
+		return getService()
+				   .getByGroupIdAndDossierNoAndDate(groupId, dossierNo,
+			fromDate, toDate, start, end);
+	}
+
+	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndDossierNoAndServiceCodeAndDate(
+		long groupId, String dossierNo, String serviceCode,
+		java.util.Date fromDate, java.util.Date toDate, int start, int end) {
+		return getService()
+				   .getByGroupIdAndDossierNoAndServiceCodeAndDate(groupId,
+			dossierNo, serviceCode, fromDate, toDate, start, end);
+	}
+
+	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByGroupIdAndServiceCodeAndDate(
+		long groupId, String serviceCode, java.util.Date fromDate,
+		java.util.Date toDate, int start, int end) {
+		return getService()
+				   .getByGroupIdAndServiceCodeAndDate(groupId, serviceCode,
+			fromDate, toDate, start, end);
+	}
+
+	public static org.opencps.synctracking.model.SyncTracking getByReferenceUid(
+		long groupId, String referenceUid) {
+		return getService().getByReferenceUid(groupId, referenceUid);
+	}
+
+	public static java.util.List<org.opencps.synctracking.model.SyncTracking> getByReferenceUidAndDate(
+		long groupId, String referenceUid, java.util.Date fromDate,
+		java.util.Date toDate, int start, int end) {
+		return getService()
+				   .getByReferenceUidAndDate(groupId, referenceUid, fromDate,
+			toDate, start, end);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(

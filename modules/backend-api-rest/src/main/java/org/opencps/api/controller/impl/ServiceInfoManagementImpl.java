@@ -39,6 +39,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -57,9 +58,12 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.adminconfig.model.ApiManager;
+import org.opencps.adminconfig.service.ApiManagerLocalServiceUtil;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ServiceInfoManagement;
 import org.opencps.api.controller.util.MessageUtil;
+import org.opencps.api.controller.util.OpenCPSUtils;
 import org.opencps.api.controller.util.ServiceInfoUtils;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplateResultsModel;
@@ -84,7 +88,6 @@ import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
@@ -101,6 +104,9 @@ import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
+	private static final String API_LIST_SERVICEINFO = "API_LIST_SERVICEINFO";
+	private static final String API_VIEW_SERVICEINFO = "API_VIEW_SERVICEINFO";
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response getServiceInfos(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -109,6 +115,8 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 
 		ServiceInfoResultsModel results = new ServiceInfoResultsModel();
+		JSONObject bodyResponse = JSONFactoryUtil.createJSONObject();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (query.getEnd() == 0) {
@@ -119,7 +127,6 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -238,9 +245,23 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //			
 //		    builder.cacheControl(cc);
 //		    
-//		    return builder.build();
+//		    return builder.build();			
+
+			bodyResponse.put("status", HttpURLConnection.HTTP_OK);
+			bodyResponse.put("total", results.getTotal());
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_LIST_SERVICEINFO, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 1,
+					JSONFactoryUtil.looseSerialize(query), bodyResponse.toJSONString());
+			
 		    return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		} catch (Exception e) {
+			_log.error(e.getMessage());
+			// ghi log vao syncTracking
+			bodyResponse.put("status", HttpURLConnection.HTTP_INTERNAL_ERROR);
+			OpenCPSUtils.addSyncTracking(API_LIST_SERVICEINFO, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					JSONFactoryUtil.looseSerialize(query), bodyResponse.toJSONString());
 			return BusinessExceptionImpl.processException(e);
 		}
 
@@ -309,9 +330,10 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 
 		ServiceInfoDetailModel results = new ServiceInfoDetailModel();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
 			long userId = user.getUserId();
 
 			ServiceInfo serviceInfo = null;
@@ -343,9 +365,19 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
                     
 		    return builder.build();
                     */
-                    return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+			
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_VIEW_SERVICEINFO, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, serviceInfo.getServiceCode(), 1,
+					id, JSONFactoryUtil.looseSerialize(results));
+						
+           return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_VIEW_SERVICEINFO, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					id, StringPool.NULL);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

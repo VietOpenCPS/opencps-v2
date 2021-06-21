@@ -57,6 +57,8 @@ import org.opencps.dossiermgt.service.persistence.ApplicableInfoPersistence;
 import org.opencps.dossiermgt.service.persistence.BookingFinder;
 import org.opencps.dossiermgt.service.persistence.BookingPersistence;
 import org.opencps.dossiermgt.service.persistence.ConfigCounterPersistence;
+import org.opencps.dossiermgt.service.persistence.CsdlDcServiceInfoPersistence;
+import org.opencps.dossiermgt.service.persistence.CsdlDcUserPersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverableFinder;
 import org.opencps.dossiermgt.service.persistence.DeliverableLogPersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverablePersistence;
@@ -720,6 +722,82 @@ public abstract class DossierActionSyncLocalServiceBaseImpl
 	public void setCPSDossierBusinessLocalService(
 		org.opencps.dossiermgt.service.CPSDossierBusinessLocalService cpsDossierBusinessLocalService) {
 		this.cpsDossierBusinessLocalService = cpsDossierBusinessLocalService;
+	}
+
+	/**
+	 * Returns the csdl dc service info local service.
+	 *
+	 * @return the csdl dc service info local service
+	 */
+	public org.opencps.dossiermgt.service.CsdlDcServiceInfoLocalService getCsdlDcServiceInfoLocalService() {
+		return csdlDcServiceInfoLocalService;
+	}
+
+	/**
+	 * Sets the csdl dc service info local service.
+	 *
+	 * @param csdlDcServiceInfoLocalService the csdl dc service info local service
+	 */
+	public void setCsdlDcServiceInfoLocalService(
+		org.opencps.dossiermgt.service.CsdlDcServiceInfoLocalService csdlDcServiceInfoLocalService) {
+		this.csdlDcServiceInfoLocalService = csdlDcServiceInfoLocalService;
+	}
+
+	/**
+	 * Returns the csdl dc service info persistence.
+	 *
+	 * @return the csdl dc service info persistence
+	 */
+	public CsdlDcServiceInfoPersistence getCsdlDcServiceInfoPersistence() {
+		return csdlDcServiceInfoPersistence;
+	}
+
+	/**
+	 * Sets the csdl dc service info persistence.
+	 *
+	 * @param csdlDcServiceInfoPersistence the csdl dc service info persistence
+	 */
+	public void setCsdlDcServiceInfoPersistence(
+		CsdlDcServiceInfoPersistence csdlDcServiceInfoPersistence) {
+		this.csdlDcServiceInfoPersistence = csdlDcServiceInfoPersistence;
+	}
+
+	/**
+	 * Returns the csdl dc user local service.
+	 *
+	 * @return the csdl dc user local service
+	 */
+	public org.opencps.dossiermgt.service.CsdlDcUserLocalService getCsdlDcUserLocalService() {
+		return csdlDcUserLocalService;
+	}
+
+	/**
+	 * Sets the csdl dc user local service.
+	 *
+	 * @param csdlDcUserLocalService the csdl dc user local service
+	 */
+	public void setCsdlDcUserLocalService(
+		org.opencps.dossiermgt.service.CsdlDcUserLocalService csdlDcUserLocalService) {
+		this.csdlDcUserLocalService = csdlDcUserLocalService;
+	}
+
+	/**
+	 * Returns the csdl dc user persistence.
+	 *
+	 * @return the csdl dc user persistence
+	 */
+	public CsdlDcUserPersistence getCsdlDcUserPersistence() {
+		return csdlDcUserPersistence;
+	}
+
+	/**
+	 * Sets the csdl dc user persistence.
+	 *
+	 * @param csdlDcUserPersistence the csdl dc user persistence
+	 */
+	public void setCsdlDcUserPersistence(
+		CsdlDcUserPersistence csdlDcUserPersistence) {
+		this.csdlDcUserPersistence = csdlDcUserPersistence;
 	}
 
 	/**
@@ -2896,6 +2974,14 @@ public abstract class DossierActionSyncLocalServiceBaseImpl
 	protected ConfigCounterPersistence configCounterPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.CPSDossierBusinessLocalService.class)
 	protected org.opencps.dossiermgt.service.CPSDossierBusinessLocalService cpsDossierBusinessLocalService;
+	@BeanReference(type = org.opencps.dossiermgt.service.CsdlDcServiceInfoLocalService.class)
+	protected org.opencps.dossiermgt.service.CsdlDcServiceInfoLocalService csdlDcServiceInfoLocalService;
+	@BeanReference(type = CsdlDcServiceInfoPersistence.class)
+	protected CsdlDcServiceInfoPersistence csdlDcServiceInfoPersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.CsdlDcUserLocalService.class)
+	protected org.opencps.dossiermgt.service.CsdlDcUserLocalService csdlDcUserLocalService;
+	@BeanReference(type = CsdlDcUserPersistence.class)
+	protected CsdlDcUserPersistence csdlDcUserPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.DeliverableLocalService.class)
 	protected org.opencps.dossiermgt.service.DeliverableLocalService deliverableLocalService;
 	@BeanReference(type = DeliverablePersistence.class)

@@ -1,5 +1,8 @@
 package org.opencps.backend.statisticmgt.application;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -16,6 +19,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -30,6 +34,10 @@ import org.opencps.backend.statisticmgt.context.CompanyContextProvider;
 import org.opencps.backend.statisticmgt.context.LocaleContextProvider;
 import org.opencps.backend.statisticmgt.context.ServiceContextProvider;
 import org.opencps.backend.statisticmgt.context.UserContextProvider;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtFinderService;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtFinderServiceImpl;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtResponse;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtSearchModel;
 import org.opencps.backend.statisticmgt.util.ActionUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -42,6 +50,7 @@ import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 @Component(immediate = true, property = { JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/statistic/",
 		JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.statistic" }, service = Application.class)
 public class StatisticApplication extends Application {
+
 
 	public Set<Object> getSingletons() {
 
@@ -207,7 +216,20 @@ public class StatisticApplication extends Application {
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}
 	}
-
+	
+	@GET
+	@Path("/dossier/report")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getReport(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @BeanParam DossierStatisticMgtSearchModel query){
+		
+		DossierStatisticMgtResponse doMgtResponse = ActionUtil.searchDossierStatistic(query);
+		ResponseBuilder responseBuilder = Response.ok(doMgtResponse);
+		return responseBuilder.build();
+	}
+	
 	@Context
 	private UriInfo uriInfo;
 
