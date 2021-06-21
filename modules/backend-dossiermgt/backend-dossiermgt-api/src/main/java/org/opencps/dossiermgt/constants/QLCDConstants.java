@@ -48,6 +48,7 @@ public class QLCDConstants {
     public static final String KEY_MaTichHop = "MaTichHop";
     public static final String KEY_MaCanBo = "MaCanBo";
     public static final String KEY_SoDinhDanh = "SoDinhDanh";
+    public static final String KEY_SoCMND = "SoCMND";
     public static final String KEY_HoVaTen = "HoVaTen";
     public static final String KEY_NgayThangNamSinh = "NgayThangNamSinh";
     public static final String KEY_NgayThangNam = "NgayThangNam";

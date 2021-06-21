@@ -131,7 +131,8 @@ public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
                 bodyDC.put("maYeuCau", body.getString(QLCDConstants.KEY_MaYeuCau));
                 bodyDC.put("maDVC", body.getString(QLCDConstants.KEY_MaDVC));
                 bodyDC.put("maCanBo", body.getString(QLCDConstants.KEY_MaCanBo));
-                bodyDC.put("soDinhDanh",  body.getString(QLCDConstants.KEY_SoDinhDanh));
+                bodyDC.put("soDinhDanh", body.has(QLCDConstants.KEY_SoDinhDanh) ? body.getString(QLCDConstants.KEY_SoDinhDanh) : "");
+                bodyDC.put("soCMND",  body.has(QLCDConstants.KEY_SoCMND) ? body.getString(QLCDConstants.KEY_SoCMND) : "");
                 bodyDC.put("hoVaTen", body.getString(QLCDConstants.KEY_HoVaTen));
                 bodyDC.put("ngayThangNam", body.getString(QLCDConstants.KEY_NgayThangNamSinh));
                 bodyDC.put("userNameService", "STTTT_DONGTHAP");
