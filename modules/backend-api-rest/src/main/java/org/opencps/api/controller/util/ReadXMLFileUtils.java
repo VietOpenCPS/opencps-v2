@@ -283,7 +283,7 @@ public class ReadXMLFileUtils {
 					strFile = processListFileDict(fileEntry, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_SERVICES:
-					strFile = processListFileService(fileEntry, folderParentPath, groupId, userId, StringPool.BLANK, serviceContext);
+					strFile = processListFileService(fileEntry, folderParentPath, groupId, userId, subFolder, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_TEMPLATES:
 					strFile =processListFileTemplate(fileEntry, folderParentPath, groupId, userId, serviceContext);

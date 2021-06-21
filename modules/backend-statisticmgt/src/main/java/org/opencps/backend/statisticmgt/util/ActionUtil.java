@@ -1,6 +1,8 @@
 package org.opencps.backend.statisticmgt.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -14,10 +16,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.ws.rs.core.CacheControl;
+
 import org.opencps.backend.statisticmgt.constant.Constants;
 import org.opencps.backend.statisticmgt.constant.PropValues;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtFinderService;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtFinderServiceImpl;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtRequest;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtResponse;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtSearchModel;
 import org.opencps.backend.statisticmgt.processimpl.QueryProcessFactoryImpl;
 import org.opencps.bundlemgt.classloader.util.ClassLoaderFactoryUtil;
+import org.opencps.statistic.model.OpencpsDossierStatisticMgt;
+import org.opencps.statistic.service.OpencpsDossierStatisticMgtLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
@@ -28,6 +39,8 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 public class ActionUtil {
 
 	private static Log _log = LogFactoryUtil.getLog(ActionUtil.class);
+
+	private static DossierStatisticMgtFinderService dossierStatisticMgtFinderService = new DossierStatisticMgtFinderServiceImpl();
 
 	public static String exportDossierStatistic(long groupId, long userId, long fromDate, long toDate, String originalities,
 			String domainCode, String govAgencyCode, String serviceCode, String dossierStatus, Integer day,
@@ -346,6 +359,8 @@ public class ActionUtil {
 			} else {
 				sqlTemplate = sqlTemplate.replace("{scopeEmpl}", "''");
 			}
+		}else {
+			sqlTemplate = sqlTemplate.replace("{scopeEmpl}", "''");
 		}
 		if (Validator.isNull(sqlTemplate)) {
 			return StatisticUtil.createResponseSchema(groupId, strFromDate, strToDate,
@@ -558,6 +573,12 @@ public class ActionUtil {
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
 						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
 						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
+			}else if(type == 22){
+
+				return factory.getDossierStatistic21(groupId, userId, strFromDate, strToDate,
+						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
+						ParamUtil.getArrayParams(govAgencyCode), ParamUtil.getArrayParams(serviceCode),
+						ParamUtil.getArrayParams(dossierStatus), groupBy, start, end, sqlTemplate, type, subType);
 			} else {
 				return StatisticUtil.createResponseSchema(groupId, strFromDate, strToDate,
 						ParamUtil.getArrayParams(originalities, 0), ParamUtil.getArrayParams(domainCode),
@@ -572,6 +593,53 @@ public class ActionUtil {
 					ParamUtil.getArrayParams(dossierStatus), type, subType, new String[] { e.getMessage() });
 		}
 
+	}
+	
+	
+	public static DossierStatisticMgtResponse searchDossierStatistic(DossierStatisticMgtSearchModel query) {
+		
+		CacheControl cc = new CacheControl();
+		cc.setMaxAge(60);
+		cc.setPrivate(true);
+		System.out.println(JSONFactoryUtil.looseSerialize(query));
+		
+		int start = query.getStart();
+		int end = query.getEnd();
+		int month = query.getMonth();
+		int year = query.getYear();
+		String govAgencyCode = query.getGovAgencyCode();
+		String domainCode = query.getDomainCode();
+		long groupId = query.getGroupId();
+		int groupBy = query.getGroupBy();
+		
+		if (start == 0)
+			start = -1;
+
+		if (end == 0)
+			end = -1;
+		
+		DossierStatisticMgtResponse dossierStatisticMgtResponse = null;
+		DossierStatisticMgtRequest dossierStatisticMgtRequest = new DossierStatisticMgtRequest();
+		dossierStatisticMgtRequest.setDomainCode(domainCode);
+		dossierStatisticMgtRequest.setGovAgencyCode(govAgencyCode);
+		dossierStatisticMgtRequest.setGroupBy(groupBy);
+		dossierStatisticMgtRequest.setGroupId(groupId);
+		dossierStatisticMgtRequest.setMonth(month);
+		dossierStatisticMgtRequest.setYear(year);
+		dossierStatisticMgtRequest.setStart(start);
+		dossierStatisticMgtRequest.setEnd(end);
+		_log.info(JSONFactoryUtil.looseSerialize(dossierStatisticMgtRequest));
+		
+		try {
+			dossierStatisticMgtResponse = dossierStatisticMgtFinderService.finderDossierStatisticMgt(dossierStatisticMgtRequest);
+		_log.info(JSONFactoryUtil.looseSerialize(dossierStatisticMgtResponse));
+			return dossierStatisticMgtResponse;
+		} catch (PortalException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		return null;
 	}
 
 }
