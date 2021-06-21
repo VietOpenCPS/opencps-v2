@@ -4864,6 +4864,70 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 		return configJson;
 	}
+	public String uploadDossierFile(String UrlFileChungTu){
+		if(Validator.isNotNull(UrlFileChungTu)){
+			HttpURLConnection conn = null;
+
+			try {
+				JSONObject config = getServerConfigByServerNo(DossierTerm.DVCQG_THANH_TOAN_THUE,"");
+				_log.debug("config: " + config.toJSONString());
+
+				String endpoint = UrlFileChungTu;
+
+				URL url = new URL(endpoint);
+
+				conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("POST");
+				conn.setDoInput(true);
+				conn.setDoOutput(true);
+
+				conn.setRequestProperty("Accept", "application/json");
+				conn.setRequestProperty("Content-Type", "application/json");
+				conn.setRequestProperty("Charset", "utf-8");
+
+				conn.setInstanceFollowRedirects(true);
+				HttpURLConnection.setFollowRedirects(true);
+				conn.setReadTimeout(TIMEOUT_DVCQG * 1000);
+
+//				byte[] postData = body.toJSONString().getBytes("UTF-8");
+//				int postDataLength = postData.length;
+//				conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+//				try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+//					wr.write(postData);
+//				}
+
+				conn.connect();
+
+				try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((conn.getInputStream())))) {
+
+					String output = StringPool.BLANK;
+
+					StringBuilder sb = new StringBuilder();
+
+					while ((output = bufferedReader.readLine()) != null) {
+						sb.append(output);
+					}
+
+					System.out.println("response: " + sb.toString());
+
+					JSONObject result = JSONFactoryUtil.createJSONObject(sb.toString());
+
+					// ------------------
+					return StringPool.BLANK;
+
+				}
+
+			} catch (Exception e) {
+				_log.error(e);
+				return StringPool.BLANK;
+			} finally {
+				if (conn != null) {
+					conn.disconnect();
+				}
+			}
+		}
+		return null;
+	}
 
 	private String _DEFAULT_CLASS_NAME = "dvcqg";
 }
