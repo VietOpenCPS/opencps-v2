@@ -135,6 +135,30 @@
 		</field>
 		<field name="startCounter" type="int" />
 	</model>
+	<model name="org.opencps.dossiermgt.model.CsdlDcServiceInfo">
+		<field name="uuid" type="String" />
+		<field name="idDcService" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="serviceCode" type="String" />
+		<field name="serviceCodeDvcqg" type="String" />
+		<field name="status" type="int" />
+	</model>
+	<model name="org.opencps.dossiermgt.model.CsdlDcUser">
+		<field name="uuid" type="String" />
+		<field name="idDcUser" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyCodeDvcqg" type="String" />
+		<field name="keyName" type="String" />
+		<field name="keyPass" type="String" />
+		<field name="userName" type="String" />
+		<field name="employeeEmail" type="String" />
+		<field name="status" type="int" />
+	</model>
 	<model name="org.opencps.dossiermgt.model.Deliverable">
 		<field name="uuid" type="String" />
 		<field name="deliverableId" type="long" />

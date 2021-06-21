@@ -44,8 +44,12 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
-import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierDocument;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceProcess;
 
 import java.io.Serializable;
 
@@ -333,7 +337,7 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findDossierByGroup(long groupId);
 
-	public org.opencps.dossiermgt.model.DossierDocument findDossierDocumentByDossierId(
+	public DossierDocument findDossierDocumentByDossierId(
 		long dossierDocumentId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

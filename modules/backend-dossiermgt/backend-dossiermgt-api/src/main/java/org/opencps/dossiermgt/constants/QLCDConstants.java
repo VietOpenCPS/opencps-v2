@@ -36,9 +36,14 @@ public class QLCDConstants {
     public static final String CONFIG_PARTNER_CODE_CUS = "partnerCodeCus";
     public static final String CONFIG_SERVER = "serverQLCD";
 
+    public static final String UNIT_HG = "HAUGIANG";
+    public static final String UNIT_DT = "DONGTHAP";
 
     public static final String KEY_TYPE_API = "type";
     public static final String KEY_MaYeuCau = "MaYeuCau";
+    public static final String KEY_GovAgencyCode = "GovAgencyCode"; //remove after validate
+    public static final String KEY_AuthHash = "AuthHash"; //remove after validate
+    public static final String KEY_StaffEmail = "StaffEmail"; //remove after validate
     public static final String KEY_MaDVC = "MaDVC";
     public static final String KEY_MaTichHop = "MaTichHop";
     public static final String KEY_MaCanBo = "MaCanBo";
