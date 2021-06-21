@@ -115,7 +115,7 @@ public class SyncTrackingModelImpl extends BaseModelImpl<SyncTracking>
 		TABLE_COLUMNS_MAP.put("metaData", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_synctracking (uuid_ VARCHAR(75) null,trackingId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierNo VARCHAR(75) null,referenceUid VARCHAR(75) null,serverNo VARCHAR(75) null,protocol VARCHAR(75) null,stateSync INTEGER,serviceCode VARCHAR(75) null,api VARCHAR(75) null,fromUnit VARCHAR(75) null,toUnit VARCHAR(75) null,bodyRequest VARCHAR(75) null,response VARCHAR(75) null,metaData VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_synctracking (uuid_ VARCHAR(75) null,trackingId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierNo VARCHAR(75) null,referenceUid VARCHAR(75) null,serverNo VARCHAR(75) null,protocol VARCHAR(75) null,stateSync INTEGER,serviceCode VARCHAR(75) null,api VARCHAR(200) null,fromUnit VARCHAR(75) null,toUnit VARCHAR(75) null,bodyRequest TEXT null,response TEXT null,metaData VARCHAR(500) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_synctracking";
 	public static final String ORDER_BY_JPQL = " ORDER BY syncTracking.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_synctracking.createDate DESC";

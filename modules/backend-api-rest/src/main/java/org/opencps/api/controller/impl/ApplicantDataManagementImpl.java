@@ -57,8 +57,8 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 			User user, ServiceContext serviceContext, Attachment file, String fileTemplateNo, String fileNo, String fileName,
 			String applicantIdNo, String status) {
 		//Mặc định groupId =0
-//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		long groupId = ApplicantTerm.GROUP_ID_DEFAULT;
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+//		long groupId = ApplicantTerm.GROUP_ID_DEFAULT;
 		DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 		ApplicantData applicantData = null;
 		
@@ -68,7 +68,6 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 			if(Validator.isNull(dataHandler)) {
 				throw new Exception("obj null");
 			}
-
 			if(dataHandler.getInputStream() != null) {
 				applicantData = ApplicantDataLocalServiceUtil.createApplicantData(groupId, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
 				ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
@@ -172,10 +171,11 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 				throw new Exception("obj null");
 			}
 			if(Validator.isNotNull(dataHandler.getInputStream()) && dataHandler.getName() !=null){
-				_log.debug("dataHandler: " + dataHandler.getName());
+				_log.info("dataHandler: " + dataHandler.getName());
 				applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt,
 						dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
 			}else{
+				_log.info("dataHandler nulllllllll: " + dataHandler.getName());
 				applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, serviceContext);
 			}
 
