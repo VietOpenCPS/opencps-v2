@@ -114,7 +114,6 @@ import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
-import javax.xml.ws.Service;
 
 public class ProcessUpdateDBUtils {
 
@@ -868,6 +867,7 @@ public class ProcessUpdateDBUtils {
 				org.opencps.dossiermgt.model.ServiceInfo serviceInfo = null;
 				ServiceInfoActions actionService = new ServiceInfoActionsImpl();
 				if (Validator.isNotNull(service.getServiceCode()) && Validator.isNotNull(service.getServiceName())) {
+					_log.info("Vaoooooo 11111111111");
 					String serviceCode = service.getServiceCode();
 					String serviceName = service.getServiceName();
 					String processText = service.getProcessText();
@@ -899,8 +899,14 @@ public class ProcessUpdateDBUtils {
 						}
 					}
 				} else {
+					_log.info("Vaoooooo 22222222222222");
 					serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, service.getServiceCode());
 				}
+				if(Validator.isNotNull(serviceInfo)){
+					_log.info("Id --- : " + serviceInfo.getServiceInfoId());
+					_log.info("keyImport --- : " + keyImport);
+				}
+				_log.info("groupId : " + groupId);
 				// Add serviceConfig
 				Configs configs = service.getConfigs();
 				if ((configs != null && serviceInfoId > 0) || Validator.isNotNull(serviceInfo)) {
