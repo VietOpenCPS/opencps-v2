@@ -150,15 +150,15 @@ public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
     private JSONObject validateBodyJson(JSONObject body) throws Exception {
         try {
             if(!body.has(QLCDConstants.KEY_MaDVC) || Validator.isNull(body.getString(QLCDConstants.KEY_MaDVC))) {
-                throw new Exception("No key MaDVC was found");
+                throw new Exception(QLCDConstants.ERROR_NO_MADVC);
             }
 
             if(!body.has(QLCDConstants.KEY_GovAgencyCode) || Validator.isNull(body.getString(QLCDConstants.KEY_GovAgencyCode))) {
-                throw new Exception("No key GovAgencyCode was found");
+                throw new Exception(QLCDConstants.ERROR_NO_GOV_AGENCY);
             }
 
             if(!body.has(QLCDConstants.KEY_StaffEmail) || Validator.isNull(body.getString(QLCDConstants.KEY_StaffEmail))) {
-                throw new Exception("No key StaffEmail was found");
+                throw new Exception(QLCDConstants.ERROR_NO_STAFF_EMAIL);
             }
 
             CsdlDcServiceInfo serviceInfoMapping = CsdlDcServiceInfoLocalServiceUtil.findByServiceCodeAndStatus(
@@ -167,7 +167,7 @@ public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
             body.put(QLCDConstants.KEY_MaDVC, serviceInfoMapping.getServiceCodeDvcqg());
 
             if(Validator.isNull(serviceInfoMapping)) {
-                throw new Exception("No mapping service code was found with key MaDVC: " + body.getString(QLCDConstants.KEY_MaDVC));
+                throw new Exception(QLCDConstants.ERROR_MAPPING_DVC);
             }
 
             CsdlDcUser staffInfoMapping = CsdlDcUserLocalServiceUtil.findByGovAndEmailAndStatus(
@@ -175,9 +175,7 @@ public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
             );
 
             if(Validator.isNull(staffInfoMapping)) {
-                throw new Exception("No mapping staff was found with key GovAgencyCode: "
-                        + body.getString(QLCDConstants.KEY_GovAgencyCode) + ", Staff: "
-                        + body.getString(QLCDConstants.KEY_StaffEmail));
+                throw new Exception(QLCDConstants.ERROR_MAPPING_STAFF);
             }
             String keyStringAuthHash = "";
             try {
