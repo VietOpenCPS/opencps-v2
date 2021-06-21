@@ -53,4 +53,10 @@ public class QLCDConstants {
     public static final String KEY_NgayThangNamSinh = "NgayThangNamSinh";
     public static final String KEY_NgayThangNam = "NgayThangNam";
     public static final String KEY_Paging = "paging";
+
+    public static final String ERROR_NO_MADVC = "001";
+    public static final String ERROR_NO_GOV_AGENCY = "002";
+    public static final String ERROR_NO_STAFF_EMAIL = "003";
+    public static final String ERROR_MAPPING_DVC = "004";
+    public static final String ERROR_MAPPING_STAFF = "005";
 }
