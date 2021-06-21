@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.apache.commons.lang3.StringUtils;
 import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyService;
 import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyServiceImpl;
 import org.opencps.communication.model.ServerConfig;
@@ -21,7 +22,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
     private JSONObject configJson;
@@ -60,20 +63,27 @@ public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
     }
 
     @Override
-    public String getToken() throws Exception {
+    public String getToken(String unit) throws Exception {
+        String urlGetToken = this.configJson.getString(QLCDConstants.CONFIG_URL)
+                + this.configJson.getString(QLCDConstants.CONFIG_GET_TOKEN);
         try {
-            String urlGetToken = this.configJson.getString(QLCDConstants.CONFIG_URL)
-                    + this.configJson.getString(QLCDConstants.CONFIG_GET_TOKEN);
+            if(unit.equals(QLCDConstants.UNIT_HG)) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+                _log.info("lgspaccesstoken: " + headers.get("lgspaccesstoken"));
+                JSONObject result = this.apiService.callApiEncode(urlGetToken, headers, null,
+                        true, this.base64LgspToken);
 
-            _log.info("lgspaccesstoken: " + headers.get("lgspaccesstoken"));
-            JSONObject result = this.apiService.callApiEncode(urlGetToken, headers, null,
-                    true, this.base64LgspToken);
-
-            if(Validator.isNotNull(result) && result.has("access_token")) {
-                return result.getString("access_token");
+                if(Validator.isNotNull(result) && result.has("access_token")) {
+                    return result.getString("access_token");
+                }
+            } else if (unit.equals(QLCDConstants.UNIT_DT)) {
+                JSONObject checkUnitGetToken = JSONFactoryUtil.createJSONObject();
+                checkUnitGetToken.put("partnerCode", "PAYGOV-DONGTHAP");
+                return this.apiService.getTokenLGSP(checkUnitGetToken);
+            } else {
+                //other unit
             }
 
             throw new Exception("No token found");
@@ -84,33 +94,54 @@ public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
     }
     
     @Override
-    public String sendData(String token, JSONObject body) throws Exception {
+    public String sendData(String token, JSONObject body, String unit) throws Exception {
         try {
             String url = this.configJson.getString(QLCDConstants.CONFIG_URL)
                     + this.configJson.getString(body.getString("type"));
-            JSONObject bodyValid = validateBodyJson(body);
-            JSONObject bodyRequest = JSONFactoryUtil.createJSONObject();
 
-            bodyRequest.put("accessToken", "Bearer " + token);
-            bodyRequest.put("lgspAccessToken", this.base64LgspToken);
-            bodyRequest.put("AuthHash", bodyValid.getString(QLCDConstants.KEY_AuthHash));
+            if(unit.equals(QLCDConstants.UNIT_HG)) {
+                JSONObject bodyValid = validateBodyJson(body);
+                JSONObject bodyRequest = JSONFactoryUtil.createJSONObject();
 
-            //remove unnecessary key to forward to LGSP
-            bodyValid.remove(QLCDConstants.KEY_AuthHash);
-            bodyValid.remove(QLCDConstants.KEY_StaffEmail);
-            bodyValid.remove(QLCDConstants.KEY_GovAgencyCode);
+                bodyRequest.put("accessToken", "Bearer " + token);
+                bodyRequest.put("lgspAccessToken", this.base64LgspToken);
+                bodyRequest.put("AuthHash", bodyValid.getString(QLCDConstants.KEY_AuthHash));
 
-            bodyRequest.put("data", createRequestSoap(bodyValid));
+                //remove unnecessary key to forward to LGSP
+                bodyValid.remove(QLCDConstants.KEY_AuthHash);
+                bodyValid.remove(QLCDConstants.KEY_StaffEmail);
+                bodyValid.remove(QLCDConstants.KEY_GovAgencyCode);
 
-            //Call api DLDC
-            String soapResponse = this.apiService.callApiWithRawBody(url, bodyRequest);
+                bodyRequest.put("data", createRequestSoap(bodyValid));
 
-            //Parse xml result to json
-            XmlMapper xmlMapper = new XmlMapper();
-            JsonNode node = xmlMapper.readTree(soapResponse);
-            ObjectMapper jsonMapper = new ObjectMapper();
+                //Call api DLDC
+                String soapResponse = this.apiService.callApiWithRawBody(url, bodyRequest);
 
-            return jsonMapper.writeValueAsString(node);
+                //Parse xml result to json
+                XmlMapper xmlMapper = new XmlMapper();
+                JsonNode node = xmlMapper.readTree(soapResponse);
+                ObjectMapper jsonMapper = new ObjectMapper();
+
+                return jsonMapper.writeValueAsString(node);
+            } else if (unit.equals(QLCDConstants.UNIT_DT)) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Authorization", "Bearer " + token);
+
+                Map<String, Object> bodyDC = new HashMap<>();
+                bodyDC.put("maYeuCau", body.getString(QLCDConstants.KEY_MaYeuCau));
+                bodyDC.put("maDVC", body.getString(QLCDConstants.KEY_MaDVC));
+                bodyDC.put("maCanBo", body.getString(QLCDConstants.KEY_MaCanBo));
+                bodyDC.put("soDinhDanh", body.has(QLCDConstants.KEY_SoDinhDanh) ? body.getString(QLCDConstants.KEY_SoDinhDanh) : "");
+                bodyDC.put("soCMND",  body.has(QLCDConstants.KEY_SoCMND) ? body.getString(QLCDConstants.KEY_SoCMND) : "");
+                bodyDC.put("hoVaTen", body.getString(QLCDConstants.KEY_HoVaTen));
+                bodyDC.put("ngayThangNam", body.getString(QLCDConstants.KEY_NgayThangNamSinh));
+                bodyDC.put("userNameService", "STTTT_DONGTHAP");
+                JSONObject result = this.apiService.callApi(url, headers, bodyDC);
+                return result.toJSONString();
+            } else {
+                //other unit
+            }
+            throw new Exception("No unit found");
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -119,15 +150,15 @@ public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
     private JSONObject validateBodyJson(JSONObject body) throws Exception {
         try {
             if(!body.has(QLCDConstants.KEY_MaDVC) || Validator.isNull(body.getString(QLCDConstants.KEY_MaDVC))) {
-                throw new Exception("No key MaDVC was found");
+                throw new Exception(QLCDConstants.ERROR_NO_MADVC);
             }
 
             if(!body.has(QLCDConstants.KEY_GovAgencyCode) || Validator.isNull(body.getString(QLCDConstants.KEY_GovAgencyCode))) {
-                throw new Exception("No key GovAgencyCode was found");
+                throw new Exception(QLCDConstants.ERROR_NO_GOV_AGENCY);
             }
 
             if(!body.has(QLCDConstants.KEY_StaffEmail) || Validator.isNull(body.getString(QLCDConstants.KEY_StaffEmail))) {
-                throw new Exception("No key StaffEmail was found");
+                throw new Exception(QLCDConstants.ERROR_NO_STAFF_EMAIL);
             }
 
             CsdlDcServiceInfo serviceInfoMapping = CsdlDcServiceInfoLocalServiceUtil.findByServiceCodeAndStatus(
@@ -136,7 +167,7 @@ public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
             body.put(QLCDConstants.KEY_MaDVC, serviceInfoMapping.getServiceCodeDvcqg());
 
             if(Validator.isNull(serviceInfoMapping)) {
-                throw new Exception("No mapping service code was found with key MaDVC: " + body.getString(QLCDConstants.KEY_MaDVC));
+                throw new Exception(QLCDConstants.ERROR_MAPPING_DVC);
             }
 
             CsdlDcUser staffInfoMapping = CsdlDcUserLocalServiceUtil.findByGovAndEmailAndStatus(
@@ -144,9 +175,7 @@ public class QLCDIntegrationActionImpl implements QLCDIntegrationAction {
             );
 
             if(Validator.isNull(staffInfoMapping)) {
-                throw new Exception("No mapping staff was found with key GovAgencyCode: "
-                        + body.getString(QLCDConstants.KEY_GovAgencyCode) + ", Staff: "
-                        + body.getString(QLCDConstants.KEY_StaffEmail));
+                throw new Exception(QLCDConstants.ERROR_MAPPING_STAFF);
             }
             String keyStringAuthHash = "";
             try {
