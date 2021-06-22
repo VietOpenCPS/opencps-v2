@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
@@ -145,9 +146,13 @@ import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.ApplicantData;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.FileItem;
+import org.opencps.usermgt.service.ApplicantDataLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.FileItemLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -2290,6 +2295,28 @@ public class DossierManagementImpl implements DossierManagement {
 				if (Validator.isNotNull(postAction) && !postAction.isEmpty()) {
 					String result = processPostAction(postAction, groupId, dossier, user);
 					_log.debug("Result post action:" + result);
+				}
+			}
+			
+			//day du lieu vao kho du lieu cong dan
+			Dossier dossier2 = DossierLocalServiceUtil.getByDossierNo(groupId, dossier.getDossierNo());
+			_log.info("Kho dữ liệu công dân : 1111" + JSONFactoryUtil.looseSerialize(dossier2));
+			if (Validator.isNotNull(dossier2) && dossier2.getDossierStatus().contentEquals(DossierTerm.DOSSIER_STATUS_DONE)) {
+				List<DossierFile> lstDossierFiles = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
+				_log.info("Kho dữ liệu công dân : 2222" + JSONFactoryUtil.looseSerialize(lstDossierFiles));
+				if (Validator.isNotNull(lstDossierFiles) && lstDossierFiles.size() > 0) {
+					for (DossierFile doFile : lstDossierFiles) {
+						String fileTemplateNo = doFile.getFileTemplateNo();
+						if (Validator.isNotNull(fileTemplateNo)) {
+							FileItem fileItem = FileItemLocalServiceUtil.findByG_FTN(groupId, fileTemplateNo);
+							FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(doFile.getFileEntryId());
+							if (Validator.isNotNull(fileItem) && Validator.isNotNull(fileEntry)) {
+								ApplicantData applicantData = ApplicantDataLocalServiceUtil.createApplicantData(
+										serviceContext, groupId, fileTemplateNo, fileEntry.getFileName(), doFile.getDisplayName(), doFile.getFileEntryId(), StringPool.BLANK, 0, dossier.getApplicantIdNo(), 0);		
+								_log.info("Kho dữ liệu công dân : 3333" + JSONFactoryUtil.looseSerialize(applicantData));
+								}
+							}
+						}					
 				}
 			}
 
