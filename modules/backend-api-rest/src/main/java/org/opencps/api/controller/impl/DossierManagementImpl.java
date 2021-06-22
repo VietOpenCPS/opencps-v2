@@ -11,10 +11,7 @@ import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.*;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
@@ -84,6 +81,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.constants.DossierManagementConstants;
+import org.opencps.api.constants.SupportSearchConstants;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
 import org.opencps.api.controller.util.DossierFileUtils;
@@ -185,6 +183,31 @@ public class DossierManagementImpl implements DossierManagement {
 		body.put(ERROR_CODE, code);
 		body.put(ERROR_MESSAGE, message);
 		return body.toString();
+	}
+
+	@Override
+	public Response getSupportSearchDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, long groupId, String dossierId) {
+		try {
+			JSONObject body = JSONFactoryUtil.createJSONObject();
+
+			Dossier dossier = DossierUtils.getDossierNew(dossierId, groupId);
+
+			List<DossierSync> ListDossierSync = DossierSyncLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+
+			List<DossierAction> ListDossierAction =
+					DossierActionLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+
+			JSONObject dossierObject = SupportSearchConstants.convertDossierToJSONObject(dossier);
+			body.put(SupportSearchConstants.DOSSIER, dossierObject);
+			JSONArray DossierSyncArray = SupportSearchConstants.convertListSyncToArray(ListDossierSync);
+			body.put(SupportSearchConstants.DOSSIER_SYNC, DossierSyncArray);
+			JSONArray DossierActionArray = SupportSearchConstants.convertListActionToArray(ListDossierAction);
+			body.put(SupportSearchConstants.DOSSIER_ACTION, DossierActionArray);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(body.toJSONString()).build();
+		} catch (Exception e){
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 
 	@Override
