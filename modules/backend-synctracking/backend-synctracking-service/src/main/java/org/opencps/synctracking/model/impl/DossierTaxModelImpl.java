@@ -97,7 +97,9 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 			{ "fileChungTu", Types.VARCHAR },
 			{ "ngayThueTraThongBao", Types.TIMESTAMP },
 			{ "ngayTraThongBao", Types.TIMESTAMP },
-			{ "ngayNhanBienLai", Types.TIMESTAMP }
+			{ "ngayNhanBienLai", Types.TIMESTAMP },
+			{ "statusTBT", Types.INTEGER },
+			{ "statusCTT", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -131,9 +133,11 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		TABLE_COLUMNS_MAP.put("ngayThueTraThongBao", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("ngayTraThongBao", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("ngayNhanBienLai", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("statusTBT", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("statusCTT", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossier_tax (uuid_ VARCHAR(75) null,taxId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierNo VARCHAR(75) null,maSoThue VARCHAR(75) null,soQuyetDinh VARCHAR(75) null,ngayQuyetDinh DATE null,tenTieuMuc VARCHAR(75) null,soTien INTEGER,hoTenNguoiNopTien VARCHAR(75) null,soCmtNguoiNopTien INTEGER,diaChiNguoiNopTien VARCHAR(75) null,tinhNguoiNopTien VARCHAR(75) null,huyenNguoiNopTien VARCHAR(75) null,xaNguoiNopTien VARCHAR(75) null,thoiGianThanhToan DATE null,soTienNop INTEGER,noiDungThanhToan VARCHAR(75) null,trangThaiThanhToan INTEGER,fileChungTu VARCHAR(75) null,ngayThueTraThongBao DATE null,ngayTraThongBao DATE null,ngayNhanBienLai DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossier_tax (uuid_ VARCHAR(75) null,taxId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierNo VARCHAR(75) null,maSoThue VARCHAR(75) null,soQuyetDinh VARCHAR(75) null,ngayQuyetDinh DATE null,tenTieuMuc VARCHAR(75) null,soTien INTEGER,hoTenNguoiNopTien VARCHAR(75) null,soCmtNguoiNopTien INTEGER,diaChiNguoiNopTien VARCHAR(75) null,tinhNguoiNopTien VARCHAR(75) null,huyenNguoiNopTien VARCHAR(75) null,xaNguoiNopTien VARCHAR(75) null,thoiGianThanhToan DATE null,soTienNop INTEGER,noiDungThanhToan VARCHAR(75) null,trangThaiThanhToan INTEGER,fileChungTu VARCHAR(75) null,ngayThueTraThongBao DATE null,ngayTraThongBao DATE null,ngayNhanBienLai DATE null,statusTBT INTEGER,statusCTT INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossier_tax";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierTax.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossier_tax.createDate DESC";
@@ -150,12 +154,15 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 				"value.object.column.bitmask.enabled.org.opencps.synctracking.model.DossierTax"),
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long DOSSIERNO_COLUMN_BITMASK = 2L;
-	public static final long GROUPID_COLUMN_BITMASK = 4L;
-	public static final long MASOTHUE_COLUMN_BITMASK = 8L;
-	public static final long SOQUYETDINH_COLUMN_BITMASK = 16L;
-	public static final long UUID_COLUMN_BITMASK = 32L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 64L;
+	public static final long DOSSIERID_COLUMN_BITMASK = 2L;
+	public static final long DOSSIERNO_COLUMN_BITMASK = 4L;
+	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long MASOTHUE_COLUMN_BITMASK = 16L;
+	public static final long SOQUYETDINH_COLUMN_BITMASK = 32L;
+	public static final long STATUSCTT_COLUMN_BITMASK = 64L;
+	public static final long STATUSTBT_COLUMN_BITMASK = 128L;
+	public static final long UUID_COLUMN_BITMASK = 256L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 512L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.synctracking.org.opencps.backend.synctracking.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.synctracking.model.DossierTax"));
 
@@ -225,6 +232,8 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		attributes.put("ngayThueTraThongBao", getNgayThueTraThongBao());
 		attributes.put("ngayTraThongBao", getNgayTraThongBao());
 		attributes.put("ngayNhanBienLai", getNgayNhanBienLai());
+		attributes.put("statusTBT", getStatusTBT());
+		attributes.put("statusCTT", getStatusCTT());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -408,6 +417,18 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		if (ngayNhanBienLai != null) {
 			setNgayNhanBienLai(ngayNhanBienLai);
 		}
+
+		Integer statusTBT = (Integer)attributes.get("statusTBT");
+
+		if (statusTBT != null) {
+			setStatusTBT(statusTBT);
+		}
+
+		Integer statusCTT = (Integer)attributes.get("statusCTT");
+
+		if (statusCTT != null) {
+			setStatusCTT(statusCTT);
+		}
 	}
 
 	@Override
@@ -563,7 +584,19 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 
 	@Override
 	public void setDossierId(long dossierId) {
+		_columnBitmask |= DOSSIERID_COLUMN_BITMASK;
+
+		if (!_setOriginalDossierId) {
+			_setOriginalDossierId = true;
+
+			_originalDossierId = _dossierId;
+		}
+
 		_dossierId = dossierId;
+	}
+
+	public long getOriginalDossierId() {
+		return _originalDossierId;
 	}
 
 	@Override
@@ -852,6 +885,50 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 	}
 
 	@Override
+	public int getStatusTBT() {
+		return _statusTBT;
+	}
+
+	@Override
+	public void setStatusTBT(int statusTBT) {
+		_columnBitmask |= STATUSTBT_COLUMN_BITMASK;
+
+		if (!_setOriginalStatusTBT) {
+			_setOriginalStatusTBT = true;
+
+			_originalStatusTBT = _statusTBT;
+		}
+
+		_statusTBT = statusTBT;
+	}
+
+	public int getOriginalStatusTBT() {
+		return _originalStatusTBT;
+	}
+
+	@Override
+	public int getStatusCTT() {
+		return _statusCTT;
+	}
+
+	@Override
+	public void setStatusCTT(int statusCTT) {
+		_columnBitmask |= STATUSCTT_COLUMN_BITMASK;
+
+		if (!_setOriginalStatusCTT) {
+			_setOriginalStatusCTT = true;
+
+			_originalStatusCTT = _statusCTT;
+		}
+
+		_statusCTT = statusCTT;
+	}
+
+	public int getOriginalStatusCTT() {
+		return _originalStatusCTT;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				DossierTax.class.getName()));
@@ -917,6 +994,8 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		dossierTaxImpl.setNgayThueTraThongBao(getNgayThueTraThongBao());
 		dossierTaxImpl.setNgayTraThongBao(getNgayTraThongBao());
 		dossierTaxImpl.setNgayNhanBienLai(getNgayNhanBienLai());
+		dossierTaxImpl.setStatusTBT(getStatusTBT());
+		dossierTaxImpl.setStatusCTT(getStatusCTT());
 
 		dossierTaxImpl.resetOriginalValues();
 
@@ -991,11 +1070,23 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 
 		dossierTaxModelImpl._setModifiedDate = false;
 
+		dossierTaxModelImpl._originalDossierId = dossierTaxModelImpl._dossierId;
+
+		dossierTaxModelImpl._setOriginalDossierId = false;
+
 		dossierTaxModelImpl._originalDossierNo = dossierTaxModelImpl._dossierNo;
 
 		dossierTaxModelImpl._originalMaSoThue = dossierTaxModelImpl._maSoThue;
 
 		dossierTaxModelImpl._originalSoQuyetDinh = dossierTaxModelImpl._soQuyetDinh;
+
+		dossierTaxModelImpl._originalStatusTBT = dossierTaxModelImpl._statusTBT;
+
+		dossierTaxModelImpl._setOriginalStatusTBT = false;
+
+		dossierTaxModelImpl._originalStatusCTT = dossierTaxModelImpl._statusCTT;
+
+		dossierTaxModelImpl._setOriginalStatusCTT = false;
 
 		dossierTaxModelImpl._columnBitmask = 0;
 	}
@@ -1189,12 +1280,16 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 			dossierTaxCacheModel.ngayNhanBienLai = Long.MIN_VALUE;
 		}
 
+		dossierTaxCacheModel.statusTBT = getStatusTBT();
+
+		dossierTaxCacheModel.statusCTT = getStatusCTT();
+
 		return dossierTaxCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(59);
+		StringBundler sb = new StringBundler(63);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1254,6 +1349,10 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		sb.append(getNgayTraThongBao());
 		sb.append(", ngayNhanBienLai=");
 		sb.append(getNgayNhanBienLai());
+		sb.append(", statusTBT=");
+		sb.append(getStatusTBT());
+		sb.append(", statusCTT=");
+		sb.append(getStatusCTT());
 		sb.append("}");
 
 		return sb.toString();
@@ -1261,7 +1360,7 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(91);
+		StringBundler sb = new StringBundler(97);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.synctracking.model.DossierTax");
@@ -1383,6 +1482,14 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 			"<column><column-name>ngayNhanBienLai</column-name><column-value><![CDATA[");
 		sb.append(getNgayNhanBienLai());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>statusTBT</column-name><column-value><![CDATA[");
+		sb.append(getStatusTBT());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>statusCTT</column-name><column-value><![CDATA[");
+		sb.append(getStatusCTT());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1408,6 +1515,8 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private long _dossierId;
+	private long _originalDossierId;
+	private boolean _setOriginalDossierId;
 	private String _dossierNo;
 	private String _originalDossierNo;
 	private String _maSoThue;
@@ -1431,6 +1540,12 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 	private Date _ngayThueTraThongBao;
 	private Date _ngayTraThongBao;
 	private Date _ngayNhanBienLai;
+	private int _statusTBT;
+	private int _originalStatusTBT;
+	private boolean _setOriginalStatusTBT;
+	private int _statusCTT;
+	private int _originalStatusCTT;
+	private boolean _setOriginalStatusCTT;
 	private long _columnBitmask;
 	private DossierTax _escapedModel;
 }

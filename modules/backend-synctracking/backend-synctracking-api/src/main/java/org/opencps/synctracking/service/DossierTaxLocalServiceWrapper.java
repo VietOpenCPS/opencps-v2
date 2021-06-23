@@ -214,6 +214,36 @@ public class DossierTaxLocalServiceWrapper implements DossierTaxLocalService,
 		return _dossierTaxLocalService.getActionableDynamicQuery();
 	}
 
+	@Override
+	public java.util.List<org.opencps.synctracking.model.DossierTax> getByDossierIdAndStatusCTT(
+		long dossierId, int statuses) {
+		return _dossierTaxLocalService.getByDossierIdAndStatusCTT(dossierId,
+			statuses);
+	}
+
+	@Override
+	public java.util.List<org.opencps.synctracking.model.DossierTax> getByDossierIdAndStatusTBT(
+		long dossierId, int statuses) {
+		return _dossierTaxLocalService.getByDossierIdAndStatusTBT(dossierId,
+			statuses);
+	}
+
+	@Override
+	public java.util.List<org.opencps.synctracking.model.DossierTax> getByStatusCTT(
+		int statusTBT, int statusesCTT, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.synctracking.model.DossierTax> orderByComparator) {
+		return _dossierTaxLocalService.getByStatusCTT(statusTBT, statusesCTT,
+			start, end, orderByComparator);
+	}
+
+	@Override
+	public java.util.List<org.opencps.synctracking.model.DossierTax> getByStatusTBT(
+		int[] statuses, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.synctracking.model.DossierTax> orderByComparator) {
+		return _dossierTaxLocalService.getByStatusTBT(statuses, start, end,
+			orderByComparator);
+	}
+
 	/**
 	* Returns the dossier tax with the primary key.
 	*

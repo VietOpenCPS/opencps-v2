@@ -289,6 +289,12 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
                 dossierTax.setTrangThaiThanhToan(dossierTaxInput.trangThaiThanhToan);
                 dossierTax.setFileChungTu(dossierTaxInput.fileChungTu);
                 dossierTax.setNgayQuyetDinh(APIDateTimeUtils.convertStringToDate(dossierTaxInput.ngayQuyetDinh,APIDateTimeUtils._NORMAL_DATE));
+                if(Validator.isNotNull(dossierTaxInput.statusTBT)) {
+                    dossierTax.setStatusTBT(Integer.valueOf(dossierTaxInput.statusTBT));
+                }
+                if(Validator.isNotNull(dossierTaxInput.statusCTT)) {
+                    dossierTax.setStatusCTT(Integer.valueOf(dossierTaxInput.statusCTT));
+                }
                 DossierTaxLocalServiceUtil.updateDossierTax(dossierTax);
                 return true;
             }

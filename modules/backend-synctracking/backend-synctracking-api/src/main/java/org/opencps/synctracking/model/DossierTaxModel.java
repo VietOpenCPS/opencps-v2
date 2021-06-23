@@ -515,6 +515,34 @@ public interface DossierTaxModel extends BaseModel<DossierTax>, GroupedModel,
 	 */
 	public void setNgayNhanBienLai(Date ngayNhanBienLai);
 
+	/**
+	 * Returns the status tbt of this dossier tax.
+	 *
+	 * @return the status tbt of this dossier tax
+	 */
+	public int getStatusTBT();
+
+	/**
+	 * Sets the status tbt of this dossier tax.
+	 *
+	 * @param statusTBT the status tbt of this dossier tax
+	 */
+	public void setStatusTBT(int statusTBT);
+
+	/**
+	 * Returns the status ctt of this dossier tax.
+	 *
+	 * @return the status ctt of this dossier tax
+	 */
+	public int getStatusCTT();
+
+	/**
+	 * Sets the status ctt of this dossier tax.
+	 *
+	 * @param statusCTT the status ctt of this dossier tax
+	 */
+	public void setStatusCTT(int statusCTT);
+
 	@Override
 	public boolean isNew();
 

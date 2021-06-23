@@ -62,6 +62,8 @@ public class DossierTaxSoap implements Serializable {
 		soapModel.setNgayThueTraThongBao(model.getNgayThueTraThongBao());
 		soapModel.setNgayTraThongBao(model.getNgayTraThongBao());
 		soapModel.setNgayNhanBienLai(model.getNgayNhanBienLai());
+		soapModel.setStatusTBT(model.getStatusTBT());
+		soapModel.setStatusCTT(model.getStatusCTT());
 
 		return soapModel;
 	}
@@ -346,6 +348,22 @@ public class DossierTaxSoap implements Serializable {
 		_ngayNhanBienLai = ngayNhanBienLai;
 	}
 
+	public int getStatusTBT() {
+		return _statusTBT;
+	}
+
+	public void setStatusTBT(int statusTBT) {
+		_statusTBT = statusTBT;
+	}
+
+	public int getStatusCTT() {
+		return _statusCTT;
+	}
+
+	public void setStatusCTT(int statusCTT) {
+		_statusCTT = statusCTT;
+	}
+
 	private String _uuid;
 	private long _taxId;
 	private long _companyId;
@@ -375,4 +393,6 @@ public class DossierTaxSoap implements Serializable {
 	private Date _ngayThueTraThongBao;
 	private Date _ngayTraThongBao;
 	private Date _ngayNhanBienLai;
+	private int _statusTBT;
+	private int _statusCTT;
 }

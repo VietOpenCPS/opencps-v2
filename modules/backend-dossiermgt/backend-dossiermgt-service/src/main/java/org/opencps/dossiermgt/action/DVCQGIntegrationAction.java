@@ -33,7 +33,7 @@ public interface DVCQGIntegrationAction {
 														   ServiceContext serviceContext, JSONObject data, boolean isUpdating);
 	public JSONObject doCreateUpdateDossierFromDVCQG(Company company, User user, long groupId,
 														   ServiceContext serviceContext, JSONObject data, boolean isUpdating);
-	public JSONArray doCrUpDossierThongBaoThueDatDVCQG(Company company, User user, long groupId,
+	public JSONObject doCrUpDossierThongBaoThueDatDVCQG(Company company, User user, long groupId,
 													   ServiceContext serviceContext, JSONObject data, boolean isUpdating);
 	public void syncSummaryVote() throws Exception;
 	public JSONObject doSyncServiceConfig(User user, long groupId, String requestBody, ServiceContext context);
