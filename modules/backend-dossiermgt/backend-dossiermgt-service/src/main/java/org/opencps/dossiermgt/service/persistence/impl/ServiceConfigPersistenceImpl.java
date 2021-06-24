@@ -4507,128 +4507,168 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 	private static final String _FINDER_COLUMN_GID_LEVEL_GROUPID_2 = "serviceConfig.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_GID_LEVEL_SERVICELEVEL_2 = "serviceConfig.serviceLevel = ?";
-	public static final FinderPath FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL = new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_SI_GOV_LEVEL =
+		new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
 			ServiceConfigModelImpl.FINDER_CACHE_ENABLED,
-			ServiceConfigImpl.class, FINDER_CLASS_NAME_ENTITY,
-			"fetchByGID_SI_GOV_LEVEL",
+			ServiceConfigImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByGID_SI_GOV_LEVEL",
 			new String[] {
 				Long.class.getName(), Long.class.getName(),
-				String.class.getName(), Integer.class.getName()
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_SI_GOV_LEVEL =
+		new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceConfigModelImpl.FINDER_CACHE_ENABLED,
+			ServiceConfigImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByGID_SI_GOV_LEVEL",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName()
 			},
 			ServiceConfigModelImpl.GROUPID_COLUMN_BITMASK |
 			ServiceConfigModelImpl.SERVICEINFOID_COLUMN_BITMASK |
-			ServiceConfigModelImpl.GOVAGENCYCODE_COLUMN_BITMASK |
-			ServiceConfigModelImpl.SERVICELEVEL_COLUMN_BITMASK);
+			ServiceConfigModelImpl.GOVAGENCYCODE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL = new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
 			ServiceConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 			"countByGID_SI_GOV_LEVEL",
 			new String[] {
 				Long.class.getName(), Long.class.getName(),
-				String.class.getName(), Integer.class.getName()
+				String.class.getName()
 			});
 
 	/**
-	 * Returns the service config where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63; or throws a {@link NoSuchServiceConfigException} if it could not be found.
+	 * Returns all the service configs where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param serviceInfoId the service info ID
 	 * @param govAgencyCode the gov agency code
-	 * @param serviceLevel the service level
-	 * @return the matching service config
-	 * @throws NoSuchServiceConfigException if a matching service config could not be found
+	 * @return the matching service configs
 	 */
 	@Override
-	public ServiceConfig findByGID_SI_GOV_LEVEL(long groupId,
-		long serviceInfoId, String govAgencyCode, int serviceLevel)
-		throws NoSuchServiceConfigException {
-		ServiceConfig serviceConfig = fetchByGID_SI_GOV_LEVEL(groupId,
-				serviceInfoId, govAgencyCode, serviceLevel);
+	public List<ServiceConfig> findByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfoId, String govAgencyCode) {
+		return findByGID_SI_GOV_LEVEL(groupId, serviceInfoId, govAgencyCode,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
 
-		if (serviceConfig == null) {
-			StringBundler msg = new StringBundler(10);
+	/**
+	 * Returns a range of all the service configs where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
+	 * @param start the lower bound of the range of service configs
+	 * @param end the upper bound of the range of service configs (not inclusive)
+	 * @return the range of matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfoId, String govAgencyCode, int start, int end) {
+		return findByGID_SI_GOV_LEVEL(groupId, serviceInfoId, govAgencyCode,
+			start, end, null);
+	}
 
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+	/**
+	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
+	 * @param start the lower bound of the range of service configs
+	 * @param end the upper bound of the range of service configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfoId, String govAgencyCode, int start, int end,
+		OrderByComparator<ServiceConfig> orderByComparator) {
+		return findByGID_SI_GOV_LEVEL(groupId, serviceInfoId, govAgencyCode,
+			start, end, orderByComparator, true);
+	}
 
-			msg.append("groupId=");
-			msg.append(groupId);
+	/**
+	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
+	 * @param start the lower bound of the range of service configs
+	 * @param end the upper bound of the range of service configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfoId, String govAgencyCode, int start, int end,
+		OrderByComparator<ServiceConfig> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
 
-			msg.append(", serviceInfoId=");
-			msg.append(serviceInfoId);
-
-			msg.append(", govAgencyCode=");
-			msg.append(govAgencyCode);
-
-			msg.append(", serviceLevel=");
-			msg.append(serviceLevel);
-
-			msg.append("}");
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(msg.toString());
-			}
-
-			throw new NoSuchServiceConfigException(msg.toString());
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_SI_GOV_LEVEL;
+			finderArgs = new Object[] { groupId, serviceInfoId, govAgencyCode };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_SI_GOV_LEVEL;
+			finderArgs = new Object[] {
+					groupId, serviceInfoId, govAgencyCode,
+					
+					start, end, orderByComparator
+				};
 		}
 
-		return serviceConfig;
-	}
-
-	/**
-	 * Returns the service config where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @param serviceInfoId the service info ID
-	 * @param govAgencyCode the gov agency code
-	 * @param serviceLevel the service level
-	 * @return the matching service config, or <code>null</code> if a matching service config could not be found
-	 */
-	@Override
-	public ServiceConfig fetchByGID_SI_GOV_LEVEL(long groupId,
-		long serviceInfoId, String govAgencyCode, int serviceLevel) {
-		return fetchByGID_SI_GOV_LEVEL(groupId, serviceInfoId, govAgencyCode,
-			serviceLevel, true);
-	}
-
-	/**
-	 * Returns the service config where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @param serviceInfoId the service info ID
-	 * @param govAgencyCode the gov agency code
-	 * @param serviceLevel the service level
-	 * @param retrieveFromCache whether to retrieve from the finder cache
-	 * @return the matching service config, or <code>null</code> if a matching service config could not be found
-	 */
-	@Override
-	public ServiceConfig fetchByGID_SI_GOV_LEVEL(long groupId,
-		long serviceInfoId, String govAgencyCode, int serviceLevel,
-		boolean retrieveFromCache) {
-		Object[] finderArgs = new Object[] {
-				groupId, serviceInfoId, govAgencyCode, serviceLevel
-			};
-
-		Object result = null;
+		List<ServiceConfig> list = null;
 
 		if (retrieveFromCache) {
-			result = finderCache.getResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL,
+			list = (List<ServiceConfig>)finderCache.getResult(finderPath,
 					finderArgs, this);
-		}
 
-		if (result instanceof ServiceConfig) {
-			ServiceConfig serviceConfig = (ServiceConfig)result;
+			if ((list != null) && !list.isEmpty()) {
+				for (ServiceConfig serviceConfig : list) {
+					if ((groupId != serviceConfig.getGroupId()) ||
+							(serviceInfoId != serviceConfig.getServiceInfoId()) ||
+							!Objects.equals(govAgencyCode,
+								serviceConfig.getGovAgencyCode())) {
+						list = null;
 
-			if ((groupId != serviceConfig.getGroupId()) ||
-					(serviceInfoId != serviceConfig.getServiceInfoId()) ||
-					!Objects.equals(govAgencyCode,
-						serviceConfig.getGovAgencyCode()) ||
-					(serviceLevel != serviceConfig.getServiceLevel())) {
-				result = null;
+						break;
+					}
+				}
 			}
 		}
 
-		if (result == null) {
-			StringBundler query = new StringBundler(6);
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
 
 			query.append(_SQL_SELECT_SERVICECONFIG_WHERE);
 
@@ -4650,7 +4690,14 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 				query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_2);
 			}
 
-			query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_SERVICELEVEL_2);
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ServiceConfigModelImpl.ORDER_BY_JPQL);
+			}
 
 			String sql = query.toString();
 
@@ -4671,36 +4718,25 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 					qPos.add(govAgencyCode);
 				}
 
-				qPos.add(serviceLevel);
+				if (!pagination) {
+					list = (List<ServiceConfig>)QueryUtil.list(q, getDialect(),
+							start, end, false);
 
-				List<ServiceConfig> list = q.list();
+					Collections.sort(list);
 
-				if (list.isEmpty()) {
-					finderCache.putResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL,
-						finderArgs, list);
+					list = Collections.unmodifiableList(list);
 				}
 				else {
-					if (list.size() > 1) {
-						Collections.sort(list, Collections.reverseOrder());
-
-						if (_log.isWarnEnabled()) {
-							_log.warn(
-								"ServiceConfigPersistenceImpl.fetchByGID_SI_GOV_LEVEL(long, long, String, int, boolean) with parameters (" +
-								StringUtil.merge(finderArgs) +
-								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
-						}
-					}
-
-					ServiceConfig serviceConfig = list.get(0);
-
-					result = serviceConfig;
-
-					cacheResult(serviceConfig);
+					list = (List<ServiceConfig>)QueryUtil.list(q, getDialect(),
+							start, end);
 				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL,
-					finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -4709,55 +4745,353 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			}
 		}
 
-		if (result instanceof List<?>) {
-			return null;
-		}
-		else {
-			return (ServiceConfig)result;
-		}
+		return list;
 	}
 
 	/**
-	 * Removes the service config where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63; from the database.
+	 * Returns the first service config in the ordered set where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param serviceInfoId the service info ID
 	 * @param govAgencyCode the gov agency code
-	 * @param serviceLevel the service level
-	 * @return the service config that was removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching service config
+	 * @throws NoSuchServiceConfigException if a matching service config could not be found
 	 */
 	@Override
-	public ServiceConfig removeByGID_SI_GOV_LEVEL(long groupId,
-		long serviceInfoId, String govAgencyCode, int serviceLevel)
+	public ServiceConfig findByGID_SI_GOV_LEVEL_First(long groupId,
+		long serviceInfoId, String govAgencyCode,
+		OrderByComparator<ServiceConfig> orderByComparator)
 		throws NoSuchServiceConfigException {
-		ServiceConfig serviceConfig = findByGID_SI_GOV_LEVEL(groupId,
-				serviceInfoId, govAgencyCode, serviceLevel);
+		ServiceConfig serviceConfig = fetchByGID_SI_GOV_LEVEL_First(groupId,
+				serviceInfoId, govAgencyCode, orderByComparator);
 
-		return remove(serviceConfig);
+		if (serviceConfig != null) {
+			return serviceConfig;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", serviceInfoId=");
+		msg.append(serviceInfoId);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append("}");
+
+		throw new NoSuchServiceConfigException(msg.toString());
 	}
 
 	/**
-	 * Returns the number of service configs where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; and serviceLevel = &#63;.
+	 * Returns the first service config in the ordered set where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param serviceInfoId the service info ID
 	 * @param govAgencyCode the gov agency code
-	 * @param serviceLevel the service level
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching service config, or <code>null</code> if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig fetchByGID_SI_GOV_LEVEL_First(long groupId,
+		long serviceInfoId, String govAgencyCode,
+		OrderByComparator<ServiceConfig> orderByComparator) {
+		List<ServiceConfig> list = findByGID_SI_GOV_LEVEL(groupId,
+				serviceInfoId, govAgencyCode, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last service config in the ordered set where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching service config
+	 * @throws NoSuchServiceConfigException if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig findByGID_SI_GOV_LEVEL_Last(long groupId,
+		long serviceInfoId, String govAgencyCode,
+		OrderByComparator<ServiceConfig> orderByComparator)
+		throws NoSuchServiceConfigException {
+		ServiceConfig serviceConfig = fetchByGID_SI_GOV_LEVEL_Last(groupId,
+				serviceInfoId, govAgencyCode, orderByComparator);
+
+		if (serviceConfig != null) {
+			return serviceConfig;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", serviceInfoId=");
+		msg.append(serviceInfoId);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append("}");
+
+		throw new NoSuchServiceConfigException(msg.toString());
+	}
+
+	/**
+	 * Returns the last service config in the ordered set where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching service config, or <code>null</code> if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig fetchByGID_SI_GOV_LEVEL_Last(long groupId,
+		long serviceInfoId, String govAgencyCode,
+		OrderByComparator<ServiceConfig> orderByComparator) {
+		int count = countByGID_SI_GOV_LEVEL(groupId, serviceInfoId,
+				govAgencyCode);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<ServiceConfig> list = findByGID_SI_GOV_LEVEL(groupId,
+				serviceInfoId, govAgencyCode, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the service configs before and after the current service config in the ordered set where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param serviceConfigId the primary key of the current service config
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next service config
+	 * @throws NoSuchServiceConfigException if a service config with the primary key could not be found
+	 */
+	@Override
+	public ServiceConfig[] findByGID_SI_GOV_LEVEL_PrevAndNext(
+		long serviceConfigId, long groupId, long serviceInfoId,
+		String govAgencyCode, OrderByComparator<ServiceConfig> orderByComparator)
+		throws NoSuchServiceConfigException {
+		ServiceConfig serviceConfig = findByPrimaryKey(serviceConfigId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ServiceConfig[] array = new ServiceConfigImpl[3];
+
+			array[0] = getByGID_SI_GOV_LEVEL_PrevAndNext(session,
+					serviceConfig, groupId, serviceInfoId, govAgencyCode,
+					orderByComparator, true);
+
+			array[1] = serviceConfig;
+
+			array[2] = getByGID_SI_GOV_LEVEL_PrevAndNext(session,
+					serviceConfig, groupId, serviceInfoId, govAgencyCode,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ServiceConfig getByGID_SI_GOV_LEVEL_PrevAndNext(Session session,
+		ServiceConfig serviceConfig, long groupId, long serviceInfoId,
+		String govAgencyCode,
+		OrderByComparator<ServiceConfig> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(5);
+		}
+
+		query.append(_SQL_SELECT_SERVICECONFIG_WHERE);
+
+		query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_SERVICEINFOID_2);
+
+		boolean bindGovAgencyCode = false;
+
+		if (govAgencyCode == null) {
+			query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_1);
+		}
+		else if (govAgencyCode.equals("")) {
+			query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_3);
+		}
+		else {
+			bindGovAgencyCode = true;
+
+			query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(ServiceConfigModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(serviceInfoId);
+
+		if (bindGovAgencyCode) {
+			qPos.add(govAgencyCode);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(serviceConfig);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<ServiceConfig> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the service configs where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
+	 */
+	@Override
+	public void removeByGID_SI_GOV_LEVEL(long groupId, long serviceInfoId,
+		String govAgencyCode) {
+		for (ServiceConfig serviceConfig : findByGID_SI_GOV_LEVEL(groupId,
+				serviceInfoId, govAgencyCode, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(serviceConfig);
+		}
+	}
+
+	/**
+	 * Returns the number of service configs where groupId = &#63; and serviceInfoId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceInfoId the service info ID
+	 * @param govAgencyCode the gov agency code
 	 * @return the number of matching service configs
 	 */
 	@Override
 	public int countByGID_SI_GOV_LEVEL(long groupId, long serviceInfoId,
-		String govAgencyCode, int serviceLevel) {
+		String govAgencyCode) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL;
 
-		Object[] finderArgs = new Object[] {
-				groupId, serviceInfoId, govAgencyCode, serviceLevel
-			};
+		Object[] finderArgs = new Object[] { groupId, serviceInfoId, govAgencyCode };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
-			StringBundler query = new StringBundler(5);
+			StringBundler query = new StringBundler(4);
 
 			query.append(_SQL_COUNT_SERVICECONFIG_WHERE);
 
@@ -4779,8 +5113,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 				query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_2);
 			}
 
-			query.append(_FINDER_COLUMN_GID_SI_GOV_LEVEL_SERVICELEVEL_2);
-
 			String sql = query.toString();
 
 			Session session = null;
@@ -4799,8 +5131,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 				if (bindGovAgencyCode) {
 					qPos.add(govAgencyCode);
 				}
-
-				qPos.add(serviceLevel);
 
 				count = (Long)q.uniqueResult();
 
@@ -4821,10 +5151,9 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_GROUPID_2 = "serviceConfig.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_SERVICEINFOID_2 = "serviceConfig.serviceInfoId = ? AND ";
-	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_1 = "serviceConfig.govAgencyCode IS NULL AND ";
-	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_2 = "serviceConfig.govAgencyCode = ? AND ";
-	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_3 = "(serviceConfig.govAgencyCode IS NULL OR serviceConfig.govAgencyCode = '') AND ";
-	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_SERVICELEVEL_2 = "serviceConfig.serviceLevel = ?";
+	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_1 = "serviceConfig.govAgencyCode IS NULL";
+	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_2 = "serviceConfig.govAgencyCode = ?";
+	private static final String _FINDER_COLUMN_GID_SI_GOV_LEVEL_GOVAGENCYCODE_3 = "(serviceConfig.govAgencyCode IS NULL OR serviceConfig.govAgencyCode = '')";
 
 	public ServiceConfigPersistenceImpl() {
 		setModelClass(ServiceConfig.class);
@@ -4867,13 +5196,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			new Object[] {
 				serviceConfig.getGroupId(), serviceConfig.getServiceInfoId(),
 				serviceConfig.getGovAgencyCode()
-			}, serviceConfig);
-
-		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL,
-			new Object[] {
-				serviceConfig.getGroupId(), serviceConfig.getServiceInfoId(),
-				serviceConfig.getGovAgencyCode(),
-				serviceConfig.getServiceLevel()
 			}, serviceConfig);
 
 		serviceConfig.resetOriginalValues();
@@ -4967,18 +5289,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_SI_GAC, args,
 			serviceConfigModelImpl, false);
-
-		args = new Object[] {
-				serviceConfigModelImpl.getGroupId(),
-				serviceConfigModelImpl.getServiceInfoId(),
-				serviceConfigModelImpl.getGovAgencyCode(),
-				serviceConfigModelImpl.getServiceLevel()
-			};
-
-		finderCache.putResult(FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL, args,
-			Long.valueOf(1), false);
-		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL, args,
-			serviceConfigModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -5025,31 +5335,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_SI_GAC, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_SI_GAC, args);
-		}
-
-		if (clearCurrent) {
-			Object[] args = new Object[] {
-					serviceConfigModelImpl.getGroupId(),
-					serviceConfigModelImpl.getServiceInfoId(),
-					serviceConfigModelImpl.getGovAgencyCode(),
-					serviceConfigModelImpl.getServiceLevel()
-				};
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL, args);
-		}
-
-		if ((serviceConfigModelImpl.getColumnBitmask() &
-				FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL.getColumnBitmask()) != 0) {
-			Object[] args = new Object[] {
-					serviceConfigModelImpl.getOriginalGroupId(),
-					serviceConfigModelImpl.getOriginalServiceInfoId(),
-					serviceConfigModelImpl.getOriginalGovAgencyCode(),
-					serviceConfigModelImpl.getOriginalServiceLevel()
-				};
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_SI_GOV_LEVEL, args);
 		}
 	}
 
@@ -5291,6 +5576,16 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_LEVEL,
 				args);
 
+			args = new Object[] {
+					serviceConfigModelImpl.getGroupId(),
+					serviceConfigModelImpl.getServiceInfoId(),
+					serviceConfigModelImpl.getGovAgencyCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_SI_GOV_LEVEL,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -5431,6 +5726,31 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_LEVEL, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_LEVEL,
+					args);
+			}
+
+			if ((serviceConfigModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_SI_GOV_LEVEL.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						serviceConfigModelImpl.getOriginalGroupId(),
+						serviceConfigModelImpl.getOriginalServiceInfoId(),
+						serviceConfigModelImpl.getOriginalGovAgencyCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_SI_GOV_LEVEL,
+					args);
+
+				args = new Object[] {
+						serviceConfigModelImpl.getGroupId(),
+						serviceConfigModelImpl.getServiceInfoId(),
+						serviceConfigModelImpl.getGovAgencyCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_SI_GOV_LEVEL,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_SI_GOV_LEVEL,
 					args);
 			}
 		}

@@ -313,6 +313,7 @@ create unique index IX_CB4E0745 on opencps_reportlandtax (uuid_[$COLUMN_LENGTH:7
 create index IX_29DADB16 on opencps_serviceconfig (govAgencyCode[$COLUMN_LENGTH:128$]);
 create index IX_E713E0A0 on opencps_serviceconfig (groupId, govAgencyCode[$COLUMN_LENGTH:128$]);
 create index IX_5ED8CC55 on opencps_serviceconfig (groupId, serviceInfoId, govAgencyCode[$COLUMN_LENGTH:128$], serviceLevel);
+create index IX_4900D761 on opencps_serviceconfig (groupId, serviceInfoId, serviceLevel);
 create index IX_195F08D3 on opencps_serviceconfig (groupId, serviceLevel);
 create index IX_4F240C8E on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_6FC25E90 on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:75$], groupId);

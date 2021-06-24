@@ -215,10 +215,10 @@ public class ServiceConfigLocalServiceWrapper
 	}
 
 	@Override
-	public org.opencps.dossiermgt.model.ServiceConfig fetchByGID_SI_GOV_LEVEL(
-		long groupId, long serviceInfo, String govAgencyCode, int serviceLevel) {
+	public java.util.List<org.opencps.dossiermgt.model.ServiceConfig> fetchByGID_SI_GOV_LEVEL(
+		long groupId, long serviceInfo, String govAgencyCode) {
 		return _serviceConfigLocalService.fetchByGID_SI_GOV_LEVEL(groupId,
-			serviceInfo, govAgencyCode, serviceLevel);
+			serviceInfo, govAgencyCode);
 	}
 
 	@Override
