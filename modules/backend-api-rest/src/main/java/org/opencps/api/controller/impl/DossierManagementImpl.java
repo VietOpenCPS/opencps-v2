@@ -9,6 +9,7 @@ import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.*;
@@ -79,6 +80,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.http.client.methods.HttpGet;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.constants.DossierManagementConstants;
 import org.opencps.api.constants.SupportSearchConstants;
@@ -168,6 +170,7 @@ public class DossierManagementImpl implements DossierManagement {
 	public static final String RT_CORRECTING = "correcting";
 	public static final String RT_SUBMITTING = "submitting";
 
+
 	public static final String ALL_AGENCY = "all";
 
 	private static final String CONFIG_DVCQG_INTEGRATION = "DVCQG_INTEGRATION";
@@ -178,6 +181,13 @@ public class DossierManagementImpl implements DossierManagement {
 	private static final String DATE_FORMAT = "dd/MM/yyyy hh:mm";
 	private static final String AUTHEN_KEY = "authenKey";
 
+	private static final int DICH_VU_CONG = 1;
+	private static final int MOT_CUA = 2;
+	private static final String SERVER_NO_DVC = "SERVER_DVC";
+	private static final String PROTOCOL = "API_SYNC";
+	private static final String REFUID = "refUid";
+
+
 	private String getBodyError(String code, String message) {
 		JSONObject body = JSONFactoryUtil.createJSONObject();
 		body.put(ERROR_CODE, code);
@@ -185,29 +195,143 @@ public class DossierManagementImpl implements DossierManagement {
 		return body.toString();
 	}
 
-	@Override
-	public Response getSupportSearchDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, long groupId, String dossierId) {
-		try {
-			JSONObject body = JSONFactoryUtil.createJSONObject();
+	private JSONObject sendRequestToURL(String urlAddress, long groupId) throws IOException, JSONException {
 
-			Dossier dossier = DossierUtils.getDossierNew(dossierId, groupId);
+		URL obj = new URL(urlAddress);
+		java.net.HttpURLConnection connection = (java.net.HttpURLConnection) obj.openConnection();
+		connection.setRequestProperty("groupId", String.valueOf(groupId));
+		connection.setRequestMethod("GET");
+		int responseCode = connection.getResponseCode();
 
-			List<DossierSync> ListDossierSync = DossierSyncLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+		_log.debug("responseCode = " + responseCode);
 
-			List<DossierAction> ListDossierAction =
-					DossierActionLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+		// Thực hiện đọc
+		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
 
-			JSONObject dossierObject = SupportSearchConstants.convertDossierToJSONObject(dossier);
-			body.put(SupportSearchConstants.DOSSIER, dossierObject);
-			JSONArray DossierSyncArray = SupportSearchConstants.convertListSyncToArray(ListDossierSync);
-			body.put(SupportSearchConstants.DOSSIER_SYNC, DossierSyncArray);
-			JSONArray DossierActionArray = SupportSearchConstants.convertListActionToArray(ListDossierAction);
-			body.put(SupportSearchConstants.DOSSIER_ACTION, DossierActionArray);
-
-			return Response.status(HttpURLConnection.HTTP_OK).entity(body.toJSONString()).build();
-		} catch (Exception e){
-			return BusinessExceptionImpl.processException(e);
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
 		}
+
+		in.close();
+		JSONObject myResponse = JSONFactoryUtil.createJSONObject(response.toString());
+		return myResponse;
+	}
+
+	private JSONObject supportSearchDVC(long groupId, String key){
+		JSONObject body = JSONFactoryUtil.createJSONObject();
+
+		Dossier dossier = DossierUtils.getDossierNew(key, groupId);
+
+		List<DossierSync> ListDossierSync = DossierSyncLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+
+		List<DossierAction> ListDossierAction =
+				DossierActionLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+
+		JSONObject dossierObject = SupportSearchConstants.convertDossierToJSONObject(dossier);
+		body.put(SupportSearchConstants.DOSSIER, dossierObject);
+		JSONArray DossierSyncArray = SupportSearchConstants.convertListSyncToArray(ListDossierSync);
+		body.put(SupportSearchConstants.DOSSIER_SYNC, DossierSyncArray);
+		JSONArray DossierActionArray = SupportSearchConstants.convertListActionToArray(ListDossierAction);
+		body.put(SupportSearchConstants.DOSSIER_ACTION, DossierActionArray);
+
+		List<Dossier> DossierBetweenList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), dossier.getDossierId(), null);
+
+		if(Validator.isNotNull(DossierBetweenList)){
+			JSONArray DossierBetweenArray = JSONFactoryUtil.createJSONArray();
+			for(Dossier dossierEntity : DossierBetweenList){
+				DossierBetweenArray.put(SupportSearchConstants.convertDossierToJSONObject(dossierEntity));
+			}
+			body.put(SupportSearchConstants.DOSSIER_BETWEEN, DossierBetweenArray);
+		} else {
+			body.put(SupportSearchConstants.DOSSIER_BETWEEN, "No Result");
+		}
+
+		List<Dossier> DossierTransferList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), null, 2);
+
+		if(Validator.isNotNull(DossierTransferList)){
+			JSONArray DossierTransferArray = JSONFactoryUtil.createJSONArray();
+			for(Dossier dossierEntity : DossierTransferList){
+				DossierTransferArray.put(SupportSearchConstants.convertDossierToJSONObject(dossierEntity));
+			}
+			body.put(SupportSearchConstants.DOSSIER_TRANFER, DossierTransferArray);
+
+		} else {
+			body.put(SupportSearchConstants.DOSSIER_TRANFER, "No Result");
+		}
+		return body;
+	}
+
+
+	@Override
+	public Response getSupportSearchDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String dossierId, int type, Boolean isCallAgain, String referenceUid) {
+		if(Validator.isNull(isCallAgain)){
+			isCallAgain = true;
+		}
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		if(type==DICH_VU_CONG) {
+			try {
+				if(Validator.isNull(referenceUid)){
+					response.put(SupportSearchConstants.HO_SO_DVC, supportSearchDVC(groupId, dossierId));
+
+				} else {
+					response.put(SupportSearchConstants.HO_SO_DVC, supportSearchDVC(groupId, referenceUid));
+				}
+
+				if(isCallAgain){
+					Dossier dossier = DossierUtils.getDossierNew(dossierId, groupId);
+					ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNO_PROTOCOL("SERVER_"+dossier.getGovAgencyCode(), PROTOCOL, dossier.getGroupId());
+
+					JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+
+					String url = config.get("url").toString() + "/dossiers/supportSearch/"
+							+ dossier.getDossierId() + StringPool.QUESTION + "type"+StringPool.EQUAL
+							+ MOT_CUA+StringPool.AMPERSAND+"isCallAgain"+StringPool.EQUAL+"false"+StringPool.AMPERSAND+REFUID+StringPool.EQUAL+dossier.getReferenceUid();
+					_log.info("url : " + url +" ===== groupId" + config.getLong("groupId") );
+
+					JSONObject responeUrl = sendRequestToURL(url, config.getLong("groupId"));
+					JSONObject hoSoMCDT = JSONFactoryUtil.createJSONObject(responeUrl.get(SupportSearchConstants.HO_SO_MCDT).toString());
+
+					response.put(SupportSearchConstants.HO_SO_MCDT, hoSoMCDT);
+				}
+			} catch (Exception e){
+				_log.error(e);
+				return BusinessExceptionImpl.processException(e);
+			}
+		} else if(type==MOT_CUA) {
+			try {
+				if(Validator.isNull(referenceUid)){
+					response.put(SupportSearchConstants.HO_SO_MCDT, supportSearchDVC(groupId, dossierId));
+				} else {
+					response.put(SupportSearchConstants.HO_SO_MCDT, supportSearchDVC(groupId, referenceUid));
+				}
+
+				if(isCallAgain){
+					Dossier dossier = DossierUtils.getDossierNew(dossierId, groupId);
+					ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNO_PROTOCOL(SERVER_NO_DVC, PROTOCOL, dossier.getGroupId());
+					JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+
+					String url = config.get("url").toString() + "/dossiers/supportSearch/"
+							+ dossier.getDossierId() + StringPool.QUESTION + "type"+StringPool.EQUAL+DICH_VU_CONG+StringPool.AMPERSAND+"isCallAgain"+StringPool.EQUAL+"false"
+							+StringPool.AMPERSAND+REFUID+StringPool.EQUAL+dossier.getReferenceUid();
+					_log.info("url : " + url +" ===== groupId" + groupId );
+
+					JSONObject responeUrl = sendRequestToURL(url, config.getLong("groupId"));
+					JSONObject hoSoDVC = JSONFactoryUtil.createJSONObject(responeUrl.get(SupportSearchConstants.HO_SO_DVC).toString());
+
+					response.put(SupportSearchConstants.HO_SO_DVC, hoSoDVC);
+				}
+			}
+			catch (Exception e){
+				_log.error(e);
+				return BusinessExceptionImpl.processException(e);
+			}
+		}
+		return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
 	}
 
 	@Override

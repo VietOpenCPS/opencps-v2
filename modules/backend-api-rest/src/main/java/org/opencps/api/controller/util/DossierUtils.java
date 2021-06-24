@@ -1346,10 +1346,12 @@ public class DossierUtils {
 			}
 
 			Dossier dossier2 = DossierLocalServiceUtil.getByDossierNo(groupId, id);
-			if (dossier2 == null) {
+
+			if (Validator.isNull(dossier2)) {
 				return DossierLocalServiceUtil.getByRef(groupId, id);
+
 			} else {
-				return dossier;
+				return dossier2;
 			}
 		}
 	}

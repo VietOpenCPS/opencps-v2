@@ -502,6 +502,13 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(
+		String originDossierNo, Long originDossierId, Integer originality) {
+		return _dossierLocalService.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(originDossierNo,
+			originDossierId, originality);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _dossierLocalService.getActionableDynamicQuery();
 	}

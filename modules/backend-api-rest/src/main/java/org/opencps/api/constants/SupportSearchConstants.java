@@ -10,6 +10,11 @@ import org.opencps.dossiermgt.model.DossierSync;
 import java.util.List;
 
 public class SupportSearchConstants {
+
+
+    public static final String HO_SO_DVC = "HoSoDVC";
+    public static final String HO_SO_MCDT = "HoSoMCDT";
+    //    ===================
     public static final String DOSSIER_SYNC = "dossierSync";
     public static final String ACTION_CODE = "actionCode";
     public static final String SYNC_TYPE = "syncType";
@@ -36,16 +41,22 @@ public class SupportSearchConstants {
 
 //    ===================
     public static final String DOSSIER_ACTION = "dossierAction";
-//    public static final String DOSSIER_ACTION_ID = "dossierActionId";
-//    public static final String DOSSIER_ID = "dossierID";
     public static final String FROM_STEP_CODE = "fromStepCode";
     public static final String FROM_STEP_NAME = "fromStepName";
-//    public static final String ACTION_CODE = "actionCode";
     public static final String ACTION_NAME = "actionName";
     public static final String STEP_CODE = "stepCode";
     public static final String STEP_NAME = "stepName";
     public static final String PENDING = "pending";
 
+//  =======================
+    public static final String DOSSIER_BETWEEN = "dossierBetween";
+    public static final String DOSSIER_TRANFER = "dossierTranfer";
+
+//  =======================
+    public static final String CONDITION = "condition";
+    public static final String TYPE = "type";
+    public static final String KEY_SEARCH = "keySearch";
+    public static final String IS_CALL_AGAIN = "isCallAgain";
 
     public static JSONArray convertListSyncToArray(List<DossierSync> ListDossierSync){
         JSONArray DossierSyncArray = JSONFactoryUtil.createJSONArray();
@@ -81,15 +92,14 @@ public class SupportSearchConstants {
             entityDossierAction.put(SupportSearchConstants.CREATE_DATE, dossierAction.getCreateDate());
             entityDossierAction.put(SupportSearchConstants.MODIFIED_DATE, dossierAction.getModifiedDate());
 
-
-
-
             DossierActionArray.put(entityDossierAction);
         }
         return DossierActionArray;
     }
     public static JSONObject convertDossierToJSONObject (Dossier dossier){
+
         JSONObject dossierObject = JSONFactoryUtil.createJSONObject();
+
         dossierObject.put(SupportSearchConstants.DOSSIER_ID, dossier.getDossierId());
         dossierObject.put(SupportSearchConstants.DOSSIER_NO, dossier.getDossierNo());
         dossierObject.put(SupportSearchConstants.REFERENCE_UID, dossier.getReferenceUid());
@@ -104,6 +114,7 @@ public class SupportSearchConstants {
         dossierObject.put(SupportSearchConstants.ONLINE, dossier.getOnline());
         dossierObject.put(SupportSearchConstants.ORIGIN_DOSSIER_ID, dossier.getOriginDossierId());
         dossierObject.put(SupportSearchConstants.ORIGIN_DOSSIER_NO, dossier.getOriginDossierNo());
+
         return dossierObject;
     }
 }

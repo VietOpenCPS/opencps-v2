@@ -55,7 +55,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface DossierManagement {
 
 	@GET
-	@Path("/supportSearch/{groupId}/{dossierId}")
+	@Path("/supportSearch/{dossierId}")
 	@Consumes({
 			MediaType.APPLICATION_JSON
 	})
@@ -72,8 +72,11 @@ public interface DossierManagement {
 	public Response getSupportSearchDossiers(
 			@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("groupId") long groupId ,
-			@PathParam("dossierId") String dossierId);
+			@Context ServiceContext serviceContext,
+			@PathParam("dossierId") String dossierId,
+			@QueryParam("type") int type,
+			@QueryParam("isCallAgain") Boolean isCallAgain,
+			@QueryParam("refUid") String referenceUid);
 
 	@POST
 	@Path("/direct")

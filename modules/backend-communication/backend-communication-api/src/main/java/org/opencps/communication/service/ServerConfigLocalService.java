@@ -200,6 +200,10 @@ public interface ServerConfigLocalService extends BaseLocalService,
 		String protocol);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ServerConfig getByServerNO_PROTOCOL(String serverNo,
+		String protocol, long groupId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ServerConfig getByServerNoAndProtocol(long groupId, String serverNo,
 		String protocol);
 
