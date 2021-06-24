@@ -1321,7 +1321,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			logLineLevelDoActionInside(9, dossierIDString);
 			ProcessStep curStep = processStepLocalService.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 			_log.debug("ProcessStep:" + JSONFactoryUtil.looseSerialize(curStep));
-			//Kiểm tra cấu hình cần tạo hồ sơ liên thông
+			//Kiểm tra cấu hình cần tạo hồ sơ liên thông và trung gian
 			 hsltDossier = createCrossDossier(groupId, proAction, curStep, previousAction, employee, dossier,
 					user, payloadObject, context);
 			logLineLevelDoActionInside(10, dossierIDString);

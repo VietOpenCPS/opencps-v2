@@ -88,6 +88,8 @@ public class DossierTaxWrapper implements DossierTax, ModelWrapper<DossierTax> {
 		attributes.put("ngayThueTraThongBao", getNgayThueTraThongBao());
 		attributes.put("ngayTraThongBao", getNgayTraThongBao());
 		attributes.put("ngayNhanBienLai", getNgayNhanBienLai());
+		attributes.put("statusTBT", getStatusTBT());
+		attributes.put("statusCTT", getStatusCTT());
 
 		return attributes;
 	}
@@ -267,6 +269,18 @@ public class DossierTaxWrapper implements DossierTax, ModelWrapper<DossierTax> {
 
 		if (ngayNhanBienLai != null) {
 			setNgayNhanBienLai(ngayNhanBienLai);
+		}
+
+		Integer statusTBT = (Integer)attributes.get("statusTBT");
+
+		if (statusTBT != null) {
+			setStatusTBT(statusTBT);
+		}
+
+		Integer statusCTT = (Integer)attributes.get("statusCTT");
+
+		if (statusCTT != null) {
+			setStatusCTT(statusCTT);
 		}
 	}
 
@@ -498,6 +512,26 @@ public class DossierTaxWrapper implements DossierTax, ModelWrapper<DossierTax> {
 	@Override
 	public int getSoTienNop() {
 		return _dossierTax.getSoTienNop();
+	}
+
+	/**
+	* Returns the status ctt of this dossier tax.
+	*
+	* @return the status ctt of this dossier tax
+	*/
+	@Override
+	public int getStatusCTT() {
+		return _dossierTax.getStatusCTT();
+	}
+
+	/**
+	* Returns the status tbt of this dossier tax.
+	*
+	* @return the status tbt of this dossier tax
+	*/
+	@Override
+	public int getStatusTBT() {
+		return _dossierTax.getStatusTBT();
 	}
 
 	/**
@@ -864,6 +898,26 @@ public class DossierTaxWrapper implements DossierTax, ModelWrapper<DossierTax> {
 	@Override
 	public void setSoTienNop(int soTienNop) {
 		_dossierTax.setSoTienNop(soTienNop);
+	}
+
+	/**
+	* Sets the status ctt of this dossier tax.
+	*
+	* @param statusCTT the status ctt of this dossier tax
+	*/
+	@Override
+	public void setStatusCTT(int statusCTT) {
+		_dossierTax.setStatusCTT(statusCTT);
+	}
+
+	/**
+	* Sets the status tbt of this dossier tax.
+	*
+	* @param statusTBT the status tbt of this dossier tax
+	*/
+	@Override
+	public void setStatusTBT(int statusTBT) {
+		_dossierTax.setStatusTBT(statusTBT);
 	}
 
 	/**

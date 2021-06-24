@@ -401,7 +401,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 
 		_log.debug("doCreateDossierFromDVCQG API " + body);
 		try {
-			JSONArray result = JSONFactoryUtil.createJSONArray();
+			JSONObject result = JSONFactoryUtil.createJSONObject();
 			JSONObject bodyFull = JSONFactoryUtil.createJSONObject(body);
 			if(Validator.isNull(bodyFull)) {
 				throw new Exception("Body is empty");

@@ -13,6 +13,7 @@
  */
 
 package org.opencps.synctracking.service.impl;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.synctracking.model.DossierTax;
@@ -20,6 +21,7 @@ import org.opencps.synctracking.model.DossierTaxInput;
 import org.opencps.synctracking.service.base.DossierTaxLocalServiceBaseImpl;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * The implementation of the dossier tax local service.
@@ -74,10 +76,88 @@ public class DossierTaxLocalServiceImpl extends DossierTaxLocalServiceBaseImpl {
 			dossierTax.setSoTien(dossierTaxInput.soTien);
 		}
 
+		if(Validator.isNotNull(dossierTaxInput.hoTenNguoiNopTien)) {
+			dossierTax.setHoTenNguoiNopTien(dossierTaxInput.hoTenNguoiNopTien);
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.soCmtNguoiNopTien)) {
+			dossierTax.setSoCmtNguoiNopTien(Integer.valueOf(dossierTaxInput.soCmtNguoiNopTien));
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.diaChiNguoiNopTien)) {
+			dossierTax.setDiaChiNguoiNopTien(dossierTaxInput.diaChiNguoiNopTien);
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.tinhNguoiNopTien)) {
+			dossierTax.setTinhNguoiNopTien(dossierTaxInput.tinhNguoiNopTien);
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.huyenNguoiNopTien)) {
+			dossierTax.setHuyenNguoiNopTien(dossierTaxInput.huyenNguoiNopTien);
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.xaNguoiNopTien)) {
+			dossierTax.setXaNguoiNopTien(dossierTaxInput.xaNguoiNopTien);
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.xaNguoiNopTien)) {
+			dossierTax.setThoiGianThanhToan(APIDateTimeUtils.convertStringToDate(dossierTaxInput.thoiGianThanhToan, APIDateTimeUtils._NORMAL_DATE));
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.xaNguoiNopTien)) {
+			dossierTax.setNgayNhanBienLai(APIDateTimeUtils.convertStringToDate(dossierTaxInput.ngayNhanBienLai, APIDateTimeUtils._NORMAL_DATE));
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.xaNguoiNopTien)) {
+			dossierTax.setNgayThueTraThongBao(APIDateTimeUtils.convertStringToDate(dossierTaxInput.ngayThueTraThongBao, APIDateTimeUtils._NORMAL_DATE));
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.xaNguoiNopTien)) {
+			dossierTax.setNgayTraThongBao(APIDateTimeUtils.convertStringToDate(dossierTaxInput.ngayTraThongBao, APIDateTimeUtils._NORMAL_DATE));
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.xaNguoiNopTien)) {
+			dossierTax.setSoTienNop(Integer.valueOf(dossierTaxInput.soTienNop));
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.xaNguoiNopTien)) {
+			dossierTax.setNoiDungThanhToan(dossierTaxInput.noiDungThanhToan);
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.xaNguoiNopTien)) {
+			dossierTax.setTrangThaiThanhToan(dossierTaxInput.trangThaiThanhToan);
+		}
+
+		if(Validator.isNotNull(dossierTaxInput.statusTBT)) {
+			dossierTax.setStatusTBT(Integer.valueOf(dossierTaxInput.statusTBT));
+		}
+		if(Validator.isNotNull(dossierTaxInput.statusCTT)) {
+			dossierTax.setStatusCTT(Integer.valueOf(dossierTaxInput.statusCTT));
+		}
+
 		dossierTaxPersistence.update(dossierTax);
 		return dossierTax;
 	}
 
+	@Override
+	public List<DossierTax> getByStatusTBT(int[] statuses, int start, int end, OrderByComparator<DossierTax> orderByComparator) {
+		return dossierTaxPersistence.findByF_STATUS_TBT(statuses, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<DossierTax> getByStatusCTT(int statusTBT, int statusCTT, int start, int end, OrderByComparator<DossierTax> orderByComparator) {
+		return dossierTaxPersistence.findByF_STATUS_CTT(statusTBT, statusCTT, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<DossierTax> getByDossierIdAndStatusTBT(long dossierId, int statuses) {
+		return dossierTaxPersistence.findByF_DOSSIER_TBT(dossierId, statuses);
+	}
+
+	@Override
+	public List<DossierTax> getByDossierIdAndStatusCTT(long dossierId, int statuses) {
+		return dossierTaxPersistence.findByF_DOSSIER_CTT(dossierId, statuses);
+	}
 
 	@Override
 	public DossierTax fetchDossierTaxByDMS(String dossierNo, String maSoThue, String soQuyetDinh) {
