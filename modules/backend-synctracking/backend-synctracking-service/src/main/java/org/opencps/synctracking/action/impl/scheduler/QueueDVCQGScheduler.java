@@ -47,13 +47,13 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class QueueDVCQGScheduler extends BaseMessageListener {
     public static final int STATE_WAITING_SYNC = 1;
     public static final int STATE_DONE = 3;
-    private static final Integer QUANTITY_JOB_DVCQG = 100;
+    private static final Integer QUANTITY_JOB_DVCQG = 500;
     private volatile boolean isRunning = false;
     private static final String SERVER_CONFIG_NULL = "There is no server config frequency";
     private static final String PARSE_CONFIG_JSON_FAIL= "Create object json from config error";
     private static int timeSyncDossierDVCQG = Validator.isNotNull(PropsUtil.get("opencps.sync.dossiertax.time"))
             ? Integer.valueOf(PropsUtil.get("opencps.sync.dossiertax.time"))
-            : 20;
+            : 1440;
     private static final Boolean ENABLE_JOB = Validator.isNotNull(PropsUtil.get("org.opencps.dossiertax.enable"))
             ? Boolean.valueOf(PropsUtil.get("org.opencps.dossiertax.enable")) : false;
 
@@ -104,8 +104,11 @@ public class QueueDVCQGScheduler extends BaseMessageListener {
         _log.debug("=======START SEND : ====== : isRunning: "+ isRunning);
         if (!isRunning) {
             isRunning = true;
+        } else {
+            return;
         }
-        else {
+
+        if(!ENABLE_JOB) {
             return;
         }
 
