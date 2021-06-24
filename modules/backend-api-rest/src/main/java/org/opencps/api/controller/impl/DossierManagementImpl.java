@@ -2276,6 +2276,28 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 			}
+			
+
+			//day du lieu vao kho du lieu cong dan
+			if (Validator.isNotNull(dossier) && dossier.getDossierStatus().contentEquals(DossierTerm.DOSSIER_STATUS_DONE)) {
+				_log.info("Kho dữ liệu công dân : 1111" + JSONFactoryUtil.looseSerialize(dossier));
+				List<DossierFile> lstDossierFiles = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
+				_log.info("Kho dữ liệu công dân : 2222" + JSONFactoryUtil.looseSerialize(lstDossierFiles));
+				if (Validator.isNotNull(lstDossierFiles) && lstDossierFiles.size() > 0) {
+					for (DossierFile doFile : lstDossierFiles) {
+						String fileTemplateNo = doFile.getFileTemplateNo();
+						if (Validator.isNotNull(fileTemplateNo)) {
+							FileItem fileItem = FileItemLocalServiceUtil.findByG_FTN(groupId, fileTemplateNo);
+							FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(doFile.getFileEntryId());
+							if (Validator.isNotNull(fileItem) && Validator.isNotNull(fileEntry)) {
+								ApplicantData applicantData = ApplicantDataLocalServiceUtil.createApplicantData(
+										serviceContext, groupId, fileTemplateNo, fileEntry.getFileName(), doFile.getDisplayName(), doFile.getFileEntryId(), StringPool.BLANK, 0, dossier.getApplicantIdNo(), 0);		
+								_log.info("Kho dữ liệu công dân : 3333" + JSONFactoryUtil.looseSerialize(applicantData));
+								}
+							}
+						}					
+				}
+			}
 
 			_log.debug("Doaction oke with dossierActionId: " + dossierResult.getDossierActionId());
 			long dossierActionId = dossierResult.getDossierActionId();
@@ -2298,27 +2320,6 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 			
-			//day du lieu vao kho du lieu cong dan
-			Dossier dossier2 = DossierLocalServiceUtil.getByDossierNo(groupId, dossier.getDossierNo());
-			_log.info("Kho dữ liệu công dân : 1111" + JSONFactoryUtil.looseSerialize(dossier2));
-			if (Validator.isNotNull(dossier2) && dossier2.getDossierStatus().contentEquals(DossierTerm.DOSSIER_STATUS_DONE)) {
-				List<DossierFile> lstDossierFiles = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
-				_log.info("Kho dữ liệu công dân : 2222" + JSONFactoryUtil.looseSerialize(lstDossierFiles));
-				if (Validator.isNotNull(lstDossierFiles) && lstDossierFiles.size() > 0) {
-					for (DossierFile doFile : lstDossierFiles) {
-						String fileTemplateNo = doFile.getFileTemplateNo();
-						if (Validator.isNotNull(fileTemplateNo)) {
-							FileItem fileItem = FileItemLocalServiceUtil.findByG_FTN(groupId, fileTemplateNo);
-							FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(doFile.getFileEntryId());
-							if (Validator.isNotNull(fileItem) && Validator.isNotNull(fileEntry)) {
-								ApplicantData applicantData = ApplicantDataLocalServiceUtil.createApplicantData(
-										serviceContext, groupId, fileTemplateNo, fileEntry.getFileName(), doFile.getDisplayName(), doFile.getFileEntryId(), StringPool.BLANK, 0, dossier.getApplicantIdNo(), 0);		
-								_log.info("Kho dữ liệu công dân : 3333" + JSONFactoryUtil.looseSerialize(applicantData));
-								}
-							}
-						}					
-				}
-			}
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(dAction).build();
 		}
