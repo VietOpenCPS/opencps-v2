@@ -31,6 +31,8 @@
 		<field name="ngayThueTraThongBao" type="Date" />
 		<field name="ngayTraThongBao" type="Date" />
 		<field name="ngayNhanBienLai" type="Date" />
+		<field name="statusTBT" type="int" />
+		<field name="statusCTT" type="int" />
 	</model>
 	<model name="org.opencps.synctracking.model.SyncTracking">
 		<field name="uuid" type="String" />
@@ -53,7 +55,7 @@
 		<field name="fromUnit" type="String" />
 		<field name="toUnit" type="String" />
 		<field name="bodyRequest" type="String">
-			<hint name="max-length">5000</hint>
+			<hint name="max-length">10000</hint>
 		</field>
 		<field name="response" type="String">
 			<hint name="max-length">5000</hint>

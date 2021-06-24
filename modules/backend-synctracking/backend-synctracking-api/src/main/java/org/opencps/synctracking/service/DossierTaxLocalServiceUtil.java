@@ -207,6 +207,31 @@ public class DossierTaxLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.synctracking.model.DossierTax> getByDossierIdAndStatusCTT(
+		long dossierId, int statuses) {
+		return getService().getByDossierIdAndStatusCTT(dossierId, statuses);
+	}
+
+	public static java.util.List<org.opencps.synctracking.model.DossierTax> getByDossierIdAndStatusTBT(
+		long dossierId, int statuses) {
+		return getService().getByDossierIdAndStatusTBT(dossierId, statuses);
+	}
+
+	public static java.util.List<org.opencps.synctracking.model.DossierTax> getByStatusCTT(
+		int statusTBT, int statusCTT, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.synctracking.model.DossierTax> orderByComparator) {
+		return getService()
+				   .getByStatusCTT(statusTBT, statusCTT, start, end,
+			orderByComparator);
+	}
+
+	public static java.util.List<org.opencps.synctracking.model.DossierTax> getByStatusTBT(
+		int[] statuses, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.synctracking.model.DossierTax> orderByComparator) {
+		return getService()
+				   .getByStatusTBT(statuses, start, end, orderByComparator);
+	}
+
 	/**
 	* Returns the dossier tax with the primary key.
 	*

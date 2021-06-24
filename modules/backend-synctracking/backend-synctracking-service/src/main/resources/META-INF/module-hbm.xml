@@ -36,6 +36,8 @@
 		<property name="ngayThueTraThongBao" type="org.hibernate.type.TimestampType" />
 		<property name="ngayTraThongBao" type="org.hibernate.type.TimestampType" />
 		<property name="ngayNhanBienLai" type="org.hibernate.type.TimestampType" />
+		<property name="statusTBT" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="statusCTT" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.synctracking.model.impl.SyncTrackingImpl" table="opencps_synctracking">
 		<id name="trackingId" type="long">

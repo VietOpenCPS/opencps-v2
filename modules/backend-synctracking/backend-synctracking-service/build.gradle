@@ -25,6 +25,8 @@ dependencies {
 	compileOnly project(":modules:backend-synctracking:backend-synctracking-api")
 	compileOnly project(":modules:backend-communication:backend-communication-api")
 	compileOnly project(":modules:backend-auth")
+	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-service")
+	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
 }
 
 buildService {
