@@ -18,11 +18,8 @@ import com.liferay.portal.kernel.util.Validator;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.scheduler.PublishEventHSKMScheduler;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.opencps.synctracking.model.DossierTax;
@@ -64,6 +61,17 @@ public class QueueDVCQGScheduler extends BaseMessageListener {
             ? Integer.valueOf(PropsUtil.get("opencps.dossiertax.minute")) :-1;
     private static int SECOND_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.dossiertax.second"))
             ? Integer.valueOf(PropsUtil.get("opencps.dossiertax.second")) :-1;
+
+    public static final String UTF_8 = "UTF-8";
+    public static final String VALUE_AUTHORIZATION = "Authorization";
+    public static final String VALUE_BASIC = "Basic ";
+    public static final String VALUE_ACCEPT = "Accept";
+    public static final String CONTENT_LENGTH = "Content-Length";
+    public static final String OPENCPS_REST_CONNECTION_TIMEOUT = "org.opencps.rest.connection.timeout";
+    public static final String OPENCPS_REST_READ_TIMEOUT = "org.opencps.rest.read.timeout";
+    public static final int DEFAULT_READ_TIMEOUT = 3 * 60000;
+    public static final int DEFAULT_CONNECT_TIMEOUT = 3 * 60000;
+
     static class Counter {
         private volatile static int count = 0;
         public static int getCount(){
@@ -378,6 +386,17 @@ public class QueueDVCQGScheduler extends BaseMessageListener {
         return resPostDossier;
     }
 
+    public static int getRestConnectionTimeout() {
+        String connectionTimeoutProperty = PropsUtil.get(OPENCPS_REST_CONNECTION_TIMEOUT);
+        return Validator.isNotNull(connectionTimeoutProperty) ? Integer.parseInt(connectionTimeoutProperty) : DEFAULT_CONNECT_TIMEOUT;
+
+    }
+
+    public static int getRestReadTimeout() {
+        String readTimeoutProperty = PropsUtil.get(OPENCPS_REST_READ_TIMEOUT);
+        return Validator.isNotNull(readTimeoutProperty) ? Integer.parseInt(readTimeoutProperty) : DEFAULT_READ_TIMEOUT;
+
+    }
     public JSONObject callPostAPI(String httpMethod, String accept, String urlPath, HashMap<String, String> properties,
                                   Map<String, Object> params, String username, String password) {
 
@@ -392,20 +411,20 @@ public class QueueDVCQGScheduler extends BaseMessageListener {
             URL url = new URL(urlPath);
 
             conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
-            conn.setReadTimeout(OpenCPSConfigUtil.getRestReadTimeout());
+            conn.setConnectTimeout(getRestConnectionTimeout());
+            conn.setReadTimeout(getRestReadTimeout());
             conn.setRequestMethod(httpMethod);
             conn.setDoInput(true);
             conn.setDoOutput(true);
 
-            conn.setRequestProperty(ConstantUtils.VALUE_ACCEPT, accept);
+            conn.setRequestProperty(VALUE_ACCEPT, accept);
 
             if (Validator.isNotNull(username) && Validator.isNotNull(password)) {
                 String authString = username + StringPool.COLON + password;
 
                 String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
-                conn.setRequestProperty(ConstantUtils.VALUE_AUTHORIZATION, ConstantUtils.VALUE_BASIC + authStringEnc);
+                conn.setRequestProperty(VALUE_AUTHORIZATION, VALUE_BASIC + authStringEnc);
             }
 
             if (!properties.isEmpty()) {
@@ -419,14 +438,14 @@ public class QueueDVCQGScheduler extends BaseMessageListener {
             for (Map.Entry<String, Object> param : params.entrySet()) {
                 if (postData.length() != 0)
                     postData.append(StringPool.AMPERSAND.charAt(0));
-                postData.append(java.net.URLEncoder.encode(param.getKey(), ConstantUtils.UTF_8));
+                postData.append(java.net.URLEncoder.encode(param.getKey(), UTF_8));
                 postData.append(StringPool.EQUAL.charAt(0));
-                postData.append(java.net.URLEncoder.encode(String.valueOf(param.getValue()), ConstantUtils.UTF_8));
+                postData.append(java.net.URLEncoder.encode(String.valueOf(param.getValue()), UTF_8));
             }
 
-            byte[] postDataBytes = postData.toString().getBytes(ConstantUtils.UTF_8);
+            byte[] postDataBytes = postData.toString().getBytes(UTF_8);
 
-            conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, String.valueOf(postDataBytes.length));
+            conn.setRequestProperty(CONTENT_LENGTH, String.valueOf(postDataBytes.length));
 
             conn.getOutputStream().write(postDataBytes);
 
