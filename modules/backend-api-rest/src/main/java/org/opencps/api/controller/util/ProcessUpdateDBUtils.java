@@ -1139,18 +1139,6 @@ public class ProcessUpdateDBUtils {
 				boolean postalService = false;
 				boolean registration = false;
 				for (ServiceConfig config : configList) {
-					org.opencps.dossiermgt.model.ServiceConfig serviceConfigOld = ServiceConfigLocalServiceUtil.findByBySIAndGAC(groupId, serviceInfoId, config.getGovAgencyCode());
-
-					govAgencyCode = config.getGovAgencyCode();
-					govAgencyName = config.getGovAgencyName();
-					serviceInstruction = config.getServiceInstruction();
-					serviceLevel = config.getServiceLevel();
-					serviceUrl = config.getServiceUrl();
-					forCitizen = config.isForCitizen();
-					forBusiness = config.isForBusiness();
-					postalService = config.isPostalService();
-					registration = config.isRegistration();
-					//
 
 					//Delete ServiceConfig No ProcessOption
 					List<org.opencps.dossiermgt.model.ServiceConfig> lstServiceByServiceInfo = ServiceConfigLocalServiceUtil.fetchByG_SERVICE_CODE(groupId, serviceInfoId, config.getGovAgencyCode());
@@ -1164,6 +1152,18 @@ public class ProcessUpdateDBUtils {
 							}
 						}
 					}
+
+					org.opencps.dossiermgt.model.ServiceConfig serviceConfigOld = ServiceConfigLocalServiceUtil.findByBySIAndGAC(groupId, serviceInfoId, config.getGovAgencyCode());
+
+					govAgencyCode = config.getGovAgencyCode();
+					govAgencyName = config.getGovAgencyName();
+					serviceInstruction = config.getServiceInstruction();
+					serviceLevel = config.getServiceLevel();
+					serviceUrl = config.getServiceUrl();
+					forCitizen = config.isForCitizen();
+					forBusiness = config.isForBusiness();
+					postalService = config.isPostalService();
+					registration = config.isRegistration();
 					ServiceConfigActions actionConfig = new ServiceConfigActionImpl();
 					org.opencps.dossiermgt.model.ServiceConfig serviceConfigNew = null;
 					if(Validator.isNotNull(serviceConfigOld)){
