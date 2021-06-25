@@ -340,6 +340,9 @@ public interface DossierLocalService extends BaseLocalService,
 	public DossierDocument findDossierDocumentByDossierId(
 		long dossierDocumentId);
 
+	public List<Dossier> findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(
+		String originDossierNo, Long originDossierId, Integer originality);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

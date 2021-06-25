@@ -203,6 +203,8 @@ public interface DossierFileManagement {
 		@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid,
 		@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
 
+
+
 	@GET
 	@Path("/{id}/files/{referenceUid}/public/{password}")
 	@Consumes({

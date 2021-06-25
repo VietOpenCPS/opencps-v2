@@ -15,6 +15,8 @@
 package org.opencps.communication.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -381,5 +383,23 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 		
 		return serverConfig;
 	}
+	public ServerConfig getByServerNO_PROTOCOL (String serverNo, String protocol, long groupId){
+		DynamicQuery dynamicQuery = serverConfigLocalService.dynamicQuery();
 
+		dynamicQuery.add(RestrictionsFactoryUtil.eq("groupId", groupId));
+
+		if(Validator.isNotNull(serverNo)){
+			dynamicQuery.add(RestrictionsFactoryUtil.eq("serverNo", serverNo));
+		}
+		if(Validator.isNotNull(protocol)){
+			dynamicQuery.add(RestrictionsFactoryUtil.eq("protocol", protocol));
+		}
+
+		List<ServerConfig> result = serverConfigPersistence.findWithDynamicQuery(dynamicQuery);
+		if(Validator.isNotNull(result)){
+			return result.get(0);
+		} else {
+			return null;
+		}
+	}
 }

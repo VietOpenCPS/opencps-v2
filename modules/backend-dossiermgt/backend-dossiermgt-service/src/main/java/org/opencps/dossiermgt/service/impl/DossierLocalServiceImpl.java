@@ -7930,4 +7930,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return result;
 	}
 	
+	public List<Dossier> findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(String originDossierNo, Long originDossierId, Integer originality){
+		DynamicQuery dynamicQuery = dossierLocalService.dynamicQuery();
+		
+		dynamicQuery.add(RestrictionsFactoryUtil.eq("originDossierNo", originDossierNo));
+
+		if(Validator.isNotNull(originDossierId)) {
+			dynamicQuery.add(RestrictionsFactoryUtil.eq("originDossierId", originDossierId));
+		}
+
+		if(Validator.isNotNull(originality)) {
+			dynamicQuery.add(RestrictionsFactoryUtil.eq("originality", originality));
+		}
+		
+		List<Dossier> result = dossierPersistence.findWithDynamicQuery(dynamicQuery);
+		return result;
+	}
+
+	
 }
