@@ -74,7 +74,6 @@ public interface DossierManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@PathParam("dossierId") String dossierId,
-			@QueryParam("type") int type,
 			@QueryParam("isCallAgain") Boolean isCallAgain,
 			@QueryParam("refUid") String referenceUid);
 

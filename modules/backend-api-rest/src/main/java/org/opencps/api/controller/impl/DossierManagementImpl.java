@@ -280,9 +280,16 @@ public class DossierManagementImpl implements DossierManagement {
 
 
 	@Override
-	public Response getSupportSearchDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String dossierId, int type, Boolean isCallAgain, String referenceUid) {
+	public Response getSupportSearchDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String dossierId, Boolean isCallAgain, String referenceUid) {
 		if(Validator.isNull(isCallAgain)){
 			isCallAgain = true;
+		}
+		Integer type = null;
+		String liferay_home = PropsUtil.get("liferay.home");
+		if(liferay_home.contains("dvc")){
+			type = DICH_VU_CONG;
+		} else if(liferay_home.contains("mcdt")) {
+			type = MOT_CUA;
 		}
 
 		JSONObject response = JSONFactoryUtil.createJSONObject();
@@ -304,8 +311,7 @@ public class DossierManagementImpl implements DossierManagement {
 					JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 
 					String url = config.get("url").toString() + "/dossiers/supportSearch/"
-							+ dossier.getDossierId() + StringPool.QUESTION + "type"+StringPool.EQUAL
-							+ MOT_CUA+StringPool.AMPERSAND+"isCallAgain"+StringPool.EQUAL+"false"+StringPool.AMPERSAND+REFUID+StringPool.EQUAL+dossier.getReferenceUid();
+							+ dossier.getDossierId() + StringPool.QUESTION +StringPool.AMPERSAND+"isCallAgain"+StringPool.EQUAL+"false"+StringPool.AMPERSAND+REFUID+StringPool.EQUAL+dossier.getReferenceUid();
 					_log.info("url : " + url +" ===== groupId" + config.getLong("groupId") );
 
 					JSONObject responeUrl = sendRequestToURL(url, config.getLong("groupId"));
@@ -331,7 +337,7 @@ public class DossierManagementImpl implements DossierManagement {
 					JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 
 					String url = config.get("url").toString() + "/dossiers/supportSearch/"
-							+ dossier.getDossierId() + StringPool.QUESTION + "type"+StringPool.EQUAL+DICH_VU_CONG+StringPool.AMPERSAND+"isCallAgain"+StringPool.EQUAL+"false"
+							+ dossier.getDossierId() + StringPool.QUESTION + StringPool.AMPERSAND+"isCallAgain"+StringPool.EQUAL+"false"
 							+StringPool.AMPERSAND+REFUID+StringPool.EQUAL+dossier.getReferenceUid();
 					_log.info("url : " + url +" ===== groupId" + groupId );
 
