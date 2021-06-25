@@ -190,6 +190,22 @@ public interface DossierTaxLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierTax> getByDossierIdAndStatusCTT(long dossierId,
+		int statuses);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierTax> getByDossierIdAndStatusTBT(long dossierId,
+		int statuses);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierTax> getByStatusCTT(int statusTBT, int statusCTT,
+		int start, int end, OrderByComparator<DossierTax> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierTax> getByStatusTBT(int[] statuses, int start, int end,
+		OrderByComparator<DossierTax> orderByComparator);
+
 	/**
 	* Returns the dossier tax with the primary key.
 	*

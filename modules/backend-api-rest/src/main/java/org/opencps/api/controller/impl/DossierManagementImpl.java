@@ -140,6 +140,7 @@ import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierFileUtil;
 import org.opencps.dossiermgt.service.persistence.ProcessActionUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessUtil;
+import org.opencps.kernel.prop.PropKeys;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
@@ -223,43 +224,57 @@ public class DossierManagementImpl implements DossierManagement {
 		JSONObject body = JSONFactoryUtil.createJSONObject();
 
 		Dossier dossier = DossierUtils.getDossierNew(key, groupId);
+		JSONObject dossierObject = SupportSearchConstants.convertDossierToJSONObject(dossier);
+		body.put(SupportSearchConstants.DOSSIER, dossierObject);
 
 		List<DossierSync> ListDossierSync = DossierSyncLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+		JSONArray DossierSyncArray = SupportSearchConstants.convertListSyncToArray(ListDossierSync);
+		body.put(SupportSearchConstants.DOSSIER_SYNC, DossierSyncArray);
 
 		List<DossierAction> ListDossierAction =
 				DossierActionLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
-
-		JSONObject dossierObject = SupportSearchConstants.convertDossierToJSONObject(dossier);
-		body.put(SupportSearchConstants.DOSSIER, dossierObject);
-		JSONArray DossierSyncArray = SupportSearchConstants.convertListSyncToArray(ListDossierSync);
-		body.put(SupportSearchConstants.DOSSIER_SYNC, DossierSyncArray);
 		JSONArray DossierActionArray = SupportSearchConstants.convertListActionToArray(ListDossierAction);
 		body.put(SupportSearchConstants.DOSSIER_ACTION, DossierActionArray);
 
 		List<Dossier> DossierBetweenList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), dossier.getDossierId(), null);
 
-		if(Validator.isNotNull(DossierBetweenList)){
-			JSONArray DossierBetweenArray = JSONFactoryUtil.createJSONArray();
-			for(Dossier dossierEntity : DossierBetweenList){
-				DossierBetweenArray.put(SupportSearchConstants.convertDossierToJSONObject(dossierEntity));
-			}
-			body.put(SupportSearchConstants.DOSSIER_BETWEEN, DossierBetweenArray);
+		if(DossierBetweenList.size()>0){
+
+			Dossier dossierBetween = DossierBetweenList.get(0);
+
+			body.put(SupportSearchConstants.DOSSIER_BETWEEN, SupportSearchConstants.convertDossierToJSONObject(dossierBetween));
+
 		} else {
 			body.put(SupportSearchConstants.DOSSIER_BETWEEN, "No Result");
 		}
 
 		List<Dossier> DossierTransferList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), null, 2);
 
-		if(Validator.isNotNull(DossierTransferList)){
-			JSONArray DossierTransferArray = JSONFactoryUtil.createJSONArray();
-			for(Dossier dossierEntity : DossierTransferList){
-				DossierTransferArray.put(SupportSearchConstants.convertDossierToJSONObject(dossierEntity));
-			}
-			body.put(SupportSearchConstants.DOSSIER_TRANFER, DossierTransferArray);
+		if(DossierTransferList.size()>0){
+
+			Dossier dossierTransfer = dossierTransfer = DossierTransferList.get(0);
+
+			body.put(SupportSearchConstants.DOSSIER_TRANFER, SupportSearchConstants.convertDossierToJSONObject(dossierTransfer));
 
 		} else {
 			body.put(SupportSearchConstants.DOSSIER_TRANFER, "No Result");
 		}
+
+		List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
+
+		if(dossierFileList.size() >0) {
+			JSONArray dossierFileArray = JSONFactoryUtil.createJSONArray();
+			for( DossierFile dossierFile : dossierFileList ){
+				JSONObject dossiferFileObject = JSONFactoryUtil.createJSONObject();
+				String urlAPI = PropsUtil.get(PropKeys.PORTAL_DOMAIN)+"/o/rest/v2/dossiers/"+dossierFile.getDossierId()+"/files/"+dossierFile.getReferenceUid()+"/preview.pdf";
+				dossiferFileObject.put(SupportSearchConstants.URL_DOSSIER_FILE, urlAPI);
+				dossierFileArray.put(dossiferFileObject);
+			}
+			body.put(SupportSearchConstants.DOSSIER_FILE, dossierFileArray);
+		} else {
+			body.put(SupportSearchConstants.DOSSIER_FILE, "No Result");
+		}
+
 		return body;
 	}
 
@@ -331,6 +346,13 @@ public class DossierManagementImpl implements DossierManagement {
 				return BusinessExceptionImpl.processException(e);
 			}
 		}
+
+		JSONObject conditionJSON = JSONFactoryUtil.createJSONObject();
+		conditionJSON.put(SupportSearchConstants.TYPE, type);
+		conditionJSON.put(SupportSearchConstants.KEY_SEARCH, dossierId);
+		conditionJSON.put(SupportSearchConstants.IS_CALL_AGAIN, isCallAgain.toString());
+		response.put(SupportSearchConstants.CONDITION, conditionJSON);
+
 		return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
 	}
 

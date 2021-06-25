@@ -104,6 +104,7 @@ import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
@@ -1138,7 +1139,7 @@ public class ProcessUpdateDBUtils {
 				boolean postalService = false;
 				boolean registration = false;
 				for (ServiceConfig config : configList) {
-					org.opencps.dossiermgt.model.ServiceConfig serviceConfigOld = ServiceConfigLocalServiceUtil.fetchByGID_SI_GOV_LEVEL(groupId, serviceInfoId, config.getGovAgencyCode(), config.getServiceLevel());
+					org.opencps.dossiermgt.model.ServiceConfig serviceConfigOld = ServiceConfigLocalServiceUtil.findByBySIAndGAC(groupId, serviceInfoId, config.getGovAgencyCode());
 
 					govAgencyCode = config.getGovAgencyCode();
 					govAgencyName = config.getGovAgencyName();
@@ -1150,6 +1151,19 @@ public class ProcessUpdateDBUtils {
 					postalService = config.isPostalService();
 					registration = config.isRegistration();
 					//
+
+					//Delete ServiceConfig No ProcessOption
+					List<org.opencps.dossiermgt.model.ServiceConfig> lstServiceByServiceInfo = ServiceConfigLocalServiceUtil.fetchByG_SERVICE_CODE(groupId, serviceInfoId, config.getGovAgencyCode());
+
+					if(lstServiceByServiceInfo !=null && lstServiceByServiceInfo.size() > 0){
+						for(org.opencps.dossiermgt.model.ServiceConfig item : lstServiceByServiceInfo){
+							List<org.opencps.dossiermgt.model.ProcessOption> optionList = ProcessOptionLocalServiceUtil
+									.getByServiceProcessId(item.getServiceConfigId());
+							if(optionList.size() == 0 || optionList.isEmpty()){
+								ServiceConfigLocalServiceUtil.deleteServiceConfig(item);
+							}
+						}
+					}
 					ServiceConfigActions actionConfig = new ServiceConfigActionImpl();
 					org.opencps.dossiermgt.model.ServiceConfig serviceConfigNew = null;
 					if(Validator.isNotNull(serviceConfigOld)){

@@ -24,6 +24,24 @@ public class DossierTaxInfo {
     public String ngayThueTraThongBao;
     public String ngayTraThongBao;
     public String ngayNhanBienLai;
+    public String statusTBT;
+    public String statusCTT;
+
+    public String getStatusTBT() {
+        return statusTBT;
+    }
+
+    public void setStatusTBT(String statusTBT) {
+        this.statusTBT = statusTBT;
+    }
+
+    public String getStatusCTT() {
+        return statusCTT;
+    }
+
+    public void setStatusCTT(String statusCTT) {
+        this.statusCTT = statusCTT;
+    }
 
     public String getHoTenNguoiNopTien() {
         return hoTenNguoiNopTien;

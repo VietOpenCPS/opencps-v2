@@ -58,6 +58,42 @@ public class SupportSearchConstants {
     public static final String KEY_SEARCH = "keySearch";
     public static final String IS_CALL_AGAIN = "isCallAgain";
 
+//  =======================
+    public static final String DOSSIER_FILE = "dossierFile";
+    public static final String URL_DOSSIER_FILE = "url";
+
+    public static JSONObject convertDossierSyncToObject(DossierSync dossierSync){
+
+        JSONObject entityDossierSync = JSONFactoryUtil.createJSONObject();
+
+        entityDossierSync.put(SupportSearchConstants.ACTION_CODE, dossierSync.getDossierId());
+        entityDossierSync.put(SupportSearchConstants.SYNC_TYPE, dossierSync.getSyncType());
+        entityDossierSync.put(SupportSearchConstants.STATE_, dossierSync.getState());
+        entityDossierSync.put(SupportSearchConstants.RETRY, dossierSync.getRetry());
+        entityDossierSync.put(SupportSearchConstants.CREATE_DATE, dossierSync.getCreateDate());
+        entityDossierSync.put(SupportSearchConstants.MODIFIED_DATE, dossierSync.getModifiedDate());
+        entityDossierSync.put(SupportSearchConstants.PAYLOAD, dossierSync.getPayload());
+
+        return entityDossierSync;
+    }
+    public static JSONObject convertDossierActionToObject(DossierAction dossierAction){
+        JSONObject entityDossierAction = JSONFactoryUtil.createJSONObject();
+
+        entityDossierAction.put(SupportSearchConstants.DOSSIER_ID, dossierAction.getDossierId());
+        entityDossierAction.put(SupportSearchConstants.FROM_STEP_CODE, dossierAction.getFromStepCode());
+        entityDossierAction.put(SupportSearchConstants.FROM_STEP_NAME, dossierAction.getFromStepName());
+        entityDossierAction.put(SupportSearchConstants.ACTION_CODE, dossierAction.getActionCode());
+        entityDossierAction.put(SupportSearchConstants.ACTION_NAME, dossierAction.getActionName());
+        entityDossierAction.put(SupportSearchConstants.STEP_CODE, dossierAction.getStepCode());
+        entityDossierAction.put(SupportSearchConstants.STEP_NAME, dossierAction.getStepName());
+        entityDossierAction.put(SupportSearchConstants.PENDING, dossierAction.getPending());
+        entityDossierAction.put(SupportSearchConstants.DOSSIER_ACTION_ID, dossierAction.getDossierActionId());
+        entityDossierAction.put(SupportSearchConstants.CREATE_DATE, dossierAction.getCreateDate());
+        entityDossierAction.put(SupportSearchConstants.MODIFIED_DATE, dossierAction.getModifiedDate());
+
+        return entityDossierAction;
+    }
+
     public static JSONArray convertListSyncToArray(List<DossierSync> ListDossierSync){
         JSONArray DossierSyncArray = JSONFactoryUtil.createJSONArray();
         for(DossierSync dossierSync : ListDossierSync){

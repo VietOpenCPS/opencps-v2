@@ -65,7 +65,7 @@ public class DossierTaxCacheModel implements CacheModel<DossierTax>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(59);
+		StringBundler sb = new StringBundler(63);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -125,6 +125,10 @@ public class DossierTaxCacheModel implements CacheModel<DossierTax>,
 		sb.append(ngayTraThongBao);
 		sb.append(", ngayNhanBienLai=");
 		sb.append(ngayNhanBienLai);
+		sb.append(", statusTBT=");
+		sb.append(statusTBT);
+		sb.append(", statusCTT=");
+		sb.append(statusCTT);
 		sb.append("}");
 
 		return sb.toString();
@@ -289,6 +293,9 @@ public class DossierTaxCacheModel implements CacheModel<DossierTax>,
 			dossierTaxImpl.setNgayNhanBienLai(new Date(ngayNhanBienLai));
 		}
 
+		dossierTaxImpl.setStatusTBT(statusTBT);
+		dossierTaxImpl.setStatusCTT(statusCTT);
+
 		dossierTaxImpl.resetOriginalValues();
 
 		return dossierTaxImpl;
@@ -334,6 +341,10 @@ public class DossierTaxCacheModel implements CacheModel<DossierTax>,
 		ngayThueTraThongBao = objectInput.readLong();
 		ngayTraThongBao = objectInput.readLong();
 		ngayNhanBienLai = objectInput.readLong();
+
+		statusTBT = objectInput.readInt();
+
+		statusCTT = objectInput.readInt();
 	}
 
 	@Override
@@ -458,6 +469,10 @@ public class DossierTaxCacheModel implements CacheModel<DossierTax>,
 		objectOutput.writeLong(ngayThueTraThongBao);
 		objectOutput.writeLong(ngayTraThongBao);
 		objectOutput.writeLong(ngayNhanBienLai);
+
+		objectOutput.writeInt(statusTBT);
+
+		objectOutput.writeInt(statusCTT);
 	}
 
 	public String uuid;
@@ -489,4 +504,6 @@ public class DossierTaxCacheModel implements CacheModel<DossierTax>,
 	public long ngayThueTraThongBao;
 	public long ngayTraThongBao;
 	public long ngayNhanBienLai;
+	public int statusTBT;
+	public int statusCTT;
 }

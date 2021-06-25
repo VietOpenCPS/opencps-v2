@@ -193,8 +193,8 @@ public interface ServiceConfigLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ServiceConfig fetchByGID_SI_GOV_LEVEL(long groupId,
-		long serviceInfo, String govAgencyCode, int serviceLevel);
+	public List<ServiceConfig> fetchByGID_SI_GOV_LEVEL(long groupId,
+		long serviceInfo, String govAgencyCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ServiceConfig fetchServiceConfig(long serviceConfigId);

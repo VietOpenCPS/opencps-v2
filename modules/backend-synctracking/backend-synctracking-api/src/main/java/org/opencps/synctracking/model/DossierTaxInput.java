@@ -28,5 +28,7 @@ public class DossierTaxInput {
     public String ngayThueTraThongBao;
     public String ngayTraThongBao;
     public String ngayNhanBienLai;
+    public String statusTBT;
+    public String statusCTT;
 
 }

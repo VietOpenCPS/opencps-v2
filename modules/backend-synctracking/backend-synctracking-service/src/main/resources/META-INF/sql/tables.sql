@@ -27,7 +27,9 @@ create table opencps_dossier_tax (
 	fileChungTu VARCHAR(75) null,
 	ngayThueTraThongBao DATE null,
 	ngayTraThongBao DATE null,
-	ngayNhanBienLai DATE null
+	ngayNhanBienLai DATE null,
+	statusTBT INTEGER,
+	statusCTT INTEGER
 );
 
 create table opencps_synctracking (
