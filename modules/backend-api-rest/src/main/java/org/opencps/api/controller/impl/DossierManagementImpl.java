@@ -227,12 +227,12 @@ public class DossierManagementImpl implements DossierManagement {
 		JSONObject dossierObject = SupportSearchConstants.convertDossierToJSONObject(dossier);
 		body.put(SupportSearchConstants.DOSSIER, dossierObject);
 
-		List<DossierSync> ListDossierSync = DossierSyncLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+		List<DossierSync> ListDossierSync = DossierSyncLocalServiceUtil.findByG_DID(dossier.getGroupId(), dossier.getDossierId());
 		JSONArray DossierSyncArray = SupportSearchConstants.convertListSyncToArray(ListDossierSync);
 		body.put(SupportSearchConstants.DOSSIER_SYNC, DossierSyncArray);
 
 		List<DossierAction> ListDossierAction =
-				DossierActionLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+				DossierActionLocalServiceUtil.findByG_DID(dossier.getGroupId(), dossier.getDossierId());
 		JSONArray DossierActionArray = SupportSearchConstants.convertListActionToArray(ListDossierAction);
 		body.put(SupportSearchConstants.DOSSIER_ACTION, DossierActionArray);
 
@@ -260,7 +260,7 @@ public class DossierManagementImpl implements DossierManagement {
 			body.put(SupportSearchConstants.DOSSIER_TRANFER, "No Result");
 		}
 
-		List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
+		List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossier.getDossierId());
 
 		if(dossierFileList.size() >0) {
 			JSONArray dossierFileArray = JSONFactoryUtil.createJSONArray();
