@@ -288,22 +288,22 @@ public class Processes {
         protected String processName;
         @XmlElement(required = true)
         protected String registerBookCode;
-        protected boolean forCitizen;
-        protected boolean forBusiness;
+        protected Boolean forCitizen;
+        protected Boolean forBusiness;
 
-        public boolean isForCitizen() {
+        public Boolean getForCitizen() {
             return forCitizen;
         }
 
-        public void setForCitizen(boolean forCitizen) {
+        public void setForCitizen(Boolean forCitizen) {
             this.forCitizen = forCitizen;
         }
 
-        public boolean isForBusiness() {
+        public Boolean getForBusiness() {
             return forBusiness;
         }
 
-        public void setForBusiness(boolean forBusiness) {
+        public void setForBusiness(Boolean forBusiness) {
             this.forBusiness = forBusiness;
         }
 
