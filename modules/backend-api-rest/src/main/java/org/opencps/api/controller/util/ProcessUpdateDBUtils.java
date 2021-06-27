@@ -1162,6 +1162,12 @@ public class ProcessUpdateDBUtils {
 					serviceUrl = config.getServiceUrl();
 					forCitizen = config.isForCitizen();
 					forBusiness = config.isForBusiness();
+					if (config.isForCitizen()){
+						forCitizen = true;
+					}
+					if(config.isForBusiness()){
+						forBusiness = true;
+					}
 					postalService = config.isPostalService();
 					registration = config.isRegistration();
 					ServiceConfigActions actionConfig = new ServiceConfigActionImpl();
@@ -1169,7 +1175,7 @@ public class ProcessUpdateDBUtils {
 					if(Validator.isNotNull(serviceConfigOld)){
 						boolean flagConfig = actionService.deleteAllServiceConfig(userId, groupId, serviceInfoId, serviceConfigOld, serviceContext);
 						_log.debug("FlagConfig: " + flagConfig);
-						_log.debug("serviceConfigOld.getServiceConfigId(): " + serviceConfigOld.getServiceConfigId());
+						_log.info("serviceConfigOld.getServiceConfigId(): " + serviceConfigOld.getServiceConfigId());
 						serviceConfigNew = actionConfig.updateServiceConfig(serviceConfigOld.getServiceConfigId(),userId,groupId,
 								serviceInfoId,govAgencyCode,serviceInstruction, serviceLevel,serviceUrl,forCitizen,
 								forBusiness,postalService,registration,serviceContext);
@@ -1284,8 +1290,16 @@ public class ProcessUpdateDBUtils {
 					processName = option.getProcessName();
 					registerBookCode = option.getRegisterBookCode();
 					sampleCount = option.getSampleCount();
-					forCitizen = option.isForCitizen();
-					forBusiness = option.isForBusiness();
+					_log.info("option: " + option.getForCitizen());
+
+					if (Validator.isNotNull(option.getForCitizen())) {
+						forCitizen = option.getForCitizen();
+					}
+
+					if(Validator.isNotNull(option.getForBusiness())) {
+						forBusiness = option.getForBusiness();
+					}
+					_log.info("option: " + option.getForBusiness());
 					//
 					actionConfig.updateOptionDB(userId, groupId, optionCode, optionName, serviceConfigId, seqOrder,
 							autoSelect, instructionNote, submissionNote, templateNo, templateName, processNo, processName,

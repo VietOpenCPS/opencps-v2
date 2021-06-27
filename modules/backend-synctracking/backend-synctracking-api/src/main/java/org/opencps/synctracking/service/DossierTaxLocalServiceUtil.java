@@ -187,6 +187,7 @@ public class DossierTaxLocalServiceUtil {
 
 	public static org.opencps.synctracking.model.DossierTax fetchDossierTaxByDMS(
 		String dossierNo, String maSoThue, String soQuyetDinh) {
+		System.out.println("LocalServiceUtil : " + getService());
 		return getService()
 				   .fetchDossierTaxByDMS(dossierNo, maSoThue, soQuyetDinh);
 	}

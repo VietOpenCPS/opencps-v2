@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -53,6 +54,7 @@ import org.opencps.dossiermgt.input.model.DossierTaxInfo;
 import org.opencps.dossiermgt.input.model.SyncTrackingInfo;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.impl.ServiceInfoImpl;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
@@ -4325,7 +4327,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			callPostAPISyncTracking(groupId, "", data.toString(), "", DVCQG_NHAN_CHUNG_TU_THUE);
 			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(MaHoSo);
 			if(Validator.isNotNull(dossier)) {
-				String dossierTax = getDetailDossierTax(MaHoSo, MaSoThue, MaThongBaoThue);
+				String dossierTax = getDetailDossierTax(groupId,MaHoSo, MaSoThue, MaThongBaoThue);
 				_log.info("dossierTax: " + dossierTax);
 				if(Validator.isNotNull(dossierTax)) {
 
@@ -4425,7 +4427,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						_log.debug("subObject: " + subObject);
 
 						Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
-						String dossierTax = getDetailDossierTax(dossierNo, maSoThue, soQD);
+						String dossierTax = getDetailDossierTax(groupId, dossierNo, maSoThue, soQD);
 						if (Validator.isNotNull(dossier)) {
 							_log.info("Hồ sơ có trên hệ thống : "  + dossierNo);
 							if (Validator.isNull(dossierTax)) {
@@ -4453,20 +4455,41 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return validateResult;
 	}
 
-	private String getDetailDossierTax(String dossierNo, String maSoThue, String soQuyetDinh) {
+	private String getDetailDossierTax(long groupId, String dossierNo, String maSoThue, String soQuyetDinh) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", "*");
-		DossierTaxInfo body = new DossierTaxInfo();
 		try {
 			JSONObject configJson = getServerConfigByServerNo(DossierTerm.API_SYNC_TRACKING,"");
 			String urlCall = configJson.getString("urlMC") + configJson.getString(FrequencyOfficeConstants.CONFIG_GET_DOSSIER_TAX);
-			body.dossierNo = dossierNo;
-			body.maSoThue = maSoThue;
-			body.soQuyetDinh = soQuyetDinh;
-			HttpEntity<DossierTaxInfo> entity = new HttpEntity<>(body, headers);
-			ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
-			if(Validator.isNotNull(response)){
-				return response.getBody();
+			_log.info("url: " + urlCall);
+			StringBuilder sb = new StringBuilder();
+			URL urlVoid = new URL(urlCall);
+
+			JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+			jsonBody.put("dossierNo",dossierNo);
+			jsonBody.put("maSoThue",maSoThue);
+			jsonBody.put("soQuyetDinh",soQuyetDinh);
+
+			_log.info("POST DATA: " + jsonBody.toString());
+			java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVoid.openConnection();
+
+			conn.setRequestMethod(HttpMethod.POST);
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
+			conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			conn.setRequestProperty("Content-Length",StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+			conn.setUseCaches(false);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			_log.debug("POST DATA: " + jsonBody.toString());
+			OutputStream osLogin = conn.getOutputStream();
+			osLogin.write(jsonBody.toString().getBytes());
+			osLogin.close();
+
+			BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			int cp;
+			while ((cp = brf.read()) != -1) {
+				sb.append((char) cp);
 			}
 			return null;
 		}catch (Exception e){

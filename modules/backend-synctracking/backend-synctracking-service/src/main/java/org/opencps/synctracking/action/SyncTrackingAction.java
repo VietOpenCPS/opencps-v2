@@ -12,4 +12,5 @@ public interface SyncTrackingAction {
     public boolean updateDossierTax(DossierTaxInput dossierTaxInput) throws Exception;
     public SyncTrackingResponse getSyncTracking(SyncTrackingQuery dossierTaxInput) throws Exception;
     public DossierTaxResponse getDetailDossierTax(DossierTaxInput input) throws Exception;
+    public String getDDossierTax(DossierTaxInput input) throws Exception;
 }
