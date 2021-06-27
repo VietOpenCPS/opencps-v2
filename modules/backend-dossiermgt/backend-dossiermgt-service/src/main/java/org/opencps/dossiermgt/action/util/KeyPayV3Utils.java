@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.fds.opencps.paygate.integration.util;
+package org.opencps.dossiermgt.action.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -9,6 +9,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -17,12 +22,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 
 /**
  * @author moon
@@ -95,7 +94,7 @@ public class KeyPayV3Utils {
 			result = formatter.toString();
 
 		} catch (Exception e) {
-			_log.error(e);
+			e.printStackTrace();
 		} finally {
 			formatter.close();
 		}
@@ -120,7 +119,7 @@ public class KeyPayV3Utils {
 			byte[] hash = sha256HMAC.doFinal(message.getBytes());
 			return toHexString(hash);
 		} catch (Exception e) {
-			_log.error(e);
+			e.printStackTrace();
 			return null;
 		}
 	}

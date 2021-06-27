@@ -734,4 +734,28 @@ public interface DossierFileManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@BeanParam DossierSearchModel query);
+
+	@POST
+	@Path("/{id}/file/eforms")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "addDossierFileByEform)", response = DossierFileModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the DossierFileModel was updated", response = DossierFileResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response addDossierFileByEform(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
+			@ApiParam(value = "dossier PartNo", required = true) @FormParam("dossierPartNo") String dossierPartNo,
+			@ApiParam(value = "display name dossier file", required = true) @FormParam("displayName") String displayName,
+			@ApiParam(value = "file entry id dossier file", required = true) @FormParam("fileEntryId") long fileEntryId,
+			@ApiParam(value = "eform file", required = true) @FormParam("eform") boolean eform);
+
 }

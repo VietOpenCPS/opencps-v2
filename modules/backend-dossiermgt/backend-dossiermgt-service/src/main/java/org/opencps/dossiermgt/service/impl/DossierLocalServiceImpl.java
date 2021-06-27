@@ -7892,6 +7892,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public Dossier findDossierByDeclarationCode(String code, long groupId) {
 		return dossierFinder.findDossierByDeclarationCode(code, groupId);
 	}
+
+	public Dossier findDossierById( long dossierId) {
+		return dossierFinder.findDossierById(dossierId);
+	}
+
 	public java.util.List<Object[]> getListVotingByDossier(long groupId, List<String> listDossier) {
 		return dossierFinder.getListVotingByDossier(groupId, listDossier);
 	}
