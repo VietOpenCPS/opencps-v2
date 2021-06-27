@@ -161,6 +161,7 @@ public class DossierTaxLocalServiceImpl extends DossierTaxLocalServiceBaseImpl {
 
 	@Override
 	public DossierTax fetchDossierTaxByDMS(String dossierNo, String maSoThue, String soQuyetDinh) {
+		System.out.println("Vaooooooooooooooooooooooooo");
 		return dossierTaxPersistence.fetchByF_DMS(dossierNo, maSoThue, soQuyetDinh);
 	}
 	/*

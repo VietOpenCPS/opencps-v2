@@ -197,6 +197,24 @@ public class SyncTrackingApplication extends Application{
     }
 
     @POST
+    @Path("/getDossierTax")
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response getDDossierTax(@HeaderParam("groupId") long groupId, DossierTaxInput input) {
+        try {
+            String response = syncTrackingAction.getDDossierTax(input);
+            if(Validator.isNotNull(response)) {
+                return Response.status(200).entity(response).build();
+            }else {
+                return Response.status(200).entity(StringPool.BLANK).build();
+            }
+        } catch (Exception e) {
+            _log.error(e);
+            return Response.status(500).entity("Error").build();
+        }
+    }
+
+    @POST
     @Path("/resend")
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_JSON })

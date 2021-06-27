@@ -1162,6 +1162,12 @@ public class ProcessUpdateDBUtils {
 					serviceUrl = config.getServiceUrl();
 					forCitizen = config.isForCitizen();
 					forBusiness = config.isForBusiness();
+					if (config.isForCitizen()){
+						forCitizen = true;
+					}
+					if(config.isForBusiness()){
+						forBusiness = true;
+					}
 					postalService = config.isPostalService();
 					registration = config.isRegistration();
 					ServiceConfigActions actionConfig = new ServiceConfigActionImpl();
@@ -1284,8 +1290,12 @@ public class ProcessUpdateDBUtils {
 					processName = option.getProcessName();
 					registerBookCode = option.getRegisterBookCode();
 					sampleCount = option.getSampleCount();
-					forCitizen = option.isForCitizen();
-					forBusiness = option.isForBusiness();
+					if (option.isForCitizen()) {
+						forCitizen = option.isForCitizen();
+					}
+					if(option.isForBusiness()) {
+						forBusiness = option.isForBusiness();
+					}
 					//
 					actionConfig.updateOptionDB(userId, groupId, optionCode, optionName, serviceConfigId, seqOrder,
 							autoSelect, instructionNote, submissionNote, templateNo, templateName, processNo, processName,

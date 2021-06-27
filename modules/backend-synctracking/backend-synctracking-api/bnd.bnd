@@ -6,5 +6,4 @@ Export-Package:\
 	org.opencps.synctracking.model,\
 	org.opencps.synctracking.service,\
 	org.opencps.synctracking.service.persistence
--check: EXPORTS
 -includeresource: META-INF/service.xml=../backend-synctracking-service/service.xml
