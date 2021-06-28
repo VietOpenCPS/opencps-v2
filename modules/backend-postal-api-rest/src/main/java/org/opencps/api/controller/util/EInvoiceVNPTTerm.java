@@ -10,6 +10,10 @@ public class EInvoiceVNPTTerm {
 	public static final String PATTERN = "pattern";
 	public static final String SERIAL = "serial";
 	public static final String CONVERT = "convert";
+	public static final String UPDATE_CUS_SOAP_ENDPOINT = "updateCusSoapEndPoint";
+	public static final String IMPORTANDPUBLISHINV_SOAP_ENDPOINT = "ImportAndPublishInvSoapEndPoint";
+	public static final String DOWNLOADINVPDFFKEYNOPAY_SOAP_ENDPOINT = "downloadInvPDFFkeyNoPaySoapEndPoint";
+
 
 	//common
 	public static final String NAME_SPACE = "tem";
@@ -30,14 +34,12 @@ public class EInvoiceVNPTTerm {
 	public static final String XML_SERIAL = "tem:serial";
 	public static final String XML_CONVERT = "tem:convert";
 	public static final String XML_PASS = "tem:pass";
-	public static final String XML_UserName = "userName";
-	public static final String XML_UserPass = "userPass";
-	public static final String XML_FKEY = "fkey";
+	public static final String XML_UserName = "tem:userName";
+	public static final String XML_UserPass = "tem:userPass";
+	public static final String XML_FKEY = "tem:fkey";
 
 	
 	//api update customer
-	public static final String UPDATE_CUS_SOAP_ENDPOINT = 
-			"https://vpboxaydungadmindemo.vnpt-invoice.com.vn/PublishService.asmx";
 	public static final String UPDATE_CUS_SOAP_ACTION = 
 			"http://tempuri.org/UpdateCus";
 	public static final String UPDATE_CUS_RES = "UpdateCusResponse";
@@ -48,8 +50,6 @@ public class EInvoiceVNPTTerm {
 
 	//api ImportAndPublishInv
 	public static final String IMPORTANDPUBLISHINV = "tem:ImportAndPublishInv";
-	public static final String IMPORTANDPUBLISHINV_SOAP_ENDPOINT = 
-			"https://vpboxaydungadmindemo.vnpt-invoice.com.vn/PublishService.asmx";
 	public static final String IMPORTANDPUBLISHINV_SOAP_ACTION = 
 			"http://tempuri.org/ImportAndPublishInv";
 	public static final String IMPORTANDPUBLISHINV_RES = "ImportAndPublishInvResponse";
@@ -62,9 +62,7 @@ public class EInvoiceVNPTTerm {
 	public static final String IMPORTANDPUBLISHINV_RES_MESSAGE_SUCCESS = "Biên lai đã phát hành thành công";
 
 	//api downloadInvPDFFkeyNoPay
-	public static final String DOWNLOADINVPDFFKEYNOPAY = "downloadInvPDFFkeyNoPay";
-	public static final String DOWNLOADINVPDFFKEYNOPAY_SOAP_ENDPOINT = 
-			"https://vpboxaydungadmindemo.vnpt-invoice.com.vn/PortalService.asmx?wsdl";
+	public static final String DOWNLOADINVPDFFKEYNOPAY = "tem:downloadInvPDFFkeyNoPay";
 	public static final String DOWNLOADINVPDFFKEYNOPAY_SOAP_ACTION = 
 			"http://tempuri.org/downloadInvPDFFkeyNoPay";
 	public static final String DOWNLOADINVPDFFKEYNOPAY_RES = "downloadInvPDFFkeyNoPayResponse";

@@ -2,6 +2,7 @@ package org.opencps.api.controller.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -21,12 +22,11 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.ws.rs.core.Response;
 
@@ -35,6 +35,7 @@ import io.swagger.models.auth.In;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.dossier.model.*;
+import org.opencps.api.dossiermark.model.DossierMarkModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -54,6 +55,7 @@ import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierUser;
@@ -73,6 +75,7 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
@@ -427,11 +430,17 @@ public class DossierUtils {
 			model.setSubmitting(doc.get(DossierTerm.SUBMITTING));
 //			model.setPermission(getPermission(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			String strPermission = GetterUtil.getString(doc.get(DossierTerm.MAPPING_PERMISSION));
+			_log.debug("StrPermission: " +strPermission);
+//			_log.info("globalGroup: " + query.isGlobalViewGroup());
+//			_log.info("isGlobalViewAll: " + query.isGlobalViewAll());
 			if (Validator.isNotNull(strPermission)) {
 				String[] permissionArr = strPermission.split(StringPool.SPACE);
 				if (permissionArr != null) {
 					for (String permission: permissionArr) {
-						if (Validator.isNotNull(permission) && permission.contains(String.valueOf(userId))) {
+						if((Validator.isNotNull(permission) && query.isGlobalViewAll() || query.isGlobalViewGroup())){
+							model.setPermission(permission);
+							break;
+						} else if (Validator.isNotNull(permission) && permission.contains(String.valueOf(userId))) {
 							model.setPermission(permission);
 							break;
 						} else {
@@ -479,6 +488,7 @@ public class DossierUtils {
 			
 			model.setLastActionUserId(GetterUtil.getLong(doc.get(DossierTerm.USER_DOSSIER_ACTION_ID)));
 			model.setStepCode(doc.get(DossierTerm.STEP_CODE));
+			model.setUnStep(doc.get(DossierTerm.UNSTEP));
 			model.setStepName(doc.get(DossierTerm.STEP_NAME));
 			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
 //			model.setStepOverdue(StringPool.BLANK);
@@ -626,7 +636,7 @@ public class DossierUtils {
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 			return employee;
 		}catch (Exception e){
-			_log.info("EXCEPTION" + e.getMessage());
+			_log.error(e);
 			return null;
 		}
 	}
@@ -1184,7 +1194,14 @@ public class DossierUtils {
 		model.setFromViaPostal(input.getFromViaPostal());
 		model.setPostalCodeSend(input.getPostalCodeSend());
 		model.setProcessNo(input.getProcessNo());
-
+		List<DossierMark> lstDossierMark = DossierMarkLocalServiceUtil.getDossierMarks(input.getGroupId(), input.getDossierId());
+		if(lstDossierMark !=null){
+			JSONObject objectMark = JSONFactoryUtil.createJSONObject();
+			for(DossierMark dossierMark : lstDossierMark) {
+				objectMark.put(dossierMark.getDossierPartNo(), dossierMark.getFileCheck());
+			}
+			model.setDossierMarks(objectMark.toString());
+		}
 		return model;
 	}
 
@@ -1299,6 +1316,7 @@ public class DossierUtils {
 			try {
 				return DossierLocalServiceUtil.getDossier(dossierId);
 			} catch (PortalException e) {
+				_log.error(e);
 				return null;
 			}
 		} else {
@@ -1308,6 +1326,32 @@ public class DossierUtils {
 				return DossierLocalServiceUtil.getByRef(groupId, id);
 			} else {
 				return dossier;
+			}
+		}
+	}
+
+	public static Dossier getDossierNew(String id, long groupId) {
+		long dossierId = GetterUtil.getLong(id);
+		if (dossierId > 0) {
+			try {
+				return DossierLocalServiceUtil.getDossier(dossierId);
+			} catch (PortalException e) {
+				_log.error(e);
+				return null;
+			}
+		} else {
+			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(id);
+			if(Validator.isNotNull(dossier)){
+				return dossier;
+			}
+
+			Dossier dossier2 = DossierLocalServiceUtil.getByDossierNo(groupId, id);
+
+			if (Validator.isNull(dossier2)) {
+				return DossierLocalServiceUtil.getByRef(groupId, id);
+
+			} else {
+				return dossier2;
 			}
 		}
 	}
@@ -1472,21 +1516,27 @@ public class DossierUtils {
 //					pk.setDossierId(dossier.getDossierId());
 //					pk.setUserId(e.getMappingUserId());
 //					DossierUser ds = DossierUserLocalServiceUtil.fetchDossierUser(pk);
-					if (mapDaus.get(e.getMappingUserId()) == null) {
-//					if (ds == null) {
-						DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(), moderator, Boolean.FALSE);						
-					}
-					else {
-						DossierUser ds = mapDaus.get(e.getMappingUserId());
-						
-						if (moderator == 1 && ds.getModerator() == 0) {
-							ds.setModerator(1);
-							DossierUserLocalServiceUtil.updateDossierUser(ds);
+					if(checkGovDossierEmployee(dossier, e)) {
+						if (mapDaus.get(e.getMappingUserId()) == null) {
+//							_log.debug("Scope : " + e.getScope());
+							DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(), moderator, Boolean.FALSE);
+						} else {
+							DossierUser ds = mapDaus.get(e.getMappingUserId());
+							if (moderator == 1 && ds.getModerator() == 0) {
+								ds.setModerator(1);
+								DossierUserLocalServiceUtil.updateDossierUser(ds);
+							}
 						}
 					}
 				}
 			}
 		}
+	}
+	private static boolean checkGovDossierEmployee(Dossier dossier, Employee e) {
+		if (e != null && (Validator.isNull(e.getScope()) || (Arrays.asList(e.getScope().split(StringPool.COMMA)).indexOf(dossier.getGovAgencyCode()) >= 0))) {
+			return true;
+		}
+		return false;
 	}
 
 	public static DossierActionDetailModel mappingDossierAction(DossierAction dAction, long dossierDocumentId) {
@@ -1576,6 +1626,8 @@ public class DossierUtils {
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
 			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
 			model.setDossierSubStatusText(doc.get(DossierTerm.DOSSIER_SUB_STATUS_TEXT));
+			model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
+			model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
 
 			ouputs.add(model);
 		}
@@ -1749,6 +1801,7 @@ public class DossierUtils {
 		model.setVnpostalStatus(input.getVnpostalStatus());
 		model.setVnpostalProfile(input.getVnpostalProfile());
 		model.setFromViaPostal(input.getFromViaPostal());
+		model.setSystemId(input.getSystemId());
 		
 		return model;
 	}
@@ -1847,7 +1900,9 @@ public class DossierUtils {
 			model.setApplicantName(doc.getApplicantName() != null ? doc.getApplicantName().toUpperCase().replace(";", "; ") : StringPool.BLANK);
 			model.setDossierNo(doc.getDossierNo());
 			model.setOriginality(originality);
-			model.setDueDate(doc.getDueDate().toGMTString());
+			if(Validator.isNotNull(doc.getDueDate())) {
+				model.setDueDate(doc.getDueDate().toGMTString());
+			}
 			if(Validator.isNotNull(doc.getExtendDate())) {
 				model.setExtendDate(doc.getExtendDate().toGMTString());
 			}
@@ -2019,6 +2074,29 @@ public class DossierUtils {
 
 	return ouputs;
 
+	}
+	
+	public static String getmd5(String input) {
+		try {
+			// Static getInstance method is called with hashing MD5
+            MessageDigest md = MessageDigest.getInstance("MD5");
+  
+            // digest() method is called to calculate message digest
+            //  of an input digest() return array of byte
+            byte[] messageDigest = md.digest(input.getBytes());
+  
+            // Convert byte array into signum representation
+            BigInteger no = new BigInteger(1, messageDigest);
+  
+            // Convert message digest into hex value
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

@@ -277,14 +277,13 @@ public class ReadXMLFileUtils {
 			int index = folderPath.lastIndexOf(File.separator);
 			String subFolder = folderPath.substring(index + 1);
 			_log.info("subFolder: "+subFolder);
-			String keyImport = StringPool.BLANK;
 			if (Validator.isNotNull(subFolder)) {
 				switch (subFolder) {
 				case ConstantUtils.SOURCE_DICTS:
 					strFile = processListFileDict(fileEntry, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_SERVICES:
-					strFile = processListFileService(fileEntry, folderParentPath, groupId, userId, keyImport, serviceContext);
+					strFile = processListFileService(fileEntry, folderParentPath, groupId, userId, subFolder, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_TEMPLATES:
 					strFile =processListFileTemplate(fileEntry, folderParentPath, groupId, userId, serviceContext);
@@ -293,11 +292,9 @@ public class ReadXMLFileUtils {
 					strFile = processListFileProcess(fileEntry, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_SERVICE_INFOS:
-					keyImport = ConstantUtils.SOURCE_SERVICE_INFOS;
 					strFile = processListFileService(fileEntry, folderParentPath, groupId, userId, subFolder, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_SERVICE_CONFIGS:
-					keyImport = ConstantUtils.SOURCE_SERVICE_INFOS;
 					strFile = processListFileService(fileEntry,folderParentPath,groupId,userId, subFolder, serviceContext);
 					break;
 				default:

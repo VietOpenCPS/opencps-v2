@@ -111,7 +111,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 
 			// moi dich vu cong co 1 thong tin ngan hang thu huong khac nhau
 			JSONObject banksInfo = schema.getJSONObject(KeyPayV3Term.BANKINFO);
-			JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+			JSONObject bankInfo;
 			if (banksInfo.has(dossier.getServiceCode())) {
 				bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
 			} else {
@@ -148,8 +148,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			bill_info.put(KeyPayV3Term.MAHOSO, dossier.getDossierNo());
 //			ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(dossier.getGroupId(),
 //					dossier.getServiceCode());
-			String serviceCode = dossier != null ? dossier.getServiceCode()
-					: StringPool.BLANK;
+			String serviceCode = dossier.getServiceCode();
 			// TODO validate
 			bill_info.put(KeyPayV3Term.MATTHC, dossier.getServiceCode());// ma TTHC  = serviceCode
 			bill_info.put(KeyPayV3Term.TENTTHC, dossier.getServiceName());
@@ -281,8 +280,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 				ImageIO.write(image, "png", outputfile);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 		return outputfile;
 	}
@@ -327,7 +325,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 						}
 					}
 				}catch (Exception e){
-					e.getMessage();
+					_log.error(e);
 				}
 			} else {
 				result.put(KeyPayV3Term.RETURN_CODE, KeyPayV3Term.RETURN_CODE_ERROR);
@@ -350,7 +348,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 
 			PaymentFileActions actions = new PaymentFileActionsImpl();
 
-			JSONObject action = JSONFactoryUtil.createJSONObject();
+			JSONObject action;
 
 			if (dossier.isOnline()) {
 				// TODO: call api doaction to DVC
@@ -538,11 +536,13 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 
 		} catch (MalformedURLException e) {
 			_log.error("Can't invoke api " + urlPath);
+			_log.error(e);
 		} catch (IOException e) {
 			_log.error("Can't invoke api " + urlPath);
+			_log.error(e);
 		} catch (JSONException e) {
 			_log.error("Can't invoke api " + urlPath);
-			e.printStackTrace();
+			_log.error(e);
 		} finally {
 			if (conn != null) {
 				conn.disconnect();

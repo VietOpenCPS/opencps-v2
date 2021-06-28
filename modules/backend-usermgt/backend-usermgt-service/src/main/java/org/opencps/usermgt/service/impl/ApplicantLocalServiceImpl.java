@@ -19,11 +19,13 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.liferay.counter.kernel.model.Counter;
 import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.usermgt.action.impl.UserActions;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.exception.DuplicateApplicantIdException;
 import org.opencps.usermgt.exception.DuplicateContactEmailException;
@@ -34,16 +36,13 @@ import org.opencps.usermgt.exception.NoApplicantNameException;
 import org.opencps.usermgt.exception.NoSuchApplicantException;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
-import org.opencps.usermgt.service.util.DateTimeUtils;
-import org.opencps.usermgt.service.util.MessageUtil;
-import org.opencps.usermgt.service.util.ServiceProps;
-import org.opencps.usermgt.service.util.UserMgtUtils;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -77,6 +76,10 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
+import org.opencps.usermgt.service.util.DateTimeUtils;
+import org.opencps.usermgt.service.util.MessageUtil;
+import org.opencps.usermgt.service.util.ServiceProps;
+import org.opencps.usermgt.service.util.UserMgtUtils;
 
 /**
  * The implementation of the applicant local service.
@@ -175,15 +178,26 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Date idDate = DateTimeUtils.stringToDate(applicantIdDate);
 		_log.debug("ADD APPLICANT | profile: "+profile);
 		if (applicantId == 0) {
-
+			_log.info("4444444");
 			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
 
 			validateApplicantDuplicate(groupId, context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
 
-			applicantId = counterLocalService.increment(Applicant.class.getName());
+			try {
+				Counter counterDetail = CounterLocalServiceUtil.fetchCounter("org.opencps.usermgt.model.Applicant");
+				if(counterDetail != null) {
+					_log.info("Applicant current counter: " + counterDetail.getCurrentId());
+				}
 
+			} catch (Exception e) {
+				_log.error("Error when get applicant counter");
+			}
+
+			applicantId = counterLocalService.increment(Applicant.class.getName());
+			
+			_log.info("5555555 : applicantId " + applicantId);
 			applicant = applicantPersistence.create(applicantId);
-			_log.debug("ADD APPLICANT: " + applicant);
+			_log.info("ADD APPLICANT: " + applicant);
 
 			Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
 
@@ -252,6 +266,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			// _log.info("MAPPING USER: " + mappingUser.getLastName() + "," +
 			// mappingUser.getFullName());
 			mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
+			
+			_log.info("6666666 : " + JSONFactoryUtil.looseSerialize(mappingUser));
 
 			long mappingUserId = mappingUser.getUserId();
 
@@ -339,6 +355,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		}
 
+		_log.info("7777777 : " + JSONFactoryUtil.looseSerialize(applicant));
 		return applicantPersistence.update(applicant);
 	}
 
@@ -615,12 +632,12 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Applicant applicant = applicantPersistence.fetchByF_APLC_GID(groupId, applicantIdNo);
 
 		if (Validator.isNotNull(applicant))
-			throw new DuplicateApplicantIdException("DuplicateApplicantIdException");
+			throw new DuplicateApplicantIdException("DuplicateApplicantIdException-" + applicant.getContactEmail());
 
 		applicant = applicantPersistence.fetchByF_GID_CTEM(groupId, email);
 
 		if (Validator.isNotNull(applicant))
-			throw new DuplicateContactEmailException("DuplicateContactEmailException");
+			throw new DuplicateContactEmailException("DuplicateContactEmailException-" + applicant.getContactEmail());
 
 		User user = userLocalService.fetchUserByEmailAddress(companyId, email);
 
@@ -1530,7 +1547,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			
 			if (Validator.isNotNull(profile))
 				applicant.setProfile(profile);
-			
+
 		}
 
 		return applicantPersistence.update(applicant);
@@ -1825,6 +1842,15 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 	public Applicant fetchByF_GID_CTEM(long groupId, String email) {
 		return applicantPersistence.fetchByF_GID_CTEM(groupId, email);
+	}
+
+	public User addUser(String fullName, String screenName, String email, String password,
+							ServiceContext serviceContext) throws PortalException {
+
+		UserActions userUtil = new UserActions();
+		User user = userUtil.checkUser(fullName,screenName,email,password,
+				 serviceContext);
+		return user;
 	}
 	// private Log _log =
 	// LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);

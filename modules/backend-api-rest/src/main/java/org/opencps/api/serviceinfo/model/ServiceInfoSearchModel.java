@@ -58,7 +58,11 @@ import javax.xml.bind.annotation.XmlType;
     "top",
     "agency",
     "mapping",
-    "synced"
+    "synced",
+    "tagCode",
+    "tagName",
+    "synced",
+    "filterApplicant"
 })
 @XmlRootElement(name = "ServiceInfoSearchModel")
 public class ServiceInfoSearchModel {
@@ -91,7 +95,39 @@ public class ServiceInfoSearchModel {
 	protected String mapping;
 	@QueryParam(value = "synced")
 	protected String synced;
-	
+    @DefaultValue("false")
+    @QueryParam(value = "filterApplicant")
+    protected Boolean filterApplicant;
+
+    public boolean isFilterApplicant() {
+        return filterApplicant;
+    }
+
+    public void setFilterApplicant(boolean filterApplicant) {
+        this.filterApplicant = filterApplicant;
+    }
+
+    @QueryParam(value = "tagCode")
+    protected String tagCode;
+    @QueryParam(value = "tagName")
+    protected String tagName;
+
+    public String getTagCode() {
+        return tagCode;
+    }
+
+    public void setTagCode(String tagCode) {
+        this.tagCode = tagCode;
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
     public String getAgency() {
 		return agency;
 	}

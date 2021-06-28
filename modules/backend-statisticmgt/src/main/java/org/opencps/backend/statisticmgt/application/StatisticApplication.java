@@ -1,5 +1,8 @@
 package org.opencps.backend.statisticmgt.application;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -10,27 +13,34 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.opencps.backend.statisticmgt.constant.Constants;
+import org.opencps.backend.statisticmgt.context.CompanyContextProvider;
+import org.opencps.backend.statisticmgt.context.LocaleContextProvider;
+import org.opencps.backend.statisticmgt.context.ServiceContextProvider;
+import org.opencps.backend.statisticmgt.context.UserContextProvider;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtFinderService;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtFinderServiceImpl;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtResponse;
+import org.opencps.backend.statisticmgt.dto.DossierStatisticMgtSearchModel;
 import org.opencps.backend.statisticmgt.util.ActionUtil;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
 /**
@@ -41,10 +51,26 @@ import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 		JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.statistic" }, service = Application.class)
 public class StatisticApplication extends Application {
 
-	@Override
+
 	public Set<Object> getSingletons() {
-		return Collections.<Object>singleton(this);
+
+		Set<Object> singletons = new HashSet<>();
+
+		singletons.add(this);
+
+		// add service provider
+		singletons.add(_serviceContextProvider);
+		singletons.add(_companyContextProvider);
+		singletons.add(_localeContextProvider);
+		singletons.add(_userContextProvider);
+
+		return singletons;
 	}
+
+//	@Override
+//	public Set<Object> getSingletons() {
+//		return Collections.<Object>singleton(this);
+//	}
 
 	@GET
 	@Path("/dossier/test")
@@ -69,8 +95,9 @@ public class StatisticApplication extends Application {
 			@QueryParam("type") int type, @QueryParam("day") Integer day, @QueryParam("groupBy") String groupBy) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long userId = GetterUtil.getLong(header.getHeaderString(Field.USER_ID));
 
-		JSONObject result = ActionUtil.getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode,
+		JSONObject result = ActionUtil.getDossierStatistic(groupId, userId, fromDate, toDate, originalities, domainCode,
 				govAgencyCode, serviceCode, dossierStatus, day, groupBy, 0, 0, type, Constants.COUNT);
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
@@ -90,8 +117,9 @@ public class StatisticApplication extends Application {
 			@QueryParam("end") Integer end, @QueryParam("groupBy") String groupBy) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long userId = user.getUserId();
 
-		JSONObject result = ActionUtil.getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode,
+		JSONObject result = ActionUtil.getDossierStatistic(groupId, userId, fromDate, toDate, originalities, domainCode,
 				govAgencyCode, serviceCode, dossierStatus, day, groupBy, start, end, type, Constants.LIST);
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
@@ -111,8 +139,8 @@ public class StatisticApplication extends Application {
 			@QueryParam("end") Integer end, @QueryParam("groupBy") String groupBy) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-
-		String filePath = ActionUtil.exportDossierStatistic(groupId, fromDate, toDate, originalities, domainCode,
+		long userId = user.getUserId();
+		String filePath = ActionUtil.exportDossierStatistic(groupId, userId, fromDate, toDate, originalities, domainCode,
 				govAgencyCode, serviceCode, dossierStatus, day, groupBy, start, end, type, Constants.LIST);
 
 		File file = new File(filePath);
@@ -147,8 +175,8 @@ public class StatisticApplication extends Application {
 			@QueryParam("end") Integer end, @QueryParam("groupBy") String groupBy) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-
-		JSONObject result = ActionUtil.getDossierStatistic(groupId, fromDate, toDate, originalities, domainCode,
+		long userId = user.getUserId();
+		JSONObject result = ActionUtil.getDossierStatistic(groupId, userId, fromDate, toDate, originalities, domainCode,
 				govAgencyCode, serviceCode, dossierStatus, day, groupBy, start, end, type, Constants.GROUP_COUNT);
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
@@ -157,7 +185,7 @@ public class StatisticApplication extends Application {
 	@POST
 	@Path("/dossier/groupcount/export")
 	@Consumes({ MediaType.APPLICATION_JSON })
-	@Produces({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_OCTET_STREAM })
 	public Response exportGroupCountDossier(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @QueryParam("fromDate") long fromDate,
@@ -168,8 +196,8 @@ public class StatisticApplication extends Application {
 			@QueryParam("end") Integer end, @QueryParam("groupBy") String groupBy) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-
-		String filePath = ActionUtil.exportDossierStatistic(groupId, fromDate, toDate, originalities, domainCode,
+		long userId = user.getUserId();
+		String filePath = ActionUtil.exportDossierStatistic(groupId, userId, fromDate, toDate, originalities, domainCode,
 				govAgencyCode, serviceCode, dossierStatus, day, groupBy, start, end, type, Constants.GROUP_COUNT);
 
 		File file = new File(filePath);
@@ -188,5 +216,33 @@ public class StatisticApplication extends Application {
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}
 	}
+	
+	@GET
+	@Path("/dossier/report")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getReport(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @BeanParam DossierStatisticMgtSearchModel query){
+		
+		DossierStatisticMgtResponse doMgtResponse = ActionUtil.searchDossierStatistic(query);
+		ResponseBuilder responseBuilder = Response.ok(doMgtResponse);
+		return responseBuilder.build();
+	}
+	
+	@Context
+	private UriInfo uriInfo;
+
+	@Reference
+	private CompanyContextProvider _companyContextProvider;
+
+	@Reference
+	private LocaleContextProvider _localeContextProvider;
+
+	@Reference
+	private UserContextProvider _userContextProvider;
+
+	@Reference
+	private ServiceContextProvider _serviceContextProvider;
 
 }

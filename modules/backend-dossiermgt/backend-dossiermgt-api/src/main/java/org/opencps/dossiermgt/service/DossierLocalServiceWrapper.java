@@ -473,6 +473,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierBeforeDateAndDossierStatusisNull(
+		java.util.Date date) {
+		return _dossierLocalService.findDossierBeforeDateAndDossierStatusisNull(date);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(
 		String date) {
 		return _dossierLocalService.findDossierByDay(date);
@@ -493,6 +499,19 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByGroup(
 		long groupId) {
 		return _dossierLocalService.findDossierByGroup(groupId);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierDocument findDossierDocumentByDossierId(
+		long dossierDocumentId) {
+		return _dossierLocalService.findDossierDocumentByDossierId(dossierDocumentId);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(
+		String originDossierNo, Long originDossierId, Integer originality) {
+		return _dossierLocalService.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(originDossierNo,
+			originDossierId, originality);
 	}
 
 	@Override
@@ -1038,6 +1057,11 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public Boolean isDuplicateDossierNo(long groupId, String dossierNo) {
+		return _dossierLocalService.isDuplicateDossierNo(groupId, dossierNo);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier postDossier(long groupId,
 		long dossierId, String referenceUid, int counter, String serviceCode,
 		String serviceName, String govAgencyCode, String govAgencyName,
@@ -1094,6 +1118,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String delegateWardName, double durationCount, int durationUnit,
 		String dossierName, String processNo, String metaData,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
+		String dossierCounter, int systemId,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _dossierLocalService.publishDossier(groupId, dossierId,
@@ -1114,7 +1139,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateDistrictCode, delegateDistrictName, delegateWardCode,
 			delegateWardName, durationCount, durationUnit, dossierName,
 			processNo, metaData, vnpostalStatus, vnpostalProfile,
-			fromViaPostal, context);
+			fromViaPostal, dossierCounter, systemId, context);
 	}
 
 	@Override

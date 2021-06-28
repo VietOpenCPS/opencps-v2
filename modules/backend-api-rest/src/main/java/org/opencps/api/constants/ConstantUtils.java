@@ -125,7 +125,9 @@ public class ConstantUtils {
 	public static final String ROLE_ADMIN = "Administrator";
 	public static final String ROLE_ADMIN_LOWER = "admin";
 	public static final String ROLE_ADMIN_DATA = "Administrator_data";
-	
+	public static final String GLOBAL_VIEW_GROUP = "GLOBAL_VIEW_GROUP";
+	public static final String GLOBAL_VIEW_ALL  = "GLOBAL_VIEW_ALL";
+
 	public static final String NGSP_TOKEN_URL_KEY = "org.opencps.ngsp.token.url";
 	public static final String NGSP_SECRET_KEY = "org.opencps.ngsp.secret.key";
 	public static final String NGSP_CONSUMER_KEY = "org.opencps.ngsp.consumer.key";

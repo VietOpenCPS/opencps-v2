@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.scheduler;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -21,10 +22,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.util.Validator;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.PublishQueue;
+import org.opencps.dossiermgt.service.AccessTokenLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
+import org.opencps.dossiermgt.service.comparator.PublishQueueComparator;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -32,7 +39,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, service = GarbageCollectorScheduler.class)
+//@Component(immediate = true, service = GarbageCollectorScheduler.class)
 public class GarbageCollectorScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	@Override
@@ -50,17 +57,35 @@ public class GarbageCollectorScheduler extends BaseMessageListener {
 			cal.setTime(now);
 			cal.add(Calendar.DATE, -7);
 			Date sevenDayAgo = cal.getTime();
-			
-			List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.findByST_LT_MD(new int[] { PublishQueueTerm.STATE_RECEIVED_ACK }, sevenDayAgo, 0, 10);
-			
+
+			List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByStatusesAndServerNo(new int[] {
+							PublishQueueTerm.STATE_RECEIVED_ACK },
+					ServerConfigTerm.SERVER_PUBLISH, 0, 1000,null);
+
+			if(Validator.isNull(lstQueues) || lstQueues.size() == 0) {
+				isRunning = false;
+				return;
+			}
+
+			_log.info("OpenCPS GARBAGE COLLECTOR COUNT: " + lstQueues.size());
+
 			for (PublishQueue pq : lstQueues) {
 				try {
 					PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
 				}
-				catch (PortalException pe) {
-					_log.debug(pe);
+				catch (Exception pe) {
+					_log.error(pe);
 				}
 			}
+
+			try {
+				DossierLocalServiceUtil.removeDossierByF_OG_DS(9, StringPool.BLANK);
+			}
+			catch (Exception e) {
+				_log.error(e);
+			}
+
+			AccessTokenLocalServiceUtil.garbageToken();
 		} catch (Exception e) {
 			_log.debug(e);
 		}

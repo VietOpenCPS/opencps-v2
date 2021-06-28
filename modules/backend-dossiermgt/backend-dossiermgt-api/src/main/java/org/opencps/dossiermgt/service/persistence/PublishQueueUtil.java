@@ -2033,6 +2033,185 @@ public class PublishQueueUtil {
 	}
 
 	/**
+	* Returns all the publish queues where dossierId = &#63; and serverNo &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @return the matching publish queues
+	*/
+	public static List<PublishQueue> findByDID_SN_NOT(long dossierId,
+		String serverNo) {
+		return getPersistence().findByDID_SN_NOT(dossierId, serverNo);
+	}
+
+	/**
+	* Returns a range of all the publish queues where dossierId = &#63; and serverNo &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @return the range of matching publish queues
+	*/
+	public static List<PublishQueue> findByDID_SN_NOT(long dossierId,
+		String serverNo, int start, int end) {
+		return getPersistence().findByDID_SN_NOT(dossierId, serverNo, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the publish queues where dossierId = &#63; and serverNo &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching publish queues
+	*/
+	public static List<PublishQueue> findByDID_SN_NOT(long dossierId,
+		String serverNo, int start, int end,
+		OrderByComparator<PublishQueue> orderByComparator) {
+		return getPersistence()
+				   .findByDID_SN_NOT(dossierId, serverNo, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the publish queues where dossierId = &#63; and serverNo &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PublishQueueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param start the lower bound of the range of publish queues
+	* @param end the upper bound of the range of publish queues (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching publish queues
+	*/
+	public static List<PublishQueue> findByDID_SN_NOT(long dossierId,
+		String serverNo, int start, int end,
+		OrderByComparator<PublishQueue> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByDID_SN_NOT(dossierId, serverNo, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first publish queue in the ordered set where dossierId = &#63; and serverNo &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching publish queue
+	* @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	*/
+	public static PublishQueue findByDID_SN_NOT_First(long dossierId,
+		String serverNo, OrderByComparator<PublishQueue> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchPublishQueueException {
+		return getPersistence()
+				   .findByDID_SN_NOT_First(dossierId, serverNo,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first publish queue in the ordered set where dossierId = &#63; and serverNo &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	*/
+	public static PublishQueue fetchByDID_SN_NOT_First(long dossierId,
+		String serverNo, OrderByComparator<PublishQueue> orderByComparator) {
+		return getPersistence()
+				   .fetchByDID_SN_NOT_First(dossierId, serverNo,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last publish queue in the ordered set where dossierId = &#63; and serverNo &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching publish queue
+	* @throws NoSuchPublishQueueException if a matching publish queue could not be found
+	*/
+	public static PublishQueue findByDID_SN_NOT_Last(long dossierId,
+		String serverNo, OrderByComparator<PublishQueue> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchPublishQueueException {
+		return getPersistence()
+				   .findByDID_SN_NOT_Last(dossierId, serverNo, orderByComparator);
+	}
+
+	/**
+	* Returns the last publish queue in the ordered set where dossierId = &#63; and serverNo &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching publish queue, or <code>null</code> if a matching publish queue could not be found
+	*/
+	public static PublishQueue fetchByDID_SN_NOT_Last(long dossierId,
+		String serverNo, OrderByComparator<PublishQueue> orderByComparator) {
+		return getPersistence()
+				   .fetchByDID_SN_NOT_Last(dossierId, serverNo,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the publish queues before and after the current publish queue in the ordered set where dossierId = &#63; and serverNo &ne; &#63;.
+	*
+	* @param publishQueueId the primary key of the current publish queue
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next publish queue
+	* @throws NoSuchPublishQueueException if a publish queue with the primary key could not be found
+	*/
+	public static PublishQueue[] findByDID_SN_NOT_PrevAndNext(
+		long publishQueueId, long dossierId, String serverNo,
+		OrderByComparator<PublishQueue> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchPublishQueueException {
+		return getPersistence()
+				   .findByDID_SN_NOT_PrevAndNext(publishQueueId, dossierId,
+			serverNo, orderByComparator);
+	}
+
+	/**
+	* Removes all the publish queues where dossierId = &#63; and serverNo &ne; &#63; from the database.
+	*
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	*/
+	public static void removeByDID_SN_NOT(long dossierId, String serverNo) {
+		getPersistence().removeByDID_SN_NOT(dossierId, serverNo);
+	}
+
+	/**
+	* Returns the number of publish queues where dossierId = &#63; and serverNo &ne; &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param serverNo the server no
+	* @return the number of matching publish queues
+	*/
+	public static int countByDID_SN_NOT(long dossierId, String serverNo) {
+		return getPersistence().countByDID_SN_NOT(dossierId, serverNo);
+	}
+
+	/**
 	* Returns all the publish queues where status = &#63; and serverNo = &#63;.
 	*
 	* @param status the status

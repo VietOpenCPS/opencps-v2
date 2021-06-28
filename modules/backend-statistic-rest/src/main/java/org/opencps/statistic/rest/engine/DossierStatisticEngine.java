@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -95,19 +96,19 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = DossierStatisticEngine.class)
 public class DossierStatisticEngine extends BaseMessageListener {
 	private volatile boolean isRunningDossier = false;
-	
+
 	protected Log _log = LogFactoryUtil.getLog(DossierStatisticEngine.class);
-	
+
 	public static final int GROUP_TYPE_SITE = 1;
-	
+
 	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
 	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 
 	private static final Boolean CALCULATE_DOSSIER_STATISTIC_ENABLE = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.enable"))
-					? Boolean.valueOf(PropsUtil.get("org.opencps.statistic.enable")) : false;
+			? Boolean.valueOf(PropsUtil.get("org.opencps.statistic.enable")) : false;
 	//Time engine dossier
 	private static int TIME_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.time"))
-				? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.time")) :45;
+			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.time")) :45;
 	//Start time config
 	private static int HOUR_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.hour"))
 			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.hour")) :-1;
@@ -130,23 +131,24 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		try {
 			_log.info("START TRACE LOG STATISTICS TIME: " + nowLog);
 			_log.info("START STATISTICS TIME: " + (System.currentTimeMillis() - startTime) + " ms");
-			
+
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
-			
+
 			List<Group> groups = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
 			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
-			
+
 			List<Group> sites = new ArrayList<Group>();
-	
+
 			for (Group group : groups) {
 				if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
 					sites.add(group);
-				}
+				}				
 			}
+			_log.debug("SITES : " + JSONFactoryUtil.looseSerialize(sites));
 	
 			Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
-			
+
 			for (Group site : sites) {
 //				if (site.getGroupId() != 45027) {
 //					continue;
@@ -154,11 +156,11 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				Map<Integer, Map<Integer, Map<String, DossierStatisticData>>> calculateDatas = new HashMap<>();
 				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
 //				_log.info("CALCULATE AFTER GET SERVER CONFIG: " + (System.currentTimeMillis() - startTime) + " ms");
-				
-	//			LOG.info("START getDossierStatistic(): " + site.getGroupId());
-	
-	//			GetDossierResponse dossierResponse = new GetDossierResponse();
-				
+
+				//			LOG.info("START getDossierStatistic(): " + site.getGroupId());
+
+				//			GetDossierResponse dossierResponse = new GetDossierResponse();
+
 				ServiceDomainRequest sdPayload = new ServiceDomainRequest();
 				sdPayload.setGroupId(site.getGroupId());
 				sdPayload.setStart(QueryUtil.ALL_POS);
@@ -174,7 +176,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 						if (scObject.has(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY)) {
 							sdPayload.setEndpoint(scObject.getString(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY));
-						}						
+						}
 					}
 				}
 //				_log.debug("STATISTICS CALL SERVICE DOMAIN: " + (System.currentTimeMillis() - startTime) + " ms");;
@@ -186,10 +188,10 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					serviceDomainResponse = StatisticDataUtil.getLocalServiceDomain(sdPayload);
 				}
 //				_log.debug("STATISTICS CALL SERVICE DOMAIN END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
-				
+
 //				_log.info("CALCULATE AFTER GET SERVICE DOMAIN: " + serviceDomainResponse.getTotal() + ", " + (System.currentTimeMillis() - startTime) + " ms");
 				GetDossierRequest payload = new GetDossierRequest();
-				
+
 				payload.setGroupId(site.getGroupId());
 				payload.setStart(QueryUtil.ALL_POS);
 				payload.setEnd(QueryUtil.ALL_POS);
@@ -204,7 +206,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
 							payload.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
-						}						
+						}
 					}
 				}
 				//
@@ -239,7 +241,8 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				for (int month = 1; month <= monthCurrent; month ++) {
 					boolean flagStatistic = true;
 					if (month < monthCurrent) {
-//						_log.debug("STATISTICS CALCULATE ONE MONTH SITE: " + month + ", " + site.getGroupId() + ", " + site.getName(Locale.getDefault()) + " " + (System.currentTimeMillis() - startTime) + " ms");;
+						_log.debug("STATISTICS CALCULATE ONE MONTH SITE: " + month + ", " + site.getGroupId() + ", " + site.getName(Locale.getDefault()) + " " + (System.currentTimeMillis() - startTime) + " ms");;
+
 						OpencpsDossierStatistic statisticInfo = engineUpdateAction
 								.getStatisticByMonthYearAndNotReport(site.getGroupId(), month, yearCurrent, 0);
 						if (statisticInfo != null) {
@@ -273,14 +276,19 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							try {
 //								Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 								processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
-									engineUpdateAction, serviceDomainResponse, calculateData);
+										engineUpdateAction, serviceDomainResponse, calculateData);
+								try {
+									//_log.info("2 :" + site.getGroupId() + " || " + month + " || " + yearCurrent + " || " + JSONFactoryUtil.looseSerialize(calculateData.get(1)));
+								} catch (Exception e) {
+									_log.error(e.getMessage());
+								}
 								//
 								if (calculateData != null && jsonEndPoint != null) {
 									for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateData.entrySet()) {
 										if (mapInt.getKey() == month) {
 											StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 											JSONArray jsonArr = statisticEngineUpdate.convertMapDataList(mapInt.getValue());
-											// 
+											//
 											String sbUpdate = DossierStatisticUtils.invokeUpdateStatistic(jsonEndPoint,
 													JSONFactoryUtil.looseSerialize(jsonArr));
 											if (Validator.isNotNull(sbUpdate)) {
@@ -316,7 +324,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						try {
 //							Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 							processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
-								engineUpdateAction, serviceDomainResponse, calculateData);
+									engineUpdateAction, serviceDomainResponse, calculateData);
 							if (calculateData != null && jsonEndPoint != null) {
 								for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateData.entrySet()) {
 									if (mapInt.getKey() == month) {
@@ -355,7 +363,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					}
 				}
 
-				//Recalculate data				
+				//Recalculate data
 				//TODO: Calculator again year ago
 				int lastYear = LocalDate.now().getYear() - 1;
 				boolean flagLastYear = true;
@@ -396,12 +404,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					if (flagLastYear) {
 						try {
 							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
-								engineUpdateAction, serviceDomainResponse, calculateLastData);
+									engineUpdateAction, serviceDomainResponse, calculateLastData);
 							if (calculateLastData != null && jsonEndPoint != null) {
 
 								for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateLastData.entrySet()) {
 									if (mapInt.getKey() == lastMonth) {
-										
+
 										StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 										JSONArray jsonArr = statisticEngineUpdate.convertMapDataList(mapInt.getValue());
 										//
@@ -430,7 +438,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					mapFlagPrev.put(lastMonth, flagLastYear);
 				}
 //				_log.info("CALCULATE AFTER GET FLAG LAST YEAR: " + (System.currentTimeMillis() - startTime) + " ms");
-				
+
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 				List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
 				for (int month = 1; month <= monthCurrent; month ++) {
@@ -499,7 +507,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 			}
 
-			}
+		}
 		catch (Exception e) {
 			_log.error(e);
 		}
@@ -511,8 +519,8 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 	@SuppressWarnings("unchecked")
 	private void processUpdateStatistic(long groupId, int month, int year, GetDossierRequest payload,
-			StatisticEngineUpdateAction engineUpdateAction, ServiceDomainResponse serviceDomainResponse,
-			Map<Integer, Map<String, DossierStatisticData>> calculateData)
+										StatisticEngineUpdateAction engineUpdateAction, ServiceDomainResponse serviceDomainResponse,
+										Map<Integer, Map<String, DossierStatisticData>> calculateData)
 			throws Exception {
 //		engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 		payload.setMonth(Integer.toString(month));
@@ -520,14 +528,14 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		payload.setCalculate(true);
 		payload.setStart(QueryUtil.ALL_POS);
 		payload.setEnd(QueryUtil.ALL_POS);
-		if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {			
+		if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
 			GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
 			if (dossierResponse != null) {
 				List<GetDossierData> dossierData = dossierResponse.getData();
-				
+
 				if (dossierData != null) {
 					//LOG.info("***** " + site.getGroupId() + source.size());
-					
+
 					if(dossierData.size() > 0) {
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
 
@@ -537,8 +545,8 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						Date lastDay = StatisticUtils.getLastDay(month, year);
 						engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, 0);
 //						StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-//						
-//						statisticEngineUpdate.updateStatisticData(statisticData);	
+//
+//						statisticEngineUpdate.updateStatisticData(statisticData);
 						calculateData.put(month, statisticData);
 					}
 				}
@@ -574,20 +582,20 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				}
 				if (Validator.isNotNull(payload.getToStatisticDate())) {
 					params.put(DossierTerm.TO_STATISTIC_DATE, payload.getToStatisticDate());
-				}				
+				}
 			}
 			//Add common params
 			String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
 			params.put(DossierTerm.SYSTEM_ID, strSystemId);
 			params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
-			
+
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
-			long companyId = company.getCompanyId(); 
+			long companyId = company.getCompanyId();
 			int start = QueryUtil.ALL_POS;
 			int end = QueryUtil.ALL_POS;
-			
+
 			if (payload.getStart() != 0) {
-				start = payload.getStart();			
+				start = payload.getStart();
 			}
 			else {
 			}
@@ -596,19 +604,19 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			}
 			else {
 			}
-			
+
 			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, start, end, new ServiceContext());
 			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			List<GetDossierData> dossierData = new ArrayList<>();
 			int total = jsonData.getInt(ConstantUtils.TOTAL);
 
 			//_log.info("GET DOSSIER SIZE: " + datas != null ? datas.size() : 0);
-//			_log.info("GET DOSSIER total: " + total);
+			_log.debug("GET DOSSIER total: " + total);
 
 			if (total > datas.size()) {
 				JSONObject jsonData2 = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, total, new ServiceContext());
 				datas = (List<Document>) jsonData2.get(ConstantUtils.DATA);
-//				_log.debug("_GET ALL DOSSIER SIZE_: " + datas.size());
+				_log.debug("_GET ALL DOSSIER SIZE_: " + datas.size());
 			}
 
 			for (Document doc : datas) {
@@ -648,38 +656,43 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					}
 				}
 				model.setFromViaPostal(GetterUtil.getInteger(doc.get(DossierTerm.FROM_VIA_POSTAL)));
-				
+
 				dossierData.add(model);
 			}
-			
+
 			//GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
 			//if (dossierResponse != null) {
-				//List<GetDossierData> dossierData = dossierResponse.getData();
-	//			List<GetDossierData> dossierData = new ArrayList<>();
-				
-				if (dossierData != null && dossierData.size() > 0) {
-					//LOG.info("***** " + site.getGroupId() + source.size());
+			//List<GetDossierData> dossierData = dossierResponse.getData();
+			//			List<GetDossierData> dossierData = new ArrayList<>();
 
-					StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+			if (dossierData != null && dossierData.size() > 0) {
+				//LOG.info("***** " + site.getGroupId() + source.size());
 
-					Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
+				StatisticEngineFetch engineFetch = new StatisticEngineFetch();
 
-					Date firstDay = StatisticUtils.getFirstDay(month, year);
-					Date lastDay = StatisticUtils.getLastDay(month, year);
-					engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, 0);
+				Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
+
+				Date firstDay = StatisticUtils.getFirstDay(month, year);
+				Date lastDay = StatisticUtils.getLastDay(month, year);
+				engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, 0);
 //					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 
-					calculateData.put(month, statisticData);
-//					}
+				calculateData.put(month, statisticData);
+				try {
+					//_log.info("1 :" + groupId + " || " + month + " || " + year + " || " + JSONFactoryUtil.looseSerialize(calculateData.get(1)));
+				} catch (Exception e) {
+					_log.error(e.getMessage());
 				}
+//					}
 			}
+		}
 	}
 
 
 	/**
 	 * activate: Called whenever the properties for the component change (ala Config
 	 * Admin) or OSGi is activating the component.
-	 * 
+	 *
 	 * @param properties The properties map from Config Admin.
 	 * @throws SchedulerException in case of error.
 	 */
@@ -697,9 +710,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			cal.set(year, month-1, day, HOUR_STATISTIC, MINUTE_STATISTIC, SECOND_STATISTIC);
 		}else {
 			cal.set(year, month-1, day);
-		}		
+		}
 		Date startDate = cal.getTime();
-		
+
 		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, startDate, null,
 				TIME_STATISTIC, TimeUnit.MINUTE);
 
@@ -735,7 +748,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	/**
 	 * getStorageType: Utility method to get the storage type from the scheduler entry wrapper.
 	 * @return StorageType The storage type to use.
-	*/
+	 */
 	protected StorageType getStorageType() {
 		if (_schedulerEntryImpl instanceof StorageTypeAware) {
 			return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
@@ -743,24 +756,24 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 		return StorageType.PERSISTED;
 	}
-	  
+
 	/**
-	   * setModuleServiceLifecycle: So this requires some explanation...
-	   * 
-	   * OSGi will start a component once all of it's dependencies are satisfied.  However, there
-	   * are times where you want to hold off until the portal is completely ready to go.
-	   * 
-	   * This reference declaration is waiting for the ModuleServiceLifecycle's PORTAL_INITIALIZED
-	   * component which will not be available until, surprise surprise, the portal has finished
-	   * initializing.
-	   * 
-	   * With this reference, this component activation waits until portal initialization has completed.
-	   * @param moduleServiceLifecycle
-	   */
+	 * setModuleServiceLifecycle: So this requires some explanation...
+	 *
+	 * OSGi will start a component once all of it's dependencies are satisfied.  However, there
+	 * are times where you want to hold off until the portal is completely ready to go.
+	 *
+	 * This reference declaration is waiting for the ModuleServiceLifecycle's PORTAL_INITIALIZED
+	 * component which will not be available until, surprise surprise, the portal has finished
+	 * initializing.
+	 *
+	 * With this reference, this component activation waits until portal initialization has completed.
+	 * @param moduleServiceLifecycle
+	 */
 	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED, unbind = "-")
 	protected void setModuleServiceLifecycle(ModuleServiceLifecycle moduleServiceLifecycle) {
 	}
-	  
+
 	@Reference(unbind = "-")
 	protected void setTriggerFactory(TriggerFactory triggerFactory) {
 		_triggerFactory = triggerFactory;
@@ -770,9 +783,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	protected void setSchedulerEngineHelper(SchedulerEngineHelper schedulerEngineHelper) {
 		_schedulerEngineHelper = schedulerEngineHelper;
 	}
-	
+
 	private SchedulerEngineHelper _schedulerEngineHelper;
 	private TriggerFactory _triggerFactory;
 	private volatile boolean _initialized;
-	private SchedulerEntryImpl _schedulerEntryImpl = null;	
+	private SchedulerEntryImpl _schedulerEntryImpl = null;
 }

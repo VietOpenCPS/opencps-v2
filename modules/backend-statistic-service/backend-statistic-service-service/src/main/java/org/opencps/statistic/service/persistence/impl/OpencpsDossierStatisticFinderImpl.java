@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -45,6 +46,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 	private static final String CONDITION_YEAR_REPLACE = "(opencps_statistic.year != 0) AND";
 	private static final String CONDITION_SYSTEM = "(opencps_statistic.system = ?) AND";
 	private static final String CONDITION_SYSTEM_REPLACE = "(opencps_statistic.system IS NULL) AND";
+	//private static final String CONDITION_SYSTEM_REPLACE = "(opencps_statistic.system IN (0,1,2,3,4,5)) AND";
 	
 	public static final int ALL_MONTH = -1;
 	
@@ -559,6 +561,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 		try {
 			session = openSession();
+			
 			String sql = _customSQL.get(getClass(), SEARCH_DOSSIER_STATISTIC_SYSTEM);
 
 			// LOG.info(sql);
@@ -595,7 +598,6 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 				sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);
 			}
 
-			//LOG.info(sql);
 			SQLQuery q = session.createSQLQuery(sql);
 
 			q.setCacheable(true);

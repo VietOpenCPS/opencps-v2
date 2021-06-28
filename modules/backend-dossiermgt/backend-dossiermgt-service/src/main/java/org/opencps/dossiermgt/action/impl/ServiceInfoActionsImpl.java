@@ -80,20 +80,20 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			String serviceName, String processText, String methodText, String dossierText, String conditionText,
 			String durationText, String applicantText, String resultText, String regularText, String feeText,
 			String administrationCode, String domainCode, int maxLevel, boolean public_, String govAgencyText,
-			ServiceContext serviceContext) throws PortalException {
+			String tagCode, String tagName, ServiceContext serviceContext) throws PortalException {
 
 		ServiceInfo serviceInfo = null;
 
 		if (serviceInfoId == 0) {
 			serviceInfo = ServiceInfoLocalServiceUtil.addServiceInfo(userId, groupId, serviceCode, serviceName,
 					processText, methodText, dossierText, conditionText, durationText, applicantText, resultText,
-					regularText, feeText, administrationCode, domainCode, maxLevel, public_, govAgencyText,
+					regularText, feeText, administrationCode, domainCode, maxLevel, public_, govAgencyText,tagCode, tagName,
 					serviceContext);
 		} else {
 			serviceInfo = ServiceInfoLocalServiceUtil.updateServiceInfo(groupId, serviceInfoId, serviceCode,
 					serviceName, processText, methodText, dossierText, conditionText, durationText, applicantText,
 					resultText, regularText, feeText, administrationCode, domainCode, maxLevel, public_, govAgencyText,
-					serviceContext);
+					tagCode, tagName, serviceContext);
 		}
 
 		return serviceInfo;
@@ -425,7 +425,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		try {
 			List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByServiceInfo(groupId, serviceInfoId);
 			if (configList != null && configList.size() > 0) {
-				long serviceConfigId = 0;
+				long serviceConfigId;
 				for (ServiceConfig config : configList) {
 					serviceConfigId = config.getServiceConfigId();
 					if (serviceConfigId > 0) {
@@ -439,14 +439,6 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 						} else {
 							flag = true;
 						}
-					}
-					if (flag) {
-						if(Validator.isNull(serviceConfigOld)) {
-							ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.deleteServiceConfig(config);
-						}
-//						if (serviceConfig == null) {
-//							flag = false;
-//						}
 					}
 				}
 			} else {

@@ -1,4 +1,4 @@
-package org.opencps.dossiermgt.action.util;
+	package org.opencps.dossiermgt.action.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -109,19 +109,11 @@ public class AutoFillFormData {
 						_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
 						_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
-						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
-						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
-						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
-						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
-						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
-						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
 						_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
 						_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
 						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
-						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
 						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
-//						_applicantIdDate = applicantJSON.getString("applicantIdDate");
 						_applicantIdDate = applicantJSON.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE);
 
 					} else {
@@ -132,26 +124,16 @@ public class AutoFillFormData {
 						_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
 						_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
-						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
-						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
-						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
-						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
-						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
-						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
 						_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
 						_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
 						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
-						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
 						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
 						_applicantIdDate = applicantJSON.getString(ApplicantTerm.APPLICANTIDDATE);
 						_representative = applicantJSON.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE);
-
 					}
 
 				} catch (PortalException e1) {
-					// TODO Auto-generated catch block
-//					e1.printStackTrace();
 					_log.error(e1);
 				}
 
@@ -159,7 +141,6 @@ public class AutoFillFormData {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
 							serviceContext.getUserId());
 
-//					Deliverable deliverable = DeliverableLocalServiceUtil.getByF_GID_DI_STATE(dossier.getGroupId(), dossier.getDossierId(), DeliverableTerm.DELIVERABLE_STATE_VALID_INT);
 					List<DossierFile> lstFile = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossierId);
 					if(lstFile !=null && !lstFile.isEmpty()){
 						for(DossierFile item : lstFile){
@@ -299,7 +280,7 @@ public class AutoFillFormData {
 									jsonMap.put(entry.getKey(),  StringPool.BLANK);
 								}
 							} catch (JSONException e) {
-								_log.debug(e.getMessage());
+								_log.debug(e);
 								e.printStackTrace();
 							}
 						}
@@ -463,7 +444,8 @@ public class AutoFillFormData {
 				}
 			}
 		} catch (JSONException e) {
-			_log.error(e);
+			_log.error("Error While FillFormData! Configurate Debug Log: org.opencps.dossiermgt.action.util.AutoFillFormData for more details!");
+			_log.debug(e);
 //			e.printStackTrace();
 		}
 
@@ -492,7 +474,7 @@ public class AutoFillFormData {
 		Iterator<String> keysItr = object.keys();
 		while (keysItr.hasNext()) {
 			String key = keysItr.next();
-			Object value = null;
+			Object value;
 			if (Validator.isNotNull(object.getJSONArray(key))) {
 				value = (JSONArray) object.getJSONArray(key);
 				map.put(key, value);

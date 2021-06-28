@@ -14,6 +14,9 @@
 
 package org.opencps.synctracking.service.impl;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.synctracking.exception.NoSuchSyncTrackingException;
 import org.opencps.synctracking.model.SyncTracking;
@@ -44,6 +47,8 @@ public class SyncTrackingLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.synctracking.service.SyncTrackingLocalServiceUtil} to access the sync tracking local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(SyncTrackingLocalServiceImpl.class);
 	public List<SyncTracking> getByGroupId(long groupId, int start, int end) {
 		return syncTrackingPersistence.findByGroupId(groupId, start, end);
 	}
@@ -64,6 +69,10 @@ public class SyncTrackingLocalServiceImpl
 				toDate, start, end);
 	}
 
+	public List<SyncTracking> getByGroupIdAndApi(long groupId, String api, int start, int end) {
+		return syncTrackingPersistence.findByF_GID_API(groupId, api, start, end);
+	}
+
 	public List<SyncTracking> getByGroupIdAndDossierNoAndServiceCodeAndDate(long groupId, String dossierNo,
 																			String serviceCode, Date fromDate,
 																			Date toDate, int start, int end) {
@@ -81,6 +90,7 @@ public class SyncTrackingLocalServiceImpl
 		try {
 			return syncTrackingPersistence.findByF_GID_DossierNo(groupId, dossierNo);
 		} catch (NoSuchSyncTrackingException e) {
+			_log.error(e);
 			return null;
 		}
 	}
@@ -89,11 +99,13 @@ public class SyncTrackingLocalServiceImpl
 		try {
 			return syncTrackingPersistence.findByF_GID_ReferenceUid(groupId, referenceUid);
 		} catch (NoSuchSyncTrackingException e) {
+			_log.error(e);
 			return null;
 		}
 	}
 
 	public SyncTracking createSyncTrackingManual(SyncTrackingQuery syncTrackingQuery) {
+//		System.out.println("SyncTrackingQuery: " + JSONFactoryUtil.looseSerialize(syncTrackingQuery));
 		long syncTrackingId = counterLocalService.increment(SyncTracking.class.getName());
 		Date now = new Date();
 
@@ -141,4 +153,5 @@ public class SyncTrackingLocalServiceImpl
 
 		return syncTracking;
 	}
+	
 }

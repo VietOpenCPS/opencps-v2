@@ -1,5 +1,6 @@
 package org.opencps.synctracking.action.impl;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -152,6 +153,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             response.data  = syncTrackingResponse;
             return response;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -191,6 +193,30 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
 
             return true;
         } catch (Exception e) {
+            _log.error(e);
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean createSynTrackingDVCQG(SyncTrackingQuery syncTrackingQuery) throws Exception {
+        try {
+            if (Validator.isNull(syncTrackingQuery)) {
+                throw new Exception("No body param was found");
+            }
+
+            if (Validator.isNull(syncTrackingQuery.groupId) || syncTrackingQuery.groupId == 0) {
+                throw new Exception("No groupId was found");
+            }
+
+            if (Validator.isNull(syncTrackingQuery.bodyRequest) || syncTrackingQuery.bodyRequest.isEmpty()) {
+                throw new Exception("No from unit code was found");
+            }
+
+            SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
+            return true;
+        } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }
@@ -231,6 +257,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             integrationOutsideApi.postWithString(url, headers, bodyRequest);
             return true;
         } catch (Exception e) {
+            _log.error(e);
             throw new Exception(e.getMessage());
         }
     }

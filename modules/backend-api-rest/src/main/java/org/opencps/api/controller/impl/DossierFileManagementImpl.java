@@ -232,7 +232,10 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		String removed, String eForm, Long modifiedDate) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		_log.debug("In dossier file create");
+		_log.debug("---addDossierFileByDossierId---");
+		_log.debug("====dossierTemplateNo:"+dossierTemplateNo+"|dossierPartNo:"+dossierPartNo+"|fileTemplateNo:"+fileTemplateNo);
+		_log.debug("====displayName:"+displayName+"|fileType:"+fileType+"|isSync:"+isSync);
+		_log.debug("====removed:"+removed+"|id:"+id+"|referenceUid:"+referenceUid);
 		try {
 //			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
 //			
@@ -335,7 +338,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			return responseBuilder.build();
 		}catch (Exception e){
-			_log.error(e.getMessage());
+			_log.error(e);
 
 			return Response.status(
 					HttpURLConnection.HTTP_NO_CONTENT).build();
@@ -366,7 +369,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			return responseBuilder.build();
 		} catch (Exception e) {
-			_log.error("Error when lgsp download file from fds: " + e.getMessage());
+			_log.error(e);
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}
 	}
@@ -431,6 +434,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
+
+
 
 	@Override
 	public Response updateDossierFile(
@@ -1055,7 +1060,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 		}catch (Exception e) {
 			_log.error("*****!!!!!!Import file excel ERROR!!!!!!*****");
-			_log.error(e.getMessage());
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -1538,7 +1542,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		try {
 
 			DossierFileActions action = new DossierFileActionsImpl();
-			DossierFileModel result = new DossierFileModel();
+			DossierFileModel result;
 			if (Validator.isNotNull(fileEntryId)) {
 				FileEntry fileEntryOld = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
 				String fileTemplateNo = dossierTemplateNo + dossierPartNo;
@@ -1670,7 +1674,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 														 ServiceContext serviceContext, DossierSearchModel query) {
 		try {
 			DossierActions actions = new DossierActionsImpl();
-			DossierResultsModel results = new DossierResultsModel();
+			DossierResultsModel results;
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			String createDateStart =
 					APIDateTimeUtils.convertNormalDateToLuceneDate(
@@ -1701,7 +1705,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					JSONObject jsonData = actions.getDossiers(user.getUserId(),
 							company.getCompanyId(), groupId, params,
 							sorts, 0, 10, serviceContext);
-					List<DossierFile> listDossierFile = new ArrayList<>();
+					List<DossierFile> listDossierFile;
 					if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
 						lstData = DossierUtils.mappingForGetList((List<Document>) jsonData.get(ConstantUtils.DATA),
 								user.getUserId(),query.getAssigned(),query);
@@ -1777,7 +1781,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						}
 					}
 				}catch (Exception e){
-					e.getMessage();
+					_log.error(e);
 				}
 				return Response.status(HttpURLConnection.HTTP_OK).entity("Success").build();
 			}else{

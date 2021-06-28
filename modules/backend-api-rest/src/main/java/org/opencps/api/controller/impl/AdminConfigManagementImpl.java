@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionList;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -23,11 +24,17 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -35,21 +42,52 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
 import org.opencps.adminconfig.model.AdminConfig;
+import org.opencps.adminconfig.model.ApiManager;
+import org.opencps.adminconfig.model.ApiRole;
 import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
+import org.opencps.adminconfig.service.ApiManagerLocalServiceUtil;
+import org.opencps.adminconfig.service.ApiRoleLocalServiceUtil;
+import org.opencps.api.adminconfig.model.ApiManagerDetailModel;
+import org.opencps.api.adminconfig.model.ApiManagerInputModel;
+import org.opencps.api.adminconfig.model.ApiManagerModel;
+import org.opencps.api.adminconfig.model.ApiManagerResultsModel;
+import org.opencps.api.adminconfig.model.ApiRoleDetailModel;
+import org.opencps.api.adminconfig.model.ApiRoleInputModel;
+import org.opencps.api.adminconfig.model.ApiRoleModel;
+import org.opencps.api.adminconfig.model.ApiRoleResultsModel;
+import org.opencps.api.adminconfig.model.DtoResponse;
+import org.opencps.api.adminconfig.model.LogReportResultResponse;
+import org.opencps.api.adminconfig.model.LogReportStatisticData;
+import org.opencps.api.adminconfig.model.SyncTrackingQuery;
+import org.opencps.api.adminconfig.model.SyncTrackingResponse;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.constants.StatisticManagementConstants;
 import org.opencps.api.controller.AdminConfigManagement;
 import org.opencps.api.controller.util.MessageUtil;
+import org.opencps.api.controller.util.OpenCPSUtils;
+import org.opencps.auth.api.BackendAuth;
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.springframework.http.HttpStatus;
 
 import backend.admin.config.whiteboard.BundleLoader;
@@ -148,7 +186,25 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String CLASSNAME_DELIVERABLE_TYPE = "opencps_deliverabletype";
 	private static final String TYPE_CODE = "typeCode";
 	private static final String NOK = "NOK";
-
+	
+	private final String ACCESS_CONTROL_ALLOW_ORIGIN_HEADER = "Access-Control-Allow-Origin";
+	private final String ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
+	private final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
+	private final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
+	private final String ORIGIN_HEADER = "Origin";
+	private final String METHOD_POST = "POST";
+	private final String METHOD_GET = "GET";
+	private final String METHOD_PUT = "PUT";
+	private final String METHOD_DELETE = "DELETE";
+	private final String ALLOW_HEADERS = "origin, content-type, accept, authorization, groupid, token";
+	
+	private void buildCrossOriginHeader(ResponseBuilder builder, HttpServletRequest request, String method) {
+		builder.header(ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, request.getHeader(ORIGIN_HEADER));
+		builder.header(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+		builder.header(ACCESS_CONTROL_ALLOW_HEADERS, ALLOW_HEADERS);
+		builder.header(ACCESS_CONTROL_ALLOW_METHODS, method);
+	}
+	
 	@Override
 	public Response onMessage(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User u,
 			ServiceContext serviceContext, String text) {
@@ -589,7 +645,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 
 			String fileName = headerData.getString(NAME) + StringPool.UNDERLINE
 					+ String.format("%d.xls", System.currentTimeMillis());
-			_log.info("fileName: "+fileName);
+			_log.debug("fileName: "+fileName);
 
 			File exportDir = new File(StatisticManagementConstants.FOLDER_EXPORTED);
 			if (!exportDir.exists()) {
@@ -708,6 +764,427 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 		cellStyle.setWrapText(true);
 		cellStyle.setAlignment(HorizontalAlignment.LEFT);
 		return cellStyle;
+	}
+
+	@Override
+	public Response getApiManagers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			List<ApiManager> lstApiManagers = ApiManagerLocalServiceUtil.findByG(groupId);
+			ApiManagerResultsModel result = new ApiManagerResultsModel();
+			result.setTotal(ApiManagerLocalServiceUtil.countByG(groupId));
+			List<ApiManagerModel> lstModels = new ArrayList<>();
+			if (lstApiManagers != null && lstApiManagers.size() > 0) {
+				for (ApiManager apiManager : lstApiManagers) {
+					ApiManagerModel model = new ApiManagerModel();
+					model.setApiCode(apiManager.getApiCode());
+					model.setApiDescription(apiManager.getApiDescription());
+					model.setApiName(apiManager.getApiName());
+					model.setApiManagerId(apiManager.getApiManagerId());
+					model.setApiStatus(apiManager.getApiStatus());
+					model.setClassName(apiManager.getClassName());
+					model.setCreateDate(APIDateTimeUtils.convertDateToString(apiManager.getCreateDate()));
+					model.setModifiedDate(APIDateTimeUtils.convertDateToString(apiManager.getModifiedDate()));
+					model.setUserId(user.getUserId());
+					model.setGroupId(groupId);
+					
+					lstModels.add(model);
+				}
+				result.getData().addAll(lstModels);
+			}		
+
+			ResponseBuilder builder = Response.status(HttpURLConnection.HTTP_OK).entity(result);
+			buildCrossOriginHeader(builder, request, METHOD_GET);
+			
+			return builder.build();
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response addApiManager(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, ApiManagerInputModel input) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			ApiManager apiManager = ApiManagerLocalServiceUtil.updateApiManager(
+					user.getUserId(), groupId, 0l, input.getApiCode(),
+					input.getApiDescription(), input.getApiName(),
+					input.getApiStatus(), input.getClassName());
+			if (apiManager != null) {
+				ApiManagerDetailModel result = new ApiManagerDetailModel();
+				result.setApiCode(apiManager.getApiCode());
+				result.setApiDescription(apiManager.getApiDescription());
+				result.setApiName(apiManager.getApiName());
+				result.setApiStatus(apiManager.getApiStatus());
+				result.setClassName(apiManager.getClassName());
+				result.setCreateDate(APIDateTimeUtils.convertDateToString(apiManager.getCreateDate()));
+				result.setModifiedDate(APIDateTimeUtils.convertDateToString(apiManager.getModifiedDate()));
+				result.setGroupId(apiManager.getGroupId());
+				result.setUserId(apiManager.getUserId());
+				result.setApiManagerId(apiManager.getApiManagerId());
+				
+				ResponseBuilder builder = Response.status(HttpURLConnection.HTTP_OK).entity(result);
+				buildCrossOriginHeader(builder, request, METHOD_POST);
+				
+				return builder.build();
+			}
+			else {
+				throw new Exception(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_ERROR_PROCESS_DATABASE));
+			}
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response updateApiManager(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, ApiManagerInputModel input) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long apiManagerId = GetterUtil.getLong(id);
+		
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			ApiManager apiManager = ApiManagerLocalServiceUtil.updateApiManager(
+					user.getUserId(), groupId, apiManagerId, input.getApiCode(),
+					input.getApiDescription(), input.getApiName(), input.getApiStatus(), input.getClassName());
+			if (apiManager != null) {
+				
+				ApiManagerDetailModel result = new ApiManagerDetailModel();
+				result.setApiCode(apiManager.getApiCode());
+				result.setApiDescription(apiManager.getApiDescription());
+				result.setApiName(apiManager.getApiName());
+				result.setApiStatus(apiManager.getApiStatus());
+				result.setClassName(apiManager.getClassName());
+				result.setCreateDate(APIDateTimeUtils.convertDateToString(apiManager.getCreateDate()));
+				result.setModifiedDate(APIDateTimeUtils.convertDateToString(apiManager.getModifiedDate()));
+				result.setGroupId(apiManager.getGroupId());
+				result.setUserId(apiManager.getUserId());
+				result.setApiManagerId(apiManager.getApiManagerId());
+
+				ResponseBuilder builder = Response.status(HttpURLConnection.HTTP_OK).entity(result);
+				buildCrossOriginHeader(builder, request, METHOD_PUT);
+				
+				return builder.build();
+			}
+			else {
+				throw new Exception(MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_PROCESSDBERROR));
+			}
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response deleteApiManager(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		long apiManagerId = GetterUtil.getLong(id);
+
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			ApiManagerLocalServiceUtil.deleteApiManager(apiManagerId);
+
+			ResponseBuilder builder = Response.status(HttpURLConnection.HTTP_OK).entity(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_DELETESUCCESS));
+			buildCrossOriginHeader(builder, request, METHOD_DELETE);
+			
+			return builder.build();
+		}
+		catch (PortalException e) {
+			_log.debug(e);
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
+				MessageUtil.getMessage(ConstantUtils.API_MESSAGE_DELETEFAILURE)).build();
+		}
+	}
+
+	@Override
+	public Response detailApiManager(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		
+		ResponseBuilder builder = Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK);
+		buildCrossOriginHeader(builder, request, METHOD_GET + StringPool.COMMA + METHOD_PUT + StringPool.COMMA + METHOD_DELETE);
+		return builder.build();
+	}
+
+	@Override
+	public Response getApiRoles(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			List<ApiRole> lstApiRoles = ApiRoleLocalServiceUtil.findByG(groupId);
+			ApiRoleResultsModel result = new ApiRoleResultsModel();
+			result.setTotal(ApiRoleLocalServiceUtil.countByG(groupId));
+			List<ApiRoleModel> lstModels = new ArrayList<>();
+			if (lstApiRoles != null && lstApiRoles.size() > 0) {
+				for (ApiRole apiRole : lstApiRoles) {
+					ApiRoleModel model = new ApiRoleModel();
+					model.setApiCode(apiRole.getApiCode());
+					model.setApiRoleId(apiRole.getRoleId());
+					model.setRoleCode(apiRole.getRoleCode());
+					model.setApiRoleId(apiRole.getApiRoleId());
+					model.setApiRoleStatus(apiRole.getApiRoleStatus());
+					model.setCreateDate(APIDateTimeUtils.convertDateToString(apiRole.getCreateDate()));
+					model.setModifiedDate(APIDateTimeUtils.convertDateToString(apiRole.getModifiedDate()));
+					model.setUserId(user.getUserId());
+					model.setGroupId(groupId);
+					
+					JobPos jobPos = JobPosLocalServiceUtil.fetchByF_mappingRoleId(groupId, apiRole.getRoleId());
+					if (Validator.isNotNull(jobPos)) {
+						model.setRoleName(jobPos.getTitle());
+					}
+					lstModels.add(model);
+				}
+				result.getData().addAll(lstModels);
+			}		
+
+			ResponseBuilder builder = Response.status(HttpURLConnection.HTTP_OK).entity(result);
+			buildCrossOriginHeader(builder, request, METHOD_GET);
+			
+			return builder.build();
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response addApiRole(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, ApiRoleInputModel input) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
+		try {
+						
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			ApiRole apiRole = ApiRoleLocalServiceUtil.updateApiRole(
+					user.getUserId(), groupId, 0l, input.getApiCode(),
+					input.getRoleId(), input.getRoleCode(),
+					input.getApiRoleStatus());
+			if (apiRole != null) {
+				ApiRoleDetailModel result = new ApiRoleDetailModel();
+				result.setApiCode(apiRole.getApiCode());
+				result.setRoleId(apiRole.getRoleId());
+				result.setRoleCode(apiRole.getRoleCode());
+				result.setApiRoleStatus(apiRole.getApiRoleStatus());
+				result.setCreateDate(APIDateTimeUtils.convertDateToString(apiRole.getCreateDate()));
+				result.setModifiedDate(APIDateTimeUtils.convertDateToString(apiRole.getModifiedDate()));
+				result.setGroupId(apiRole.getGroupId());
+				result.setUserId(apiRole.getUserId());
+				result.setApiRoleId(apiRole.getApiRoleId());
+				
+				ResponseBuilder builder = Response.status(HttpURLConnection.HTTP_OK).entity(result);
+				buildCrossOriginHeader(builder, request, METHOD_POST);
+				
+				return builder.build();
+			}
+			else {
+				throw new Exception(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_ERROR_PROCESS_DATABASE));
+			}
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response updateApiRole(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, ApiRoleInputModel input) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long apiRoleId = GetterUtil.getLong(id);
+		
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			ApiRole apiRole= ApiRoleLocalServiceUtil.updateApiRole(
+					user.getUserId(), groupId, apiRoleId, input.getApiCode(),
+					input.getRoleId(), input.getRoleCode(), input.getApiRoleStatus());
+			if (apiRole != null) {
+				
+				ApiRoleDetailModel result = new ApiRoleDetailModel();
+				result.setApiCode(apiRole.getApiCode());
+				result.setRoleId(apiRole.getRoleId());
+				result.setRoleCode(apiRole.getRoleCode());
+				result.setApiRoleStatus(apiRole.getApiRoleStatus());
+				result.setCreateDate(APIDateTimeUtils.convertDateToString(apiRole.getCreateDate()));
+				result.setModifiedDate(APIDateTimeUtils.convertDateToString(apiRole.getModifiedDate()));
+				result.setGroupId(apiRole.getGroupId());
+				result.setUserId(apiRole.getUserId());
+				result.setApiRoleId(apiRole.getApiRoleId());
+
+				ResponseBuilder builder = Response.status(HttpURLConnection.HTTP_OK).entity(result);
+				buildCrossOriginHeader(builder, request, METHOD_PUT);
+				
+				return builder.build();
+			}
+			else {
+				throw new Exception(MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_PROCESSDBERROR));
+			}
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response deleteApiRole(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		long apiRoleId = GetterUtil.getLong(id);
+
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			
+			ApiRoleLocalServiceUtil.deleteApiRole(apiRoleId);
+
+			ResponseBuilder builder = Response.status(HttpURLConnection.HTTP_OK).entity(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_DELETESUCCESS));
+			buildCrossOriginHeader(builder, request, METHOD_DELETE);
+			
+			return builder.build();
+		}
+		catch (PortalException e) {
+			_log.debug(e);
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
+				MessageUtil.getMessage(ConstantUtils.API_MESSAGE_DELETEFAILURE)).build();
+		}
+	}
+
+	@Override
+	public Response detailApiRole(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		
+		ResponseBuilder builder = Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK);
+		buildCrossOriginHeader(builder, request, METHOD_GET + StringPool.COMMA + METHOD_PUT + StringPool.COMMA + METHOD_DELETE);
+		return builder.build();
+	}
+
+	@Override
+	public Response getLogReport(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, SyncTrackingQuery input) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		DtoResponse response = new DtoResponse();
+		
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			response = new OpenCPSUtils().getLogReports(input,false);
+			_log.debug("Response :" + JSONFactoryUtil.looseSerialize(response));
+			
+			return Response.status(HttpURLConnection.HTTP_OK).entity(response).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+
+	}
+
+	@Override
+	public Response getStatisticLogReport(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, SyncTrackingQuery input) {
+		
+		BackendAuth auth = new BackendAuthImpl();
+		LogReportResultResponse response = new LogReportResultResponse();
+		
+		try {
+			
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			if (Validator.isNull(input.end) || input.end== 0) {
+				input.start = 0;
+				input.end = 999;
+			}
+			List<LogReportStatisticData> liStatisticDatas = new ArrayList<>();
+			DtoResponse dtoResponse = new OpenCPSUtils().getLogReports(input,true);
+			if (dtoResponse != null) {
+				List<SyncTrackingResponse> syList = dtoResponse.getData();
+				if (Validator.isNotNull(syList) && syList.size() > 0) {
+					for (SyncTrackingResponse reTrackingResponse : syList) {
+						LogReportStatisticData data = new LogReportStatisticData();
+						data.setGroupId(reTrackingResponse.groupId);						
+						ApiManager apiManager = ApiManagerLocalServiceUtil.findByApiCode(reTrackingResponse.api);
+		                if (Validator.isNotNull(apiManager)) {
+		                	data.setApiCode(apiManager.getApiCode());
+		                	data.setApiDescription(apiManager.getApiDescription());
+		                	data.setApiName(apiManager.getApiName());
+		                }
+						updateLogReportStaticData(data, reTrackingResponse);
+						_log.debug("-----------------");
+						_log.debug("data: " + JSONFactoryUtil.looseSerialize(data));
+						liStatisticDatas.add(data);
+					}
+				}
+			}
+			response.getData().addAll(liStatisticDatas);
+			response.setTotal(liStatisticDatas.size());			
+			return Response.status(HttpURLConnection.HTTP_OK).entity(response).build();
+			
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}		
+	}
+	
+	private void updateLogReportStaticData(LogReportStatisticData logData, SyncTrackingResponse response) {
+		
+		if (response.getStateSync() == 0) {
+			logData.setTotalAccessFal(logData.getTotalAccessFal() + 1);
+		}else {
+			logData.setTotalAccessSuc(logData.getTotalAccessSuc() + 1);
+		}
+		logData.setTotalAccess(logData.getTotalAccess() + 1);
 	}
 
 }

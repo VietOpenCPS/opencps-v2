@@ -55,9 +55,10 @@ public class POSVCBUtils {
                 jsonBody.put("CLIENT_ID", clientId);
 
                 String data = jsonBody.toString();
-                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
-                byte[] keyData = thirdPartyKey.getBytes();
-                System.out.println("keyData: " + keyData);
+                byte[] keyData = configObj.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
+//                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
+//                byte[] keyData = thirdPartyKey.getBytes();
+                System.out.println("thirdPartyKey: " + configObj.getString(SyncServerTerm.THIRD_PARTY_KEY));
                 JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
 
                 jsonBodyEncrypt.put("KEY", configObj.getString(SyncServerTerm.THIRD_PARTY_ID));
@@ -110,15 +111,20 @@ public class POSVCBUtils {
         }
         return null;
     }
-    public static JSONObject getPaymentConfig(long groupId, String govAgencyCode){
+    public static JSONObject getPaymentConfig(long groupId, String govAgencyCode, String serviceCode){
         try {
             PaymentConfig payConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId, govAgencyCode);
             if (payConfig != null && Validator.isNotNull(payConfig.getEpaymentConfig())) {
                 JSONObject config = JSONFactoryUtil.createJSONObject(payConfig.getEpaymentConfig());
                 if(Validator.isNotNull(config.getString("POS_VCB"))) {
                     JSONObject configPOS = JSONFactoryUtil.createJSONObject(config.getString("POS_VCB"));
-                    if (Validator.isNotNull(configPOS) && Validator.isNotNull(configPOS.getString("default"))) {
-                        JSONObject defaultJSON = JSONFactoryUtil.createJSONObject(configPOS.getString("default"));
+                    JSONObject defaultJSON = JSONFactoryUtil.createJSONObject();
+                    if (Validator.isNotNull(configPOS) && Validator.isNotNull(serviceCode) && configPOS.has(serviceCode)) {
+                        defaultJSON = JSONFactoryUtil.createJSONObject(configPOS.getString(serviceCode));
+                        return defaultJSON;
+                    }
+                    else if (Validator.isNotNull(configPOS) && Validator.isNotNull(configPOS.getString("default"))) {
+                        defaultJSON = JSONFactoryUtil.createJSONObject(configPOS.getString("default"));
                         return defaultJSON;
                     }else{
                         _log.debug("Không có cấu hình ");
@@ -140,10 +146,10 @@ public class POSVCBUtils {
 
     public static String saleRequestDataPOSVCB(long groupId, String govAgencyCode,
                                                long amount, String currencyCode, String staffId,
-                                               String addPrint, String addData, String orderId) {
+                                               String addPrint, String addData, String orderId, String serviceCode) {
 
         try {
-            JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode);
+            JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode,serviceCode);
             JSONObject reponseJSON = getRequestConnectionPOSVCB(groupId, defaultJSON);
 
             StringBuilder sb = new StringBuilder();
@@ -185,9 +191,10 @@ public class POSVCBUtils {
 
                 String data = jsonBody.toString();
                 System.out.println("Data: " + data);
-                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
-                byte[] keyData = thirdPartyKey.getBytes();
-//                System.out.println("keyData: " + keyData);
+                byte[] keyData = reponseJSON.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
+//                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
+//                byte[] keyData = thirdPartyKey.getBytes();
+              _log.info("thirdPartyKey: " + reponseJSON.getString(SyncServerTerm.THIRD_PARTY_KEY));
 
                 JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
 
@@ -229,10 +236,10 @@ public class POSVCBUtils {
     }
 
     public static String voidPOSVCB( long groupId, String govAgencyCode, String currencyCode, String staffId,
-                                     String orderId,  JSONObject resultJSON, String addPrint) {
+                                     String orderId,  JSONObject resultJSON, String addPrint, String serviceCode) {
 
         try {
-            JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode);
+            JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode, serviceCode);
             JSONObject reponseJSON = getRequestConnectionPOSVCB(groupId, defaultJSON);
             StringBuilder sb = new StringBuilder();
             if (Validator.isNotNull(defaultJSON) && Validator.isNotNull(reponseJSON) && Validator.isNotNull(resultJSON.getString(SyncServerTerm.INVOICE))) {
@@ -279,8 +286,10 @@ public class POSVCBUtils {
 
                 String data = jsonBody.toString();
 
-                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
-                byte[] keyData = thirdPartyKey.getBytes();
+//                String thirdPartyKey =reponseJSON.getString(SyncServerTerm.THIRD_PARTY_KEY);
+//                byte[] keyData = thirdPartyKey.getBytes();
+                byte[] keyData = reponseJSON.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
+                _log.info("ThirdParty: " + reponseJSON.getString(SyncServerTerm.THIRD_PARTY_KEY));
 
                 JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
 
@@ -332,7 +341,7 @@ public class POSVCBUtils {
             StringBuilder sb = new StringBuilder();
             _log.debug("SERVER PROXY: " + sc.getConfigs());
             if (sc != null) {
-                String serverUrl = StringPool.BLANK;
+                String serverUrl;
 
                 JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
                 serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
@@ -356,10 +365,10 @@ public class POSVCBUtils {
 
                 String data = jsonBody.toString();
 
-//                byte[] keyData = configObj.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
+                byte[] keyData = configObj.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
 
-                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
-                byte[] keyData = thirdPartyKey.getBytes();
+//                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
+//                byte[] keyData = thirdPartyKey.getBytes();
 
                 JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
 
@@ -399,10 +408,10 @@ public class POSVCBUtils {
 
     }
 
-    public static String checkResultPOSVCB(long groupId, String govAgencyCode, String key){
+    public static String checkResultPOSVCB(long groupId, String govAgencyCode, String key, String serviceCode){
         try {
             String result = StringPool.BLANK;
-            JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode);
+            JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode, serviceCode);
 
             StringBuilder sb = new StringBuilder();
             _log.debug("SERVER PROXY: " + defaultJSON.toString());
@@ -417,8 +426,9 @@ public class POSVCBUtils {
                 jsonBody.put("EVENT",SyncServerTerm.CHECK_RESULT);
                 jsonBody.put("KEY",key);
                 String data = jsonBody.toString();
-                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
-                byte[] keyData = thirdPartyKey.getBytes();
+                byte[] keyData = configObj.getString(SyncServerTerm.THIRD_PARTY_KEY).getBytes();
+//                String thirdPartyKey = SyncServerTerm.THIRD_PARTY_KEY;
+//                byte[] keyData = thirdPartyKey.getBytes();
 
                 JSONObject jsonBodyEncrypt = JSONFactoryUtil.createJSONObject();
                 jsonBodyEncrypt.put("KEY", configObj.getString(SyncServerTerm.THIRD_PARTY_ID));

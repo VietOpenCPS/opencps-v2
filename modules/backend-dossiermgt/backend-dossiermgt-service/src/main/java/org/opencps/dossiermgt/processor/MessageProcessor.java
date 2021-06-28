@@ -1,19 +1,20 @@
 package org.opencps.dossiermgt.processor;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.model.DossierSync;
 
 public class MessageProcessor {
-//	private static Log _log = LogFactoryUtil.getLog(MessageProcessor.class);
+	private static Log _log = LogFactoryUtil.getLog(MessageProcessor.class);
 	private static volatile IMessageProcessor _processor;
 	
 	public static IMessageProcessor getProcessor(DossierSync ds) {
 		if (ds == null)
 			return null;
 		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(ds.getGroupId(), ds.getServerNo());
-		System.out.println("sc: "+sc);
 		if (sc == null)
 			return null;
 		

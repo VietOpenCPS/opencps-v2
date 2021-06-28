@@ -52,7 +52,7 @@ import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 @Component(immediate = true, property = { JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/pgi/",
 		JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.pgi" }, service = Application.class)
 public class PayGateIntegrationApplication extends Application {
-
+	private static Log _log = LogFactoryUtil.getLog(PayGateIntegrationApplication.class);
 	@Override
 	public Set<Object> getSingletons() {
 		return Collections.<Object>singleton(this);
@@ -337,6 +337,7 @@ public class PayGateIntegrationApplication extends Application {
 			result.put("url", actionImpl.getUrlRedirectToPaygov(dossierId, ipAddress));
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
+			_log.error(e);
 			return Response.status(404).entity(e.getMessage()).build();
 		}
 	}
@@ -453,7 +454,7 @@ public class PayGateIntegrationApplication extends Application {
 						file = keypayAction.getQrCode(user, dossierId, serviceContext, request, response, imageStr);
 						break;
 					}catch (Exception e){
-						e.getMessage();
+						_log.error(e);
 					}
 
 				}
@@ -463,6 +464,7 @@ public class PayGateIntegrationApplication extends Application {
 				if (file != null ) break;
 			}
 			catch (InterruptedException e) {
+				_log.error(e);
 				break;
 			}
 		}

@@ -32,7 +32,7 @@ public class LGSPIntegrationManagementImpl implements LGSPIntegrationManagement 
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("call sync Id Lgsp with gr " + groupId + " " + regionId);
-		JSONObject result = JSONFactoryUtil.createJSONObject();
+		JSONObject result;
 		if (LGSPTerm.DICTCOLLECTION_REGION.equals(code)) {
 			result = LGSPTerm.syncAllRegion();
 		} else {
@@ -51,7 +51,7 @@ public class LGSPIntegrationManagementImpl implements LGSPIntegrationManagement 
 			jsonResult.put("secrectKey", encryptSecrect);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonResult.toString()).build();
 		} catch (Exception e) {
-			_log.error("err");
+			_log.error(e);
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}
 	}

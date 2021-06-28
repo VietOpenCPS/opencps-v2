@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
@@ -328,6 +329,8 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findByVnpostalStatus(long groupId, int vnpostalStatus);
 
+	public List<Dossier> findDossierBeforeDateAndDossierStatusisNull(Date date);
+
 	public List<Dossier> findDossierByDay(String date);
 
 	public Dossier findDossierByDeclarationCode(String code, long groupId);
@@ -335,6 +338,12 @@ public interface DossierLocalService extends BaseLocalService,
 	public Dossier findDossierById(long dossierId);
 
 	public List<Dossier> findDossierByGroup(long groupId);
+
+	public DossierDocument findDossierDocumentByDossierId(
+		long dossierDocumentId);
+
+	public List<Dossier> findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(
+		String originDossierNo, Long originDossierId, Integer originality);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -664,6 +673,9 @@ public interface DossierLocalService extends BaseLocalService,
 		String vnpostalProfile, Integer fromViaPostal, String metaData,
 		Date dueDate, int durationCount, ServiceContext serviceContext);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Boolean isDuplicateDossierNo(long groupId, String dossierNo);
+
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier postDossier(long groupId, long dossierId,
 		String referenceUid, int counter, String serviceCode,
@@ -706,7 +718,8 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateWardName, double durationCount, int durationUnit,
 		String dossierName, String processNo, String metaData,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		ServiceContext context) throws PortalException;
+		String dossierCounter, int systemId, ServiceContext context)
+		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier publishImportDossier(long groupId, long dossierId,

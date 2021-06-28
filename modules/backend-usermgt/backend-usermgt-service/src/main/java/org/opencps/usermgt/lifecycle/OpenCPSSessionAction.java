@@ -13,7 +13,7 @@ import org.osgi.service.component.annotations.Component;
 
 import java.util.Date;
 
-@Component(immediate = true, property = { "key=servlet.session.destroy.events" }, service = LifecycleAction.class)
+//@Component(immediate = true, property = { "key=servlet.session.destroy.events" }, service = LifecycleAction.class)
 public class OpenCPSSessionAction extends SessionAction {	
 	private static final Log _log = LogFactoryUtil.getLog(OpenCPSSessionAction.class);
 

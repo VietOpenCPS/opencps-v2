@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action;
 
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -30,6 +31,10 @@ public interface DVCQGIntegrationAction {
 	public JSONObject doCreateDossierFromDVCQG(Company company, User user, long groupId, ServiceContext serviceContext, JSONObject data);
 	public JSONObject doCreateDossierSuaDoiBoSungFromDVCQG(Company company, User user, long groupId,
 														   ServiceContext serviceContext, JSONObject data, boolean isUpdating);
+	public JSONObject doCreateUpdateDossierFromDVCQG(Company company, User user, long groupId,
+														   ServiceContext serviceContext, JSONObject data, boolean isUpdating);
+	public JSONObject doCrUpDossierThongBaoThueDatDVCQG(Company company, User user, long groupId,
+													   ServiceContext serviceContext, JSONObject data, boolean isUpdating);
 	public void syncSummaryVote() throws Exception;
 	public JSONObject doSyncServiceConfig(User user, long groupId, String requestBody, ServiceContext context);
 	//public JSONObject doSyncAnsewer(User user, ServiceContext serviceContext, JSONObject data);

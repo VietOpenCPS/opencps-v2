@@ -27,7 +27,7 @@ public class EnginePreview implements MessageListener {
 		try {
 			_doPreview(message);
 		} catch (Exception e) {
-			_log.error("Unable to process message " + message, e);
+			_log.error(e);
 		}
 	}
 	
@@ -48,7 +48,6 @@ public class EnginePreview implements MessageListener {
                 	return true;
                 }
             } catch (JSONException e) {
-            	_log.error(e.getMessage());
                 return false;
             }
         }
@@ -84,8 +83,8 @@ public class EnginePreview implements MessageListener {
 				MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);
 	
 			} catch (Exception e) {
-				_log.error("Generate file exception........."+e);
-				}
+				_log.error(e);
+			}
 		} else {
 			String reportType = message.contains(ConfigConstants.JASPER_REPORT_TYPE) ? message.getString(ConfigConstants.JASPER_REPORT_TYPE) : ConfigConstants.JASPER_DOCTYPE_PDF;
 			File file = null;
@@ -118,7 +117,7 @@ public class EnginePreview implements MessageListener {
 					MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);
 			
 				} catch (Exception e) {
-					_log.error("Generate file exception........."+e);
+					_log.error(e);
 				}			
 			}
 		}

@@ -14,6 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.model.Counter;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -610,7 +611,11 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		
 		return results;
 	}
-	
+
+	private void logLineLevelType(String type, int number, String dossierId) {
+		_log.info(type + "_"+ number + "_" + dossierId + "_log_action");
+	}
+
 	//@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateDossierAction(long groupId, long dossierActionId, long dossierId, long serviceProcessId,
 			long previousActionId, String fromStepCode, String fromStepName, String fromSequenceNo, String actionCode,
@@ -622,17 +627,51 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		long userId = 0l;
 		String fullName = StringPool.BLANK;
 		Date now = new Date();
-
+		String dossierIdString = String.valueOf(dossierId);
 		if (context.getUserId() > 0) {
 			User userAction = userLocalService.getUser(context.getUserId());
 			userId = userAction.getUserId();
 			fullName = userAction.getFullName();
 		}
 
-		if (dossierActionId == 0) {
-			dossierActionId = counterLocalService.increment(DossierAction.class.getName());
+//		try {
+//			Counter counterDetail = CounterLocalServiceUtil.fetchCounter("org.opencps.dossiermgt.model.DossierAction");
+//			if(counterDetail != null) {
+//				_log.info("DossierAction current counter: " + counterDetail.getCurrentId() + " with dossier: " + dossierIdString);
+//			}
+//
+//		} catch (Exception e) {
+//			_log.error("Error when get DossierAction counter");
+//		}
 
-			object = dossierActionPersistence.create(dossierActionId);
+		if (dossierActionId == 0) {
+			try {
+				logLineLevelType("updateDossierAction", 1 , dossierIdString);
+				dossierActionId = counterLocalService.increment(DossierAction.class.getName());
+				object = dossierActionPersistence.create(dossierActionId);
+				logLineLevelType("updateDossierAction", 2 , dossierIdString);
+				logLineLevelType("updateDossierAction", 3 , dossierIdString + "_"+ dossierActionId);
+			} catch (Exception e) {
+				_log.error("Error when creating dossierAction: " + e.getMessage());
+				logLineLevelType("updateDossierAction", 4 , dossierIdString);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException interruptedException) {
+					interruptedException.printStackTrace();
+				}
+				logLineLevelType("updateDossierAction", 5 , dossierIdString);
+
+				try {
+					dossierActionId = counterLocalService.increment(DossierAction.class.getName());
+					object = dossierActionPersistence.create(dossierActionId);
+				} catch (Exception ex) {
+					_log.info("BOTAY: " + ex.getMessage());
+					return null;
+				}
+
+				logLineLevelType("updateDossierAction", 6 , dossierIdString);
+			}
+
 
 			// Add audit fields
 			object.setCompanyId(context.getCompanyId());

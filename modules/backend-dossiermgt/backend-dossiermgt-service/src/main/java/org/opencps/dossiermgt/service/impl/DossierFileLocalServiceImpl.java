@@ -45,6 +45,8 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.exception.FileNameException;
 import com.liferay.document.library.kernel.util.DLValidatorUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -394,7 +396,7 @@ public class DossierFileLocalServiceImpl
 
 			return dossierFilePersistence.update(object);
 		}catch (Exception e){
-			 e.getMessage();
+			 _log.error(e);
 		}
 		return null;
 	}
@@ -2062,6 +2064,7 @@ public class DossierFileLocalServiceImpl
 			dossierId, fileTemplateNo, dossierPartType, fileEntryId, removed,
 			start, end, orderByComparator);
 	}
+	
 
 	@Override
 	public List<DossierFile> findByDID_GROUP(long groupId, long dossierId) {
@@ -2072,6 +2075,7 @@ public class DossierFileLocalServiceImpl
 	public List<DossierFile> getByG_DID_FILE(long groupId, long[] dossierIds, String dossierPartNo) {
 		return dossierFilePersistence.findByG_DID_FILE(groupId,dossierIds,dossierPartNo);
 	}
+	
 
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

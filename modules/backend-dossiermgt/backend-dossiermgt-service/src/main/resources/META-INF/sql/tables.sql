@@ -93,6 +93,32 @@ create table opencps_configcounter (
 	startCounter INTEGER
 );
 
+create table opencps_csdldc_serviceinfo (
+	uuid_ VARCHAR(75) null,
+	idDcService LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	serviceCode VARCHAR(75) null,
+	serviceCodeDvcqg VARCHAR(75) null,
+	status INTEGER
+);
+
+create table opencps_csdldc_user (
+	uuid_ VARCHAR(75) null,
+	idDcUser LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	govAgencyCode VARCHAR(75) null,
+	govAgencyCodeDvcqg VARCHAR(75) null,
+	keyName VARCHAR(75) null,
+	keyPass VARCHAR(75) null,
+	userName VARCHAR(75) null,
+	employeeEmail VARCHAR(75) null,
+	status INTEGER
+);
+
 create table opencps_deliverable (
 	uuid_ VARCHAR(75) null,
 	deliverableId LONG not null primary key,
@@ -303,7 +329,8 @@ create table opencps_dossier (
 	postalCodeSend VARCHAR(75) null,
 	postalCodeReceived VARCHAR(75) null,
 	lastReceiveDate DATE null,
-	lastSendDate DATE null
+	lastSendDate DATE null,
+	serviceLevel INTEGER
 );
 
 create table opencps_dossieraction (
@@ -846,7 +873,9 @@ create table opencps_processoption (
 	instructionNote TEXT null,
 	submissionNote TEXT null,
 	sampleCount LONG,
-	registerBookCode VARCHAR(100) null
+	registerBookCode VARCHAR(100) null,
+	forCitizen BOOLEAN,
+	forBusiness BOOLEAN
 );
 
 create table opencps_processsequence (
@@ -1002,6 +1031,20 @@ create table opencps_registrationtemplate (
 	sampleData TEXT null
 );
 
+create table opencps_reportlandtax (
+	uuid_ VARCHAR(75) null,
+	reportId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	dossierNo VARCHAR(75) null,
+	bodyRequest VARCHAR(75) null,
+	response VARCHAR(75) null
+);
+
 create table opencps_serviceconfig (
 	uuid_ VARCHAR(75) null,
 	serviceConfigId LONG not null primary key,
@@ -1070,7 +1113,9 @@ create table opencps_serviceinfo (
 	public_ BOOLEAN,
 	govAgencyText TEXT null,
 	isNotarization BOOLEAN,
-	serviceNameTitle VARCHAR(500) null
+	serviceNameTitle VARCHAR(500) null,
+	tagCode VARCHAR(75) null,
+	tagName VARCHAR(75) null
 );
 
 create table opencps_serviceinfomapping (

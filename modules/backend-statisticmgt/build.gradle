@@ -19,6 +19,10 @@ dependencies {
 	compile group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxrs', version: '3.0.3'
 	compile group: 'org.apache.cxf', name: 'cxf-rt-transports-http', version: '3.0.3'
 	compile group: 'org.apache.cxf', name: 'cxf-rt-rs-client', version: '3.0.3'
+	compileOnly project(":modules:backend-usermgt:backend-usermgt-api")
+	compileOnly project(":modules:backend-usermgt:backend-usermgt-service")
+	compileOnly project(":modules:backend-statistic-service:backend-statistic-service-api")
+	compileOnly project(":modules:backend-auth")
 	
 	compile project(":modules:backend-bundlemgt")
 	//compile project(":modules:backend-exportmgt")

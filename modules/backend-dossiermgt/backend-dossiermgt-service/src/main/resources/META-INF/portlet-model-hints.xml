@@ -135,6 +135,30 @@
 		</field>
 		<field name="startCounter" type="int" />
 	</model>
+	<model name="org.opencps.dossiermgt.model.CsdlDcServiceInfo">
+		<field name="uuid" type="String" />
+		<field name="idDcService" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="serviceCode" type="String" />
+		<field name="serviceCodeDvcqg" type="String" />
+		<field name="status" type="int" />
+	</model>
+	<model name="org.opencps.dossiermgt.model.CsdlDcUser">
+		<field name="uuid" type="String" />
+		<field name="idDcUser" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyCodeDvcqg" type="String" />
+		<field name="keyName" type="String" />
+		<field name="keyPass" type="String" />
+		<field name="userName" type="String" />
+		<field name="employeeEmail" type="String" />
+		<field name="status" type="int" />
+	</model>
 	<model name="org.opencps.dossiermgt.model.Deliverable">
 		<field name="uuid" type="String" />
 		<field name="deliverableId" type="long" />
@@ -539,6 +563,7 @@
 		<field name="postalCodeReceived" type="String" />
 		<field name="lastReceiveDate" type="Date" />
 		<field name="lastSendDate" type="Date" />
+		<field name="serviceLevel" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />
@@ -1328,6 +1353,8 @@
 		<field name="registerBookCode" type="String">
 			<hint name="max-length">100</hint>
 		</field>
+		<field name="forCitizen" type="boolean" />
+		<field name="forBusiness" type="boolean" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessPlugin">
 		<field name="uuid" type="String" />
@@ -1754,6 +1781,8 @@
 		<field name="serviceNameTitle" type="String">
 			<hint name="max-length">500</hint>
 		</field>
+		<field name="tagCode" type="String" />
+		<field name="tagName" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceInfoMapping">
 		<field name="serviceInfoMappingId" type="long" />

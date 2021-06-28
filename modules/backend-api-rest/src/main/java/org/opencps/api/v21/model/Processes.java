@@ -260,7 +260,9 @@ public class Processes {
         "templateName",
         "processNo",
         "processName",
-        "registerBookCode"
+        "registerBookCode",
+        "forCitizen",
+        "forBusiness"
     })
     public static class ProcessOption {
 
@@ -286,6 +288,24 @@ public class Processes {
         protected String processName;
         @XmlElement(required = true)
         protected String registerBookCode;
+        protected Boolean forCitizen;
+        protected Boolean forBusiness;
+
+        public Boolean getForCitizen() {
+            return forCitizen;
+        }
+
+        public void setForCitizen(Boolean forCitizen) {
+            this.forCitizen = forCitizen;
+        }
+
+        public Boolean getForBusiness() {
+            return forBusiness;
+        }
+
+        public void setForBusiness(Boolean forBusiness) {
+            this.forBusiness = forBusiness;
+        }
 
         /**
          * Gets the value of the optionCode property.

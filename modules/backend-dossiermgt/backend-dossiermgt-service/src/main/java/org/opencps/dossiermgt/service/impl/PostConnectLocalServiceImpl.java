@@ -81,6 +81,7 @@ public class PostConnectLocalServiceImpl extends PostConnectLocalServiceBaseImpl
 			return postConnectPersistence.update(postConnectNew);
 
 		}catch (Exception e) {
+			_log.error(e);
 			_log.error("CRUD Order number " + orderNumber + " error: " + e.getMessage());
 		}
 		return null;

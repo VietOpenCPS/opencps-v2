@@ -83,6 +83,15 @@ public class DossierInputModel {
 	private String assignUsers;
 	private String payload;
 	private String actionUser;
+	private int serviceLevel;
+
+	public int getServiceLevel() {
+		return serviceLevel;
+	}
+
+	public void setServiceLevel(int serviceLevel) {
+		this.serviceLevel = serviceLevel;
+	}
 
 	public String getActionUser() {
 		return actionUser;

@@ -61,9 +61,7 @@ public class CPSDossierBusinessLocalServiceUtil {
 		String referenceUid, String dossierTemplateNo, String dossierPartNo,
 		String fileTemplateNo, String displayName, String fileType,
 		String isSync, String formData, String removed, String eForm,
-		Long modifiedDate)
-		throws org.opencps.auth.api.exception.UnauthenticationException,
-			com.liferay.portal.kernel.exception.PortalException, Exception {
+		Long modifiedDate) throws Exception {
 		return getService()
 				   .addDossierFileByDossierId(groupId, company, user,
 			serviceContext, file, id, referenceUid, dossierTemplateNo,
@@ -89,8 +87,7 @@ public class CPSDossierBusinessLocalServiceUtil {
 		com.liferay.portal.kernel.model.User user,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,
 		org.opencps.dossiermgt.input.model.DossierPublishModel input)
-		throws org.opencps.auth.api.exception.UnauthenticationException,
-			com.liferay.portal.kernel.exception.PortalException, Exception {
+		throws Exception {
 		return getService()
 				   .addDossierPublish(groupId, company, user, serviceContext,
 			input);
@@ -146,8 +143,7 @@ public class CPSDossierBusinessLocalServiceUtil {
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,
 		String id,
 		org.opencps.dossiermgt.input.model.PaymentFileInputModel input)
-		throws org.opencps.auth.api.exception.UnauthenticationException,
-			com.liferay.portal.kernel.exception.PortalException, Exception {
+		throws Exception {
 		return getService()
 				   .createPaymentFileByDossierId(groupId, serviceContext, id,
 			input);
@@ -174,8 +170,7 @@ public class CPSDossierBusinessLocalServiceUtil {
 		com.liferay.portal.kernel.model.User user,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,
 		long id, org.opencps.dossiermgt.input.model.DossierPublishModel input)
-		throws org.opencps.auth.api.exception.UnauthenticationException,
-			com.liferay.portal.kernel.exception.PortalException, Exception {
+		throws Exception {
 		return getService()
 				   .eparPublish(groupId, company, user, serviceContext, id,
 			input);
@@ -218,8 +213,7 @@ public class CPSDossierBusinessLocalServiceUtil {
 		long groupId, com.liferay.portal.kernel.model.Company company,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,
 		long id, String referenceUid, String formdata)
-		throws org.opencps.auth.api.exception.UnauthenticationException,
-			com.liferay.portal.kernel.exception.PortalException, Exception {
+		throws Exception {
 		return getService()
 				   .resetformdataDossierFileFormData(groupId, company,
 			serviceContext, id, referenceUid, formdata);
@@ -230,8 +224,7 @@ public class CPSDossierBusinessLocalServiceUtil {
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,
 		long id, String referenceUid,
 		org.apache.cxf.jaxrs.ext.multipart.Attachment file)
-		throws org.opencps.auth.api.exception.UnauthenticationException,
-			com.liferay.portal.kernel.exception.PortalException, Exception {
+		throws Exception {
 		return getService()
 				   .updateDossierFile(groupId, company, serviceContext, id,
 			referenceUid, file);
@@ -241,8 +234,7 @@ public class CPSDossierBusinessLocalServiceUtil {
 		long groupId, com.liferay.portal.kernel.model.Company company,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,
 		long id, String referenceUid, String formdata)
-		throws org.opencps.auth.api.exception.UnauthenticationException,
-			com.liferay.portal.kernel.exception.PortalException, Exception {
+		throws Exception {
 		return getService()
 				   .updateDossierFileFormData(groupId, company, serviceContext,
 			id, referenceUid, formdata);

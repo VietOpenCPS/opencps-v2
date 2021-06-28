@@ -4,11 +4,4 @@ Bundle-Version: 1.0.0
 
 Include-Resource:configuration=src/main/resources/configuration
 
-Export-Package: \
-	com.fasterxml.jackson.annotation,\
-    com.fasterxml.jackson.annotation.*,\
-    io.swagger.annotations,\
-    io.swagger.annotations.*,\
-    com.fasterxml.jackson.dataformat.xml.annotation,\
-    org.json.simple.parser,\
-    org.json.simple
+

@@ -533,7 +533,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
 		actionModel.setActionNote(dossierSync.getActionNote());
-		actionModel.setActionNote(dossierSync.getActionNote());
 		//actionModel.setPayload(dossierSync.getPayload());
 		
 		//Test submitsionNote
@@ -556,10 +555,9 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			}
 
 			actionModel.setPayload(payloadData.toJSONString());
-			System.out.println("payload Sync: "+ payloadData.toJSONString());
 		} catch (Exception e) {
-			actionModel.setPayload(dossierSync.getPayload());
-			System.out.println("payload Sync: "+ dossierSync.getPayload());
+//			actionModel.setPayload(dossierSync.getPayload());
+			_log.info("ERROR Exception");
 			_log.debug(e);
 		}
 
@@ -617,7 +615,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			model.setOriginality(DossierTerm.ORIGINALITY_LIENTHONG);
 		}
 //		model.setOnline("true");
-		_log.info("DEBUG SYNC DOSSIER: " + model.getServiceCode() + ", " + model.getGovAgencyCode() + ", " + model.getDossierTemplateNo());
+		_log.info("DEBUG SYNC DOSSIER: " + model.getServiceCode() + ", " + model.getGovAgencyCode()
+				+ ", " + model.getDossierTemplateNo());
 		
 		DossierDetailModel result = client.postDossier(model);
 		StringBuilder messageText = new StringBuilder();
@@ -639,6 +638,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		
 		String payload = dossierSync.getPayload();
 		if (dossier.getOriginDossierId() == 0) {
+			_log.debug("Vaooooo OrigindossierId = 0");
 			try {
 				JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
 				if (payloadObj.has(DossierSyncTerm.PAYLOAD_SYNC_FILES)) {
@@ -665,6 +665,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 					for (int i = 0; i < fileArrs.length(); i++) {
 						JSONObject fileObj = fileArrs.getJSONObject(i);
 						if (fileObj.has(DossierFileTerm.REFERENCE_UID)) {
+							_log.debug("Vaoooooooo 1111111");
 							DossierFile df = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossier.getDossierId(), fileObj.getString(DossierFileTerm.REFERENCE_UID));
 							if (df != null && !df.getEForm()) {
 								if (df.getFileEntryId() > 0) {
@@ -684,6 +685,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFileType(fileEntry.getMimeType());
 										dfModel.setRemoved(df.getRemoved());
 										dfModel.setEForm(df.getEForm());
+										_log.debug("Vaoooooo: " + JSONFactoryUtil.looseSerialize(dfModel));
 										messageText.append(ConstantUtils.POST_DOSIER_FILE);
 										messageText.append(System.lineSeparator());
 										messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
@@ -811,6 +813,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		}
 		else {
 			//HSLT
+			_log.debug("Vaooooo OrigindossierId > 0");
 			try {
 				JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
 				if (payloadObj.has(DossierSyncTerm.PAYLOAD_SYNC_FILES)) {
@@ -837,6 +840,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 					for (int i = 0; i < fileArrs.length(); i++) {
 						JSONObject fileObj = fileArrs.getJSONObject(i);
 						if (fileObj.has(DossierFileTerm.REFERENCE_UID)) {
+							_log.debug("Vaoooooooo 111111");
 							DossierFile df = DossierFileLocalServiceUtil.getDossierFileByReferenceUid(dossier.getOriginDossierId(), fileObj.getString(DossierFileTerm.REFERENCE_UID));
 							String dossierPartNo = StringPool.BLANK;
 							String dossierTemplateNo = StringPool.BLANK;
@@ -875,6 +879,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 							}
 							
 							if (df != null && !df.getEForm()) {
+								_log.debug("Vaoooooooo 222222222");
 								if (df.getFileEntryId() > 0) {
 									FileEntry fileEntry;
 									try {
@@ -1027,7 +1032,9 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		//Process action
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 		//_log.debug("SONDT DOSSIER ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierAction));
-		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchByF_GID_SID_AC_PRE_POST(dossierAction.getGroupId(), dossierAction.getServiceProcessId(), dossierAction.getActionCode(), dossierAction.getFromStepCode(), dossierAction.getStepCode());
+		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchByF_GID_SID_AC_PRE_POST(
+				dossierAction.getGroupId(), dossierAction.getServiceProcessId(), dossierAction.getActionCode(),
+				dossierAction.getFromStepCode(), dossierAction.getStepCode());
 		//_log.debug("SONDT PROCESS ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(processAction));
 		//_log.debug("SONDT DOSSIERID PAYMENT REQUEST ================"+ dossier.getDossierId());
 		_log.debug("OpenCPS SYNC PAYMENTFILE FROM SYNCREQUEST : " + APIDateTimeUtils.convertDateToString(new Date()));

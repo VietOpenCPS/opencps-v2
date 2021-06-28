@@ -18,7 +18,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.opencps.backend.statisticmgt.constant.Constants;
+import org.opencps.backend.statisticmgt.constant.PropKeys;
 import org.opencps.backend.statisticmgt.constant.PropValues;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 /**
  * @author trungnt
@@ -98,7 +101,9 @@ public class QueryUtil {
 
 		STATISTIC_DOSSIER_PEDING_TOTAL_LIST(19),
 
-		STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT(20);
+		STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT(20),
+
+		STATISTIC_DOSSIER_VOTING_TOTAL_LIST(21);
 
 		private QueryType(int type) {
 			this.type = type;
@@ -269,6 +274,14 @@ public class QueryUtil {
 				this.sqlSearchTemplate = StringPool.BLANK;
 				break;
 
+			case 21:
+				this.sqlCountTemplate = PropValues.STATISTIC_DOSSIER_VOTING_TOTAL_COUNT;
+				this.sqlGroupTemplate = PropValues.STATISTIC_DOSSIER_VOTING_GROUP_TOTAL_COUNT;
+				this.sqlRowTemplate = PropValues.STATISTIC_DOSSIER_VOTING_ROW_TOTAL_COUNT;
+				this.sqlSearchTemplate = PropValues.STATISTIC_DOSSIER_VOTING_TOTAL_LIST;
+				break;
+
+
 			default:
 				this.sqlCountTemplate = StringPool.BLANK;
 				this.sqlGroupTemplate = StringPool.BLANK;
@@ -301,6 +314,15 @@ public class QueryUtil {
 			return StringPool.BLANK;
 		}
 
+		public static String getSQLRowTotalQueryTemplate(int type) {
+			for (QueryType e : values()) {
+				if (e.type == type) {
+					return e.sqlRowTemplate;
+				}
+			}
+			return StringPool.BLANK;
+		}
+
 		public static String getSQLGroupQueryTemplate(int type) {
 			for (QueryType e : values()) {
 				if (e.type == type) {
@@ -316,12 +338,34 @@ public class QueryUtil {
 
 		String sqlGroupTemplate;
 
+		String sqlRowTemplate;
+
 		int type;
 	}
 
-	public static int getCount(String sql) {
+	public static int getCount(String sql, long userId, long groupId) {
 
 		int count = 0;
+		_log.debug("sqlTemplate: " + sql);
+		if (userId > 0) {
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			if (Validator.isNotNull(employee) && Validator.isNotNull(employee.getScope())) {
+				String name = StringPool.BLANK;
+				String[] scope = employee.getScope().split(StringPool.COMMA);
+				for (String key : scope) {
+					if (Validator.isNotNull(name)) {
+						name += "," + key;
+					} else {
+						name = key;
+					}
+				}
+				sql = sql.replace("{scopeEmpl}", StringPool.APOSTROPHE + name + StringPool.APOSTROPHE);
+			} else {
+				sql = sql.replace("{scopeEmpl}", "''");
+			}
+		}else {
+			sql = sql.replace("{scopeEmpl}", "''");
+		}
 
 		try (PreparedStatement pst = ConnectionUtil._getConnection().prepareStatement(sql)) {
 
@@ -334,6 +378,7 @@ public class QueryUtil {
 			}
 		} catch (SQLException sqle) {
 			_log.warn(sqle.getMessage(), sqle);
+			ConnectionUtil._getConnection();
 		}
 
 		return count;
@@ -394,10 +439,13 @@ public class QueryUtil {
 					data.put(dataRow);
 				}
 			} catch (SQLException sqle) {
-				_log.error(sqle.getMessage(), sqle);
+				_log.error(sqle.getMessage() + "! - Configurate Debug log org.opencps.backend.statisticmgt.util.QueryUtil for more details!");
+				_log.debug(sqle);
 			}
 		} catch (SQLException sqle) {
-			_log.error(sqle.getMessage(), sqle);
+			_log.error(sqle.getMessage() + "! - Configurate Debug log org.opencps.backend.statisticmgt.util.QueryUtil for more details!");
+			_log.debug(sqle);
+			ConnectionUtil._getConnection();
 		}
 
 		return data;
@@ -420,14 +468,13 @@ public class QueryUtil {
 			return columns;
 		}
 
-		pattern = Pattern.compile("([a-z]+|[A-Z]+|[0-9]+)(\\[([a-z]+|[A-Z]+)\\])", Pattern.CASE_INSENSITIVE);
+		pattern = Pattern.compile("([a-z0-9_]+|[A-Z0-9_]+|[0-9]+)(\\[([a-z]+|[A-Z]+)\\])", Pattern.CASE_INSENSITIVE);
 
 		matcher = pattern.matcher(select);
 
 		String group = StringPool.BLANK;
 
 		while (matcher.find()) {
-
 			group = matcher.group();
 
 			String dataType = group.substring(group.lastIndexOf(StringPool.OPEN_BRACKET) + 1,
@@ -485,8 +532,10 @@ public class QueryUtil {
 			sqlQueryTemplate = QueryType.getSQLGroupQueryTemplate(type);
 		} else if (subType.equals(Constants.LIST)) {
 			sqlQueryTemplate = QueryType.getSQLSearchQueryTemplate(type);
+		} else if (subType.equals(Constants.ROW_TOTAL)) {
+			sqlQueryTemplate = QueryType.getSQLRowTotalQueryTemplate(type);
 		}
-		System.out.println("5 " + Thread.currentThread().getId() + "|" + Thread.currentThread().getName());
+		//System.out.println("5 " + Thread.currentThread().getId() + "|" + Thread.currentThread().getName());
 		return sqlQueryTemplate;
 	}
 

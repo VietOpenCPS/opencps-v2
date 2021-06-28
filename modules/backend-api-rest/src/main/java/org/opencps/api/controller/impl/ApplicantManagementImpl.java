@@ -1,8 +1,5 @@
 package org.opencps.api.controller.impl;
 
-import backend.auth.api.exception.BusinessExceptionImpl;
-import backend.auth.api.exception.ErrorMsgModel;
-import backend.utils.SendMailUtils;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -19,22 +16,82 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.search.*;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.HttpMethods;
-import com.liferay.portal.kernel.util.*;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.MimeTypesUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
+
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.activation.DataHandler;
+import javax.imageio.ImageIO;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.X509TrustManager;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ApplicantManagement;
-import org.opencps.api.controller.util.*;
+import org.opencps.api.controller.util.ApplicantUtils;
+import org.opencps.api.controller.util.CaptchaServiceSingleton;
+import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
+import org.opencps.api.controller.util.EmployeeUtils;
+import org.opencps.api.controller.util.MessageUtil;
+import org.opencps.api.controller.util.NGSPRestClient;
+import org.opencps.api.controller.util.OpenCPSUtils;
 import org.opencps.api.employee.model.EmployeeAccountInputModel;
 import org.opencps.api.employee.model.EmployeeAccountModel;
-import org.opencps.api.usermgt.model.*;
+import org.opencps.api.usermgt.model.ApplicantInputModel;
+import org.opencps.api.usermgt.model.ApplicantInputUpdateModel;
+import org.opencps.api.usermgt.model.ApplicantModel;
+import org.opencps.api.usermgt.model.ApplicantResultsModel;
+import org.opencps.api.usermgt.model.ApplicantSearchModel;
+import org.opencps.api.usermgt.model.ProfileInputModel;
 import org.opencps.api.v21.model.NotificationTemplateList;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
@@ -57,12 +114,13 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.action.util.TrustManager;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
-import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.exception.model.ExceptionModel;
 import org.opencps.kernel.prop.PropValues;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.UserInterface;
@@ -75,43 +133,26 @@ import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.scheduler.utils.RegisterLGSPUtils;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+
+import backend.auth.api.exception.BusinessExceptionImpl;
+import backend.auth.api.exception.ErrorMsgModel;
+import backend.utils.SendMailUtils;
 import vn.gov.ngsp.DKDN.GTVT.IDoanhNghiep;
 import vn.gov.ngsp.DKDN.GTVT.IToken;
 import vn.gov.ngsp.DKDN.GTVT.Models.MToken;
 
-import javax.activation.DataHandler;
-import javax.imageio.ImageIO;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.*;
-
 public class ApplicantManagementImpl implements ApplicantManagement {
+	
+	private static final String API_LIST_APPLICANT = "API_LIST_APPLICANT";
+	private static final String API_VIEW_APPLICANT = "API_VIEW_APPLICANT";
+	
 	private final String USER_03 = "USER-03";
 	private final String USER_05 = "USER-05";
 	@Override
 	public Response register(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, ApplicantInputModel input) {
 
+		_log.info("111111");
 		ApplicantActions actions = new ApplicantActionsImpl();
 
 		ApplicantModel result = new ApplicantModel();
@@ -124,9 +165,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
 
+			_log.info("Input :" + JSONFactoryUtil.looseSerialize(input));
 			if (!auth2.checkToken(request, header)) {
 				throw new UnauthenticationException();
 			}
+			_log.info("222222");
 			String applicantName = HtmlUtil.escape(input.getApplicantName());
 			String applicantIdType = HtmlUtil.escape(input.getApplicantIdType());
 			String applicantIdNo = HtmlUtil.escape(input.getApplicantIdNo());
@@ -151,6 +194,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 
 			}
+			_log.info("3333333");
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
 					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
 					cityCode, cityName, districtCode, districtName,
@@ -221,9 +265,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new Exception("Notification template not found");
 			}
 
-			ApplicantActions actions = new ApplicantActionsImpl();
 			Applicant applicant = null;
-			String payloadString;
 			String contactEmail;
 
 			//Case resend email confirm account
@@ -352,6 +394,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		ApplicantResultsModel results = new ApplicantResultsModel();
 		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		JSONObject bodyResponse = JSONFactoryUtil.createJSONObject();
+
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -377,7 +422,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					APIDateTimeUtils.convertNormalDateToLuceneDate(
 							query.getToRegistryDate());
 
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -401,14 +445,29 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					serviceContext.getCompanyId(), groupId, params, sorts, query.getStart(), query.getEnd(),
 					serviceContext);
 
+			
 			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
 				results.getData().addAll(ApplicantUtils.mappingToApplicantResults((List<Document>) jsonData.get(ConstantUtils.DATA)));
+				
+				bodyResponse.put("status", HttpURLConnection.HTTP_OK);
+				bodyResponse.put("total", results.getTotal());
 			}
+			
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_LIST_APPLICANT, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 1,
+					JSONFactoryUtil.looseSerialize(query), bodyResponse.toJSONString());
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
+			
+			bodyResponse.put("status", HttpURLConnection.HTTP_INTERNAL_ERROR);
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_LIST_APPLICANT, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					JSONFactoryUtil.looseSerialize(query), bodyResponse.toJSONString());
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -447,6 +506,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				applicant = actions.getApplicantDetail(serviceContext, id);
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
+				
+				// ghi log vao syncTracking
+				OpenCPSUtils.addSyncTracking(API_VIEW_APPLICANT, user.getUserId(),
+						applicant.getGroupId(), StringPool.NULL,StringPool.NULL, StringPool.NULL, 1,
+						String.valueOf(id), JSONFactoryUtil.looseSerialize(results));
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {
@@ -454,6 +518,10 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 		} catch (Exception e) {
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_VIEW_APPLICANT, user.getUserId(),
+					applicant.getGroupId(), StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					String.valueOf(id), JSONFactoryUtil.looseSerialize(results));
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -932,6 +1000,91 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		return token;
 	}
 	
+	private String getTokenLGSP(NGSPRestClient client) throws Exception {
+		String tokenUrl = getDefaultTokenUrl();
+		String consumer_key = getDefaultConsumerKey();
+		String secret_key = getDefaultSecretKey();
+
+		if (client != null) {
+			tokenUrl = client.getBaseUrl();
+			consumer_key = client.getConsumerKey();
+			secret_key = client.getConsumerSecret();
+		}
+		String token = getToken(tokenUrl, consumer_key, secret_key);
+		
+		return token;
+	}
+	
+	public String getToken(String tokenURL, String consumer_key, String secret_key) throws Exception {
+		
+		HttpsURLConnection  conn = null;
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+			
+			String authString =  consumer_key+StringPool.COLON+secret_key;
+			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
+			
+			URL url = new URL(tokenURL);
+			
+			conn = (HttpsURLConnection ) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("Authorization", "Basic "+authStringEnc);
+			conn.setInstanceFollowRedirects(true);
+			conn.setReadTimeout(60 * 1000);
+			
+			StringBuilder body = new StringBuilder();
+			body.append("grant_type").append(StringPool.EQUAL).append("client_credentials");
+
+			byte[] postData = body.toString().toString().getBytes("UTF-8");
+			int postDataLength = postData.length;
+			conn.setRequestProperty("Content-Length",Integer.toString(postDataLength));
+			
+			TrustManager myTrustManager = new TrustManager();
+			conn = myTrustManager.disableSSL(conn);
+			
+			try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+				wr.write(postData);
+			}
+			conn.connect();
+
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			
+
+			String output = StringPool.BLANK;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = bufferedReader.readLine()) != null) {
+				sb.append(output);
+			}
+			
+			if(Validator.isNotNull(sb.toString())){
+				result = JSONFactoryUtil.createJSONObject(sb.toString());
+			}
+			
+			_log.debug("+++++token return:"+result);
+
+			return result.has("access_token") ? result.getString("access_token") : StringPool.BLANK;
+
+			
+
+		} catch (Exception e) {
+			_log.error(e);
+			return null;
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
+		}
+		
+	}
+	
 	private String CTDN_NGSP_URL = "https://api.ngsp.gov.vn/apiCSDLDKDN/1.0/chiTietDoanhNghiep";
 	private String CTDN_TOKEN = "cd21bef3-e484-3ce9-9045-84c240e9803b";
 	
@@ -1274,7 +1427,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			if (syncUserLGSP) {
 
-				String strProfile = StringPool.BLANK;
+				String strProfile;
 				//String strToken = ApplicantUtils.getTokenNewLGSP();
 				//if (Validator.isNotNull(strToken)) {
 					JSONObject jsonToken = LGSPRestfulUtils.createTokenLGSP("Bearer");
@@ -1313,11 +1466,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 												applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address,
 												cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
 												contactTelNo, StringPool.BLANK, input.getPassword());
-
-										result = ApplicantUtils.mappingToApplicantModel(applicant);
 									}
 									catch (Exception e) {
-										_log.error("Error duplicate lgsp: " + e.getMessage());
+										_log.error(e);
 									}
 									ErrorMsgModel error = new ErrorMsgModel();
 									error.setMessage("Active error");
@@ -1556,7 +1707,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -1915,7 +2065,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactName = HtmlUtil.escape(input.getContactName());
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
-			String applicantIdDate = input.getApplicantIdDate();
 
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
@@ -1929,7 +2078,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			//
 			// Create a trust manager that does not validate certificate chains
-			TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[] { new X509TrustManager() {
 				public X509Certificate[] getAcceptedIssuers() {
 					return null;
 				}
@@ -1944,7 +2093,10 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				sc.init(null, trustAllCerts, new SecureRandom());
 				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 			} catch (Exception e) {
+				_log.error(e);
 			}
+			
+			
 
 			//String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
 			String strProfile = StringPool.BLANK;
@@ -2046,7 +2198,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		//Active LGSP and change pass
 		if (aplc != null) {
 			// Create a trust manager that does not validate certificate chains
-			TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[] { new X509TrustManager() {
 				public X509Certificate[] getAcceptedIssuers() {
 					return null;
 				}
@@ -2061,6 +2213,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				sc.init(null, trustAllCerts, new SecureRandom());
 				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 			} catch (Exception e) {
+				_log.error(e);
 			}
 	
 			try {
@@ -2167,7 +2320,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						}
 						ApplicantLocalServiceUtil.adminProcessData(objectData);
 					} catch (Exception e) {
-						e.printStackTrace();
+						_log.error(e);
 						resultt--;
 					}
 					
@@ -2248,5 +2401,202 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		}
 
 		return Response.status(HttpURLConnection.HTTP_MULT_CHOICE).entity(ConstantUtils.API_JSON_ERROR).build();
+	}
+	
+	
+	
+	@Override
+	public Response getEnterpriseInformationFromDVCQG(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String applicantIdNo) {
+
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+		
+		try {
+			
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			String apiUrl = StringPool.BLANK;
+			String access_token = StringPool.BLANK;
+			String rs = StringPool.BLANK;
+			
+
+			JSONObject configObject = checkEnterpriseDVCQGConfig(groupId);
+			NGSPRestClient nGSPRestClient = NGSPRestClient.fromJSONObject(configObject);
+			
+			access_token = getTokenLGSP(nGSPRestClient);
+			apiUrl = nGSPRestClient.getConsumerAdapter();
+			
+			rs = chiTietDoanhNghiep(apiUrl+"?category=chiTietDoanhNghiep&version=1.1&msdn="+applicantIdNo, access_token);
+			
+			JSONObject dkkdDNJSONObject = JSONFactoryUtil.createJSONObject(rs);
+		 
+			JSONObject mainInformation = JSONFactoryUtil.createJSONObject();
+			JSONObject hoAdress = JSONFactoryUtil.createJSONObject();
+			JSONArray representatives = JSONFactoryUtil.createJSONArray();
+			JSONArray businessActivity = JSONFactoryUtil.createJSONArray();
+			
+			JSONObject data = dkkdDNJSONObject.has("Data")? dkkdDNJSONObject.getJSONObject("Data") :JSONFactoryUtil.createJSONObject();
+			mainInformation = data.has("MainInformation")?data.getJSONObject("MainInformation") :JSONFactoryUtil.createJSONObject();
+			hoAdress = data.has("HOAdress")?data.getJSONObject("HOAdress"):JSONFactoryUtil.createJSONObject();
+			representatives = data.has("Representatives")?data.getJSONArray("Representatives"):JSONFactoryUtil.createJSONArray();
+			businessActivity = data.has("BusinessActivities")?data.getJSONArray("BusinessActivities"):JSONFactoryUtil.createJSONArray();
+			
+			if(Validator.isNotNull(mainInformation)) {
+				results.put("NAME",mainInformation.has("NAME") ? mainInformation.getString("NAME"):StringPool.BLANK);
+				results.put("SHORT_NAME",mainInformation.has("SHORT_NAME") ? mainInformation.getString("SHORT_NAME"):StringPool.BLANK);
+				results.put("ENTERPRISE_GDT_CODE",mainInformation.has("ENTERPRISE_GDT_CODE") ? mainInformation.getString("ENTERPRISE_GDT_CODE"):StringPool.BLANK);
+				results.put("IMP_BUSINESS_CODE",mainInformation.has("IMP_BUSINESS_CODE") ? mainInformation.getString("IMP_BUSINESS_CODE"):StringPool.BLANK);
+				results.put("NAME_F", mainInformation.has("NAME_F") ? mainInformation.getString("NAME_F"):StringPool.BLANK);
+				results.put("ENTERPRISE_STATUS_NAME", mainInformation.has("ENTERPRISE_STATUS_NAME") ? mainInformation.getString("ENTERPRISE_STATUS_NAME"):StringPool.BLANK);
+				results.put("ENTERPRISE_STATUS_ID", mainInformation.has("ENTERPRISE_STATUS_ID") ? mainInformation.getString("ENTERPRISE_STATUS_ID"):StringPool.BLANK);
+				results.put("FOUNDING_DATE", (mainInformation.has("FOUNDING_DATE") && Validator.isNotNull( mainInformation.getString("FOUNDING_DATE"))) ? APIDateTimeUtils.convertDateToString(APIDateTimeUtils.convertStringToDate(mainInformation.getString("FOUNDING_DATE"),APIDateTimeUtils._TIMESTAMP_LGSP), APIDateTimeUtils._NORMAL_DATE)  :StringPool.BLANK);
+				results.put("LAST_AMEND_DATE", (mainInformation.has("LAST_AMEND_DATE") && Validator.isNotNull( mainInformation.getString("LAST_AMEND_DATE"))) ? APIDateTimeUtils.convertDateToString(APIDateTimeUtils.convertStringToDate(mainInformation.getString("LAST_AMEND_DATE"),APIDateTimeUtils._TIMESTAMP_LGSP), APIDateTimeUtils._NORMAL_DATE) :StringPool.BLANK);
+				results.put("NUMBER_CHANGES",mainInformation.has("NUMBER_CHANGES") ? mainInformation.getString("NUMBER_CHANGES"):StringPool.BLANK);
+				results.put("ENTERPRISE_TYPE_NAME", mainInformation.has("ENTERPRISE_TYPE_NAME") ? mainInformation.getString("ENTERPRISE_TYPE_NAME"):StringPool.BLANK);
+			}
+			
+			if(Validator.isNotNull(hoAdress)) {
+				results.put("AddressFullText",  hoAdress.has("AddressFullText") ? hoAdress.getString("AddressFullText") :StringPool.BLANK);
+			}
+			
+			if(Validator.isNotNull(representatives)) {
+				results.put("FULL_NAME", representatives.getJSONObject(0).get("FULL_NAME"));
+			}
+			
+			JSONArray loaiHinhKinhDoanhs = JSONFactoryUtil.createJSONArray();
+			
+			if(Validator.isNotNull(businessActivity)) {
+				for(int i=0;i < businessActivity.length();i++) {
+					JSONObject loaiHinhKinhDoanh = businessActivity.getJSONObject(i);
+					
+					loaiHinhKinhDoanhs.put(loaiHinhKinhDoanh);
+				}
+			}
+			
+			results.put("BusinessActivities", loaiHinhKinhDoanhs);
+			
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results.toJSONString()).build();
+
+		} catch (Exception e) {
+			
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+	
+	private JSONObject checkEnterpriseDVCQGConfig(long groupId) {
+
+//		ServerConfig config = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId,StringPool.BLANK,StringPool.BLANK, ServerConfigTerm.NGSP_PROTOCOL);
+
+		ServerConfig config = ServerConfigLocalServiceUtil.getByCode(ServerConfigTerm.NGSP_PROTOCOL);
+
+		if (Validator.isNotNull(config)) {
+
+			try {
+				JSONObject result = JSONFactoryUtil.createJSONObject(config.getConfigs());
+
+				return result;
+			} catch (Exception e) {
+				_log.error(e);
+			}
+		}
+
+		return null;
+
+	}
+
+	@Override
+	public Response checkEnterpriseInformationDVCQG(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext) {
+
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+			JSONObject result = checkEnterpriseDVCQGConfig(groupId);
+
+			if (Validator.isNotNull(result)) {
+				results.put("enabled", true);
+
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results.toJSONString()).build();
+
+			} else {
+
+				ExceptionModel exception = new ExceptionModel();
+				exception.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+
+				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(exception).build();
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+
+			return BusinessExceptionImpl.processException(e);
+
+		}
+
+	}
+	
+	private  String chiTietDoanhNghiep(String endpoint, String access_token) {
+
+		HttpsURLConnection conn = null;
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+			
+			URL url = new URL(endpoint);
+
+			conn = (HttpsURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("Authorization", "Bearer "+access_token);
+			
+			conn.setInstanceFollowRedirects(true);
+			HttpURLConnection.setFollowRedirects(true);
+			conn.setReadTimeout(60 * 1000);
+
+			int postDataLength = 0;
+			conn.setRequestProperty("Content-Length",Integer.toString(postDataLength));
+			
+			TrustManager myTrustManager = new TrustManager();
+			conn = myTrustManager.disableSSL(conn);
+			
+			conn.connect();
+
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+			String output = StringPool.BLANK;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = bufferedReader.readLine()) != null) {
+				sb.append(output);
+			}
+
+			_log.debug("response: " + sb.toString());
+			
+			if(Validator.isNotNull(sb.toString())){
+				result = JSONFactoryUtil.createJSONObject(sb.toString());
+			}
+
+			return result.toString();
+
+			
+
+		} catch (Exception e) {
+			_log.error(e);
+			return StringPool.BLANK;
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
+		}
 	}
 }

@@ -56,7 +56,9 @@ import javax.xml.bind.annotation.XmlType;
 	 "dossierStatusText",
 	 "dossierSubStatus",
 	 "dossierSubStatusText",
-	 "finishDate"
+	 "finishDate",
+	 "govAgencyCode",
+	 "govAgencyName"
 })
 public class DossierDataPublishModel {
 
@@ -73,7 +75,21 @@ public class DossierDataPublishModel {
 	protected String dossierSubStatus;
 	protected String dossierSubStatusText;
 	protected String finishDate;
+	protected String govAgencyCode;
+	protected String govAgencyName;
 
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
 	public String getDossierNo() {
 		return dossierNo;
 	}

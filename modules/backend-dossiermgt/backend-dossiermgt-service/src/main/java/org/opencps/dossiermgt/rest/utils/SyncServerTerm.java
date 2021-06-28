@@ -1,6 +1,5 @@
 package org.opencps.dossiermgt.rest.utils;
 
-import org.omg.CORBA.INTERNAL;
 
 public class SyncServerTerm {
 	public static final String SERVER_USERNAME = "username";
