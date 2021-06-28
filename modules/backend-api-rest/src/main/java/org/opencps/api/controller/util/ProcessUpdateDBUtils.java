@@ -1187,11 +1187,13 @@ public class ProcessUpdateDBUtils {
 								serviceInstruction, serviceLevel, serviceUrl, forCitizen, forBusiness, postalService, registration, serviceContext);
 					}
 					// Process ProcessOption
+					_log.debug("ServiceConfigId : " + serviceConfigId);
 					if (serviceConfigId > 0) {
 						Processes process = config.getProcesses();
 						if (process != null) {
 							flagService = processProcessOption(userId, groupId, serviceConfigId, process, actionConfig,
 									serviceContext);
+							_log.debug("flagService : " + flagService);
 
 						}
 					}
@@ -1290,7 +1292,6 @@ public class ProcessUpdateDBUtils {
 					processName = option.getProcessName();
 					registerBookCode = option.getRegisterBookCode();
 					sampleCount = option.getSampleCount();
-					_log.info("option: " + option.getForCitizen());
 
 					if (Validator.isNotNull(option.getForCitizen())) {
 						forCitizen = option.getForCitizen();
@@ -1299,7 +1300,6 @@ public class ProcessUpdateDBUtils {
 					if(Validator.isNotNull(option.getForBusiness())) {
 						forBusiness = option.getForBusiness();
 					}
-					_log.info("option: " + option.getForBusiness());
 					//
 					actionConfig.updateOptionDB(userId, groupId, optionCode, optionName, serviceConfigId, seqOrder,
 							autoSelect, instructionNote, submissionNote, templateNo, templateName, processNo, processName,
