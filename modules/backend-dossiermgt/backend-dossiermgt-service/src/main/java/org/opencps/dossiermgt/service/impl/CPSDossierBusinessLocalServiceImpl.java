@@ -5218,7 +5218,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				JSONObject paymentObject = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 				key = paymentObject.getString(SyncServerTerm.KEY_SALE);
 				_log.info("Call API Hủy Thanh toán");
-				String result = POSVCBUtils.checkResultPOSVCB(groupId, dossier.getGovAgencyCode(), key);
+				String result = POSVCBUtils.checkResultPOSVCB(groupId, dossier.getGovAgencyCode(), key, dossier.getServiceCode());
 				if(Validator.isNotNull(result)) {
 					JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
 					if ("00".equals(resultJSON.getString("RESPONSE_CODE"))) {
