@@ -245,7 +245,7 @@ public class DossierManagementImpl implements DossierManagement {
 			body.put(SupportSearchConstants.DOSSIER_BETWEEN, SupportSearchConstants.convertDossierToJSONObject(dossierBetween));
 
 		} else {
-			body.put(SupportSearchConstants.DOSSIER_BETWEEN, "No Result");
+			body.put(SupportSearchConstants.DOSSIER_BETWEEN, JSONFactoryUtil.createJSONObject());
 		}
 
 		List<Dossier> DossierTransferList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), null, 2);
@@ -257,7 +257,7 @@ public class DossierManagementImpl implements DossierManagement {
 			body.put(SupportSearchConstants.DOSSIER_TRANFER, SupportSearchConstants.convertDossierToJSONObject(dossierTransfer));
 
 		} else {
-			body.put(SupportSearchConstants.DOSSIER_TRANFER, "No Result");
+			body.put(SupportSearchConstants.DOSSIER_TRANFER, JSONFactoryUtil.createJSONObject());
 		}
 
 		List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossier.getDossierId());
@@ -272,7 +272,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			body.put(SupportSearchConstants.DOSSIER_FILE, dossierFileArray);
 		} else {
-			body.put(SupportSearchConstants.DOSSIER_FILE, "No Result");
+			body.put(SupportSearchConstants.DOSSIER_FILE, JSONFactoryUtil.createJSONArray());
 		}
 
 		return body;
