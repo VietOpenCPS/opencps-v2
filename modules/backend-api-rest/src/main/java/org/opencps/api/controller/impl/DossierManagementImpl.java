@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.BaseJSPSettingsConfigurationAction;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -197,35 +198,44 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	private JSONObject sendRequestToURL(String urlAddress, long groupId) throws IOException, JSONException {
-
+		JSONObject myResponse = null;
 		URL obj = new URL(urlAddress);
 		java.net.HttpURLConnection connection = (java.net.HttpURLConnection) obj.openConnection();
 		connection.setRequestProperty("groupId", String.valueOf(groupId));
 		connection.setRequestMethod("GET");
-		int responseCode = connection.getResponseCode();
+		try {
+			int responseCode = connection.getResponseCode();
 
-		_log.debug("responseCode = " + responseCode);
+			_log.debug("responseCode = " + responseCode);
 
-		// Thực hiện đọc
-		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
+			// Thực hiện đọc
+			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
 
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+
+			in.close();
+
+			if(responseCode==200){
+				myResponse = JSONFactoryUtil.createJSONObject(response.toString());
+			} else {
+				myResponse = null;
+			}
+		} catch(Exception ex) {
+			myResponse = null;
 		}
-
-		in.close();
-		JSONObject myResponse = JSONFactoryUtil.createJSONObject(response.toString());
 		return myResponse;
 	}
 
-	private JSONObject supportSearchDVC(long groupId, String key){
+	public JSONObject SupportSeactContent(long groupId, String key){
 		JSONObject body = JSONFactoryUtil.createJSONObject();
 
 		Dossier dossier = DossierUtils.getDossierNew(key, groupId);
 		JSONObject dossierObject = SupportSearchConstants.convertDossierToJSONObject(dossier);
-		body.put(SupportSearchConstants.DOSSIER, dossierObject);
+		body.put(SupportSearchConstants.INFO, dossierObject);
 
 		List<DossierSync> ListDossierSync = DossierSyncLocalServiceUtil.findByG_DID(dossier.getGroupId(), dossier.getDossierId());
 		JSONArray DossierSyncArray = SupportSearchConstants.convertListSyncToArray(ListDossierSync);
@@ -233,32 +243,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 		List<DossierAction> ListDossierAction =
 				DossierActionLocalServiceUtil.findByG_DID(dossier.getGroupId(), dossier.getDossierId());
+
 		JSONArray DossierActionArray = SupportSearchConstants.convertListActionToArray(ListDossierAction);
 		body.put(SupportSearchConstants.DOSSIER_ACTION, DossierActionArray);
-
-		List<Dossier> DossierBetweenList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), dossier.getDossierId(), null);
-
-		if(DossierBetweenList.size()>0){
-
-			Dossier dossierBetween = DossierBetweenList.get(0);
-
-			body.put(SupportSearchConstants.DOSSIER_BETWEEN, SupportSearchConstants.convertDossierToJSONObject(dossierBetween));
-
-		} else {
-			body.put(SupportSearchConstants.DOSSIER_BETWEEN, JSONFactoryUtil.createJSONObject());
-		}
-
-		List<Dossier> DossierTransferList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), null, 2);
-
-		if(DossierTransferList.size()>0){
-
-			Dossier dossierTransfer = dossierTransfer = DossierTransferList.get(0);
-
-			body.put(SupportSearchConstants.DOSSIER_TRANFER, SupportSearchConstants.convertDossierToJSONObject(dossierTransfer));
-
-		} else {
-			body.put(SupportSearchConstants.DOSSIER_TRANFER, JSONFactoryUtil.createJSONObject());
-		}
 
 		List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossier.getDossierId());
 
@@ -273,6 +260,43 @@ public class DossierManagementImpl implements DossierManagement {
 			body.put(SupportSearchConstants.DOSSIER_FILE, dossierFileArray);
 		} else {
 			body.put(SupportSearchConstants.DOSSIER_FILE, JSONFactoryUtil.createJSONArray());
+		}
+		return body;
+	}
+
+	private JSONObject supportSearchDVC(long groupId, String key){
+
+		JSONObject body = JSONFactoryUtil.createJSONObject();
+		JSONObject dossierObj = SupportSeactContent(groupId, key);
+		body.put(SupportSearchConstants.DOSSIER, dossierObj);
+		Dossier dossier = DossierUtils.getDossierNew(key, groupId);
+
+		List<Dossier> DossierBetweenList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), dossier.getDossierId(), null);
+
+		if(DossierBetweenList.size()>0){
+
+			Dossier dossierBetween = DossierBetweenList.get(0);
+
+			JSONObject jsonObject = SupportSeactContent(groupId, String.valueOf(dossierBetween.getDossierId()));
+
+			body.put(SupportSearchConstants.DOSSIER_BETWEEN, jsonObject);
+
+		} else {
+			body.put(SupportSearchConstants.DOSSIER_BETWEEN, JSONFactoryUtil.createJSONObject());
+		}
+
+		List<Dossier> DossierTransferList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), null, 2);
+
+		if(DossierTransferList.size()>0){
+
+			Dossier dossierTransfer = DossierTransferList.get(0);
+
+			JSONObject jsonObject = SupportSeactContent(groupId, String.valueOf(dossierTransfer.getDossierId()));
+
+			body.put(SupportSearchConstants.DOSSIER_TRANFER, jsonObject);
+
+		} else {
+			body.put(SupportSearchConstants.DOSSIER_TRANFER, JSONFactoryUtil.createJSONObject());
 		}
 
 		return body;
@@ -306,7 +330,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				if(isCallAgain){
 					Dossier dossier = DossierUtils.getDossierNew(dossierId, groupId);
-					ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNO_PROTOCOL("SERVER_"+dossier.getGovAgencyCode(), PROTOCOL, dossier.getGroupId());
+					ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNO_PROTOCOL(dossier.getServerNo(), PROTOCOL, dossier.getGroupId());
 
 					JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 
@@ -315,7 +339,11 @@ public class DossierManagementImpl implements DossierManagement {
 					_log.info("url : " + url +" ===== groupId" + config.getLong("groupId") );
 
 					JSONObject responeUrl = sendRequestToURL(url, config.getLong("groupId"));
-					JSONObject hoSoMCDT = JSONFactoryUtil.createJSONObject(responeUrl.get(SupportSearchConstants.HO_SO_MCDT).toString());
+					JSONObject hoSoMCDT = JSONFactoryUtil.createJSONObject();
+
+					if(Validator.isNotNull(responeUrl)){
+						hoSoMCDT = JSONFactoryUtil.createJSONObject(responeUrl.get(SupportSearchConstants.HO_SO_MCDT).toString());
+					}
 
 					response.put(SupportSearchConstants.HO_SO_MCDT, hoSoMCDT);
 				}
@@ -352,12 +380,6 @@ public class DossierManagementImpl implements DossierManagement {
 				return BusinessExceptionImpl.processException(e);
 			}
 		}
-
-		JSONObject conditionJSON = JSONFactoryUtil.createJSONObject();
-		conditionJSON.put(SupportSearchConstants.TYPE, type);
-		conditionJSON.put(SupportSearchConstants.KEY_SEARCH, dossierId);
-		conditionJSON.put(SupportSearchConstants.IS_CALL_AGAIN, isCallAgain.toString());
-		response.put(SupportSearchConstants.CONDITION, conditionJSON);
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
 	}

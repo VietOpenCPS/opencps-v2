@@ -16,6 +16,9 @@ public class SupportSearchConstants {
     public static final String HO_SO_DVC = "HoSoDVC";
     public static final String HO_SO_MCDT = "HoSoMCDT";
     //    ===================
+    public static final String INFO = "info";
+
+    //    ===================
     public static final String DOSSIER_SYNC = "dossierSync";
     public static final String ACTION_CODE = "actionCode";
     public static final String SYNC_TYPE = "syncType";
@@ -24,6 +27,11 @@ public class SupportSearchConstants {
     public static final String RETRY = "retry";
     public static final String CREATE_DATE = "createDate";
     public static final String MODIFIED_DATE = "modifiedDate";
+    public static final String SUDMIT_DATE = "submitDate";
+    public static final String RECEIVE_DATE= "receiveDate";
+    public static final String DUE_DATE = "dueDate";
+    public static final String RELEASE_DATE = "releaseDate";
+    public static final String FINISH_DATE = "finishDate";
 
 //    ===================
     public static final String DOSSIER = "dossier";
@@ -52,12 +60,6 @@ public class SupportSearchConstants {
 //  =======================
     public static final String DOSSIER_BETWEEN = "dossierBetween";
     public static final String DOSSIER_TRANFER = "dossierTranfer";
-
-//  =======================
-    public static final String CONDITION = "condition";
-    public static final String TYPE = "type";
-    public static final String KEY_SEARCH = "keySearch";
-    public static final String IS_CALL_AGAIN = "isCallAgain";
 
 //  =======================
     public static final String DOSSIER_FILE = "dossierFile";
@@ -151,6 +153,11 @@ public class SupportSearchConstants {
         dossierObject.put(SupportSearchConstants.ONLINE, dossier.getOnline());
         dossierObject.put(SupportSearchConstants.ORIGIN_DOSSIER_ID, dossier.getOriginDossierId());
         dossierObject.put(SupportSearchConstants.ORIGIN_DOSSIER_NO, dossier.getOriginDossierNo());
+        dossierObject.put(SupportSearchConstants.SUDMIT_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getSubmitDate()));
+        dossierObject.put(SupportSearchConstants.RECEIVE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getReceiveDate()));
+        dossierObject.put(SupportSearchConstants.DUE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getDueDate()));
+        dossierObject.put(SupportSearchConstants.RELEASE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getReleaseDate()));
+        dossierObject.put(SupportSearchConstants.FINISH_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getFinishDate()));
 
         return dossierObject;
     }
