@@ -5160,7 +5160,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			try {
 				String result = POSVCBUtils.saleRequestDataPOSVCB(groupId, dossier.getGovAgencyCode(),
 						paymentFile.getPaymentAmount(), SyncServerTerm.CURRENCY_CODE, "",  paymentFile.getPaymentNote(),
-						dossier.getDossierCounter(),dossier.getDossierNo());
+						dossier.getDossierCounter(),dossier.getDossierNo(), dossier.getServiceCode());
 				JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 				if(Validator.isNotNull(result)) {
 					JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
@@ -5189,7 +5189,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			JSONObject paymentObject = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 			key = paymentObject.getString(SyncServerTerm.KEY_SALE);
 			_log.info("Call API Xác Nhận Thanh toán");
-			String result = POSVCBUtils.checkResultPOSVCB(groupId, dossier.getGovAgencyCode(), key);
+			String result = POSVCBUtils.checkResultPOSVCB(groupId, dossier.getGovAgencyCode(), key, dossier.getServiceCode());
 			_log.info("Result thanh toán :" + result);
 			if (Validator.isNotNull(result)) {
 				JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
@@ -5223,7 +5223,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
 					if ("00".equals(resultJSON.getString("RESPONSE_CODE"))) {
 						resultVoid = POSVCBUtils.voidPOSVCB(groupId, dossier.getGovAgencyCode(),
-								SyncServerTerm.CURRENCY_CODE, "", dossier.getDossierNo(), resultJSON, paymentFile.getPaymentNote());
+								SyncServerTerm.CURRENCY_CODE, "", dossier.getDossierNo(), resultJSON, paymentFile.getPaymentNote(), dossier.getServiceCode());
 					} else {
 						resultVoid = "Giao dịch chưa được khởi tạo";
 					}
