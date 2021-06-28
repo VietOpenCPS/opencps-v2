@@ -41,6 +41,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierFileManagement;
 import org.opencps.api.controller.util.*;
+import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
@@ -59,17 +60,14 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
-import org.opencps.dossiermgt.action.util.CheckFileUtils;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
-import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.action.util.*;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.service.*;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import org.opencps.kernel.util.FileUploadUtil;
@@ -1794,4 +1792,40 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		}
 	}
 
+	@Override
+	public Response addDossierFileByEform(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext,
+										  long id, String dossierPartNo, String displayName, long fileEntryId, boolean eform) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		DossierFile dossierFile = null;
+		try {
+			if(!eform && Validator.isNotNull(dossierPartNo)){
+				String referenceFileUid = DossierNumberGenerator.generateReferenceUID(groupId);
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+				if(Validator.isNotNull(dossier)) {
+					_log.info("Them DossierFile :" + dossier.getDossierId());
+					DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId,
+							dossier.getDossierTemplateNo(), dossierPartNo);
+					dossierFile = DossierFileLocalServiceUtil.addDossierFileEForm(groupId, id,
+							referenceFileUid, dossier.getDossierTemplateNo(), dossierPartNo, dossierPart.getFileTemplateNo(),
+							displayName, displayName, 0, null,
+							StringPool.BLANK, "true", serviceContext);
+
+					if(fileEntryId > 0 && Validator.isNotNull(dossierFile)) {
+						_log.info("Update fileEntryId :" + dossier.getDossierId());
+						dossierFile.setEForm(false);
+						dossierFile.setFileEntryId(fileEntryId);
+						//File sinh từ eForm default PDF
+//						String fileName = dossierFile.getDisplayName();
+						dossierFile.setDisplayName(dossierFile.getDisplayName() + ".pdf");
+						_log.info("Log dossierFile : " + dossierFile.getDossierFileId() + " DisplayName : " + dossierFile.getDisplayName());
+						DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+					}
+				}
+
+			}
+		}catch (Exception e) {
+			e.getMessage();
+		}
+		return null;
+	}
 }
