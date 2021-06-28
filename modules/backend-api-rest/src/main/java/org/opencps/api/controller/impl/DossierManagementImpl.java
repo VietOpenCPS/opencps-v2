@@ -2280,19 +2280,19 @@ public class DossierManagementImpl implements DossierManagement {
 
 			//day du lieu vao kho du lieu cong dan
 			if (Validator.isNotNull(dossier) && dossier.getDossierStatus().contentEquals(DossierTerm.DOSSIER_STATUS_DONE)) {
-				_log.info("Kho dữ liệu công dân : 1111" + JSONFactoryUtil.looseSerialize(dossier));
 				List<DossierFile> lstDossierFiles = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
-				_log.info("Kho dữ liệu công dân : 2222" + JSONFactoryUtil.looseSerialize(lstDossierFiles));
 				if (Validator.isNotNull(lstDossierFiles) && lstDossierFiles.size() > 0) {
 					for (DossierFile doFile : lstDossierFiles) {
 						String fileTemplateNo = doFile.getFileTemplateNo();
+						_log.info("fileTemplateNo : " + fileTemplateNo);
 						if (Validator.isNotNull(fileTemplateNo)) {
-							FileItem fileItem = FileItemLocalServiceUtil.findByG_FTN(groupId, fileTemplateNo);
+							FileItem fileItem = FileItemLocalServiceUtil.findByG_FTN(0, fileTemplateNo);
 							FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(doFile.getFileEntryId());
 							if (Validator.isNotNull(fileItem) && Validator.isNotNull(fileEntry)) {
 								ApplicantData applicantData = ApplicantDataLocalServiceUtil.createApplicantData(
-										serviceContext, groupId, fileTemplateNo, fileEntry.getFileName(), doFile.getDisplayName(), doFile.getFileEntryId(), StringPool.BLANK, 0, dossier.getApplicantIdNo(), 0);		
-								_log.info("Kho dữ liệu công dân : 3333" + JSONFactoryUtil.looseSerialize(applicantData));
+										serviceContext, 0, fileTemplateNo, fileEntry.getFileName(), doFile.getDisplayName(), doFile.getFileEntryId(), StringPool.BLANK, 0, dossier.getApplicantIdNo(), 0);		
+								_log.debug("Kho dữ liệu công dân : " + JSONFactoryUtil.looseSerialize(applicantData));
+								ApplicantDataLocalServiceUtil.updateApplicantData(applicantData);
 								}
 							}
 						}					
