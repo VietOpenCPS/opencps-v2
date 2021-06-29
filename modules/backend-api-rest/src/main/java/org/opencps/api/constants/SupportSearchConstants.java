@@ -32,6 +32,10 @@ public class SupportSearchConstants {
     public static final String DUE_DATE = "dueDate";
     public static final String RELEASE_DATE = "releaseDate";
     public static final String FINISH_DATE = "finishDate";
+    public static final String LOCK_STATE = "lockState";
+    public static final String REGISTER_BOOK_CODE = "registerBookCode";
+    public static final String PROCESS_NO = "processNo";
+    public static final String GOV_AGENCY_CODE = "govAgencyCode";
 
 //    ===================
     public static final String DOSSIER = "dossier";
@@ -158,7 +162,10 @@ public class SupportSearchConstants {
         dossierObject.put(SupportSearchConstants.DUE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getDueDate()));
         dossierObject.put(SupportSearchConstants.RELEASE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getReleaseDate()));
         dossierObject.put(SupportSearchConstants.FINISH_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getFinishDate()));
-
+        dossierObject.put(SupportSearchConstants.LOCK_STATE, dossier.getLockState());
+        dossierObject.put(SupportSearchConstants.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
+        dossierObject.put(SupportSearchConstants.PROCESS_NO, dossier.getProcessNo());
+        dossierObject.put(SupportSearchConstants.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
         return dossierObject;
     }
 }
