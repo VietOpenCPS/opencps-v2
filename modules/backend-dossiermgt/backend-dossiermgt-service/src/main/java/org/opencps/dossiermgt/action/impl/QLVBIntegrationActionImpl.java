@@ -32,6 +32,7 @@ import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.constants.QLVBConstants;
 import org.opencps.dossiermgt.input.model.FileVBModel;
 import org.opencps.dossiermgt.input.model.FrequencyDoAction;
+import org.opencps.dossiermgt.input.model.ProfileInModel;
 import org.opencps.dossiermgt.input.model.QLVBModel;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -355,7 +356,7 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
                     }
 
                     this.doAction(serverConfig.getGroupId(), serviceContext,
-                            dossier, this.configJson.getString(QLVBConstants.CONFIG_ACTION_CODE));
+                            dossier, this.configJson.getString(QLVBConstants.CONFIG_ACTION_CODE), null);
 
                     GetChangeStatusResult result;
 
@@ -431,11 +432,12 @@ public class QLVBIntegrationActionImpl implements QLVBIntegrationAction {
     }
 
     @Override
-    public void doAction(long groupId, ServiceContext serviceContext, Dossier dossier, String actionCode){
+    public void doAction(long groupId, ServiceContext serviceContext, Dossier dossier, String actionCode
+            , ProfileInModel input){
         try {
             FrequencyDoAction frequencyDoAction = CPSDossierBusinessLocalServiceUtil.updateDossierFrequencyAction(
                     groupId, serviceContext, dossier,
-                    null, actionCode);
+                    input, actionCode);
 
             if(Validator.isNotNull(frequencyDoAction.getProcessAction())) {
                 _log.info("Doing postAction with action code: " + actionCode);
