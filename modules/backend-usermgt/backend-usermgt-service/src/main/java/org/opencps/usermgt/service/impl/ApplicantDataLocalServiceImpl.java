@@ -355,17 +355,23 @@ public class ApplicantDataLocalServiceImpl
 		return Validator.isNotNull(ext) ? (System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
 	}
 
-	private FileEntry uploadApplicantDataFile(long userId, long groupId, 
+	public FileEntry uploadApplicantDataFile(long userId, long groupId,
 			InputStream inputStream, String sourceFileName,
-			String fileType, long fileSize, ServiceContext serviceContext) 
+			String fileType, long fileSize, ServiceContext serviceContext)
 		throws Exception {
 		
 		return uploadFile(userId, groupId, 0, inputStream, sourceFileName, 
 				fileType, fileSize, FOLDER_NAME_APPLICANT_DATA_FILE, serviceContext);
 	}
 
+	@Override
+	public FileEntry uploadFileDLEntry(long userId, long groupId, InputStream inputStream, String sourceFileName, String fileType, long fileSize, ServiceContext serviceContext) throws Exception {
+		return uploadFile(userId, groupId, 0, inputStream, sourceFileName,
+				fileType, fileSize, FOLDER_NAME_APPLICANT_DATA_FILE, serviceContext);
+	}
+
 	private FileEntry uploadFile(long userId, long groupId, long fileEntryId, InputStream inputStream, String sourceFileName,
-			String fileType, long fileSize, String destination, ServiceContext serviceContext) 
+								 String fileType, long fileSize, String destination, ServiceContext serviceContext)
 		throws Exception {
 		
 		FileEntry fileEntry = null;

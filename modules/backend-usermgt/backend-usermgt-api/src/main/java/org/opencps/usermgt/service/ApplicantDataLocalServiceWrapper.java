@@ -423,6 +423,14 @@ public class ApplicantDataLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.portal.kernel.repository.model.FileEntry uploadFileDLEntry(long userId, long groupId, java.io.InputStream inputStream,
+		String sourceFileName, String fileType, long fileSize, com.liferay.portal.kernel.service.ServiceContext serviceContext)
+			throws Exception {
+		return _applicantDataLocalService.uploadFileDLEntry(userId, groupId, inputStream, sourceFileName,
+				fileType, fileSize, serviceContext );
+	}
+
+	@Override
 	public org.opencps.usermgt.model.ApplicantData updateApplicantData(
 		com.liferay.portal.kernel.service.ServiceContext context, long groupId,
 		long applicantDataId, String fileTemplateNo, String fileNo,

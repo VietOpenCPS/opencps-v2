@@ -375,6 +375,14 @@ public class ApplicantDataLocalServiceUtil {
 		return getService().updateApplicantData(applicantData);
 	}
 
+
+	public static com.liferay.portal.kernel.repository.model.FileEntry uploadFileDLEntry(long userId, long groupId,
+			java.io.InputStream inputStream, String sourceFileName,
+			String fileType, long fileSize, com.liferay.portal.kernel.service.ServiceContext serviceContext) throws Exception{
+		return getService().uploadFileDLEntry(userId, groupId, inputStream, sourceFileName, fileType, fileSize, serviceContext);
+	}
+
+
 	public static org.opencps.usermgt.model.ApplicantData updateApplicantData(
 		long groupId, long applicantDataId, String fileTemplateNo,
 		String fileNo, String fileName, String applicantIdNo, int status,
