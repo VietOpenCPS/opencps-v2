@@ -166,17 +166,17 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 		ApplicantData applicantData = null;
 		
 		try {
-			int statusInt = Validator.isNotNull(status) ? Integer.parseInt(status) : 0;
+
 			if(Validator.isNull(dataHandler)) {
 				throw new Exception("obj null");
 			}
-			if(Validator.isNotNull(dataHandler.getInputStream()) && dataHandler.getName() !=null){
-				_log.info("dataHandler: " + dataHandler.getName());
-				applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt,
+			if(Validator.isNotNull(dataHandler.getInputStream()) && dataHandler.getName() !=null && !dataHandler.getName().equals("file")){
+				_log.debug("dataHandler: " + dataHandler.getName());
+				applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, status,
 						dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
 			}else{
-				_log.info("dataHandler nulllllllll: " + dataHandler.getName());
-				applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, serviceContext);
+				_log.debug("dataHandler nulllllllll: " + dataHandler.getName());
+				applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, status, serviceContext);
 			}
 
 			ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
