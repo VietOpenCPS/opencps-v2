@@ -215,10 +215,6 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
                 throw new Exception("No body param was found");
             }
 
-            if (Validator.isNull(syncTrackingQuery.groupId) || syncTrackingQuery.groupId == 0) {
-                throw new Exception("No groupId was found");
-            }
-
             if (Validator.isNull(syncTrackingQuery.bodyRequest) || syncTrackingQuery.bodyRequest.isEmpty()) {
                 throw new Exception("No from unit code was found");
             }
@@ -360,7 +356,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             if (Validator.isNull(input.soQuyetDinh) || input.soQuyetDinh.isEmpty()) {
                 throw new Exception("No from So Quyet Dinh was found");
             }
-            _log.info("Vao 1111111111111111111");
+
             DossierTax dossierTax = DossierTaxLocalServiceUtil.fetchDossierTaxByDMS(input.dossierNo, input.maSoThue, input.soQuyetDinh);
             if (Validator.isNotNull(dossierTax)) {
                 _log.debug("SyncTracking: " + JSONFactoryUtil.looseSerialize(dossierTax));

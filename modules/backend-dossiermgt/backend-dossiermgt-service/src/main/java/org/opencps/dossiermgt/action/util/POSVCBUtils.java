@@ -242,7 +242,7 @@ public class POSVCBUtils {
             JSONObject defaultJSON = getPaymentConfig(groupId, govAgencyCode, serviceCode);
             JSONObject reponseJSON = getRequestConnectionPOSVCB(groupId, defaultJSON);
             StringBuilder sb = new StringBuilder();
-            if (Validator.isNotNull(defaultJSON) && Validator.isNotNull(reponseJSON) && Validator.isNotNull(resultJSON.getString(SyncServerTerm.INVOICE))) {
+            if (Validator.isNotNull(defaultJSON) && Validator.isNotNull(reponseJSON) || Validator.isNotNull(resultJSON.getString(SyncServerTerm.INVOICE))) {
                 String serverUrl = StringPool.BLANK;
                 String serialNumber = StringPool.BLANK;
                 String refId = StringPool.BLANK;

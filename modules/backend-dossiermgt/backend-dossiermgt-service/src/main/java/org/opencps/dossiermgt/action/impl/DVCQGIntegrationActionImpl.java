@@ -4359,6 +4359,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		byte[] decodedBytes = Base64.getDecoder().decode(FileThongBaoThue);
 		String xmlFileThongBaoThue = new String(decodedBytes);
 		// Ghi log SyncTracking
+		_log.debug("GroupId: "+ groupId);
 		callPostAPISyncTracking(groupId, "", xmlFileThongBaoThue, "", DVCQG_THONG_BAO_THUE_DAT);
 		try {
 			_log.debug("Constructor doCrUpDossierThongBaoThueDatDVCQG");
