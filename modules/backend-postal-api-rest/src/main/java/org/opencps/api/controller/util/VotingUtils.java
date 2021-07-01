@@ -589,9 +589,11 @@ public class VotingUtils {
 		int countTem = 0;
 		int countVotingId = 0;
 		if (votingList == null || votingList.size() < 1) return result;
+		_log.info("votingList: " + votingList.size());
 		for (Document doc : votingList) {
 			Long votingId = Long.valueOf(doc.get(VotingTerm.VOTING_ID));
 			countVotingId ++;
+			_log.info("votingId: " + votingId);
 			if (!StringUtils.isEmpty(votingId)) {
 			count = VotingResultLocalServiceUtil.countByF_votingId(votingId);
 			countTem = countTem + count;
