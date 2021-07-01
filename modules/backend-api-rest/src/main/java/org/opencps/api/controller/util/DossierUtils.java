@@ -1330,6 +1330,32 @@ public class DossierUtils {
 		}
 	}
 
+	public static Dossier getDossierNew(String id, long groupId) {
+		long dossierId = GetterUtil.getLong(id);
+		if (dossierId > 0) {
+			try {
+				return DossierLocalServiceUtil.getDossier(dossierId);
+			} catch (PortalException e) {
+				_log.error(e);
+				return null;
+			}
+		} else {
+			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(id);
+			if(Validator.isNotNull(dossier)){
+				return dossier;
+			}
+
+			Dossier dossier2 = DossierLocalServiceUtil.getByDossierNo(groupId, id);
+
+			if (Validator.isNull(dossier2)) {
+				return DossierLocalServiceUtil.getByRef(groupId, id);
+
+			} else {
+				return dossier2;
+			}
+		}
+	}
+
 	//LamTV: Process get process option
 	public static ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
 			long groupId) throws PortalException {

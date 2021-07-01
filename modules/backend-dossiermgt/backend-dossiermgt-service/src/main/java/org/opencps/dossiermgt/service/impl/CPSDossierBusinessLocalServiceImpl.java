@@ -106,6 +106,7 @@ import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
+import org.opencps.dossiermgt.action.KeyPayV3Action;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
@@ -127,6 +128,8 @@ import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.VNPostCLSUtils;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
+import org.opencps.dossiermgt.action.util.POSVCBUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.CInvoiceTerm;
 import org.opencps.dossiermgt.constants.CacheTerm;
@@ -184,6 +187,11 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.impl.DossierImpl;
+import org.opencps.dossiermgt.model.impl.DossierModelImpl;
+import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
@@ -2027,7 +2035,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 											Validator.isNotNull(expiredCal) ? expiredCal : expired,
 											context);
 								}
-								
+
 							}
 						} catch (NoSuchUserException e) {
 							_log.debug(e);
@@ -3007,12 +3015,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (epaymentConfigJSON.has(KeyPayTerm.KEYPAY_LATE_CONFIG)) {
 				try {
+					User user = UserLocalServiceUtil.fetchUser(userId);
 					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
-					createTransactionKeypayV3(dossier, dossier.getDossierActionId());
-//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-//							epaymentProfileJSON.toJSONString(), context);
+//					createTransactionKeypayV3(dossier, dossier.getDossierActionId());
+//					createKeypayV3(dossier);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfileJSON.toJSONString(), context);
+					KeyPayV3Action keypayAction = new KeyPayV3ActionImpl();
+					JSONObject epaymentProFile = keypayAction.createPaylater(user, dossier.getDossierId(), context, null);
+					if(Validator.isNotNull(epaymentProFile)){
+						epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE_CONFIG, epaymentProFile);
+					}
 				} catch (Exception e) {
 					_log.error(e);
 				}
@@ -4626,6 +4641,31 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		_log.debug("=============create keypay v3============");
 		MessageBusUtil.sendMessage(DossierTerm.KEYPAY_V3_DESTINATION, message);
 	}
+	private void createKeypayV3(Dossier dossier) {
+		try {
+			long groupId = dossier.getGroupId();
+			long dossierId = dossier.getDossierId();
+			InvokeREST callRest = new InvokeREST();
+			String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
+			HashMap<String, String> properties = new HashMap<String, String>();
+			Map<String, Object> params = new HashMap<>();
+			ServiceContext context = null;
+
+			params.put(DossierTerm.DOSSIER_ID, dossierId);
+//			_log.info("DossierId " + dossierId + " GroupId " + groupId);
+			//Hồ sơ đẩy sang chưa kịp tạo ==> Để sleep 2s để hồ sơ có thể tạo
+//			Thread.sleep(3000);
+			Dossier dossier3 = DossierLocalServiceUtil.findDossierById(dossierId);
+			_log.info(" Log Dossier " + JSONFactoryUtil.looseSerialize(dossier3));
+			JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON, baseUrl,
+					KeyPayTerm.ENDPOINT_KEYPAY, "", "", properties, params, context);
+			_log.info("baseUrl: " + baseUrl + KeyPayTerm.ENDPOINT_KEYPAY);
+//			_log.info("Call post API SEND keypayv3 result: " + resultObj.toJSONString());
+			_log.info(params);
+		} catch (Exception e) {
+			e.getMessage();
+		}
+	}
 
 	private void integrateTTTT(Dossier dossier, ServiceContext context, long dossierActionId) {
 		//Add tich hop Thong tin truyen thong
@@ -5114,15 +5154,86 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		if(DossierActionTerm.ACTION_SPECIAL_WAITING_PAYMENT.equals(actionCode)){
+			// Gửi giao dịch thanh toán lên máy POS
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
-			if (paymentFile != null) {
-				paymentFile.setPaymentStatus(3);
-				paymentFile.setApproveDatetime(new Date());
+			_log.info(" --- Call API Sale RequestData POSVCB --- ");
+			try {
+				String result = POSVCBUtils.saleRequestDataPOSVCB(groupId, dossier.getGovAgencyCode(),
+						paymentFile.getPaymentAmount(), SyncServerTerm.CURRENCY_CODE, "",  paymentFile.getPaymentNote(),
+						dossier.getDossierCounter(),dossier.getDossierNo(), dossier.getServiceCode());
+				JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+				if(Validator.isNotNull(result)) {
+					JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
+					String key = resultJSON.getString("KEY");
+					if (Validator.isNotNull(key)) {
+						_log.info("KEY POS: " + key);
+						epaymentProfile.put(SyncServerTerm.KEY_SALE, key);
+					}
+				}
+				if (paymentFile != null) {
+					paymentFile.setPaymentStatus(3);
+					paymentFile.setApproveDatetime(new Date());
+					paymentFile.setEpaymentProfile(epaymentProfile.toString());
+				}
+				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+				_log.info(" --- Result VCB ---  : "  + result);
+			}catch (Exception e){
+				e.getMessage();
 			}
-			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 		}
-		if(DossierActionTerm.ACTION_SPECIAL_CONFIRM_PAYMENT.equals(actionCode)){
-//			POSVCBUtils.saleRequestDataPOSVCB();
+		if(DossierActionTerm.ACTION_SPECIAL_CONFIRM_PAYMENT.equals(actionCode)) {
+			// Cán bộ xác nhận thanh toán cập nhật lại trạng thái
+			// Check giao dịch đã được thanh toán chưa
+			String key = StringPool.BLANK;
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
+			JSONObject paymentObject = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+			key = paymentObject.getString(SyncServerTerm.KEY_SALE);
+			_log.info("Call API Xác Nhận Thanh toán");
+			String result = POSVCBUtils.checkResultPOSVCB(groupId, dossier.getGovAgencyCode(), key, dossier.getServiceCode());
+			_log.info("Result thanh toán :" + result);
+			if (Validator.isNotNull(result)) {
+				JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
+				String responseCode = resultJSON.getString("RESPONSE_CODE");
+				if (paymentFile != null && responseCode.equals("00")) {
+					paymentFile.setPaymentStatus(5);
+					paymentFile.setApproveDatetime(new Date());
+					PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+					_log.info("Hồ sơ thanh toán thành công");
+				}else if (responseCode.equals("7000")){
+					_log.info("Hồ sơ chưa được thanh toán trên máy POS");
+				}else{
+					_log.info("Hồ sơ chưa gửi thanh toán lên máy POS");
+				}
+			}
+		}
+		if(DossierActionTerm.ACTION_SPECIAL_CANCEL_PAYMENT.equals(actionCode)){
+			// Hủy giao dịch thanh toán lên máy POS
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossier.getDossierId());
+			_log.info(" --- Call API Void RequestData POSVCB --- ");
+			try {
+
+				// Check giao dịch đã được thanh toán chưa
+				String key = StringPool.BLANK;
+				String resultVoid = StringPool.BLANK;
+				JSONObject paymentObject = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+				key = paymentObject.getString(SyncServerTerm.KEY_SALE);
+				_log.info("Call API Hủy Thanh toán");
+				String result = POSVCBUtils.checkResultPOSVCB(groupId, dossier.getGovAgencyCode(), key, dossier.getServiceCode());
+				if(Validator.isNotNull(result)) {
+					JSONObject resultJSON = JSONFactoryUtil.createJSONObject(result);
+					if ("00".equals(resultJSON.getString("RESPONSE_CODE"))) {
+						resultVoid = POSVCBUtils.voidPOSVCB(groupId, dossier.getGovAgencyCode(),
+								SyncServerTerm.CURRENCY_CODE, "", dossier.getDossierNo(), resultJSON, paymentFile.getPaymentNote(), dossier.getServiceCode());
+					} else {
+						resultVoid = "Giao dịch chưa được khởi tạo";
+					}
+				}else{
+					resultVoid = "Mất kết nối đến máy POS";
+				}
+				_log.info(" --- Result VCB ---  : " + resultVoid);
+			}catch (Exception e){
+				e.getMessage();
+			}
 		}
 
 		return dossierAction;

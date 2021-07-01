@@ -9,12 +9,10 @@ import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.*;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
@@ -82,8 +80,10 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.http.client.methods.HttpGet;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.constants.DossierManagementConstants;
+import org.opencps.api.constants.SupportSearchConstants;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
 import org.opencps.api.controller.util.DossierFileUtils;
@@ -140,6 +140,7 @@ import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierFileUtil;
 import org.opencps.dossiermgt.service.persistence.ProcessActionUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessUtil;
+import org.opencps.kernel.prop.PropKeys;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
@@ -170,6 +171,7 @@ public class DossierManagementImpl implements DossierManagement {
 	public static final String RT_CORRECTING = "correcting";
 	public static final String RT_SUBMITTING = "submitting";
 
+
 	public static final String ALL_AGENCY = "all";
 
 	private static final String CONFIG_DVCQG_INTEGRATION = "DVCQG_INTEGRATION";
@@ -180,11 +182,184 @@ public class DossierManagementImpl implements DossierManagement {
 	private static final String DATE_FORMAT = "dd/MM/yyyy hh:mm";
 	private static final String AUTHEN_KEY = "authenKey";
 
+	private static final int DICH_VU_CONG = 1;
+	private static final int MOT_CUA = 2;
+	private static final String SERVER_NO_DVC = "SERVER_DVC";
+	private static final String PROTOCOL = "API_SYNC";
+	private static final String REFUID = "refUid";
+
+
 	private String getBodyError(String code, String message) {
 		JSONObject body = JSONFactoryUtil.createJSONObject();
 		body.put(ERROR_CODE, code);
 		body.put(ERROR_MESSAGE, message);
 		return body.toString();
+	}
+
+	private JSONObject sendRequestToURL(String urlAddress, long groupId) throws IOException, JSONException {
+
+		URL obj = new URL(urlAddress);
+		java.net.HttpURLConnection connection = (java.net.HttpURLConnection) obj.openConnection();
+		connection.setRequestProperty("groupId", String.valueOf(groupId));
+		connection.setRequestMethod("GET");
+		int responseCode = connection.getResponseCode();
+
+		_log.debug("responseCode = " + responseCode);
+
+		// Thực hiện đọc
+		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+
+		in.close();
+		JSONObject myResponse = JSONFactoryUtil.createJSONObject(response.toString());
+		return myResponse;
+	}
+
+	private JSONObject supportSearchDVC(long groupId, String key){
+		JSONObject body = JSONFactoryUtil.createJSONObject();
+
+		Dossier dossier = DossierUtils.getDossierNew(key, groupId);
+		JSONObject dossierObject = SupportSearchConstants.convertDossierToJSONObject(dossier);
+		body.put(SupportSearchConstants.DOSSIER, dossierObject);
+
+		List<DossierSync> ListDossierSync = DossierSyncLocalServiceUtil.findByG_DID(dossier.getGroupId(), dossier.getDossierId());
+		JSONArray DossierSyncArray = SupportSearchConstants.convertListSyncToArray(ListDossierSync);
+		body.put(SupportSearchConstants.DOSSIER_SYNC, DossierSyncArray);
+
+		List<DossierAction> ListDossierAction =
+				DossierActionLocalServiceUtil.findByG_DID(dossier.getGroupId(), dossier.getDossierId());
+		JSONArray DossierActionArray = SupportSearchConstants.convertListActionToArray(ListDossierAction);
+		body.put(SupportSearchConstants.DOSSIER_ACTION, DossierActionArray);
+
+		List<Dossier> DossierBetweenList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), dossier.getDossierId(), null);
+
+		if(DossierBetweenList.size()>0){
+
+			Dossier dossierBetween = DossierBetweenList.get(0);
+
+			body.put(SupportSearchConstants.DOSSIER_BETWEEN, SupportSearchConstants.convertDossierToJSONObject(dossierBetween));
+
+		} else {
+			body.put(SupportSearchConstants.DOSSIER_BETWEEN, "No Result");
+		}
+
+		List<Dossier> DossierTransferList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), null, 2);
+
+		if(DossierTransferList.size()>0){
+
+			Dossier dossierTransfer = dossierTransfer = DossierTransferList.get(0);
+
+			body.put(SupportSearchConstants.DOSSIER_TRANFER, SupportSearchConstants.convertDossierToJSONObject(dossierTransfer));
+
+		} else {
+			body.put(SupportSearchConstants.DOSSIER_TRANFER, "No Result");
+		}
+
+		List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossier.getDossierId());
+
+		if(dossierFileList.size() >0) {
+			JSONArray dossierFileArray = JSONFactoryUtil.createJSONArray();
+			for( DossierFile dossierFile : dossierFileList ){
+				JSONObject dossiferFileObject = JSONFactoryUtil.createJSONObject();
+				String urlAPI = PropsUtil.get(PropKeys.PORTAL_DOMAIN)+"/o/rest/v2/dossiers/"+dossierFile.getDossierId()+"/files/"+dossierFile.getReferenceUid()+"/preview.pdf";
+				dossiferFileObject.put(SupportSearchConstants.URL_DOSSIER_FILE, urlAPI);
+				dossierFileArray.put(dossiferFileObject);
+			}
+			body.put(SupportSearchConstants.DOSSIER_FILE, dossierFileArray);
+		} else {
+			body.put(SupportSearchConstants.DOSSIER_FILE, "No Result");
+		}
+
+		return body;
+	}
+
+
+	@Override
+	public Response getSupportSearchDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String dossierId, Boolean isCallAgain, String referenceUid) {
+		if(Validator.isNull(isCallAgain)){
+			isCallAgain = true;
+		}
+		Integer type = null;
+		String liferay_home = PropsUtil.get("liferay.home");
+		if(liferay_home.contains("dvc")){
+			type = DICH_VU_CONG;
+		} else if(liferay_home.contains("mcdt")) {
+			type = MOT_CUA;
+		}
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		if(type==DICH_VU_CONG) {
+			try {
+				if(Validator.isNull(referenceUid)){
+					response.put(SupportSearchConstants.HO_SO_DVC, supportSearchDVC(groupId, dossierId));
+
+				} else {
+					response.put(SupportSearchConstants.HO_SO_DVC, supportSearchDVC(groupId, referenceUid));
+				}
+
+				if(isCallAgain){
+					Dossier dossier = DossierUtils.getDossierNew(dossierId, groupId);
+					ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNO_PROTOCOL("SERVER_"+dossier.getGovAgencyCode(), PROTOCOL, dossier.getGroupId());
+
+					JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+
+					String url = config.get("url").toString() + "/dossiers/supportSearch/"
+							+ dossier.getDossierId() + StringPool.QUESTION +StringPool.AMPERSAND+"isCallAgain"+StringPool.EQUAL+"false"+StringPool.AMPERSAND+REFUID+StringPool.EQUAL+dossier.getReferenceUid();
+					_log.info("url : " + url +" ===== groupId" + config.getLong("groupId") );
+
+					JSONObject responeUrl = sendRequestToURL(url, config.getLong("groupId"));
+					JSONObject hoSoMCDT = JSONFactoryUtil.createJSONObject(responeUrl.get(SupportSearchConstants.HO_SO_MCDT).toString());
+
+					response.put(SupportSearchConstants.HO_SO_MCDT, hoSoMCDT);
+				}
+			} catch (Exception e){
+				_log.error(e);
+				return BusinessExceptionImpl.processException(e);
+			}
+		} else if(type==MOT_CUA) {
+			try {
+				if(Validator.isNull(referenceUid)){
+					response.put(SupportSearchConstants.HO_SO_MCDT, supportSearchDVC(groupId, dossierId));
+				} else {
+					response.put(SupportSearchConstants.HO_SO_MCDT, supportSearchDVC(groupId, referenceUid));
+				}
+
+				if(isCallAgain){
+					Dossier dossier = DossierUtils.getDossierNew(dossierId, groupId);
+					ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNO_PROTOCOL(SERVER_NO_DVC, PROTOCOL, dossier.getGroupId());
+					JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+
+					String url = config.get("url").toString() + "/dossiers/supportSearch/"
+							+ dossier.getDossierId() + StringPool.QUESTION + StringPool.AMPERSAND+"isCallAgain"+StringPool.EQUAL+"false"
+							+StringPool.AMPERSAND+REFUID+StringPool.EQUAL+dossier.getReferenceUid();
+					_log.info("url : " + url +" ===== groupId" + groupId );
+
+					JSONObject responeUrl = sendRequestToURL(url, config.getLong("groupId"));
+					JSONObject hoSoDVC = JSONFactoryUtil.createJSONObject(responeUrl.get(SupportSearchConstants.HO_SO_DVC).toString());
+
+					response.put(SupportSearchConstants.HO_SO_DVC, hoSoDVC);
+				}
+			}
+			catch (Exception e){
+				_log.error(e);
+				return BusinessExceptionImpl.processException(e);
+			}
+		}
+
+		JSONObject conditionJSON = JSONFactoryUtil.createJSONObject();
+		conditionJSON.put(SupportSearchConstants.TYPE, type);
+		conditionJSON.put(SupportSearchConstants.KEY_SEARCH, dossierId);
+		conditionJSON.put(SupportSearchConstants.IS_CALL_AGAIN, isCallAgain.toString());
+		response.put(SupportSearchConstants.CONDITION, conditionJSON);
+
+		return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
 	}
 
 	@Override

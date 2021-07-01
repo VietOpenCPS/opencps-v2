@@ -460,6 +460,11 @@ public class DossierLocalServiceUtil {
 		return getService().findDossierByDeclarationCode(code, groupId);
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier findDossierById(
+			long dossierId) {
+		return getService().findDossierById(dossierId);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByGroup(
 		long groupId) {
 		return getService().findDossierByGroup(groupId);
@@ -468,6 +473,13 @@ public class DossierLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.DossierDocument findDossierDocumentByDossierId(
 		long dossierDocumentId) {
 		return getService().findDossierDocumentByDossierId(dossierDocumentId);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(
+		String originDossierNo, Long originDossierId, Integer originality) {
+		return getService()
+				   .findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(originDossierNo,
+			originDossierId, originality);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {

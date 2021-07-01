@@ -1139,18 +1139,6 @@ public class ProcessUpdateDBUtils {
 				boolean postalService = false;
 				boolean registration = false;
 				for (ServiceConfig config : configList) {
-					org.opencps.dossiermgt.model.ServiceConfig serviceConfigOld = ServiceConfigLocalServiceUtil.findByBySIAndGAC(groupId, serviceInfoId, config.getGovAgencyCode());
-
-					govAgencyCode = config.getGovAgencyCode();
-					govAgencyName = config.getGovAgencyName();
-					serviceInstruction = config.getServiceInstruction();
-					serviceLevel = config.getServiceLevel();
-					serviceUrl = config.getServiceUrl();
-					forCitizen = config.isForCitizen();
-					forBusiness = config.isForBusiness();
-					postalService = config.isPostalService();
-					registration = config.isRegistration();
-					//
 
 					//Delete ServiceConfig No ProcessOption
 					List<org.opencps.dossiermgt.model.ServiceConfig> lstServiceByServiceInfo = ServiceConfigLocalServiceUtil.fetchByG_SERVICE_CODE(groupId, serviceInfoId, config.getGovAgencyCode());
@@ -1164,12 +1152,30 @@ public class ProcessUpdateDBUtils {
 							}
 						}
 					}
+
+					org.opencps.dossiermgt.model.ServiceConfig serviceConfigOld = ServiceConfigLocalServiceUtil.findByBySIAndGAC(groupId, serviceInfoId, config.getGovAgencyCode());
+
+					govAgencyCode = config.getGovAgencyCode();
+					govAgencyName = config.getGovAgencyName();
+					serviceInstruction = config.getServiceInstruction();
+					serviceLevel = config.getServiceLevel();
+					serviceUrl = config.getServiceUrl();
+					forCitizen = config.isForCitizen();
+					forBusiness = config.isForBusiness();
+					if (config.isForCitizen()){
+						forCitizen = true;
+					}
+					if(config.isForBusiness()){
+						forBusiness = true;
+					}
+					postalService = config.isPostalService();
+					registration = config.isRegistration();
 					ServiceConfigActions actionConfig = new ServiceConfigActionImpl();
 					org.opencps.dossiermgt.model.ServiceConfig serviceConfigNew = null;
 					if(Validator.isNotNull(serviceConfigOld)){
 						boolean flagConfig = actionService.deleteAllServiceConfig(userId, groupId, serviceInfoId, serviceConfigOld, serviceContext);
 						_log.debug("FlagConfig: " + flagConfig);
-						_log.debug("serviceConfigOld.getServiceConfigId(): " + serviceConfigOld.getServiceConfigId());
+						_log.info("serviceConfigOld.getServiceConfigId(): " + serviceConfigOld.getServiceConfigId());
 						serviceConfigNew = actionConfig.updateServiceConfig(serviceConfigOld.getServiceConfigId(),userId,groupId,
 								serviceInfoId,govAgencyCode,serviceInstruction, serviceLevel,serviceUrl,forCitizen,
 								forBusiness,postalService,registration,serviceContext);
@@ -1181,11 +1187,13 @@ public class ProcessUpdateDBUtils {
 								serviceInstruction, serviceLevel, serviceUrl, forCitizen, forBusiness, postalService, registration, serviceContext);
 					}
 					// Process ProcessOption
+					_log.debug("ServiceConfigId : " + serviceConfigId);
 					if (serviceConfigId > 0) {
 						Processes process = config.getProcesses();
 						if (process != null) {
 							flagService = processProcessOption(userId, groupId, serviceConfigId, process, actionConfig,
 									serviceContext);
+							_log.debug("flagService : " + flagService);
 
 						}
 					}
@@ -1284,8 +1292,14 @@ public class ProcessUpdateDBUtils {
 					processName = option.getProcessName();
 					registerBookCode = option.getRegisterBookCode();
 					sampleCount = option.getSampleCount();
-					forCitizen = option.isForCitizen();
-					forBusiness = option.isForBusiness();
+
+					if (Validator.isNotNull(option.getForCitizen())) {
+						forCitizen = option.getForCitizen();
+					}
+
+					if(Validator.isNotNull(option.getForBusiness())) {
+						forBusiness = option.getForBusiness();
+					}
 					//
 					actionConfig.updateOptionDB(userId, groupId, optionCode, optionName, serviceConfigId, seqOrder,
 							autoSelect, instructionNote, submissionNote, templateNo, templateName, processNo, processName,

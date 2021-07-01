@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.input.model.DossierTaxInfo;
 import org.opencps.synctracking.action.IntegrationOutsideApi;
 import org.opencps.synctracking.action.SyncTrackingAction;
 import org.opencps.synctracking.action.TransformAction;
@@ -13,9 +14,16 @@ import org.opencps.synctracking.model.*;
 import org.opencps.synctracking.service.DossierTaxLocalServiceUtil;
 import org.opencps.synctracking.service.SyncTrackingLocalServiceUtil;
 import org.opencps.synctracking.service.util.CommonServiceUtils;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,10 +34,14 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
     private TransformAction transformAction;
     private IntegrationOutsideApi integrationOutsideApi;
     private Log _log = LogFactoryUtil.getLog(SyncTrackingActionImpl.class);
+    private RestTemplate restTemplate;
 
+    private static final Integer timeout = 10000 ;
     public SyncTrackingActionImpl(TransformAction transformAction, IntegrationOutsideApi integrationOutsideApi) {
         this.transformAction = transformAction;
         this.integrationOutsideApi = integrationOutsideApi;
+        this.restTemplate = new RestTemplate(setConfigRestTemplate(timeout));
+        this.restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
     }
 
     @Override
@@ -348,6 +360,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             if (Validator.isNull(input.soQuyetDinh) || input.soQuyetDinh.isEmpty()) {
                 throw new Exception("No from So Quyet Dinh was found");
             }
+            _log.info("Vao 1111111111111111111");
             DossierTax dossierTax = DossierTaxLocalServiceUtil.fetchDossierTaxByDMS(input.dossierNo, input.maSoThue, input.soQuyetDinh);
             if (Validator.isNotNull(dossierTax)) {
                 _log.debug("SyncTracking: " + JSONFactoryUtil.looseSerialize(dossierTax));
@@ -356,6 +369,32 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
 
             return response;
 
+        }catch (Exception e){
+            e.getMessage();
+        }
+        return null;
+    }
+
+    @Override
+    public String getDDossierTax(DossierTaxInput input) throws Exception {
+        try {
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Accept", "*");
+            DossierTaxInfo body = new DossierTaxInfo();
+            String urlCall ="127.0.0.1:8081/o/rest/getDetailDossierTax";
+
+            body.dossierNo = input.dossierNo;
+			body.maSoThue = input.maSoThue;
+			body.soQuyetDinh = input.soQuyetDinh;
+			headers.add("groupId", String.valueOf(input.groupId));
+			_log.info("Body: " + JSONFactoryUtil.looseSerialize(body));
+			HttpEntity<DossierTaxInfo> entity = new HttpEntity<>(body, headers);
+			ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
+			if(Validator.isNotNull(response)){
+				return response.getBody();
+			}
+			return null;
         }catch (Exception e){
             e.getMessage();
         }
@@ -401,5 +440,11 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             _log.error(e);
             throw new Exception(e.getMessage());
         }
+    }
+    private ClientHttpRequestFactory setConfigRestTemplate(Integer timeout) {
+        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
+                = new HttpComponentsClientHttpRequestFactory();
+        clientHttpRequestFactory.setConnectTimeout(timeout);
+        return clientHttpRequestFactory;
     }
 }

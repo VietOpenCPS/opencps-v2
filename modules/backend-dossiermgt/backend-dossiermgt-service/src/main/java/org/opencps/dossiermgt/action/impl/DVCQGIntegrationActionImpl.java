@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -53,6 +54,7 @@ import org.opencps.dossiermgt.input.model.DossierTaxInfo;
 import org.opencps.dossiermgt.input.model.SyncTrackingInfo;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.impl.ServiceInfoImpl;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
@@ -94,7 +96,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -129,7 +130,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private static HashMap<String, JSONObject> _dictItemMapItems = new HashMap<String, JSONObject>();
 
 	private static JSONArray _serviceInfoDVCQG = JSONFactoryUtil.createJSONArray();
-	private RestTemplate restTemplate;
 	private static volatile ThreadPoolExecutor threadPoolExecutor;
 	private int corePoolSize    = 5;
 	private int maximumPoolSize = 10;
@@ -145,11 +145,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private static final Integer timeout = 10000 ;
 
 	private static final Integer TIMEOUT_DVCQG = 6;
-
-	public DVCQGIntegrationActionImpl(){
-		this.restTemplate = new RestTemplate(setConfigRestTemplate(timeout));
-		this.restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
-	}
 
 	private String convertDate2String(Date date) {
 
@@ -4325,7 +4320,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			callPostAPISyncTracking(groupId, "", data.toString(), "", DVCQG_NHAN_CHUNG_TU_THUE);
 			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(MaHoSo);
 			if(Validator.isNotNull(dossier)) {
-				String dossierTax = getDetailDossierTax(MaHoSo, MaSoThue, MaThongBaoThue);
+				String dossierTax = getDetailDossierTax(groupId,MaHoSo, MaSoThue, MaThongBaoThue);
 				_log.info("dossierTax: " + dossierTax);
 				if(Validator.isNotNull(dossierTax)) {
 
@@ -4425,7 +4420,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						_log.debug("subObject: " + subObject);
 
 						Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
-						String dossierTax = getDetailDossierTax(dossierNo, maSoThue, soQD);
+						String dossierTax = getDetailDossierTax(groupId, dossierNo, maSoThue, soQD);
 						if (Validator.isNotNull(dossier)) {
 							_log.info("Hồ sơ có trên hệ thống : "  + dossierNo);
 							if (Validator.isNull(dossierTax)) {
@@ -4453,22 +4448,41 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return validateResult;
 	}
 
-	private String getDetailDossierTax(String dossierNo, String maSoThue, String soQuyetDinh) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Accept", "*");
-		DossierTaxInfo body = new DossierTaxInfo();
+	private String getDetailDossierTax(long groupId, String dossierNo, String maSoThue, String soQuyetDinh) {
 		try {
 			JSONObject configJson = getServerConfigByServerNo(DossierTerm.API_SYNC_TRACKING,"");
 			String urlCall = configJson.getString("urlMC") + configJson.getString(FrequencyOfficeConstants.CONFIG_GET_DOSSIER_TAX);
-			body.dossierNo = dossierNo;
-			body.maSoThue = maSoThue;
-			body.soQuyetDinh = soQuyetDinh;
-			HttpEntity<DossierTaxInfo> entity = new HttpEntity<>(body, headers);
-			ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
-			if(Validator.isNotNull(response)){
-				return response.getBody();
+			_log.info("url: " + urlCall);
+			StringBuilder sb = new StringBuilder();
+			URL urlVoid = new URL(urlCall);
+
+			JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+			jsonBody.put("dossierNo",dossierNo);
+			jsonBody.put("maSoThue",maSoThue);
+			jsonBody.put("soQuyetDinh",soQuyetDinh);
+
+			_log.info("POST DATA: " + jsonBody.toString());
+			java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVoid.openConnection();
+
+			conn.setRequestMethod(HttpMethod.POST);
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
+			conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			conn.setRequestProperty("Content-Length",StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+			conn.setUseCaches(false);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			_log.debug("POST DATA: " + jsonBody.toString());
+			OutputStream osLogin = conn.getOutputStream();
+			osLogin.write(jsonBody.toString().getBytes());
+			osLogin.close();
+
+			BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			int cp;
+			while ((cp = brf.read()) != -1) {
+				sb.append((char) cp);
 			}
-			return null;
+			return sb.toString();
 		}catch (Exception e){
 			e.getMessage();
 			_log.error(e);
@@ -4477,24 +4491,45 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	private String callPostAPISyncTracking(long groupId, String MaHoSo, String data, String reponse, String protocol){
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Accept", "*");
-		SyncTrackingInfo body = new SyncTrackingInfo();
+		StringBuilder sb = new StringBuilder();
 		try {
 			JSONObject configJson = getServerConfigByServerNo(DossierTerm.API_SYNC_TRACKING,"");
 			String urlCall = configJson.getString(FrequencyOfficeConstants.CONFIG_URL_LOCAL)
 					+ configJson.getString(FrequencyOfficeConstants.CONFIG_SAVE_SYNC_TRACKING);
-			body.groupId = groupId;
-			body.bodyRequest = data;
-			body.dossierNo = MaHoSo;
-			body.bodyResponse = reponse;
-			body.api = protocol;
-			headers.add("groupId", String.valueOf(groupId));
-			HttpEntity<SyncTrackingInfo> entity = new HttpEntity<>(body, headers);
-			ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
-			_log.info("Response api saving tracking: " + response.getBody());
+
+			URL urlVoid = new URL(urlCall);
+
+			JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+			jsonBody.put("groupId",groupId);
+			jsonBody.put("bodyRequest",data);
+			jsonBody.put("dossierNo",MaHoSo);
+			jsonBody.put("bodyResponse",reponse);
+			jsonBody.put("api",protocol);
+
+			_log.info("POST DATA: " + jsonBody.toString());
+			java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVoid.openConnection();
+
+			conn.setRequestMethod(HttpMethod.POST);
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
+			conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			conn.setRequestProperty("Content-Length",StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+			conn.setUseCaches(false);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			_log.debug("POST DATA: " + jsonBody.toString());
+			OutputStream osLogin = conn.getOutputStream();
+			osLogin.write(jsonBody.toString().getBytes());
+			osLogin.close();
+
+			BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			int cp;
+			while ((cp = brf.read()) != -1) {
+				sb.append((char) cp);
+			}
+			_log.info("Response api saving tracking: " + sb.toString());
 			_log.info("Saved tracking!!!");
-			return response.getBody();
+			return sb.toString();
 		}catch (Exception e){
 			e.getMessage();
 			_log.error(e);
@@ -4505,115 +4540,157 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private boolean callUpdateAPIDossierTax (String MaHoSo, String HoTenNguoiNopTien, String MaSoThue, String urlFileChungTu, String maThongBaoThue, String thoiGianThanhToan,
 											 String soTien, String noiDungThanhToan,int trangThaiThanhToan, long groupId,String soCMTNguoiNopTien,
 											 String diaChiNguoiNopTien,String tinhNguoiNopTien,String huyenNguoiNopTien,String xaNguoiNopTien, String statusTBT, String statusCTT) {
+		StringBuilder sb = new StringBuilder();
 		JSONObject configJson = getServerConfigByServerNo(DossierTerm.API_SYNC_TRACKING, "");
 		String urlCall = configJson.getString("urlMC") + configJson.getString("updateDossierTax");
+		try {
+			URL urlVoid = new URL(urlCall);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Accept", "*");
-		DossierTaxInfo body = new DossierTaxInfo();
+			JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+			jsonBody.put("groupId",groupId);
+			jsonBody.put("dossierNo",MaHoSo);
+			jsonBody.put("hoTenNguoiNopTien",HoTenNguoiNopTien);
+			jsonBody.put("maSoThue",MaSoThue);
+			jsonBody.put("fileChungTu",urlFileChungTu);
+			jsonBody.put("soQuyetDinh",maThongBaoThue);
+			jsonBody.put("thoiGianThanhToan",thoiGianThanhToan);
+			jsonBody.put("soTienNop",soTien);
+			jsonBody.put("noiDungThanhToan",noiDungThanhToan);
+			jsonBody.put("trangThaiThanhToan",trangThaiThanhToan);
+			jsonBody.put("soCmtNguoiNopTien",soCMTNguoiNopTien);
+			jsonBody.put("diaChiNguoiNopTien",diaChiNguoiNopTien);
+			jsonBody.put("tinhNguoiNopTien",tinhNguoiNopTien);
+			jsonBody.put("huyenNguoiNopTien",huyenNguoiNopTien);
+			jsonBody.put("xaNguoiNopTien",xaNguoiNopTien);
+			jsonBody.put("huyenNguoiNopTien",noiDungThanhToan);
+			jsonBody.put("huyenNguoiNopTien",noiDungThanhToan);
+			if (Validator.isNotNull(statusTBT)) {
+				jsonBody.put("statusTBT",statusTBT);
+			}
+			if (Validator.isNotNull(statusCTT)) {
+				jsonBody.put("statusCTT",statusCTT);
+			}
 
-		body.setDossierNo(MaHoSo);
-		body.setHoTenNguoiNopTien(HoTenNguoiNopTien);
-		body.setGroupId(groupId);
-		body.setMaSoThue(MaSoThue);
-		body.setFileChungTu(urlFileChungTu);
-		body.setSoQuyetDinh(maThongBaoThue);
-		body.setThoiGianThanhToan(thoiGianThanhToan);
-		body.setSoTienNop(soTien);
-		body.setNoiDungThanhToan(noiDungThanhToan);
-		body.setTrangThaiThanhToan(trangThaiThanhToan);
-		body.setSoCmtNguoiNopTien(soCMTNguoiNopTien);
-		body.setDiaChiNguoiNopTien(diaChiNguoiNopTien);
-		body.setTinhNguoiNopTien(tinhNguoiNopTien);
-		body.setHuyenNguoiNopTien(huyenNguoiNopTien);
-		body.setXaNguoiNopTien(xaNguoiNopTien);
-		if (Validator.isNotNull(statusTBT)) {
-			body.setStatusTBT(statusTBT);
+			_log.info("POST DATA: " + jsonBody.toString());
+			java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVoid.openConnection();
+
+			conn.setRequestMethod(HttpMethod.POST);
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
+			conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			conn.setRequestProperty("Content-Length",StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+			conn.setUseCaches(false);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			_log.debug("POST DATA: " + jsonBody.toString());
+			OutputStream osLogin = conn.getOutputStream();
+			osLogin.write(jsonBody.toString().getBytes());
+			osLogin.close();
+
+			BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			int cp;
+			while ((cp = brf.read()) != -1) {
+				sb.append((char) cp);
+			}
+			_log.info("Response api saving dossierTax: " + sb.toString());
+			_log.info("Saved dossierTax!!!");
+			return true;
+		}catch (Exception e){
+			e.getMessage();
 		}
-		if (Validator.isNotNull(statusCTT)) {
-			body.setStatusCTT(statusCTT);
-		}
-
-		_log.debug("body: " + JSONFactoryUtil.looseSerialize(body));
-		headers.add("groupId", String.valueOf(body.groupId));
-		HttpEntity<DossierTaxInfo> entity = new HttpEntity<>(body, headers);
-		ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
-		_log.info("Response api saving dossierTax: " + response);
-		_log.info("Saved dossierTax!!!");
-		return true;
+		return false;
 	}
 
 	private boolean callPostAPIDossierTax(long groupId, JSONObject subObject, Dossier dossier, String statusTBT, String statusCTT, JSONObject data, JSONObject TtttChitiet) {
 		try {
+			StringBuilder sb = new StringBuilder();
 			JSONObject configJson = getServerConfigByServerNo(DossierTerm.API_SYNC_TRACKING, "");
 			String urlCall = configJson.getString("urlMC") + configJson.getString("saveDossierTax");
+			URL urlVoid = new URL(urlCall);
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.set("Accept", "*");
+			JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+			jsonBody.put("groupId",dossier.getGroupId());
+			jsonBody.put("dossierId",dossier.getDossierId());
+			jsonBody.put("dossierNo",dossier.getDossierNo());
 
-			DossierTaxInfo body = new DossierTaxInfo();
-
-			body.setDossierId(dossier.getDossierId());
-			body.setGroupId(dossier.getGroupId());
-			body.setDossierNo(dossier.getDossierNo());
 			if (subObject != null) {
-				body.setMaSoThue(subObject.getString(MA_SO_THUE));
-				body.setSoQuyetDinh(subObject.getString(SO_QUYET_DINH));
-				body.setNgayQuyetDinh(subObject.getString(NGAY_QUYET_DINH));
-				body.setTenTieuMuc(subObject.getString(TEN_TIEU_MUC));
-				body.setSoTien(subObject.getInt(SO_TIEN));
+				jsonBody.put("maSoThue",subObject.getString(MA_SO_THUE));
+				jsonBody.put("soQuyetDinh",subObject.getString(SO_QUYET_DINH));
+				jsonBody.put("ngayQuyetDinh",subObject.getString(NGAY_QUYET_DINH));
+				jsonBody.put("tenTieuMuc",subObject.getString(TEN_TIEU_MUC));
+				jsonBody.put("soTien",subObject.getString(SO_TIEN));
 			} else {
-				body.setHoTenNguoiNopTien(data.getString("HoTenNguoiNopTien"));
-				body.setGroupId(groupId);
-				body.setMaSoThue(data.getString("MaSoThue"));
-				body.setFileChungTu(data.getString("UrlFileChungTu"));
-				body.setSoQuyetDinh(TtttChitiet.getString("MaThongBaoThue"));
+				jsonBody.put("hoTenNguoiNopTien",data.getString("HoTenNguoiNopTien"));
+				jsonBody.put("groupId",groupId);
+				jsonBody.put("maSoThue",data.getString("MaSoThue"));
+				jsonBody.put("fileChungTu",data.getString("UrlFileChungTu"));
+				jsonBody.put("soQuyetDinh",TtttChitiet.getString("MaThongBaoThue"));
 
 				if (Validator.isNotNull(TtttChitiet.getString("ThoiGianThanhToan"))) {
-					body.setThoiGianThanhToan(TtttChitiet.getString("ThoiGianThanhToan"));
+					jsonBody.put("thoiGianThanhToan",TtttChitiet.getString("ThoiGianThanhToan"));
 				}
 				if (Validator.isNotNull(TtttChitiet.getString("SoTien"))) {
-					body.setSoTienNop(TtttChitiet.getString("SoTien"));
+					jsonBody.put("soTienNop",TtttChitiet.getString("SoTien"));
 				}
 
 				if (Validator.isNotNull(TtttChitiet.getString("NoiDungThanhToan"))) {
-					body.setNoiDungThanhToan(TtttChitiet.getString("NoiDungThanhToan"));
+					jsonBody.put("noiDungThanhToan",TtttChitiet.getString("NoiDungThanhToan"));
 				}
 
 				if (Validator.isNotNull(TtttChitiet.getString("TrangThaiThanhToan"))) {
-					body.setTrangThaiThanhToan(TtttChitiet.getInt("TrangThaiThanhToan"));
+					jsonBody.put("trangThaiThanhToan",TtttChitiet.getInt("TrangThaiThanhToan"));
 				}
 
 				if (Validator.isNotNull(data.getString("SoCMTNguoiNopTien"))) {
-					body.setSoCmtNguoiNopTien(data.getString("SoCMTNguoiNopTien"));
+					jsonBody.put("soCmtNguoiNopTien",data.getString("SoCMTNguoiNopTien"));
 				}
 
 				if (Validator.isNotNull(data.getString("DiaChiNguoiNopTien"))) {
-					body.setDiaChiNguoiNopTien(data.getString("DiaChiNguoiNopTien"));
+					jsonBody.put("diaChiNguoiNopTien",data.getString("DiaChiNguoiNopTien"));
 				}
 
 				if (Validator.isNotNull(data.getString("TinhNguoiNopTien"))) {
-					body.setTinhNguoiNopTien(data.getString("TinhNguoiNopTien"));
+					jsonBody.put("tinhNguoiNopTien",data.getString("TinhNguoiNopTien"));
 				}
 
 				if (Validator.isNotNull(data.getString("HuyenNguoiNopTien"))) {
-					body.setHuyenNguoiNopTien(data.getString("HuyenNguoiNopTien"));
+					jsonBody.put("huyenNguoiNopTien",data.getString("HuyenNguoiNopTien"));
 				}
 
 				if (Validator.isNotNull(data.getString("XaNguoiNopTien"))) {
-					body.setXaNguoiNopTien(data.getString("XaNguoiNopTien"));
+					jsonBody.put("xaNguoiNopTien",data.getString("XaNguoiNopTien"));
 				}
 			}
 			if (Validator.isNotNull(statusTBT)) {
-				body.setStatusTBT(statusTBT);
+				jsonBody.put("statusTBT",statusTBT);
 			}
 			if (Validator.isNotNull(statusCTT)) {
-				body.setStatusCTT(statusCTT);
+				jsonBody.put("statusCTT",statusCTT);
 			}
-			headers.add("groupId", String.valueOf(body.groupId));
-			HttpEntity<DossierTaxInfo> entity = new HttpEntity<>(body, headers);
-			ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
-			_log.info("Response api saving dossierTax: " + response);
+			_log.info("POST DATA: " + jsonBody.toString());
+
+			java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVoid.openConnection();
+
+			conn.setRequestMethod(HttpMethod.POST);
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
+			conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			conn.setRequestProperty(javax.ws.rs.core.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			conn.setRequestProperty("Content-Length",StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+			conn.setUseCaches(false);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			_log.debug("POST DATA: " + jsonBody.toString());
+			OutputStream osLogin = conn.getOutputStream();
+			osLogin.write(jsonBody.toString().getBytes());
+			osLogin.close();
+
+			BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			int cp;
+			while ((cp = brf.read()) != -1) {
+				sb.append((char) cp);
+			}
+
+			_log.info("Response api saving dossierTax: " + sb.toString());
 			_log.info("Saved dossierTax!!!");
 		} catch (Exception e) {
 			e.getMessage();
@@ -4653,12 +4730,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			e.printStackTrace();
 		}
 		return null;
-	}
-	private ClientHttpRequestFactory setConfigRestTemplate(Integer timeout) {
-		HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
-				= new HttpComponentsClientHttpRequestFactory();
-		clientHttpRequestFactory.setConnectTimeout(timeout);
-		return clientHttpRequestFactory;
 	}
 
 	private static final String SERVER_CONFIG_NULL = "There is no server config frequency";

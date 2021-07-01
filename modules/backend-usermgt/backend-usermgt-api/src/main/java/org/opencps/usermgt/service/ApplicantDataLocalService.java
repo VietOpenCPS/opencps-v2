@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -321,15 +322,21 @@ public interface ApplicantDataLocalService extends BaseLocalService,
 
 	public ApplicantData updateApplicantData(long groupId,
 		long applicantDataId, String fileTemplateNo, String fileNo,
-		String fileName, String applicantIdNo, int status,
+		String fileName, String applicantIdNo, String status,
 		ServiceContext serviceContext) throws PortalException, SystemException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData updateApplicantData(long groupId,
 		long applicantDataId, String fileTemplateNo, String fileNo,
-		String fileName, String applicantIdNo, int status,
+		String fileName, String applicantIdNo, String status,
 		String sourceFileName, InputStream inputStream,
 		ServiceContext serviceContext) throws PortalException, SystemException;
+
+
+	@Indexable(type = IndexableType.REINDEX)
+	public FileEntry uploadFileDLEntry(long userId, long groupId,
+		InputStream inputStream, String sourceFileName,
+		String fileType, long fileSize, ServiceContext serviceContext) throws Exception;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData updateApplicantData(ServiceContext context,
