@@ -25,6 +25,9 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.BaseJSPSettingsConfigurationAction;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
+import com.liferay.portal.kernel.scheduler.SchedulerException;
+import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
@@ -52,6 +55,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Connection;
@@ -134,7 +138,9 @@ import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
+import org.opencps.dossiermgt.scheduler.FakeCounterScheduler;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.scheduler.PublishEventScheduler;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
@@ -230,7 +236,7 @@ public class DossierManagementImpl implements DossierManagement {
 		return myResponse;
 	}
 
-	public JSONObject SupportSeactContent(long groupId, String key){
+	public JSONObject SupportSeachContent(long groupId, String key){
 		JSONObject body = JSONFactoryUtil.createJSONObject();
 
 		Dossier dossier = DossierUtils.getDossierNew(key, groupId);
@@ -267,7 +273,7 @@ public class DossierManagementImpl implements DossierManagement {
 	private JSONObject supportSearchDVC(long groupId, String key){
 
 		JSONObject body = JSONFactoryUtil.createJSONObject();
-		JSONObject dossierObj = SupportSeactContent(groupId, key);
+		JSONObject dossierObj = SupportSeachContent(groupId, key);
 		body.put(SupportSearchConstants.DOSSIER, dossierObj);
 		Dossier dossier = DossierUtils.getDossierNew(key, groupId);
 
@@ -277,7 +283,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Dossier dossierBetween = DossierBetweenList.get(0);
 
-			JSONObject jsonObject = SupportSeactContent(groupId, String.valueOf(dossierBetween.getDossierId()));
+			JSONObject jsonObject = SupportSeachContent(groupId, String.valueOf(dossierBetween.getDossierId()));
 
 			body.put(SupportSearchConstants.DOSSIER_BETWEEN, jsonObject);
 
@@ -291,7 +297,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Dossier dossierTransfer = DossierTransferList.get(0);
 
-			JSONObject jsonObject = SupportSeactContent(groupId, String.valueOf(dossierTransfer.getDossierId()));
+			JSONObject jsonObject = SupportSeachContent(groupId, String.valueOf(dossierTransfer.getDossierId()));
 
 			body.put(SupportSearchConstants.DOSSIER_TRANFER, jsonObject);
 
@@ -302,6 +308,93 @@ public class DossierManagementImpl implements DossierManagement {
 		return body;
 	}
 
+
+	@Override
+	public Response getCountofScheduler(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String nameScheduler, String type) throws SchedulerException {
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+		if(Validator.isNotNull("type")){
+			if(type.equalsIgnoreCase("admin") ){
+				if(nameScheduler.equalsIgnoreCase("PublishEventScheduler")
+						|| nameScheduler.equalsIgnoreCase("PublishEventHSKMScheduler")
+						|| nameScheduler.equalsIgnoreCase("DossierSyncProcessingScheduler")
+						|| nameScheduler.equalsIgnoreCase("FakeCounterScheduler"))
+				{
+					List<SchedulerResponse> schedulerResponses =
+							SchedulerEngineHelperUtil.getScheduledJobs();
+					Method method;
+					for (SchedulerResponse schedulerResponse : schedulerResponses){
+						if(schedulerResponse.getJobName().contains(nameScheduler)){
+							try {
+								method = Class.forName(schedulerResponse.getJobName()).getMethod("getCount");
+								response.put("count", method.invoke(null));
+								return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+							} catch (Exception e){
+								_log.error(e);
+								return BusinessExceptionImpl.processException(e);
+							}
+						}
+					}
+					response.put("Message: ", "Scheduler doesn't found in opencpsscheduler:list");
+					return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+				} else {
+					response.put("Message : ", "Scheduler doesn't exist or not found");
+					return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+				}
+
+			} else {
+				response.put("Message: ", "Unauthorized Information.");
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(response.toJSONString()).build();
+			}
+		} else {
+			response.put("Message: ", "Non-Authoritative Information.");
+			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(response.toJSONString()).build();
+		}
+
+	}
+
+	@Override
+	public Response ResetCountofScheduler(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String nameScheduler, String type) throws SchedulerException {
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+		if(Validator.isNotNull("type")){
+			if(type.equalsIgnoreCase("admin") ){
+				if(nameScheduler.equalsIgnoreCase("PublishEventScheduler")
+						|| nameScheduler.equalsIgnoreCase("PublishEventHSKMScheduler")
+						|| nameScheduler.equalsIgnoreCase("DossierSyncProcessingScheduler")
+						|| nameScheduler.equalsIgnoreCase("FakeCounterScheduler"))
+				{
+					List<SchedulerResponse> schedulerResponses =
+							SchedulerEngineHelperUtil.getScheduledJobs();
+					Method method;
+					for (SchedulerResponse schedulerResponse : schedulerResponses){
+						if(schedulerResponse.getJobName().contains(nameScheduler)){
+							try {
+								method = Class.forName(schedulerResponse.getJobName()).getMethod("resetCount");
+								response.put("count", method.invoke(null));
+								return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+							} catch (Exception e){
+								_log.error(e);
+								return BusinessExceptionImpl.processException(e);
+							}
+						}
+					}
+					response.put("Message: ", "Scheduler doesn't found in opencpsscheduler:list");
+					return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+				} else {
+					response.put("Message : ", "Scheduler doesn't exist or not found");
+					return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+				}
+
+			} else {
+				response.put("Message: ", "Unauthorized Information.");
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(response.toJSONString()).build();
+			}
+		} else {
+			response.put("Message: ", "Non-Authoritative Information.");
+			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(response.toJSONString()).build();
+		}
+
+	}
 
 	@Override
 	public Response getSupportSearchDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String dossierId, Boolean isCallAgain, String referenceUid) {
@@ -323,7 +416,6 @@ public class DossierManagementImpl implements DossierManagement {
 			try {
 				if(Validator.isNull(referenceUid)){
 					response.put(SupportSearchConstants.HO_SO_DVC, supportSearchDVC(groupId, dossierId));
-
 				} else {
 					response.put(SupportSearchConstants.HO_SO_DVC, supportSearchDVC(groupId, referenceUid));
 				}
@@ -336,7 +428,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 					String url = config.get("url").toString() + "/dossiers/supportSearch/"
 							+ dossier.getDossierId() + StringPool.QUESTION +StringPool.AMPERSAND+"isCallAgain"+StringPool.EQUAL+"false"+StringPool.AMPERSAND+REFUID+StringPool.EQUAL+dossier.getReferenceUid();
-					_log.info("url : " + url +" ===== groupId" + config.getLong("groupId") );
+//					_log.info("url : " + url +" ===== groupId" + config.getLong("groupId") );
 
 					JSONObject responeUrl = sendRequestToURL(url, config.getLong("groupId"));
 					JSONObject hoSoMCDT = JSONFactoryUtil.createJSONObject();
@@ -367,7 +459,7 @@ public class DossierManagementImpl implements DossierManagement {
 					String url = config.get("url").toString() + "/dossiers/supportSearch/"
 							+ dossier.getDossierId() + StringPool.QUESTION + StringPool.AMPERSAND+"isCallAgain"+StringPool.EQUAL+"false"
 							+StringPool.AMPERSAND+REFUID+StringPool.EQUAL+dossier.getReferenceUid();
-					_log.info("url : " + url +" ===== groupId" + groupId );
+//					_log.info("url : " + url +" ===== groupId" + groupId );
 
 					JSONObject responeUrl = sendRequestToURL(url, config.getLong("groupId"));
 					JSONObject hoSoDVC = JSONFactoryUtil.createJSONObject(responeUrl.get(SupportSearchConstants.HO_SO_DVC).toString());
