@@ -455,7 +455,7 @@ public class ConfigCounterNumberGenerator {
 	private static final String PERCENT_ZERO = "%0";
 	private static final String NUMBER_FORMAT = "d";
 	
-	private static String countByNumber(String pattern, String tmp, ConfigCounter configCounter) {
+	private synchronized static String countByNumber(String pattern, String tmp, ConfigCounter configCounter) {
 
 		//long counter = CounterLocalServiceUtil.increment(pattern);
 		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;

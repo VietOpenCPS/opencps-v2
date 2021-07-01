@@ -630,7 +630,7 @@ public class DossierNumberGenerator {
 		return password;
 	}
 
-	public static long countByRegiterBookCode(long groupId, String registerBookCode, String govAgencyCode) {
+	public synchronized static long countByRegiterBookCode(long groupId, String registerBookCode, String govAgencyCode) {
 		
 		long _counterNumber = 0;
 
