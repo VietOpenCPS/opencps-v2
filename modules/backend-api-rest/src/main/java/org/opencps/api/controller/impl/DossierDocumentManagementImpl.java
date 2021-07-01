@@ -157,7 +157,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					try {
 						Date dateStart1 = new Date();
 						String previewResponse = (String) MessageBusUtil
-								.sendSynchronousMessage(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW, message, 10000);
+								.sendSynchronousMessage(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW, message, 20000);
 
 
 						File file = new File(previewResponse);

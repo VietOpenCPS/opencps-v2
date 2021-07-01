@@ -151,7 +151,7 @@ public class ApplicantDataLocalServiceImpl
 	}
 
 	@Override
-	public ApplicantData updateApplicantData(long groupId, long applicantDataId, String fileTemplateNo, String fileNo, String fileName, String applicantIdNo, int status, ServiceContext serviceContext) throws PortalException, SystemException {
+	public ApplicantData updateApplicantData(long groupId, long applicantDataId, String fileTemplateNo, String fileNo, String fileName, String applicantIdNo, String status, ServiceContext serviceContext) throws PortalException, SystemException {
 		ApplicantData applicantData = null;
 
 		Date now = new Date();
@@ -166,8 +166,12 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setFileTemplateNo(fileTemplateNo);
 		applicantData.setFileNo(fileNo);
 		applicantData.setFileName(fileName);
-		applicantData.setApplicantIdNo(applicantIdNo);
-		applicantData.setStatus(status);
+		if(Validator.isNotNull(applicantIdNo)) {
+			applicantData.setApplicantIdNo(applicantIdNo);
+		}
+		if(Validator.isNotNull(status)) {
+			applicantData.setStatus(Validator.isNotNull(status) ? Integer.parseInt(status) : 0);
+		}
 		applicantData.setApplicantDataType(0);
 
 		applicantData = applicantDataPersistence.update(applicantData);
@@ -298,7 +302,7 @@ public class ApplicantDataLocalServiceImpl
 			String fileNo,
 			String fileName,
 			String applicantIdNo,
-			int status,
+			String status,
 			String sourceFileName, InputStream inputStream,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		ApplicantData applicantData = null;
@@ -314,8 +318,12 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setFileTemplateNo(fileTemplateNo);
 		applicantData.setFileNo(fileNo);
 		applicantData.setFileName(fileName);
-		applicantData.setApplicantIdNo(applicantIdNo);
-		applicantData.setStatus(status);
+		if(Validator.isNotNull(applicantIdNo)) {
+			applicantData.setApplicantIdNo(applicantIdNo);
+		}
+		if(Validator.isNotNull(status)) {
+			applicantData.setStatus(Validator.isNotNull(status) ? Integer.parseInt(status) : 0);
+		}
 		applicantData.setApplicantDataType(0);
 		
 		if (applicantData.getFileEntryId() != 0) {
@@ -355,17 +363,23 @@ public class ApplicantDataLocalServiceImpl
 		return Validator.isNotNull(ext) ? (System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
 	}
 
-	private FileEntry uploadApplicantDataFile(long userId, long groupId, 
+	public FileEntry uploadApplicantDataFile(long userId, long groupId,
 			InputStream inputStream, String sourceFileName,
-			String fileType, long fileSize, ServiceContext serviceContext) 
+			String fileType, long fileSize, ServiceContext serviceContext)
 		throws Exception {
 		
 		return uploadFile(userId, groupId, 0, inputStream, sourceFileName, 
 				fileType, fileSize, FOLDER_NAME_APPLICANT_DATA_FILE, serviceContext);
 	}
 
+	@Override
+	public FileEntry uploadFileDLEntry(long userId, long groupId, InputStream inputStream, String sourceFileName, String fileType, long fileSize, ServiceContext serviceContext) throws Exception {
+		return uploadFile(userId, groupId, 0, inputStream, sourceFileName,
+				fileType, fileSize, FOLDER_NAME_APPLICANT_DATA_FILE, serviceContext);
+	}
+
 	private FileEntry uploadFile(long userId, long groupId, long fileEntryId, InputStream inputStream, String sourceFileName,
-			String fileType, long fileSize, String destination, ServiceContext serviceContext) 
+								 String fileType, long fileSize, String destination, ServiceContext serviceContext)
 		throws Exception {
 		
 		FileEntry fileEntry = null;
