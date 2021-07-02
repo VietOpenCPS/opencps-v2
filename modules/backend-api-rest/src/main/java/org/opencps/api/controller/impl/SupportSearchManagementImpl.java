@@ -145,7 +145,7 @@ public class SupportSearchManagementImpl implements SupportSearchManagement {
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(now);
-        cal.add(Calendar.DATE, -90);
+        cal.add(Calendar.DATE, -30);
         Date thirtyDayAgo = cal.getTime();
         thirtyDayAgo.setHours(0);
         thirtyDayAgo.setMinutes(0);
@@ -171,7 +171,7 @@ public class SupportSearchManagementImpl implements SupportSearchManagement {
                 }
 
             }
-            response.put("Message", "Update complete " + jsonArray.length() + " Users has NULL EMAIL");
+            response.put("Message", "Update complete! " + jsonArray.length() + " Users has NULL EMAIL");
             response.put(DATA, jsonArray);
             return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
         } catch (Exception ex){
