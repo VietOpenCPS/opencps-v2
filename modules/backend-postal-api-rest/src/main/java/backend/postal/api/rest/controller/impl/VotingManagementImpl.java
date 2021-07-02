@@ -2,6 +2,7 @@
 package backend.postal.api.rest.controller.impl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -125,6 +126,7 @@ public class VotingManagementImpl implements VotingManagement {
 
 			JSONObject jsonData = action.getVotingList(user.getUserId(), company.getCompanyId(), groupId, sorts, className, classPK,
 						params, query.getStart(), query.getEnd(), serviceContext);
+			_log.debug("JSONdata: " + JSONFactoryUtil.looseSerialize(jsonData));
 
 			if (jsonData != null) {
 				result.setVotingCount(VotingUtils.getVotingCount((List<Document>) jsonData.get(PostalConstantUtils.DATA)));

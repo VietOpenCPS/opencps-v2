@@ -3,6 +3,7 @@ package org.opencps.api.constants;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import org.opencps.api.controller.util.DateTimeUtil;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierSync;
@@ -15,6 +16,9 @@ public class SupportSearchConstants {
     public static final String HO_SO_DVC = "HoSoDVC";
     public static final String HO_SO_MCDT = "HoSoMCDT";
     //    ===================
+    public static final String INFO = "info";
+
+    //    ===================
     public static final String DOSSIER_SYNC = "dossierSync";
     public static final String ACTION_CODE = "actionCode";
     public static final String SYNC_TYPE = "syncType";
@@ -23,6 +27,15 @@ public class SupportSearchConstants {
     public static final String RETRY = "retry";
     public static final String CREATE_DATE = "createDate";
     public static final String MODIFIED_DATE = "modifiedDate";
+    public static final String SUDMIT_DATE = "submitDate";
+    public static final String RECEIVE_DATE= "receiveDate";
+    public static final String DUE_DATE = "dueDate";
+    public static final String RELEASE_DATE = "releaseDate";
+    public static final String FINISH_DATE = "finishDate";
+    public static final String LOCK_STATE = "lockState";
+    public static final String REGISTER_BOOK_CODE = "registerBookCode";
+    public static final String PROCESS_NO = "processNo";
+    public static final String GOV_AGENCY_CODE = "govAgencyCode";
 
 //    ===================
     public static final String DOSSIER = "dossier";
@@ -53,12 +66,6 @@ public class SupportSearchConstants {
     public static final String DOSSIER_TRANFER = "dossierTranfer";
 
 //  =======================
-    public static final String CONDITION = "condition";
-    public static final String TYPE = "type";
-    public static final String KEY_SEARCH = "keySearch";
-    public static final String IS_CALL_AGAIN = "isCallAgain";
-
-//  =======================
     public static final String DOSSIER_FILE = "dossierFile";
     public static final String URL_DOSSIER_FILE = "url";
 
@@ -70,8 +77,8 @@ public class SupportSearchConstants {
         entityDossierSync.put(SupportSearchConstants.SYNC_TYPE, dossierSync.getSyncType());
         entityDossierSync.put(SupportSearchConstants.STATE_, dossierSync.getState());
         entityDossierSync.put(SupportSearchConstants.RETRY, dossierSync.getRetry());
-        entityDossierSync.put(SupportSearchConstants.CREATE_DATE, dossierSync.getCreateDate());
-        entityDossierSync.put(SupportSearchConstants.MODIFIED_DATE, dossierSync.getModifiedDate());
+        entityDossierSync.put(SupportSearchConstants.CREATE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossierSync.getCreateDate()));
+        entityDossierSync.put(SupportSearchConstants.MODIFIED_DATE, DateTimeUtil.convertDatetoDateTimeString(dossierSync.getModifiedDate()));
         entityDossierSync.put(SupportSearchConstants.PAYLOAD, dossierSync.getPayload());
 
         return entityDossierSync;
@@ -88,8 +95,8 @@ public class SupportSearchConstants {
         entityDossierAction.put(SupportSearchConstants.STEP_NAME, dossierAction.getStepName());
         entityDossierAction.put(SupportSearchConstants.PENDING, dossierAction.getPending());
         entityDossierAction.put(SupportSearchConstants.DOSSIER_ACTION_ID, dossierAction.getDossierActionId());
-        entityDossierAction.put(SupportSearchConstants.CREATE_DATE, dossierAction.getCreateDate());
-        entityDossierAction.put(SupportSearchConstants.MODIFIED_DATE, dossierAction.getModifiedDate());
+        entityDossierAction.put(SupportSearchConstants.CREATE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossierAction.getCreateDate()));
+        entityDossierAction.put(SupportSearchConstants.MODIFIED_DATE, DateTimeUtil.convertDatetoDateTimeString(dossierAction.getModifiedDate()));
 
         return entityDossierAction;
     }
@@ -98,12 +105,12 @@ public class SupportSearchConstants {
         JSONArray DossierSyncArray = JSONFactoryUtil.createJSONArray();
         for(DossierSync dossierSync : ListDossierSync){
             JSONObject entityDossierSync = JSONFactoryUtil.createJSONObject();
-            entityDossierSync.put(SupportSearchConstants.ACTION_CODE, dossierSync.getDossierId());
+            entityDossierSync.put(SupportSearchConstants.ACTION_CODE, dossierSync.getActionCode());
             entityDossierSync.put(SupportSearchConstants.SYNC_TYPE, dossierSync.getSyncType());
             entityDossierSync.put(SupportSearchConstants.STATE_, dossierSync.getState());
             entityDossierSync.put(SupportSearchConstants.RETRY, dossierSync.getRetry());
-            entityDossierSync.put(SupportSearchConstants.CREATE_DATE, dossierSync.getCreateDate());
-            entityDossierSync.put(SupportSearchConstants.MODIFIED_DATE, dossierSync.getModifiedDate());
+            entityDossierSync.put(SupportSearchConstants.CREATE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossierSync.getCreateDate()));
+            entityDossierSync.put(SupportSearchConstants.MODIFIED_DATE, DateTimeUtil.convertDatetoDateTimeString(dossierSync.getModifiedDate()));
             entityDossierSync.put(SupportSearchConstants.PAYLOAD, dossierSync.getPayload());
 
             DossierSyncArray.put(entityDossierSync);
@@ -125,8 +132,8 @@ public class SupportSearchConstants {
             entityDossierAction.put(SupportSearchConstants.STEP_NAME, dossierAction.getStepName());
             entityDossierAction.put(SupportSearchConstants.PENDING, dossierAction.getPending());
             entityDossierAction.put(SupportSearchConstants.DOSSIER_ACTION_ID, dossierAction.getDossierActionId());
-            entityDossierAction.put(SupportSearchConstants.CREATE_DATE, dossierAction.getCreateDate());
-            entityDossierAction.put(SupportSearchConstants.MODIFIED_DATE, dossierAction.getModifiedDate());
+            entityDossierAction.put(SupportSearchConstants.CREATE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossierAction.getCreateDate()));
+            entityDossierAction.put(SupportSearchConstants.MODIFIED_DATE, DateTimeUtil.convertDatetoDateTimeString(dossierAction.getModifiedDate()));
 
             DossierActionArray.put(entityDossierAction);
         }
@@ -144,13 +151,21 @@ public class SupportSearchConstants {
         dossierObject.put(SupportSearchConstants.DOSSIER_SUB_STATUS_, dossier.getDossierSubStatus());
         dossierObject.put(SupportSearchConstants.DOSSIER_SUB_STATUS_TEXT_, dossier.getDossierSubStatusText());
         dossierObject.put(SupportSearchConstants.DOSSIER_ACTION_ID, dossier.getDossierActionId());
-        dossierObject.put(SupportSearchConstants.CREATE_DATE, dossier.getCreateDate());
-        dossierObject.put(SupportSearchConstants.MODIFIED_DATE, dossier.getModifiedDate());
+        dossierObject.put(SupportSearchConstants.CREATE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getCreateDate()));
+        dossierObject.put(SupportSearchConstants.MODIFIED_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getModifiedDate()));
         dossierObject.put(SupportSearchConstants.ORIGINALITY, dossier.getOriginality());
         dossierObject.put(SupportSearchConstants.ONLINE, dossier.getOnline());
         dossierObject.put(SupportSearchConstants.ORIGIN_DOSSIER_ID, dossier.getOriginDossierId());
         dossierObject.put(SupportSearchConstants.ORIGIN_DOSSIER_NO, dossier.getOriginDossierNo());
-
+        dossierObject.put(SupportSearchConstants.SUDMIT_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getSubmitDate()));
+        dossierObject.put(SupportSearchConstants.RECEIVE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getReceiveDate()));
+        dossierObject.put(SupportSearchConstants.DUE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getDueDate()));
+        dossierObject.put(SupportSearchConstants.RELEASE_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getReleaseDate()));
+        dossierObject.put(SupportSearchConstants.FINISH_DATE, DateTimeUtil.convertDatetoDateTimeString(dossier.getFinishDate()));
+        dossierObject.put(SupportSearchConstants.LOCK_STATE, dossier.getLockState());
+        dossierObject.put(SupportSearchConstants.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
+        dossierObject.put(SupportSearchConstants.PROCESS_NO, dossier.getProcessNo());
+        dossierObject.put(SupportSearchConstants.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
         return dossierObject;
     }
 }
