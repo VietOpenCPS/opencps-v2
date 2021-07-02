@@ -386,6 +386,11 @@ public class ApplicantLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.usermgt.model.Applicant> getListApplicationByG_NotEqualZero_CDateToNow(
+		java.util.Date date) {
+		return getService().getListApplicationByG_NotEqualZero_CDateToNow(date);
+	}
+
 	/**
 	* Returns the OSGi service identifier.
 	*
