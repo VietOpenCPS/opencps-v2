@@ -114,7 +114,6 @@ import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
-import javax.xml.ws.Service;
 
 public class ProcessUpdateDBUtils {
 
@@ -868,6 +867,7 @@ public class ProcessUpdateDBUtils {
 				org.opencps.dossiermgt.model.ServiceInfo serviceInfo = null;
 				ServiceInfoActions actionService = new ServiceInfoActionsImpl();
 				if (Validator.isNotNull(service.getServiceCode()) && Validator.isNotNull(service.getServiceName())) {
+					_log.info("Vaoooooo 11111111111");
 					String serviceCode = service.getServiceCode();
 					String serviceName = service.getServiceName();
 					String processText = service.getProcessText();
@@ -901,6 +901,11 @@ public class ProcessUpdateDBUtils {
 				} else {
 					serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, service.getServiceCode());
 				}
+				if(Validator.isNotNull(serviceInfo)){
+					_log.info("Id --- : " + serviceInfo.getServiceInfoId());
+					_log.info("keyImport --- : " + keyImport);
+				}
+				_log.info("groupId : " + groupId);
 				// Add serviceConfig
 				Configs configs = service.getConfigs();
 				if ((configs != null && serviceInfoId > 0) || Validator.isNotNull(serviceInfo)) {
@@ -1109,6 +1114,7 @@ public class ProcessUpdateDBUtils {
 	private static boolean processServiceConfigNoDelAll(long userId, long groupId, long serviceInfoId, Configs configs,
 														ServiceInfoActions actionService, String keyImport, ServiceContext serviceContext) {
 
+		_log.debug("serviceInfoId: " + serviceInfoId);
 		boolean flagService = true;
 		try {
 			// Delete all ServiceFileTemplate with serviceInfoId
@@ -1149,8 +1155,9 @@ public class ProcessUpdateDBUtils {
 					if(Validator.isNotNull(serviceConfigOld)){
 						boolean flagConfig = actionService.deleteAllServiceConfig(userId, groupId, serviceInfoId, serviceConfigOld, serviceContext);
 						_log.debug("FlagConfig: " + flagConfig);
+						_log.debug("serviceConfigOld.getServiceConfigId(): " + serviceConfigOld.getServiceConfigId());
 						serviceConfigNew = actionConfig.updateServiceConfig(serviceConfigOld.getServiceConfigId(),userId,groupId,
-								serviceConfigId,govAgencyCode,serviceInstruction, serviceLevel,serviceUrl,forCitizen,
+								serviceInfoId,govAgencyCode,serviceInstruction, serviceLevel,serviceUrl,forCitizen,
 								forBusiness,postalService,registration,serviceContext);
 
 						serviceConfigId = serviceConfigNew.getServiceConfigId();

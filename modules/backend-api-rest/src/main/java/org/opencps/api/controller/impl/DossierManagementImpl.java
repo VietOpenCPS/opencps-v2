@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
@@ -145,9 +146,13 @@ import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.ApplicantData;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.FileItem;
+import org.opencps.usermgt.service.ApplicantDataLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.FileItemLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -2271,6 +2276,28 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 			}
+			
+
+			//day du lieu vao kho du lieu cong dan
+			if (Validator.isNotNull(dossier) && dossier.getDossierStatus().contentEquals(DossierTerm.DOSSIER_STATUS_DONE)) {
+				List<DossierFile> lstDossierFiles = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
+				if (Validator.isNotNull(lstDossierFiles) && lstDossierFiles.size() > 0) {
+					for (DossierFile doFile : lstDossierFiles) {
+						String fileTemplateNo = doFile.getFileTemplateNo();
+						_log.info("fileTemplateNo : " + fileTemplateNo);
+						if (Validator.isNotNull(fileTemplateNo)) {
+							FileItem fileItem = FileItemLocalServiceUtil.findByG_FTN(0, fileTemplateNo);
+							FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(doFile.getFileEntryId());
+							if (Validator.isNotNull(fileItem) && Validator.isNotNull(fileEntry)) {
+								ApplicantData applicantData = ApplicantDataLocalServiceUtil.createApplicantData(
+										serviceContext, 0, fileTemplateNo, fileEntry.getFileName(), doFile.getDisplayName(), doFile.getFileEntryId(), StringPool.BLANK, 1, dossier.getApplicantIdNo(), 0);		
+								_log.debug("Kho dữ liệu công dân : " + JSONFactoryUtil.looseSerialize(applicantData));
+								ApplicantDataLocalServiceUtil.updateApplicantData(applicantData);
+								}
+							}
+						}					
+				}
+			}
 
 			_log.debug("Doaction oke with dossierActionId: " + dossierResult.getDossierActionId());
 			long dossierActionId = dossierResult.getDossierActionId();
@@ -2292,6 +2319,7 @@ public class DossierManagementImpl implements DossierManagement {
 					_log.debug("Result post action:" + result);
 				}
 			}
+			
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(dAction).build();
 		}
