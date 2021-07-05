@@ -93,8 +93,11 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				dossierSync.setState(DossierSyncTerm.STATE_RECEIVED_ACK);
 				DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
 				DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-				dossierAction.setPending(false);
-				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+				if(Validator.isNotNull(dossierAction)){
+					_log.info("DossierActionId : " + dossierAction.getDossierActionId() + " _ " + dossierAction.getDossierId());
+					dossierAction.setPending(false);
+					DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+				}
 			}
 			else {
 				int retry = dossierSync.getRetry();
@@ -120,8 +123,12 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			dossierSync.setState(DossierSyncTerm.STATE_RECEIVED_ACK);
 			DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-			dossierAction.setPending(false);
-			DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			if(Validator.isNotNull(dossierAction)){
+				_log.info("DossierActionId : " + dossierAction.getDossierActionId() + " _ " + dossierAction.getDossierId());
+				dossierAction.setPending(false);
+				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			}
+
 		}
 		else {
 			int retry = dossierSync.getRetry();
@@ -146,8 +153,11 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			dossierSync.setState(DossierSyncTerm.STATE_RECEIVED_ACK);
 			DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-			dossierAction.setPending(false);
-			DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			if(Validator.isNotNull(dossierAction)){
+				_log.info("DossierActionId : " + dossierAction.getDossierActionId() + " _ " + dossierAction.getDossierId());
+				dossierAction.setPending(false);
+				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			}
 		}
 		else {
 			int retry = dossierSync.getRetry();
