@@ -2290,7 +2290,7 @@ public class DossierManagementImpl implements DossierManagement {
 							FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(doFile.getFileEntryId());
 							if (Validator.isNotNull(fileItem) && Validator.isNotNull(fileEntry)) {
 								ApplicantData applicantData = ApplicantDataLocalServiceUtil.createApplicantData(
-										serviceContext, 0, fileTemplateNo, fileEntry.getFileName(), doFile.getDisplayName(), doFile.getFileEntryId(), StringPool.BLANK, 0, dossier.getApplicantIdNo(), 0);		
+										serviceContext, 0, fileTemplateNo, fileEntry.getFileName(), doFile.getDisplayName(), doFile.getFileEntryId(), StringPool.BLANK, 1, dossier.getApplicantIdNo(), 0);		
 								_log.debug("Kho dữ liệu công dân : " + JSONFactoryUtil.looseSerialize(applicantData));
 								ApplicantDataLocalServiceUtil.updateApplicantData(applicantData);
 								}
