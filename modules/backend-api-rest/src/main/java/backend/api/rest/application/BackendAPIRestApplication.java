@@ -188,6 +188,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new QLVGManagementImpl());
 		singletons.add(new QLCDManagementImpl());
 		singletons.add(new Mofa2ManagementImpl());
+		singletons.add(new SupportSearchManagementImpl());
 //		singletons.add(new DossierStatisticManagementImpl());
 		
 		singletons.add(this);
