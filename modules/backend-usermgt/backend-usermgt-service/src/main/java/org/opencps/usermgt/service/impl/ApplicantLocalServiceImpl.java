@@ -20,6 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.liferay.counter.kernel.model.Counter;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DataMGTConstants;
@@ -1854,5 +1856,13 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	}
 	// private Log _log =
 	// LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
+
+	public List<Applicant> getListApplicationByG_NotEqualZero_CDateToNow(Date date){
+		DynamicQuery dynamicQuery = applicantLocalService.dynamicQuery();
+		dynamicQuery.add(RestrictionsFactoryUtil.gt("createDate", date));
+		dynamicQuery.add(RestrictionsFactoryUtil.ne("groupId", 0L));
+		return applicantPersistence.findWithDynamicQuery(dynamicQuery);
+	}
+
 
 }

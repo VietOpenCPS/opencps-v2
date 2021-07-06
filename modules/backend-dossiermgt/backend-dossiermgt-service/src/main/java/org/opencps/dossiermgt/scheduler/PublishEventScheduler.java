@@ -89,6 +89,24 @@ public class PublishEventScheduler extends BaseMessageListener {
 			count = countNew;
 		}
 	}
+
+	public static int getCount(){
+		return PublishEventScheduler.CounterPublishEvent.getCount();
+	}
+
+	public static int resetCount(){
+		PublishEventScheduler.CounterPublishEvent.count = 0;
+		return getCount();
+	}
+
+	public static int PublishEventSchedulerCount(){
+		return CounterPublishEvent.getCount();
+	}
+
+	public static int ResetPublishEventSchedulerCount(){
+		CounterPublishEvent.setCount(0);
+		return PublishEventSchedulerCount();
+	}
 	
 	public PublishEventScheduler () {
 		_log.debug("Constructor PublishEventScheduler");
