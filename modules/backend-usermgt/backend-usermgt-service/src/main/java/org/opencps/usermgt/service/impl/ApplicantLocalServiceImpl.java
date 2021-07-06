@@ -268,8 +268,6 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			// _log.info("MAPPING USER: " + mappingUser.getLastName() + "," +
 			// mappingUser.getFullName());
 			mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
-			
-			_log.info("6666666 : " + JSONFactoryUtil.looseSerialize(mappingUser));
 
 			long mappingUserId = mappingUser.getUserId();
 

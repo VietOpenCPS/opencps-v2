@@ -1486,17 +1486,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 											: "FAILED"));
 									result = ApplicantUtils.mappingToApplicantModel(applicant);
 
-									try {
-										if(applicant.getMappingUserId() > 0) {
-											User userNew = UserLocalServiceUtil.getUser(applicant.getMappingUserId());
-											if(Validator.isNotNull(userNew)) {
-												userNew.setEmailAddress(contactEmail);
-												UserLocalServiceUtil.updateUser(userNew);
-											}
-										}
-									} catch (Exception e) {
-										_log.error(e.getMessage());
-									}
 
 									return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 								}
@@ -1514,18 +1503,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						input.getPassword());
 				_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
 				result = ApplicantUtils.mappingToApplicantModel(applicant);
-
-				try {
-					if(applicant.getMappingUserId() > 0) {
-						User userNew = UserLocalServiceUtil.getUser(applicant.getMappingUserId());
-						if(Validator.isNotNull(userNew)) {
-							userNew.setEmailAddress(contactEmail);
-							UserLocalServiceUtil.updateUser(userNew);
-						}
-					}
-				} catch (Exception e) {
-					_log.error(e.getMessage());
-				}
 
 				// Công dân đăng ký bên DVC ==> Đẩy thông tin sang một cửa
 //				String serverConfigDetail = "serverconfigs/" + serverNo;
