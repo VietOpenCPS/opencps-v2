@@ -1771,7 +1771,7 @@ public class RestfulController {
 								searchContext, userId);
 
 						result.put(ConstantUtils.TOTAL, total);
-						System.out.println("total: " + total);
+//						System.out.println("total: " + total);
 					} else {
 						result.put(ConstantUtils.TOTAL, 0);
 					}
@@ -1786,7 +1786,7 @@ public class RestfulController {
 			_log.debug(e);
 		}
 
-		System.out.println("result: " + result);
+//		System.out.println("result: " + result);
 		return result.toJSONString();
 	}
 
