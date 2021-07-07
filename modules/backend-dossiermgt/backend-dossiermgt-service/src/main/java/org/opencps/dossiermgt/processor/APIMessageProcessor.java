@@ -439,6 +439,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				_log.debug("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 2: "
 						+ APIDateTimeUtils.convertDateToString(new Date()));
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
+				_log.info("paymentFile: " + JSONFactoryUtil.looseSerialize(paymentFile));
 				//_log.debug("SONDT SYNC INFORM REQUESTPAYMENT = 2 PAYMENT FILE ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 				//_log.debug("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
 				String paymentFee = null; 
@@ -525,7 +526,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 						pfiModel.setReferenceUid(newRef);
 					}
 				}
-				
+
 				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());

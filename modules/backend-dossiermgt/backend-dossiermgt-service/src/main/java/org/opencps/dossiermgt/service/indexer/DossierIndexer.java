@@ -546,13 +546,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 									}else if(dossierAction2.getUserId() == dossierAction.getUserId()
 											&& dossierAction2.getNextActionId() == 0) {
 										List<DossierActionUser> lstdossierActionUser = DossierActionUserLocalServiceUtil.getByDID_DAID(dossierAction2.getDossierId(), dossierAction2.getDossierActionId());
-										_log.debug("lstdossierActionUser :" + JSONFactoryUtil.looseSerialize(lstdossierActionUser));
 										if (lstdossierActionUser != null && lstdossierActionUser.size() > 0) {
 											for (DossierActionUser doActionUser : lstdossierActionUser) {
 												if (doActionUser.getUserId() != dossierAction2.getUserId()
 														&& doActionUser.getStepCode().contentEquals(dossierAction2.getStepCode())) {
 													setUserId.add(String.valueOf(dossierAction2.getUserId()));
-													_log.debug("setUserId2 : " + setUserId);
 												}
 											}
 										}
@@ -560,7 +558,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								}
 							}
 							String userPeriodActionIds = String.join(" ", setUserId);
-							_log.info("userPeriodActionIds : " + userPeriodActionIds);
 							document.addTextSortable(DossierTerm.USER_DOSSIER_ACTION_ID, userPeriodActionIds);
 						}
 					} else {
