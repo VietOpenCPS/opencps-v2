@@ -1864,7 +1864,7 @@ public class RestfulController {
 				throw new ResourceNotFoundException();
 			}
 			result = "/documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId()
-					+ StringPool.FORWARD_SLASH + fileEntry.getTitle() + StringPool.FORWARD_SLASH + fileEntry.getUuid();
+					+ StringPool.FORWARD_SLASH + fileEntry.getFileName() + StringPool.FORWARD_SLASH + fileEntry.getUuid();
 
 		} catch (Exception e) {
 			_log.debug(e);
