@@ -3,6 +3,7 @@ package org.opencps.api.controller;
 
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.net.HttpURLConnection;
@@ -55,27 +56,50 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface DossierManagement {
 
 	@GET
-	@Path("/supportSearch/{dossierId}")
+	@Path("/{nameScheduler}/count")
 	@Consumes({
-			MediaType.APPLICATION_JSON
+			MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED
 	})
 	@Produces({
-			MediaType.APPLICATION_JSON
+			MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED
 	})
-	@ApiOperation(value = "support Search Dossiers")
+	@ApiOperation(value = "View Count of Scheduler")
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of Dossiers have been filtered", response = DossierResultsModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
 	})
-	public Response getSupportSearchDossiers(
+	public Response getCountofScheduler(
 			@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext,
-			@PathParam("dossierId") String dossierId,
-			@QueryParam("isCallAgain") Boolean isCallAgain,
-			@QueryParam("refUid") String referenceUid);
+			@Context ServiceContext serviceContext, @PathParam("nameScheduler") String nameScheduler,
+			@FormParam("type") String type
+	) throws SchedulerException;
+
+	@POST
+	@Path("/{nameScheduler}/count")
+	@Consumes({
+			MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+			MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@ApiOperation(value = "View Count of Scheduler")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of Dossiers have been filtered", response = DossierResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response ResetCountofScheduler(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("nameScheduler") String nameScheduler,
+			@FormParam("type") String type
+	) throws SchedulerException;
+
+
 
 	@POST
 	@Path("/direct")

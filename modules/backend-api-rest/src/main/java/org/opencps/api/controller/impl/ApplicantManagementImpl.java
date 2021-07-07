@@ -1486,6 +1486,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 											: "FAILED"));
 									result = ApplicantUtils.mappingToApplicantModel(applicant);
 
+
 									return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 								}
 							}
