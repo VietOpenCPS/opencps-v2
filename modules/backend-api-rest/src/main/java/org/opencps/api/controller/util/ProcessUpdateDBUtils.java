@@ -1141,7 +1141,7 @@ public class ProcessUpdateDBUtils {
 				for (ServiceConfig config : configList) {
 
 					//Delete ServiceConfig No ProcessOption
-					List<org.opencps.dossiermgt.model.ServiceConfig> lstServiceByServiceInfo = ServiceConfigLocalServiceUtil.fetchByG_SERVICE_CODE(groupId, serviceInfoId, config.getGovAgencyCode());
+					List<org.opencps.dossiermgt.model.ServiceConfig> lstServiceByServiceInfo = ServiceConfigLocalServiceUtil.fetchByGID_SI_GOV_LEVEL(groupId, serviceInfoId, config.getGovAgencyCode());
 
 					if(lstServiceByServiceInfo !=null && lstServiceByServiceInfo.size() > 0){
 						for(org.opencps.dossiermgt.model.ServiceConfig item : lstServiceByServiceInfo){

@@ -335,9 +335,9 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public Dossier findDossierByDeclarationCode(String code, long groupId);
 
-	public Dossier findDossierById(long dossierId);
-
 	public List<Dossier> findDossierByGroup(long groupId);
+
+	public Dossier findDossierById(long dossierId);
 
 	public DossierDocument findDossierDocumentByDossierId(
 		long dossierDocumentId);

@@ -200,6 +200,9 @@ public interface DossierMarkLocalService extends BaseLocalService,
 	public DossierMark fetchDossierMarkByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public List<DossierMark> findDossierMarkByDossierId(long groupId,
+		long dossierId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

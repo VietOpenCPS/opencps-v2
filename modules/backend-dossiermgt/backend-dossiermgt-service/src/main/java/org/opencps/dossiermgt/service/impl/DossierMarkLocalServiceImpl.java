@@ -119,6 +119,11 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 		return dossierMarkPersistence.fetchByG_DID_PN(groupId, dossierId, dossierPartNo);
 	}
 
+	@Override
+	public List<DossierMark> findDossierMarkByDossierId(long groupId, long dossierId) {
+		return dossierMarkFinder.findDossierMarkByDossierId(groupId, dossierId);
+	}
+
 	public List<DossierMark> getDossierMarks(long groupId, long dossierId) {
 
 		return dossierMarkPersistence.findByG_DID(groupId, dossierId);
