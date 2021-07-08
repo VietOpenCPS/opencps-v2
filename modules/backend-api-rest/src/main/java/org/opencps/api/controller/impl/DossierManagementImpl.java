@@ -139,7 +139,6 @@ import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
-import org.opencps.dossiermgt.scheduler.FakeCounterScheduler;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.PublishEventScheduler;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;

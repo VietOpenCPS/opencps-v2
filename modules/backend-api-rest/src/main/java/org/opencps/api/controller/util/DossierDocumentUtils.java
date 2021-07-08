@@ -373,6 +373,11 @@ public class DossierDocumentUtils {
 		}
 		
 		jsonData.put(DossierTerm.DOSSIER_MARKS, dossierMarkArr);
+		_log.info("DossierId: " + dossierId + ", DossierMarkLength: " + dossierMarkArr.length());
+		if(dossierMarkArr.length()> 0) {
+			_log.info("First element of dossierMarkArr:" + dossierMarkArr.getJSONObject(0));
+		}
+
 
 		PaymentFile payment = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 		if (payment != null) {
