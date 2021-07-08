@@ -35,4 +35,8 @@ public class DossierMarkActionsImpl implements DossierMarkActions {
 		return DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, dossierPartNo);
 	}
 
+	@Override
+	public List<DossierMark> findDossierMarkByDossierId(long groupId, long dossierId) {
+		return DossierMarkLocalServiceUtil.findDossierMarkByDossierId(groupId, dossierId);
+	}
 }

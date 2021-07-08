@@ -2891,7 +2891,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierMarkResultsModel result = new DossierMarkResultsModel();
 
 			List<DossierMark> lstDossierMark =
-				actions.getDossierMarks(groupId, dossierId);
+				actions.findDossierMarkByDossierId(groupId, dossierId);
 
 			List<DossierMarkModel> outputs =
 				DossierMarkUtils.mappingDossierMarks(lstDossierMark);
