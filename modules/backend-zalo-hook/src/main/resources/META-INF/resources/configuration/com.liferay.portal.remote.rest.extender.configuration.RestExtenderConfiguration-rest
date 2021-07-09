@@ -1,0 +1,2 @@
+contextPath=/zaloSearch
+jaxRsApplicationFilterStrings=(component.name=org.opencps.zalo.hook.api.ZaloWebhookManagement)

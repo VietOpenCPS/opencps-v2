@@ -1,0 +1,2 @@
+contextPath=/zaloSearch
+authVerifierProperties=auth.verifier.BasicAuthHeaderAuthVerifier.urls.includes=*
