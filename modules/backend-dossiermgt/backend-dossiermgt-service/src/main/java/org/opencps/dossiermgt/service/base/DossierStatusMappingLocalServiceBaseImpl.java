@@ -69,6 +69,7 @@ import org.opencps.dossiermgt.service.persistence.DossierDocumentPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierFilePersistence;
 import org.opencps.dossiermgt.service.persistence.DossierFinder;
 import org.opencps.dossiermgt.service.persistence.DossierLogPersistence;
+import org.opencps.dossiermgt.service.persistence.DossierMarkFinder;
 import org.opencps.dossiermgt.service.persistence.DossierMarkPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierPartPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierPersistence;
@@ -1237,6 +1238,24 @@ public abstract class DossierStatusMappingLocalServiceBaseImpl
 	public void setDossierMarkPersistence(
 		DossierMarkPersistence dossierMarkPersistence) {
 		this.dossierMarkPersistence = dossierMarkPersistence;
+	}
+
+	/**
+	 * Returns the dossier mark finder.
+	 *
+	 * @return the dossier mark finder
+	 */
+	public DossierMarkFinder getDossierMarkFinder() {
+		return dossierMarkFinder;
+	}
+
+	/**
+	 * Sets the dossier mark finder.
+	 *
+	 * @param dossierMarkFinder the dossier mark finder
+	 */
+	public void setDossierMarkFinder(DossierMarkFinder dossierMarkFinder) {
+		this.dossierMarkFinder = dossierMarkFinder;
 	}
 
 	/**
@@ -3007,6 +3026,8 @@ public abstract class DossierStatusMappingLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.DossierMarkLocalService dossierMarkLocalService;
 	@BeanReference(type = DossierMarkPersistence.class)
 	protected DossierMarkPersistence dossierMarkPersistence;
+	@BeanReference(type = DossierMarkFinder.class)
+	protected DossierMarkFinder dossierMarkFinder;
 	@BeanReference(type = org.opencps.dossiermgt.service.DossierPartLocalService.class)
 	protected org.opencps.dossiermgt.service.DossierPartLocalService dossierPartLocalService;
 	@BeanReference(type = DossierPartPersistence.class)

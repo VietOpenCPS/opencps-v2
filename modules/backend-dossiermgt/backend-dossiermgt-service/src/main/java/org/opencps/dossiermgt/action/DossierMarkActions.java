@@ -18,4 +18,6 @@ public interface DossierMarkActions {
 
 	public DossierMark getDossierMarkbyDossierId(long groupId, long dossierId, String dossierPartNo);
 
+	public List<DossierMark> findDossierMarkByDossierId(long groupId, long dossierId);
+
 }

@@ -52,6 +52,7 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierLogPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierLogPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.DossierMarkLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierMarkLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierMarkPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierMarkPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierMarkFinderImpl" id="org.opencps.dossiermgt.service.persistence.DossierMarkFinder" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.DossierPartLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierPartLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierPartPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierPartPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.DossierRequestUDLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierRequestUDLocalService" />

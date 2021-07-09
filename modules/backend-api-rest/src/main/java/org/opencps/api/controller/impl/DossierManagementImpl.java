@@ -139,7 +139,6 @@ import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
-import org.opencps.dossiermgt.scheduler.FakeCounterScheduler;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.PublishEventScheduler;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
@@ -2890,8 +2889,12 @@ public class DossierManagementImpl implements DossierManagement {
 
 			DossierMarkResultsModel result = new DossierMarkResultsModel();
 
-			List<DossierMark> lstDossierMark =
+			List<DossierMark> lstDossierMark2 =
 				actions.getDossierMarks(groupId, dossierId);
+			_log.info("lstDossierMark2: " + lstDossierMark2.size());
+			List<DossierMark> lstDossierMark =
+				actions.findDossierMarkByDossierId(groupId, dossierId);
+			_log.info("lstDossierMark: " + lstDossierMark.size());
 
 			List<DossierMarkModel> outputs =
 				DossierMarkUtils.mappingDossierMarks(lstDossierMark);
