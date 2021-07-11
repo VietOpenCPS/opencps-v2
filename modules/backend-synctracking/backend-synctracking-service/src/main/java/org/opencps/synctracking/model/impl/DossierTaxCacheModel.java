@@ -65,7 +65,7 @@ public class DossierTaxCacheModel implements CacheModel<DossierTax>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(63);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -83,8 +83,6 @@ public class DossierTaxCacheModel implements CacheModel<DossierTax>,
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
-		sb.append(", dossierId=");
-		sb.append(dossierId);
 		sb.append(", dossierNo=");
 		sb.append(dossierNo);
 		sb.append(", maSoThue=");
@@ -170,8 +168,6 @@ public class DossierTaxCacheModel implements CacheModel<DossierTax>,
 		else {
 			dossierTaxImpl.setModifiedDate(new Date(modifiedDate));
 		}
-
-		dossierTaxImpl.setDossierId(dossierId);
 
 		if (dossierNo == null) {
 			dossierTaxImpl.setDossierNo("");
@@ -315,8 +311,6 @@ public class DossierTaxCacheModel implements CacheModel<DossierTax>,
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-
-		dossierId = objectInput.readLong();
 		dossierNo = objectInput.readUTF();
 		maSoThue = objectInput.readUTF();
 		soQuyetDinh = objectInput.readUTF();
@@ -374,8 +368,6 @@ public class DossierTaxCacheModel implements CacheModel<DossierTax>,
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
-
-		objectOutput.writeLong(dossierId);
 
 		if (dossierNo == null) {
 			objectOutput.writeUTF("");
@@ -483,7 +475,6 @@ public class DossierTaxCacheModel implements CacheModel<DossierTax>,
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
-	public long dossierId;
 	public String dossierNo;
 	public String maSoThue;
 	public String soQuyetDinh;

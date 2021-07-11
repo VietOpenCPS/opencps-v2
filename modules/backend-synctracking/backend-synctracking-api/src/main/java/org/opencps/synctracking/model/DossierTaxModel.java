@@ -211,20 +211,6 @@ public interface DossierTaxModel extends BaseModel<DossierTax>, GroupedModel,
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
-	 * Returns the dossier ID of this dossier tax.
-	 *
-	 * @return the dossier ID of this dossier tax
-	 */
-	public long getDossierId();
-
-	/**
-	 * Sets the dossier ID of this dossier tax.
-	 *
-	 * @param dossierId the dossier ID of this dossier tax
-	 */
-	public void setDossierId(long dossierId);
-
-	/**
 	 * Returns the dossier no of this dossier tax.
 	 *
 	 * @return the dossier no of this dossier tax

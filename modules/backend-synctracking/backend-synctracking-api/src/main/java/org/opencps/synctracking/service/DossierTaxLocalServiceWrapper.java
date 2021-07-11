@@ -216,23 +216,23 @@ public class DossierTaxLocalServiceWrapper implements DossierTaxLocalService,
 
 	@Override
 	public java.util.List<org.opencps.synctracking.model.DossierTax> getByDossierIdAndStatusCTT(
-		long dossierId, int statuses) {
-		return _dossierTaxLocalService.getByDossierIdAndStatusCTT(dossierId,
+		String dossierNo, int statuses) {
+		return _dossierTaxLocalService.getByDossierIdAndStatusCTT(dossierNo,
 			statuses);
 	}
 
 	@Override
 	public java.util.List<org.opencps.synctracking.model.DossierTax> getByDossierIdAndStatusTBT(
-		long dossierId, int statuses) {
-		return _dossierTaxLocalService.getByDossierIdAndStatusTBT(dossierId,
+		String dossierNo, int statuses) {
+		return _dossierTaxLocalService.getByDossierIdAndStatusTBT(dossierNo,
 			statuses);
 	}
 
 	@Override
 	public java.util.List<org.opencps.synctracking.model.DossierTax> getByStatusCTT(
-		int statusTBT, int statusesCTT, int start, int end,
+		int statusTBT, int statusCTT, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.synctracking.model.DossierTax> orderByComparator) {
-		return _dossierTaxLocalService.getByStatusCTT(statusTBT, statusesCTT,
+		return _dossierTaxLocalService.getByStatusCTT(statusTBT, statusCTT,
 			start, end, orderByComparator);
 	}
 

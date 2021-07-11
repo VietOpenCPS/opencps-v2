@@ -191,11 +191,11 @@ public interface DossierTaxLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DossierTax> getByDossierIdAndStatusCTT(long dossierId,
+	public List<DossierTax> getByDossierIdAndStatusCTT(String dossierNo,
 		int statuses);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DossierTax> getByDossierIdAndStatusTBT(long dossierId,
+	public List<DossierTax> getByDossierIdAndStatusTBT(String dossierNo,
 		int statuses);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
