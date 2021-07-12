@@ -66,7 +66,6 @@ public class ZaloWebhookManagement extends Application {
             try {
                 JSONObject message = bodyJson.getJSONObject(ZaloHookConstantKeys.ZALO_V2_ACTION_POST_MESSAGE);
                 String textJson = message.getString(ZaloHookConstantKeys.ZALO_V2_PARAM_MESSAGE_TEXT);
-                _log.info("text : " + textJson);
                 if(textJson.startsWith(StringPool.POUND) && !textJson.startsWith(StringPool.POUND + ZaloHookConstantKeys.ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER + "Menu")){
                     textJson = textJson.replace(StringPool.POUND + ZaloHookConstantKeys.ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER, "");
                     textJson = textJson.trim();
@@ -76,19 +75,19 @@ public class ZaloWebhookManagement extends Application {
                         String password_ = arrayText[1];
                         messageReply = ActionUtils.execFindDossier(dossierNo, password_);
                     } else {
-                        messageReply = "Cú pháp không hợp lệ! Vui lòng thử lại! 123";
+                        messageReply = "Cú pháp không hợp lệ! Vui lòng thử lại!";
                     }
                 } else {
                     return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
                 }
 
             } catch (Exception ex){
-                messageReply = "Cú pháp không hợp lệ! Vui lòng thử lại! 456";
+                messageReply = "Cú pháp không hợp lệ! Vui lòng thử lại!";
             }
 
             ActionUtils.execSendMessage(senderId, messageReply);
         } catch (Exception e){
-
+            _log.error(e.getMessage());
         }
 
         return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
