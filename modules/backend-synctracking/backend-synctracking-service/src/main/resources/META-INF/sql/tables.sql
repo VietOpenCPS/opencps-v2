@@ -7,7 +7,6 @@ create table opencps_dossier_tax (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	dossierId LONG,
 	dossierNo VARCHAR(75) null,
 	maSoThue VARCHAR(75) null,
 	soQuyetDinh VARCHAR(75) null,

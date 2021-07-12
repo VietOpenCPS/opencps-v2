@@ -85,13 +85,12 @@ public class TransformActionImpl implements TransformAction {
         try {
             DossierTaxResponse oneDossierTaxTransform = new DossierTaxResponse();
 
-            oneDossierTaxTransform.dossierId = dossierTax.getDossierId();
             oneDossierTaxTransform.dossierNo = Validator.isNotNull(dossierTax.getDossierNo())
                     ? dossierTax.getDossierNo() : "";
             oneDossierTaxTransform.maSoThue = Validator.isNotNull(dossierTax.getMaSoThue())
                     ? dossierTax.getMaSoThue() : "";
             oneDossierTaxTransform.soQuyetDinh = Validator.isNotNull(dossierTax.getSoQuyetDinh())
-                    ? dossierTax.getMaSoThue() : "";
+                    ? dossierTax.getSoQuyetDinh() : "";
             return oneDossierTaxTransform;
         } catch (Exception e) {
             _log.error(e);

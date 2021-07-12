@@ -460,14 +460,14 @@ public class DossierLocalServiceUtil {
 		return getService().findDossierByDeclarationCode(code, groupId);
 	}
 
-	public static org.opencps.dossiermgt.model.Dossier findDossierById(
-			long dossierId) {
-		return getService().findDossierById(dossierId);
-	}
-
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByGroup(
 		long groupId) {
 		return getService().findDossierByGroup(groupId);
+	}
+
+	public static org.opencps.dossiermgt.model.Dossier findDossierById(
+		long dossierId) {
+		return getService().findDossierById(dossierId);
 	}
 
 	public static org.opencps.dossiermgt.model.DossierDocument findDossierDocumentByDossierId(

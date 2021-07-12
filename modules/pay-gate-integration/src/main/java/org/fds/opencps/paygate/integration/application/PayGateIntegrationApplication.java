@@ -502,6 +502,4 @@ public class PayGateIntegrationApplication extends Application {
 		return Response.status(200).entity(result.toString()).build();
 	}
 
-	private Log _log = LogFactoryUtil.getLog(PayGateIntegrationApplication.class);
-
 }

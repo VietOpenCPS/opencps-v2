@@ -146,50 +146,50 @@ public class QueueDVCQGScheduler extends BaseMessageListener {
                         STATE_WAITING_SYNC , 0, QUANTITY_JOB_DVCQG,
                 new QueueDVCQGComparator(true, Field.CREATE_DATE, Date.class));
 
-        //Remove duplicated dossierId
-        Set<Long> listDossierIdTBT = new HashSet<>();
-        Set<Long> listDossierIdCTT = new HashSet<>();
+        //Remove duplicated dossierNo
+        Set<String> listDossierNoTBT = new HashSet<>();
+        Set<String> listDossierNoCTT = new HashSet<>();
         JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
         if(lstQueueTBT !=null && lstQueueTBT.size()> 0) {
             for (DossierTax queue : lstQueueTBT) {
-                // distinct thông báo thuế
-                listDossierIdTBT.add(queue.getDossierId());
+                // TODO distinct thông báo thuế
+                listDossierNoTBT.add(queue.getDossierNo());
 
             }
         }
         if(lstQueueCTT !=null && lstQueueCTT.size()> 0) {
             for (DossierTax queue : lstQueueCTT) {
-                // distinct chứng từ thuế
-                listDossierIdCTT.add(queue.getDossierId());
+                // todo distinct chứng từ thuế
+                listDossierNoCTT.add(queue.getDossierNo());
             }
         }
 
         if(lstQueueTBT !=null && lstQueueTBT.size() >0){
-            for(Long dossierId : listDossierIdTBT) {
-                // Thông báo thuế
+            for(String dossierNo : listDossierNoTBT) {
+                // Todo Thông báo thuế
                 JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-                jsonObject.put("dossierId", dossierId);
+                jsonObject.put("dossierNo", dossierNo);
                 jsonObject.put("type", false);
                 jsonArray.put(jsonObject);
             }
         }
 
-        if(listDossierIdCTT !=null && listDossierIdCTT.size() >0){
-            for(Long dossierId : listDossierIdCTT) {
-                // Chứng từ thuế
+        if(listDossierNoCTT !=null && listDossierNoCTT.size() >0){
+            for(String dossierNo : listDossierNoCTT) {
+                // Todo Chứng từ thuế
                 JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-                jsonObject.put("dossierId", dossierId);
+                jsonObject.put("dossierNo", dossierNo);
                 jsonObject.put("type", true);
                 jsonArray.put(jsonObject);
             }
         }
         if(Validator.isNull(jsonArray)) {
-            _log.warn(  "Not found queue dvcqg with dossierId still running...");
+            _log.warn(  "Not found queue dvcqg with dossierNo still running...");
             return;
         }
         try {
-            // Thông báo thuế && Chứng từ thuế
+            // Todo Thông báo thuế && Chứng từ thuế
             if(jsonArray !=null){
                 Counter.setCount(jsonArray.length());
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -204,14 +204,15 @@ public class QueueDVCQGScheduler extends BaseMessageListener {
     }
 
     private void mainProcess(JSONObject object) {
-        Long dossierId = object.getLong("dossierId");
+        String dossierNo = object.getString("dossierNo");
         boolean type = object.getBoolean("type");
-        _log.info("DossierId : " + dossierId);
+        _log.info("dossierNo : " + dossierNo);
         _log.info("type : " + type);
-        Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+        Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
 
         if (type) {
-            List<DossierTax> lstCTT = DossierTaxLocalServiceUtil.getByDossierIdAndStatusCTT(dossierId, 1);
+            // TODO type = true ( Chứng từ thuế )
+            List<DossierTax> lstCTT = DossierTaxLocalServiceUtil.getByDossierIdAndStatusCTT(dossierNo, 1);
 
             if (lstCTT == null && lstCTT.size() == 0) {
                 return;
@@ -224,26 +225,17 @@ public class QueueDVCQGScheduler extends BaseMessageListener {
                     } else if (dossierTax.getStatusCTT() == 1) {
                         if (Validator.isNotNull(result) && Validator.isNotNull(result.getString("dossierActionId"))) {
                             dossierTax.setStatusCTT(3);
-                            DossierTaxLocalServiceUtil.updateDossierTax(dossierTax);
                         } else {
                             dossierTax.setStatusCTT(4);
-                            DossierTaxLocalServiceUtil.updateDossierTax(dossierTax);
                         }
-                    }
-                }
-            }else{
-                for (DossierTax dossierTax : lstCTT) {
-                    if (dossierTax.getStatusCTT() == 3) {
-                        continue;
-                    } else if (dossierTax.getStatusCTT() == 1) {
-                        dossierTax.setStatusCTT(4);
                         DossierTaxLocalServiceUtil.updateDossierTax(dossierTax);
                     }
                 }
             }
-        } else {
+        }else {
 
-            List<DossierTax> lstTTB = DossierTaxLocalServiceUtil.getByDossierIdAndStatusTBT(dossierId, 1);
+            // TODO type = true ( Thông báo thuế )
+            List<DossierTax> lstTTB = DossierTaxLocalServiceUtil.getByDossierIdAndStatusTBT(dossierNo, 1);
             if (lstTTB == null && lstTTB.size() == 0) {
                 return;
             }
@@ -252,27 +244,16 @@ public class QueueDVCQGScheduler extends BaseMessageListener {
                 for (DossierTax dossierTax : lstTTB) {
                     if (dossierTax.getStatusTBT() == 3) {
                         continue;
-                    } else if (dossierTax.getStatusCTT() == 1) {
+                    } else if (dossierTax.getStatusTBT() == 1) {
                         if (Validator.isNotNull(result) && Validator.isNotNull(result.getString("dossierActionId"))) {
                             dossierTax.setStatusTBT(3);
-                            DossierTaxLocalServiceUtil.updateDossierTax(dossierTax);
                         } else {
                             dossierTax.setStatusTBT(4);
-                            DossierTaxLocalServiceUtil.updateDossierTax(dossierTax);
                         }
-                    }
-                }
-            }else{
-                for (DossierTax dossierTax : lstTTB) {
-                    if (dossierTax.getStatusTBT() == 3) {
-                        continue;
-                    } else if (dossierTax.getStatusTBT() == 1) {
-                        dossierTax.setStatusTBT(4);
                         DossierTaxLocalServiceUtil.updateDossierTax(dossierTax);
                     }
                 }
             }
-
         }
         Counter.decreaseCount();
         _log.info("Counting remain: " + Counter.getCount());
@@ -339,26 +320,26 @@ public class QueueDVCQGScheduler extends BaseMessageListener {
 
                 params.put(DossierTerm.ACTION_CODE, actionCode);
 
-                _log.info("params============" + params);
+                _log.debug("params============" + params);
                 resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
                         properties, params, username, pwd);
 
-                _log.info("=====resPostDossier=========" + resPostDossier);
+                _log.info("=====resPostDossier=========: " + resPostDossier);
 
                 return resPostDossier;
             } else {//
                 // tạo file trc mới doAction tạo trên DVC
                 // Hs trực tuyến lấy groupId theo SERVER_ + GovAgencyCode của hồ sơ trong ServerConfig
-
+                // TODO: DoAction hồ sơ tại MCDT
                 action = config.getJSONObject(DossierTerm.ACTION_IS_NOT_ONLINE);
                 HashMap<String, String> properties = new HashMap<String, String>();
                 if(Validator.isNotNull(dossier.getGovAgencyCode())){
                     JSONObject serverConfig = getServerConfigByServerNo("", "SERVER_" + dossier.getGovAgencyCode());
-                    properties.put(Field.GROUP_ID, serverConfig.getString(Field.GROUP_ID)); //124302
+                    properties.put(Field.GROUP_ID, serverConfig.getString(Field.GROUP_ID));
+                }else {
+
+                    properties.put(Field.GROUP_ID, action.getString(Field.GROUP_ID));
                 }
-
-                properties.put(Field.GROUP_ID, action.getString(Field.GROUP_ID)); //124302
-
                 String endPoint = DossierTerm.buildPathDoAction(action.getString(DossierTerm.URL),
                         dossier.getReferenceUid());
 
@@ -375,7 +356,7 @@ public class QueueDVCQGScheduler extends BaseMessageListener {
                 resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
                         properties, params, action.getString(DossierTerm.USERNAME), action.getString(DossierTerm.PWD));
 
-                _log.info("=====resPostDossier=========" + resPostDossier);
+                _log.info("=====resPostDossier========= : " + resPostDossier);
                 return resPostDossier;
             }
 
@@ -466,12 +447,15 @@ public class QueueDVCQGScheduler extends BaseMessageListener {
         } catch (MalformedURLException e) {
             _log.error("Can't invoke api " + urlPath);
             _log.error(e);
+            return response;
         } catch (IOException e) {
             _log.error("Can't invoke api " + urlPath);
             _log.error(e);
+            return response;
         } catch (JSONException e) {
             _log.error("Can't invoke api " + urlPath);
             _log.error(e);
+            return response;
         } finally {
             if (conn != null) {
                 conn.disconnect();
