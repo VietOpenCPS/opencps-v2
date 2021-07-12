@@ -490,13 +490,6 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
-	public org.opencps.dossiermgt.model.Dossier findDossierByDossierNO_Password(
-		String dossierNo, String password_) {
-		return _dossierLocalService.findDossierByDossierNO_Password(dossierNo,
-			password_);
-	}
-
-	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByGroup(
 		long groupId) {
 		return _dossierLocalService.findDossierByGroup(groupId);

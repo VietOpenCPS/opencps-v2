@@ -29,16 +29,22 @@ public class ActionUtils {
 
         Dossier dossier = null;
         try {
-            dossier = DossierLocalServiceUtil.findDossierByDossierNO_Password(dossierNo, password_);
+            dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
         } catch (Exception ex){
             _log.error(ex.getMessage());
             return "Có lỗi khi tìm kiếm hồ sơ! Vui lòng liên hệ với quản trị viên để nhận hỗ trợ";
         }
-        if(Validator.isNotNull(dossier)){
-            return generateMessage(dossier);
+        if(Validator.isNotNull(dossier) ){
+            if(dossier.getPassword().equals(password_)){
+                return generateMessage(dossier);
+            } else {
+                return "Mã bí mật của hồ sơ: " + dossierNo + " không đúng! Vui lòng kiểm tra lại!";
+            }
         } else {
             return "Không tìm thấy hồ sơ!";
         }
+
+
 
     }
 

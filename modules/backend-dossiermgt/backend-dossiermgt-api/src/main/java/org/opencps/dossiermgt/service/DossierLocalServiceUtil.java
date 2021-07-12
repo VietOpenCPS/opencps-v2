@@ -460,11 +460,6 @@ public class DossierLocalServiceUtil {
 		return getService().findDossierByDeclarationCode(code, groupId);
 	}
 
-	public static org.opencps.dossiermgt.model.Dossier findDossierByDossierNO_Password(
-		String dossierNo, String password_) {
-		return getService().findDossierByDossierNO_Password(dossierNo, password_);
-	}
-
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByGroup(
 		long groupId) {
 		return getService().findDossierByGroup(groupId);

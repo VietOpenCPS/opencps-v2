@@ -66,21 +66,24 @@ public class ZaloWebhookManagement extends Application {
             try {
                 JSONObject message = bodyJson.getJSONObject(ZaloHookConstantKeys.ZALO_V2_ACTION_POST_MESSAGE);
                 String textJson = message.getString(ZaloHookConstantKeys.ZALO_V2_PARAM_MESSAGE_TEXT);
-                textJson = textJson.replace(StringPool.POUND + ZaloHookConstantKeys.ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER, "");
-                textJson = textJson.trim();
-                String[] arrayText = textJson.split(StringPool.SPACE);
-                if(arrayText.length == 2){
-                    String dossierNo = arrayText[0];
-                    String password_ = arrayText[1];
-                    messageReply = ActionUtils.execFindDossier(dossierNo, password_);
+                _log.info("text : " + textJson);
+                if(textJson.startsWith(StringPool.POUND) && !textJson.startsWith(StringPool.POUND + ZaloHookConstantKeys.ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER + "Menu")){
+                    textJson = textJson.replace(StringPool.POUND + ZaloHookConstantKeys.ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER, "");
+                    textJson = textJson.trim();
+                    String[] arrayText = textJson.split(StringPool.SPACE);
+                    if(arrayText.length == 2){
+                        String dossierNo = arrayText[0];
+                        String password_ = arrayText[1];
+                        messageReply = ActionUtils.execFindDossier(dossierNo, password_);
+                    } else {
+                        messageReply = "Cú pháp không hợp lệ! Vui lòng thử lại! 123";
+                    }
                 } else {
-                    messageReply = "Cú pháp không hợp lệ! Vui lòng thử lại!";
+                    return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
                 }
 
-
-
             } catch (Exception ex){
-                messageReply = "Cú pháp không hợp lệ! Vui lòng thử lại!";
+                messageReply = "Cú pháp không hợp lệ! Vui lòng thử lại! 456";
             }
 
             ActionUtils.execSendMessage(senderId, messageReply);

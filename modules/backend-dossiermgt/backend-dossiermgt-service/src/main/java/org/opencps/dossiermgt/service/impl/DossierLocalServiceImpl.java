@@ -7951,15 +7951,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		List<Dossier> result = dossierPersistence.findWithDynamicQuery(dynamicQuery);
 		return result;
 	}
-	public Dossier findDossierByDossierNO_Password(String dossierNo, String password_){
-		DynamicQuery dynamicQuery = dossierLocalService.dynamicQuery();
-		dynamicQuery.add(RestrictionsFactoryUtil.eq("dossierNo", dossierNo));
-		dynamicQuery.add(RestrictionsFactoryUtil.eq("password", password_));
-		List<Dossier> result = dossierPersistence.findWithDynamicQuery(dynamicQuery);
-		if (result.size()>0){
-			return result.get(0);
-		}
-		return null;
-	}
+
 	
 }
