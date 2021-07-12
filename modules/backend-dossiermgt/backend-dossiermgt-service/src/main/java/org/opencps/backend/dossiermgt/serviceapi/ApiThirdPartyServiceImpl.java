@@ -458,8 +458,9 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     @Override
     public JSONObject callApiEncode(String url, HttpHeaders headers
             , MultiValueMap<String, String> body, boolean isHTTPS, String lgspAccessToken) throws Exception{
-        HttpsURLConnection conn = null;
         JSONObject result = JSONFactoryUtil.createJSONObject();
+        HttpsURLConnection connHttps = null;
+        HttpURLConnection conn = null;
         try {
             _log.info("Calling api: " + url);
             if(!isHTTPS) {
@@ -470,8 +471,54 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
                 return JSONFactoryUtil.createJSONObject(response.getBody());
             }
 
+            if(!url.contains("https")) {
+                isHTTPS = false;
+            }
+            _log.info("isHttps:" + isHTTPS);
+            if(isHTTPS) {
+                URL urlNew = new URL(url);
+                connHttps = (HttpsURLConnection ) urlNew.openConnection();
+                connHttps.setRequestMethod("POST");
+                connHttps.setDoOutput(true);
+                connHttps.setRequestProperty("Accept", "application/json");
+                connHttps.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                connHttps.setRequestProperty("Charset", "utf-8");
+                connHttps.setRequestProperty("lgspaccesstoken", lgspAccessToken);
+                connHttps.setInstanceFollowRedirects(true);
+                connHttps.setReadTimeout(10 * 1000);
+                StringBuilder bodyRequest = new StringBuilder();
+                bodyRequest.append("grant_type").append(StringPool.EQUAL).append("client_credentials");
+
+                byte[] postData = bodyRequest.toString().getBytes("UTF-8");
+                int postDataLength = postData.length;
+                connHttps.setRequestProperty("Content-Length",
+                        Integer.toString(postDataLength));
+                TrustManager myTrustManager = new TrustManager();
+                connHttps = myTrustManager.disableSSL(connHttps);
+
+                try (DataOutputStream wr = new DataOutputStream(connHttps.getOutputStream())) {
+                    wr.write(postData);
+                }
+
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connHttps.getInputStream()));
+                String output = StringPool.BLANK;
+
+                StringBuilder sb = new StringBuilder();
+
+                while ((output = bufferedReader.readLine()) != null) {
+                    sb.append(output);
+                }
+                if(Validator.isNotNull(sb.toString())){
+                    result = JSONFactoryUtil.createJSONObject(sb.toString());
+                }
+                _log.info("+++++token return:"+ result);
+
+                return result;
+            }
+            _log.info("Calling http...");
+            //url has http://
             URL urlNew = new URL(url);
-            conn = (HttpsURLConnection ) urlNew.openConnection();
+            conn = (HttpURLConnection ) urlNew.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             conn.setRequestProperty("Accept", "application/json");
@@ -487,8 +534,6 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             int postDataLength = postData.length;
             conn.setRequestProperty("Content-Length",
                     Integer.toString(postDataLength));
-            TrustManager myTrustManager = new TrustManager();
-            conn = myTrustManager.disableSSL(conn);
 
             try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
                 wr.write(postData);
@@ -508,12 +553,15 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             _log.info("+++++token return:"+ result);
 
             return result;
-
         } catch (Exception e) {
             throw new Exception(e);
         } finally {
             if (conn != null) {
                 conn.disconnect();
+            }
+
+            if (connHttps != null) {
+                connHttps.disconnect();
             }
         }
     }
@@ -538,12 +586,53 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
 
     @Override
     public String callApiWithRawBody(String url, JSONObject body) throws Exception {
-        HttpsURLConnection conn = null;
+        HttpsURLConnection connHttps = null;
+        HttpURLConnection conn = null;
         try {
             _log.info("Calling api: " + url);
             _log.info("Body: " + body);
+            boolean isHTTPS = true;
+
+            if(!url.contains("https")) {
+                isHTTPS = false;
+            }
+
+            if(isHTTPS) {
+                URL urlNew = new URL(url);
+                connHttps = (HttpsURLConnection ) urlNew.openConnection();
+                connHttps.setRequestMethod("POST");
+                connHttps.setDoOutput(true);
+                connHttps.setRequestProperty("Accept", "*");
+                connHttps.setRequestProperty("Content-Type", "application/xml");
+                connHttps.setRequestProperty("Authorization", body.getString("accessToken"));
+                connHttps.setRequestProperty("lgspaccesstoken", body.getString("lgspAccessToken"));
+                connHttps.setRequestProperty("AuthHash", body.getString("AuthHash"));
+                connHttps.setInstanceFollowRedirects(true);
+                connHttps.setReadTimeout(10 * 1000);
+                String bodyRequest = body.getString("data");
+                byte[] postData = bodyRequest.toString().getBytes("UTF-8");
+                int postDataLength = postData.length;
+                connHttps.setRequestProperty("Content-Length",
+                        Integer.toString(postDataLength));
+                TrustManager myTrustManager = new TrustManager();
+                connHttps = myTrustManager.disableSSL(connHttps);
+                try (DataOutputStream wr = new DataOutputStream(connHttps.getOutputStream())) {
+                    wr.write(postData);
+                }
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connHttps.getInputStream()));
+                String output = StringPool.BLANK;
+                StringBuilder sb = new StringBuilder();
+
+                while ((output = bufferedReader.readLine()) != null) {
+                    sb.append(output);
+                }
+                _log.info("Response soap:"+ sb.toString());
+
+                return sb.toString();
+            }
+
             URL urlNew = new URL(url);
-            conn = (HttpsURLConnection ) urlNew.openConnection();
+            conn = (HttpURLConnection ) urlNew.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             conn.setRequestProperty("Accept", "*");
@@ -558,11 +647,7 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             int postDataLength = postData.length;
             conn.setRequestProperty("Content-Length",
                     Integer.toString(postDataLength));
-            TrustManager myTrustManager = new TrustManager();
-            conn = myTrustManager.disableSSL(conn);
-            try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
-                wr.write(postData);
-            }
+
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String output = StringPool.BLANK;
             StringBuilder sb = new StringBuilder();
@@ -575,6 +660,14 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             return sb.toString();
         }catch (Exception e) {
             throw new Exception(e);
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+
+            if (connHttps != null) {
+                connHttps.disconnect();
+            }
         }
     }
 
