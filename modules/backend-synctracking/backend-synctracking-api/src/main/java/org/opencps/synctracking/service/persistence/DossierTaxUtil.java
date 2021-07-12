@@ -992,66 +992,66 @@ public class DossierTaxUtil {
 	}
 
 	/**
-	* Returns all the dossier taxs where dossierId = &#63; and statusTBT = &#63;.
+	* Returns all the dossier taxs where dossierNo = &#63; and statusTBT = &#63;.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusTBT the status tbt
 	* @return the matching dossier taxs
 	*/
-	public static List<DossierTax> findByF_DOSSIER_TBT(long dossierId,
+	public static List<DossierTax> findByF_DOSSIER_TBT(String dossierNo,
 		int statusTBT) {
-		return getPersistence().findByF_DOSSIER_TBT(dossierId, statusTBT);
+		return getPersistence().findByF_DOSSIER_TBT(dossierNo, statusTBT);
 	}
 
 	/**
-	* Returns a range of all the dossier taxs where dossierId = &#63; and statusTBT = &#63;.
+	* Returns a range of all the dossier taxs where dossierNo = &#63; and statusTBT = &#63;.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierTaxModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusTBT the status tbt
 	* @param start the lower bound of the range of dossier taxs
 	* @param end the upper bound of the range of dossier taxs (not inclusive)
 	* @return the range of matching dossier taxs
 	*/
-	public static List<DossierTax> findByF_DOSSIER_TBT(long dossierId,
+	public static List<DossierTax> findByF_DOSSIER_TBT(String dossierNo,
 		int statusTBT, int start, int end) {
 		return getPersistence()
-				   .findByF_DOSSIER_TBT(dossierId, statusTBT, start, end);
+				   .findByF_DOSSIER_TBT(dossierNo, statusTBT, start, end);
 	}
 
 	/**
-	* Returns an ordered range of all the dossier taxs where dossierId = &#63; and statusTBT = &#63;.
+	* Returns an ordered range of all the dossier taxs where dossierNo = &#63; and statusTBT = &#63;.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierTaxModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusTBT the status tbt
 	* @param start the lower bound of the range of dossier taxs
 	* @param end the upper bound of the range of dossier taxs (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching dossier taxs
 	*/
-	public static List<DossierTax> findByF_DOSSIER_TBT(long dossierId,
+	public static List<DossierTax> findByF_DOSSIER_TBT(String dossierNo,
 		int statusTBT, int start, int end,
 		OrderByComparator<DossierTax> orderByComparator) {
 		return getPersistence()
-				   .findByF_DOSSIER_TBT(dossierId, statusTBT, start, end,
+				   .findByF_DOSSIER_TBT(dossierNo, statusTBT, start, end,
 			orderByComparator);
 	}
 
 	/**
-	* Returns an ordered range of all the dossier taxs where dossierId = &#63; and statusTBT = &#63;.
+	* Returns an ordered range of all the dossier taxs where dossierNo = &#63; and statusTBT = &#63;.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierTaxModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusTBT the status tbt
 	* @param start the lower bound of the range of dossier taxs
 	* @param end the upper bound of the range of dossier taxs (not inclusive)
@@ -1059,180 +1059,180 @@ public class DossierTaxUtil {
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching dossier taxs
 	*/
-	public static List<DossierTax> findByF_DOSSIER_TBT(long dossierId,
+	public static List<DossierTax> findByF_DOSSIER_TBT(String dossierNo,
 		int statusTBT, int start, int end,
 		OrderByComparator<DossierTax> orderByComparator,
 		boolean retrieveFromCache) {
 		return getPersistence()
-				   .findByF_DOSSIER_TBT(dossierId, statusTBT, start, end,
+				   .findByF_DOSSIER_TBT(dossierNo, statusTBT, start, end,
 			orderByComparator, retrieveFromCache);
 	}
 
 	/**
-	* Returns the first dossier tax in the ordered set where dossierId = &#63; and statusTBT = &#63;.
+	* Returns the first dossier tax in the ordered set where dossierNo = &#63; and statusTBT = &#63;.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusTBT the status tbt
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching dossier tax
 	* @throws NoSuchDossierTaxException if a matching dossier tax could not be found
 	*/
-	public static DossierTax findByF_DOSSIER_TBT_First(long dossierId,
+	public static DossierTax findByF_DOSSIER_TBT_First(String dossierNo,
 		int statusTBT, OrderByComparator<DossierTax> orderByComparator)
 		throws org.opencps.synctracking.exception.NoSuchDossierTaxException {
 		return getPersistence()
-				   .findByF_DOSSIER_TBT_First(dossierId, statusTBT,
+				   .findByF_DOSSIER_TBT_First(dossierNo, statusTBT,
 			orderByComparator);
 	}
 
 	/**
-	* Returns the first dossier tax in the ordered set where dossierId = &#63; and statusTBT = &#63;.
+	* Returns the first dossier tax in the ordered set where dossierNo = &#63; and statusTBT = &#63;.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusTBT the status tbt
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching dossier tax, or <code>null</code> if a matching dossier tax could not be found
 	*/
-	public static DossierTax fetchByF_DOSSIER_TBT_First(long dossierId,
+	public static DossierTax fetchByF_DOSSIER_TBT_First(String dossierNo,
 		int statusTBT, OrderByComparator<DossierTax> orderByComparator) {
 		return getPersistence()
-				   .fetchByF_DOSSIER_TBT_First(dossierId, statusTBT,
+				   .fetchByF_DOSSIER_TBT_First(dossierNo, statusTBT,
 			orderByComparator);
 	}
 
 	/**
-	* Returns the last dossier tax in the ordered set where dossierId = &#63; and statusTBT = &#63;.
+	* Returns the last dossier tax in the ordered set where dossierNo = &#63; and statusTBT = &#63;.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusTBT the status tbt
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching dossier tax
 	* @throws NoSuchDossierTaxException if a matching dossier tax could not be found
 	*/
-	public static DossierTax findByF_DOSSIER_TBT_Last(long dossierId,
+	public static DossierTax findByF_DOSSIER_TBT_Last(String dossierNo,
 		int statusTBT, OrderByComparator<DossierTax> orderByComparator)
 		throws org.opencps.synctracking.exception.NoSuchDossierTaxException {
 		return getPersistence()
-				   .findByF_DOSSIER_TBT_Last(dossierId, statusTBT,
+				   .findByF_DOSSIER_TBT_Last(dossierNo, statusTBT,
 			orderByComparator);
 	}
 
 	/**
-	* Returns the last dossier tax in the ordered set where dossierId = &#63; and statusTBT = &#63;.
+	* Returns the last dossier tax in the ordered set where dossierNo = &#63; and statusTBT = &#63;.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusTBT the status tbt
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching dossier tax, or <code>null</code> if a matching dossier tax could not be found
 	*/
-	public static DossierTax fetchByF_DOSSIER_TBT_Last(long dossierId,
+	public static DossierTax fetchByF_DOSSIER_TBT_Last(String dossierNo,
 		int statusTBT, OrderByComparator<DossierTax> orderByComparator) {
 		return getPersistence()
-				   .fetchByF_DOSSIER_TBT_Last(dossierId, statusTBT,
+				   .fetchByF_DOSSIER_TBT_Last(dossierNo, statusTBT,
 			orderByComparator);
 	}
 
 	/**
-	* Returns the dossier taxs before and after the current dossier tax in the ordered set where dossierId = &#63; and statusTBT = &#63;.
+	* Returns the dossier taxs before and after the current dossier tax in the ordered set where dossierNo = &#63; and statusTBT = &#63;.
 	*
 	* @param taxId the primary key of the current dossier tax
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusTBT the status tbt
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier tax
 	* @throws NoSuchDossierTaxException if a dossier tax with the primary key could not be found
 	*/
 	public static DossierTax[] findByF_DOSSIER_TBT_PrevAndNext(long taxId,
-		long dossierId, int statusTBT,
+		String dossierNo, int statusTBT,
 		OrderByComparator<DossierTax> orderByComparator)
 		throws org.opencps.synctracking.exception.NoSuchDossierTaxException {
 		return getPersistence()
-				   .findByF_DOSSIER_TBT_PrevAndNext(taxId, dossierId,
+				   .findByF_DOSSIER_TBT_PrevAndNext(taxId, dossierNo,
 			statusTBT, orderByComparator);
 	}
 
 	/**
-	* Removes all the dossier taxs where dossierId = &#63; and statusTBT = &#63; from the database.
+	* Removes all the dossier taxs where dossierNo = &#63; and statusTBT = &#63; from the database.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusTBT the status tbt
 	*/
-	public static void removeByF_DOSSIER_TBT(long dossierId, int statusTBT) {
-		getPersistence().removeByF_DOSSIER_TBT(dossierId, statusTBT);
+	public static void removeByF_DOSSIER_TBT(String dossierNo, int statusTBT) {
+		getPersistence().removeByF_DOSSIER_TBT(dossierNo, statusTBT);
 	}
 
 	/**
-	* Returns the number of dossier taxs where dossierId = &#63; and statusTBT = &#63;.
+	* Returns the number of dossier taxs where dossierNo = &#63; and statusTBT = &#63;.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusTBT the status tbt
 	* @return the number of matching dossier taxs
 	*/
-	public static int countByF_DOSSIER_TBT(long dossierId, int statusTBT) {
-		return getPersistence().countByF_DOSSIER_TBT(dossierId, statusTBT);
+	public static int countByF_DOSSIER_TBT(String dossierNo, int statusTBT) {
+		return getPersistence().countByF_DOSSIER_TBT(dossierNo, statusTBT);
 	}
 
 	/**
-	* Returns all the dossier taxs where dossierId = &#63; and statusCTT = &#63;.
+	* Returns all the dossier taxs where dossierNo = &#63; and statusCTT = &#63;.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusCTT the status ctt
 	* @return the matching dossier taxs
 	*/
-	public static List<DossierTax> findByF_DOSSIER_CTT(long dossierId,
+	public static List<DossierTax> findByF_DOSSIER_CTT(String dossierNo,
 		int statusCTT) {
-		return getPersistence().findByF_DOSSIER_CTT(dossierId, statusCTT);
+		return getPersistence().findByF_DOSSIER_CTT(dossierNo, statusCTT);
 	}
 
 	/**
-	* Returns a range of all the dossier taxs where dossierId = &#63; and statusCTT = &#63;.
+	* Returns a range of all the dossier taxs where dossierNo = &#63; and statusCTT = &#63;.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierTaxModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusCTT the status ctt
 	* @param start the lower bound of the range of dossier taxs
 	* @param end the upper bound of the range of dossier taxs (not inclusive)
 	* @return the range of matching dossier taxs
 	*/
-	public static List<DossierTax> findByF_DOSSIER_CTT(long dossierId,
+	public static List<DossierTax> findByF_DOSSIER_CTT(String dossierNo,
 		int statusCTT, int start, int end) {
 		return getPersistence()
-				   .findByF_DOSSIER_CTT(dossierId, statusCTT, start, end);
+				   .findByF_DOSSIER_CTT(dossierNo, statusCTT, start, end);
 	}
 
 	/**
-	* Returns an ordered range of all the dossier taxs where dossierId = &#63; and statusCTT = &#63;.
+	* Returns an ordered range of all the dossier taxs where dossierNo = &#63; and statusCTT = &#63;.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierTaxModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusCTT the status ctt
 	* @param start the lower bound of the range of dossier taxs
 	* @param end the upper bound of the range of dossier taxs (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching dossier taxs
 	*/
-	public static List<DossierTax> findByF_DOSSIER_CTT(long dossierId,
+	public static List<DossierTax> findByF_DOSSIER_CTT(String dossierNo,
 		int statusCTT, int start, int end,
 		OrderByComparator<DossierTax> orderByComparator) {
 		return getPersistence()
-				   .findByF_DOSSIER_CTT(dossierId, statusCTT, start, end,
+				   .findByF_DOSSIER_CTT(dossierNo, statusCTT, start, end,
 			orderByComparator);
 	}
 
 	/**
-	* Returns an ordered range of all the dossier taxs where dossierId = &#63; and statusCTT = &#63;.
+	* Returns an ordered range of all the dossier taxs where dossierNo = &#63; and statusCTT = &#63;.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierTaxModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusCTT the status ctt
 	* @param start the lower bound of the range of dossier taxs
 	* @param end the upper bound of the range of dossier taxs (not inclusive)
@@ -1240,117 +1240,117 @@ public class DossierTaxUtil {
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching dossier taxs
 	*/
-	public static List<DossierTax> findByF_DOSSIER_CTT(long dossierId,
+	public static List<DossierTax> findByF_DOSSIER_CTT(String dossierNo,
 		int statusCTT, int start, int end,
 		OrderByComparator<DossierTax> orderByComparator,
 		boolean retrieveFromCache) {
 		return getPersistence()
-				   .findByF_DOSSIER_CTT(dossierId, statusCTT, start, end,
+				   .findByF_DOSSIER_CTT(dossierNo, statusCTT, start, end,
 			orderByComparator, retrieveFromCache);
 	}
 
 	/**
-	* Returns the first dossier tax in the ordered set where dossierId = &#63; and statusCTT = &#63;.
+	* Returns the first dossier tax in the ordered set where dossierNo = &#63; and statusCTT = &#63;.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusCTT the status ctt
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching dossier tax
 	* @throws NoSuchDossierTaxException if a matching dossier tax could not be found
 	*/
-	public static DossierTax findByF_DOSSIER_CTT_First(long dossierId,
+	public static DossierTax findByF_DOSSIER_CTT_First(String dossierNo,
 		int statusCTT, OrderByComparator<DossierTax> orderByComparator)
 		throws org.opencps.synctracking.exception.NoSuchDossierTaxException {
 		return getPersistence()
-				   .findByF_DOSSIER_CTT_First(dossierId, statusCTT,
+				   .findByF_DOSSIER_CTT_First(dossierNo, statusCTT,
 			orderByComparator);
 	}
 
 	/**
-	* Returns the first dossier tax in the ordered set where dossierId = &#63; and statusCTT = &#63;.
+	* Returns the first dossier tax in the ordered set where dossierNo = &#63; and statusCTT = &#63;.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusCTT the status ctt
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching dossier tax, or <code>null</code> if a matching dossier tax could not be found
 	*/
-	public static DossierTax fetchByF_DOSSIER_CTT_First(long dossierId,
+	public static DossierTax fetchByF_DOSSIER_CTT_First(String dossierNo,
 		int statusCTT, OrderByComparator<DossierTax> orderByComparator) {
 		return getPersistence()
-				   .fetchByF_DOSSIER_CTT_First(dossierId, statusCTT,
+				   .fetchByF_DOSSIER_CTT_First(dossierNo, statusCTT,
 			orderByComparator);
 	}
 
 	/**
-	* Returns the last dossier tax in the ordered set where dossierId = &#63; and statusCTT = &#63;.
+	* Returns the last dossier tax in the ordered set where dossierNo = &#63; and statusCTT = &#63;.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusCTT the status ctt
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching dossier tax
 	* @throws NoSuchDossierTaxException if a matching dossier tax could not be found
 	*/
-	public static DossierTax findByF_DOSSIER_CTT_Last(long dossierId,
+	public static DossierTax findByF_DOSSIER_CTT_Last(String dossierNo,
 		int statusCTT, OrderByComparator<DossierTax> orderByComparator)
 		throws org.opencps.synctracking.exception.NoSuchDossierTaxException {
 		return getPersistence()
-				   .findByF_DOSSIER_CTT_Last(dossierId, statusCTT,
+				   .findByF_DOSSIER_CTT_Last(dossierNo, statusCTT,
 			orderByComparator);
 	}
 
 	/**
-	* Returns the last dossier tax in the ordered set where dossierId = &#63; and statusCTT = &#63;.
+	* Returns the last dossier tax in the ordered set where dossierNo = &#63; and statusCTT = &#63;.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusCTT the status ctt
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching dossier tax, or <code>null</code> if a matching dossier tax could not be found
 	*/
-	public static DossierTax fetchByF_DOSSIER_CTT_Last(long dossierId,
+	public static DossierTax fetchByF_DOSSIER_CTT_Last(String dossierNo,
 		int statusCTT, OrderByComparator<DossierTax> orderByComparator) {
 		return getPersistence()
-				   .fetchByF_DOSSIER_CTT_Last(dossierId, statusCTT,
+				   .fetchByF_DOSSIER_CTT_Last(dossierNo, statusCTT,
 			orderByComparator);
 	}
 
 	/**
-	* Returns the dossier taxs before and after the current dossier tax in the ordered set where dossierId = &#63; and statusCTT = &#63;.
+	* Returns the dossier taxs before and after the current dossier tax in the ordered set where dossierNo = &#63; and statusCTT = &#63;.
 	*
 	* @param taxId the primary key of the current dossier tax
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusCTT the status ctt
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier tax
 	* @throws NoSuchDossierTaxException if a dossier tax with the primary key could not be found
 	*/
 	public static DossierTax[] findByF_DOSSIER_CTT_PrevAndNext(long taxId,
-		long dossierId, int statusCTT,
+		String dossierNo, int statusCTT,
 		OrderByComparator<DossierTax> orderByComparator)
 		throws org.opencps.synctracking.exception.NoSuchDossierTaxException {
 		return getPersistence()
-				   .findByF_DOSSIER_CTT_PrevAndNext(taxId, dossierId,
+				   .findByF_DOSSIER_CTT_PrevAndNext(taxId, dossierNo,
 			statusCTT, orderByComparator);
 	}
 
 	/**
-	* Removes all the dossier taxs where dossierId = &#63; and statusCTT = &#63; from the database.
+	* Removes all the dossier taxs where dossierNo = &#63; and statusCTT = &#63; from the database.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusCTT the status ctt
 	*/
-	public static void removeByF_DOSSIER_CTT(long dossierId, int statusCTT) {
-		getPersistence().removeByF_DOSSIER_CTT(dossierId, statusCTT);
+	public static void removeByF_DOSSIER_CTT(String dossierNo, int statusCTT) {
+		getPersistence().removeByF_DOSSIER_CTT(dossierNo, statusCTT);
 	}
 
 	/**
-	* Returns the number of dossier taxs where dossierId = &#63; and statusCTT = &#63;.
+	* Returns the number of dossier taxs where dossierNo = &#63; and statusCTT = &#63;.
 	*
-	* @param dossierId the dossier ID
+	* @param dossierNo the dossier no
 	* @param statusCTT the status ctt
 	* @return the number of matching dossier taxs
 	*/
-	public static int countByF_DOSSIER_CTT(long dossierId, int statusCTT) {
-		return getPersistence().countByF_DOSSIER_CTT(dossierId, statusCTT);
+	public static int countByF_DOSSIER_CTT(String dossierNo, int statusCTT) {
+		return getPersistence().countByF_DOSSIER_CTT(dossierNo, statusCTT);
 	}
 
 	/**

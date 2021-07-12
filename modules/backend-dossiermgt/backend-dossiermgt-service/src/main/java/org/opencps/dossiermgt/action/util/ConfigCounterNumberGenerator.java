@@ -455,7 +455,7 @@ public class ConfigCounterNumberGenerator {
 	private static final String PERCENT_ZERO = "%0";
 	private static final String NUMBER_FORMAT = "d";
 	
-	private static String countByNumber(String pattern, String tmp, ConfigCounter configCounter) {
+	private synchronized static String countByNumber(String pattern, String tmp, ConfigCounter configCounter) {
 
 		//long counter = CounterLocalServiceUtil.increment(pattern);
 		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
@@ -466,9 +466,11 @@ public class ConfigCounterNumberGenerator {
 		//Counter counterDetail = null;
 		_log.info("pattern" + pattern);
 		if (configCounter.getStartCounter() == 0) {
+			_log.info("case Start Counter: " + configCounter.getStartCounter());
 			Counter counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
 
 			if (Validator.isNotNull(counterDetail)) {
+				_log.info("case update pattern: " + pattern);
 				// create counter config
 				_counterNumber = counterDetail.getCurrentId() + 1;
 				while (counter == null) {
@@ -509,6 +511,7 @@ public class ConfigCounterNumberGenerator {
 			_counterNumber = configCounter.getStartCounter() + 1;
 			while (counter == null) {
 				if (counterDetail != null) {
+					_log.info("case update pattern: " + pattern);
 					counterDetail.setCurrentId(_counterNumber);
 					try {
 						counter = CounterLocalServiceUtil.updateCounter(counterDetail);
