@@ -330,6 +330,10 @@ public interface ApplicantLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Applicant> getListApplicationByG_NotEqualZero_CDateToNow(
+		Date date);
+
 	/**
 	* Returns the OSGi service identifier.
 	*

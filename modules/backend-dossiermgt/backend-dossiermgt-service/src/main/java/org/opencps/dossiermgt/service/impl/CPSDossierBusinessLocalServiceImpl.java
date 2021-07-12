@@ -7390,7 +7390,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			ProcessAction proAction = null;
 			ProcessAction processActionCurrent;
 			ProcessOption option;
-			DossierAction dossierActionResult;
+			DossierAction dossierActionResult = null;
 			Integer syncType = 0;
 			ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 			long serviceProcessId = 0;
@@ -7454,17 +7454,66 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			processActionCurrent = proAction;
 
-			if(Validator.isNotNull(input)) {
-				if(Validator.isNull(input.getPayment())) {
-					dossierActionResult = doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
-							StringPool.BLANK, StringPool.BLANK, null, syncType, serviceContext);
+			boolean canDoAction = true;
+
+			_log.info("Doing action QLVB for dossier: " + dossier.getDossierId());
+			if (Validator.isNotNull(input)
+					&& Validator.isNotNull(input.getStatusQLVB())
+					&& !input.getStatusQLVB().isEmpty()) {
+				String statusQLVB = input.getStatusQLVB();
+				_log.info("statusQLVB: " + statusQLVB);
+
+				if(Validator.isNotNull(proAction.getPreCondition())) {
+					_log.info("getPreCondition: " + proAction.getPreCondition());
+
+					String[] preConditionArr = StringUtil.split(proAction.getPreCondition());
+
+					boolean hasSequenceQLVB = false;
+
+					for (String preCondition : preConditionArr) {
+						if (preCondition.contains(DossierTerm.CONTAIN_SEQUENCE_QLVB)) {
+							hasSequenceQLVB = true;
+							String[] splitServerSync = preCondition.split(StringPool.EQUAL);
+							if(splitServerSync.length > 1) {
+								String sequenceQLVBConfig = splitServerSync[1];
+								_log.info("sequenceQLVBConfig: " + sequenceQLVBConfig);
+								if(!statusQLVB.equals(sequenceQLVBConfig)) {
+									canDoAction = false;
+								}
+							}
+						}
+					}
+
+					if(!hasSequenceQLVB && !statusQLVB.equals("1")) {
+						_log.info("Case default status from QLVB > 1, but Duan chua cau hinh precondition, " +
+								"thi KO cho thuc hien");
+						canDoAction = false;
+					}
+
+				} else {
+					_log.info("Null pre condition");
+					if(!statusQLVB.equals("1")) {
+						_log.info("Not first time and no precondition");
+						canDoAction = false;
+					}
+				}
+			}
+
+			_log.info("CanDoAction: " + canDoAction);
+
+			if (canDoAction) {
+				if(Validator.isNotNull(input)) {
+					if(Validator.isNull(input.getPayment())) {
+						dossierActionResult = doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
+								StringPool.BLANK, StringPool.BLANK, null, syncType, serviceContext);
+					} else {
+						dossierActionResult = doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
+								StringPool.BLANK, StringPool.BLANK, objMapper.writeValueAsString(input.getPayment()), syncType, serviceContext);
+					}
 				} else {
 					dossierActionResult = doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
-							StringPool.BLANK, StringPool.BLANK, objMapper.writeValueAsString(input.getPayment()), syncType, serviceContext);
+							StringPool.BLANK, StringPool.BLANK, null, syncType, serviceContext);
 				}
-			} else {
-				dossierActionResult = doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
-						StringPool.BLANK, StringPool.BLANK, null, syncType, serviceContext);
 			}
 
 			if(Validator.isNull(dossierActionResult)) {

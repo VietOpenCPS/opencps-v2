@@ -38,7 +38,8 @@ public interface QLVGManagement {
                                   @Multipart("file") File file,
                                   @Multipart("displayName") String displayName,
                                   @Multipart("fileType") String fileType,
-                                  @Multipart("actionCode") String actionCode);
+                                  @Multipart("actionCode") String actionCode,
+                                  @Multipart("sequence") int sequence);
 
     @GET
     @Path("/{dossierId}/qlvbcts")

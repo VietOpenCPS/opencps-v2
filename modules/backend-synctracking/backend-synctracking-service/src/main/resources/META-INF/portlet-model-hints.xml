@@ -10,7 +10,6 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="dossierId" type="long" />
 		<field name="dossierNo" type="String" />
 		<field name="maSoThue" type="String" />
 		<field name="soQuyetDinh" type="String" />

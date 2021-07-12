@@ -41,7 +41,6 @@ public class DossierTaxSoap implements Serializable {
 		soapModel.setUserName(model.getUserName());
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
-		soapModel.setDossierId(model.getDossierId());
 		soapModel.setDossierNo(model.getDossierNo());
 		soapModel.setMaSoThue(model.getMaSoThue());
 		soapModel.setSoQuyetDinh(model.getSoQuyetDinh());
@@ -178,14 +177,6 @@ public class DossierTaxSoap implements Serializable {
 
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
-	}
-
-	public long getDossierId() {
-		return _dossierId;
-	}
-
-	public void setDossierId(long dossierId) {
-		_dossierId = dossierId;
 	}
 
 	public String getDossierNo() {
@@ -372,7 +363,6 @@ public class DossierTaxSoap implements Serializable {
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
-	private long _dossierId;
 	private String _dossierNo;
 	private String _maSoThue;
 	private String _soQuyetDinh;

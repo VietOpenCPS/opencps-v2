@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
@@ -23,7 +24,11 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.BaseJSPSettingsConfigurationAction;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
+import com.liferay.portal.kernel.scheduler.SchedulerException;
+import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
@@ -51,6 +56,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Connection;
@@ -134,6 +140,7 @@ import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.scheduler.PublishEventScheduler;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
@@ -146,9 +153,13 @@ import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.ApplicantData;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.FileItem;
+import org.opencps.usermgt.service.ApplicantDataLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.FileItemLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -182,13 +193,6 @@ public class DossierManagementImpl implements DossierManagement {
 	private static final String DATE_FORMAT = "dd/MM/yyyy hh:mm";
 	private static final String AUTHEN_KEY = "authenKey";
 
-	private static final int DICH_VU_CONG = 1;
-	private static final int MOT_CUA = 2;
-	private static final String SERVER_NO_DVC = "SERVER_DVC";
-	private static final String PROTOCOL = "API_SYNC";
-	private static final String REFUID = "refUid";
-
-
 	private String getBodyError(String code, String message) {
 		JSONObject body = JSONFactoryUtil.createJSONObject();
 		body.put(ERROR_CODE, code);
@@ -196,171 +200,94 @@ public class DossierManagementImpl implements DossierManagement {
 		return body.toString();
 	}
 
-	private JSONObject sendRequestToURL(String urlAddress, long groupId) throws IOException, JSONException {
-
-		URL obj = new URL(urlAddress);
-		java.net.HttpURLConnection connection = (java.net.HttpURLConnection) obj.openConnection();
-		connection.setRequestProperty("groupId", String.valueOf(groupId));
-		connection.setRequestMethod("GET");
-		int responseCode = connection.getResponseCode();
-
-		_log.debug("responseCode = " + responseCode);
-
-		// Thực hiện đọc
-		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-
-		in.close();
-		JSONObject myResponse = JSONFactoryUtil.createJSONObject(response.toString());
-		return myResponse;
-	}
-
-	private JSONObject supportSearchDVC(long groupId, String key){
-		JSONObject body = JSONFactoryUtil.createJSONObject();
-
-		Dossier dossier = DossierUtils.getDossierNew(key, groupId);
-		JSONObject dossierObject = SupportSearchConstants.convertDossierToJSONObject(dossier);
-		body.put(SupportSearchConstants.DOSSIER, dossierObject);
-
-		List<DossierSync> ListDossierSync = DossierSyncLocalServiceUtil.findByG_DID(dossier.getGroupId(), dossier.getDossierId());
-		JSONArray DossierSyncArray = SupportSearchConstants.convertListSyncToArray(ListDossierSync);
-		body.put(SupportSearchConstants.DOSSIER_SYNC, DossierSyncArray);
-
-		List<DossierAction> ListDossierAction =
-				DossierActionLocalServiceUtil.findByG_DID(dossier.getGroupId(), dossier.getDossierId());
-		JSONArray DossierActionArray = SupportSearchConstants.convertListActionToArray(ListDossierAction);
-		body.put(SupportSearchConstants.DOSSIER_ACTION, DossierActionArray);
-
-		List<Dossier> DossierBetweenList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), dossier.getDossierId(), null);
-
-		if(DossierBetweenList.size()>0){
-
-			Dossier dossierBetween = DossierBetweenList.get(0);
-
-			body.put(SupportSearchConstants.DOSSIER_BETWEEN, SupportSearchConstants.convertDossierToJSONObject(dossierBetween));
-
-		} else {
-			body.put(SupportSearchConstants.DOSSIER_BETWEEN, "No Result");
-		}
-
-		List<Dossier> DossierTransferList = DossierLocalServiceUtil.findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(dossier.getDossierNo(), null, 2);
-
-		if(DossierTransferList.size()>0){
-
-			Dossier dossierTransfer = dossierTransfer = DossierTransferList.get(0);
-
-			body.put(SupportSearchConstants.DOSSIER_TRANFER, SupportSearchConstants.convertDossierToJSONObject(dossierTransfer));
-
-		} else {
-			body.put(SupportSearchConstants.DOSSIER_TRANFER, "No Result");
-		}
-
-		List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossier.getDossierId());
-
-		if(dossierFileList.size() >0) {
-			JSONArray dossierFileArray = JSONFactoryUtil.createJSONArray();
-			for( DossierFile dossierFile : dossierFileList ){
-				JSONObject dossiferFileObject = JSONFactoryUtil.createJSONObject();
-				String urlAPI = PropsUtil.get(PropKeys.PORTAL_DOMAIN)+"/o/rest/v2/dossiers/"+dossierFile.getDossierId()+"/files/"+dossierFile.getReferenceUid()+"/preview.pdf";
-				dossiferFileObject.put(SupportSearchConstants.URL_DOSSIER_FILE, urlAPI);
-				dossierFileArray.put(dossiferFileObject);
-			}
-			body.put(SupportSearchConstants.DOSSIER_FILE, dossierFileArray);
-		} else {
-			body.put(SupportSearchConstants.DOSSIER_FILE, "No Result");
-		}
-
-		return body;
-	}
-
-
 	@Override
-	public Response getSupportSearchDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String dossierId, Boolean isCallAgain, String referenceUid) {
-		if(Validator.isNull(isCallAgain)){
-			isCallAgain = true;
-		}
-		Integer type = null;
-		String liferay_home = PropsUtil.get("liferay.home");
-		if(liferay_home.contains("dvc")){
-			type = DICH_VU_CONG;
-		} else if(liferay_home.contains("mcdt")) {
-			type = MOT_CUA;
-		}
+	public Response getCountofScheduler(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String nameScheduler, String type) throws SchedulerException {
 
 		JSONObject response = JSONFactoryUtil.createJSONObject();
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-
-		if(type==DICH_VU_CONG) {
-			try {
-				if(Validator.isNull(referenceUid)){
-					response.put(SupportSearchConstants.HO_SO_DVC, supportSearchDVC(groupId, dossierId));
-
+		if(Validator.isNotNull("type")){
+			if(type.equals("admin") ){
+				if(nameScheduler.equalsIgnoreCase("PublishEventScheduler")
+						|| nameScheduler.equalsIgnoreCase("PublishEventHSKMScheduler")
+						|| nameScheduler.equalsIgnoreCase("DossierSyncProcessingScheduler")
+						|| nameScheduler.equalsIgnoreCase("FakeCounterScheduler"))
+				{
+					List<SchedulerResponse> schedulerResponses =
+							SchedulerEngineHelperUtil.getScheduledJobs();
+					Method method;
+					for (SchedulerResponse schedulerResponse : schedulerResponses){
+						if(schedulerResponse.getJobName().contains(nameScheduler)){
+							try {
+								method = Class.forName(schedulerResponse.getJobName()).getMethod("getCount");
+								response.put("count", method.invoke(null));
+								return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+							} catch (Exception e){
+								_log.error(e);
+								return BusinessExceptionImpl.processException(e);
+							}
+						}
+					}
+					response.put("Message", "Scheduler doesn't found in opencpsscheduler:list");
+					return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
 				} else {
-					response.put(SupportSearchConstants.HO_SO_DVC, supportSearchDVC(groupId, referenceUid));
+					response.put("Message", "Scheduler doesn't exist or not found");
+					return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
 				}
 
-				if(isCallAgain){
-					Dossier dossier = DossierUtils.getDossierNew(dossierId, groupId);
-					ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNO_PROTOCOL("SERVER_"+dossier.getGovAgencyCode(), PROTOCOL, dossier.getGroupId());
-
-					JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-
-					String url = config.get("url").toString() + "/dossiers/supportSearch/"
-							+ dossier.getDossierId() + StringPool.QUESTION +StringPool.AMPERSAND+"isCallAgain"+StringPool.EQUAL+"false"+StringPool.AMPERSAND+REFUID+StringPool.EQUAL+dossier.getReferenceUid();
-					_log.info("url : " + url +" ===== groupId" + config.getLong("groupId") );
-
-					JSONObject responeUrl = sendRequestToURL(url, config.getLong("groupId"));
-					JSONObject hoSoMCDT = JSONFactoryUtil.createJSONObject(responeUrl.get(SupportSearchConstants.HO_SO_MCDT).toString());
-
-					response.put(SupportSearchConstants.HO_SO_MCDT, hoSoMCDT);
-				}
-			} catch (Exception e){
-				_log.error(e);
-				return BusinessExceptionImpl.processException(e);
+			} else {
+				response.put("Message", "Unauthorized Information.");
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(response.toJSONString()).build();
 			}
-		} else if(type==MOT_CUA) {
-			try {
-				if(Validator.isNull(referenceUid)){
-					response.put(SupportSearchConstants.HO_SO_MCDT, supportSearchDVC(groupId, dossierId));
-				} else {
-					response.put(SupportSearchConstants.HO_SO_MCDT, supportSearchDVC(groupId, referenceUid));
-				}
-
-				if(isCallAgain){
-					Dossier dossier = DossierUtils.getDossierNew(dossierId, groupId);
-					ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNO_PROTOCOL(SERVER_NO_DVC, PROTOCOL, dossier.getGroupId());
-					JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-
-					String url = config.get("url").toString() + "/dossiers/supportSearch/"
-							+ dossier.getDossierId() + StringPool.QUESTION + StringPool.AMPERSAND+"isCallAgain"+StringPool.EQUAL+"false"
-							+StringPool.AMPERSAND+REFUID+StringPool.EQUAL+dossier.getReferenceUid();
-					_log.info("url : " + url +" ===== groupId" + groupId );
-
-					JSONObject responeUrl = sendRequestToURL(url, config.getLong("groupId"));
-					JSONObject hoSoDVC = JSONFactoryUtil.createJSONObject(responeUrl.get(SupportSearchConstants.HO_SO_DVC).toString());
-
-					response.put(SupportSearchConstants.HO_SO_DVC, hoSoDVC);
-				}
-			}
-			catch (Exception e){
-				_log.error(e);
-				return BusinessExceptionImpl.processException(e);
-			}
+		} else {
+			response.put("Message", "Non-Authoritative Information.");
+			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(response.toJSONString()).build();
 		}
 
-		JSONObject conditionJSON = JSONFactoryUtil.createJSONObject();
-		conditionJSON.put(SupportSearchConstants.TYPE, type);
-		conditionJSON.put(SupportSearchConstants.KEY_SEARCH, dossierId);
-		conditionJSON.put(SupportSearchConstants.IS_CALL_AGAIN, isCallAgain.toString());
-		response.put(SupportSearchConstants.CONDITION, conditionJSON);
-
-		return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
 	}
+
+	@Override
+	public Response ResetCountofScheduler(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String nameScheduler, String type) throws SchedulerException {
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+		if(Validator.isNotNull("type")){
+			if(type.equalsIgnoreCase("admin") ){
+				if(nameScheduler.equalsIgnoreCase("PublishEventScheduler")
+						|| nameScheduler.equalsIgnoreCase("PublishEventHSKMScheduler")
+						|| nameScheduler.equalsIgnoreCase("DossierSyncProcessingScheduler")
+						|| nameScheduler.equalsIgnoreCase("FakeCounterScheduler"))
+				{
+					List<SchedulerResponse> schedulerResponses =
+							SchedulerEngineHelperUtil.getScheduledJobs();
+					Method method;
+					for (SchedulerResponse schedulerResponse : schedulerResponses){
+						if(schedulerResponse.getJobName().contains(nameScheduler)){
+							try {
+								method = Class.forName(schedulerResponse.getJobName()).getMethod("resetCount");
+								response.put("count", method.invoke(null));
+								return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+							} catch (Exception e){
+								_log.error(e);
+								return BusinessExceptionImpl.processException(e);
+							}
+						}
+					}
+					response.put("Message", "Scheduler doesn't found in opencpsscheduler:list");
+					return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+				} else {
+					response.put("Message", "Scheduler doesn't exist or not found");
+					return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+				}
+
+			} else {
+				response.put("Message", "Unauthorized Information.");
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(response.toJSONString()).build();
+			}
+		} else {
+			response.put("Message", "Non-Authoritative Information.");
+			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(response.toJSONString()).build();
+		}
+
+	}
+
+
 
 	@Override
 	public Response getDirectDossiers(HttpServletRequest request, HttpHeaders header,
@@ -2446,6 +2373,28 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 			}
+			
+
+			//day du lieu vao kho du lieu cong dan
+			if (Validator.isNotNull(dossier) && dossier.getDossierStatus().contentEquals(DossierTerm.DOSSIER_STATUS_DONE)) {
+				List<DossierFile> lstDossierFiles = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
+				if (Validator.isNotNull(lstDossierFiles) && lstDossierFiles.size() > 0) {
+					for (DossierFile doFile : lstDossierFiles) {
+						String fileTemplateNo = doFile.getFileTemplateNo();
+						_log.info("fileTemplateNo : " + fileTemplateNo);
+						if (Validator.isNotNull(fileTemplateNo)) {
+							FileItem fileItem = FileItemLocalServiceUtil.findByG_FTN(0, fileTemplateNo);
+							FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(doFile.getFileEntryId());
+							if (Validator.isNotNull(fileItem) && Validator.isNotNull(fileEntry)) {
+								ApplicantData applicantData = ApplicantDataLocalServiceUtil.createApplicantData(
+										serviceContext, 0, fileTemplateNo, fileEntry.getFileName(), doFile.getDisplayName(), doFile.getFileEntryId(), StringPool.BLANK, 1, dossier.getApplicantIdNo(), 0);		
+								_log.debug("Kho dữ liệu công dân : " + JSONFactoryUtil.looseSerialize(applicantData));
+								ApplicantDataLocalServiceUtil.updateApplicantData(applicantData);
+								}
+							}
+						}					
+				}
+			}
 
 			_log.debug("Doaction oke with dossierActionId: " + dossierResult.getDossierActionId());
 			long dossierActionId = dossierResult.getDossierActionId();
@@ -2467,6 +2416,7 @@ public class DossierManagementImpl implements DossierManagement {
 					_log.debug("Result post action:" + result);
 				}
 			}
+			
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(dAction).build();
 		}
@@ -2940,7 +2890,8 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierMarkResultsModel result = new DossierMarkResultsModel();
 
 			List<DossierMark> lstDossierMark =
-				actions.getDossierMarks(groupId, dossierId);
+				actions.findDossierMarkByDossierId(groupId, dossierId);
+			_log.info("lstDossierMark: " + lstDossierMark.size());
 
 			List<DossierMarkModel> outputs =
 				DossierMarkUtils.mappingDossierMarks(lstDossierMark);

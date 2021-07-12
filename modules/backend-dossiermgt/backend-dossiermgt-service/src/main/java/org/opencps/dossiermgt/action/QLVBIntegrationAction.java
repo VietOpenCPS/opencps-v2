@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.action;
 
 import com.liferay.portal.kernel.service.ServiceContext;
+import org.opencps.dossiermgt.input.model.ProfileInModel;
 import org.opencps.dossiermgt.model.Dossier;
 
 public interface QLVBIntegrationAction {
@@ -15,5 +16,6 @@ public interface QLVBIntegrationAction {
     public boolean sendDocEOfficeTTTT() throws Exception;
 
     //Do action QLVB
-    public void doAction(long groupId, ServiceContext serviceContext, Dossier dossier, String actionCode);
+    public void doAction(long groupId, ServiceContext serviceContext, Dossier dossier, String actionCode
+            , ProfileInModel input);
 }

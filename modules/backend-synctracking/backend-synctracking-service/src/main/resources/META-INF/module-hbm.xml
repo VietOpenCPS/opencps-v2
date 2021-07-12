@@ -15,7 +15,6 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="dossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="dossierNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="maSoThue" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="soQuyetDinh" type="com.liferay.portal.dao.orm.hibernate.StringType" />

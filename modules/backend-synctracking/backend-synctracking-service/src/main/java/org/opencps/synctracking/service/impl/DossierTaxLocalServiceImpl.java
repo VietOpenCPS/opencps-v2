@@ -47,9 +47,6 @@ public class DossierTaxLocalServiceImpl extends DossierTaxLocalServiceBaseImpl {
 		dossierTax.setModifiedDate(now);
 		dossierTax.setGroupId(dossierTaxInput.groupId);
 
-		if(Validator.isNotNull(dossierTaxInput.dossierId) && dossierTaxInput.dossierId >0) {
-			dossierTax.setDossierId(dossierTaxInput.dossierId);
-		}
 
 		if(Validator.isNotNull(dossierTaxInput.dossierNo)) {
 			dossierTax.setDossierNo(dossierTaxInput.dossierNo);
@@ -150,18 +147,17 @@ public class DossierTaxLocalServiceImpl extends DossierTaxLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<DossierTax> getByDossierIdAndStatusTBT(long dossierId, int statuses) {
-		return dossierTaxPersistence.findByF_DOSSIER_TBT(dossierId, statuses);
+	public List<DossierTax> getByDossierIdAndStatusTBT(String dossierNo, int statuses) {
+		return dossierTaxPersistence.findByF_DOSSIER_TBT(dossierNo, statuses);
 	}
 
 	@Override
-	public List<DossierTax> getByDossierIdAndStatusCTT(long dossierId, int statuses) {
-		return dossierTaxPersistence.findByF_DOSSIER_CTT(dossierId, statuses);
+	public List<DossierTax> getByDossierIdAndStatusCTT(String dossierNo, int statuses) {
+		return dossierTaxPersistence.findByF_DOSSIER_CTT(dossierNo, statuses);
 	}
 
 	@Override
 	public DossierTax fetchDossierTaxByDMS(String dossierNo, String maSoThue, String soQuyetDinh) {
-		System.out.println("Vaooooooooooooooooooooooooo");
 		return dossierTaxPersistence.fetchByF_DMS(dossierNo, maSoThue, soQuyetDinh);
 	}
 	/*

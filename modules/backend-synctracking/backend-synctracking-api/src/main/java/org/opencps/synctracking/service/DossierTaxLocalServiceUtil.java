@@ -187,7 +187,6 @@ public class DossierTaxLocalServiceUtil {
 
 	public static org.opencps.synctracking.model.DossierTax fetchDossierTaxByDMS(
 		String dossierNo, String maSoThue, String soQuyetDinh) {
-		System.out.println("LocalServiceUtil : " + getService());
 		return getService()
 				   .fetchDossierTaxByDMS(dossierNo, maSoThue, soQuyetDinh);
 	}
@@ -209,13 +208,13 @@ public class DossierTaxLocalServiceUtil {
 	}
 
 	public static java.util.List<org.opencps.synctracking.model.DossierTax> getByDossierIdAndStatusCTT(
-		long dossierId, int statuses) {
-		return getService().getByDossierIdAndStatusCTT(dossierId, statuses);
+		String dossierNo, int statuses) {
+		return getService().getByDossierIdAndStatusCTT(dossierNo, statuses);
 	}
 
 	public static java.util.List<org.opencps.synctracking.model.DossierTax> getByDossierIdAndStatusTBT(
-		long dossierId, int statuses) {
-		return getService().getByDossierIdAndStatusTBT(dossierId, statuses);
+		String dossierNo, int statuses) {
+		return getService().getByDossierIdAndStatusTBT(dossierNo, statuses);
 	}
 
 	public static java.util.List<org.opencps.synctracking.model.DossierTax> getByStatusCTT(

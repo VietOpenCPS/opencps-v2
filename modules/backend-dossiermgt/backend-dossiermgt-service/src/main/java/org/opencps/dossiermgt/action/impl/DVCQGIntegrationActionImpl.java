@@ -4359,6 +4359,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		byte[] decodedBytes = Base64.getDecoder().decode(FileThongBaoThue);
 		String xmlFileThongBaoThue = new String(decodedBytes);
 		// Ghi log SyncTracking
+		_log.debug("GroupId: "+ groupId);
 		callPostAPISyncTracking(groupId, "", xmlFileThongBaoThue, "", DVCQG_THONG_BAO_THUE_DAT);
 		try {
 			_log.debug("Constructor doCrUpDossierThongBaoThueDatDVCQG");
@@ -4415,14 +4416,13 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 							String tenTieuMuc = subElement.getElementsByTagName(TEN_TIEU_MUC).item(0).getTextContent();
 							subObject.put(TEN_TIEU_MUC, tenTieuMuc);
 						}
-						_log.info("MA_HS: " + dossierNo);
+						_log.debug("MA_HS: " + dossierNo);
 						_log.debug("dossierTaxArr: " + dossierTaxArr);
 						_log.debug("subObject: " + subObject);
 
 						Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
 						String dossierTax = getDetailDossierTax(groupId, dossierNo, maSoThue, soQD);
 						if (Validator.isNotNull(dossier)) {
-							_log.info("Hồ sơ có trên hệ thống : "  + dossierNo);
 							if (Validator.isNull(dossierTax)) {
 								//Lưu thông tin thuế
 								callPostAPIDossierTax(groupId, subObject, dossier,"1" , null, null, null);
@@ -4434,13 +4434,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 				return createResponseMessage(validateResult, 0, "gửi dữ liệu thành công");
 			}
-//			_log.info("Count : " + Counter.getCount());
-//			int timeWaiting = 0;
-//			while (Counter.getCount() != 0 && timeWaiting < 10) {
-//				Thread.sleep(1000);
-//				timeWaiting ++;
-//				_log.info("timeWaiting: " + timeWaiting);
-//			}
 		} catch (Exception e) {
 			e.getMessage();
 			_log.error(e);
@@ -4472,7 +4465,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setUseCaches(false);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			_log.debug("POST DATA: " + jsonBody.toString());
 			OutputStream osLogin = conn.getOutputStream();
 			osLogin.write(jsonBody.toString().getBytes());
 			osLogin.close();
@@ -4506,7 +4498,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			jsonBody.put("bodyResponse",reponse);
 			jsonBody.put("api",protocol);
 
-			_log.info("POST DATA: " + jsonBody.toString());
+			_log.debug("POST DATA: " + jsonBody.toString());
 			java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVoid.openConnection();
 
 			conn.setRequestMethod(HttpMethod.POST);
@@ -4605,12 +4597,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		try {
 			StringBuilder sb = new StringBuilder();
 			JSONObject configJson = getServerConfigByServerNo(DossierTerm.API_SYNC_TRACKING, "");
-			String urlCall = configJson.getString("urlMC") + configJson.getString("saveDossierTax");
+			String urlCall = configJson.getString("urlLocal") + configJson.getString("saveDossierTax");
 			URL urlVoid = new URL(urlCall);
 
 			JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
-			jsonBody.put("groupId",dossier.getGroupId());
-			jsonBody.put("dossierId",dossier.getDossierId());
+			jsonBody.put("groupId", dossier.getGroupId());
 			jsonBody.put("dossierNo",dossier.getDossierNo());
 
 			if (subObject != null) {
@@ -4621,7 +4612,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				jsonBody.put("soTien",subObject.getString(SO_TIEN));
 			} else {
 				jsonBody.put("hoTenNguoiNopTien",data.getString("HoTenNguoiNopTien"));
-				jsonBody.put("groupId",groupId);
 				jsonBody.put("maSoThue",data.getString("MaSoThue"));
 				jsonBody.put("fileChungTu",data.getString("UrlFileChungTu"));
 				jsonBody.put("soQuyetDinh",TtttChitiet.getString("MaThongBaoThue"));
@@ -4667,7 +4657,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			if (Validator.isNotNull(statusCTT)) {
 				jsonBody.put("statusCTT",statusCTT);
 			}
-			_log.info("POST DATA: " + jsonBody.toString());
+			_log.debug("POST DATA: " + jsonBody.toString());
 
 			java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVoid.openConnection();
 
@@ -4690,7 +4680,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				sb.append((char) cp);
 			}
 
-			_log.info("Response api saving dossierTax: " + sb.toString());
+			_log.debug("Response api saving dossierTax: " + sb.toString());
 			_log.info("Saved dossierTax!!!");
 		} catch (Exception e) {
 			e.getMessage();

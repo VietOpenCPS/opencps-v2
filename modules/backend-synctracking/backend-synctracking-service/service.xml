@@ -132,7 +132,6 @@
 		<column name="modifiedDate" type="Date" />
 
 		<!-- Other fields -->
-		<column name="dossierId" type="long" />
 		<column name="dossierNo" type="String" />
 		<column name="maSoThue" type="String" />
 		<column name="soQuyetDinh" type="String" />
@@ -177,11 +176,11 @@
 		</finder>
 
 		<finder return-type="Collection" name="F_DOSSIER_TBT">
-			<finder-column name="dossierId" />
+			<finder-column name="dossierNo" />
 			<finder-column name="statusTBT" />
 		</finder>
 		<finder return-type="Collection" name="F_DOSSIER_CTT">
-			<finder-column name="dossierId" />
+			<finder-column name="dossierNo" />
 			<finder-column name="statusCTT" />
 		</finder>
 

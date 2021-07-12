@@ -789,7 +789,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				// TODO: fix
 				bill_info.put(PayGateTerm.MADVC, serviceCodeDVCQG + schema.getString(PayGateTerm.MADVCAPPEND));// chua xd
 				bill_info.put(PayGateTerm.TENDVC, dossier.getServiceName());// chua xd
-				bill_info.put(PayGateTerm.NOIDUNGTHANHTOAN, paymentFile.getPaymentNote());
+				bill_info.put(PayGateTerm.NOIDUNGTHANHTOAN, Validator.isNotNull(paymentFile.getPaymentNote()) ? paymentFile.getPaymentNote() : "Thu phí, lệ phí");
 				bill_info.put(PayGateTerm.MALOAIHINHTHUPHAT, "");//ko bb;
 
 				bill_info.put(PayGateTerm.HOTENNGUOINOP, dossier.getApplicantName());
@@ -821,7 +821,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				JSONArray dskhoannop = JSONFactoryUtil.createJSONArray();
 				JSONObject dskhoannop_obj = JSONFactoryUtil.createJSONObject();
 
-				dskhoannop_obj.put(PayGateTerm.NOIDUNG, paymentFile.getPaymentNote());
+				dskhoannop_obj.put(PayGateTerm.NOIDUNG, Validator.isNotNull(paymentFile.getPaymentNote()) ? paymentFile.getPaymentNote() : "Thu phí, lệ phí");
 				dskhoannop_obj.put(PayGateTerm.SOTIEN, String.valueOf(paymentFile.getPaymentAmount()));
 				dskhoannop.put(dskhoannop_obj);
 

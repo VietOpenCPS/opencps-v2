@@ -103,7 +103,7 @@ public class DossierTerm {
 	public static final String PWD = "pwd";
 	public static final String DVCQG_THANH_TOAN_THUE = "DVCQG_THANH_TOAN_THUE";
 	public static final String API_SYNC_TRACKING = "API_SYNC_TRACKING";
-	public static final String ACTION_CODE_CHUNG_TU = "actionCodeChungTu";
+	public static final String ACTION_CODE_CHUNG_TU = "actionCode_BL";
 
 	public static String buildPathDoAction(String path, String dossierId) {
 		return path + "/o/rest/v2/dossiers/" + dossierId + "/actions";
@@ -369,6 +369,7 @@ public class DossierTerm {
 	public static final String CONTAIN_DURATION_COUNT_GREATER_THAN = "durationCount>";
 	public static final String CONTAIN_MULTIPLE_CHECK = "multipleCheck=";
 	public static final String CONTAIN_SERVER_SYNC ="serversync=";
+	public static final String CONTAIN_SEQUENCE_QLVB ="sequenceQLVB=";
 	public static final String CONTAIN_GOV_SYNC ="govsync=";
 	public static final String DUE_DATE_NOTIFY = "dueDateNotify";
 	public static final String DUE_DATE_NOTIFY_TYPE = "type";

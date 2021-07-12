@@ -223,6 +223,11 @@ public class DossierMarkLocalServiceUtil {
 		return getService().fetchDossierMarkByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierMark> findDossierMarkByDossierId(
+		long groupId, long dossierId) {
+		return getService().findDossierMarkByDossierId(groupId, dossierId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

@@ -51,6 +51,16 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 			count = countNew;
 		}
 	}
+
+	public static int getCount(){
+		return DossierSyncProcessingScheduler.CounterSync.getCount();
+	}
+
+	public static int resetCount(){
+		DossierSyncProcessingScheduler.CounterSync.count = 0;
+		return getCount();
+	}
+
 	private static final String startLine1 = "==========";
 	private static final String startLine2 = "==================";
 	private volatile boolean isRunning = false;
