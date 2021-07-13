@@ -4444,8 +4444,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private String getDetailDossierTax(long groupId, String dossierNo, String maSoThue, String soQuyetDinh) {
 		try {
 			JSONObject configJson = getServerConfigByServerNo(DossierTerm.API_SYNC_TRACKING,"");
-			String urlCall = configJson.getString("urlMC") + configJson.getString(FrequencyOfficeConstants.CONFIG_GET_DOSSIER_TAX);
-			_log.info("url: " + urlCall);
+			String urlCall = configJson.getString("urlLocal") + configJson.getString(FrequencyOfficeConstants.CONFIG_GET_DOSSIER_TAX);
+			_log.debug("url: " + urlCall);
 			StringBuilder sb = new StringBuilder();
 			URL urlVoid = new URL(urlCall);
 
@@ -4454,7 +4454,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			jsonBody.put("maSoThue",maSoThue);
 			jsonBody.put("soQuyetDinh",soQuyetDinh);
 
-			_log.info("POST DATA: " + jsonBody.toString());
+			_log.debug("POST DATA: " + jsonBody.toString());
 			java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVoid.openConnection();
 
 			conn.setRequestMethod(HttpMethod.POST);
