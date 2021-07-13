@@ -103,7 +103,9 @@ public class QueryUtil {
 
 		STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT(20),
 
-		STATISTIC_DOSSIER_VOTING_TOTAL_LIST(21);
+		STATISTIC_DOSSIER_VOTING_TOTAL_LIST(21),
+
+		STATISTIC_DOSSIER_WAITING_TOTAL_LIST(22);
 
 		private QueryType(int type) {
 			this.type = type;
@@ -279,6 +281,12 @@ public class QueryUtil {
 				this.sqlGroupTemplate = PropValues.STATISTIC_DOSSIER_VOTING_GROUP_TOTAL_COUNT;
 				this.sqlRowTemplate = PropValues.STATISTIC_DOSSIER_VOTING_ROW_TOTAL_COUNT;
 				this.sqlSearchTemplate = PropValues.STATISTIC_DOSSIER_VOTING_TOTAL_LIST;
+				break;
+
+			case 22:
+				this.sqlCountTemplate = PropValues.STATISTIC_DOSSIER_WAITING_TOTAL_COUNT;
+				this.sqlGroupTemplate = PropValues.STATISTIC_DOSSIER_WAITING_GROUP_TOTAL_COUNT;
+				this.sqlSearchTemplate = PropValues.STATISTIC_DOSSIER_WAITING_TOTAL_LIST;
 				break;
 
 
