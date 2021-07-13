@@ -216,7 +216,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             }
 
             if (Validator.isNull(syncTrackingQuery.bodyRequest) || syncTrackingQuery.bodyRequest.isEmpty()) {
-                throw new Exception("No from unit code was found");
+                throw new Exception("No from bodyRequest was found");
             }
 
             SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
