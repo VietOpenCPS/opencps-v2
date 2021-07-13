@@ -1391,9 +1391,10 @@ public class DefaultSignatureManagementImpl
 					DLFileEntry newFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
 					File fileSigned = DLFileEntryLocalServiceUtil.getFile(fileEntryId, newFileEntry.getVersion(), false);
 					try {
-						DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
+						FileEntry fileEntry =  DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
 								dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
 								StringPool.BLANK, true, fileSigned, serviceContext);
+						_log.debug("File Upload : " + fileEntry.getFileEntryId());
 
 						DLAppLocalServiceUtil.deleteFileEntry(newFileEntry.getFileEntryId());
 					}catch (Exception e ){
