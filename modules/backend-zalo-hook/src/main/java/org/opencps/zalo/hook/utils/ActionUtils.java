@@ -1,10 +1,13 @@
 package org.opencps.zalo.hook.utils;
 
 import com.google.gson.JsonObject;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.communication.model.ServerConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.zalo.hook.api.ZaloWebhookManagement;
@@ -15,33 +18,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ActionUtils {
+    private static final String OAID_TOKEN_ACCESS = "oaid_token_access";
+    private static final String API_SEND_MESSAGE = "api_send_message";
+
+    private static final String DOSSIER_ERROR_PASSWORD_MESS = "dossierErrorPasswordMes";
+    private static final String DOSSIER_NOT_FOUND_MES = "dossierNotFoundMes";
+    private static final String DOSSIER_ERROR_FIND_MES = "dossierErrorFindMes";
+
+
     private static final Log _log = LogFactoryUtil.getLog(ZaloWebhookManagement.class);
 
-    private static final String ZALO_OA_ACCESS_TOKEN = "zalo.oa.access.token";
+    public static String execFindDossier(String dossierNo, String password_, ServerConfig serverConfig) throws JSONException {
 
-    private static final String access_token = Validator
-            .isNotNull(PropsUtil.get(ZALO_OA_ACCESS_TOKEN))
-            ? String.valueOf(PropsUtil.get(ZALO_OA_ACCESS_TOKEN))
-            : null;
-
-
-    public static String execFindDossier(String dossierNo, String password_) {
+        JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 
         Dossier dossier = null;
         try {
             dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
         } catch (Exception ex){
             _log.error(ex.getMessage());
-            return "Có lỗi khi tìm kiếm hồ sơ! Vui lòng liên hệ với quản trị viên để nhận hỗ trợ";
+            return config.getString(DOSSIER_ERROR_FIND_MES);
         }
         if(Validator.isNotNull(dossier) ){
             if(dossier.getPassword().equals(password_)){
                 return generateMessage(dossier);
             } else {
-                return "Mã bí mật của hồ sơ: " + dossierNo + " không đúng! Vui lòng kiểm tra lại!";
+                return config.getString(DOSSIER_ERROR_PASSWORD_MESS);
             }
         } else {
-            return "Không tìm thấy hồ sơ!";
+            return config.getString(DOSSIER_NOT_FOUND_MES);
         }
 
 
@@ -66,16 +71,20 @@ public class ActionUtils {
                 + "\n + Hình thức nộp: " + onlineText
                 + "\n + Thư điện tử: " + dossier.getContactEmail();
 
-
-
         return context;
     }
-    public static void execSendMessage(String idSender, String replyMessage) throws APIException {
+    public static void execSendMessage(String idSender, String replyMessage, ServerConfig serverConfig) throws APIException, JSONException {
+
+        JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+
+        String access_token = config.getString(OAID_TOKEN_ACCESS);
+        String api_send_message = config.getString(API_SEND_MESSAGE);
+
         ZaloOaClient client = new ZaloOaClient();
 
         if(Validator.isNotNull(access_token)){
             Map<String, Object> params = new HashMap<>();
-            params.put("access_token", ActionUtils.access_token);
+            params.put("access_token", access_token);
 
             JsonObject id = new JsonObject();
             id.addProperty("user_id", idSender);
@@ -87,9 +96,9 @@ public class ActionUtils {
             bodyRaw.add("recipient", id);
             bodyRaw.add("message", text);
 
-            client.excuteRequest("https://openapi.zalo.me/v2.0/oa/message", "POST", params, bodyRaw);
+            client.excuteRequest(api_send_message, "POST", params, bodyRaw);
         } else {
-            _log.error("Please config zalo.oa.access.token in portal-setup-wizard.properties");
+            _log.error("Please config "+OAID_TOKEN_ACCESS+" in serverConfig where serverConfigId = " + serverConfig.getServerConfigId());
         }
 
 

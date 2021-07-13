@@ -7,12 +7,12 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.zalo.hook.constants.ZaloHookConstantKeys;
-import org.opencps.zalo.hook.exception.APIException;
 import org.opencps.zalo.hook.utils.ActionUtils;
 import org.osgi.service.component.annotations.Component;
 
@@ -32,6 +32,12 @@ import java.util.Set;
 @Component(immediate = true, property = { JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/zaloSearch",
         JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.zaloSearch" }, service = Application.class)
 public class ZaloWebhookManagement extends Application {
+
+
+    private static final String TYPE_ERROR = "typeError";
+    private static final String SERVER_NO = "ZALO";
+    private static final String PROTOCOL = "ZALO_INF";
+    private static final long GROUP_ID = 35417;
 
     @Override
     public Set<Object> getSingletons() {
@@ -57,40 +63,56 @@ public class ZaloWebhookManagement extends Application {
     @Produces({ MediaType.APPLICATION_JSON })
     public Response doAction(@Context HttpServletRequest request, @Context HttpServletResponse response,
                          @Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-                         @Context ServiceContext serviceContext, String body) throws JSONException, APIException {
-        String messageReply = "";
+                         @Context ServiceContext serviceContext, String body) throws JSONException {
+        ServerConfig serverConfig = null;
         try {
-            JSONObject bodyJson = JSONFactoryUtil.createJSONObject(body);
-            JSONObject sender = bodyJson.getJSONObject(ZaloHookConstantKeys.ZALO_V2_PARAM_SENDER);
-            String senderId = sender.getString(ZaloHookConstantKeys.ZALO_V2_PARAM_SENDER_ID);
-            try {
-                JSONObject message = bodyJson.getJSONObject(ZaloHookConstantKeys.ZALO_V2_ACTION_POST_MESSAGE);
-                String textJson = message.getString(ZaloHookConstantKeys.ZALO_V2_PARAM_MESSAGE_TEXT);
-                if(textJson.startsWith(StringPool.POUND) && !textJson.startsWith(StringPool.POUND + ZaloHookConstantKeys.ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER + "Menu")){
-                    textJson = textJson.replace(StringPool.POUND + ZaloHookConstantKeys.ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER, "");
-                    textJson = textJson.trim();
-                    String[] arrayText = textJson.split(StringPool.SPACE);
-                    if(arrayText.length == 2){
-                        String dossierNo = arrayText[0];
-                        String password_ = arrayText[1];
-                        messageReply = ActionUtils.execFindDossier(dossierNo, password_);
-                    } else {
-                        messageReply = "Cú pháp không hợp lệ! Vui lòng thử lại!";
-                    }
-                } else {
-                    return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
-                }
-
-            } catch (Exception ex){
-                messageReply = "Cú pháp không hợp lệ! Vui lòng thử lại!";
-            }
-
-            ActionUtils.execSendMessage(senderId, messageReply);
-        } catch (Exception e){
-            _log.error(e.getMessage());
+             serverConfig = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(GROUP_ID,SERVER_NO,PROTOCOL);
+        } catch (Exception ex){
+            _log.error(ex.getMessage());
         }
 
-        return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
+        if(Validator.isNotNull(serverConfig)){
+            JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+            String messageReply = "";
+            try {
+                JSONObject bodyJson = JSONFactoryUtil.createJSONObject(body);
+                JSONObject sender = bodyJson.getJSONObject(ZaloHookConstantKeys.ZALO_V2_PARAM_SENDER);
+                String senderId = sender.getString(ZaloHookConstantKeys.ZALO_V2_PARAM_SENDER_ID);
+                try {
+                    JSONObject message = bodyJson.getJSONObject(ZaloHookConstantKeys.ZALO_V2_ACTION_POST_MESSAGE);
+                    String textJson = message.getString(ZaloHookConstantKeys.ZALO_V2_PARAM_MESSAGE_TEXT);
+                    if(textJson.startsWith(StringPool.POUND) && !textJson.startsWith(StringPool.POUND + ZaloHookConstantKeys.ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER + "Menu")){
+                        textJson = textJson.replace(StringPool.POUND + ZaloHookConstantKeys.ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER, "");
+                        textJson = textJson.trim();
+                        String[] arrayText = textJson.split(StringPool.SPACE);
+                        if(arrayText.length == 2){
+                            String dossierNo = arrayText[0];
+                            String password_ = arrayText[1];
+                            messageReply = ActionUtils.execFindDossier(dossierNo, password_, serverConfig);
+                        } else {
+                            messageReply = config.getString(TYPE_ERROR);
+                        }
+                    } else {
+                        return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
+                    }
+
+                } catch (Exception ex){
+                    messageReply = config.getString(TYPE_ERROR);
+                }
+
+                ActionUtils.execSendMessage(senderId, messageReply, serverConfig);
+            } catch (Exception e){
+                _log.error(e.getMessage());
+            }
+
+            return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
+        } else {
+
+            _log.error("Không tìm thấy serverConfig với điều kiện : {groupId : " +GROUP_ID+",serverNo: " +SERVER_NO +", protocol " + PROTOCOL + "}");
+
+            return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
+        }
+
     }
 
 
