@@ -1512,14 +1512,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							}
 						}
 					}else {
-						Deliverable deliverable = DeliverableLocalServiceUtil.fetchByGID_DID(groupId, dossierId);
-						JSONObject deliverablObj =  JSONFactoryUtil.createJSONObject(deliverable.getFormData());
-						if(Validator.isNotNull(dossier.getDossierNo())){
-							deliverablObj.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
-						}
-						if (Validator.isNotNull(deliverable)) {
-							updateDeliverable(deliverable, userId, groupId, dossierPart, dlt, deliverablObj, context);
-						}
+//						Deliverable deliverable = DeliverableLocalServiceUtil.fetchByGID_DID(groupId, dossierId);
+//						JSONObject deliverablObj =  JSONFactoryUtil.createJSONObject(deliverable.getFormData());
+//						if(Validator.isNotNull(dossier.getDossierNo())){
+//							deliverablObj.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+//						}
+//						if (Validator.isNotNull(deliverable)) {
+//							updateDeliverable(deliverable, userId, groupId, dossierPart, dlt, deliverablObj, context);
+//						}
 					}
 				}
 				logLineLevelDoActionInside(28, dossierIDString);

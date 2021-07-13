@@ -93,8 +93,11 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				dossierSync.setState(DossierSyncTerm.STATE_RECEIVED_ACK);
 				DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
 				DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-				dossierAction.setPending(false);
-				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+				if(Validator.isNotNull(dossierAction)){
+					_log.info("DossierActionId : " + dossierAction.getDossierActionId() + " _ " + dossierAction.getDossierId());
+					dossierAction.setPending(false);
+					DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+				}
 			}
 			else {
 				int retry = dossierSync.getRetry();
@@ -120,8 +123,12 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			dossierSync.setState(DossierSyncTerm.STATE_RECEIVED_ACK);
 			DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-			dossierAction.setPending(false);
-			DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			if(Validator.isNotNull(dossierAction)){
+				_log.info("DossierActionId : " + dossierAction.getDossierActionId() + " _ " + dossierAction.getDossierId());
+				dossierAction.setPending(false);
+				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			}
+
 		}
 		else {
 			int retry = dossierSync.getRetry();
@@ -146,8 +153,11 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			dossierSync.setState(DossierSyncTerm.STATE_RECEIVED_ACK);
 			DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-			dossierAction.setPending(false);
-			DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			if(Validator.isNotNull(dossierAction)){
+				_log.info("DossierActionId : " + dossierAction.getDossierActionId() + " _ " + dossierAction.getDossierId());
+				dossierAction.setPending(false);
+				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			}
 		}
 		else {
 			int retry = dossierSync.getRetry();
@@ -429,6 +439,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				_log.debug("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 2: "
 						+ APIDateTimeUtils.convertDateToString(new Date()));
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
+				_log.info("paymentFile: " + JSONFactoryUtil.looseSerialize(paymentFile));
 				//_log.debug("SONDT SYNC INFORM REQUESTPAYMENT = 2 PAYMENT FILE ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 				//_log.debug("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
 				String paymentFee = null; 
@@ -515,7 +526,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 						pfiModel.setReferenceUid(newRef);
 					}
 				}
-				
+
 				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());

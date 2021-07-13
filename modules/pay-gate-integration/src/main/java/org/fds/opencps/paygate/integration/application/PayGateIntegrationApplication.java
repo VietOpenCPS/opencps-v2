@@ -52,7 +52,6 @@ import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 @Component(immediate = true, property = { JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/pgi/",
 		JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.pgi" }, service = Application.class)
 public class PayGateIntegrationApplication extends Application {
-	private static Log _log = LogFactoryUtil.getLog(PayGateIntegrationApplication.class);
 	@Override
 	public Set<Object> getSingletons() {
 		return Collections.<Object>singleton(this);
