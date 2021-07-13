@@ -67,7 +67,6 @@ public class DossierTaxWrapper implements DossierTax, ModelWrapper<DossierTax> {
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
-		attributes.put("dossierId", getDossierId());
 		attributes.put("dossierNo", getDossierNo());
 		attributes.put("maSoThue", getMaSoThue());
 		attributes.put("soQuyetDinh", getSoQuyetDinh());
@@ -142,12 +141,6 @@ public class DossierTaxWrapper implements DossierTax, ModelWrapper<DossierTax> {
 
 		if (modifiedDate != null) {
 			setModifiedDate(modifiedDate);
-		}
-
-		Long dossierId = (Long)attributes.get("dossierId");
-
-		if (dossierId != null) {
-			setDossierId(dossierId);
 		}
 
 		String dossierNo = (String)attributes.get("dossierNo");
@@ -322,16 +315,6 @@ public class DossierTaxWrapper implements DossierTax, ModelWrapper<DossierTax> {
 	@Override
 	public String getDiaChiNguoiNopTien() {
 		return _dossierTax.getDiaChiNguoiNopTien();
-	}
-
-	/**
-	* Returns the dossier ID of this dossier tax.
-	*
-	* @return the dossier ID of this dossier tax
-	*/
-	@Override
-	public long getDossierId() {
-		return _dossierTax.getDossierId();
 	}
 
 	/**
@@ -692,16 +675,6 @@ public class DossierTaxWrapper implements DossierTax, ModelWrapper<DossierTax> {
 	@Override
 	public void setDiaChiNguoiNopTien(String diaChiNguoiNopTien) {
 		_dossierTax.setDiaChiNguoiNopTien(diaChiNguoiNopTien);
-	}
-
-	/**
-	* Sets the dossier ID of this dossier tax.
-	*
-	* @param dossierId the dossier ID of this dossier tax
-	*/
-	@Override
-	public void setDossierId(long dossierId) {
-		_dossierTax.setDossierId(dossierId);
 	}
 
 	/**

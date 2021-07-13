@@ -1,5 +1,3 @@
-create index IX_7F54ADE5 on opencps_dossier_tax (dossierId, statusCTT);
-create index IX_803C0EC8 on opencps_dossier_tax (dossierId, statusTBT);
 create index IX_DDEE0E6D on opencps_dossier_tax (dossierNo[$COLUMN_LENGTH:75$], maSoThue[$COLUMN_LENGTH:75$], soQuyetDinh[$COLUMN_LENGTH:75$]);
 create index IX_F5256AFF on opencps_dossier_tax (dossierNo[$COLUMN_LENGTH:75$], statusCTT);
 create index IX_F60CCBE2 on opencps_dossier_tax (dossierNo[$COLUMN_LENGTH:75$], statusTBT);

@@ -216,7 +216,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             }
 
             if (Validator.isNull(syncTrackingQuery.bodyRequest) || syncTrackingQuery.bodyRequest.isEmpty()) {
-                throw new Exception("No from unit code was found");
+                throw new Exception("No from bodyRequest was found");
             }
 
             SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
@@ -234,10 +234,6 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
                 throw new Exception("No body param was found");
             }
 
-            if (Validator.isNull(dossierTaxInput.dossierId) || dossierTaxInput.dossierId ==0) {
-                throw new Exception("No from dossierId was found");
-            }
-
             if (Validator.isNull(dossierTaxInput.dossierNo) || dossierTaxInput.dossierNo.isEmpty()) {
                 throw new Exception("No from dossierNo was found");
             }
@@ -250,7 +246,7 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
                 throw new Exception("No from soQuyetDinh was found");
             }
 
-            _log.info("Tạo dữ liệu thuế");
+            _log.info("Tạo dữ liệu thuế: " + dossierTaxInput.dossierNo);
             DossierTaxLocalServiceUtil.createDossierTaxManual(dossierTaxInput);
             return true;
         }catch (Exception e){

@@ -77,7 +77,6 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
-			{ "dossierId", Types.BIGINT },
 			{ "dossierNo", Types.VARCHAR },
 			{ "maSoThue", Types.VARCHAR },
 			{ "soQuyetDinh", Types.VARCHAR },
@@ -112,7 +111,6 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("dossierId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("dossierNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("maSoThue", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("soQuyetDinh", Types.VARCHAR);
@@ -137,7 +135,7 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		TABLE_COLUMNS_MAP.put("statusCTT", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossier_tax (uuid_ VARCHAR(75) null,taxId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierNo VARCHAR(75) null,maSoThue VARCHAR(75) null,soQuyetDinh VARCHAR(75) null,ngayQuyetDinh DATE null,tenTieuMuc VARCHAR(75) null,soTien INTEGER,hoTenNguoiNopTien VARCHAR(75) null,soCmtNguoiNopTien INTEGER,diaChiNguoiNopTien VARCHAR(75) null,tinhNguoiNopTien VARCHAR(75) null,huyenNguoiNopTien VARCHAR(75) null,xaNguoiNopTien VARCHAR(75) null,thoiGianThanhToan DATE null,soTienNop INTEGER,noiDungThanhToan VARCHAR(75) null,trangThaiThanhToan INTEGER,fileChungTu VARCHAR(75) null,ngayThueTraThongBao DATE null,ngayTraThongBao DATE null,ngayNhanBienLai DATE null,statusTBT INTEGER,statusCTT INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossier_tax (uuid_ VARCHAR(75) null,taxId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierNo VARCHAR(75) null,maSoThue VARCHAR(75) null,soQuyetDinh VARCHAR(75) null,ngayQuyetDinh DATE null,tenTieuMuc VARCHAR(75) null,soTien INTEGER,hoTenNguoiNopTien VARCHAR(75) null,soCmtNguoiNopTien INTEGER,diaChiNguoiNopTien VARCHAR(75) null,tinhNguoiNopTien VARCHAR(75) null,huyenNguoiNopTien VARCHAR(75) null,xaNguoiNopTien VARCHAR(75) null,thoiGianThanhToan DATE null,soTienNop INTEGER,noiDungThanhToan VARCHAR(75) null,trangThaiThanhToan INTEGER,fileChungTu VARCHAR(75) null,ngayThueTraThongBao DATE null,ngayTraThongBao DATE null,ngayNhanBienLai DATE null,statusTBT INTEGER,statusCTT INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossier_tax";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierTax.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossier_tax.createDate DESC";
@@ -154,15 +152,14 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 				"value.object.column.bitmask.enabled.org.opencps.synctracking.model.DossierTax"),
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long DOSSIERID_COLUMN_BITMASK = 2L;
-	public static final long DOSSIERNO_COLUMN_BITMASK = 4L;
-	public static final long GROUPID_COLUMN_BITMASK = 8L;
-	public static final long MASOTHUE_COLUMN_BITMASK = 16L;
-	public static final long SOQUYETDINH_COLUMN_BITMASK = 32L;
-	public static final long STATUSCTT_COLUMN_BITMASK = 64L;
-	public static final long STATUSTBT_COLUMN_BITMASK = 128L;
-	public static final long UUID_COLUMN_BITMASK = 256L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 512L;
+	public static final long DOSSIERNO_COLUMN_BITMASK = 2L;
+	public static final long GROUPID_COLUMN_BITMASK = 4L;
+	public static final long MASOTHUE_COLUMN_BITMASK = 8L;
+	public static final long SOQUYETDINH_COLUMN_BITMASK = 16L;
+	public static final long STATUSCTT_COLUMN_BITMASK = 32L;
+	public static final long STATUSTBT_COLUMN_BITMASK = 64L;
+	public static final long UUID_COLUMN_BITMASK = 128L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 256L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.synctracking.org.opencps.backend.synctracking.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.synctracking.model.DossierTax"));
 
@@ -211,7 +208,6 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
-		attributes.put("dossierId", getDossierId());
 		attributes.put("dossierNo", getDossierNo());
 		attributes.put("maSoThue", getMaSoThue());
 		attributes.put("soQuyetDinh", getSoQuyetDinh());
@@ -289,12 +285,6 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 
 		if (modifiedDate != null) {
 			setModifiedDate(modifiedDate);
-		}
-
-		Long dossierId = (Long)attributes.get("dossierId");
-
-		if (dossierId != null) {
-			setDossierId(dossierId);
 		}
 
 		String dossierNo = (String)attributes.get("dossierNo");
@@ -575,28 +565,6 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		_setModifiedDate = true;
 
 		_modifiedDate = modifiedDate;
-	}
-
-	@Override
-	public long getDossierId() {
-		return _dossierId;
-	}
-
-	@Override
-	public void setDossierId(long dossierId) {
-		_columnBitmask |= DOSSIERID_COLUMN_BITMASK;
-
-		if (!_setOriginalDossierId) {
-			_setOriginalDossierId = true;
-
-			_originalDossierId = _dossierId;
-		}
-
-		_dossierId = dossierId;
-	}
-
-	public long getOriginalDossierId() {
-		return _originalDossierId;
 	}
 
 	@Override
@@ -973,7 +941,6 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		dossierTaxImpl.setUserName(getUserName());
 		dossierTaxImpl.setCreateDate(getCreateDate());
 		dossierTaxImpl.setModifiedDate(getModifiedDate());
-		dossierTaxImpl.setDossierId(getDossierId());
 		dossierTaxImpl.setDossierNo(getDossierNo());
 		dossierTaxImpl.setMaSoThue(getMaSoThue());
 		dossierTaxImpl.setSoQuyetDinh(getSoQuyetDinh());
@@ -1070,10 +1037,6 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 
 		dossierTaxModelImpl._setModifiedDate = false;
 
-		dossierTaxModelImpl._originalDossierId = dossierTaxModelImpl._dossierId;
-
-		dossierTaxModelImpl._setOriginalDossierId = false;
-
 		dossierTaxModelImpl._originalDossierNo = dossierTaxModelImpl._dossierNo;
 
 		dossierTaxModelImpl._originalMaSoThue = dossierTaxModelImpl._maSoThue;
@@ -1136,8 +1099,6 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		else {
 			dossierTaxCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
-
-		dossierTaxCacheModel.dossierId = getDossierId();
 
 		dossierTaxCacheModel.dossierNo = getDossierNo();
 
@@ -1289,7 +1250,7 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(63);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1307,8 +1268,6 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		sb.append(getCreateDate());
 		sb.append(", modifiedDate=");
 		sb.append(getModifiedDate());
-		sb.append(", dossierId=");
-		sb.append(getDossierId());
 		sb.append(", dossierNo=");
 		sb.append(getDossierNo());
 		sb.append(", maSoThue=");
@@ -1360,7 +1319,7 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(97);
+		StringBundler sb = new StringBundler(94);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.synctracking.model.DossierTax");
@@ -1397,10 +1356,6 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 		sb.append(
 			"<column><column-name>modifiedDate</column-name><column-value><![CDATA[");
 		sb.append(getModifiedDate());
-		sb.append("]]></column-value></column>");
-		sb.append(
-			"<column><column-name>dossierId</column-name><column-value><![CDATA[");
-		sb.append(getDossierId());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>dossierNo</column-name><column-value><![CDATA[");
@@ -1514,9 +1469,6 @@ public class DossierTaxModelImpl extends BaseModelImpl<DossierTax>
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
-	private long _dossierId;
-	private long _originalDossierId;
-	private boolean _setOriginalDossierId;
 	private String _dossierNo;
 	private String _originalDossierNo;
 	private String _maSoThue;

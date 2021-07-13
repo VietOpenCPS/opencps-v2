@@ -871,7 +871,7 @@ public class DossierManagementImpl implements DossierManagement {
 				//Truong hop 1 employee cùng ở 2 site. Lấy role ở site đó và param groupId sẽ search theo Employee
 				List<Role> userRoles =  user.getRoles();
 				for (Role r : userRoles) {
-					_log.info("GetName: " + r.getName());
+//					_log.info("GetName: " + r.getName());
 					if (r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_ALL)) {
 						query.setGlobalViewAll(true);
 						break;
@@ -1489,7 +1489,7 @@ public class DossierManagementImpl implements DossierManagement {
 			//Truong hop 1 employee cùng ở 2 site. Lấy role ở site đó và param groupId sẽ search theo Employee
 			List<Role> userRoles =  user.getRoles();
 			for (Role r : userRoles) {
-				_log.info("GetName: " + r.getName());
+//				_log.info("GetName: " + r.getName());
 				if (r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_ALL)) {
 					query.setGlobalViewAll(true);
 					break;
@@ -2376,24 +2376,30 @@ public class DossierManagementImpl implements DossierManagement {
 			
 
 			//day du lieu vao kho du lieu cong dan
-			if (Validator.isNotNull(dossier) && dossier.getDossierStatus().contentEquals(DossierTerm.DOSSIER_STATUS_DONE)) {
-				List<DossierFile> lstDossierFiles = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
-				if (Validator.isNotNull(lstDossierFiles) && lstDossierFiles.size() > 0) {
-					for (DossierFile doFile : lstDossierFiles) {
-						String fileTemplateNo = doFile.getFileTemplateNo();
-						_log.info("fileTemplateNo : " + fileTemplateNo);
-						if (Validator.isNotNull(fileTemplateNo)) {
-							FileItem fileItem = FileItemLocalServiceUtil.findByG_FTN(0, fileTemplateNo);
-							FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(doFile.getFileEntryId());
-							if (Validator.isNotNull(fileItem) && Validator.isNotNull(fileEntry)) {
-								ApplicantData applicantData = ApplicantDataLocalServiceUtil.createApplicantData(
-										serviceContext, 0, fileTemplateNo, fileEntry.getFileName(), doFile.getDisplayName(), doFile.getFileEntryId(), StringPool.BLANK, 1, dossier.getApplicantIdNo(), 0);		
-								_log.debug("Kho dữ liệu công dân : " + JSONFactoryUtil.looseSerialize(applicantData));
-								ApplicantDataLocalServiceUtil.updateApplicantData(applicantData);
+			try {
+				if (Validator.isNotNull(dossier) && dossier.getDossierStatus().contentEquals(DossierTerm.DOSSIER_STATUS_DONE)) {
+					List<DossierFile> lstDossierFiles = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
+					if (Validator.isNotNull(lstDossierFiles) && lstDossierFiles.size() > 0) {
+						for (DossierFile doFile : lstDossierFiles) {
+							String fileTemplateNo = doFile.getFileTemplateNo();
+							_log.debug("fileTemplateNo : " + fileTemplateNo);
+							if (Validator.isNotNull(fileTemplateNo) && doFile.getDossierPartType() == 2) {
+								FileItem fileItem = FileItemLocalServiceUtil.findByG_FTN(0, fileTemplateNo);
+								if (doFile.getFileEntryId() > 0) {
+									FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(doFile.getFileEntryId());
+									if (Validator.isNotNull(fileItem) && Validator.isNotNull(fileEntry)) {
+										ApplicantData applicantData = ApplicantDataLocalServiceUtil.createApplicantData(
+												serviceContext, 0, fileTemplateNo, fileEntry.getFileName(), doFile.getDisplayName(), doFile.getFileEntryId(), StringPool.BLANK, 1, dossier.getApplicantIdNo(), 0);
+										_log.debug("Kho dữ liệu công dân : " + JSONFactoryUtil.looseSerialize(applicantData));
+										ApplicantDataLocalServiceUtil.updateApplicantData(applicantData);
+									}
 								}
 							}
-						}					
+						}
+					}
 				}
+			}catch (Exception e){
+				e.getMessage();
 			}
 
 			_log.debug("Doaction oke with dossierActionId: " + dossierResult.getDossierActionId());
@@ -2889,9 +2895,6 @@ public class DossierManagementImpl implements DossierManagement {
 
 			DossierMarkResultsModel result = new DossierMarkResultsModel();
 
-			List<DossierMark> lstDossierMark2 =
-				actions.getDossierMarks(groupId, dossierId);
-			_log.info("lstDossierMark2: " + lstDossierMark2.size());
 			List<DossierMark> lstDossierMark =
 				actions.findDossierMarkByDossierId(groupId, dossierId);
 			_log.info("lstDossierMark: " + lstDossierMark.size());
