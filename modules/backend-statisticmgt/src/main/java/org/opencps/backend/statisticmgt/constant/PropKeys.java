@@ -141,6 +141,14 @@ public class PropKeys {
 
 	public static final String STATISTIC_DOSSIER_VOTING_TOTAL_LIST = "statistic.dossier.voting.total_list";
 
+	//type 22
+
+	public static final String STATISTIC_DOSSIER_WAITING_TOTAL_COUNT = "statistic.dossier.waiting.total_count";
+
+	public static final String STATISTIC_DOSSIER_WAITING_GROUP_TOTAL_COUNT = "statistic.dossier.waiting.group.total_count";
+
+	public static final String STATISTIC_DOSSIER_WAITING_TOTAL_LIST = "statistic.dossier.waiting.total_list";
+
 	
 
 	//other
