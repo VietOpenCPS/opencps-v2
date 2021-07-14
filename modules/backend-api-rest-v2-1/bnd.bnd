@@ -4,4 +4,8 @@ Bundle-Version: 1.0.0
 
 Include-Resource:configuration=src/main/resources/configuration
 
-
+Export-Package: \
+	io.swagger.annotations,\
+	io.swagger.annotations.*,\
+	org.json.simple.parser.*,\
+	org.json.simple.*,\
