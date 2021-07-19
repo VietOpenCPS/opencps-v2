@@ -23,14 +23,9 @@ import org.opencps.api.controller.SupportSearchManagement;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierSync;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
+import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.model.impl.PublishQueueImpl;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.kernel.prop.PropKeys;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
@@ -58,6 +53,9 @@ public class SupportSearchManagementImpl implements SupportSearchManagement {
 
     private static final String EMAIL = "email";
     private static final String DATA = "data";
+
+    private static final String OPENCPS_DOSSIERSYNC = "ds";
+    private static final String OPENCPS_PUBLISH_QUEUE = "pq";
 
     @Override
     public Response getSupportSearchDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String dossierId, Boolean isCallAgain, String referenceUid) {
@@ -135,6 +133,51 @@ public class SupportSearchManagementImpl implements SupportSearchManagement {
         }
 
         return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+    }
+
+    @Override
+    public Response resetStateRetry(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, long id, int status, String table) {
+
+        if(table.equalsIgnoreCase(OPENCPS_DOSSIERSYNC)) {
+            PublishQueue publishQueue = null;
+            try {
+                publishQueue = PublishQueueLocalServiceUtil.getPublishQueue(id);
+            } catch (Exception ex){
+                _log.error(ex.getMessage());
+            }
+            if(Validator.isNotNull(publishQueue)){
+                publishQueue.setStatus(status);
+                publishQueue.setRetry(0);
+                publishQueue.setModifiedDate(new Date());
+                try {
+                    PublishQueueLocalServiceUtil.updatePublishQueue(publishQueue);
+                    return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
+                } catch (Exception e){
+                    _log.error(e.getMessage());
+                    return BusinessExceptionImpl.processException(e);
+                }
+            }
+        } else if(table.equalsIgnoreCase(OPENCPS_PUBLISH_QUEUE)) {
+            DossierSync dossierSync = null;
+            try {
+                dossierSync = DossierSyncLocalServiceUtil.getDossierSync(id);
+            } catch (Exception ex){
+                _log.error(ex.getMessage());
+            }
+            if(Validator.isNotNull(dossierSync)){
+                dossierSync.setState(status);
+                dossierSync.setRetry(0);
+                dossierSync.setModifiedDate(new Date());
+                try {
+                    DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
+                    return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
+                } catch (Exception e){
+                    _log.error(e.getMessage());
+                    return BusinessExceptionImpl.processException(e);
+                }
+            }
+        }
+        return Response.status(HttpURLConnection.HTTP_OK).entity("Tham số truyền vào cho API không đúng!").build();
     }
 
     @Override

@@ -112,9 +112,5 @@ public class ZaloWebhookManagement extends Application {
 
             return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
         }
-
     }
-
-
-
 }

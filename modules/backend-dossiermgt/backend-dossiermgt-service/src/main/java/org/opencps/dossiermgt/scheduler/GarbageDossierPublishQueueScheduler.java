@@ -202,7 +202,7 @@ public class GarbageDossierPublishQueueScheduler extends BaseMessageListener {
 			_log.error(e);
 		}
 
-		isRunning = false;
+		isRunning = false;	
 		
 		_log.info("OpenCPS REMOVE SCHEDULER HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 
