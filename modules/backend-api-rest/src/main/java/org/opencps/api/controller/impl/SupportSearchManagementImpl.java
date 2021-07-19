@@ -138,7 +138,7 @@ public class SupportSearchManagementImpl implements SupportSearchManagement {
     @Override
     public Response resetStateRetry(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, long id, int status, String table) {
 
-        if(table.equalsIgnoreCase(OPENCPS_DOSSIERSYNC)) {
+        if(table.equalsIgnoreCase(OPENCPS_PUBLISH_QUEUE)) {
             PublishQueue publishQueue = null;
             try {
                 publishQueue = PublishQueueLocalServiceUtil.getPublishQueue(id);
@@ -157,7 +157,7 @@ public class SupportSearchManagementImpl implements SupportSearchManagement {
                     return BusinessExceptionImpl.processException(e);
                 }
             }
-        } else if(table.equalsIgnoreCase(OPENCPS_PUBLISH_QUEUE)) {
+        } else if(table.equalsIgnoreCase(OPENCPS_DOSSIERSYNC)) {
             DossierSync dossierSync = null;
             try {
                 dossierSync = DossierSyncLocalServiceUtil.getDossierSync(id);
