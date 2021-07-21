@@ -16,7 +16,6 @@ package org.opencps.synctracking.service.persistence.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
@@ -70,7 +69,7 @@ import java.util.Set;
  * Caching information and settings can be found in <code>portal.properties</code>
  * </p>
  *
- * @author Brian Wing Shun Chan
+ * @author duongnt
  * @see SyncTrackingPersistence
  * @see org.opencps.synctracking.service.persistence.SyncTrackingUtil
  * @generated
@@ -2504,6 +2503,335 @@ public class SyncTrackingPersistenceImpl extends BasePersistenceImpl<SyncTrackin
 	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_1 = "syncTracking.dossierNo IS NULL";
 	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_2 = "syncTracking.dossierNo = ?";
 	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_DOSSIERNO_3 = "(syncTracking.dossierNo IS NULL OR syncTracking.dossierNo = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO_PROTOCOL =
+		new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
+			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, SyncTrackingImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_GID_DossierNo_Protocol",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			},
+			SyncTrackingModelImpl.GROUPID_COLUMN_BITMASK |
+			SyncTrackingModelImpl.DOSSIERNO_COLUMN_BITMASK |
+			SyncTrackingModelImpl.PROTOCOL_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_DOSSIERNO_PROTOCOL =
+		new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
+			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_GID_DossierNo_Protocol",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns the sync tracking where groupId = &#63; and dossierNo = &#63; and protocol = &#63; or throws a {@link NoSuchSyncTrackingException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @param protocol the protocol
+	 * @return the matching sync tracking
+	 * @throws NoSuchSyncTrackingException if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking findByF_GID_DossierNo_Protocol(long groupId,
+		String dossierNo, String protocol) throws NoSuchSyncTrackingException {
+		SyncTracking syncTracking = fetchByF_GID_DossierNo_Protocol(groupId,
+				dossierNo, protocol);
+
+		if (syncTracking == null) {
+			StringBundler msg = new StringBundler(8);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", dossierNo=");
+			msg.append(dossierNo);
+
+			msg.append(", protocol=");
+			msg.append(protocol);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchSyncTrackingException(msg.toString());
+		}
+
+		return syncTracking;
+	}
+
+	/**
+	 * Returns the sync tracking where groupId = &#63; and dossierNo = &#63; and protocol = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @param protocol the protocol
+	 * @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking fetchByF_GID_DossierNo_Protocol(long groupId,
+		String dossierNo, String protocol) {
+		return fetchByF_GID_DossierNo_Protocol(groupId, dossierNo, protocol,
+			true);
+	}
+
+	/**
+	 * Returns the sync tracking where groupId = &#63; and dossierNo = &#63; and protocol = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @param protocol the protocol
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching sync tracking, or <code>null</code> if a matching sync tracking could not be found
+	 */
+	@Override
+	public SyncTracking fetchByF_GID_DossierNo_Protocol(long groupId,
+		String dossierNo, String protocol, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, dossierNo, protocol };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO_PROTOCOL,
+					finderArgs, this);
+		}
+
+		if (result instanceof SyncTracking) {
+			SyncTracking syncTracking = (SyncTracking)result;
+
+			if ((groupId != syncTracking.getGroupId()) ||
+					!Objects.equals(dossierNo, syncTracking.getDossierNo()) ||
+					!Objects.equals(protocol, syncTracking.getProtocol())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_SELECT_SYNCTRACKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_GROUPID_2);
+
+			boolean bindDossierNo = false;
+
+			if (dossierNo == null) {
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_DOSSIERNO_1);
+			}
+			else if (dossierNo.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_DOSSIERNO_3);
+			}
+			else {
+				bindDossierNo = true;
+
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_DOSSIERNO_2);
+			}
+
+			boolean bindProtocol = false;
+
+			if (protocol == null) {
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_PROTOCOL_1);
+			}
+			else if (protocol.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_PROTOCOL_3);
+			}
+			else {
+				bindProtocol = true;
+
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_PROTOCOL_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindDossierNo) {
+					qPos.add(dossierNo);
+				}
+
+				if (bindProtocol) {
+					qPos.add(protocol);
+				}
+
+				List<SyncTracking> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO_PROTOCOL,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"SyncTrackingPersistenceImpl.fetchByF_GID_DossierNo_Protocol(long, String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					SyncTracking syncTracking = list.get(0);
+
+					result = syncTracking;
+
+					cacheResult(syncTracking);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO_PROTOCOL,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (SyncTracking)result;
+		}
+	}
+
+	/**
+	 * Removes the sync tracking where groupId = &#63; and dossierNo = &#63; and protocol = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @param protocol the protocol
+	 * @return the sync tracking that was removed
+	 */
+	@Override
+	public SyncTracking removeByF_GID_DossierNo_Protocol(long groupId,
+		String dossierNo, String protocol) throws NoSuchSyncTrackingException {
+		SyncTracking syncTracking = findByF_GID_DossierNo_Protocol(groupId,
+				dossierNo, protocol);
+
+		return remove(syncTracking);
+	}
+
+	/**
+	 * Returns the number of sync trackings where groupId = &#63; and dossierNo = &#63; and protocol = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @param protocol the protocol
+	 * @return the number of matching sync trackings
+	 */
+	@Override
+	public int countByF_GID_DossierNo_Protocol(long groupId, String dossierNo,
+		String protocol) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_DOSSIERNO_PROTOCOL;
+
+		Object[] finderArgs = new Object[] { groupId, dossierNo, protocol };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_SYNCTRACKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_GROUPID_2);
+
+			boolean bindDossierNo = false;
+
+			if (dossierNo == null) {
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_DOSSIERNO_1);
+			}
+			else if (dossierNo.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_DOSSIERNO_3);
+			}
+			else {
+				bindDossierNo = true;
+
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_DOSSIERNO_2);
+			}
+
+			boolean bindProtocol = false;
+
+			if (protocol == null) {
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_PROTOCOL_1);
+			}
+			else if (protocol.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_PROTOCOL_3);
+			}
+			else {
+				bindProtocol = true;
+
+				query.append(_FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_PROTOCOL_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindDossierNo) {
+					qPos.add(dossierNo);
+				}
+
+				if (bindProtocol) {
+					qPos.add(protocol);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_GROUPID_2 =
+		"syncTracking.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_DOSSIERNO_1 =
+		"syncTracking.dossierNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_DOSSIERNO_2 =
+		"syncTracking.dossierNo = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_DOSSIERNO_3 =
+		"(syncTracking.dossierNo IS NULL OR syncTracking.dossierNo = '') AND ";
+	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_PROTOCOL_1 =
+		"syncTracking.protocol IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_PROTOCOL_2 =
+		"syncTracking.protocol = ?";
+	private static final String _FINDER_COLUMN_F_GID_DOSSIERNO_PROTOCOL_PROTOCOL_3 =
+		"(syncTracking.protocol IS NULL OR syncTracking.protocol = '')";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_API =
 		new FinderPath(SyncTrackingModelImpl.ENTITY_CACHE_ENABLED,
 			SyncTrackingModelImpl.FINDER_CACHE_ENABLED, SyncTrackingImpl.class,
@@ -8841,6 +9169,12 @@ public class SyncTrackingPersistenceImpl extends BasePersistenceImpl<SyncTrackin
 			new Object[] { syncTracking.getGroupId(), syncTracking.getDossierNo() },
 			syncTracking);
 
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO_PROTOCOL,
+			new Object[] {
+				syncTracking.getGroupId(), syncTracking.getDossierNo(),
+				syncTracking.getProtocol()
+			}, syncTracking);
+
 		syncTracking.resetOriginalValues();
 	}
 
@@ -8941,6 +9275,17 @@ public class SyncTrackingPersistenceImpl extends BasePersistenceImpl<SyncTrackin
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO, args,
 			syncTrackingModelImpl, false);
+
+		args = new Object[] {
+				syncTrackingModelImpl.getGroupId(),
+				syncTrackingModelImpl.getDossierNo(),
+				syncTrackingModelImpl.getProtocol()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_DOSSIERNO_PROTOCOL,
+			args, Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO_PROTOCOL,
+			args, syncTrackingModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -9010,6 +9355,33 @@ public class SyncTrackingPersistenceImpl extends BasePersistenceImpl<SyncTrackin
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DOSSIERNO, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					syncTrackingModelImpl.getGroupId(),
+					syncTrackingModelImpl.getDossierNo(),
+					syncTrackingModelImpl.getProtocol()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DOSSIERNO_PROTOCOL,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO_PROTOCOL,
+				args);
+		}
+
+		if ((syncTrackingModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO_PROTOCOL.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					syncTrackingModelImpl.getOriginalGroupId(),
+					syncTrackingModelImpl.getOriginalDossierNo(),
+					syncTrackingModelImpl.getOriginalProtocol()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DOSSIERNO_PROTOCOL,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DOSSIERNO_PROTOCOL,
+				args);
 		}
 	}
 

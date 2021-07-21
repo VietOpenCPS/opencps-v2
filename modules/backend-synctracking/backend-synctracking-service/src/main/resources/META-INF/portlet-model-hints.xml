@@ -1,6 +1,38 @@
 <?xml version="1.0"?>
 
 <model-hints>
+	<model name="org.opencps.synctracking.model.DossierTax">
+		<field name="uuid" type="String" />
+		<field name="taxId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dossierNo" type="String" />
+		<field name="maSoThue" type="String" />
+		<field name="soQuyetDinh" type="String" />
+		<field name="ngayQuyetDinh" type="Date" />
+		<field name="tenTieuMuc" type="String" />
+		<field name="soTien" type="int" />
+		<field name="hoTenNguoiNopTien" type="String" />
+		<field name="soCmtNguoiNopTien" type="int" />
+		<field name="diaChiNguoiNopTien" type="String" />
+		<field name="tinhNguoiNopTien" type="String" />
+		<field name="huyenNguoiNopTien" type="String" />
+		<field name="xaNguoiNopTien" type="String" />
+		<field name="thoiGianThanhToan" type="Date" />
+		<field name="soTienNop" type="int" />
+		<field name="noiDungThanhToan" type="String" />
+		<field name="trangThaiThanhToan" type="int" />
+		<field name="fileChungTu" type="String" />
+		<field name="ngayThueTraThongBao" type="Date" />
+		<field name="ngayTraThongBao" type="Date" />
+		<field name="ngayNhanBienLai" type="Date" />
+		<field name="statusTBT" type="int" />
+		<field name="statusCTT" type="int" />
+	</model>
 	<model name="org.opencps.synctracking.model.SyncTracking">
 		<field name="uuid" type="String" />
 		<field name="trackingId" type="long" />
@@ -16,11 +48,19 @@
 		<field name="protocol" type="String" />
 		<field name="stateSync" type="int" />
 		<field name="serviceCode" type="String" />
-		<field name="api" type="String" />
+		<field name="api" type="String">
+			<hint name="max-length">200</hint>
+		</field>
 		<field name="fromUnit" type="String" />
 		<field name="toUnit" type="String" />
-		<field name="bodyRequest" type="String" />
-		<field name="response" type="String" />
-		<field name="metaData" type="String" />
+		<field name="bodyRequest" type="String">
+			<hint name="max-length">10000</hint>
+		</field>
+		<field name="response" type="String">
+			<hint name="max-length">5000</hint>
+		</field>
+		<field name="metaData" type="String">
+			<hint name="max-length">500</hint>
+		</field>
 	</model>
 </model-hints>

@@ -6,6 +6,68 @@
 >
 	<author>huymq</author>
 	<namespace>dossiermgt</namespace>
+	<entity name="CsdlDcServiceInfo" table="opencps_csdldc_serviceinfo"
+			local-service="true" remote-service="false" uuid="true" >
+
+		<!-- PK fields -->
+
+		<column name="idDcService" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="serviceCode" type="String" />
+		<column name="serviceCodeDvcqg" type="String" />
+		<column name="status" type="int" />
+
+		<finder name="F_SERVICECODE_STATUS" return-type="CsdlDcServiceInfo">
+			<finder-column name="serviceCode"/>
+			<finder-column name="status" />
+		</finder>
+
+	</entity>
+
+	<entity name="CsdlDcUser" table="opencps_csdldc_user"
+			local-service="true" remote-service="false" uuid="true" >
+
+		<!-- PK fields -->
+
+		<column name="idDcUser" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="govAgencyCode" type="String" />
+		<column name="govAgencyCodeDvcqg" type="String" />
+		<column name="keyName" type="String" />
+		<column name="keyPass" type="String" />
+		<column name="userName" type="String" />
+		<column name="employeeEmail" type="String" />
+		<column name="status" type="int" />
+
+		<finder name="F_GOV_EMAIL_STATUS" return-type="CsdlDcUser">
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="employeeEmail"/>
+			<finder-column name="status" />
+		</finder>
+	</entity>
+
 	<entity name="ServiceInfo" table="opencps_serviceinfo"
 		local-service="true" remote-service="false" uuid="true" >
 
@@ -424,11 +486,10 @@
 			<finder-column name="serviceLevel" />
 		</finder>
 
-		<finder return-type="ServiceConfig" name="GID_SI_GOV_LEVEL">
+		<finder return-type="Collection" name="GID_SI_GOV_LEVEL">
 			<finder-column name="groupId" />
 			<finder-column name="serviceInfoId" />
 			<finder-column name="govAgencyCode" />
-			<finder-column name="serviceLevel" />
 		</finder>
 
 

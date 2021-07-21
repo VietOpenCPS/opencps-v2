@@ -233,6 +233,13 @@ public class DossierMarkLocalServiceWrapper implements DossierMarkLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierMark> findDossierMarkByDossierId(
+		long groupId, long dossierId) {
+		return _dossierMarkLocalService.findDossierMarkByDossierId(groupId,
+			dossierId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _dossierMarkLocalService.getActionableDynamicQuery();
 	}

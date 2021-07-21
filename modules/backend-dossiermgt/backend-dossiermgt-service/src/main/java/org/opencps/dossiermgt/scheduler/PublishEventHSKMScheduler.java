@@ -48,6 +48,15 @@ public class PublishEventHSKMScheduler extends BaseMessageListener {
 		}
 	}
 
+	public static int getCount(){
+		return PublishEventHSKMScheduler.Counter.getCount();
+	}
+
+	public static int resetCount(){
+		PublishEventHSKMScheduler.Counter.count = 0;
+		return getCount();
+	}
+
 	private volatile boolean isRunning = false;
 	private static final Boolean ENABLE_JOB = Validator.isNotNull(PropsUtil.get("org.opencps.synchskm.enable"))
 			? Boolean.valueOf(PropsUtil.get("org.opencps.synchskm.enable")) : false;

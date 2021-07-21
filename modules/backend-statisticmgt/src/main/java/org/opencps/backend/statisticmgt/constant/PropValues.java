@@ -196,6 +196,17 @@ public class PropValues {
 
 	public static final String STATISTIC_DOSSIER_VOTING_TOTAL_LIST = PropUtil
 			.getQueryProperty(PropKeys.STATISTIC_DOSSIER_VOTING_TOTAL_LIST);
+
+	//type 22
+	public static final String STATISTIC_DOSSIER_WAITING_TOTAL_COUNT = PropUtil
+			.getQueryProperty(PropKeys.STATISTIC_DOSSIER_WAITING_TOTAL_COUNT);
+
+	public static final String STATISTIC_DOSSIER_WAITING_GROUP_TOTAL_COUNT = PropUtil
+			.getQueryProperty(PropKeys.STATISTIC_DOSSIER_WAITING_GROUP_TOTAL_COUNT);
+
+	public static final String STATISTIC_DOSSIER_WAITING_TOTAL_LIST = PropUtil
+			.getQueryProperty(PropKeys.STATISTIC_DOSSIER_WAITING_TOTAL_LIST);
+
 	// other
 	public static final int CONFIG_DOSSIER_STATISTIC_SIZE_LIST = GetterUtil
 			.getInteger(PropUtil.getConfigProperty(PropKeys.CONFIG_DOSSIER_STATISTIC_SIZE_LIST));

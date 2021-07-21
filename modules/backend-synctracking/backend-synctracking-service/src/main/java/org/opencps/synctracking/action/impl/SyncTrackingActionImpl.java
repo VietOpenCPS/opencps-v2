@@ -1,21 +1,29 @@
 package org.opencps.synctracking.action.impl;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.input.model.DossierTaxInfo;
 import org.opencps.synctracking.action.IntegrationOutsideApi;
 import org.opencps.synctracking.action.SyncTrackingAction;
 import org.opencps.synctracking.action.TransformAction;
-import org.opencps.synctracking.model.DtoResponse;
-import org.opencps.synctracking.model.SyncTracking;
-import org.opencps.synctracking.model.SyncTrackingQuery;
-import org.opencps.synctracking.model.SyncTrackingResponse;
+import org.opencps.synctracking.model.*;
+import org.opencps.synctracking.service.DossierTaxLocalServiceUtil;
 import org.opencps.synctracking.service.SyncTrackingLocalServiceUtil;
 import org.opencps.synctracking.service.util.CommonServiceUtils;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,10 +34,14 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
     private TransformAction transformAction;
     private IntegrationOutsideApi integrationOutsideApi;
     private Log _log = LogFactoryUtil.getLog(SyncTrackingActionImpl.class);
+    private RestTemplate restTemplate;
 
+    private static final Integer timeout = 10000 ;
     public SyncTrackingActionImpl(TransformAction transformAction, IntegrationOutsideApi integrationOutsideApi) {
         this.transformAction = transformAction;
         this.integrationOutsideApi = integrationOutsideApi;
+        this.restTemplate = new RestTemplate(setConfigRestTemplate(timeout));
+        this.restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
     }
 
     @Override
@@ -203,12 +215,8 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
                 throw new Exception("No body param was found");
             }
 
-            if (Validator.isNull(syncTrackingQuery.groupId) || syncTrackingQuery.groupId == 0) {
-                throw new Exception("No groupId was found");
-            }
-
             if (Validator.isNull(syncTrackingQuery.bodyRequest) || syncTrackingQuery.bodyRequest.isEmpty()) {
-                throw new Exception("No from unit code was found");
+                throw new Exception("No from bodyRequest was found");
             }
 
             SyncTrackingLocalServiceUtil.createSyncTrackingManual(syncTrackingQuery);
@@ -217,6 +225,172 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             _log.error(e);
             throw new Exception(e.getMessage());
         }
+    }
+
+    @Override
+    public boolean createDossierTax(DossierTaxInput dossierTaxInput) throws Exception {
+        try {
+            if (Validator.isNull(dossierTaxInput)) {
+                throw new Exception("No body param was found");
+            }
+
+            if (Validator.isNull(dossierTaxInput.dossierNo) || dossierTaxInput.dossierNo.isEmpty()) {
+                throw new Exception("No from dossierNo was found");
+            }
+
+            if (Validator.isNull(dossierTaxInput.maSoThue) || dossierTaxInput.maSoThue.isEmpty()) {
+                throw new Exception("No from maSoThue was found");
+            }
+
+            if (Validator.isNull(dossierTaxInput.soQuyetDinh) || dossierTaxInput.soQuyetDinh.isEmpty()) {
+                throw new Exception("No from soQuyetDinh was found");
+            }
+
+            _log.info("Tạo dữ liệu thuế: " + dossierTaxInput.dossierNo);
+            DossierTaxLocalServiceUtil.createDossierTaxManual(dossierTaxInput);
+            return true;
+        }catch (Exception e){
+            _log.error(e);
+            throw new Exception(e.getMessage());
+        }
+
+    }
+
+    @Override
+    public boolean updateDossierTax(DossierTaxInput dossierTaxInput) throws Exception {
+        try {
+            if (Validator.isNull(dossierTaxInput)) {
+                throw new Exception("No body param was found");
+            }
+
+            if (Validator.isNull(dossierTaxInput.dossierNo) || dossierTaxInput.dossierNo.isEmpty()) {
+                throw new Exception("No from dossierNo was found");
+            }
+
+            if (Validator.isNull(dossierTaxInput.maSoThue) || dossierTaxInput.maSoThue.isEmpty()) {
+                throw new Exception("No from maSoThue was found");
+            }
+
+            if (Validator.isNull(dossierTaxInput.soQuyetDinh) || dossierTaxInput.soQuyetDinh.isEmpty()) {
+                throw new Exception("No from soQuyetDinh was found");
+            }
+            _log.info("---- Mã hồ sơ ---: " + dossierTaxInput.dossierNo + "--- Mã số thuế--- :" + dossierTaxInput.maSoThue + " --- Số Quyết Định ---: " + dossierTaxInput.soQuyetDinh );
+            DossierTax dossierTax = DossierTaxLocalServiceUtil.fetchDossierTaxByDMS(dossierTaxInput.dossierNo, dossierTaxInput.maSoThue, dossierTaxInput.soQuyetDinh);
+            if (Validator.isNotNull(dossierTax)) {
+                _log.info("Cập nhật dữ liệu thuế");
+                dossierTax.setHoTenNguoiNopTien(dossierTaxInput.hoTenNguoiNopTien);
+                dossierTax.setSoCmtNguoiNopTien(Integer.valueOf(dossierTaxInput.soCmtNguoiNopTien));
+                dossierTax.setDiaChiNguoiNopTien(dossierTaxInput.diaChiNguoiNopTien);
+                dossierTax.setTinhNguoiNopTien(dossierTaxInput.tinhNguoiNopTien);
+                dossierTax.setHuyenNguoiNopTien(dossierTaxInput.huyenNguoiNopTien);
+                dossierTax.setXaNguoiNopTien(dossierTaxInput.xaNguoiNopTien);
+                dossierTax.setThoiGianThanhToan(APIDateTimeUtils.convertStringToDate(dossierTaxInput.thoiGianThanhToan,APIDateTimeUtils._NORMAL_DATE));
+                dossierTax.setNgayNhanBienLai(APIDateTimeUtils.convertStringToDate(dossierTaxInput.ngayNhanBienLai,APIDateTimeUtils._NORMAL_DATE));
+                dossierTax.setNgayThueTraThongBao(APIDateTimeUtils.convertStringToDate(dossierTaxInput.ngayThueTraThongBao,APIDateTimeUtils._NORMAL_DATE));
+                dossierTax.setNgayTraThongBao(APIDateTimeUtils.convertStringToDate(dossierTaxInput.ngayTraThongBao,APIDateTimeUtils._NORMAL_DATE));
+                dossierTax.setSoTienNop(Integer.valueOf(dossierTaxInput.soTienNop));
+                dossierTax.setNoiDungThanhToan(dossierTaxInput.noiDungThanhToan);
+                dossierTax.setTrangThaiThanhToan(dossierTaxInput.trangThaiThanhToan);
+                dossierTax.setFileChungTu(dossierTaxInput.fileChungTu);
+                dossierTax.setNgayQuyetDinh(APIDateTimeUtils.convertStringToDate(dossierTaxInput.ngayQuyetDinh,APIDateTimeUtils._NORMAL_DATE));
+                if(Validator.isNotNull(dossierTaxInput.statusTBT)) {
+                    dossierTax.setStatusTBT(Integer.valueOf(dossierTaxInput.statusTBT));
+                }
+                if(Validator.isNotNull(dossierTaxInput.statusCTT)) {
+                    dossierTax.setStatusCTT(Integer.valueOf(dossierTaxInput.statusCTT));
+                }
+                DossierTaxLocalServiceUtil.updateDossierTax(dossierTax);
+                return true;
+            }
+            return false;
+        }catch (Exception e){
+            _log.error(e);
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public SyncTrackingResponse getSyncTracking(SyncTrackingQuery input) throws Exception {
+        try {
+            SyncTrackingResponse syncTrackingResponse = new SyncTrackingResponse();
+            if (Validator.isNull(input)) {
+                throw new Exception("No body param was found");
+            }
+
+            if (Validator.isNull(input.dossierNo) || input.dossierNo.isEmpty()) {
+                throw new Exception("No from dossierNo was found");
+            }
+            SyncTracking syncTracking = SyncTrackingLocalServiceUtil.getByDossierNoAndProtocol(input.groupId, input.dossierNo, input.protocol);
+            if(Validator.isNotNull(syncTracking)) {
+                _log.debug("SyncTracking: " + JSONFactoryUtil.looseSerialize(syncTracking));
+                syncTrackingResponse = transformAction.transForm(syncTracking);
+            }
+
+            return syncTrackingResponse;
+
+        }catch (Exception e){
+            e.getMessage();
+        }
+        return null;
+    }
+
+    @Override
+    public DossierTaxResponse getDetailDossierTax(DossierTaxInput input) throws Exception {
+        try {
+            DossierTaxResponse response = new DossierTaxResponse();
+            if (Validator.isNull(input)) {
+                throw new Exception("No body param was found");
+            }
+
+            if (Validator.isNull(input.dossierNo) || input.dossierNo.isEmpty()) {
+                throw new Exception("No from dossierNo was found");
+            }
+
+            if (Validator.isNull(input.maSoThue) || input.maSoThue.isEmpty()) {
+                throw new Exception("No from Ma So Thue was found");
+            }
+            if (Validator.isNull(input.soQuyetDinh) || input.soQuyetDinh.isEmpty()) {
+                throw new Exception("No from So Quyet Dinh was found");
+            }
+
+            DossierTax dossierTax = DossierTaxLocalServiceUtil.fetchDossierTaxByDMS(input.dossierNo, input.maSoThue, input.soQuyetDinh);
+            if (Validator.isNotNull(dossierTax)) {
+                _log.debug("SyncTracking: " + JSONFactoryUtil.looseSerialize(dossierTax));
+                response = transformAction.transFormDossierTax(dossierTax);
+            }
+
+            return response;
+
+        }catch (Exception e){
+            e.getMessage();
+        }
+        return null;
+    }
+
+    @Override
+    public String getDDossierTax(DossierTaxInput input) throws Exception {
+        try {
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Accept", "*");
+            DossierTaxInfo body = new DossierTaxInfo();
+            String urlCall ="127.0.0.1:8081/o/rest/getDetailDossierTax";
+
+            body.dossierNo = input.dossierNo;
+			body.maSoThue = input.maSoThue;
+			body.soQuyetDinh = input.soQuyetDinh;
+			headers.add("groupId", String.valueOf(input.groupId));
+			_log.info("Body: " + JSONFactoryUtil.looseSerialize(body));
+			HttpEntity<DossierTaxInfo> entity = new HttpEntity<>(body, headers);
+			ResponseEntity<String> response = restTemplate.postForEntity(urlCall, entity, String.class);
+			if(Validator.isNotNull(response)){
+				return response.getBody();
+			}
+			return null;
+        }catch (Exception e){
+            e.getMessage();
+        }
+        return null;
     }
 
     @Override
@@ -258,5 +432,11 @@ public class SyncTrackingActionImpl implements SyncTrackingAction {
             _log.error(e);
             throw new Exception(e.getMessage());
         }
+    }
+    private ClientHttpRequestFactory setConfigRestTemplate(Integer timeout) {
+        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
+                = new HttpComponentsClientHttpRequestFactory();
+        clientHttpRequestFactory.setConnectTimeout(timeout);
+        return clientHttpRequestFactory;
     }
 }

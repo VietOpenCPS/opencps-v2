@@ -104,6 +104,7 @@ import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
@@ -114,7 +115,6 @@ import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
-import javax.xml.ws.Service;
 
 public class ProcessUpdateDBUtils {
 
@@ -868,6 +868,7 @@ public class ProcessUpdateDBUtils {
 				org.opencps.dossiermgt.model.ServiceInfo serviceInfo = null;
 				ServiceInfoActions actionService = new ServiceInfoActionsImpl();
 				if (Validator.isNotNull(service.getServiceCode()) && Validator.isNotNull(service.getServiceName())) {
+					_log.info("Vaoooooo 11111111111");
 					String serviceCode = service.getServiceCode();
 					String serviceName = service.getServiceName();
 					String processText = service.getProcessText();
@@ -901,6 +902,11 @@ public class ProcessUpdateDBUtils {
 				} else {
 					serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, service.getServiceCode());
 				}
+				if(Validator.isNotNull(serviceInfo)){
+					_log.info("Id --- : " + serviceInfo.getServiceInfoId());
+					_log.info("keyImport --- : " + keyImport);
+				}
+				_log.info("groupId : " + groupId);
 				// Add serviceConfig
 				Configs configs = service.getConfigs();
 				if ((configs != null && serviceInfoId > 0) || Validator.isNotNull(serviceInfo)) {
@@ -1109,6 +1115,7 @@ public class ProcessUpdateDBUtils {
 	private static boolean processServiceConfigNoDelAll(long userId, long groupId, long serviceInfoId, Configs configs,
 														ServiceInfoActions actionService, String keyImport, ServiceContext serviceContext) {
 
+		_log.debug("serviceInfoId: " + serviceInfoId);
 		boolean flagService = true;
 		try {
 			// Delete all ServiceFileTemplate with serviceInfoId
@@ -1132,7 +1139,21 @@ public class ProcessUpdateDBUtils {
 				boolean postalService = false;
 				boolean registration = false;
 				for (ServiceConfig config : configList) {
-					org.opencps.dossiermgt.model.ServiceConfig serviceConfigOld = ServiceConfigLocalServiceUtil.fetchByGID_SI_GOV_LEVEL(groupId, serviceInfoId, config.getGovAgencyCode(), config.getServiceLevel());
+
+					//Delete ServiceConfig No ProcessOption
+					List<org.opencps.dossiermgt.model.ServiceConfig> lstServiceByServiceInfo = ServiceConfigLocalServiceUtil.fetchByGID_SI_GOV_LEVEL(groupId, serviceInfoId, config.getGovAgencyCode());
+
+					if(lstServiceByServiceInfo !=null && lstServiceByServiceInfo.size() > 0){
+						for(org.opencps.dossiermgt.model.ServiceConfig item : lstServiceByServiceInfo){
+							List<org.opencps.dossiermgt.model.ProcessOption> optionList = ProcessOptionLocalServiceUtil
+									.getByServiceProcessId(item.getServiceConfigId());
+							if(optionList.size() == 0 || optionList.isEmpty()){
+								ServiceConfigLocalServiceUtil.deleteServiceConfig(item);
+							}
+						}
+					}
+
+					org.opencps.dossiermgt.model.ServiceConfig serviceConfigOld = ServiceConfigLocalServiceUtil.findByBySIAndGAC(groupId, serviceInfoId, config.getGovAgencyCode());
 
 					govAgencyCode = config.getGovAgencyCode();
 					govAgencyName = config.getGovAgencyName();
@@ -1141,16 +1162,22 @@ public class ProcessUpdateDBUtils {
 					serviceUrl = config.getServiceUrl();
 					forCitizen = config.isForCitizen();
 					forBusiness = config.isForBusiness();
+					if (config.isForCitizen()){
+						forCitizen = true;
+					}
+					if(config.isForBusiness()){
+						forBusiness = true;
+					}
 					postalService = config.isPostalService();
 					registration = config.isRegistration();
-					//
 					ServiceConfigActions actionConfig = new ServiceConfigActionImpl();
 					org.opencps.dossiermgt.model.ServiceConfig serviceConfigNew = null;
 					if(Validator.isNotNull(serviceConfigOld)){
 						boolean flagConfig = actionService.deleteAllServiceConfig(userId, groupId, serviceInfoId, serviceConfigOld, serviceContext);
 						_log.debug("FlagConfig: " + flagConfig);
+						_log.info("serviceConfigOld.getServiceConfigId(): " + serviceConfigOld.getServiceConfigId());
 						serviceConfigNew = actionConfig.updateServiceConfig(serviceConfigOld.getServiceConfigId(),userId,groupId,
-								serviceConfigId,govAgencyCode,serviceInstruction, serviceLevel,serviceUrl,forCitizen,
+								serviceInfoId,govAgencyCode,serviceInstruction, serviceLevel,serviceUrl,forCitizen,
 								forBusiness,postalService,registration,serviceContext);
 
 						serviceConfigId = serviceConfigNew.getServiceConfigId();
@@ -1160,11 +1187,13 @@ public class ProcessUpdateDBUtils {
 								serviceInstruction, serviceLevel, serviceUrl, forCitizen, forBusiness, postalService, registration, serviceContext);
 					}
 					// Process ProcessOption
+					_log.debug("ServiceConfigId : " + serviceConfigId);
 					if (serviceConfigId > 0) {
 						Processes process = config.getProcesses();
 						if (process != null) {
 							flagService = processProcessOption(userId, groupId, serviceConfigId, process, actionConfig,
 									serviceContext);
+							_log.debug("flagService : " + flagService);
 
 						}
 					}
@@ -1263,8 +1292,14 @@ public class ProcessUpdateDBUtils {
 					processName = option.getProcessName();
 					registerBookCode = option.getRegisterBookCode();
 					sampleCount = option.getSampleCount();
-					forCitizen = option.isForCitizen();
-					forBusiness = option.isForBusiness();
+
+					if (Validator.isNotNull(option.getForCitizen())) {
+						forCitizen = option.getForCitizen();
+					}
+
+					if(Validator.isNotNull(option.getForBusiness())) {
+						forBusiness = option.getForBusiness();
+					}
 					//
 					actionConfig.updateOptionDB(userId, groupId, optionCode, optionName, serviceConfigId, seqOrder,
 							autoSelect, instructionNote, submissionNote, templateNo, templateName, processNo, processName,

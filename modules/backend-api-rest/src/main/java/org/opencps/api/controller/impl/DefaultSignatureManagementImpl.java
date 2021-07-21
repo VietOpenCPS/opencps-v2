@@ -42,11 +42,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -1394,13 +1390,16 @@ public class DefaultSignatureManagementImpl
 					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(oldFileEntryId);
 					DLFileEntry newFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
 					File fileSigned = DLFileEntryLocalServiceUtil.getFile(fileEntryId, newFileEntry.getVersion(), false);
-					
-					DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
-							dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
-							StringPool.BLANK, true, fileSigned, serviceContext);
-					
-					DLAppLocalServiceUtil.deleteFileEntry(newFileEntry.getFileEntryId());
-					
+					try {
+						FileEntry fileEntry =  DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
+								dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
+								StringPool.BLANK, true, fileSigned, serviceContext);
+						_log.debug("File Upload : " + fileEntry.getFileEntryId());
+
+						DLAppLocalServiceUtil.deleteFileEntry(newFileEntry.getFileEntryId());
+					}catch (Exception e ){
+						e.getMessage();
+					}
 					// Update deliverable with deliverableType
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
 					if (dossierFile != null) {
@@ -1419,6 +1418,48 @@ public class DefaultSignatureManagementImpl
 			} else {
 				signOk = false;
 			}			
+		}
+		// Xử lý file -> cập nhật giấy phép, ưu tiên file đính kèm
+		// file đính kèm Efrom = false
+		// không xử lý file isRemoved ( file đã xóa)
+		List<DossierFile> lstFile = DossierFileLocalServiceUtil.getAllDossierFile(dossierId);
+		long fileEntryIdByFile = 0;
+		long fileEntryIdByEform = 0;
+		if(lstFile !=null && lstFile.size() >0){
+			for(DossierFile dossierFile : lstFile){
+				if(!dossierFile.isEForm() && !dossierFile.isRemoved()){
+					fileEntryIdByFile = dossierFile.getFileEntryId();
+				}else if(!dossierFile.isRemoved() ){
+					fileEntryIdByEform  = dossierFile.getFileEntryId();
+				}
+			}
+		}
+
+		// Cập nhật lai deliverable
+		DossierFile dossierFileOld = null;
+		if(fileEntryIdByFile > 0 || fileEntryIdByEform >0) {
+			dossierFileOld = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryIdByFile);
+
+			if(dossierFileOld == null){
+				dossierFileOld = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryIdByEform);
+			}
+			_log.debug("dossierFileOld: " + dossierFileOld.getDossierFileId());
+			if (dossierFileOld != null) {
+				String deliverableCode = dossierFileOld.getDeliverableCode();
+				_log.debug("deliverableCode: " + deliverableCode);
+				if (Validator.isNotNull(deliverableCode)) {
+					Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
+					if (deliverable != null) {
+						String deliState = String.valueOf(deliverable.getDeliverableState());
+						if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
+							deliverable.setDeliverableState(DeliverableTerm.DELIVERABLE_STATE_VALID_INT);
+							deliverable.setFileEntryId(dossierFileOld.getFileEntryId());
+							deliverable.setFileAttachs(String.valueOf(dossierFileOld.getFileEntryId()));
+						}
+						DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+					}
+				}
+			}
 		}
 
 		//Next action

@@ -83,6 +83,7 @@ import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
 import org.opencps.api.controller.util.EmployeeUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.NGSPRestClient;
+import org.opencps.api.controller.util.OpenCPSUtils;
 import org.opencps.api.employee.model.EmployeeAccountInputModel;
 import org.opencps.api.employee.model.EmployeeAccountModel;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
@@ -141,12 +142,17 @@ import vn.gov.ngsp.DKDN.GTVT.IToken;
 import vn.gov.ngsp.DKDN.GTVT.Models.MToken;
 
 public class ApplicantManagementImpl implements ApplicantManagement {
+	
+	private static final String API_LIST_APPLICANT = "API_LIST_APPLICANT";
+	private static final String API_VIEW_APPLICANT = "API_VIEW_APPLICANT";
+	
 	private final String USER_03 = "USER-03";
 	private final String USER_05 = "USER-05";
 	@Override
 	public Response register(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, ApplicantInputModel input) {
 
+		_log.info("111111");
 		ApplicantActions actions = new ApplicantActionsImpl();
 
 		ApplicantModel result = new ApplicantModel();
@@ -159,9 +165,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
 
+			_log.info("Input :" + JSONFactoryUtil.looseSerialize(input));
 			if (!auth2.checkToken(request, header)) {
 				throw new UnauthenticationException();
 			}
+			_log.info("222222");
 			String applicantName = HtmlUtil.escape(input.getApplicantName());
 			String applicantIdType = HtmlUtil.escape(input.getApplicantIdType());
 			String applicantIdNo = HtmlUtil.escape(input.getApplicantIdNo());
@@ -186,6 +194,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 
 			}
+			_log.info("3333333");
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
 					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
 					cityCode, cityName, districtCode, districtName,
@@ -385,6 +394,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		ApplicantResultsModel results = new ApplicantResultsModel();
 		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		JSONObject bodyResponse = JSONFactoryUtil.createJSONObject();
+
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -410,7 +422,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					APIDateTimeUtils.convertNormalDateToLuceneDate(
 							query.getToRegistryDate());
 
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -434,14 +445,29 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					serviceContext.getCompanyId(), groupId, params, sorts, query.getStart(), query.getEnd(),
 					serviceContext);
 
+			
 			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
 				results.getData().addAll(ApplicantUtils.mappingToApplicantResults((List<Document>) jsonData.get(ConstantUtils.DATA)));
+				
+				bodyResponse.put("status", HttpURLConnection.HTTP_OK);
+				bodyResponse.put("total", results.getTotal());
 			}
+			
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_LIST_APPLICANT, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 1,
+					JSONFactoryUtil.looseSerialize(query), bodyResponse.toJSONString());
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
+			
+			bodyResponse.put("status", HttpURLConnection.HTTP_INTERNAL_ERROR);
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_LIST_APPLICANT, user.getUserId(),
+					groupId, StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					JSONFactoryUtil.looseSerialize(query), bodyResponse.toJSONString());
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -480,6 +506,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				applicant = actions.getApplicantDetail(serviceContext, id);
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
+				
+				// ghi log vao syncTracking
+				OpenCPSUtils.addSyncTracking(API_VIEW_APPLICANT, user.getUserId(),
+						applicant.getGroupId(), StringPool.NULL,StringPool.NULL, StringPool.NULL, 1,
+						String.valueOf(id), JSONFactoryUtil.looseSerialize(results));
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {
@@ -487,6 +518,10 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 		} catch (Exception e) {
+			// ghi log vao syncTracking
+			OpenCPSUtils.addSyncTracking(API_VIEW_APPLICANT, user.getUserId(),
+					applicant.getGroupId(), StringPool.NULL,StringPool.NULL, StringPool.NULL, 0,
+					String.valueOf(id), JSONFactoryUtil.looseSerialize(results));
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -1450,6 +1485,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 											? applicant.getApplicantName() + "," + applicant.getContactEmail()
 											: "FAILED"));
 									result = ApplicantUtils.mappingToApplicantModel(applicant);
+
 
 									return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 								}

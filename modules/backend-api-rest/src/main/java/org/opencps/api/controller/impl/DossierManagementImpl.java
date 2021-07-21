@@ -5,16 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.*;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
@@ -25,7 +24,11 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.BaseJSPSettingsConfigurationAction;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
+import com.liferay.portal.kernel.scheduler.SchedulerException;
+import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
@@ -53,6 +56,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Connection;
@@ -82,8 +86,10 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.http.client.methods.HttpGet;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.constants.DossierManagementConstants;
+import org.opencps.api.constants.SupportSearchConstants;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
 import org.opencps.api.controller.util.DossierFileUtils;
@@ -134,20 +140,26 @@ import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.scheduler.PublishEventScheduler;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierFileUtil;
 import org.opencps.dossiermgt.service.persistence.ProcessActionUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessUtil;
+import org.opencps.kernel.prop.PropKeys;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.ApplicantData;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.FileItem;
+import org.opencps.usermgt.service.ApplicantDataLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.FileItemLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -170,6 +182,7 @@ public class DossierManagementImpl implements DossierManagement {
 	public static final String RT_CORRECTING = "correcting";
 	public static final String RT_SUBMITTING = "submitting";
 
+
 	public static final String ALL_AGENCY = "all";
 
 	private static final String CONFIG_DVCQG_INTEGRATION = "DVCQG_INTEGRATION";
@@ -186,6 +199,95 @@ public class DossierManagementImpl implements DossierManagement {
 		body.put(ERROR_MESSAGE, message);
 		return body.toString();
 	}
+
+	@Override
+	public Response getCountofScheduler(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String nameScheduler, String type) throws SchedulerException {
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+		if(Validator.isNotNull("type")){
+			if(type.equals("admin") ){
+				if(nameScheduler.equalsIgnoreCase("PublishEventScheduler")
+						|| nameScheduler.equalsIgnoreCase("PublishEventHSKMScheduler")
+						|| nameScheduler.equalsIgnoreCase("DossierSyncProcessingScheduler")
+						|| nameScheduler.equalsIgnoreCase("FakeCounterScheduler"))
+				{
+					List<SchedulerResponse> schedulerResponses =
+							SchedulerEngineHelperUtil.getScheduledJobs();
+					Method method;
+					for (SchedulerResponse schedulerResponse : schedulerResponses){
+						if(schedulerResponse.getJobName().contains(nameScheduler)){
+							try {
+								method = Class.forName(schedulerResponse.getJobName()).getMethod("getCount");
+								response.put("count", method.invoke(null));
+								return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+							} catch (Exception e){
+								_log.error(e);
+								return BusinessExceptionImpl.processException(e);
+							}
+						}
+					}
+					response.put("Message", "Scheduler doesn't found in opencpsscheduler:list");
+					return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+				} else {
+					response.put("Message", "Scheduler doesn't exist or not found");
+					return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+				}
+
+			} else {
+				response.put("Message", "Unauthorized Information.");
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(response.toJSONString()).build();
+			}
+		} else {
+			response.put("Message", "Non-Authoritative Information.");
+			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(response.toJSONString()).build();
+		}
+
+	}
+
+	@Override
+	public Response ResetCountofScheduler(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String nameScheduler, String type) throws SchedulerException {
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+		if(Validator.isNotNull("type")){
+			if(type.equalsIgnoreCase("admin") ){
+				if(nameScheduler.equalsIgnoreCase("PublishEventScheduler")
+						|| nameScheduler.equalsIgnoreCase("PublishEventHSKMScheduler")
+						|| nameScheduler.equalsIgnoreCase("DossierSyncProcessingScheduler")
+						|| nameScheduler.equalsIgnoreCase("FakeCounterScheduler"))
+				{
+					List<SchedulerResponse> schedulerResponses =
+							SchedulerEngineHelperUtil.getScheduledJobs();
+					Method method;
+					for (SchedulerResponse schedulerResponse : schedulerResponses){
+						if(schedulerResponse.getJobName().contains(nameScheduler)){
+							try {
+								method = Class.forName(schedulerResponse.getJobName()).getMethod("resetCount");
+								response.put("count", method.invoke(null));
+								return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+							} catch (Exception e){
+								_log.error(e);
+								return BusinessExceptionImpl.processException(e);
+							}
+						}
+					}
+					response.put("Message", "Scheduler doesn't found in opencpsscheduler:list");
+					return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+				} else {
+					response.put("Message", "Scheduler doesn't exist or not found");
+					return Response.status(HttpURLConnection.HTTP_OK).entity(response.toJSONString()).build();
+				}
+
+			} else {
+				response.put("Message", "Unauthorized Information.");
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(response.toJSONString()).build();
+			}
+		} else {
+			response.put("Message", "Non-Authoritative Information.");
+			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(response.toJSONString()).build();
+		}
+
+	}
+
+
 
 	@Override
 	public Response getDirectDossiers(HttpServletRequest request, HttpHeaders header,
@@ -769,7 +871,7 @@ public class DossierManagementImpl implements DossierManagement {
 				//Truong hop 1 employee cùng ở 2 site. Lấy role ở site đó và param groupId sẽ search theo Employee
 				List<Role> userRoles =  user.getRoles();
 				for (Role r : userRoles) {
-					_log.info("GetName: " + r.getName());
+//					_log.info("GetName: " + r.getName());
 					if (r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_ALL)) {
 						query.setGlobalViewAll(true);
 						break;
@@ -1387,7 +1489,7 @@ public class DossierManagementImpl implements DossierManagement {
 			//Truong hop 1 employee cùng ở 2 site. Lấy role ở site đó và param groupId sẽ search theo Employee
 			List<Role> userRoles =  user.getRoles();
 			for (Role r : userRoles) {
-				_log.info("GetName: " + r.getName());
+//				_log.info("GetName: " + r.getName());
 				if (r.getName().startsWith(ConstantUtils.GLOBAL_VIEW_ALL)) {
 					query.setGlobalViewAll(true);
 					break;
@@ -2271,6 +2373,34 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 			}
+			
+
+			//day du lieu vao kho du lieu cong dan
+			try {
+				if (Validator.isNotNull(dossier) && dossier.getDossierStatus().contentEquals(DossierTerm.DOSSIER_STATUS_DONE)) {
+					List<DossierFile> lstDossierFiles = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
+					if (Validator.isNotNull(lstDossierFiles) && lstDossierFiles.size() > 0) {
+						for (DossierFile doFile : lstDossierFiles) {
+							String fileTemplateNo = doFile.getFileTemplateNo();
+							_log.debug("fileTemplateNo : " + fileTemplateNo);
+							if (Validator.isNotNull(fileTemplateNo) && doFile.getDossierPartType() == 2) {
+								FileItem fileItem = FileItemLocalServiceUtil.findByG_FTN(0, fileTemplateNo);
+								if (doFile.getFileEntryId() > 0) {
+									FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(doFile.getFileEntryId());
+									if (Validator.isNotNull(fileItem) && Validator.isNotNull(fileEntry)) {
+										ApplicantData applicantData = ApplicantDataLocalServiceUtil.createApplicantData(
+												serviceContext, 0, fileTemplateNo, fileEntry.getFileName(), doFile.getDisplayName(), doFile.getFileEntryId(), StringPool.BLANK, 1, dossier.getApplicantIdNo(), 0);
+										_log.debug("Kho dữ liệu công dân : " + JSONFactoryUtil.looseSerialize(applicantData));
+										ApplicantDataLocalServiceUtil.updateApplicantData(applicantData);
+									}
+								}
+							}
+						}
+					}
+				}
+			}catch (Exception e){
+				e.getMessage();
+			}
 
 			_log.debug("Doaction oke with dossierActionId: " + dossierResult.getDossierActionId());
 			long dossierActionId = dossierResult.getDossierActionId();
@@ -2292,6 +2422,7 @@ public class DossierManagementImpl implements DossierManagement {
 					_log.debug("Result post action:" + result);
 				}
 			}
+			
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(dAction).build();
 		}
@@ -2765,7 +2896,8 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierMarkResultsModel result = new DossierMarkResultsModel();
 
 			List<DossierMark> lstDossierMark =
-				actions.getDossierMarks(groupId, dossierId);
+				actions.findDossierMarkByDossierId(groupId, dossierId);
+			_log.info("lstDossierMark: " + lstDossierMark.size());
 
 			List<DossierMarkModel> outputs =
 				DossierMarkUtils.mappingDossierMarks(lstDossierMark);

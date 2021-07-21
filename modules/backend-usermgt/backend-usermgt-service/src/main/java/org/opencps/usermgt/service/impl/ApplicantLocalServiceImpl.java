@@ -20,6 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.liferay.counter.kernel.model.Counter;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DataMGTConstants;
@@ -42,6 +44,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -177,7 +180,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Date idDate = DateTimeUtils.stringToDate(applicantIdDate);
 		_log.debug("ADD APPLICANT | profile: "+profile);
 		if (applicantId == 0) {
-
+			_log.info("4444444");
 			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
 
 			validateApplicantDuplicate(groupId, context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
@@ -193,9 +196,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			}
 
 			applicantId = counterLocalService.increment(Applicant.class.getName());
-
+			
+			_log.info("5555555 : applicantId " + applicantId);
 			applicant = applicantPersistence.create(applicantId);
-			_log.debug("ADD APPLICANT: " + applicant);
+			_log.info("ADD APPLICANT: " + applicant);
 
 			Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
 
@@ -351,6 +355,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		}
 
+		_log.info("7777777 : " + JSONFactoryUtil.looseSerialize(applicant));
 		return applicantPersistence.update(applicant);
 	}
 
@@ -1849,5 +1854,13 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	}
 	// private Log _log =
 	// LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
+
+	public List<Applicant> getListApplicationByG_NotEqualZero_CDateToNow(Date date){
+		DynamicQuery dynamicQuery = applicantLocalService.dynamicQuery();
+		dynamicQuery.add(RestrictionsFactoryUtil.gt("createDate", date));
+		dynamicQuery.add(RestrictionsFactoryUtil.ne("groupId", 0L));
+		return applicantPersistence.findWithDynamicQuery(dynamicQuery);
+	}
+
 
 }

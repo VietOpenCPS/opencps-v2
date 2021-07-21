@@ -23,10 +23,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * This class is used by SOAP remote services, specifically {@link org.opencps.synctracking.service.http.SyncTrackingServiceSoap}.
+ * This class is used by SOAP remote services.
  *
- * @author Brian Wing Shun Chan
- * @see org.opencps.synctracking.service.http.SyncTrackingServiceSoap
+ * @author duongnt
  * @generated
  */
 @ProviderType

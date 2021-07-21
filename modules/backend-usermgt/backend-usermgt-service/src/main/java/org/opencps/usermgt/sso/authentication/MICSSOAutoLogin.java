@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@Component(immediate = true, service = AutoLogin.class)
+//@Component(immediate = true, service = AutoLogin.class)
 public class MICSSOAutoLogin extends BaseAutoLogin {
     private String _SESSION_API_PRIFIX = "equinox.http.rest.v2";
     private Log _log = LogFactoryUtil.getLog(MICSSOAutoLogin.class.getName());
@@ -62,7 +62,6 @@ public class MICSSOAutoLogin extends BaseAutoLogin {
             }
             return _userLocalService.fetchUser(employee.getMappingUserId());
         } catch (Exception e) {
-            _log.error(e);
             return null;
         }
     }

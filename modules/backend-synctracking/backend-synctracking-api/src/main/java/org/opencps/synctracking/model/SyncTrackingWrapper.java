@@ -35,7 +35,7 @@ import java.util.Objects;
  * This class is a wrapper for {@link SyncTracking}.
  * </p>
  *
- * @author Brian Wing Shun Chan
+ * @author duongnt
  * @see SyncTracking
  * @generated
  */

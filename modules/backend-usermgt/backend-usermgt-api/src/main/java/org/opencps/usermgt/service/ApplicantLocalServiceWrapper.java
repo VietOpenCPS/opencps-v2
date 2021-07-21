@@ -408,6 +408,12 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 		return _applicantLocalService.getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public java.util.List<org.opencps.usermgt.model.Applicant> getListApplicationByG_NotEqualZero_CDateToNow(
+		java.util.Date date) {
+		return _applicantLocalService.getListApplicationByG_NotEqualZero_CDateToNow(date);
+	}
+
 	/**
 	* Returns the OSGi service identifier.
 	*

@@ -57,6 +57,8 @@ import org.opencps.dossiermgt.service.persistence.ApplicableInfoPersistence;
 import org.opencps.dossiermgt.service.persistence.BookingFinder;
 import org.opencps.dossiermgt.service.persistence.BookingPersistence;
 import org.opencps.dossiermgt.service.persistence.ConfigCounterPersistence;
+import org.opencps.dossiermgt.service.persistence.CsdlDcServiceInfoPersistence;
+import org.opencps.dossiermgt.service.persistence.CsdlDcUserPersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverableFinder;
 import org.opencps.dossiermgt.service.persistence.DeliverableLogPersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverablePersistence;
@@ -71,6 +73,7 @@ import org.opencps.dossiermgt.service.persistence.DossierDocumentPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierFilePersistence;
 import org.opencps.dossiermgt.service.persistence.DossierFinder;
 import org.opencps.dossiermgt.service.persistence.DossierLogPersistence;
+import org.opencps.dossiermgt.service.persistence.DossierMarkFinder;
 import org.opencps.dossiermgt.service.persistence.DossierMarkPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierPartPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierPersistence;
@@ -712,6 +715,82 @@ public abstract class BookingLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
+	 * Returns the csdl dc service info local service.
+	 *
+	 * @return the csdl dc service info local service
+	 */
+	public org.opencps.dossiermgt.service.CsdlDcServiceInfoLocalService getCsdlDcServiceInfoLocalService() {
+		return csdlDcServiceInfoLocalService;
+	}
+
+	/**
+	 * Sets the csdl dc service info local service.
+	 *
+	 * @param csdlDcServiceInfoLocalService the csdl dc service info local service
+	 */
+	public void setCsdlDcServiceInfoLocalService(
+		org.opencps.dossiermgt.service.CsdlDcServiceInfoLocalService csdlDcServiceInfoLocalService) {
+		this.csdlDcServiceInfoLocalService = csdlDcServiceInfoLocalService;
+	}
+
+	/**
+	 * Returns the csdl dc service info persistence.
+	 *
+	 * @return the csdl dc service info persistence
+	 */
+	public CsdlDcServiceInfoPersistence getCsdlDcServiceInfoPersistence() {
+		return csdlDcServiceInfoPersistence;
+	}
+
+	/**
+	 * Sets the csdl dc service info persistence.
+	 *
+	 * @param csdlDcServiceInfoPersistence the csdl dc service info persistence
+	 */
+	public void setCsdlDcServiceInfoPersistence(
+		CsdlDcServiceInfoPersistence csdlDcServiceInfoPersistence) {
+		this.csdlDcServiceInfoPersistence = csdlDcServiceInfoPersistence;
+	}
+
+	/**
+	 * Returns the csdl dc user local service.
+	 *
+	 * @return the csdl dc user local service
+	 */
+	public org.opencps.dossiermgt.service.CsdlDcUserLocalService getCsdlDcUserLocalService() {
+		return csdlDcUserLocalService;
+	}
+
+	/**
+	 * Sets the csdl dc user local service.
+	 *
+	 * @param csdlDcUserLocalService the csdl dc user local service
+	 */
+	public void setCsdlDcUserLocalService(
+		org.opencps.dossiermgt.service.CsdlDcUserLocalService csdlDcUserLocalService) {
+		this.csdlDcUserLocalService = csdlDcUserLocalService;
+	}
+
+	/**
+	 * Returns the csdl dc user persistence.
+	 *
+	 * @return the csdl dc user persistence
+	 */
+	public CsdlDcUserPersistence getCsdlDcUserPersistence() {
+		return csdlDcUserPersistence;
+	}
+
+	/**
+	 * Sets the csdl dc user persistence.
+	 *
+	 * @param csdlDcUserPersistence the csdl dc user persistence
+	 */
+	public void setCsdlDcUserPersistence(
+		CsdlDcUserPersistence csdlDcUserPersistence) {
+		this.csdlDcUserPersistence = csdlDcUserPersistence;
+	}
+
+	/**
 	 * Returns the deliverable local service.
 	 *
 	 * @return the deliverable local service
@@ -1256,6 +1335,24 @@ public abstract class BookingLocalServiceBaseImpl extends BaseLocalServiceImpl
 	public void setDossierMarkPersistence(
 		DossierMarkPersistence dossierMarkPersistence) {
 		this.dossierMarkPersistence = dossierMarkPersistence;
+	}
+
+	/**
+	 * Returns the dossier mark finder.
+	 *
+	 * @return the dossier mark finder
+	 */
+	public DossierMarkFinder getDossierMarkFinder() {
+		return dossierMarkFinder;
+	}
+
+	/**
+	 * Sets the dossier mark finder.
+	 *
+	 * @param dossierMarkFinder the dossier mark finder
+	 */
+	public void setDossierMarkFinder(DossierMarkFinder dossierMarkFinder) {
+		this.dossierMarkFinder = dossierMarkFinder;
 	}
 
 	/**
@@ -2885,6 +2982,14 @@ public abstract class BookingLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected ConfigCounterPersistence configCounterPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.CPSDossierBusinessLocalService.class)
 	protected org.opencps.dossiermgt.service.CPSDossierBusinessLocalService cpsDossierBusinessLocalService;
+	@BeanReference(type = org.opencps.dossiermgt.service.CsdlDcServiceInfoLocalService.class)
+	protected org.opencps.dossiermgt.service.CsdlDcServiceInfoLocalService csdlDcServiceInfoLocalService;
+	@BeanReference(type = CsdlDcServiceInfoPersistence.class)
+	protected CsdlDcServiceInfoPersistence csdlDcServiceInfoPersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.CsdlDcUserLocalService.class)
+	protected org.opencps.dossiermgt.service.CsdlDcUserLocalService csdlDcUserLocalService;
+	@BeanReference(type = CsdlDcUserPersistence.class)
+	protected CsdlDcUserPersistence csdlDcUserPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.DeliverableLocalService.class)
 	protected org.opencps.dossiermgt.service.DeliverableLocalService deliverableLocalService;
 	@BeanReference(type = DeliverablePersistence.class)
@@ -2943,6 +3048,8 @@ public abstract class BookingLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected org.opencps.dossiermgt.service.DossierMarkLocalService dossierMarkLocalService;
 	@BeanReference(type = DossierMarkPersistence.class)
 	protected DossierMarkPersistence dossierMarkPersistence;
+	@BeanReference(type = DossierMarkFinder.class)
+	protected DossierMarkFinder dossierMarkFinder;
 	@BeanReference(type = org.opencps.dossiermgt.service.DossierPartLocalService.class)
 	protected org.opencps.dossiermgt.service.DossierPartLocalService dossierPartLocalService;
 	@BeanReference(type = DossierPartPersistence.class)

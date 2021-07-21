@@ -23,10 +23,13 @@ import com.liferay.portal.kernel.util.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +44,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierFileManagement;
 import org.opencps.api.controller.util.*;
+import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
@@ -55,24 +59,26 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.cache.actions.CacheActions;
 import org.opencps.cache.actions.impl.CacheActionsImpl;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
-import org.opencps.dossiermgt.action.util.CheckFileUtils;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
-import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.action.util.*;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.FrequencyOfficeConstants;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.service.*;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import org.opencps.kernel.util.FileUploadUtil;
+import org.opencps.usermgt.service.ApplicantDataLocalServiceUtil;
+import org.opencps.usermgt.service.impl.ApplicantDataLocalServiceImpl;
 import service.ImportFile;
 import service.dependencies.ImportFileImpl;
 
@@ -436,6 +442,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
+
+
 
 	@Override
 	public Response updateDossierFile(
@@ -1540,31 +1548,85 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
-
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
 			DossierFileActions action = new DossierFileActionsImpl();
 			DossierFileModel result;
-			if (Validator.isNotNull(fileEntryId)) {
-				FileEntry fileEntryOld = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
-				String fileTemplateNo = dossierTemplateNo + dossierPartNo;
-				DossierFile dossierFile =
-						action.addDossierFileByFileEntryId(
-								groupId, id, UUID.randomUUID().toString(),
-								dossierTemplateNo, dossierPartNo, fileTemplateNo,
-								displayName, displayName, fileEntryOld.getSize(), fileEntryOld.getContentStream(), StringPool.BLANK, String.valueOf(false),
-								fileEntryOld.getFileEntryId(), serviceContext);
-				_log.debug("__End add file at:" + new Date());
-				dossierFile.setRemoved(false);
-				_log.debug("__Start update dossier file at:" + new Date());
-				dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+			String ipServerStr = StringPool.BLANK;
+			FileEntry fileEntry = null;
 
-				result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
-				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+			List<ServerConfig> listConfig = new ArrayList<>();
+
+			listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol("SERVER_" + dossier.getGovAgencyCode(), "API_SYNC");
+			ServerConfig serverConfig = listConfig.get(0);
+
+			String urlDocument = regex(uri);
+			_log.debug("uriSub: " + urlDocument);
+
+			JSONObject configJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			String urlCall = configJson.getString("url");
+			Pattern pattern = Pattern.compile("https?:\\/\\/([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})\\:?([0-9]{1,5})?");
+			Matcher matcher = pattern.matcher(urlCall);
+
+			if (matcher.find()) {
+				ipServerStr = matcher.group(0) + urlDocument;
 			}
-		}
-		catch (Exception e) {
+			_log.info("ipServerStr: " + ipServerStr);
+			URL url = new URL(ipServerStr);
+			java.net.HttpURLConnection httpConn = (java.net.HttpURLConnection) url.openConnection();
+			int responseCode = httpConn.getResponseCode();
+
+			// always check HTTP response code first
+			if (responseCode == java.net.HttpURLConnection.HTTP_OK) {
+				InputStream inputStream = httpConn.getInputStream();
+
+				if (inputStream != null) {
+					try {
+						fileEntry = ApplicantDataLocalServiceUtil.uploadFileDLEntry(serviceContext.getUserId(), groupId, inputStream, displayName, StringPool.BLANK,
+								0, serviceContext);
+
+						if (fileEntry != null) {
+							fileEntryId = fileEntry.getFileEntryId();
+						}
+					} catch (Exception e) {
+						_log.debug(e);
+					}
+				}
+
+				_log.debug("fileEntry: " + JSONFactoryUtil.looseSerialize(fileEntry));
+				if (Validator.isNotNull(fileEntry)) {
+					FileEntry fileEntryOld = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+					String fileTemplateNo = dossierTemplateNo + dossierPartNo;
+					DossierFile dossierFile =
+							action.addDossierFileByFileEntryId(
+									groupId, id, UUID.randomUUID().toString(),
+									dossierTemplateNo, dossierPartNo, fileTemplateNo,
+									displayName, displayName, fileEntryOld.getSize(), fileEntryOld.getContentStream(), StringPool.BLANK, String.valueOf(false),
+									fileEntryOld.getFileEntryId(), serviceContext);
+					_log.debug("__End add file at:" + new Date());
+					dossierFile.setRemoved(false);
+					_log.debug("__Start update dossier file at:" + new Date());
+					dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+					result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+					return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+				}
+			}
+		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
-		 return Response.status(HttpURLConnection.HTTP_FORBIDDEN).build();
+		return Response.status(HttpURLConnection.HTTP_FORBIDDEN).build();
+	}
+	public String regex(String url){
+		Pattern pattern = Pattern.compile("https?:\\/\\/([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})\\:?([0-9]{1,5})?");
+		Matcher matcher = pattern.matcher(url);
+		String substr = StringPool.BLANK;
+		if (matcher.find())
+		{
+			String ip = matcher.group(0);
+			substr = url.replace(ip,"");
+		}
+		return substr;
+
 	}
 
 	@Override
@@ -1792,4 +1854,40 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		}
 	}
 
+	@Override
+	public Response addDossierFileByEform(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext,
+										  long id, String dossierPartNo, String displayName, long fileEntryId, boolean eform) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		DossierFile dossierFile = null;
+		try {
+			if(!eform && Validator.isNotNull(dossierPartNo)){
+				String referenceFileUid = DossierNumberGenerator.generateReferenceUID(groupId);
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+				if(Validator.isNotNull(dossier)) {
+					_log.info("Them DossierFile :" + dossier.getDossierId());
+					DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId,
+							dossier.getDossierTemplateNo(), dossierPartNo);
+					dossierFile = DossierFileLocalServiceUtil.addDossierFileEForm(groupId, id,
+							referenceFileUid, dossier.getDossierTemplateNo(), dossierPartNo, dossierPart.getFileTemplateNo(),
+							displayName, displayName, 0, null,
+							StringPool.BLANK, "true", serviceContext);
+
+					if(fileEntryId > 0 && Validator.isNotNull(dossierFile)) {
+						_log.info("Update fileEntryId :" + dossier.getDossierId());
+						dossierFile.setEForm(false);
+						dossierFile.setFileEntryId(fileEntryId);
+						//File sinh từ eForm default PDF
+//						String fileName = dossierFile.getDisplayName();
+						dossierFile.setDisplayName(dossierFile.getDisplayName() + ".pdf");
+						_log.info("Log dossierFile : " + dossierFile.getDossierFileId() + " DisplayName : " + dossierFile.getDisplayName());
+						DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+					}
+				}
+
+			}
+		}catch (Exception e) {
+			e.getMessage();
+		}
+		return null;
+	}
 }

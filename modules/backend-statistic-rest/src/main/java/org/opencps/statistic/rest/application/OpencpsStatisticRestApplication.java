@@ -184,6 +184,8 @@ public class OpencpsStatisticRestApplication extends Application {
 	private DossierStatisticManualFinderService dossierStatisticManualFinderService = new DossierStatisticManualFinderServiceImpl();
 
 	public static final String ALL_MONTH = "-1";
+	
+	public static final String API_VOTING_STATISTIC = "API_VOTING_STATISTIC";
 
 	public Set<Object> getSingletons() {
 		return Collections.<Object>singleton(this);
@@ -713,7 +715,10 @@ public class OpencpsStatisticRestApplication extends Application {
 	@GET
 	@Path("/votingsCountPoint")
 	public VotingResultResponse searchVotingStatisticCountPoint(@HeaderParam("groupId") long groupId,
-																@BeanParam VotingSearchModel query) {
+																@BeanParam VotingSearchModel query, @Context HttpServletRequest request) {
+		
+		User user = (User) request.getAttribute("USER");
+
 		try {
 			String fromStatisticDate = query.getFromStatisticDate() != null ? query.getFromStatisticDate() : "1/1/2019";
 			String toStatisticDate = query.getToStatisticDate() != null ? query.getToStatisticDate() : "1/1/2100";
@@ -757,9 +762,24 @@ public class OpencpsStatisticRestApplication extends Application {
 			statisticResponse.setTotal(listVotingResult.size());
 			statisticResponse.setData(listVotingResult);
 
+			// ghi log vao syncTracking
+			/*
+			 * OpenCPSUtils.addSyncTracking(API_VOTING_STATISTIC, user.getUserId(), groupId,
+			 * StringPool.NULL, StringPool.NULL, StringPool.NULL, 1,
+			 * JSONFactoryUtil.looseSerialize(query),
+			 * JSONFactoryUtil.looseSerialize(statisticResponse));
+			 */
+			
 			return statisticResponse;
 		}catch (Exception e) {
 			_log.error("error", e);
+			// ghi log vao syncTracking
+			/*
+			 * OpenCPSUtils.addSyncTracking(API_VOTING_STATISTIC, user.getUserId(), groupId,
+			 * StringPool.NULL, StringPool.NULL, StringPool.NULL, 0,
+			 * JSONFactoryUtil.looseSerialize(query), StringPool.NULL);
+			 */
+			
 			OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
 			serviceExceptionDetails.setFaultCode(String.valueOf(HttpURLConnection.HTTP_INTERNAL_ERROR));

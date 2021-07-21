@@ -16,6 +16,8 @@ public class SyncTrackingQuery {
     public String toDate;
     @QueryParam(value = "unit")
     public String unit;
+    @QueryParam(value = "serverNo")
+    public String serverNo;
     @QueryParam(value = "protocol")
     public String protocol;
     @QueryParam(value = "stateSync")

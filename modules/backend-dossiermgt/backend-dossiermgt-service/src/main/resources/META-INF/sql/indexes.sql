@@ -21,6 +21,14 @@ create index IX_F420D66C on opencps_configcounter (groupId, counterCode[$COLUMN_
 create index IX_6442A351 on opencps_configcounter (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_EA0DCA13 on opencps_configcounter (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_1F11AAF4 on opencps_csdldc_serviceinfo (serviceCode[$COLUMN_LENGTH:75$], status);
+create index IX_BCB95758 on opencps_csdldc_serviceinfo (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_2EDFD3DA on opencps_csdldc_serviceinfo (uuid_[$COLUMN_LENGTH:75$], groupId);
+
+create index IX_3E74E06A on opencps_csdldc_user (govAgencyCode[$COLUMN_LENGTH:75$], employeeEmail[$COLUMN_LENGTH:75$], status);
+create index IX_8E5C272A on opencps_csdldc_user (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_F438702C on opencps_csdldc_user (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_62C6C2A0 on opencps_deliverable (deliverableCode[$COLUMN_LENGTH:128$], deliverableState);
 create index IX_8D12CC2D on opencps_deliverable (deliverableState, govAgencyCode[$COLUMN_LENGTH:128$], deliverableType[$COLUMN_LENGTH:255$], applicantIdNo[$COLUMN_LENGTH:128$]);
 create index IX_B5D727C6 on opencps_deliverable (groupId, applicantIdNo[$COLUMN_LENGTH:128$]);
@@ -305,6 +313,7 @@ create unique index IX_CB4E0745 on opencps_reportlandtax (uuid_[$COLUMN_LENGTH:7
 create index IX_29DADB16 on opencps_serviceconfig (govAgencyCode[$COLUMN_LENGTH:128$]);
 create index IX_E713E0A0 on opencps_serviceconfig (groupId, govAgencyCode[$COLUMN_LENGTH:128$]);
 create index IX_5ED8CC55 on opencps_serviceconfig (groupId, serviceInfoId, govAgencyCode[$COLUMN_LENGTH:128$], serviceLevel);
+create index IX_4900D761 on opencps_serviceconfig (groupId, serviceInfoId, serviceLevel);
 create index IX_195F08D3 on opencps_serviceconfig (groupId, serviceLevel);
 create index IX_4F240C8E on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_6FC25E90 on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:75$], groupId);

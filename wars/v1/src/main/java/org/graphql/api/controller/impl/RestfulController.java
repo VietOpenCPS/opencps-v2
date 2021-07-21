@@ -1771,7 +1771,7 @@ public class RestfulController {
 								searchContext, userId);
 
 						result.put(ConstantUtils.TOTAL, total);
-						System.out.println("total: " + total);
+//						System.out.println("total: " + total);
 					} else {
 						result.put(ConstantUtils.TOTAL, 0);
 					}
@@ -1786,7 +1786,7 @@ public class RestfulController {
 			_log.debug(e);
 		}
 
-		System.out.println("result: " + result);
+//		System.out.println("result: " + result);
 		return result.toJSONString();
 	}
 
@@ -1864,7 +1864,7 @@ public class RestfulController {
 				throw new ResourceNotFoundException();
 			}
 			result = "/documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId()
-					+ StringPool.FORWARD_SLASH + fileEntry.getTitle() + StringPool.FORWARD_SLASH + fileEntry.getUuid();
+					+ StringPool.FORWARD_SLASH + fileEntry.getFileName() + StringPool.FORWARD_SLASH + fileEntry.getUuid();
 
 		} catch (Exception e) {
 			_log.debug(e);

@@ -31,6 +31,29 @@
 		<field name="groupFilter" type="boolean" />
 		<field name="publicManager" type="boolean" />
 	</model>
+	<model name="org.opencps.adminconfig.model.ApiManager">
+		<field name="apiManagerId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="apiCode" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="userId" type="long" />
+		<field name="apiName" type="String" />
+		<field name="apiDescription" type="String" />
+		<field name="apiStatus" type="int" />
+		<field name="className" type="String" />
+	</model>
+	<model name="org.opencps.adminconfig.model.ApiRole">
+		<field name="apiRoleId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="userId" type="long" />
+		<field name="apiCode" type="String" />
+		<field name="roleId" type="int" />
+		<field name="roleCode" type="String" />
+		<field name="apiRoleStatus" type="int" />
+	</model>
 	<model name="org.opencps.adminconfig.model.DynamicReport">
 		<field name="dynamicReportId" type="long" />
 		<field name="groupId" type="long" />
@@ -65,5 +88,27 @@
 		<field name="reportRoleId" type="long" />
 		<field name="dynamicReportId" type="long" />
 		<field name="roleId" type="long" />
+	</model>
+	<model name="org.opencps.adminconfig.model.SyncTracking">
+		<field name="uuid" type="String" />
+		<field name="trackingId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dossierNo" type="String" />
+		<field name="referenceUid" type="String" />
+		<field name="serverNo" type="String" />
+		<field name="protocol" type="String" />
+		<field name="stateSync" type="int" />
+		<field name="serviceCode" type="String" />
+		<field name="api" type="String" />
+		<field name="fromUnit" type="String" />
+		<field name="toUnit" type="String" />
+		<field name="bodyRequest" type="String" />
+		<field name="response" type="String" />
+		<field name="metaData" type="String" />
 	</model>
 </model-hints>

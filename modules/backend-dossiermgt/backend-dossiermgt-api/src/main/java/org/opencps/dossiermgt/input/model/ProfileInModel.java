@@ -84,6 +84,16 @@ public class ProfileInModel {
 
     public String position;
 
+    public String statusQLVB;
+
+    public String getStatusQLVB() {
+        return statusQLVB;
+    }
+
+    public void setStatusQLVB(String statusQLVB) {
+        this.statusQLVB = statusQLVB;
+    }
+
     public String getContent_process() {
         return content_process;
     }

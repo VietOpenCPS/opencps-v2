@@ -20,6 +20,7 @@ import org.opencps.dossiermgt.action.QLVBIntegrationAction;
 import org.opencps.dossiermgt.action.impl.QLVBIntegrationActionImpl;
 import org.opencps.dossiermgt.action.util.DossierFileUtils;
 import org.opencps.dossiermgt.constants.QLVBConstants;
+import org.opencps.dossiermgt.input.model.ProfileInModel;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -131,7 +132,7 @@ public class QLVGManagementImpl implements QLVGManagement {
                                   Company company, Locale locale, User user,
                                   ServiceContext serviceContext, String id, File file,
                                   String displayName, String fileType,
-                                  String actionCode) {
+                                  String actionCode, int sequence) {
         _log.info("Eoffice system calling api FDS...");
         JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
         try {
@@ -151,6 +152,7 @@ public class QLVGManagementImpl implements QLVGManagement {
                     || displayName.isEmpty()
                     || fileType.isEmpty()
                     || actionCode.isEmpty()
+                    || Validator.isNull(sequence)
             ) {
                 jsonObject.put("message", "Data is invalid");
                 jsonObject.put("code", "01");
@@ -204,9 +206,12 @@ public class QLVGManagementImpl implements QLVGManagement {
                     inputStream, "", dossier, displayName, fileType, "false", dossierPartNo,
                     "", "" );
 
+            ProfileInModel input = new ProfileInModel();
+            input.setStatusQLVB(String.valueOf(sequence));
+
             //Do action
             QLVBIntegrationAction docAction = new QLVBIntegrationActionImpl(serverConfig);
-            docAction.doAction(groupId, serviceContext, dossier, actionCode);
+            docAction.doAction(groupId, serviceContext, dossier, actionCode, input);
 
             jsonObject.put("message", "Success");
             jsonObject.put("code", "00");

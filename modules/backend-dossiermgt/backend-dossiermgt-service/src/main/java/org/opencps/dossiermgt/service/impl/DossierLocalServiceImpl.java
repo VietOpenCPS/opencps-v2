@@ -81,7 +81,17 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
-import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
@@ -7882,6 +7892,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public Dossier findDossierByDeclarationCode(String code, long groupId) {
 		return dossierFinder.findDossierByDeclarationCode(code, groupId);
 	}
+
+	public Dossier findDossierById( long dossierId) {
+		return dossierFinder.findDossierById(dossierId);
+	}
+
 	public java.util.List<Object[]> getListVotingByDossier(long groupId, List<String> listDossier) {
 		return dossierFinder.getListVotingByDossier(groupId, listDossier);
 	}
@@ -7919,5 +7934,23 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		List<Dossier> result = dossierPersistence.findWithDynamicQuery(dynamicQuery);
 		return result;
 	}
+	
+	public List<Dossier> findDossierTransferByORIGIN_NO_ORIGIN_ID_ORIGINALITY(String originDossierNo, Long originDossierId, Integer originality){
+		DynamicQuery dynamicQuery = dossierLocalService.dynamicQuery();
+		
+		dynamicQuery.add(RestrictionsFactoryUtil.eq("originDossierNo", originDossierNo));
+
+		if(Validator.isNotNull(originDossierId)) {
+			dynamicQuery.add(RestrictionsFactoryUtil.eq("originDossierId", originDossierId));
+		}
+
+		if(Validator.isNotNull(originality)) {
+			dynamicQuery.add(RestrictionsFactoryUtil.eq("originality", originality));
+		}
+		
+		List<Dossier> result = dossierPersistence.findWithDynamicQuery(dynamicQuery);
+		return result;
+	}
+
 	
 }

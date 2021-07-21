@@ -75,7 +75,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 
 		try {
 
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			Dossier dossier = DossierLocalServiceUtil.findDossierById(dossierId);
 			_log.info("DossierId" + dossierId);
 			_log.info("Dossier" + JSONFactoryUtil.looseSerialize(dossier));
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
@@ -257,12 +257,13 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 		try {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.findPaymentFileByDossierId(dossier.getGroupId(), dossierId);
-			JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
-					.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
-			String imageStr = data.getString(KeyPayV3Term.QRCODE_PAY);
+			JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+			JSONObject keyPayLateConfig = JSONFactoryUtil.createJSONObject(data.getString(KeyPayTerm.KEYPAY_LATE_CONFIG));
+			String imageStr = keyPayLateConfig.getString(KeyPayV3Term.QRCODE_PAY);
 			if(Validator.isNotNull(imaStr)){
 				imageStr = imaStr;
 			}
+			_log.debug("Image: " + imageStr);
 			if(Validator.isNotNull(imageStr)) {
 				String imageDataBytes = imageStr.split(",")[1];
 

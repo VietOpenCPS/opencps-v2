@@ -103,7 +103,9 @@ public class QueryUtil {
 
 		STATISTIC_DOSSIER_DASHBROAD_TOTAL_COUNT(20),
 
-		STATISTIC_DOSSIER_VOTING_TOTAL_LIST(21);
+		STATISTIC_DOSSIER_VOTING_TOTAL_LIST(21),
+
+		STATISTIC_DOSSIER_WAITING_TOTAL_LIST(22);
 
 		private QueryType(int type) {
 			this.type = type;
@@ -281,6 +283,12 @@ public class QueryUtil {
 				this.sqlSearchTemplate = PropValues.STATISTIC_DOSSIER_VOTING_TOTAL_LIST;
 				break;
 
+			case 22:
+				this.sqlCountTemplate = PropValues.STATISTIC_DOSSIER_WAITING_TOTAL_COUNT;
+				this.sqlGroupTemplate = PropValues.STATISTIC_DOSSIER_WAITING_GROUP_TOTAL_COUNT;
+				this.sqlSearchTemplate = PropValues.STATISTIC_DOSSIER_WAITING_TOTAL_LIST;
+				break;
+
 
 			default:
 				this.sqlCountTemplate = StringPool.BLANK;
@@ -363,6 +371,8 @@ public class QueryUtil {
 			} else {
 				sql = sql.replace("{scopeEmpl}", "''");
 			}
+		}else {
+			sql = sql.replace("{scopeEmpl}", "''");
 		}
 
 		try (PreparedStatement pst = ConnectionUtil._getConnection().prepareStatement(sql)) {

@@ -907,7 +907,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
-			return BusinessExceptionImpl.processException(e);
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e.getMessage()).build();
 		}
 	}
 

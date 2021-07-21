@@ -54,6 +54,8 @@ import org.opencps.statistic.service.OpencpsDossierStatisticManualLocalService;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticManualFinder;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticManualPersistence;
+import org.opencps.statistic.service.persistence.OpencpsDossierStatisticMgtFinder;
+import org.opencps.statistic.service.persistence.OpencpsDossierStatisticMgtPersistence;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticPersistence;
 import org.opencps.statistic.service.persistence.OpencpsPersonStatisticFinder;
 import org.opencps.statistic.service.persistence.OpencpsPersonStatisticPersistence;
@@ -566,6 +568,63 @@ public abstract class OpencpsDossierStatisticManualLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the opencps dossier statistic mgt local service.
+	 *
+	 * @return the opencps dossier statistic mgt local service
+	 */
+	public org.opencps.statistic.service.OpencpsDossierStatisticMgtLocalService getOpencpsDossierStatisticMgtLocalService() {
+		return opencpsDossierStatisticMgtLocalService;
+	}
+
+	/**
+	 * Sets the opencps dossier statistic mgt local service.
+	 *
+	 * @param opencpsDossierStatisticMgtLocalService the opencps dossier statistic mgt local service
+	 */
+	public void setOpencpsDossierStatisticMgtLocalService(
+		org.opencps.statistic.service.OpencpsDossierStatisticMgtLocalService opencpsDossierStatisticMgtLocalService) {
+		this.opencpsDossierStatisticMgtLocalService = opencpsDossierStatisticMgtLocalService;
+	}
+
+	/**
+	 * Returns the opencps dossier statistic mgt persistence.
+	 *
+	 * @return the opencps dossier statistic mgt persistence
+	 */
+	public OpencpsDossierStatisticMgtPersistence getOpencpsDossierStatisticMgtPersistence() {
+		return opencpsDossierStatisticMgtPersistence;
+	}
+
+	/**
+	 * Sets the opencps dossier statistic mgt persistence.
+	 *
+	 * @param opencpsDossierStatisticMgtPersistence the opencps dossier statistic mgt persistence
+	 */
+	public void setOpencpsDossierStatisticMgtPersistence(
+		OpencpsDossierStatisticMgtPersistence opencpsDossierStatisticMgtPersistence) {
+		this.opencpsDossierStatisticMgtPersistence = opencpsDossierStatisticMgtPersistence;
+	}
+
+	/**
+	 * Returns the opencps dossier statistic mgt finder.
+	 *
+	 * @return the opencps dossier statistic mgt finder
+	 */
+	public OpencpsDossierStatisticMgtFinder getOpencpsDossierStatisticMgtFinder() {
+		return opencpsDossierStatisticMgtFinder;
+	}
+
+	/**
+	 * Sets the opencps dossier statistic mgt finder.
+	 *
+	 * @param opencpsDossierStatisticMgtFinder the opencps dossier statistic mgt finder
+	 */
+	public void setOpencpsDossierStatisticMgtFinder(
+		OpencpsDossierStatisticMgtFinder opencpsDossierStatisticMgtFinder) {
+		this.opencpsDossierStatisticMgtFinder = opencpsDossierStatisticMgtFinder;
+	}
+
+	/**
 	 * Returns the opencps person statistic local service.
 	 *
 	 * @return the opencps person statistic local service
@@ -856,6 +915,12 @@ public abstract class OpencpsDossierStatisticManualLocalServiceBaseImpl
 	protected OpencpsDossierStatisticManualPersistence opencpsDossierStatisticManualPersistence;
 	@BeanReference(type = OpencpsDossierStatisticManualFinder.class)
 	protected OpencpsDossierStatisticManualFinder opencpsDossierStatisticManualFinder;
+	@BeanReference(type = org.opencps.statistic.service.OpencpsDossierStatisticMgtLocalService.class)
+	protected org.opencps.statistic.service.OpencpsDossierStatisticMgtLocalService opencpsDossierStatisticMgtLocalService;
+	@BeanReference(type = OpencpsDossierStatisticMgtPersistence.class)
+	protected OpencpsDossierStatisticMgtPersistence opencpsDossierStatisticMgtPersistence;
+	@BeanReference(type = OpencpsDossierStatisticMgtFinder.class)
+	protected OpencpsDossierStatisticMgtFinder opencpsDossierStatisticMgtFinder;
 	@BeanReference(type = org.opencps.statistic.service.OpencpsPersonStatisticLocalService.class)
 	protected org.opencps.statistic.service.OpencpsPersonStatisticLocalService opencpsPersonStatisticLocalService;
 	@BeanReference(type = OpencpsPersonStatisticPersistence.class)
